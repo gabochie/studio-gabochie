@@ -404,6 +404,22 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   <div class="footer-copy">&copy; 2026 GideonAbochie Studio &mdash; School of Creativity, Love &amp; Wisdom &middot; Accra, Ghana &middot; All rights reserved</div>
 </div>
 
+<!-- NEWS READER MODAL -->
+<div class="modal-overlay" id="newsModal">
+  <div class="modal-panel">
+    <button class="modal-close" onclick="closeReader()">&times;</button>
+    <div class="modal-source" id="modalSource"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-divider"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <a href="#" id="modalLink" target="_blank" rel="noopener" class="modal-btn modal-btn-primary">Read Full Article &rarr;</a>
+      <button class="modal-btn modal-btn-secondary" onclick="closeReader()">Keep Browsing</button>
+    </div>
+  </div>
+</div>
+
 <script src="../assets/js/main.js"></script>
 <script>
   /* ── GHANA NEWS AGGREGATOR ── */
@@ -605,22 +621,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     loadCategory('all');
   })();
 </script>
-
-<!-- NEWS READER MODAL -->
-<div class="modal-overlay" id="newsModal">
-  <div class="modal-panel">
-    <button class="modal-close" onclick="closeReader()">&times;</button>
-    <div class="modal-source" id="modalSource"></div>
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-meta" id="modalMeta"></div>
-    <div class="modal-divider"></div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-footer">
-      <a href="#" id="modalLink" target="_blank" rel="noopener" class="modal-btn modal-btn-primary">Read Full Article &rarr;</a>
-      <button class="modal-btn modal-btn-secondary" onclick="closeReader()">Keep Browsing</button>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
