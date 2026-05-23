@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install HTMLHint
+        run: npm install -g htmlhint
+
+      - name: HTML lint
+        run: htmlhint "**/*.html" --ignore "node_modules/**,books/**"
+
+      - name: Check for garbled UTF-8 characters
+        run: |
+          echo "Checking for common mojibake patterns..."
+          ! grep -rPl '[\x80-\xBF][\x80-\xBF][\x80-\xBF]' --include='*.html' . 2>/dev/null && \
+            grep -rn 'â€\|Â·\|Â¢\|Ã—\|â•\|â–¬\|â–¨\|âœ¦\|â—ˆ\|âŠž\|â—‰' --include='*.html' . | \
+            grep -v '.github/' && echo "All clear — no garbled characters found"
+
+      - name: Check image sizes
+        run: |
+          echo "Checking for images over 500KB..."
+          large=0
+          while IFS= read -r img; do
+            size=$(stat --format=%s "$img" 2>/dev/null || stat -f%z "$img" 2>/dev/null)
+            if [ "$size" -gt 512000 ]; then
+              echo "OVERSIZE: $img ($((size/1024))KB)"
+              large=1
+            fi
+          done < <(find . -path ./node_modules -prune -o \( -name '*.jpg' -o -name '*.png' -o -name '*.webp' \) -print 2>/dev/null)
+          if [ "$large" -eq 1 ]; then echo "FAIL: Some images exceed 500KB"; exit 1; fi
+          echo "All images under 500KB"
+
+      - name: Check for broken internal links
+        run: |
+          echo "Checking internal file references..."
+          errors=0
+          for file in $(find . -path ./node_modules -prune -o -name '*.html' -print); do
+            while IFS= read -r href; do
+              path=$(echo "$href" | sed 's/#.*//' | sed 's/^\.\///' | sed 's/?.*//')
+              [ -z "$path" ] && continue
+              # Skip external URLs
+              echo "$path" | grep -qE '^https?://' && continue
+              # Skip mailto
+              echo "$path" | grep -q '^mailto:' && continue
+              # Skip anchors-only
+              echo "$path" | grep -q '^#' && continue
+              # Resolve relative path from file location
+              dir=$(dirname "$file")
+              full="$dir/$path"
+              full="${full//\/.\//\//}"
+              full="${full//\/\//\//}"
+              if [ ! -f "$full" ] && [ ! -d "$full" ]; then
+                echo "BROKEN: $file → $path"
+                errors=1
+              fi
+            done < <(grep -oP '(?:src|href)="([^"]+)"' "$file" | grep -oP '"[^"]+"' | tr -d '"')
+          done
+          if [ "$errors" -eq 1 ]; then echo "FAIL: Broken links found"; exit 1; fi
+          echo "All internal links valid"
