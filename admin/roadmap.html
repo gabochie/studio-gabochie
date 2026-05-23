@@ -241,6 +241,19 @@ var DATA = {
             "Add CNAME DNS record to Cloudflare",
             "Verify HTTPS + test all pages"
           ]
+        },
+        {
+          "id": "1.9",
+          "task": "Mobile & UX Optimization",
+          "launch": [{"label":"advertise.html","url":"../newsletter/advertise.html","local":true},{"label":"main.css","url":"../assets/css/main.css","local":true},{"label":"Lighthouse","url":"https://pagespeed.web.dev"}],
+          "items": [
+            "Fix UTF-8 encoding issues in advertise.html (mojibake characters) ✓",
+            "Add prefers-reduced-motion media query to disable scroll animations",
+            "Add prefers-color-scheme media query for light mode support",
+            "Add touch-action: manipulation to interactive elements",
+            "Add loading='lazy' to all below-the-fold images",
+            "Ensure consistent font-display strategy across all pages"
+          ]
         }
       ],
       "acceptance_criteria": [
@@ -250,7 +263,10 @@ var DATA = {
         "Social links resolve correctly",
         "Books are downloadable",
         "Legal pages accessible",
-        "Lead form submits via Formspree"
+        "Lead form submits via Formspree",
+        "All pages pass Lighthouse Mobile score ≥ 80",
+        "Animations respect prefers-reduced-motion",
+        "No 300ms tap delay on interactive elements"
       ]
     },
     {
@@ -418,7 +434,8 @@ var DATA = {
     "Tasks marked with ✓ are already completed in this session.",
     "Auto-verification checks live files on page load — verified items update automatically.",
     "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
-    "404.html added. Roadmap moved to /admin/. Gallery images renamed descriptively."
+    "404.html added. Roadmap moved to /admin/. Gallery images renamed descriptively.",
+    "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first."
   ]
 };
 

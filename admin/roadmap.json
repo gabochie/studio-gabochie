@@ -52,8 +52,21 @@
             "Upload entire `gideonabochie-org/` folder",
             "Set custom domain: gideonabochie.org",
             "Add CNAME DNS record: gideonabochie.org → gideonabochie.pages.dev",
-        "Verify HTTPS is working",
-        "Test all pages, links, donation buttons"
+            "Verify HTTPS is working",
+            "Test all pages, links, donation buttons"
+          ]
+        },
+        {
+          "id": 1.9,
+          "task": "Mobile & UX Optimization",
+          "status": "pending",
+          "items": [
+            "Fix UTF-8 encoding issues in advertise.html (mojibake characters)",
+            "Add prefers-reduced-motion media query to disable scroll animations",
+            "Add prefers-color-scheme media query for light mode support",
+            "Add touch-action: manipulation to interactive elements",
+            "Add loading='lazy' to all below-the-fold images",
+            "Ensure consistent font-display strategy across all pages"
           ]
         },
         {
@@ -108,7 +121,10 @@
         "Social links (X, Facebook, TikTok, Instagram) resolve correctly",
         "Books are downloadable",
         "Legal pages are accessible",
-        "Lead form submits (or gracefully falls back)"
+        "Lead form submits (or gracefully falls back)",
+        "All pages pass Lighthouse Mobile score ≥ 80",
+        "Animations respect prefers-reduced-motion",
+        "No 300ms tap delay on interactive elements"
       ]
     },
     {
@@ -280,6 +296,7 @@
     "RSS news proxy (Pages Function) replaces rss2json.com — live Ghana news feed.",
     "Books converted to lead magnets (email capture modal via Formspree).",
     "Sales chat widget with animated dice mascot added to donation page.",
+    "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first.",
     "Remaining: custom domain, Cloudflare Access, image compression, decal PDF."
   ]
 }
