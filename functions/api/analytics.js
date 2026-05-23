@@ -23,11 +23,11 @@ export async function onRequest(context) {
       viewer {
         zones(filter: {zoneTag: "${zoneId}"}) {
           httpRequests1mGroups(
-            limit: 1000
-            filter: { datetime_geq: "${since}" }
-            orderBy: [datetime_ASC]
+            limit: 10000
+            filter: { datetimeMinute_geq: "${since}" }
+            orderBy: [datetimeMinute_ASC]
           ) {
-            dimensions { date }
+            dimensions { datetimeMinute }
             sum { requests bytes }
             uniq { uniques }
           }
