@@ -14,106 +14,103 @@
         {
           "id": 1.1,
           "task": "Fix deployment blockers",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Replace Formspree placeholder `your-form-id` with real ID — or replace with mailto fallback for now",
-            "Fix `newsletter/advertise.html` links pointing to `index.html#subscribe` — remove or comment out",
-            "Delete duplicate `gideonabochie-org/images books and socials/` directory",
-            "Rename book files to remove spaces (use hyphens)"
+            "Replace Formspree placeholder `your-form-id` with real ID ✓",
+            "Fix `newsletter/advertise.html` links pointing to `index.html#subscribe` ✓",
+            "Delete duplicate `gideonabochie-org/images books and socials/` directory ✓",
+            "Rename book files to remove spaces (use hyphens) ✓"
           ]
         },
         {
           "id": 1.2,
           "task": "Compress assets for web",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Compress `logo.png` (2.4MB → ~150KB) — use tinypng.com or squoosh.app",
-            "Compress `neogh-logo.png` (1.9MB → ~100KB)",
-            "Compress gallery images (550–995KB each → ~200KB each)",
+            "Compress `logo.png` (2.4MB → ~30KB) ✓",
+            "Compress `neogh-logo.png` (1.9MB → ~33KB) ✓",
+            "Compress gallery images (→ ~200KB each) ✓",
             "Optional: convert logos to WebP for smaller size"
           ]
         },
         {
           "id": 1.3,
           "task": "Add Cloudflare Pages config",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Create `_headers` file with CSP, HSTS, CORS headers",
-            "Create `_redirects` file for domain redirects (gideonabochie.org → www or vice versa)",
-            "Verify all relative paths work from subdirectory if needed"
+            "Create `_headers` file with CSP, HSTS, CORS headers ✓",
+            "Create `_redirects` file for URL redirects ✓",
+            "Verify all relative paths work in production ✓"
           ]
         },
         {
           "id": 1.4,
           "task": "Deploy to Cloudflare Pages",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Go to dash.cloudflare.com → Pages → Create → Direct Upload",
-            "Upload entire `gideonabochie-org/` folder",
-            "Set custom domain: gideonabochie.org",
-            "Add CNAME DNS record: gideonabochie.org → gideonabochie.pages.dev",
-            "Verify HTTPS is working",
-            "Test all pages, links, donation buttons"
-          ]
-        },
-        {
-          "id": 1.9,
-          "task": "Mobile & UX Optimization",
-          "status": "pending",
-          "items": [
-            "Fix UTF-8 encoding issues in advertise.html (mojibake characters)",
-            "Add prefers-reduced-motion media query to disable scroll animations",
-            "Add prefers-color-scheme media query for light mode support",
-            "Add touch-action: manipulation to interactive elements",
-            "Add loading='lazy' to all below-the-fold images",
-            "Ensure consistent font-display strategy across all pages"
+            "Upload gideonabochie-org/ folder to Cloudflare Pages ✓",
+            "Set custom domain: gideonabochie.org ✓",
+            "Add CNAME DNS record to Cloudflare ✓",
+            "Verify HTTPS + test all pages ✓"
           ]
         },
         {
           "id": 1.5,
           "task": "Custom domain on Cloudflare Pages",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Add gideonabochie.org to Cloudflare Pages project",
-            "Add CNAME DNS record: gideonabochie.org → gideonabochie-org.pages.dev",
-            "Wait for SSL cert provisioning (automatic)",
-            "Verify domain resolves and HTTPS works"
+            "Add gideonabochie.org to Cloudflare Pages project ✓",
+            "Add CNAME DNS record ✓",
+            "SSL cert provisioned (automatic) ✓",
+            "Domain resolves and HTTPS works ✓"
           ]
         },
         {
           "id": 1.6,
           "task": "Admin security — Cloudflare Access",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Sign up for Zero Trust Free plan (50 users, email OTP)",
-            "Zero Trust dashboard → Access → Applications → Add self-hosted",
-            "Domain: gideonabochie.org, Path: admin/*",
-            "Policy: Email OTP → authorize info@gideonabochie.com",
-            "Verify admin pages are login-gated"
+            "Zero Trust Free plan configured (email OTP) ✓",
+            "Access Application: gideonabochie.org/admin/* ✓",
+            "Policy: Email OTP → info@gideonabochie.com ✓",
+            "Admin pages login-gated ✓"
           ]
         },
         {
           "id": 1.7,
           "task": "Compress gallery images",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "teaching-session.jpg (550KB), creative-workshop.jpg, community-outreach.jpg",
-            "book-launch.jpg, behind-scenes.jpg, ministry-moment.jpg",
-            "Target: ~200KB each via TinyPNG or PowerShell compression",
-            "Update src paths if filenames change"
+            "teaching-session.jpg (188KB) ✓",
+            "creative-workshop.jpg (183KB) ✓",
+            "community-outreach.jpg (159KB) ✓",
+            "book-launch.jpg (193KB) ✓",
+            "behind-scenes.jpg (144KB) ✓",
+            "ministry-moment.jpg (166KB) ✓"
           ]
         },
         {
           "id": 1.8,
           "task": "Flutterwave decal PDF",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Create/download Flutterwave donation decal PDF",
-            "Place in assets/ as flutterwave-decal.pdf",
-            "Add download link on landing page (index.html footer or give section)"
+            "Decal PDF placed in assets/flutterwave-decal.pdf ✓",
+            "Download link added to site ✓"
+          ]
+        },
+        {
+          "id": 1.9,
+          "task": "Mobile & UX Optimization",
+          "status": "done",
+          "items": [
+            "Fix UTF-8 encoding issues in advertise.html ✓",
+            "Add prefers-reduced-motion media query ✓",
+            "Add prefers-color-scheme media query ✓",
+            "Add touch-action: manipulation to interactive elements ✓",
+            "Add loading='lazy' to below-fold images ✓",
+            "Consistent font-display strategy across all pages ✓"
           ]
         }
-      ],
       "acceptance_criteria": [
         "All pages load via https://gideonabochie.org",
         "Nav links work on all pages",
@@ -283,7 +280,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 1 — remaining deployment tasks: custom domain, Cloudflare Access, image compression, decal PDF",
+  "current_focus": "Phase 1 complete — moving to Phase 2: serverless functions (form handler Worker deployed, news aggregator live)",
   "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
@@ -297,6 +294,7 @@
     "Books converted to lead magnets (email capture modal via Formspree).",
     "Sales chat widget with animated dice mascot added to donation page.",
     "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first.",
-    "Remaining: custom domain, Cloudflare Access, image compression, decal PDF."
+    "Phase 1 complete. All deployment blockers fixed, domain secured, admin gated, images compressed, mobile UX optimized.",
+    "Phase 2 started: form handler Worker deployed (replaces Formspree), news aggregation Worker live."
   ]
 }
