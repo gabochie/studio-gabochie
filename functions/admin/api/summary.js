@@ -36,6 +36,14 @@ export async function onRequest(context) {
       "SELECT DATE(viewed_at) AS day, COUNT(*) AS count FROM page_views WHERE viewed_at >= datetime('now', '-30 days') GROUP BY day ORDER BY day"
     ).all();
 
+    const viewsByCountry = await env.DB.prepare(
+      "SELECT COALESCE(NULLIF(country,''), 'Unknown') AS country, COUNT(*) AS count FROM page_views WHERE viewed_at >= datetime('now', '-30 days') AND country IS NOT NULL GROUP BY country ORDER BY count DESC LIMIT 20"
+    ).all();
+
+    const uniqueVisitors = await env.DB.prepare(
+      "SELECT COUNT(DISTINCT ip) AS total, COALESCE(COUNT(DISTINCT CASE WHEN viewed_at >= datetime('now', '-7 days') THEN ip END), 0) AS this_week, COALESCE(COUNT(DISTINCT CASE WHEN viewed_at >= datetime('now', '-30 days') THEN ip END), 0) AS this_month FROM page_views WHERE ip IS NOT NULL AND ip != ''"
+    ).first();
+
     const donationsByMonth = await env.DB.prepare(
       "SELECT strftime('%Y-%m', created_at) AS month, COUNT(*) AS count, COALESCE(SUM(CASE WHEN status='successful' THEN amount ELSE 0 END), 0) AS total FROM donations WHERE created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month"
     ).all();
@@ -69,9 +77,15 @@ export async function onRequest(context) {
       },
       bookings: { pending: bookings.pending, active: bookings.active, completed: bookings.completed },
       page_views: { total: views.total, this_week: views.this_week, this_month: views.this_month },
+      unique_visitors: {
+        total: uniqueVisitors.total,
+        this_week: uniqueVisitors.this_week,
+        this_month: uniqueVisitors.this_month
+      },
       charts: {
         views_by_day: viewsByDay.results,
         views_by_page: viewsByPage.results,
+        views_by_country: viewsByCountry.results,
         donations_by_month: donationsByMonth.results,
         subs_by_month: subsByMonth.results
       },

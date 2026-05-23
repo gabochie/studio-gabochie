@@ -7,10 +7,15 @@ export async function onRequest(context) {
   }
   try {
     const { page, referrer } = await request.json();
+    const cf = request.cf || {};
+    const ip = request.headers.get('CF-Connecting-IP') || '';
     if (env.DB) {
       await env.DB.prepare(
-        'INSERT INTO page_views (page, referrer) VALUES (?, ?)'
-      ).bind(page || '/', referrer || '').run();
+        'INSERT INTO page_views (page, referrer, country, city, ip) VALUES (?, ?, ?, ?, ?)'
+      ).bind(
+        page || '/', referrer || '',
+        cf.country || '', cf.city || '', ip
+      ).run();
     }
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: { 'Content-Type': 'application/json' }

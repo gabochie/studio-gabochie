@@ -82,7 +82,11 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page)`,
       `CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
-      `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
+      // Migrations: add new columns to existing tables
+      `ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT ''`
     ];
     const results = [];
     for (const sql of statements) {

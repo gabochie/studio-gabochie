@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS page_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   page TEXT NOT NULL,
   referrer TEXT DEFAULT '',
+  country TEXT DEFAULT '',
+  city TEXT DEFAULT '',
+  ip TEXT DEFAULT '',
   viewed_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -88,3 +91,8 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false');
+
+-- Migrate existing page_views table (safe to run even if columns already exist)
+ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT '';
+ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT '';
+ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT '';
