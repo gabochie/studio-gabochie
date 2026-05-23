@@ -21,7 +21,15 @@ export async function onRequest(context) {
     }
     const payload = { name, email, phone, company, slot, message, timestamp: new Date().toISOString(), source: 'booking:' + slot };
 
-    // Store in KV if bound
+    // Store in D1 if bound
+    const db = env.DB;
+    if (db && email) {
+      await db.prepare(
+        `INSERT INTO bookings (name, email, company, ad_type, message, status) VALUES (?, ?, ?, ?, ?, ?)`
+      ).bind(name, email, company, slot, message, 'pending').run().catch(function(){});
+    }
+
+    // Store in KV if bound (legacy fallback)
     const kv = env.SUBSCRIBERS;
     if (kv && email) {
       await kv.put('booking:' + Date.now() + ':' + email, JSON.stringify(payload));
