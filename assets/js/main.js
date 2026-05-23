@@ -18,11 +18,10 @@ function toggleFaq(btn) {
 /* ── Mobile Nav Toggle ── */
 function toggleNav(el) {
   var nav = document.querySelector('.nav-links');
-  var toggle = document.querySelector('.nav-toggle');
   var overlay = document.querySelector('.nav-mobile-overlay');
+  var btn = document.querySelector('.nav-toggle');
   if (!nav) return;
-  nav.classList.toggle('open');
-  if (toggle) toggle.classList.toggle('active');
-  if (overlay) overlay.classList.toggle('open');
+  if (!el) { nav.classList.remove('open'); if (overlay) overlay.classList.remove('open'); if (btn) btn.classList.remove('active'); }
+  else { nav.classList.toggle('open'); el.classList.toggle('active'); if (overlay) overlay.classList.toggle('open'); }
   document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
 }
