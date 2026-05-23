@@ -209,11 +209,14 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
 .footer-sponsors{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);grid-column:1/-1}
 .footer-sponsors-label{display:block;font-family:'Courier Prime',monospace;font-size:10px;color:#3A5278;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
 .footer-sponsors-logos{display:flex;flex-wrap:wrap;gap:24px;align-items:center}
-.footer-sponsor-item{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#5A7A9F;transition:opacity 0.2s;padding:8px 16px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;opacity:0.7}
+.footer-sponsor-item{display:inline-flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#5A7A9F;transition:opacity 0.2s;padding:12px 20px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;opacity:0.7;min-width:100px}
 .footer-sponsor-item:hover{opacity:1;border-color:rgba(201,168,76,0.3)}
-.footer-sponsor-item img{height:32px;width:auto;display:block;border-radius:4px}
-.footer-sponsor-item span{font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F;line-height:1.2;font-weight:500}
+.footer-sponsor-item img{height:36px;width:auto;display:block;border-radius:4px}
+.footer-sponsor-item span{font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F;line-height:1.2;font-weight:500;text-align:center}
 .footer-sponsor-item span small{display:block;font-size:9px;color:#3A5278;font-weight:400}
+.footer-sponsor-item.placeholder{border:1px dashed rgba(255,255,255,0.1);opacity:0.35}
+.footer-sponsor-item.placeholder:hover{opacity:0.5;border-color:rgba(255,255,255,0.15)}
+.footer-sponsor-item .placeholder-icon{width:36px;height:36px;border-radius:4px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:14px;color:#3A5278}
 .footer-bottom{font-family:'Courier Prime',monospace;border-top:1px solid rgba(255,255,255,0.06);margin-top:32px;padding-top:20px;font-size:12px;text-align:center;grid-column:1/-1}
 @media(max-width:640px){footer .container{grid-template-columns:1fr;gap:24px}}
 </style>
@@ -648,6 +651,11 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
       <span class="footer-sponsors-label">Sponsors &amp; Affiliations</span>
       <div class="footer-sponsors-logos">
         <a href="https://www.tiktok.com/@neoghglobal" target="_blank" rel="noopener" class="footer-sponsor-item"><img src="assets/images/neogh-logo.png" alt="NEOGH - Spirit of Nation Building"><span>NEOGH<small>Spirit of Nation Building</small></span></a>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
       </div>
     </div>
     <div class="footer-bottom">
