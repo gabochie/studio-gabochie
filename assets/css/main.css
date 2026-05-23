@@ -1,0 +1,35 @@
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+img{max-width:100%;height:auto;display:block}
+a{text-decoration:none;color:inherit}
+
+/* ── Container ── */
+.container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:64px;display:flex;align-items:center;font-family:'DM Sans',system-ui,-apple-system,sans-serif}
+nav .container{display:flex;align-items:center;justify-content:space-between;width:100%}
+.nav-brand{display:flex;align-items:center;gap:12px;color:#fff}
+.nav-brand img{height:56px;width:auto;display:block}
+.nav-brand-wrapper{display:flex;flex-direction:column;align-items:center}
+.nav-brand-title{font-family:'DM Sans',system-ui,-apple-system,sans-serif;font-size:23px;font-weight:700;color:#fff;line-height:1.2;text-align:center}
+.nav-brand-tagline{font-family:'DM Sans',system-ui,-apple-system,sans-serif;font-size:9px;color:#C9A84C;font-weight:500;letter-spacing:0.3px;text-transform:uppercase;text-align:center}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);transition:all 0.2s;text-decoration:none;font-family:'DM Sans',system-ui,-apple-system,sans-serif}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,0.06)}
+.nav-donate{padding:8px 18px!important;background:#C9A84C!important;color:#0A1628!important;border-radius:6px!important;font-weight:600!important;font-size:13px!important;font-family:'DM Sans',system-ui,-apple-system,sans-serif!important}
+.nav-donate:hover{background:#D9B85C!important;color:#0A1628!important}
+@media(max-width:640px){.nav-links a:not(.nav-donate){display:none}}
+
+/* ── Utilities ── */
+.text-center{text-align:center}
+.mt-4{margin-top:16px}
+.mb-2{margin-bottom:8px}
+
+/* ── Shared Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.anim-1{animation:fadeUp .6s .1s both}.anim-2{animation:fadeUp .6s .25s both}.anim-3{animation:fadeUp .6s .4s both}.anim-4{animation:fadeUp .6s .55s both}
+.reveal-scroll{opacity:0;transform:translateY(20px);transition:opacity .65s,transform .65s}
+.reveal-scroll.in{opacity:1;transform:translateY(0)}
+@keyframes spin{to{transform:rotate(360deg)}}

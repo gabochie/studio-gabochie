@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advertise — The Studio Weekly · GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+:root{--bg:#FAFAFA;--paper:#FFFFFF;--ink:#0A1628;--ink-mid:#2A3A5C;--ink-lt:#6B7F9A;--rule:#E2E6ED;--gold:#C9A84C;--gold-lt:#D9B85C;--gold-soft:rgba(201,168,76,0.12);--red:#8C2020;--col-w:680px;--cream:var(--bg);--olive:var(--gold);--olive-lt:var(--gold-lt);--amber:var(--gold);--amber-lt:var(--gold-lt)}
+body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georgia,serif;font-size:16px;line-height:1.75;padding-top:64px}
+
+/* Masthead */
+.masthead{background:var(--ink);padding:0 40px;position:relative;overflow:hidden}
+.masthead-main{text-align:center;padding:48px 0 36px}
+.masthead-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:20px}
+.masthead-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,7vw,80px);font-weight:700;color:var(--bg);line-height:.9;letter-spacing:-.01em;text-transform:uppercase}
+.masthead-title em{font-style:italic;font-weight:600;color:var(--gold-lt)}
+.masthead-tagline{font-family:'Libre Baskerville',serif;font-style:italic;font-size:14px;color:rgba(250,250,250,.45);margin-top:16px;letter-spacing:.02em}
+.masthead-rule{border:none;border-top:1px solid rgba(255,255,255,.12)}
+.masthead-nav{display:flex;justify-content:center;gap:0;padding:0;position:static;height:auto;align-items:stretch}
+.masthead-nav a{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,250,250,.45);text-decoration:none;padding:14px 24px;border-right:1px solid rgba(255,255,255,.06);transition:color .25s,background .25s}
+.masthead-nav a:first-child{border-left:1px solid rgba(255,255,255,.06)}
+.masthead-nav a:hover{color:var(--gold-lt);background:rgba(255,255,255,.03)}
+
+/* Page wrap */
+.page-wrap{max-width:1160px;margin:0 auto;padding:0 40px}
+
+/* Section */
+.section-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.35em;color:var(--ink-lt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--gold);opacity:.2;max-width:60px}
+.section-title{font-family:'Libre Baskerville',serif;font-size:clamp(32px,4vw,54px);font-weight:700;line-height:1.1;color:var(--ink);margin-bottom:24px}
+.section-body{font-size:17px;color:var(--ink-lt);max-width:680px;line-height:1.8}
+
+/* Rate card */
+.rate-section{background:var(--paper);padding:80px 0;margin-top:48px}
+.rate-inner{max-width:1100px;margin:0 auto;padding:0 40px}
+.rate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:48px}
+.rate-item{background:var(--bg);border:1px solid var(--rule);padding:36px 28px;text-align:center;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+.rate-item:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(10,22,40,.08)}
+.rate-item-icon{font-size:30px;margin-bottom:14px;font-family:'Courier Prime',monospace;color:var(--ink-lt)}
+.rate-item-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);margin-bottom:2px}
+.rate-item-size{font-family:'Courier Prime',monospace;font-size:10px;color:var(--ink-lt);margin-bottom:14px}
+.rate-item-price{font-family:'Libre Baskerville',serif;font-size:32px;font-weight:700;color:var(--gold);margin-bottom:2px}
+.rate-item-price-sub{font-family:'Barlow',sans-serif;font-size:12px;color:var(--ink-lt);margin-bottom:18px}
+.rate-item-desc{font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:20px;flex:1}
+.rate-item-cta{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:10px 24px;background:var(--gold);color:var(--ink);text-decoration:none;transition:background .2s}
+.rate-item-cta:hover{background:var(--gold-lt)}
+.rate-note{margin-top:32px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink-lt);text-align:center;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.7}
+.rate-note a{color:var(--gold)}
+
+/* Why advertise */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin:48px 0}
+.why-item{background:var(--paper);border:1px solid var(--rule);padding:32px 24px;text-align:center}
+.why-num{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px}
+.why-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:8px}
+.why-desc{font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink-lt);line-height:1.5}
+
+/* Footer */
+.footer-band{background:var(--ink);padding:56px 40px;text-align:center;margin-top:80px}
+.footer-title{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:var(--bg);letter-spacing:.04em;text-transform:uppercase;opacity:.15;margin-bottom:20px}
+.footer-links{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:28px}
+.footer-links a{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.2em;color:rgba(250,250,250,.35);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--gold-lt)}
+.footer-copy{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(250,250,250,.18);letter-spacing:.1em;text-transform:uppercase}
+
+/* Responsive */
+@media(max-width:900px){
+  .page-wrap{padding:0 20px}
+  .masthead{padding:0 20px}
+  .rate-grid{grid-template-columns:1fr}
+  .rate-section{padding:60px 0}
+  .rate-inner{padding:0 20px}
+  .why-grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .rate-item{padding:28px 20px}
+  .masthead-title{font-size:clamp(36px,12vw,48px)}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="container">
+    <a href="../index.html" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="index.html">The Issue</a>
+      <a href="index.html#news">News</a>
+      <a href="#rates">Rates</a>
+      <a href="#why">Why Advertise</a>
+      <a href="../index.html#give" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-main">
+    <div class="masthead-eyebrow">GideonAbochie Studio — School of Creativity, Love &amp; Wisdom</div>
+    <div class="masthead-title">Advertise <em>With</em> Us</div>
+    <div class="masthead-tagline">Reach Ghana &amp; the Global Diaspora · The Studio Weekly</div>
+  </div>
+  <hr class="masthead-rule">
+  <nav class="masthead-nav">
+    <a href="index.html">The Issue</a>
+    <a href="index.html#news">Ghana News</a>
+    <a href="#rates">Rates</a>
+    <a href="#why">Why Advertise</a>
+    <a href="index.html#subscribe">Subscribe</a>
+  </nav>
+</div>
+
+<!-- WHY ADVERTISE -->
+<div class="page-wrap" id="why">
+  <div class="why-grid" style="margin-top:80px;">
+    <div class="why-item">
+      <div class="why-num">10K+</div>
+      <div class="why-label">Weekly Readers</div>
+      <div class="why-desc">Educators, innovators, and changemakers across Ghana and the diaspora.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">85%</div>
+      <div class="why-label">Open Rate</div>
+      <div class="why-desc">Highly engaged subscriber base that reads and acts on content.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">GH/GLOBAL</div>
+      <div class="why-label">Dual Reach</div>
+      <div class="why-desc">Simultaneous audience in Ghana and the international diaspora community.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">#1</div>
+      <div class="why-label">Trusted Voice</div>
+      <div class="why-desc">GideonAbochie Studio is a recognized source for creativity, love, and wisdom.</div>
+    </div>
+  </div>
+</div>
+
+<!-- RATE CARD -->
+<div class="page-wrap" id="rates">
+  <div class="rate-section">
+    <div class="rate-inner">
+      <div class="section-label">Advertise With Us</div>
+      <h2 class="section-title">Choose Your<br>Placement</h2>
+      <p class="section-body">The Studio Weekly reaches educators, innovators, and changemakers across Ghana and the diaspora. Promote your brand, cause, or event to an engaged audience that values creativity, love, and wisdom.</p>
+
+      <div class="rate-grid">
+        <div class="rate-item">
+          <div class="rate-item-icon">▬</div>
+          <div class="rate-item-name">Leaderboard Banner</div>
+          <div class="rate-item-size">728 × 90 px · Top of issue</div>
+          <div class="rate-item-price">GH¢2,500</div>
+          <div class="rate-item-price-sub">$150 / week · High visibility</div>
+          <div class="rate-item-desc">Prime placement above the lead story. Maximum exposure for your brand across all devices.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Leaderboard%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+        </div>
+        <div class="rate-item">
+          <div class="rate-item-icon">▨</div>
+          <div class="rate-item-name">Medium Rectangle</div>
+          <div class="rate-item-size">300 × 250 px · Sidebar</div>
+          <div class="rate-item-price">GH¢3,500</div>
+          <div class="rate-item-price-sub">$200 / month · Sidebar placement</div>
+          <div class="rate-item-desc">Ideal for campaigns, product launches, and events. Sits alongside editorial content for natural engagement.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Rectangle%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+        </div>
+        <div class="rate-item">
+          <div class="rate-item-icon">✦</div>
+          <div class="rate-item-name">Sponsored Article</div>
+          <div class="rate-item-size">Native content · Within issue</div>
+          <div class="rate-item-price">GH¢5,000</div>
+          <div class="rate-item-price-sub">$300 / placement · Custom content</div>
+          <div class="rate-item-desc">Full native article written in collaboration with our editorial team. Tell your story authentically to our audience.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Sponsored%20Article%20Inquiry" class="rate-item-cta">Book Now</a>
+        </div>
+        <div class="rate-item">
+          <div class="rate-item-icon">◈</div>
+          <div class="rate-item-name">Footer Banner</div>
+          <div class="rate-item-size">728 × 90 px · Bottom of issue</div>
+          <div class="rate-item-price">GH¢2,000</div>
+          <div class="rate-item-price-sub">$120 / week · Persistent placement</div>
+          <div class="rate-item-desc">Cost-effective banner at the close of every issue. Seen by readers who consume the full newsletter.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Footer%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+        </div>
+        <div class="rate-item">
+          <div class="rate-item-icon">⊞</div>
+          <div class="rate-item-name">Premium Package</div>
+          <div class="rate-item-size">All placements · 4-week run</div>
+          <div class="rate-item-price">GH¢10,000</div>
+          <div class="rate-item-price-sub">$600 / month · Best value</div>
+          <div class="rate-item-desc">Leaderboard + Rectangle + Sponsored Article + Footer. Full coverage across the entire issue for maximum impact.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Premium%20Package%20Inquiry" class="rate-item-cta">Book Now</a>
+        </div>
+        <div class="rate-item" style="border:2px solid var(--gold);">
+          <div class="rate-item-icon">◉</div>
+          <div class="rate-item-name">Founding Sponsor</div>
+          <div class="rate-item-size">Exclusive · Per quarter</div>
+          <div class="rate-item-price" style="color:var(--gold);">GH¢25,000</div>
+          <div class="rate-item-price-sub">$1,500 / quarter · Exclusive</div>
+          <div class="rate-item-desc">Be the sole sponsor for an entire quarter. Logo placement in every issue, dedicated editorial feature, and social media amplification.</div>
+          <a href="mailto:admin@gideonabochie.com?subject=Founding%20Sponsor%20Inquiry" class="rate-item-cta" style="background:var(--gold);">Enquire</a>
+        </div>
+      </div>
+
+      <div class="rate-note">
+        All prices in Ghana Cedis (GH¢) and USD ($). Discounts available for 3-month+ commitments.
+        <br>Contact <a href="mailto:admin@gideonabochie.com">admin@gideonabochie.com</a> for custom packages or multi-issue deals.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-band">
+  <div class="footer-title">The Studio Weekly</div>
+  <div class="footer-links">
+    <a href="../manifesto/index.html">Manifesto</a>
+    <a href="index.html">Current Issue</a>
+    <a href="index.html#news">Ghana News</a>
+    <a href="index.html#subscribe">Subscribe</a>
+    <a href="../index.html">About Us</a>
+    <a href="mailto:admin@gideonabochie.com">Contact</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 GideonAbochie Studio &mdash; School of Creativity, Love &amp; Wisdom &middot; Accra, Ghana &middot; All rights reserved</div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

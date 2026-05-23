@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAHQ — GideonAbochie Studio Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;line-height:1.6;min-height:100vh}
+.container{max-width:960px;margin:0 auto;padding:0 24px}
+
+/* Header */
+.header{padding:32px 0 24px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center}
+.header .ga-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:2px;color:#C9A84C;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);padding:3px 10px;border-radius:20px;margin-bottom:12px;text-transform:uppercase}
+.header h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:-.01em}
+.header h1 span{color:#C9A84C}
+.header .tagline{color:rgba(255,255,255,.35);font-size:13px;margin-top:4px}
+.header .infra{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:10px 18px;display:inline-block;margin-top:16px;font-size:12px;color:rgba(255,255,255,.5)}
+.header .infra strong{color:#C9A84C;font-weight:500}
+
+/* Overview */
+.overview{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0}
+.stat-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px;text-align:center}
+.stat-card .num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;display:block;transition:all .3s}
+.stat-card .label{font-size:11px;color:#5A7A9F;margin-top:4px;text-transform:uppercase;letter-spacing:.8px}
+.stat-card .bar-wrap{height:3px;background:#1E3250;border-radius:2px;margin-top:10px;overflow:hidden}
+.stat-card .bar-fill{height:100%;background:#C9A84C;border-radius:2px;transition:width .6s}
+
+/* Phase card */
+.phase{margin-bottom:20px;border:1px solid #1E3250;border-radius:12px;overflow:hidden;transition:border-color .3s,opacity .3s}
+.phase:hover{border-color:rgba(201,168,76,.2)}
+.phase.complete{border-color:rgba(52,199,123,.2)}
+.phase-header{background:#0F1E38;padding:20px 24px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;user-select:none;transition:background .2s}
+.phase-header:hover{background:#162540}
+.phase-header-left{display:flex;align-items:center;gap:16px;flex:1;min-width:0}
+.phase-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0}
+.phase-badge.ready{background:rgba(52,199,123,.12);color:#34C77B}
+.phase-badge.planned{background:rgba(201,168,76,.1);color:#C9A84C}
+.phase-badge.future{background:rgba(90,122,159,.12);color:#5A7A9F}
+.phase-badge.active{background:rgba(52,199,123,.15);color:#34C77B}
+.phase-badge.done{background:rgba(52,199,123,.15);color:#34C77B}
+.phase-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:.02em}
+.phase-platform{font-size:11px;color:#5A7A9F;margin-top:2px}
+.phase-header-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.phase-progress-text{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:#C9A84C;white-space:nowrap;min-width:40px;text-align:right}
+.phase-chevron{color:#3A5278;font-size:18px;transition:transform .3s;flex-shrink:0}
+.phase.open .phase-chevron{transform:rotate(180deg)}
+.phase-body{display:none;padding:0 24px 24px;border-top:1px solid #1E3250}
+.phase.open .phase-body{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.phase-desc{font-size:14px;color:#8A9BB5;line-height:1.7;padding:20px 0 0;margin-bottom:20px}
+.phase-progress-bar{height:4px;background:#1E3250;border-radius:2px;margin-bottom:20px;overflow:hidden}
+.phase-progress-fill{height:100%;background:#C9A84C;border-radius:2px;transition:width .6s}
+
+/* Step */
+.step{margin-bottom:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;padding:16px 20px;transition:all .3s}
+.step.done{opacity:.7}
+.step-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.step-check{width:22px;height:22px;border:2px solid #3A5278;border-radius:6px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .25s;background:0 0}
+.step-check:hover{border-color:#C9A84C;transform:scale(1.1)}
+.step-check.done{background:#C9A84C;border-color:#C9A84C;animation:pop .3s}
+.step-check.done::after{content:'✓';color:#0A1628;font-size:14px;font-weight:700}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.step-title{font-size:14px;font-weight:600;color:#E8EEF7;flex:1;padding-top:2px;cursor:pointer}
+.step-title.done{color:rgba(232,238,247,.35);text-decoration:line-through}
+.step-title:hover{color:#fff}
+.step-actions{display:flex;gap:8px;flex-shrink:0}
+.step-launch{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;text-decoration:none;line-height:1;background:rgba(201,168,76,.12);color:#C9A84C}
+.step-launch:hover{background:#C9A84C;color:#0A1628;transform:translateY(-1px)}
+.step-launch.external{background:rgba(90,122,159,.12);color:#5A7A9F}
+.step-launch.external:hover{background:#5A7A9F;color:#fff}
+.step-items{padding-left:34px;display:flex;flex-direction:column;gap:5px}
+.step-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#8A9BB5;line-height:1.5}
+.step-item input[type="checkbox"]{display:none}
+.step-item label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex:1}
+.step-item .cb{width:16px;height:16px;border:2px solid #2A3A5C;border-radius:4px;flex-shrink:0;margin-top:2px;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.step-item input:checked+.cb{background:#C9A84C;border-color:#C9A84C;animation:pop .25s}
+.step-item input:checked+.cb::after{content:'✓';color:#0A1628;font-size:10px;font-weight:700}
+.step-item input:checked~span{color:rgba(90,122,159,.4);text-decoration:line-through}
+.step-item span{transition:all .2s}
+
+/* Acceptance */
+.acceptance{margin-top:12px;padding:16px 20px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:8px}
+.acceptance-title{font-size:11px;font-weight:600;color:#C9A84C;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.acceptance-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#8A9BB5;padding:4px 0}
+.acceptance-item input[type="checkbox"]{display:none}
+.acceptance-item label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex:1}
+.acceptance-item .cb{width:16px;height:16px;border:2px solid rgba(201,168,76,.3);border-radius:50%;flex-shrink:0;margin-top:2px;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.acceptance-item input:checked+.cb{background:#C9A84C;border-color:#C9A84C;animation:pop .25s}
+.acceptance-item input:checked+.cb::after{content:'✓';color:#0A1628;font-size:10px;font-weight:700}
+.acceptance-item input:checked~span{color:rgba(90,122,159,.4);text-decoration:line-through}
+
+/* Activity log */
+.activity{margin:32px 0;background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px}
+.activity-title{font-size:11px;font-weight:600;color:#C9A84C;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.activity-title .count{font-size:10px;color:#5A7A9F;background:rgba(90,122,159,.12);padding:2px 8px;border-radius:8px;font-weight:400;letter-spacing:0}
+.activity-empty{font-size:13px;color:#5A7A9F;font-style:italic;padding:8px 0}
+.activity-entry{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid rgba(30,50,80,.4);animation:slideIn .3s}
+.activity-entry:last-child{border-bottom:none}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.activity-dot.done{background:#34C77B}
+.activity-dot.uncheck{background:#E8637A}
+.activity-text{font-size:12px;color:#8A9BB5;flex:1;line-height:1.5}
+.activity-text strong{color:#E8EEF7;font-weight:500}
+.activity-time{font-size:10px;color:#3A5278;white-space:nowrap;font-family:'Courier Prime',monospace}
+
+/* Notes */
+.notes{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);border-radius:12px;padding:24px;margin:24px 0}
+.notes-title{font-size:11px;font-weight:600;color:#C9A84C;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.notes p{font-size:13px;color:#8A9BB5;line-height:1.7;padding:4px 0;padding-left:16px;position:relative}
+.notes p::before{content:'→';position:absolute;left:0;color:#C9A84C}
+
+/* Footer actions */
+.actions{display:flex;gap:12px;justify-content:center;padding:24px 0 16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;text-decoration:none;line-height:1}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C;transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
+.btn-outline:hover{background:#C9A84C;color:#0A1628}
+.btn-ghost{background:transparent;color:#5A7A9F;border:1px solid #1E3250}
+.btn-ghost:hover{color:#fff;border-color:#3A5278}
+.reset-wrap{text-align:center;padding-bottom:40px}
+.reset-btn{background:0 0;border:none;font-size:11px;color:#3A5278;cursor:pointer;text-decoration:underline;transition:color .2s;padding:8px}
+.reset-btn:hover{color:#8C2020}
+.auto-badge{display:inline;color:#34C77B;font-size:11px;font-weight:700;margin-left:4px}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+
+@media(max-width:700px){
+  .overview{grid-template-columns:repeat(2,1fr)}
+  .phase-header{flex-wrap:wrap}
+  .phase-header-right{width:100%;justify-content:flex-end}
+  .step-head{flex-wrap:wrap}
+  .step-actions{width:100%;justify-content:flex-end}
+}
+@media(max-width:450px){
+  .overview{grid-template-columns:1fr}
+  .header h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="ga-tag"><a href="index.html" style="color:inherit;text-decoration:none">GAHQ Admin</a> · Deployment Roadmap</div>
+  <h1>Deployment <span>Roadmap</span></h1>
+  <div class="tagline">School of Creativity, Love &amp; Wisdom — gideonabochie.org</div>
+  <div class="infra"><strong>Infrastructure:</strong> Cloudflare Pages → Cloudflare Workers → VPS/Railway + Database</div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="overview" id="overview"></div>
+
+<!-- PHASES -->
+<div id="phases"></div>
+
+<!-- ACTIVITY LOG -->
+<div class="activity" id="activity">
+  <div class="activity-title">Activity Log <span class="count" id="activityCount">0</span></div>
+  <div id="activityList"><div class="activity-empty">No activity yet. Start completing tasks to see your progress here.</div></div>
+</div>
+
+<!-- NOTES -->
+<div class="notes" id="notesContainer">
+  <div class="notes-title">Notes &amp; Strategy</div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="btn btn-gold" onclick="window.open('../index.html','_blank')"><span>&larr;</span> View Live Site</button>
+  <button class="btn btn-outline" id="verifyBtn" onclick="runVerification()"><span>&#9711;</span> Verify Live</button>
+  <button class="btn btn-ghost" onclick="window.open('roadmap.json','_blank')">Download JSON</button>
+  <button class="btn btn-ghost" onclick="window.open('index.html','_self')">Admin Dashboard</button>
+  <button class="btn btn-ghost" onclick="window.open('https://dash.cloudflare.com','_blank')">Cloudflare Dashboard</button>
+</div>
+
+<div class="reset-wrap">
+  <button class="reset-btn" onclick="resetAll()">Reset All Progress</button>
+</div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA — Each step has launch URLs tied to it
+// ══════════════════════════════════════════════
+var DATA = {
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Static Site Launch",
+      "status": "ready_to_deploy",
+      "description": "Deploy all static HTML/CSS/JS pages to Cloudflare Pages. No backend needed. Donations use external hosted payment links.",
+      "platform": "Cloudflare Pages (free tier)",
+      "steps": [
+        {
+          "id": "1.1",
+          "task": "Fix deployment blockers",
+          "launch": [{"label":"Open Formspree","url":"https://formspree.io/forms/xgoplkoe"},{"label":"index.html","url":"../index.html","local":true},{"label":"Check newsletter","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Replace Formspree placeholder with real ID (xgoplkoe) ✓",
+            "Fix newsletter/advertise.html #subscribe links ✓",
+            "Delete duplicate images books and socials/ directory ✓",
+            "Rename book files to remove spaces ✓"
+          ]
+        },
+        {
+          "id": "1.2",
+          "task": "Compress assets for web",
+          "launch": [{"label":"TinyPNG","url":"https://tinypng.com"},{"label":"Images folder","url":"../assets/images/","local":true}],
+          "items": [
+            "Compress logo.png (2.4MB → ~30KB) ✓",
+            "Compress neogh-logo.png (1.9MB → ~33KB) ✓",
+            "Compress gallery images (→ ~200KB each) — optional",
+            "Optional: convert logos to WebP"
+          ]
+        },
+        {
+          "id": "1.3",
+          "task": "Add Cloudflare Pages config",
+          "launch": [{"label":"_headers","url":"../_headers","local":true},{"label":"_redirects","url":"../_redirects","local":true}],
+          "items": [
+            "Create _headers file (CSP, HSTS, security) ✓",
+            "Create _redirects file (URL redirects) ✓",
+            "Verify relative paths work in production"
+          ]
+        },
+        {
+          "id": "1.4",
+          "task": "Deploy to Cloudflare Pages",
+          "launch": [{"label":"Cloudflare Dashboard","url":"https://dash.cloudflare.com"},{"label":"DEPLOY.md","url":"../DEPLOY.md","local":true}],
+          "items": [
+            "Upload gideonabochie-org/ folder to Cloudflare Pages",
+            "Set custom domain: gideonabochie.org",
+            "Add CNAME DNS record to Cloudflare",
+            "Verify HTTPS + test all pages"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "All pages load via https://gideonabochie.org",
+        "Nav links work on all pages",
+        "Donation buttons open correct payment pages",
+        "Social links resolve correctly",
+        "Books are downloadable",
+        "Legal pages accessible",
+        "Lead form submits via Formspree"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Serverless Functions & Engagement",
+      "status": "planned",
+      "description": "Add Cloudflare Workers for form handling, newsletter subscription, news aggregation proxy, and ad booking.",
+      "platform": "Cloudflare Pages + Cloudflare Workers (free tier)",
+      "steps": [
+        {
+          "id": "2.1",
+          "task": "Form handling Worker",
+          "launch": [{"label":"Cloudflare Workers","url":"https://dash.cloudflare.com/?to=workers"},{"label":"Workers Docs","url":"https://developers.cloudflare.com/workers/"}],
+          "items": [
+            "Create Worker for lead capture + contact forms",
+            "Store submissions in Cloudflare KV or email",
+            "Remove Formspree dependency",
+            "Add honeypot + rate limiting"
+          ]
+        },
+        {
+          "id": "2.2",
+          "task": "Newsletter subscribe system",
+          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Worker handles email capture to KV/email",
+            "Integrate with ConvertKit/Mailchimp (optional)",
+            "Add confirmation auto-reply"
+          ]
+        },
+        {
+          "id": "2.3",
+          "task": "News aggregation Worker",
+          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Replace rss2json.com with Cloudflare Worker",
+            "Add RSS caching for rate limit compliance",
+            "Test with real traffic"
+          ]
+        },
+        {
+          "id": "2.4",
+          "task": "Ad booking form",
+          "launch": [{"label":"Advertise page","url":"../newsletter/advertise.html","local":true}],
+          "items": [
+            "Replace mailto: links with booking form",
+            "Worker processes + emails inquiries",
+            "Add rate card PDF download"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Form submissions work without Formspree",
+        "Newsletter subscribe captures emails",
+        "News aggregator works reliably",
+        "Ad inquiries submit without exposing raw email"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Backend + Database",
+      "status": "planned",
+      "description": "Deploy GAHQ CRM backend to a server with a proper database. Connect static site to APIs for dynamic features.",
+      "platform": "Railway / Fly.io / VPS (~$5-20/mo) + Postgres",
+      "steps": [
+        {
+          "id": "3.1",
+          "task": "Deploy GAHQ backend",
+          "launch": [{"label":"Railway","url":"https://railway.app"},{"label":"Fly.io","url":"https://fly.io"},{"label":"GAHQ backend","url":"../../backend/crm/","local":true}],
+          "items": [
+            "Choose platform: Railway, Fly.io, or VPS",
+            "Deploy FastAPI from backend/crm/",
+            "Set up Postgres database",
+            "Configure env vars + CI/CD"
+          ]
+        },
+        {
+          "id": "3.2",
+          "task": "Payment tracking integration",
+          "launch": [{"label":"Flutterwave Dashboard","url":"https://dashboard.flutterwave.com"},{"label":"Settings page","url":"../frontend/agent/settings.html","local":true}],
+          "items": [
+            "Connect Flutterwave webhook to log donations",
+            "Build admin donation dashboard",
+            "Email notification on new donation"
+          ]
+        },
+        {
+          "id": "3.3",
+          "task": "Content management",
+          "launch": [{"label":"Admin panel","url":"../frontend/agent/dashboard.html","local":true}],
+          "items": [
+            "Admin panel for newsletter content",
+            "Manage testimonials, stats, gallery via API",
+            "Replace hardcoded data with API content"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Backend APIs live at api.gideonabochie.org",
+        "Donations logged in database",
+        "Admin edits content without touching HTML",
+        "Forms submit to own backend"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Full Product",
+      "status": "future",
+      "description": "Revenue features: ad booking with payment, premium content gate, email automation, analytics.",
+      "platform": "Cloudflare Pages + Backend VPS + APIs",
+      "steps": [
+        {
+          "id": "4.1",
+          "task": "Ad booking with payment",
+          "launch": [{"label":"Flutterwave","url":"https://dashboard.flutterwave.com"}],
+          "items": [
+            "Accept ad payments via Flutterwave on-site",
+            "Automated slot calendar + booking confirmation",
+            "Rate card PDF generator"
+          ]
+        },
+        {
+          "id": "4.2",
+          "task": "Email automation",
+          "launch": [{"label":"ConvertKit","url":"https://convertkit.com"}],
+          "items": [
+            "Welcome sequence for subscribers",
+            "Follow-up for manifesto downloaders",
+            "Donation thank-you sequences"
+          ]
+        },
+        {
+          "id": "4.3",
+          "task": "Analytics & dashboards",
+          "launch": [{"label":"Cloudflare Analytics","url":"https://dash.cloudflare.com/?to=analytics"}],
+          "items": [
+            "Cloudflare Web Analytics (free)",
+            "Donation funnel tracking",
+            "Newsletter growth + ad revenue reporting"
+          ]
+        },
+        {
+          "id": "4.4",
+          "task": "Premium content gating",
+          "launch": [{"label":"Ko-fi","url":"https://ko-fi.com/gideonabochie"}],
+          "items": [
+            "Members-only book chapters",
+            "Exclusive video behind email gate",
+            "Paid courses/workshops"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Revenue beyond donations (ads, subscriptions)",
+        "Full admin visibility into all metrics",
+        "Automated email sequences running"
+      ]
+    }
+  ],
+  "notes": [
+    "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
+    "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
+    "The GAHQ CRM backend already exists locally — deploying it is the main Phase 3 effort.",
+    "Don't wait for perfect — deploy Phase 1 now, iterate live.",
+    "Tasks marked with ✓ are already completed in this session.",
+    "Auto-verification checks live files on page load — verified items update automatically.",
+    "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
+    "404.html added. Roadmap moved to /admin/. Gallery images renamed descriptively."
+  ]
+};
+
+// ══════════════════════════════════════════════
+// STATE MANAGEMENT
+// ══════════════════════════════════════════════
+var STORAGE_KEY = 'gideon_roadmap_state';
+var ACTIVITY_KEY = 'gideon_roadmap_activity';
+var state = loadState();
+var activityLog = loadActivity();
+
+function defaultState() {
+  var s = { stepItems: {}, stepChecks: {}, acceptance: {} };
+  DATA.phases.forEach(function(p) {
+    (p.steps || []).forEach(function(step) {
+      s.stepChecks[step.id] = false;
+      (step.items || []).forEach(function(item, i) {
+        s.stepItems[step.id + '-' + i] = false;
+      });
+    });
+    (p.acceptance_criteria || []).forEach(function(c, i) {
+      s.acceptance[p.phase + '-' + i] = false;
+    });
+  });
+  return s;
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      var def = defaultState();
+      Object.keys(def).forEach(function(k) {
+        if (typeof def[k] === 'object' && def[k] !== null && typeof parsed[k] === 'object' && parsed[k] !== null) {
+          Object.keys(def[k]).forEach(function(ik) {
+            if (parsed[k][ik] === undefined) parsed[k][ik] = def[k][ik];
+          });
+        }
+      });
+      return parsed;
+    }
+  } catch(e) {}
+  return defaultState();
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadActivity() {
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY)) || []; } catch(e) { return []; }
+}
+
+function saveActivity() {
+  localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activityLog.slice(0, 50)));
+}
+
+function logActivity(stepId, taskName, done) {
+  activityLog.unshift({
+    id: stepId,
+    task: taskName,
+    done: done,
+    time: new Date().toISOString()
+  });
+  saveActivity();
+  renderActivity();
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  state = defaultState();
+  activityLog = [];
+  saveState();
+  saveActivity();
+  render();
+}
+
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+function render() {
+  renderOverview();
+  renderPhases();
+  renderNotes();
+  renderActivity();
+}
+
+function renderOverview() {
+  var total = 0, done = 0;
+  DATA.phases.forEach(function(p) {
+    (p.steps || []).forEach(function(step) {
+      total++;
+      if (state.stepChecks[step.id]) done++;
+    });
+  });
+  var pct = total ? Math.round(done / total * 100) : 0;
+
+  document.getElementById('overview').innerHTML =
+    '<div class="stat-card"><span class="num" id="ovDone">' + done + '</span><span class="num" style="color:#5A7A9F;font-size:18px">/' + total + '</span><div class="label">Tasks Complete</div><div class="bar-wrap"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' +
+    '<div class="stat-card"><span class="num" id="ovPct">' + pct + '%</span><div class="label">Overall Progress</div><div class="bar-wrap"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' +
+    '<div class="stat-card"><span class="num">' + DATA.phases.length + '</span><div class="label">Phases</div><div class="bar-wrap"><div class="bar-fill" style="width:100%"></div></div></div>' +
+    '<div class="stat-card"><span class="num" style="font-size:20px">Phase ' + getCurrentPhase() + '</span><div class="label">Current Focus</div></div>';
+}
+
+function getCurrentPhase() {
+  for (var p = 0; p < DATA.phases.length; p++) {
+    var steps = DATA.phases[p].steps || [];
+    var allDone = steps.every(function(s) { return state.stepChecks[s.id]; });
+    if (!allDone) return DATA.phases[p].phase;
+  }
+  return DATA.phases[DATA.phases.length - 1].phase;
+}
+
+function renderPhases() {
+  var html = '';
+  DATA.phases.forEach(function(p) {
+    var stepTotal = 0, stepDone = 0;
+    (p.steps || []).forEach(function(step) {
+      stepTotal++;
+      if (state.stepChecks[step.id]) stepDone++;
+    });
+    var stepPct = stepTotal ? Math.round(stepDone / stepTotal * 100) : 0;
+    var allStepsDone = stepTotal > 0 && stepDone === stepTotal;
+    var badgeText = allStepsDone ? 'complete' : p.status.replace(/_/g, ' ');
+    var badgeClass = allStepsDone ? 'done' : (p.status === 'ready_to_deploy' ? 'ready' : (p.status === 'planned' ? 'planned' : 'future'));
+
+    html += '<div class="phase' + (allStepsDone ? ' complete' : '') + '" id="phase-' + p.phase + '">';
+    html += '<div class="phase-header" onclick="togglePhase(' + p.phase + ')">';
+    html += '<div class="phase-header-left">';
+    html += '<span class="phase-badge ' + badgeClass + '">' + badgeText + '</span>';
+    html += '<div><div class="phase-name">Phase ' + p.phase + ': ' + p.name + '</div><div class="phase-platform">' + p.platform + '</div></div>';
+    html += '</div>';
+    html += '<div class="phase-header-right">';
+    html += '<span class="phase-progress-text">' + stepDone + '/' + stepTotal + '</span>';
+    html += '<span class="phase-chevron">&#9660;</span>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="phase-body">';
+    html += '<p class="phase-desc">' + p.description + '</p>';
+    html += '<div class="phase-progress-bar"><div class="phase-progress-fill" style="width:' + stepPct + '%"></div></div>';
+
+    (p.steps || []).forEach(function(step) {
+      var itemTotal = (step.items || []).length;
+      var itemDone = 0;
+      (step.items || []).forEach(function(item, i) {
+        if (state.stepItems[step.id + '-' + i]) itemDone++;
+      });
+      var checked = state.stepChecks[step.id] ? 'done' : '';
+
+      html += '<div class="step' + (checked ? ' done' : '') + '">';
+      html += '<div class="step-head">';
+      html += '<div class="step-check ' + checked + '" onclick="toggleStep(' + step.id + ')" title="Mark step complete"></div>';
+      html += '<div class="step-title ' + checked + '" onclick="toggleStep(' + step.id + ')">' + step.id + '. ' + step.task + (step.items && step.items.length ? ' <span style="font-weight:400;color:#5A7A9F;font-size:12px">(' + itemDone + '/' + itemTotal + ')</span>' : '') + '</div>';
+      html += '<div class="step-actions">';
+      (step.launch || []).forEach(function(l) {
+        var cls = l.local ? '' : ' external';
+        html += '<button class="step-launch' + cls + '" onclick="event.stopPropagation();window.open(\'' + l.url + '\',\'_blank\')">' + l.label + '</button>';
+      });
+      html += '</div>';
+      html += '</div>';
+      if (step.items && step.items.length) {
+        html += '<div class="step-items">';
+        step.items.forEach(function(item, i) {
+          var itemChecked = state.stepItems[step.id + '-' + i] ? 'checked' : '';
+          var hasCheck = CHECKS[step.id] && CHECKS[step.id].some(function(c){return c.i===i});
+          html += '<div class="step-item">';
+          html += '<label><input type="checkbox" ' + itemChecked + ' onchange="toggleItem(' + step.id + ',' + i + ')"><span class="cb"></span><span>' + item + (hasCheck && itemChecked ? ' <span class="auto-badge" title="Auto-verified by live check">&#10003;</span>' : '') + '</span></label>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+
+    if (p.acceptance_criteria && p.acceptance_criteria.length) {
+      var allAccept = p.acceptance_criteria.every(function(c, i) { return state.acceptance[p.phase + '-' + i]; });
+      html += '<div class="acceptance" style="' + (allAccept ? 'border-color:rgba(52,199,123,.3)' : '') + '">';
+      html += '<div class="acceptance-title">' + (allAccept ? '&#10003; ' : '') + 'Acceptance Criteria</div>';
+      p.acceptance_criteria.forEach(function(c, i) {
+        var checked = state.acceptance[p.phase + '-' + i] ? 'checked' : '';
+        html += '<div class="acceptance-item">';
+        html += '<label><input type="checkbox" ' + checked + ' onchange="toggleAcceptance(' + p.phase + ',' + i + ')"><span class="cb"></span><span>' + c + '</span></label>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+  });
+  document.getElementById('phases').innerHTML = html;
+
+  // Restore open states
+  DATA.phases.forEach(function(p) {
+    if (localStorage.getItem('phase_open_' + p.phase) === 'true') {
+      var el = document.getElementById('phase-' + p.phase);
+      if (el) el.classList.add('open');
+    } else {
+      // Auto-open the current active phase
+      var steps = p.steps || [];
+      var anyIncomplete = steps.some(function(s) { return !state.stepChecks[s.id]; });
+      var anyComplete = steps.some(function(s) { return state.stepChecks[s.id]; });
+      if (anyIncomplete && (anyComplete || p.phase === 1)) {
+        var el = document.getElementById('phase-' + p.phase);
+        if (el) { el.classList.add('open'); localStorage.setItem('phase_open_' + p.phase, 'true'); }
+      }
+    }
+  });
+}
+
+function renderNotes() {
+  var html = '<div class="notes-title">Notes &amp; Strategy</div>';
+  (DATA.notes || []).forEach(function(n) {
+    html += '<p>' + n + '</p>';
+  });
+  document.getElementById('notesContainer').innerHTML = html;
+}
+
+function renderActivity() {
+  var list = document.getElementById('activityList');
+  var count = document.getElementById('activityCount');
+  count.textContent = activityLog.length;
+
+  if (!activityLog.length) {
+    list.innerHTML = '<div class="activity-empty">No activity yet. Start completing tasks to see your progress here.</div>';
+    return;
+  }
+
+  var html = '';
+  activityLog.slice(0, 15).forEach(function(entry) {
+    var cls = entry.done ? 'done' : 'uncheck';
+    var label = entry.done ? 'Completed' : 'Unchecked';
+    html += '<div class="activity-entry"><div class="activity-dot ' + cls + '"></div><div class="activity-text"><strong>' + entry.task + '</strong> — ' + label + '</div><div class="activity-time">' + formatTime(entry.time) + '</div></div>';
+  });
+  list.innerHTML = html;
+}
+
+function formatTime(iso) {
+  try {
+    var d = new Date(iso);
+    var now = new Date();
+    var diff = Math.round((now - d) / 60000);
+    if (diff < 1) return 'just now';
+    if (diff < 60) return diff + 'm ago';
+    var hrs = Math.round(diff / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    return d.toLocaleDateString();
+  } catch(e) { return ''; }
+}
+
+// ══════════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════════
+function togglePhase(id) {
+  var el = document.getElementById('phase-' + id);
+  if (!el) return;
+  el.classList.toggle('open');
+  localStorage.setItem('phase_open_' + id, el.classList.contains('open'));
+}
+
+function toggleStep(id) {
+  state.stepChecks[id] = !state.stepChecks[id];
+
+  // Find the task name for logging
+  var taskName = '';
+  DATA.phases.forEach(function(p) {
+    (p.steps || []).forEach(function(step) {
+      if (step.id === id) {
+        taskName = step.id + '. ' + step.task;
+        // Auto-check/uncheck all sub-items
+        (step.items || []).forEach(function(item, i) {
+          state.stepItems[step.id + '-' + i] = state.stepChecks[id];
+        });
+      }
+    });
+  });
+
+  logActivity(id, taskName, state.stepChecks[id]);
+  saveState();
+  render();
+}
+
+function toggleItem(stepId, itemIndex) {
+  var key = stepId + '-' + itemIndex;
+  state.stepItems[key] = !state.stepItems[key];
+
+  DATA.phases.forEach(function(p) {
+    (p.steps || []).forEach(function(step) {
+      if (step.id === stepId) {
+        var allDone = (step.items || []).every(function(item, i) {
+          return state.stepItems[step.id + '-' + i];
+        });
+        // If all items done, auto-check the step
+        if (allDone && !state.stepChecks[step.id]) {
+          state.stepChecks[step.id] = true;
+          logActivity(stepId, step.id + '. ' + step.task, true);
+        }
+      }
+    });
+  });
+
+  saveState();
+  render();
+}
+
+function toggleAcceptance(phaseId, index) {
+  state.acceptance[phaseId + '-' + index] = !state.acceptance[phaseId + '-' + index];
+  saveState();
+  render();
+}
+
+// ══════════════════════════════════════════════
+// AUTO-VERIFICATION ENGINE
+// ══════════════════════════════════════════════
+
+// Maps step/item indices to check functions.
+// Each check returns a promise that resolves to true/false.
+var CHECKS = {
+  "1.1": [ // Fix deployment blockers
+    {i:0, label:"Formspree ID set", check:function(){return checkPageContains("../index.html","xgoplkoe")}},
+    {i:1, label:"#subscribe links fixed on advertise.html", check:function(){return checkPageContains("../newsletter/advertise.html","index.html#subscribe")}},
+    {i:2, label:"Duplicate images dir removed", check:function(){return checkPageMissing("../images%20books%20and%20socials/")}},
+    {i:3, label:"Book filenames use hyphens", check:function(){return checkBookFilenames()}}
+  ],
+  "1.2": [ // Compress assets
+    {i:0, label:"logo.png compressed", check:function(){return checkFileSmall("../assets/images/logo.png",100)} },
+    {i:1, label:"neogh-logo.png compressed", check:function(){return checkFileSmall("../assets/images/neogh-logo.png",100)} }
+  ],
+  "1.3": [ // Cloudflare config
+    {i:0, label:"_headers exists", check:function(){return checkFileExists("../_headers")}},
+    {i:1, label:"_redirects exists", check:function(){return checkFileExists("../_redirects")}}
+  ]
+};
+
+function checkPageExists(url) {
+  return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){return r.ok}).catch(function(){return false});
+}
+
+function checkPageMissing(url) {
+  return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){return !r.ok}).catch(function(){return true});
+}
+
+function checkPageContains(url, substr) {
+  return fetch(url, {cache:"no-store"}).then(function(r){
+    if (!r.ok) return false;
+    return r.text().then(function(t){return t.indexOf(substr) !== -1});
+  }).catch(function(){return false});
+}
+
+function checkFileExists(url) {
+  return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){return r.ok}).catch(function(){return false});
+}
+
+function checkFileSmall(url, maxKB) {
+  return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){
+    if (!r.ok) return false;
+    var len = parseInt(r.headers.get("content-length") || "999999");
+    return len < maxKB * 1024;
+  }).catch(function(){return false});
+}
+
+function checkBookFilenames() {
+  var books = ["the-bible-as-kingdom-os.pdf","divine_algorithm_report.html","ai-powered-strategic-national-development-ghana.docx","Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf"];
+  return Promise.all(books.map(function(b){return checkFileExists("../books/"+b)})).then(function(results){
+    return results.every(function(r){return r});
+  });
+}
+
+function verifyStepContent(stepId) {
+  var checks = CHECKS[stepId];
+  if (!checks || !checks.length) return Promise.resolve(false);
+  return Promise.all(checks.map(function(c){return c.check()})).then(function(results){
+    return results.every(function(r){return r});
+  });
+}
+
+function verifyAllItems() {
+  var promises = [];
+  Object.keys(CHECKS).forEach(function(stepId) {
+    CHECKS[stepId].forEach(function(c) {
+      promises.push(c.check().then(function(passed){
+        if (passed && !state.stepItems[stepId + '-' + c.i]) {
+          state.stepItems[stepId + '-' + c.i] = true;
+        }
+        return {stepId:stepId, index:c.i, label:c.label, passed:passed};
+      }));
+    });
+  });
+  return Promise.all(promises);
+}
+
+function autoVerifySteps() {
+  var promises = [];
+  Object.keys(CHECKS).forEach(function(stepId) {
+    promises.push(verifyStepContent(stepId).then(function(passed){
+      if (passed && !state.stepChecks[stepId]) {
+        state.stepChecks[stepId] = true;
+        // Find the step name for logging
+        DATA.phases.forEach(function(p) {
+          (p.steps||[]).forEach(function(step) {
+            if (step.id === stepId) {
+              state.stepChecks[stepId] = true;
+              logActivity(stepId, step.id+'. '+step.task, true);
+            }
+          });
+        });
+      }
+    }));
+  });
+  return Promise.all(promises);
+}
+
+// Run verification: first items, then steps (auto-check steps where all items verified)
+function runVerification() {
+  var btn = document.getElementById('verifyBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
+  
+  verifyAllItems().then(function(results) {
+    saveState();
+    return autoVerifySteps();
+  }).then(function() {
+    saveState();
+    render();
+    if (btn) { btn.disabled = false; btn.textContent = 'Re-run Checks'; }
+  }).catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Re-run Checks'; }
+  });
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+render();
+// Auto-verify on load (with slight delay for page render)
+setTimeout(runVerification, 500);
+</script>
+</body>
+</html>

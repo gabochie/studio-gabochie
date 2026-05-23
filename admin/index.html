@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="submissions.html">Submissions</a>
+      <a href="donations.html">Donations</a>
+      <a href="content.html">Content</a>
+      <a href="newsletter.html">Newsletter</a>
+      <a href="bookings.html">Bookings</a>
+      <a href="roadmap.html">Roadmap</a>
+    </div>
+  </div>
+
+  <h1 class="page-title">Analytics <span>Dashboard</span></h1>
+  <p class="page-desc">Live site health, page view tracking, and infrastructure status. Data is stored locally until backend deployment.</p>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card"><span class="stat-num green" id="totalViews">0</span><span class="stat-label">Page Views</span><span class="stat-sub">Tracked locally</span></div>
+    <div class="stat-card"><span class="stat-num green" id="pageCount">0</span><span class="stat-label">Site Pages</span><span class="stat-sub">All online</span></div>
+    <div class="stat-card"><span class="stat-num">4</span><span class="stat-label">Books</span><span class="stat-sub">Free downloads</span></div>
+    <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">Donation Platforms</span><span class="stat-sub">Flutterwave, Ko-fi, BMC</span></div>
+    <div class="stat-card"><span class="stat-num">4</span><span class="stat-label">Social Links</span><span class="stat-sub">X, FB, IG, TikTok</span></div>
+    <div class="stat-card"><span class="stat-num dim">Phase 1</span><span class="stat-label">Current Phase</span><span class="stat-sub">Ready to deploy</span></div>
+  </div>
+
+  <!-- Site Health -->
+  <div class="section-title">&#10003; Site Health</div>
+  <div class="health-row" id="healthContainer"></div>
+
+  <!-- Two column: Visits + Daily Chart -->
+  <div class="col2">
+    <div class="card">
+      <div class="card-title">Page Views (localStorage)</div>
+      <div class="visit-list" id="visitList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Views This Week</div>
+      <div class="bar-container" id="barContainer"></div>
+    </div>
+  </div>
+
+  <!-- Infrastructure -->
+  <div class="section-title">&#9881; Infrastructure</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Phase</th><th>Name</th><th>Platform</th><th>Status</th></tr>
+      <tr><td>1</td><td>Static Site Launch</td><td>Cloudflare Pages</td><td><span class="status-pill pending">Ready to Deploy</span></td></tr>
+      <tr><td>2</td><td>Serverless Functions</td><td>Cloudflare Workers</td><td><span class="status-pill pending">Planned</span></td></tr>
+      <tr><td>3</td><td>Backend + Database</td><td>Railway / Fly.io</td><td><span class="status-pill pending">Planned</span></td></tr>
+      <tr><td>4</td><td>Full Product</td><td>Cloudflare + VPS</td><td><span class="status-pill future">Future</span></td></tr>
+    </table>
+  </div>
+
+  <!-- Quick Tools -->
+  <div class="section-title">&#9874; Admin Tools</div>
+  <div class="tools">
+    <a href="roadmap.html" class="tool-card">
+      <div class="tool-icon">&#9776;</div>
+      <div class="tool-name">Deployment Roadmap</div>
+      <div class="tool-desc">Interactive phased plan with auto-verification and activity log.</div>
+    </a>
+    <a href="submissions.html" class="tool-card">
+      <div class="tool-icon">&#9993;</div>
+      <div class="tool-name">Form Submissions</div>
+      <div class="tool-desc">Lead capture and manifesto download requests.</div>
+    </a>
+    <a href="donations.html" class="tool-card">
+      <div class="tool-icon">&#9829;</div>
+      <div class="tool-name">Donation Log</div>
+      <div class="tool-desc">Track incoming donations (connects in Phase 3).</div>
+    </a>
+    <a href="content.html" class="tool-card">
+      <div class="tool-icon">&#9998;</div>
+      <div class="tool-name">Content Manager</div>
+      <div class="tool-desc">Manage testimonials, stats, gallery (connects in Phase 3).</div>
+    </a>
+  </div>
+</div>
+
+<div class="footer"><a href="../index.html">&larr; Back to site</a> &nbsp; <a href="roadmap.html">Roadmap</a></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

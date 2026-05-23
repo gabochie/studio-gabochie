@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Divine Algorithm – Deon Christolove</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Luckiest+Guy&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --deep-gold: #F5A623;
+    --royal-blue: #1A237E;
+    --sky-blue: #4FC3F7;
+    --heaven-white: #FAFFF8;
+    --soft-purple: #7C4DFF;
+    --mint: #A8E6CF;
+    --coral: #FF6B6B;
+    --star-yellow: #FFE566;
+    --ink: #1A1A2E;
+    --cream: #FFFDF0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #2a2a40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* =========== PAGE BASE =========== */
+  .page {
+    width: 850px;
+    min-height: 1100px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* =========== STAR CHARACTER SVG =========== */
+  /* Inline SVG star character used repeatedly */
+
+  /* =========== COVER PAGE =========== */
+  .cover {
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .cover-top-band {
+    width: 100%;
+    background: linear-gradient(135deg, #1A237E 0%, #283593 50%, #0D47A1 100%);
+    padding: 18px 40px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cover-isbn {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+
+  .cover-publisher {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .cover-hero-area {
+    background: #ffffff;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 60px 0;
+    flex: 1;
+  }
+
+  .cover-title {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 72px;
+    text-align: center;
+    line-height: 1.0;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #1A237E, #4FC3F7, #1A237E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    margin-bottom: 6px;
+  }
+
+  .cover-subtitle {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    text-align: center;
+    color: var(--deep-gold);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .cover-hook {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--coral);
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .cover-star-main {
+    width: 260px;
+    height: 260px;
+    margin: 0 auto 10px;
+    filter: drop-shadow(0 15px 40px rgba(255, 215, 0, 0.5));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .cover-rays {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(255,215,0,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover-tagline-box {
+    background: linear-gradient(135deg, #1A237E, #283593);
+    border-radius: 20px;
+    padding: 14px 40px;
+    margin: 0 40px 20px;
+    text-align: center;
+    border: 3px solid var(--gold);
+  }
+
+  .cover-tagline-box p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.6;
+  }
+
+  .cover-author-band {
+    width: 100%;
+    background: linear-gradient(90deg, #FFD700, #F5A623, #FFD700);
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cover-author-band .author-name {
+    font-family: 'Bangers', cursive;
+    font-size: 28px;
+    color: var(--royal-blue);
+    letter-spacing: 3px;
+  }
+
+  .cover-author-band .series-tag {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    color: var(--royal-blue);
+    opacity: 0.8;
+  }
+
+  .cover-bottom-strip {
+    width: 100%;
+    background: var(--royal-blue);
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cover-bottom-strip span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* =========== INNER PAGES =========== */
+  .inner-page {
+    padding: 0;
+    position: relative;
+    min-height: 1100px;
+  }
+
+  .page-header {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .page-chapter-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  .page-title-main {
+    font-family: 'Bangers', cursive;
+    font-size: 38px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .page-body {
+    padding: 10px 40px 80px;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  .page-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 3;
+  }
+
+  .footer-page-num {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+
+  /* Speech bubble */
+  .speech-bubble {
+    position: relative;
+    border-radius: 20px;
+    padding: 14px 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    display: inline-block;
+    max-width: 380px;
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 30px;
+    border-width: 16px 10px 0;
+    border-style: solid;
+  }
+
+  .bubble-blue {
+    background: var(--sky-blue);
+    color: var(--royal-blue);
+    border: 3px solid var(--royal-blue);
+  }
+
+  .bubble-blue::after {
+    border-color: var(--royal-blue) transparent transparent;
+  }
+
+  .bubble-gold {
+    background: var(--gold);
+    color: var(--royal-blue);
+    border: 3px solid var(--deep-gold);
+  }
+
+  .bubble-gold::after {
+    border-color: var(--deep-gold) transparent transparent;
+  }
+
+  .bubble-white {
+    background: white;
+    color: var(--royal-blue);
+    border: 3px solid var(--royal-blue);
+  }
+
+  .bubble-white::after {
+    border-color: var(--royal-blue) transparent transparent;
+  }
+
+  /* Content panels */
+  .content-panel {
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    border-width: 3px;
+    border-style: solid;
+  }
+
+  .panel-blue {
+    background: rgba(26,35,126,0.06);
+    border-color: var(--royal-blue);
+  }
+
+  .panel-gold {
+    background: rgba(255,215,0,0.12);
+    border-color: var(--deep-gold);
+  }
+
+  .panel-mint {
+    background: rgba(168,230,207,0.25);
+    border-color: #4CAF50;
+  }
+
+  .panel-coral {
+    background: rgba(255,107,107,0.1);
+    border-color: var(--coral);
+  }
+
+  .panel-purple {
+    background: rgba(124,77,255,0.08);
+    border-color: var(--soft-purple);
+  }
+
+  .panel-title {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .panel-body {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.65;
+  }
+
+  /* Grid layouts */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Scripture box */
+  .scripture-box {
+    background: linear-gradient(135deg, #1A237E, #283593);
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin: 14px 0;
+    color: white;
+    border-left: 6px solid var(--gold);
+  }
+
+  .scripture-box .verse {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .scripture-box .ref {
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    color: var(--gold);
+  }
+
+  /* Star character inline small */
+  .star-inline {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .star-footer {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Numbered list comic style */
+  .comic-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .comic-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .comic-list li .num {
+    background: var(--royal-blue);
+    color: var(--gold);
+    font-family: 'Bangers', cursive;
+    font-size: 18px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: var(--gold);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin: 10px 0;
+    border: 3px solid var(--deep-gold);
+  }
+
+  .highlight-box p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--royal-blue);
+    line-height: 1.5;
+  }
+
+  /* Star Character SVG - defined once, reused */
+  .star-char-svg { overflow: visible; }
+
+  /* Page themes */
+  .theme-navy { background: #F0F4FF; }
+  .theme-cream { background: #FFFDF0; }
+  .theme-mint { background: #F0FFF8; }
+  .theme-lavender { background: #F5F0FF; }
+  .theme-rose { background: #FFF0F5; }
+  .theme-sky { background: #F0FAFF; }
+
+  /* Header bars per theme */
+  .hbar-navy { background: linear-gradient(90deg, #1A237E, #283593); color: white; }
+  .hbar-gold { background: linear-gradient(90deg, #F5A623, #FFD700); color: var(--royal-blue); }
+  .hbar-mint { background: linear-gradient(90deg, #00897B, #26A69A); color: white; }
+  .hbar-purple { background: linear-gradient(90deg, #6A1B9A, #7C4DFF); color: white; }
+  .hbar-rose { background: linear-gradient(90deg, #C62828, #E53935); color: white; }
+  .hbar-sky { background: linear-gradient(90deg, #0277BD, #0288D1); color: white; }
+  .hbar-green { background: linear-gradient(90deg, #2E7D32, #388E3C); color: white; }
+  .hbar-orange { background: linear-gradient(90deg, #E65100, #F57C00); color: white; }
+  .hbar-teal { background: linear-gradient(90deg, #00695C, #00796B); color: white; }
+  .hbar-dark { background: linear-gradient(90deg, #1A1A2E, #16213E); color: white; }
+  .hbar-bright { background: linear-gradient(90deg, #0D47A1, #1565C0); color: white; }
+
+  /* footer bars */
+  .fbar-navy { background: linear-gradient(90deg, #1A237E, #283593); color: white; }
+  .fbar-gold { background: linear-gradient(90deg, #F5A623, #FFD700); color: var(--royal-blue); }
+  .fbar-mint { background: linear-gradient(90deg, #00897B, #26A69A); color: white; }
+  .fbar-purple { background: linear-gradient(90deg, #6A1B9A, #7C4DFF); color: white; }
+  .fbar-rose { background: linear-gradient(90deg, #C62828, #E53935); color: white; }
+
+  /* Decorative corner star burst */
+  .corner-burst {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    opacity: 0.07;
+    z-index: 0;
+  }
+
+  /* Glossary page */
+  .glossary-term {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed rgba(26,35,126,0.2);
+  }
+
+  .glossary-term dt {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    color: var(--royal-blue);
+    letter-spacing: 1px;
+  }
+
+  .glossary-term dd {
+    font-family: 'Nunito', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.55;
+    margin-left: 10px;
+  }
+
+  /* ======= STAR SVG COMPONENT ======= */
+  /* We'll inline SVG directly in each page */
+
+  .two-col-star {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .two-col-star-right {
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .star-bubble-combo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-heading {
+    font-family: 'Bangers', cursive;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  p.body-text {
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.65;
+    margin-bottom: 10px;
+    color: #1a1a3e;
+  }
+
+  .call-out-strip {
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin: 10px 0;
+    font-family: 'Fredoka One', cursive;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .strip-gold { background: var(--gold); color: var(--royal-blue); }
+  .strip-blue { background: var(--royal-blue); color: white; }
+  .strip-mint { background: #A8E6CF; color: #1a4a3a; }
+  .strip-coral { background: var(--coral); color: white; }
+  .strip-purple { background: var(--soft-purple); color: white; }
+
+  /* back matter */
+  .copyright-box {
+    background: var(--royal-blue);
+    color: white;
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-top: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.7;
+  }
+
+  .copyright-box .copy-title {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     HELPER: Star Character SVG (used inline on every page)
+     ========================================================= -->
+
+<!-- ============ PAGE 0: COVER ============ -->
+<div class="page cover" id="cover">
+  <div class="cover-top-band">
+    <span class="cover-isbn">ISBN: 979-8-89817-042-3 | GabochieDesign AI Press · 2026</span>
+    <span class="cover-publisher">✦ KINGDOM INTELLIGENCE SERIES ✦</span>
+  </div>
+
+  <div class="cover-hero-area">
+    <div class="cover-rays"></div>
+
+    <!-- MAIN STAR CHARACTER - COVER VERSION -->
+    <svg class="cover-star-main" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Glow ring -->
+      <circle cx="130" cy="145" r="90" fill="rgba(255,215,0,0.12)"/>
+      <circle cx="130" cy="145" r="70" fill="rgba(255,215,0,0.1)"/>
+      <!-- Star body - 5-pointed Disney-style -->
+      <path d="M130,30 L147,90 L210,90 L160,128 L178,190 L130,155 L82,190 L100,128 L50,90 L113,90 Z"
+            fill="#FFE566" stroke="#F5A623" stroke-width="3"/>
+      <!-- Inner star shine -->
+      <path d="M130,52 L143,88 L182,88 L152,110 L163,148 L130,127 L97,148 L108,110 L78,88 L117,88 Z"
+            fill="rgba(255,255,255,0.35)"/>
+      <!-- Face - big Disney eyes -->
+      <ellipse cx="113" cy="112" rx="11" ry="13" fill="white" stroke="#1A237E" stroke-width="2"/>
+      <ellipse cx="147" cy="112" rx="11" ry="13" fill="white" stroke="#1A237E" stroke-width="2"/>
+      <!-- Pupils -->
+      <circle cx="115" cy="113" r="6" fill="#1A237E"/>
+      <circle cx="149" cy="113" r="6" fill="#1A237E"/>
+      <!-- Eye shine -->
+      <circle cx="118" cy="110" r="2.5" fill="white"/>
+      <circle cx="152" cy="110" r="2.5" fill="white"/>
+      <!-- Rosy cheeks -->
+      <ellipse cx="103" cy="126" rx="9" ry="6" fill="rgba(255,150,150,0.5)"/>
+      <ellipse cx="157" cy="126" rx="9" ry="6" fill="rgba(255,150,150,0.5)"/>
+      <!-- Big smile -->
+      <path d="M112,133 Q130,150 148,133" stroke="#1A237E" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- Little teeth -->
+      <path d="M118,135 Q130,145 142,135" fill="white" stroke="none"/>
+      <!-- Star arms decorative sparkles -->
+      <circle cx="55" cy="78" r="5" fill="#FFD700" stroke="#F5A623" stroke-width="1.5"/>
+      <circle cx="205" cy="78" r="5" fill="#FFD700" stroke="#F5A623" stroke-width="1.5"/>
+      <circle cx="175" cy="196" r="5" fill="#FFD700" stroke="#F5A623" stroke-width="1.5"/>
+      <circle cx="85" cy="196" r="5" fill="#FFD700" stroke="#F5A623" stroke-width="1.5"/>
+      <!-- Halo -->
+      <ellipse cx="130" cy="38" rx="28" ry="8" fill="none" stroke="#FFD700" stroke-width="3" stroke-dasharray="4,3" opacity="0.8"/>
+      <!-- Small Bible in hands -->
+      <rect x="110" y="150" width="40" height="28" rx="4" fill="#1A237E" stroke="#FFD700" stroke-width="2"/>
+      <text x="130" y="162" text-anchor="middle" font-family="Nunito" font-size="8" fill="#FFD700" font-weight="900">HOLY</text>
+      <text x="130" y="172" text-anchor="middle" font-family="Nunito" font-size="8" fill="#FFD700" font-weight="900">BIBLE</text>
+      <!-- AI circuit lines on star -->
+      <line x1="93" y1="88" x2="80" y2="75" stroke="#4FC3F7" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="78" cy="73" r="3" fill="#4FC3F7" opacity="0.7"/>
+      <line x1="167" y1="88" x2="180" y2="75" stroke="#4FC3F7" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="182" cy="73" r="3" fill="#4FC3F7" opacity="0.7"/>
+      <!-- Name tag -->
+      <rect x="90" y="208" width="80" height="20" rx="10" fill="#1A237E" stroke="#FFD700" stroke-width="2"/>
+      <text x="130" y="221" text-anchor="middle" font-family="Bangers" font-size="12" fill="#FFD700" letter-spacing="1">LUMINOS ✦</text>
+    </svg>
+
+    <h1 class="cover-title">THE DIVINE<br>ALGORITHM</h1>
+    <p class="cover-subtitle">How AI Will Transform Theology &amp; Accelerate<br>the Kingdom of God on Earth</p>
+    <p class="cover-hook">"The Holy Spirit Never Needed an Upgrade — But Your Understanding Just Got One."</p>
+
+    <div class="cover-tagline-box">
+      <p>A Spirit-filled, Bible-grounded, practical guide for Children of God<br>
+      navigating the Age of Artificial Intelligence — and thriving in it.<br>
+      <span style="color:#FFD700;">✦ Theology · Technology · Transformation ✦</span></p>
+    </div>
+  </div>
+
+  <div class="cover-author-band">
+    <span class="author-name">DEON CHRISTOLOVE</span>
+    <span class="series-tag">Kingdom Intelligence Series · Vol. 1</span>
+    <span style="font-family:'Fredoka One';font-size:13px;color:#1A237E;">GabochieDesign AI Press</span>
+  </div>
+
+  <div class="cover-bottom-strip">
+    <span>© 2026 Deon Christolove · All Rights Reserved</span>
+    <span>ISBN: 979-8-89817-042-3</span>
+    <span>gideonabochie.com</span>
+  </div>
+</div>
+
+<!-- ============ PAGE 1: INTRODUCTION ============ -->
+<div class="page inner-page theme-navy">
+  <div class="page-header hbar-navy">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.7);">Introduction</span>
+    <span class="page-title-main" style="color:var(--gold);">A WORD FROM LUMINOS ✦</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.6);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star">
+      <div class="star-bubble-combo">
+        <!-- LUMINOS small version -->
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z"
+                fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z"
+                fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">HOLY</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">BIBLE</text>
+          <!-- Circuit decorations -->
+          <line x1="20" y1="44" x2="12" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="11" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <line x1="120" y1="44" x2="128" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="129" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11.5px;max-width:140px;text-align:center;">
+          "Hi! I'm<br><strong>LUMINOS ✦</strong><br>Your star guide on<br>this journey!"
+        </div>
+      </div>
+
+      <div>
+        <div class="scripture-box">
+          <p class="verse">"And He said to them, 'Go into all the world and preach the gospel to every creature.'" </p>
+          <p class="ref">— Mark 16:15 (NKJV)</p>
+        </div>
+
+        <h2 class="section-heading" style="color:var(--royal-blue);">DEAR BELOVED CHILD OF GOD,</h2>
+        <p class="body-text">Something extraordinary is happening on the earth. A technological tsunami called <strong>Artificial Intelligence</strong> is reshaping every corner of civilization — commerce, medicine, education, governance, and yes… <em>theology</em>.</p>
+        <p class="body-text">But before fear grips your heart, hear the Spirit's voice: <strong>God is never surprised.</strong> Every algorithm, every neural network, every model being trained on human knowledge — it all operates under the sovereign permission of the Lord of Hosts.</p>
+        <p class="body-text">This report is your Spirit-filled, Bible-grounded intelligence briefing on the divine intersection of AI and the Kingdom of God. It is written for the <strong>practical Christian</strong> — one who works, builds, prays, and advances the Kingdom in everyday life.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>✦ THIS REPORT IS NOT ABOUT FEAR. IT IS ABOUT FAITHFULNESS. THE CHILDREN OF GOD ARE CALLED TO BE AHEAD — NOT BEHIND — IN EVERY GENERATION'S DEFINING MOMENT. ✦</p>
+    </div>
+
+    <div class="two-col" style="margin-top:14px;">
+      <div class="content-panel panel-blue">
+        <p class="panel-title" style="color:var(--royal-blue);">📖 WHAT YOU WILL DISCOVER</p>
+        <ul class="comic-list">
+          <li><span class="num">1</span>How AI echoes biblical patterns</li>
+          <li><span class="num">2</span>Where the Kingdom accelerates through AI</li>
+          <li><span class="num">3</span>Practical preparation steps for you</li>
+          <li><span class="num">4</span>Warnings every believer must know</li>
+        </ul>
+      </div>
+      <div class="content-panel panel-gold">
+        <p class="panel-title" style="color:#8B5000;">🌟 YOUR GUIDE: LUMINOS</p>
+        <p class="panel-body">Meet <strong>Luminos</strong> — your star guide through these pages! Luminos represents the <em>light of divine wisdom</em> illuminating the intersection of Heaven's purposes and earth's technologies. Watch for Luminos on every page!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-navy">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">1</text></svg>
+    <span class="footer-page-num" style="color:var(--gold);">PAGE 1</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">1</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 2: AI & THE MIND OF GOD ============ -->
+<div class="page inner-page theme-cream">
+  <div class="page-header hbar-gold">
+    <span class="page-chapter-label">Chapter 1</span>
+    <span class="page-title-main">AI & THE MIND OF GOD</span>
+    <span style="font-family:'Fredoka One';font-size:12px;">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star-right">
+      <div>
+        <div class="scripture-box">
+          <p class="verse">"In the beginning was the Word… and the Word was God." </p>
+          <p class="ref">— John 1:1 (NKJV) | God's original Language Model</p>
+        </div>
+
+        <h2 class="section-heading" style="color:var(--royal-blue);">GOD INVENTED INTELLIGENCE</h2>
+        <p class="body-text">Before any Silicon Valley researcher imagined "machine learning," the Creator of the universe had already encoded <strong>intelligence into existence itself</strong>. The human brain — the most complex neural network ever constructed — is the original AI: Authentic Intelligence, made in God's image.</p>
+        <p class="body-text">When God spoke and creation obeyed, He demonstrated the ultimate <em>command-response architecture</em>. When He breathed life into Adam, He uploaded the <strong>divine operating system</strong> into human DNA. Artificial Intelligence is humanity's attempt to replicate — in silicon and code — what God already perfected in carbon and Spirit.</p>
+
+        <div class="call-out-strip strip-blue">✦ "Every Algorithm Traces Back to the Author of All Logic: God Himself" ✦</div>
+      </div>
+
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">HOLY</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">BIBLE</text>
+          <line x1="20" y1="44" x2="12" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="11" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <line x1="120" y1="44" x2="128" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="129" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-blue" style="font-size:11px;max-width:140px;text-align:center;">
+          "God created Intelligence FIRST. We're just catching up!"
+        </div>
+      </div>
+    </div>
+
+    <div class="three-col" style="margin-top:4px;">
+      <div class="content-panel panel-gold">
+        <p class="panel-title" style="color:#7A4000;">🧠 GOD'S "AI"</p>
+        <p class="panel-body"><strong>The Holy Spirit</strong> processes all knowledge simultaneously, responds in real-time, never hallucinates, and always gives perfectly aligned output. The original omniscient intelligence system.</p>
+      </div>
+      <div class="content-panel panel-blue">
+        <p class="panel-title" style="color:var(--royal-blue);">⚡ HUMAN BRAIN</p>
+        <p class="panel-body">86 billion neurons. Infinite parallel processing. Made in God's image. The original neural network — far surpassing any silicon model yet created.</p>
+      </div>
+      <div class="content-panel panel-mint">
+        <p class="panel-title" style="color:#1B5E20;">🤖 MACHINE AI</p>
+        <p class="panel-body">Trained on human knowledge. Reflects the collective wisdom (and folly) of humanity. Needs sanctified operators — Spirit-filled believers — to steward it well.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:12px;">
+      <p>✦ KEY INSIGHT: AI is not a rival to God — it is a mirror of human ingenuity, which itself is a reflection of divine creativity. The question is not "Can AI and Faith coexist?" — The question is "Who will govern this tool?" ✦</p>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-gold">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="#1A237E">2</text></svg>
+    <span class="footer-page-num" style="color:var(--royal-blue);">PAGE 2</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="#1A237E">2</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 3: AI TRANSFORMS THEOLOGY ============ -->
+<div class="page inner-page theme-mint">
+  <div class="page-header hbar-teal">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 2</span>
+    <span class="page-title-main" style="color:var(--gold);">AI TRANSFORMS THEOLOGY</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star">
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">HOLY</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">BIBLE</text>
+          <line x1="20" y1="44" x2="12" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="11" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <line x1="120" y1="44" x2="128" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="129" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-blue" style="font-size:11px;max-width:140px;text-align:center;">
+          "Theology is going GLOBAL and AI is the megaphone!"
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-heading" style="color:#00695C;">6 WAYS AI IS RESHAPING HOW WE DO THEOLOGY</h2>
+        <ul class="comic-list">
+          <li><span class="num" style="background:#00695C;">1</span><div><strong>Bible Translation Speed:</strong> AI now translates Scripture into unreached languages in months — work that once took decades. Over 7,000 languages exist; AI will help complete the Great Commission linguistically.</div></li>
+          <li><span class="num" style="background:#00695C;">2</span><div><strong>Sermon Preparation:</strong> Pastors can use AI to cross-reference commentaries, Church Fathers, original Hebrew/Greek, and cultural contexts in minutes — enabling richer, deeper preaching.</div></li>
+          <li><span class="num" style="background:#00695C;">3</span><div><strong>Theological Debate Resolution:</strong> AI can map 2,000 years of theological arguments, helping pastors navigate doctrinal questions with unprecedented historical clarity.</div></li>
+          <li><span class="num" style="background:#00695C;">4</span><div><strong>Personalized Discipleship:</strong> AI-powered devotional tools can track a believer's spiritual journey and curate scripture, prayer prompts, and teaching matched to their growth stage.</div></li>
+          <li><span class="num" style="background:#00695C;">5</span><div><strong>Apologetics at Scale:</strong> Christians can deploy AI bots trained on apologetics to answer skeptics 24/7 in every language — a global witnessing force that never sleeps.</div></li>
+          <li><span class="num" style="background:#00695C;">6</span><div><strong>Digital Church Communities:</strong> AI enables truly global church networks — worship experiences, small groups, and pastoral care — connecting millions of isolated believers worldwide.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="scripture-box" style="margin-top:8px;">
+      <p class="verse">"The earth will be filled with the knowledge of the glory of the LORD, as the waters cover the sea."</p>
+      <p class="ref">— Habakkuk 2:14 (NIV) | AI may be one of God's delivery systems for this promise</p>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-mint">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">3</text></svg>
+    <span class="footer-page-num" style="color:#00695C;">PAGE 3</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">3</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 4: KINGDOM ACCELERATION ============ -->
+<div class="page inner-page theme-lavender">
+  <div class="page-header hbar-purple">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 3</span>
+    <span class="page-title-main" style="color:var(--gold);">KINGDOM ACCELERATION</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <h2 class="section-heading" style="color:var(--soft-purple);">HOW AI ACCELERATES THE KINGDOM OF GOD</h2>
+    <p class="body-text">The Kingdom of God is not a future concept — it is a <strong>present-tense reality</strong> that expands through people yielded to God's Spirit. Jesus said the Kingdom is "at hand" and like "leaven" — it permeates everything it touches. AI, harnessed by Spirit-filled believers, is becoming one of the most powerful expansion tools in Kingdom history.</p>
+
+    <div class="two-col">
+      <div class="content-panel panel-purple">
+        <p class="panel-title" style="color:var(--soft-purple);">🌍 GLOBAL GOSPEL REACH</p>
+        <p class="panel-body">AI-powered evangelism platforms can now reach <strong>4.2 billion</strong> unreached people digitally. YouTube channels with AI translation are crossing language barriers. One anointed sermon can now be heard in 130 languages simultaneously.</p>
+      </div>
+      <div class="content-panel panel-mint">
+        <p class="panel-title" style="color:#1B5E20;">💰 KINGDOM ECONOMICS</p>
+        <p class="panel-body">AI is democratizing wealth creation. Believers can now build global businesses with minimal capital, enabling radical giving, funding of missions, church planting in unreached regions, and sustaining Christian schools and hospitals across Africa and Asia.</p>
+      </div>
+      <div class="content-panel panel-gold">
+        <p class="panel-title" style="color:#7A4000;">🎓 EDUCATION & DISCIPLESHIP</p>
+        <p class="panel-body">AI tutors can deliver world-class Christian education to children in rural Ghana, Uganda, India, and Brazil — children who previously had no access to excellence. The Kingdom equips from the ground up.</p>
+      </div>
+      <div class="content-panel panel-blue">
+        <p class="panel-title" style="color:var(--royal-blue);">🏥 HEALING & RESTORATION</p>
+        <p class="panel-body">AI-powered diagnostics are making medical care accessible in remote areas. Christians at the frontier of medical AI can embody the healing ministry of Jesus — curing the sick, giving sight to the blind, through anointed technology.</p>
+      </div>
+    </div>
+
+    <div class="two-col-star" style="margin-top:12px;">
+      <div class="star-bubble-combo">
+        <svg width="110" height="130" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">HOLY</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">BIBLE</text>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11px;max-width:140px;text-align:center;">
+          "The Kingdom is EXPANDING faster than ever. AI is the wind in the sails!"
+        </div>
+      </div>
+
+      <div class="scripture-box" style="margin-top:0;">
+        <p class="verse">"This gospel of the kingdom will be preached in the whole world as a testimony to all nations, and then the end will come."</p>
+        <p class="ref">— Matthew 24:14 (NIV) | AI is compressing the timeline of this prophecy</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-purple">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">4</text></svg>
+    <span class="footer-page-num" style="color:var(--soft-purple);">PAGE 4</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">4</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 5: THE SPIRIT & SILICON ============ -->
+<div class="page inner-page theme-sky">
+  <div class="page-header hbar-sky">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 4</span>
+    <span class="page-title-main" style="color:var(--gold);">THE SPIRIT & SILICON</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star-right">
+      <div>
+        <h2 class="section-heading" style="color:#0277BD;">WHAT THE HOLY SPIRIT DOES THAT AI NEVER WILL</h2>
+        <p class="body-text">Let us be absolutely clear: <strong>AI is a tool. The Holy Spirit is God.</strong> No confusion must exist here. While AI processes patterns from human-generated data, the Holy Spirit processes the depths of the human heart, the mysteries of divine will, and the unseen spiritual realities that no algorithm can access.</p>
+
+        <div class="scripture-box">
+          <p class="verse">"But the Helper, the Holy Spirit, whom the Father will send in My name, He will teach you all things."</p>
+          <p class="ref">— John 14:26 (NKJV)</p>
+        </div>
+
+        <div class="content-panel panel-blue" style="margin-top:10px;">
+          <p class="panel-title" style="color:var(--royal-blue);">THE HOLY SPIRIT ALONE CAN:</p>
+          <ul class="comic-list">
+            <li><span class="num">✦</span>Convict of sin, righteousness, and judgment (John 16:8)</li>
+            <li><span class="num">✦</span>Regenerate a dead spirit and impart eternal life (John 3:5–6)</li>
+            <li><span class="num">✦</span>Give supernatural gifts, healing, and miracles (1 Cor 12)</li>
+            <li><span class="num">✦</span>Intercede with groans beyond human language (Rom 8:26)</li>
+            <li><span class="num">✦</span>Reveal the deep things of God (1 Cor 2:10)</li>
+            <li><span class="num">✦</span>Transform character into the likeness of Christ (Gal 5:22–23)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">HOLY</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="6" fill="#FFD700" font-weight="900">BIBLE</text>
+          <line x1="20" y1="44" x2="12" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="11" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <line x1="120" y1="44" x2="128" y2="36" stroke="#4FC3F7" stroke-width="1.2" opacity="0.6"/>
+          <circle cx="129" cy="35" r="2.5" fill="#4FC3F7" opacity="0.7"/>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-blue" style="font-size:11px;max-width:140px;text-align:center;">
+          "Use AI as your tool. Let the Holy Spirit be your TEACHER!"
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:12px;">
+      <p>✦ THE PRACTICAL FORMULA: Holy Spirit × AI Tool = Kingdom Multiplication. Never reverse this equation. The Spirit leads. Technology serves. ✦</p>
+    </div>
+
+    <div class="call-out-strip strip-blue" style="margin-top:10px;">The Christian who replaces prayer with prompting, and Scripture with AI output, has lost the Source. Stay tethered to the Vine first (John 15:5).</div>
+  </div>
+
+  <div class="page-footer fbar-navy">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">5</text></svg>
+    <span class="footer-page-num" style="color:#0277BD;">PAGE 5</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">5</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 6: DANGERS & DISCERNMENT ============ -->
+<div class="page inner-page theme-rose">
+  <div class="page-header hbar-rose">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 5</span>
+    <span class="page-title-main" style="color:var(--gold);">DANGERS & DISCERNMENT</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star">
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#C62828"/>
+          <circle cx="82" cy="63" r="4.5" fill="#C62828"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M63,84 Q70,78 77,84" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#C62828" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">⚠️ WARN</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">ING!</text>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#C62828" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-white" style="font-size:11px;max-width:140px;text-align:center;border-color:#C62828;">
+          "Heads up! Even good tools can become IDOLS. Watch and pray!"
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-heading" style="color:#C62828;">SEVEN SPIRITUAL DANGERS OF THE AI AGE</h2>
+
+        <ul class="comic-list">
+          <li><span class="num" style="background:#C62828;">1</span><div><strong>AI Idolatry:</strong> Treating AI as omniscient oracle. When Christians trust AI answers more than Scripture, technology has become a false god.</div></li>
+          <li><span class="num" style="background:#C62828;">2</span><div><strong>Deepfake Deception:</strong> Fake videos of pastors, AI-generated "prophecies" and "visions" can deceive millions. Test every spirit (1 John 4:1).</div></li>
+          <li><span class="num" style="background:#C62828;">3</span><div><strong>Theological Drift:</strong> AI trained on mixed theological sources can subtly introduce heresy. Always verify AI theological output against Scripture.</div></li>
+          <li><span class="num" style="background:#C62828;">4</span><div><strong>Surveillance State:</strong> AI-powered surveillance systems globally are increasingly targeting persecuted believers. Digital discipleship must include security literacy.</div></li>
+          <li><span class="num" style="background:#C62828;">5</span><div><strong>Addiction & Distraction:</strong> AI entertainment and social media algorithms are engineered to consume human attention — time that belongs to prayer, family, and fellowship.</div></li>
+          <li><span class="num" style="background:#C62828;">6</span><div><strong>The Mark Preparation:</strong> Many eschatological scholars see AI-powered global identity systems as precursors to prophetic end-time controls (Rev 13). Stay awake and discerning.</div></li>
+          <li><span class="num" style="background:#C62828;">7</span><div><strong>Replacement of Genuine Community:</strong> Digital church can never fully replace the embodied gathering of believers. "Do not forsake the assembling" (Heb 10:25) is non-negotiable.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="scripture-box" style="background:linear-gradient(135deg,#C62828,#B71C1C);">
+      <p class="verse">"Be sober-minded; be watchful. Your adversary the devil prowls around like a roaring lion, seeking someone to devour."</p>
+      <p class="ref">— 1 Peter 5:8 (ESV) | Discernment is a Kingdom weapon. Deploy it in the digital age.</p>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-rose">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#C62828"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">6</text></svg>
+    <span class="footer-page-num" style="color:#C62828;">PAGE 6</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#C62828"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">6</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 7: THE PREPARED CHRISTIAN ============ -->
+<div class="page inner-page theme-cream">
+  <div class="page-header hbar-orange">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 6</span>
+    <span class="page-title-main" style="color:white;">THE PREPARED CHRISTIAN</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star-right">
+      <div>
+        <h2 class="section-heading" style="color:#E65100;">10 WAYS TO PREPARE FOR THE AI AGE</h2>
+        <p class="body-text">God's people are never to be caught off guard by history. Daniel prepared for Babylon. Esther prepared for the palace. Joseph prepared for Egypt. <strong>You must prepare for the age of AI.</strong> Here is your Spirit-led preparation checklist:</p>
+
+        <ul class="comic-list">
+          <li><span class="num" style="background:#E65100;">1</span><strong>Deepen Your Prayer Life</strong> — AI cannot replace your altar time. Pray daily without ceasing (1 Thess 5:17).</li>
+          <li><span class="num" style="background:#E65100;">2</span><strong>Know Your Bible</strong> — Scripture is your discernment filter. Every AI output must pass the test of the Word.</li>
+          <li><span class="num" style="background:#E65100;">3</span><strong>Learn Basic AI Literacy</strong> — Understand what AI is, how it works, and where it is being deployed. Ignorance is not holiness.</li>
+          <li><span class="num" style="background:#E65100;">4</span><strong>Build Kingdom Digital Skills</strong> — Content creation, coding, digital marketing, AI tool use. These are modern-day workplace skills God can sanctify.</li>
+          <li><span class="num" style="background:#E65100;">5</span><strong>Steward Your Data</strong> — Your digital footprint matters. Practice godly wisdom in what you share online.</li>
+          <li><span class="num" style="background:#E65100;">6</span><strong>Invest in AI-Era Education</strong> — Equip your children with both biblical foundation AND technological competence. Don't choose one.</li>
+          <li><span class="num" style="background:#E65100;">7</span><strong>Build Sustainable Kingdom Businesses</strong> — AI enables lean, global businesses. Build enterprises that fund the mission.</li>
+          <li><span class="num" style="background:#E65100;">8</span><strong>Join Kingdom Tech Communities</strong> — Connect with other Spirit-filled tech creators, developers, designers, and entrepreneurs.</li>
+          <li><span class="num" style="background:#E65100;">9</span><strong>Practice Media Fasting</strong> — Regularly disconnect from AI-powered media feeds to prevent spiritual dullness and recalibrate your spirit.</li>
+          <li><span class="num" style="background:#E65100;">10</span><strong>Be a Voice, Not an Echo</strong> — Don't merely consume AI content. Create Kingdom content that carries the anointing of Heaven into digital spaces.</li>
+        </ul>
+      </div>
+
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#E65100"/>
+          <circle cx="82" cy="63" r="4.5" fill="#E65100"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#E65100" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">GET</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">READY!</text>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#E65100" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11px;max-width:140px;text-align:center;">
+          "10 steps to be READY! Prepare like Daniel prepared for Babylon!"
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer" style="background:linear-gradient(90deg,#E65100,#F57C00);color:white;">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#E65100"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">7</text></svg>
+    <span class="footer-page-num" style="color:white;">PAGE 7</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#E65100"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">7</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 8: AI IN THE AFRICAN CHURCH ============ -->
+<div class="page inner-page theme-mint">
+  <div class="page-header hbar-green">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 7</span>
+    <span class="page-title-main" style="color:var(--gold);">AI & THE AFRICAN CHURCH</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star">
+      <div class="star-bubble-combo">
+        <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#2E7D32"/>
+          <circle cx="82" cy="63" r="4.5" fill="#2E7D32"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,87 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#2E7D32" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">AFRICA</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">RISES!</text>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#2E7D32" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11px;max-width:140px;text-align:center;">
+          "Africa is the spiritual powerhouse. AI is the new weapon of mass transformation!"
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-heading" style="color:#2E7D32;">AFRICA: THE KINGDOM'S DIGITAL FRONTIER</h2>
+        <p class="body-text">Africa is home to the world's fastest-growing Christian population. With over <strong>700 million believers</strong> and the world's youngest demographic, Africa is positioned to be the greatest digital Kingdom force in history. AI is the great equalizer — and African Christians are called to lead, not follow.</p>
+
+        <div class="scripture-box" style="background:linear-gradient(135deg,#2E7D32,#388E3C);">
+          <p class="verse">"Ethiopia [Africa] shall quickly stretch out her hands to God."</p>
+          <p class="ref">— Psalm 68:31 (NKJV) | A prophetic invitation to digital Kingdom leadership</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="three-col" style="margin-top:10px;">
+      <div class="content-panel panel-mint">
+        <p class="panel-title" style="color:#1B5E20;">📱 MOBILE-FIRST MINISTRY</p>
+        <p class="panel-body">With 500M+ mobile users, Africa's church can use AI-powered mobile apps for Bible study, prayer networks, and digital giving — bypassing traditional infrastructure entirely. The Gospel on every phone.</p>
+      </div>
+      <div class="content-panel panel-gold">
+        <p class="panel-title" style="color:#7A4000;">🎙️ LOCAL LANGUAGE AI</p>
+        <p class="panel-body">AI can now generate sermons, devotionals, and discipleship content in Twi, Yoruba, Swahili, Igbo, Amharic, and 2,000+ other African languages. The Great Commission in every tongue!</p>
+      </div>
+      <div class="content-panel panel-blue">
+        <p class="panel-title" style="color:var(--royal-blue);">💡 TECH ENTREPRENEURSHIP</p>
+        <p class="panel-body">Ghana, Nigeria, Kenya, and South Africa are producing world-class AI developers. Christian tech entrepreneurs building Kingdom-first digital products have a divine mandate and a global market.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:12px;">
+      <p>✦ PROPHETIC DECLARATION: The African Church will not be a consumer of Western AI tools. It will be a CREATOR of Kingdom AI solutions that bless the nations. Arise, African believer! ✦</p>
+    </div>
+  </div>
+
+  <div class="page-footer" style="background:linear-gradient(90deg,#2E7D32,#388E3C);color:white;">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#2E7D32"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">8</text></svg>
+    <span class="footer-page-num" style="color:white;">PAGE 8</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#2E7D32"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">8</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 9: PRAYER IN THE AGE OF AI ============ -->
+<div class="page inner-page theme-lavender">
+  <div class="page-header hbar-bright">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 8</span>
+    <span class="page-title-main" style="color:var(--gold);">PRAYER IN THE AI AGE</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <h2 class="section-heading" style="color:var(--royal-blue);">THE IRREPLACEABLE POWER OF PRAYER</h2>
+    <p class="body-text">In an age where AI can draft sermons, answer theological questions, compose worship music, and translate Scripture — the one thing no machine can do is commune with the living God. <strong>Prayer is the breath of Heaven in your lungs.</strong> It is your most advanced technology. It is the interface between your spirit and the omnipotent Creator of all algorithms.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="scripture-box">
+          <p class="verse">"The effective, fervent prayer of a righteous man avails much."</p>
+          <p class="ref">— James 5:16 (NKJV)</p>
+        </div>
+
+        <div class="content-panel panel-blue" style="margin-top:12px;">
+          <p class="panel-title" style="color:var(--royal-blue);">🙏 AN AI AGE PRAYER STRATEGY</p>
+          <ul class="comic-list">
+            <li><span class="num">✦</span><strong>Morning Altar First:</strong> Before opening any AI tool, open Heaven first. Set the spiritual agenda before the digital one.</li>
+            <li><span class="num">✦</span><strong>Pray Over Your Work:</strong> Dedicate every AI-assisted project to God's Kingdom purpose. Sanctify the tool before deploying it.</li>
+            <li><span class="num">✦</span><strong>Intercede for AI Developers:</strong> The people building these systems need the light of the Gospel. Pray for salvation among Silicon Valley's elite.</li>
+            <li><span class="num">✦</span><strong>Spiritual Warfare:</strong> Pray against the weaponization of AI for evil — propaganda, deception, oppression. Bind the works of darkness in digital spaces.</li>
+            <li><span class="num">✦</span><strong>Pray for Wisdom:</strong> Ask for the Spirit of Wisdom (Isa 11:2) to navigate the rapidly changing digital landscape with divine insight.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="star-bubble-combo" style="margin-bottom:14px;">
+          <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+            <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+            <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+            <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+            <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+            <circle cx="62" cy="63" r="4.5" fill="#0D47A1"/>
+            <circle cx="82" cy="63" r="4.5" fill="#0D47A1"/>
+            <circle cx="64" cy="61" r="1.8" fill="white"/>
+            <circle cx="84" cy="61" r="1.8" fill="white"/>
+            <!-- Eyes closed in prayer -->
+            <path d="M54,62 Q60,68 66,62" stroke="#1A237E" stroke-width="2" fill="none"/>
+            <path d="M74,62 Q80,68 86,62" stroke="#1A237E" stroke-width="2" fill="none"/>
+            <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+            <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+            <path d="M60,80 Q70,90 80,80" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="70" cy="18" rx="18" ry="5" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="3,2.5" opacity="0.8"/>
+            <rect x="55" y="96" width="30" height="20" rx="3" fill="#0D47A1" stroke="#FFD700" stroke-width="1.5"/>
+            <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">PRAY</text>
+            <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="900">FIRST!</text>
+            <rect x="15" y="130" width="110" height="17" rx="8" fill="#0D47A1" stroke="#FFD700" stroke-width="1.5"/>
+            <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+          </svg>
+          <div class="speech-bubble bubble-blue" style="font-size:11px;max-width:140px;text-align:center;">
+            "Prayer is your highest bandwidth connection — to God Himself!"
+          </div>
+        </div>
+
+        <div class="content-panel panel-gold">
+          <p class="panel-title" style="color:#7A4000;">⚡ REMEMBER THIS ALWAYS</p>
+          <p class="panel-body">AI can write a prayer. AI cannot <em>pray</em>. AI can describe the presence of God. AI cannot <em>enter</em> it. The most powerful Christian in the AI Age is not the most technically proficient — it is the one who carries the <strong>unbroken anointing of the Holy Spirit</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-navy">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">9</text></svg>
+    <span class="footer-page-num" style="color:var(--royal-blue);">PAGE 9</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">9</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 10: THE KINGDOM MANDATE ============ -->
+<div class="page inner-page theme-navy">
+  <div class="page-header hbar-dark">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.75);">Chapter 9</span>
+    <span class="page-title-main" style="color:var(--gold);">YOUR KINGDOM MANDATE</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star">
+      <div class="star-bubble-combo">
+        <svg width="140" height="165" viewBox="0 0 140 165" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#FFD700"/>
+          <circle cx="82" cy="63" r="4.5" fill="#FFD700"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,215,0,0.5)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,215,0,0.5)"/>
+          <path d="M60,78 Q70,92 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M63,79 Q70,88 77,79" fill="white"/>
+          <ellipse cx="70" cy="18" rx="22" ry="6" fill="none" stroke="#FFD700" stroke-width="2.5" stroke-dasharray="3,2"/>
+          <!-- Crown on head -->
+          <path d="M52,22 L57,14 L63,20 L70,10 L77,20 L83,14 L88,22 Z" fill="#FFD700" stroke="#F5A623" stroke-width="1.5"/>
+          <rect x="55" y="96" width="30" height="20" rx="3" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="106" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="#FFD700" font-weight="900">TAKE</text>
+          <text x="70" y="113" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="#FFD700" font-weight="900">GROUND!</text>
+          <rect x="15" y="133" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="145" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11px;max-width:140px;text-align:center;">
+          "You are a KING and PRIEST in God's Kingdom. Wear your crown in the digital age!"
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-heading" style="color:var(--gold);">YOU ARE CALLED FOR SUCH A TIME AS THIS</h2>
+        <div class="scripture-box">
+          <p class="verse">"But you are a chosen generation, a royal priesthood, a holy nation, His own special people, that you may proclaim the praises of Him who called you."</p>
+          <p class="ref">— 1 Peter 2:9 (NKJV)</p>
+        </div>
+
+        <p class="body-text" style="color:#1a1a3e;margin-top:12px;">Your Kingdom mandate has five dimensions in the AI Age:</p>
+
+        <div class="content-panel panel-gold">
+          <ul class="comic-list">
+            <li><span class="num">👑</span><strong>DOMINION:</strong> Take cultural and technological authority in the name of Jesus. Do not cede digital spaces to darkness. Occupy until He comes (Luke 19:13).</li>
+            <li><span class="num">💡</span><strong>ILLUMINATION:</strong> Let your light shine brighter than any AI-generated content. Create Kingdom media, products, and platforms that carry supernatural anointing.</li>
+            <li><span class="num">🌱</span><strong>MULTIPLICATION:</strong> Use AI to scale your ministry, business, and discipleship output. One anointed person with AI tools has the reach of a million.</li>
+            <li><span class="num">🛡️</span><strong>PROTECTION:</strong> Guard your community from the deceptions of the age. Teach biblical discernment. Build spiritual armor alongside digital skills.</li>
+            <li><span class="num">🤝</span><strong>COLLABORATION:</strong> Partner with other Kingdom builders globally. The Body of Christ is the world's greatest distributed network — AI connects it like never before.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="call-out-strip strip-blue" style="margin-top:10px;">✦ God did not save you to be a spectator of history. He called you to shape it. The AI age is your assignment. Accept it. ✦</div>
+  </div>
+
+  <div class="page-footer fbar-navy">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">10</text></svg>
+    <span class="footer-page-num" style="color:var(--gold);">PAGE 10</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="white">10</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 11: CLOSING PRAYER & DECLARATION ============ -->
+<div class="page inner-page theme-cream">
+  <div class="page-header hbar-gold">
+    <span class="page-chapter-label">Final Word</span>
+    <span class="page-title-main">A PRAYER & DECLARATION</span>
+    <span style="font-family:'Fredoka One';font-size:12px;">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star-right">
+      <div>
+        <h2 class="section-heading" style="color:var(--royal-blue);">CLOSING CHARGE: THE DIVINE ALGORITHM RUNS THROUGH YOU</h2>
+        <p class="body-text">Beloved, as we close this report, hear the Spirit of God declare over you: <strong>You are not behind. You are not too small. You are not too late.</strong> The God who parted the Red Sea, who raised Jesus from the dead, who spoke worlds into existence — He is the same God who breathes wisdom into your spirit for the AI age.</p>
+        <p class="body-text">The divine algorithm was never written in Python or C++. It was written on tablets of the human heart by the finger of God (2 Cor 3:3). When you are filled with the Spirit, guided by the Word, and walking in love — you ARE the most advanced intelligence operating on earth.</p>
+
+        <div class="scripture-box">
+          <p class="verse">"For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do."</p>
+          <p class="ref">— Ephesians 2:10 (NIV) | You were pre-programmed for this moment.</p>
+        </div>
+
+        <div class="content-panel panel-gold" style="margin-top:12px;">
+          <p class="panel-title" style="color:#7A4000;">🔥 SPEAK THIS DECLARATION ALOUD:</p>
+          <p class="panel-body" style="font-style:italic;line-height:1.8;">
+            "I am a child of the Most High God. I am filled with the Holy Spirit. I step into the AI age without fear, armed with faith, wisdom, and the Word of God. I will create, build, and advance the Kingdom. I will discern every deception and stand in every storm. My work will bear eternal fruit. The Divine Algorithm — the Spirit of God — runs through me. In Jesus' Name. <strong>AMEN!</strong>"
+          </p>
+        </div>
+      </div>
+
+      <div class="star-bubble-combo">
+        <svg width="150" height="175" viewBox="0 0 150 175" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="75" cy="95" r="60" fill="rgba(255,215,0,0.15)"/>
+          <path d="M75,12 L89,56 L135,56 L99,82 L113,126 L75,100 L37,126 L51,82 L15,56 L61,56 Z" fill="#FFE566" stroke="#F5A623" stroke-width="3"/>
+          <path d="M75,28 L86,56 L116,56 L92,73 L102,100 L75,83 L48,100 L58,73 L34,56 L64,56 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="64" cy="68" rx="9" ry="10" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="86" cy="68" rx="9" ry="10" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="66" cy="69" r="5" fill="#1A237E"/>
+          <circle cx="88" cy="69" r="5" fill="#1A237E"/>
+          <circle cx="68" cy="67" r="2" fill="white"/>
+          <circle cx="90" cy="67" r="2" fill="white"/>
+          <ellipse cx="56" cy="81" rx="8" ry="5" fill="rgba(255,150,150,0.5)"/>
+          <ellipse cx="94" cy="81" rx="8" ry="5" fill="rgba(255,150,150,0.5)"/>
+          <path d="M63,87 Q75,102 87,87" stroke="#1A237E" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M66,88 Q75,99 84,88" fill="white"/>
+          <!-- Crown -->
+          <path d="M56,28 L62,18 L69,26 L75,14 L81,26 L88,18 L94,28 Z" fill="#FFD700" stroke="#F5A623" stroke-width="2"/>
+          <circle cx="75" cy="30" r="3" fill="white" stroke="#F5A623" stroke-width="1"/>
+          <!-- Raised arms sparkle -->
+          <line x1="25" y1="50" x2="12" y2="38" stroke="#FFD700" stroke-width="2"/>
+          <circle cx="10" cy="36" r="4" fill="#FFD700"/>
+          <line x1="125" y1="50" x2="138" y2="38" stroke="#FFD700" stroke-width="2"/>
+          <circle cx="140" cy="36" r="4" fill="#FFD700"/>
+          <!-- Victory sparkles -->
+          <circle cx="20" cy="110" r="5" fill="#4FC3F7"/>
+          <circle cx="130" cy="110" r="5" fill="#4FC3F7"/>
+          <circle cx="75" cy="150" r="6" fill="#FFD700"/>
+          <rect x="55" y="106" width="40" height="25" rx="4" fill="#1A237E" stroke="#FFD700" stroke-width="2"/>
+          <text x="75" y="117" text-anchor="middle" font-family="Nunito" font-size="6.5" fill="#FFD700" font-weight="900">AMEN!</text>
+          <text x="75" y="126" text-anchor="middle" font-family="Nunito" font-size="5.5" fill="white" font-weight="700">GOD WINS!</text>
+          <rect x="18" y="148" width="114" height="18" rx="9" fill="#1A237E" stroke="#FFD700" stroke-width="2"/>
+          <text x="75" y="160" text-anchor="middle" font-family="Bangers" font-size="12" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:11.5px;max-width:150px;text-align:center;">
+          "See you on the other side of TRANSFORMATION! God wins — and so do YOU! ✦"
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright-box" style="margin-top:16px;">
+      <p class="copy-title">© COPYRIGHT & CONTACT INFORMATION</p>
+      <p><strong>© 2026 Deon Christolove. All rights reserved.</strong> No part of this publication may be reproduced, distributed, or transmitted in any form or by any means without prior written permission, except for brief quotations in reviews and certain noncommercial uses permitted by copyright law.</p>
+      <p style="margin-top:8px;color:var(--gold);">✦ Ghana: P.O. Box SK 2125, Sakumono, Tema, Ghana | Tel: +233 243 262 019</p>
+      <p style="color:rgba(255,255,255,0.85);">✦ US: Suite #CCK799, 444 Alaska Avenue, Torrance, CA 90503, USA | Mobile/WhatsApp: +1 201-680-0459</p>
+      <p style="color:rgba(255,255,255,0.7);margin-top:6px;">Published by GabochieDesign AI Press · gideonabochie.com · ISBN: 979-8-89817-042-3</p>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-gold">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="#1A237E">11</text></svg>
+    <span class="footer-page-num" style="color:var(--royal-blue);">PAGE 11</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="5" fill="#1A237E">11</text></svg>
+  </div>
+</div>
+
+<!-- ============ PAGE 12: GLOSSARY ============ -->
+<div class="page inner-page theme-navy">
+  <div class="page-header hbar-navy">
+    <span class="page-chapter-label" style="color:rgba(255,255,255,0.7);">Back Matter</span>
+    <span class="page-title-main" style="color:var(--gold);">GLOSSARY OF TERMS</span>
+    <span style="font-family:'Fredoka One';font-size:12px;color:rgba(255,255,255,0.65);">THE DIVINE ALGORITHM</span>
+  </div>
+
+  <div class="page-body">
+    <div class="two-col-star" style="margin-bottom:14px;">
+      <div class="star-bubble-combo">
+        <svg width="100" height="120" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+          <path d="M70,10 L82,50 L124,50 L90,74 L103,115 L70,90 L37,115 L50,74 L16,50 L58,50 Z" fill="#FFE566" stroke="#F5A623" stroke-width="2.5"/>
+          <path d="M70,25 L79,50 L106,50 L84,65 L93,90 L70,75 L47,90 L56,65 L34,50 L61,50 Z" fill="rgba(255,255,255,0.3)"/>
+          <ellipse cx="60" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <ellipse cx="80" cy="62" rx="8" ry="9" fill="white" stroke="#1A237E" stroke-width="1.5"/>
+          <circle cx="62" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="82" cy="63" r="4.5" fill="#1A237E"/>
+          <circle cx="64" cy="61" r="1.8" fill="white"/>
+          <circle cx="84" cy="61" r="1.8" fill="white"/>
+          <ellipse cx="53" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <ellipse cx="87" cy="73" rx="7" ry="4.5" fill="rgba(255,150,150,0.45)"/>
+          <path d="M60,78 Q70,90 80,78" stroke="#1A237E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="15" y="130" width="110" height="17" rx="8" fill="#1A237E" stroke="#FFD700" stroke-width="1.5"/>
+          <text x="70" y="142" text-anchor="middle" font-family="Bangers" font-size="11" fill="#FFD700" letter-spacing="0.5">LUMINOS ✦</text>
+        </svg>
+        <div class="speech-bubble bubble-gold" style="font-size:10.5px;max-width:110px;text-align:center;">
+          "Know your terms — the wise are never lost for words!"
+        </div>
+      </div>
+
+      <div>
+        <p class="body-text" style="color:#1a1a3e;font-style:italic;">"My people are destroyed for lack of knowledge." — Hosea 4:6. This glossary equips you with the language of the AI age, interpreted through a Kingdom lens.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <dl>
+        <div class="glossary-term">
+          <dt>ARTIFICIAL INTELLIGENCE (AI)</dt>
+          <dd>Computer systems trained on human-generated data to perform tasks that typically require human intelligence, such as language, reasoning, and pattern recognition. Operates within God-given limits of creation.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>LARGE LANGUAGE MODEL (LLM)</dt>
+          <dd>A type of AI trained on vast amounts of text to understand and generate human language. Examples: Claude, GPT-4. A powerful tool for Kingdom content creation when used with discernment.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>GENERATIVE AI</dt>
+          <dd>AI systems that create original content — text, images, music, video, code. The creative expression of human-taught patterns; not a replacement for Spirit-inspired creativity.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>NEURAL NETWORK</dt>
+          <dd>A computational architecture loosely modeled on the human brain, consisting of interconnected nodes that process information. A reflection of the complexity God built into human cognition.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>PROMPT ENGINEERING</dt>
+          <dd>The craft of communicating effectively with AI systems to receive high-quality, targeted outputs. The modern equivalent of asking the right question at the right time.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>MACHINE LEARNING</dt>
+          <dd>A branch of AI in which systems improve their performance through exposure to data rather than explicit programming. Systems trained, not created — unlike the Holy Spirit, Who creates.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>DEEPFAKE</dt>
+          <dd>AI-generated audio or video content that realistically depicts real people saying or doing things they did not. A significant deception risk requiring biblical discernment and verification disciplines.</dd>
+        </div>
+      </dl>
+
+      <dl>
+        <div class="glossary-term">
+          <dt>KINGDOM OF GOD</dt>
+          <dd>The reign and rule of God expressed through the person of Jesus Christ, in the hearts of believers, and progressively through history toward the fullness of Christ's return. Not geographical; transformational.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>THEOLOGY</dt>
+          <dd>The systematic study of the nature of God, divine revelation, and the relationship between God and humanity. AI can assist theology; only the Holy Spirit can reveal God to the spirit of a person.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>DISCERNMENT (SPIRITUAL)</dt>
+          <dd>The Spirit-given ability to distinguish truth from error, the genuine from the counterfeit, and the divine from the demonic. The primary weapon of the believer in the information age.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>DIGITAL DISCIPLESHIP</dt>
+          <dd>The intentional formation of Christian character, doctrine, and spiritual practice through digital platforms and tools. Must be rooted in the local church body, not replace it.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>KINGDOM ECONOMICS</dt>
+          <dd>A biblical framework for building wealth, enterprise, and financial systems that are governed by Kingdom values — generosity, justice, sustainability, and mission funding.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>ANOINTING</dt>
+          <dd>The tangible presence and empowerment of the Holy Spirit upon a person for a specific purpose or work. Cannot be replicated, automated, or synthesized by technology.</dd>
+        </div>
+        <div class="glossary-term">
+          <dt>LUMINOS ✦</dt>
+          <dd>The star character guide in this report — a symbolic representation of divine wisdom (luminosity) and the Holy Spirit's illuminating work, helping believers navigate the intersection of faith and the AI age.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="page-footer fbar-navy">
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="4.5" fill="white">12</text></svg>
+    <span class="footer-page-num" style="color:var(--gold);">PAGE 12 — GLOSSARY</span>
+    <svg class="star-footer" viewBox="0 0 36 36"><path d="M18,3 L21,13 L32,13 L23,19 L26,30 L18,24 L10,30 L13,19 L4,13 L15,13 Z" fill="#FFE566" stroke="#F5A623" stroke-width="1.5"/><circle cx="18" cy="16" r="3.5" fill="#1A237E"/><text x="18" y="20" text-anchor="middle" font-family="Bangers" font-size="4.5" fill="white">12</text></svg>
+  </div>
+</div>
+
+</body>
+</html>

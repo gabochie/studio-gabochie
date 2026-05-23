@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GideonAbochie Studio — School of Creativity, Love & Wisdom</title>
+<meta name="description" content="A Bible-based ministry teaching creativity, love, and wisdom. Support the mission — every donation builds leaders and transforms lives through God's truth.">
+<meta property="og:title" content="GideonAbochie Studio">
+<meta property="og:description" content="School of Creativity, Love & Wisdom — equipping a generation with biblical truth, creative excellence, and heartfelt devotion.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gideonabochie.org">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css">
+<link rel="stylesheet" href="assets/css/main.css">
+<style>
+body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-height:1.2;color:#E8EEF7}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;text-decoration:none;line-height:1}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C;color:#0A1628}
+.btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
+.btn-outline:hover{background:#C9A84C;color:#0A1628}
+.btn-lg{padding:16px 36px;font-size:17px;border-radius:10px}
+.btn-sm{padding:8px 16px;font-size:13px}
+.hero{min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#0A1628 0%,#162540 50%,#0A1628 100%);position:relative;overflow:hidden;padding-top:64px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(201,168,76,0.04) 0%,transparent 50%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:#C9A84C;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,7vw,80px);color:#fff;line-height:.9;font-weight:700;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:20px}
+.hero h1 span{color:#C9A84C}
+.hero p{font-family:'Barlow',sans-serif;font-size:clamp(16px,1.2vw,18px);color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:32px;max-width:540px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-image{position:relative}
+.hero-image .video-wrapper{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);background:#0A1628}
+.hero-image .video-wrapper iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.hero-actions{justify-content:center}}
+.section{padding:100px 0}
+.section-label{display:inline-flex;align-items:center;gap:6px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
+.section-heading{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);margin-bottom:16px;color:#E8EEF7}
+.section-heading span{color:#C9A84C}
+.section-sub{font-family:'Barlow',sans-serif;font-size:17px;color:#8A9BB5;max-width:640px;line-height:1.7;margin-bottom:40px}
+@media(max-width:640px){.section{padding:60px 0}.section-heading{font-size:28px}}
+.story{background:#0A1628}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.story-content p{font-size:16px;color:#8A9BB5;line-height:1.8;margin-bottom:16px}
+.story-image{position:relative;overflow:hidden;border-radius:12px}
+.story-image img{width:100%;aspect-ratio:3/4;object-fit:cover;border:1px solid #1E3250;display:block}
+.story-image .matrix-overlay{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;opacity:0.35}
+.story-image .matrix-overlay canvas{width:100%;height:100%;display:block}
+@media(max-width:860px){.story-grid{grid-template-columns:1fr;gap:32px}}
+.pillars{background:#0F1E38}
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pillar-card{background:#162540;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;text-align:center;transition:all 0.3s}
+.pillar-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);border-color:#C9A84C}
+.pillar-icon{width:56px;height:56px;border-radius:14px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:#C9A84C}
+.pillar-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:16px;margin-bottom:8px;color:#E8EEF7}
+.pillar-card p{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;line-height:1.6}
+@media(max-width:860px){.pillars-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.pillars-grid{grid-template-columns:1fr}}
+.books{background:#0A1628}
+.books-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.book-card{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:32px;display:flex;flex-direction:column;transition:all 0.3s}
+.book-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);border-color:#C9A84C}
+.book-card .book-icon{width:64px;height:64px;border-radius:14px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:28px;color:#C9A84C}
+.book-card h3{font-size:18px;margin-bottom:8px;color:#E8EEF7}
+.book-card p{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;line-height:1.7;margin-bottom:16px;flex:1}
+.book-card .book-meta{font-family:'Courier Prime',monospace;font-size:11px;color:#5A7A9F;margin-bottom:12px}
+@media(max-width:640px){.books-grid{grid-template-columns:1fr}}
+.tiktok{background:#0F1E38}
+.tiktok-intro{text-align:center;margin-bottom:48px}
+.tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tiktok-card{background:#162540;border:1px solid #1E3250;border-radius:12px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block}
+.tiktok-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);border-color:#C9A84C}
+.tiktok-card .thumb{aspect-ratio:9/16;background:#0A1628;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(255,255,255,0.15);position:relative;overflow:hidden}
+.tiktok-card .thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.tiktok-card .thumb .play-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;z-index:2}
+.tiktok-card:hover .play-overlay{opacity:1}
+.tiktok-card .info{padding:12px 14px}
+.tiktok-card .info .title{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:#E8EEF7;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tiktok-card .info .views{font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F}
+.manifesto-lead{background:#0A1628;border-top:1px solid rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.08)}
+.manifesto-lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.manifesto-lead h2{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(26px,3vw,34px);color:#E8EEF7;margin-bottom:12px}
+.manifesto-lead h2 span{color:#C9A84C}
+.manifesto-lead p{font-family:'Barlow',sans-serif;font-size:15px;color:#8A9BB5;line-height:1.7;margin-bottom:24px}
+.manifesto-lead .lead-form{display:flex;flex-direction:column;gap:12px;max-width:400px}
+.manifesto-lead .lead-form input{font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 16px;border-radius:8px;border:1px solid #1E3250;background:#0F1E38;color:#E8EEF7;outline:none;transition:border-color 0.2s}
+.manifesto-lead .lead-form input:focus{border-color:#C9A84C}
+.manifesto-lead .lead-form input::placeholder{color:#3A5278}
+.manifesto-lead .lead-form button{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;border:none;background:#C9A84C;color:#0A1628;cursor:pointer;transition:background 0.2s}
+.manifesto-lead .lead-form button:hover{background:#D9B85C}
+.manifesto-lead .lead-form .form-note{font-size:11px;color:#3A5278}
+.manifesto-lead .lead-image{position:relative}
+.manifesto-lead .lead-image .lead-card{border:1px solid #1E3250;border-radius:12px;background:#0F1E38;padding:24px}
+.manifesto-lead .lead-image .lead-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:16px;color:#E8EEF7;margin-bottom:8px}
+.manifesto-lead .lead-image .lead-card p{font-family:'Barlow',sans-serif;font-size:12px;color:#5A7A9F;line-height:1.6;margin-bottom:0}
+.manifesto-lead .lead-image .lead-card .lead-stat{font-size:28px;font-weight:700;color:#C9A84C;font-family:'Barlow Condensed',sans-serif;display:block;margin-bottom:2px}
+@media(max-width:860px){.manifesto-lead-grid{grid-template-columns:1fr;gap:32px;text-align:center}.manifesto-lead .lead-form{margin:0 auto}}
+@media(max-width:860px){.tiktok-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.tiktok-grid{grid-template-columns:1fr}}
+.impact{background:#0A1628;position:relative;overflow:hidden}
+.impact::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 60%);pointer-events:none}
+.impact .section-heading{color:#fff}
+.impact .section-sub{color:rgba(255,255,255,0.5)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;position:relative;z-index:1}
+.stat-card{text-align:center;padding:24px}
+.stat-number{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,4vw,52px);font-weight:700;color:#C9A84C;display:block;margin-bottom:4px}
+.stat-label{font-family:'Barlow',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);font-weight:500}
+@media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.stats-grid{grid-template-columns:1fr}}
+.testimonials{background:#0A1628}
+.testimonial-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.testimonial-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:28px 24px}
+.testimonial-card .quote{font-family:'Libre Baskerville',Georgia,serif;font-size:14px;color:#8A9BB5;line-height:1.7;margin-bottom:16px;font-style:italic}
+.testimonial-card .quote::before{content:'\201C';font-size:28px;color:#C9A84C;font-family:Georgia,serif;line-height:0;vertical-align:-6px;margin-right:4px}
+.testimonial-card .author{display:flex;align-items:center;gap:10px}
+.testimonial-card .avatar{width:36px;height:36px;border-radius:50%;background:#1E3250;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:#8A9BB5}
+.testimonial-card .name{font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:#E8EEF7}
+.testimonial-card .role{font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F}
+@media(max-width:640px){.testimonial-grid{grid-template-columns:1fr}}
+.gallery{background:#0A1628}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery-item{aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,#0F1E38,#162540);border:1px solid #1E3250;display:flex;align-items:center;justify-content:center;color:#5A7A9F;font-size:13px;position:relative;overflow:hidden}
+.gallery-item img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.gallery-item i{font-size:28px;margin-bottom:4px;color:rgba(201,168,76,0.2)}
+.gallery-item .gallery-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.6));padding:12px;font-size:11px;color:#fff;font-weight:500;font-family:'Barlow',sans-serif}
+@media(max-width:860px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.gallery-grid{grid-template-columns:1fr}}
+.give{background:#0F1E38}
+.give-card{background:#162540;border:1px solid #1E3250;border-radius:16px;padding:48px;text-align:center;max-width:720px;margin:0 auto}
+.give-card h2{font-family:'Libre Baskerville',Georgia,serif;font-size:32px;margin-bottom:12px;color:#E8EEF7}
+.give-card>p{font-family:'Barlow',sans-serif;font-size:15px;color:#8A9BB5;margin-bottom:32px;line-height:1.7}
+.give-options{display:flex;flex-direction:column;gap:14px;max-width:480px;margin:0 auto 24px}
+.give-btn{display:flex;align-items:center;gap:14px;padding:18px 24px;border-radius:10px;border:1.5px solid #1E3250;background:#0A1628;cursor:pointer;transition:all 0.2s;text-align:left;text-decoration:none;color:inherit}
+.give-btn:hover{border-color:#C9A84C;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.3)}
+.give-btn-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.give-btn-icon.flutterwave{background:rgba(201,168,76,0.12);color:#C9A84C}
+.give-btn-icon.kofi{background:rgba(201,168,76,0.12);color:#C9A84C}
+.give-btn-icon.bmc{background:rgba(201,168,76,0.12);color:#C9A84C}
+.give-btn-text{flex:1}
+.give-btn-text strong{font-family:'Barlow',sans-serif;display:block;font-size:14px;color:#E8EEF7;margin-bottom:2px}
+.give-btn-text span{font-family:'Barlow',sans-serif;font-size:12px;color:#5A7A9F}
+.give-badge{font-family:'Courier Prime',monospace;font-size:10px;background:rgba(52,199,123,0.12);color:#34C77B;padding:2px 8px;border-radius:4px;font-weight:600}
+.give-note{font-family:'Courier Prime',monospace;font-size:12px;color:#3A5278;margin-top:24px;display:flex;align-items:center;justify-content:center;gap:6px}
+.give-note i{font-size:14px}
+.give-extras{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.give-extras a{font-family:'Barlow',sans-serif;font-size:12px;color:#5A7A9F;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;border:1px solid #1E3250;transition:all 0.2s;text-decoration:none}
+.give-extras a:hover{color:#C9A84C;border-color:#C9A84C}
+@media(max-width:640px){.give-card{padding:32px 20px}.give-card h2{font-size:26px}}
+.faq{background:#0A1628}
+.faq-list{max-width:680px;margin:0 auto}
+.faq-item{border-bottom:1px solid #1E3250;padding:20px 0}
+.faq-question{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:15px;font-weight:600;color:#E8EEF7;gap:12px;background:none;border:none;width:100%;text-align:left;padding:0;font-family:'DM Sans',sans-serif}
+.faq-question i{font-size:18px;color:#3A5278;transition:transform 0.2s;flex-shrink:0}
+.faq-item.open .faq-question i{transform:rotate(180deg)}
+.faq-answer{font-family:'Barlow',sans-serif;font-size:14px;color:#8A9BB5;line-height:1.7;margin-top:8px;display:none;padding-right:32px}
+.faq-item.open .faq-answer{display:block}
+
+footer{background:#0A1628;color:rgba(255,255,255,0.5);padding:48px 0 32px}
+footer .container{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+footer h4{color:#fff;font-size:13px;font-weight:600;margin-bottom:12px}
+footer a{display:block;font-family:'Barlow',sans-serif;font-size:13px;color:#5A7A9F;margin-bottom:8px;transition:color 0.2s}
+footer a:hover{color:#C9A84C}
+footer .brand-footer{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+footer .brand-footer img{height:56px;width:auto;display:block;filter:sepia(0.6) saturate(3) hue-rotate(-15deg) brightness(1.1)}
+footer .brand-footer-wrapper{display:flex;flex-direction:column}
+footer .brand-footer-title{font-family:'DM Sans',system-ui,-apple-system,sans-serif;font-size:15px;font-weight:600;color:#fff;line-height:1.2}
+footer .brand-tagline{font-family:'DM Sans',system-ui,-apple-system,sans-serif;font-size:10px;color:#C9A84C;font-weight:500}
+footer .footer-about{font-family:'Barlow',sans-serif;font-size:13px;line-height:1.7;margin-bottom:16px}
+footer .footer-social{display:flex;gap:8px;flex-wrap:wrap}
+footer .footer-social a{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,0.3);transition:all 0.2s;margin-bottom:0}
+footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+.footer-affiliation{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.footer-affiliation-label{display:block;font-family:'Courier Prime',monospace;font-size:10px;color:#3A5278;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px}
+.footer-affiliation-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;transition:opacity 0.2s}
+.footer-affiliation-link:hover{opacity:0.8}
+.footer-affiliation-link img{height:36px;width:auto;display:block;border-radius:4px}
+.footer-affiliation-link span{font-family:'Barlow',sans-serif;font-size:12px;color:#5A7A9F;line-height:1.3;font-weight:500}
+.footer-affiliation-link span small{font-family:'Barlow',sans-serif;font-size:10px;color:#3A5278;font-weight:400}
+.footer-bottom{font-family:'Courier Prime',monospace;border-top:1px solid rgba(255,255,255,0.06);margin-top:32px;padding-top:20px;font-size:12px;text-align:center;grid-column:1/-1}
+@media(max-width:640px){footer .container{grid-template-columns:1fr;gap:24px}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-brand"><img src="assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="#story">Story</a>
+      <a href="#pillars">Teaching</a>
+      <a href="#books">Books</a>
+      <a href="#tiktok">TikTok</a>
+      <a href="manifesto/index.html">Manifesto</a>
+      <a href="newsletter/index.html">Newsletter</a>
+      <a href="#give" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-badge"><i class="ti ti-heart-filled"></i> GideonAbochie Studio</div>
+      <h1>School of <span>Creativity, Love & Wisdom</span></h1>
+      <p>A Bible-based ministry equipping a generation to create with excellence, love with devotion, and walk in the wisdom of God's Word. Creativity is not just art — it's the language of the Creator.</p>
+      <div class="hero-actions">
+        <a href="#give" class="btn btn-gold btn-lg"><i class="ti ti-heart"></i> Support the Mission</a>
+        <a href="#story" class="btn btn-outline btn-lg">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="video-wrapper">
+        <iframe src="https://www.youtube.com/embed/mH9GOT4NqR0" title="GideonAbochie Studio" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STORY ═══ -->
+<section class="section story" id="story">
+  <div class="container story-grid">
+    <div class="story-image">
+      <img src="assets/images/headshot.jpg" alt="Gideon Abochie — Founder">
+      <div class="matrix-overlay" id="matrixOverlay"><canvas id="matrixCanvas"></canvas></div>
+    </div>
+    <div class="story-content">
+      <div class="section-label"><i class="ti ti-book"></i> The Vision</div>
+      <h2 class="section-heading">Creativity, Love & Wisdom — <span>Rooted in Scripture</span></h2>
+      <p>GideonAbochie Studio was born from a deep conviction: the Church needs a fresh encounter with the God of creativity, the God of love, and the God of wisdom. These are not abstract concepts — they are the very nature of God revealed in Scripture.</p>
+      <p><em>"In the beginning, God <strong>created</strong>"</em> (Gen 1:1). <em>"God is <strong>love</strong>"</em> (1 John 4:8). <em>"The fear of the Lord is the beginning of <strong>wisdom</strong>"</em> (Prov 9:10). Every book, every video, every teaching points back to these three pillars — because when we create like Him, love like Him, and walk in His wisdom, we reflect His image to the world.</p>
+      <p>Through TikTok, books, and teaching, we're reaching a generation that is hungry for truth but drowning in noise. The message is simple: <strong>you were created to create, you were made to love, and you are called to walk in wisdom.</strong></p>
+      <a href="https://www.tiktok.com/@gideonabochie" target="_blank" rel="noopener" class="btn btn-outline mt-4"><i class="ti ti-brand-tiktok"></i> Follow on TikTok</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PILLARS ═══ -->
+<section class="section pillars" id="pillars">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-focus"></i> The Three Pillars</div>
+      <h2 class="section-heading">Creativity · Love · <span>Wisdom</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Three truths that shape everything we teach, create, and share. Rooted in Scripture, expressed through creativity, and lived out in community.</p>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon"><i class="ti ti-brush"></i></div>
+        <h3>Creativity</h3>
+        <p>We are made in the image of the Creator. Creativity is our birthright — whether through art, music, design, or writing. We teach creative excellence as an act of worship and a tool for transformation.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon"><i class="ti ti-heart"></i></div>
+        <h3>Love</h3>
+        <p>Love is not a feeling — it's a covenant commitment. We teach the radical, sacrificial love of God and call a generation to love God with all their heart and love their neighbor as themselves.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon"><i class="ti ti-lamp"></i></div>
+        <h3>Wisdom</h3>
+        <p>The fear of the Lord is the beginning of wisdom. In an age of information without understanding, we teach biblical wisdom for every area of life — relationships, work, creativity, and purpose.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon"><i class="ti ti-book-2"></i></div>
+        <h3>Scripture-Based</h3>
+        <p>Every teaching, every resource, every creative work flows from the Word of God. The Bible is not a relic — it is the operating system for the Kingdom, alive and active today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOOKS ═══ -->
+<section class="section books" id="books">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-books"></i> Published Works</div>
+      <h2 class="section-heading">Books That <span>Unlock the Kingdom</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">From Scripture and technology to national transformation — resources that challenge the mind, awaken creativity, and illuminate the wisdom of God for every area of life.</p>
+    </div>
+    <div class="books-grid">
+      <div class="book-card">
+        <div class="book-icon"><i class="ti ti-cpu"></i></div>
+        <h3>The Bible as Kingdom OS</h3>
+        <p>A paradigm-shifting exploration of the Bible not as a religious textbook, but as the operating system of the Kingdom of God. Learn to see Scripture as the living, active framework for every area of life — from creativity to relationships to purpose.</p>
+        <div class="book-meta">PDF · 221 KB · Full-length book</div>
+        <a href="books/the-bible-as-kingdom-os.pdf" target="_blank" rel="noopener" class="btn btn-gold btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+      </div>
+      <div class="book-card">
+        <div class="book-icon"><i class="ti ti-code"></i></div>
+        <h3>The Divine Algorithm</h3>
+        <p>An interactive report exploring the divine patterns, codes, and algorithms hidden in Scripture. Discover how the mathematical and creative genius of God is woven into every page of the Bible, and how understanding these patterns unlocks a new dimension of faith.</p>
+        <div class="book-meta">HTML Report · Full interactive document</div>
+        <a href="books/divine_algorithm_report.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="align-self:flex-start"><i class="ti ti-eye"></i> View Online</a>
+      </div>
+      <div class="book-card">
+        <div class="book-icon"><i class="ti ti-rocket"></i></div>
+        <h3>AI-Powered Strategic Accelerated National Development For Ghana</h3>
+        <p>A visionary blueprint for leveraging artificial intelligence to accelerate Ghana's national development across every sector — education, healthcare, agriculture, infrastructure, and governance. A must-read for leaders, policymakers, and change-makers.</p>
+        <div class="book-meta">DOCX · 14 KB · Strategic paper</div>
+        <a href="books/ai-powered-strategic-national-development-ghana.docx" target="_blank" rel="noopener" class="btn btn-gold btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+      </div>
+      <div class="book-card">
+        <div class="book-icon"><i class="ti ti-users"></i></div>
+        <h3>Ghana Does Not Need 1 Million Coders Manifesto</h3>
+        <p>A bold manifesto challenging the popular "1 million coders" narrative. Argues for a more holistic approach to national development — one that combines technical skills with creativity, wisdom, and biblical worldview as the true foundation for transformation.</p>
+        <div class="book-meta">PDF · 246 KB · Manifesto</div>
+        <a href="books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TIKTOK CONTENT ═══ -->
+<section class="section tiktok" id="tiktok">
+  <div class="container">
+    <div class="tiktok-intro">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-brand-tiktok"></i> Daily Content</div>
+      <h2 class="section-heading">Follow the Mission on <span>TikTok</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Short, powerful teachings on creativity, love, and wisdom — straight from Scripture, delivered daily. Join a growing community on TikTok.</p>
+      <a href="https://www.tiktok.com/@gideonabochie" target="_blank" rel="noopener" class="btn btn-gold"><i class="ti ti-brand-tiktok"></i> @gideonabochie</a>
+    </div>
+    <div class="tiktok-grid">
+      <a href="https://www.tiktok.com/@gideonabochie/video/7610894227723078913" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7610894227723078913" title="How to Increase more Wisdom in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Wisdom in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
+      <a href="https://www.tiktok.com/@gideonabochie/video/7611357216582552848" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7611357216582552848" title="How to Increase more Creativity in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Creativity in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
+      <a href="https://www.tiktok.com/@gideonabochie/video/7610121906984963329" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7610121906984963329" title="How to Increase more Love in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Love in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO LEAD ═══ -->
+<section class="section manifesto-lead">
+  <div class="container manifesto-lead-grid">
+    <div>
+      <div class="section-label"><i class="ti ti-file-text"></i> The Manifesto</div>
+      <h2>Get the Full <span>Manifesto</span></h2>
+      <p><strong>The System Is Failing Our Children. We Built the Answer.</strong> A data-driven case for a new kind of school — one built for the age of intelligence, creativity, and constant reinvention. Charts, data, and the full vision for GideonAbochie Studio.</p>
+      <form class="lead-form" action="https://formspree.io/f/xgoplkoe" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <button type="submit">Send Me the Free Manifesto</button>
+        <span class="form-note">No spam. Unsubscribe anytime.</span>
+      </form>
+    </div>
+    <div class="lead-image">
+      <div class="lead-card">
+        <span class="lead-stat">1,330+</span>
+        <h3>Lines of Vision</h3>
+        <p>The complete case for a new education model — with data visualizations, comparison tables, timeline analysis, and the three pillars of Creativity, Love & Wisdom.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ IMPACT ═══ -->
+<section class="section impact" id="impact">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center;color:rgba(201,168,76,0.8)"><i class="ti ti-trending-up"></i> Reach</div>
+    <h2 class="section-heading">Sharing Truth, <span>Changing Lives</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Every video, book, and teaching is freely available — your support helps us reach more people with the message of creativity, love, and wisdom.</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-number" data-target="10000">0</span>
+        <span class="stat-label">TikTok Followers & Growing</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="2">0</span>
+        <span class="stat-label">Books Published</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="500">0</span>
+        <span class="stat-label">Daily Video Views</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-target="1">0</span>
+        <span class="stat-label">Mission Year</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section class="section testimonials">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-message"></i> Voices</div>
+      <h2 class="section-heading">What People <span>Are Saying</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">The message of creativity, love, and wisdom is resonating with hearts around the world.</p>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="quote">Gideon's teaching on creativity as worship completely shifted how I see my work. I finally understand that my art is not separate from my faith — it IS my faith expressed.</div>
+        <div class="author">
+          <div class="avatar">S</div>
+          <div>
+            <div class="name">Sarah</div>
+            <div class="role">Creative Professional</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote">The Bible as Kingdom OS opened my eyes to see Scripture in a whole new way. It's not just stories — it's a living system designed to transform every part of my life.</div>
+        <div class="author">
+          <div class="avatar">J</div>
+          <div>
+            <div class="name">James</div>
+            <div class="role">Bible Study Leader</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALLERY ═══ -->
+<section class="section gallery">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-photo"></i> Gallery</div>
+      <h2 class="section-heading">Moments from the <span>Journey</span></h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+<img src="assets/images/gallery/teaching-session.jpg" alt="Teaching Session">
+<div class="gallery-label">Teaching Session</div>
+      </div>
+      <div class="gallery-item">
+<img src="assets/images/gallery/creative-workshop.jpg" alt="Creative Workshop">
+<div class="gallery-label">Creative Workshop</div>
+      </div>
+      <div class="gallery-item">
+<img src="assets/images/gallery/community-outreach.jpg" alt="Community Outreach">
+<div class="gallery-label">Community Outreach</div>
+      </div>
+      <div class="gallery-item">
+<img src="assets/images/gallery/book-launch.jpg" alt="Book Launch">
+<div class="gallery-label">Book Launch</div>
+      </div>
+      <div class="gallery-item">
+<img src="assets/images/gallery/behind-scenes.jpg" alt="Behind the Scenes">
+<div class="gallery-label">Behind the Scenes</div>
+      </div>
+      <div class="gallery-item">
+<img src="assets/images/gallery/ministry-moment.jpg" alt="Ministry Moment">
+<div class="gallery-label">Ministry Moment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GIVE ═══ -->
+<section class="section give" id="give">
+  <div class="container">
+    <div class="give-card">
+      <h2>Support the <span style="color:#C9A84C">Mission</span></h2>
+      <p>Your generosity makes every book, video, and teaching possible. Help us reach more people with the message of creativity, love, and wisdom — freely and faithfully.</p>
+
+      <div class="give-options">
+        <a href="https://flutterwave.com/donate/xcb7pf9xbi0d" target="_blank" rel="noopener" class="give-btn">
+          <div class="give-btn-icon flutterwave"><i class="ti ti-credit-card"></i></div>
+          <div class="give-btn-text">
+            <strong>Donate via Card (Flutterwave)</strong>
+            <span>One-time or monthly — all major cards accepted</span>
+          </div>
+          <span class="give-badge">Recommended</span>
+        </a>
+
+        <a href="https://ko-fi.com/gideonabochie" target="_blank" rel="noopener" class="give-btn">
+          <div class="give-btn-icon kofi"><i class="ti ti-mug"></i></div>
+          <div class="give-btn-text">
+            <strong>Support on Ko-fi</strong>
+            <span>Quick donations via card or PayPal</span>
+          </div>
+        </a>
+
+        <a href="https://bmc.link/gabochie" target="_blank" rel="noopener" class="give-btn">
+          <div class="give-btn-icon bmc"><i class="ti ti-cup"></i></div>
+          <div class="give-btn-text">
+            <strong>Buy Me a Coffee</strong>
+            <span>Simple one-time support</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="give-extras">
+        <a href="assets/flutterwave-decal.pdf" target="_blank" rel="noopener"><i class="ti ti-download"></i> Flutterwave Donation Decal</a>
+      </div>
+
+      <p class="give-note"><i class="ti ti-lock"></i> Secure payments processed by Flutterwave, Ko-fi, and Buy Me a Coffee.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section faq" id="faq">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-question-mark"></i> Questions</div>
+      <h2 class="section-heading">Frequently <span>Asked</span></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is my donation secure?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">Yes. All payments are processed securely through Flutterwave, Ko-fi, and Buy Me a Coffee — trusted platforms that encrypt your payment information.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Where does my donation go?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">100% of donations support the creation and distribution of books, videos, and teachings on creativity, love, and wisdom. This includes production costs, platform reach, and making resources freely available.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I donate from outside Ghana?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">Absolutely. Flutterwave accepts international cards (USD, GBP, EUR, and more). Ko-fi and Buy Me a Coffee also support cross-border donations. Most supporters are from North America, Europe, and the diaspora.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is this a registered nonprofit?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">GideonAbochie Studio operates as a Bible-based teaching ministry. We're in the process of formal registration. All donations are used transparently for the mission. Feel free to reach out for more details.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How can I get involved beyond donating?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">Share our content, follow on TikTok and Instagram, follow on social media, and tell others about the mission. You can also reach out directly to discuss partnership or mentorship opportunities.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Are the books free?
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="faq-answer">Yes — both "The Bible as Kingdom OS" and "The Divine Algorithm" are available to read for free. Your donations help us keep these resources free and create more content for the growing community.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div>
+      <div class="brand-footer"><img src="assets/images/logo.png" alt="GideonAbochie Studio"><span class="brand-footer-wrapper"><span class="brand-footer-title">GideonAbochie Studio</span><span class="brand-tagline">School of Creativity, Love & Wisdom</span></span></div>
+      <p class="footer-about">A Bible-based ministry teaching a generation to create with excellence, love with devotion, and walk in the wisdom of God's Word. Rooted in Scripture, expressed through creativity, shared freely with the world.</p>
+      <div class="footer-social">
+        <a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>
+        <a href="https://web.facebook.com/GideonAbochie/" target="_blank" title="Facebook"><i class="ti ti-brand-facebook"></i></a>
+        <a href="https://www.instagram.com/gideonabochie/" target="_blank" title="Instagram"><i class="ti ti-brand-instagram"></i></a>
+        <a href="https://www.tiktok.com/@gideonabochie" target="_blank" title="TikTok"><i class="ti ti-brand-tiktok"></i></a>
+      </div>
+      <div class="footer-affiliation">
+        <span class="footer-affiliation-label">Affiliated With</span>
+        <a href="https://www.tiktok.com/@neoghglobal" target="_blank" rel="noopener" class="footer-affiliation-link"><img src="assets/images/neogh-logo.png" alt="NEOGH - Spirit of Nation Building"> <span>NEOGH<br><small>Spirit of Nation Building</small></span></a>
+      </div>
+    </div>
+    <div>
+      <h4>Connect</h4>
+      <a href="manifesto/index.html">Read the Manifesto</a>
+      <a href="newsletter/index.html">The Studio Weekly</a>
+      <a href="https://x.com/GideonAbochie" target="_blank">X / Twitter</a>
+      <a href="https://web.facebook.com/GideonAbochie/" target="_blank">Facebook</a>
+      <a href="https://www.instagram.com/gideonabochie/" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@gideonabochie" target="_blank">TikTok</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="legal/privacy.html">Privacy Policy</a>
+      <a href="legal/terms.html">Terms of Use</a>
+      <a href="legal/donations.html">Donation Policy</a>
+      <a href="legal/disclaimer.html">Disclaimer</a>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 GideonAbochie Studio &mdash; School of Creativity, Love & Wisdom. Rooted in Scripture, shared in love.
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+function animateCounters() {
+  document.querySelectorAll('.stat-number[data-target]').forEach(function(el) {
+    var target = parseInt(el.getAttribute('data-target'));
+    var current = 0;
+    var increment = Math.ceil(target / 40);
+    var timer = setInterval(function() {
+      current += increment;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = current + (target >= 1000 ? '+' : '+');
+    }, 40);
+  });
+}
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { animateCounters(); observer.disconnect(); }
+  });
+}, {threshold: 0.5});
+var el = document.getElementById('impact');
+if (el) observer.observe(el);
+
+// Matrix rain effect
+(function() {
+  var container = document.getElementById('matrixOverlay');
+  var canvas = document.getElementById('matrixCanvas');
+  if (!container || !canvas) return;
+
+  var ctx = canvas.getContext('2d');
+  var chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>/{}[]|&_';
+  var fontSize = 14;
+  var drops = [];
+  var animId = null;
+
+  function resize() {
+    var w = container.offsetWidth;
+    var h = container.offsetHeight;
+    canvas.width = w;
+    canvas.height = h;
+    var cols = Math.floor(w / fontSize);
+    drops = [];
+    for (var i = 0; i < cols; i++) drops[i] = Math.floor(Math.random() * -h / fontSize);
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(10, 22, 40, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + 'px monospace';
+    for (var i = 0; i < drops.length; i++) {
+      var char = chars[Math.floor(Math.random() * chars.length)];
+      var x = i * fontSize;
+      var y = drops[i] * fontSize;
+      ctx.fillStyle = '#00FF41';
+      ctx.fillText(char, x, y);
+      if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+    animId = requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 200);
+  });
+})();
+</script>
+
+</body>
+</html>

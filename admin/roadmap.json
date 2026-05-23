@@ -1,0 +1,237 @@
+{
+  "project": "GideonAbochie Studio — gideonabochie.org",
+  "tagline": "School of Creativity, Love & Wisdom",
+  "domain": "https://gideonabochie.org",
+  "infrastructure_plan": "Cloudflare Pages (static) → Cloudflare Workers (serverless) → VPS/Railway (backend+DB)",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Static Site Launch",
+      "status": "ready_to_deploy",
+      "description": "Deploy all static HTML/CSS/JS pages to Cloudflare Pages. No backend needed. Donations use external hosted payment links.",
+      "platform": "Cloudflare Pages (free tier)",
+      "steps": [
+        {
+          "id": 1.1,
+          "task": "Fix deployment blockers",
+          "status": "pending",
+          "items": [
+            "Replace Formspree placeholder `your-form-id` with real ID — or replace with mailto fallback for now",
+            "Fix `newsletter/advertise.html` links pointing to `index.html#subscribe` — remove or comment out",
+            "Delete duplicate `gideonabochie-org/images books and socials/` directory",
+            "Rename book files to remove spaces (use hyphens)"
+          ]
+        },
+        {
+          "id": 1.2,
+          "task": "Compress assets for web",
+          "status": "pending",
+          "items": [
+            "Compress `logo.png` (2.4MB → ~150KB) — use tinypng.com or squoosh.app",
+            "Compress `neogh-logo.png` (1.9MB → ~100KB)",
+            "Compress gallery images (550–995KB each → ~200KB each)",
+            "Optional: convert logos to WebP for smaller size"
+          ]
+        },
+        {
+          "id": 1.3,
+          "task": "Add Cloudflare Pages config",
+          "status": "pending",
+          "items": [
+            "Create `_headers` file with CSP, HSTS, CORS headers",
+            "Create `_redirects` file for domain redirects (gideonabochie.org → www or vice versa)",
+            "Verify all relative paths work from subdirectory if needed"
+          ]
+        },
+        {
+          "id": 1.4,
+          "task": "Deploy to Cloudflare Pages",
+          "status": "pending",
+          "items": [
+            "Go to dash.cloudflare.com → Pages → Create → Direct Upload",
+            "Upload entire `gideonabochie-org/` folder",
+            "Set custom domain: gideonabochie.org",
+            "Add CNAME DNS record: gideonabochie.org → gideonabochie.pages.dev",
+            "Verify HTTPS is working",
+            "Test all pages, links, donation buttons"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "All pages load via https://gideonabochie.org",
+        "Nav links work on all pages",
+        "Donation buttons (Flutterwave, Ko-fi, BMC) open correct payment pages",
+        "Social links (X, Facebook, TikTok, Instagram) resolve correctly",
+        "Books are downloadable",
+        "Legal pages are accessible",
+        "Lead form submits (or gracefully falls back)"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Serverless Functions & Engagement",
+      "status": "planned",
+      "description": "Add Cloudflare Workers for form handling, newsletter subscription, news aggregation proxy, and ad booking.",
+      "platform": "Cloudflare Pages + Cloudflare Workers (free tier)",
+      "steps": [
+        {
+          "id": 2.1,
+          "task": "Form handling Worker",
+          "status": "pending",
+          "items": [
+            "Create Cloudflare Worker for form submissions (lead capture, contact)",
+            "Worker stores submissions in Cloudflare KV or emails them",
+            "Remove Formspree dependency — go self-hosted on Workers",
+            "Add honeypot + rate limiting for spam protection"
+          ]
+        },
+        {
+          "id": 2.2,
+          "task": "Newsletter subscribe system",
+          "status": "pending",
+          "items": [
+            "Add subscribe form section to `newsletter/index.html` (with #subscribe anchor)",
+            "Worker handles email capture — stores in KV or sends to email",
+            "Fix advertise.html links pointing to #subscribe",
+            "Optional: integrate with ConvertKit / Mailchimp later"
+          ]
+        },
+        {
+          "id": 2.3,
+          "task": "News aggregation Worker",
+          "status": "pending",
+          "items": [
+            "Replace rss2json.com free tier with a Cloudflare Worker",
+            "Worker fetches + caches RSS feeds from Ghana news sources",
+            "Add caching headers to stay within free tier limits"
+          ]
+        },
+        {
+          "id": 2.4,
+          "task": "Ad booking form",
+          "status": "pending",
+          "items": [
+            "Replace mailto: links on advertise.html with a booking form",
+            "Worker processes ad inquiries and notifies admin",
+            "Add rate card PDF download option"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Form submissions work without Formspree",
+        "Newsletter subscribe captures emails",
+        "News aggregator works reliably under traffic",
+        "Ad inquiries submit without exposing raw email"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Backend + Database",
+      "status": "planned",
+      "description": "Deploy GAHQ CRM backend to a server with a proper database. Connect static site to backend APIs for dynamic features.",
+      "platform": "Railway / Fly.io / VPS (paid ~$5-20/mo) + Cloudflare DNS + Postgres/SQLite",
+      "steps": [
+        {
+          "id": 3.1,
+          "task": "Deploy GAHQ backend",
+          "status": "pending",
+          "items": [
+            "Choose platform: Railway (simplest), Fly.io, or a $5 VPS",
+            "Deploy FastAPI backend from `backend/crm/`",
+            "Set up database (Postgres on Railway or SQLite on VPS)",
+            "Configure environment variables (API keys, DB URL)",
+            "Set up CI/CD from GitHub repo"
+          ]
+        },
+        {
+          "id": 3.2,
+          "task": "Payment tracking integration",
+          "status": "pending",
+          "items": [
+            "Connect Flutterwave webhook to log donations in database",
+            "Build simple donation dashboard (admin-only)",
+            "Set up email notification on new donation"
+          ]
+        },
+        {
+          "id": 3.3,
+          "task": "Content management",
+          "status": "pending",
+          "items": [
+            "Build admin panel for updating newsletter content",
+            "Add ability to manage testimonials, stats, gallery from admin",
+            "Replace hardcoded static data with API-driven content"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Backend APIs accessible via API.gideonabochie.org (subdomain)",
+        "Donations logged in database",
+        "Admin can update content without editing HTML",
+        "Forms submit to backend, not external services"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Full Product",
+      "status": "future",
+      "description": "Revenue-generating features: ad booking with payment, premium content, email automation, analytics dashboard.",
+      "platform": "Cloudflare Pages + Backend VPS + Third-party APIs",
+      "steps": [
+        {
+          "id": 4.1,
+          "task": "Ad booking with payment",
+          "items": [
+            "Accept ad payments via Flutterwave directly on site",
+            "Automated ad slot calendar and booking confirmation",
+            "Rate card PDF generator"
+          ]
+        },
+        {
+          "id": 4.2,
+          "task": "Email automation",
+          "items": [
+            "Welcome sequence for newsletter subscribers",
+            "Automated follow-up for manifestos downloaders",
+            "Donation thank-you sequences"
+          ]
+        },
+        {
+          "id": 4.3,
+          "task": "Analytics & dashboards",
+          "items": [
+            "Page view analytics (Cloudflare Web Analytics — free)",
+            "Donation funnel tracking",
+            "Newsletter growth dashboard",
+            "Ad revenue reporting"
+          ]
+        },
+        {
+          "id": 4.4,
+          "task": "Premium content gating",
+          "items": [
+            "Members-only book chapters",
+            "Exclusive video teachings behind email gate",
+            "Paid courses or workshops"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Site generates revenue beyond donations (ads, subscriptions)",
+        "Admin has full visibility into all metrics",
+        "Automated email sequences run without manual intervention"
+      ]
+    }
+  ],
+  "current_focus": "Phase 1 — deploy static site to Cloudflare Pages (refactored, verified, ready)",
+  "last_updated": "2026-05-23 (refactored + auto-verify added)",
+  "notes": [
+    "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
+    "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
+    "The GAHQ CRM backend already exists locally — deploying it is the main Phase 3 effort.",
+    "Don't wait for perfect — deploy Phase 1 now, iterate live.",
+    "Roadmap now has auto-verification: checks live files on load, auto-marks done items.",
+    "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
+    "404.html added. Gallery images renamed. Roadmap moved to /admin/."
+  ]
+}

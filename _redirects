@@ -1,0 +1,21 @@
+# Redirect root to home page
+/ /index.html 200
+
+# Newsletter
+/newsletter /newsletter/index.html 200
+/advertise /newsletter/advertise.html 200
+
+# Manifesto
+/manifesto /manifesto/index.html 200
+
+# Legal pages
+/privacy /legal/privacy.html 200
+/terms /legal/terms.html 200
+/donations /legal/donations.html 200
+/disclaimer /legal/disclaimer.html 200
+
+# Books
+/books/the-bible-as-kingdom-os /books/the-bible-as-kingdom-os.pdf 200
+/books/manifesto /books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf 200
+/books/divine-algorithm /books/divine_algorithm_report.html 200
+/books/ai-national-development /books/ai-powered-strategic-national-development-ghana.docx 200
