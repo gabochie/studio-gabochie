@@ -22,6 +22,17 @@ export async function onRequest(context) {
         });
       }
       const search = url.searchParams.get('q') || '';
+      const group = url.searchParams.get('group') || '';
+      if (group === 'edition') {
+        const rows = await env.DB.prepare(
+          "SELECT COALESCE(NULLIF(edition,''), 'ROW') AS edition, COUNT(*) AS count FROM subscribers GROUP BY edition ORDER BY count DESC"
+        ).all();
+        const editions = {};
+        rows.results.forEach(function(r){ editions[r.edition] = r.count; });
+        return new Response(JSON.stringify({ status: 'ok', editions }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
       let rows;
       if (search) {
         rows = await env.DB.prepare(

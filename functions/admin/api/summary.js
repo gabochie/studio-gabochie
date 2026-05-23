@@ -13,7 +13,7 @@ export async function onRequest(context) {
   }
   try {
     const subs = await env.DB.prepare(
-      "SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN subscribed_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END), 0) AS this_month FROM subscribers"
+      "SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN subscribed_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END), 0) AS this_week, COALESCE(SUM(CASE WHEN subscribed_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END), 0) AS this_month FROM subscribers"
     ).first();
 
     const donations = await env.DB.prepare(
@@ -68,7 +68,7 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({
       status: 'ok',
-      subscribers: { total: subs.total, this_month: subs.this_month },
+      subscribers: { total: subs.total, this_week: subs.this_week, this_month: subs.this_month },
       donations: {
         count: donations.count,
         total: donations.total,

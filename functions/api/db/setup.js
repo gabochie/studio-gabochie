@@ -83,10 +83,27 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
-      // Migrations: add new columns to existing tables
+      // Migrations
       `ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT ''`,
       `ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT ''`
+      `ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN ref_code TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
+      `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
+      `CREATE TABLE IF NOT EXISTS referrals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        referrer_code TEXT NOT NULL,
+        referred_name TEXT DEFAULT '',
+        referred_email TEXT NOT NULL,
+        referred_country TEXT DEFAULT '',
+        referred_at TEXT NOT NULL DEFAULT (datetime('now')),
+        reward_claimed INTEGER DEFAULT 0,
+        reward_tier TEXT DEFAULT '',
+        UNIQUE(referrer_code, referred_email)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referrer_code)`,
+      `CREATE INDEX IF NOT EXISTS idx_referrals_reward ON referrals(reward_claimed)`
     ];
     const results = [];
     for (const sql of statements) {

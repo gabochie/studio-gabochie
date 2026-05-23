@@ -179,6 +179,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 /* ── SUBSCRIBE BAND ── */
 .subscribe-band{background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 
+/* ── REFERRAL SUCCESS ── */
+.ref-success{display:none;background:var(--paper);border:2px solid var(--gold);border-radius:10px;padding:32px;max-width:520px;margin:0 auto;text-align:center}
+.ref-success .ref-code{font-family:'Courier Prime',monospace;font-size:18px;color:var(--gold);background:var(--gold-soft);padding:12px 20px;border-radius:6px;display:inline-block;margin:12px 0;word-break:break-all}
+.ref-success .ref-stats{display:flex;gap:20px;justify-content:center;margin:20px 0}
+.ref-success .ref-stat{text-align:center}
+.ref-success .ref-stat .num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--gold);display:block}
+.ref-success .ref-stat .lbl{font-family:'Barlow',sans-serif;font-size:11px;color:var(--ink-lt)}
+.ref-reward{background:var(--gold-soft);border-radius:6px;padding:12px 16px;margin:12px 0;font-size:13px;color:var(--ink-mid);font-family:'Barlow',sans-serif}
+.ref-reward strong{color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:14px}
+
 /* ── FOOTER ── */
 .footer-band{background:var(--ink);padding:56px 40px;text-align:center;margin-top:80px;width:100%}
 .footer-title{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:var(--bg);letter-spacing:.04em;text-transform:uppercase;opacity:.15;margin-bottom:20px}
@@ -381,10 +391,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     <p style="font-family:'Barlow',sans-serif;font-size:15px;color:var(--ink-lt);max-width:500px;margin:0 auto 28px;line-height:1.6">Creativity, love, wisdom, and Ghana's top stories — delivered every week. No spam, unsubscribe anytime.</p>
     <form id="subscribeForm" style="display:flex;gap:12px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center">
       <input type="email" name="email" placeholder="Your email address" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid var(--rule);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);outline:none">
-      <input type="hidden" name="_subject" value="New Studio Weekly subscriber">
       <button type="submit" style="padding:14px 28px;border:none;border-radius:6px;background:var(--gold);color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s">Subscribe</button>
     </form>
     <div id="subscribeSuccess" style="display:none;padding:16px 24px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:8px;max-width:460px;margin:0 auto;font-family:'DM Sans',sans-serif;font-size:14px;color:#2A3A5C">Thanks! You're subscribed to The Studio Weekly.</div>
+    <div id="refSuccess" class="ref-success"></div>
   </div>
 </div>
 
@@ -686,23 +696,92 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   })();
 
   /* ── Subscribe Form ── */
-  document.getElementById('subscribeForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var btn = this.querySelector('button');
-    var email = this.querySelector('input[name="email"]').value;
-    btn.disabled = true;
-    btn.textContent = 'Sending\u2026';
-    var fd = new FormData();
-    fd.append('email', email);
-    fd.append('_subject', 'New Studio Weekly subscriber');
-    fetch('/api/contact', { method: 'POST', body: fd }).then(function(r) {
-      this.style.display = 'none';
-      document.getElementById('subscribeSuccess').style.display = 'block';
-    }.bind(this)).catch(function() {
-      btn.disabled = false;
-      btn.textContent = 'Subscribe';
+  (function(){
+    // Read ref from URL and store in cookie
+    var urlParams = new URLSearchParams(window.location.search);
+    var refCode = urlParams.get('ref');
+    if(refCode && refCode.startsWith('GA-')){
+      document.cookie = 'sw_ref=' + refCode + ';path=/;max-age=' + (30*24*60*60);
+    }
+
+    // Read ref from cookie
+    function getCookie(name){
+      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : '';
+    }
+
+    var form = document.getElementById('subscribeForm');
+    var success = document.getElementById('subscribeSuccess');
+    var refSuccess = document.getElementById('refSuccess');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn = this.querySelector('button');
+      var email = this.querySelector('input[name="email"]').value;
+      var ref = getCookie('sw_ref') || '';
+      btn.disabled = true;
+      btn.textContent = 'Sending\u2026';
+      fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email: email, source: 'newsletter', ref: ref})
+      }).then(function(r){ return r.json(); }).then(function(d){
+        if(d.status === 'ok'){
+          form.style.display = 'none';
+          success.style.display = 'block';
+          if(d.ref_code){
+            refSuccess.style.display = 'block';
+            var rewardsHtml = '';
+            if(d.earned_rewards && d.earned_rewards.length){
+              rewardsHtml = d.earned_rewards.map(function(rw){
+                return '<div class="ref-reward">&#127881; You earned a <strong>' + rw.label + '</strong> (value: ' + rw.value + ')! <span style="color:#22C55E">Contact us to activate.</span></div>';
+              }).join('');
+            }
+            refSuccess.innerHTML =
+              '<h3 style="font-family:\'Libre Baskerville\',serif;font-size:20px;color:#0A1628;margin-bottom:8px">Share Your Referral Link</h3>' +
+              '<p style="font-family:\'Barlow\',sans-serif;font-size:13px;color:#6B7F9A;margin-bottom:12px">Invite friends and earn free ad space.</p>' +
+              '<div class="ref-code" onclick="selectRefCode(this)">https://gideonabochie.org/newsletter/?ref=' + d.ref_code + '</div>' +
+              '<div class="ref-stats">' +
+                '<div class="ref-stat"><span class="num">3</span><span class="lbl">Footer Banner</span></div>' +
+                '<div class="ref-stat"><span class="num">10</span><span class="lbl">Leaderboard</span></div>' +
+                '<div class="ref-stat"><span class="num">50</span><span class="lbl">Premium Package</span></div>' +
+              '</div>' +
+              rewardsHtml +
+              '<button onclick="copyRefLink()" style="margin-top:12px;padding:10px 24px;border:none;border-radius:6px;background:#C9A84C;color:#0A1628;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">&#10697; Copy Referral Link</button>';
+            window._refLink = 'https://gideonabochie.org/newsletter/?ref=' + d.ref_code;
+          }
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Subscribe';
+          alert(d.message || 'Something went wrong.');
+        }
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+        alert('Something went wrong. Please try again.');
+      });
     });
-  });
+  })();
+
+  function selectRefCode(el){
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function copyRefLink(){
+    var link = window._refLink || '';
+    if(!link) return;
+    navigator.clipboard.writeText(link).then(function(){
+      var btn = document.querySelector('.ref-success button');
+      if(btn){ btn.textContent = '&#10003; Copied!'; }
+    }).catch(function(){
+      var ta = document.createElement('textarea');
+      ta.value = link; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove();
+    });
+  }
 </script>
 
 </body>

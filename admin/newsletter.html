@@ -3,9 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Newsletter — Admin · GideonAbochie Studio</title>
+<title>Newsletter Manager — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
+<style>
+h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:6px}
+h1 span{color:#C9A84C}
+.page-desc{color:#6B7F9A;font-size:14px;margin-bottom:24px}
+h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;color:#F1F5F9;margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid #1E3250;display:flex;align-items:center;gap:10px}
+h2 .badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(59,130,246,.12);color:#3B82F6;font-family:'DM Sans',sans-serif;font-weight:500;text-transform:none;letter-spacing:0}
+
+.stats{display:grid;gap:12px;margin-bottom:24px}
+.stats-4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stats-3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stat-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px 20px;position:relative;overflow:hidden}
+.stat-card .num{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3vw,36px);font-weight:700;line-height:1;display:block}
+.stat-card .num.gold{color:#C9A84C}
+.stat-card .num.green{color:#22C55E}
+.stat-card .num.blue{color:#3B82F6}
+.stat-card .num.pink{color:#EC4899}
+.stat-card .label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:4px}
+.stat-card .sub{font-size:10px;color:#3A5278;margin-top:2px}
+
+.region-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.region-item{background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.12);border-radius:8px;padding:14px;text-align:center}
+.region-item .flag{font-size:22px;display:block;margin-bottom:4px}
+.region-item .count{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#F1F5F9}
+.region-item .label{font-size:10px;color:#5A7A9F;margin-top:2px}
+
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:900px){.editor-grid{grid-template-columns:1fr}}
+.editor-panel{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px}
+.editor-panel label{font-size:12px;font-weight:600;color:#94A3B8;display:block;margin-bottom:6px}
+.editor-panel input,.editor-panel textarea{width:100%;padding:10px 14px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.editor-panel input:focus,.editor-panel textarea:focus{border-color:#C9A84C}
+.editor-panel textarea{font-family:'Courier Prime',monospace;font-size:12px;line-height:1.6;resize:vertical;min-height:300px}
+.editor-panel .hint{font-size:10px;color:#3A5278;margin-top:4px}
+
+.preview-frame{border:1px solid #1E3250;border-radius:6px;background:#fff;min-height:400px;max-height:600px;overflow-y:auto;padding:24px;font-size:14px;line-height:1.6;color:#333}
+
+.action-bar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.action-bar button{padding:10px 20px;border:none;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C}
+.btn-blue{background:rgba(59,130,246,.15);color:#3B82F6;border:1px solid rgba(59,130,246,.3)}
+.btn-blue:hover{background:rgba(59,130,246,.25)}
+.btn-green{background:rgba(34,197,94,.15);color:#22C55E;border:1px solid rgba(34,197,94,.3)}
+.btn-green:hover{background:rgba(34,197,94,.25)}
+.btn-red{background:rgba(239,68,68,.15);color:#EF4444;border:1px solid rgba(239,68,68,.3)}
+
+#sendStatus{font-size:12px;color:#5A7A9F;margin-top:8px;padding:8px 12px;border-radius:6px;display:none}
+#sendStatus.active{display:block;background:#0A1628;border:1px solid #1E3250}
+
+.referral-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+.referral-table th{text-align:left;padding:8px 12px;font-size:10px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #1E3250;font-family:'DM Sans',sans-serif;font-weight:600}
+.referral-table td{padding:8px 12px;color:#CBD5E1;border-bottom:1px solid rgba(30,50,80,.4)}
+.referral-table .gold{color:#C9A84C}
+.referral-table .claimed{color:#22C55E}
+.referral-table .pending{color:#EAB308}
+.referral-table .approve-btn{padding:4px 12px;border:none;border-radius:4px;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.referral-table .approve-btn.green{background:rgba(34,197,94,.15);color:#22C55E}
+.referral-table .approve-btn.green:hover{background:rgba(34,197,94,.25)}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -14,40 +73,284 @@
     <span class="header-tag">Admin Panel</span>
     <div class="header-nav">
       <a href="index.html">Dashboard</a>
-      <a href="submissions.html">Submissions</a>
+      <a href="subscribers.html">Subscribers</a>
       <a href="donations.html">Donations</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
       <a href="bookings.html">Bookings</a>
+      <a href="content.html">Content</a>
+      <a href="newsletter.html" class="active">Newsletter</a>
       <a href="roadmap.html">Roadmap</a>
+      <a href="strategy.html">Strategy</a>
     </div>
   </div>
 
-  <h1 class="page-title">Newsletter <span>Manager</span></h1>
-  <p class="page-desc">Create, preview, and send issues of The Studio Weekly.</p>
+  <h1>The Studio <span>Weekly</span></h1>
+  <p class="page-desc">Global distribution hub. Manage subscribers, compose issues, and track your referral army.</p>
 
-  <div class="stats">
-    <div class="stat-card"><span class="stat-num zero">—</span><span class="stat-label">Subscribers</span><span class="stat-note">After Phase 2 Worker</span></div>
-    <div class="stat-card"><span class="stat-num zero">—</span><span class="stat-label">Issues Sent</span><span class="stat-note">After Phase 2 Worker</span></div>
-    <div class="stat-card"><span class="stat-num zero">—</span><span class="stat-label">Open Rate</span><span class="stat-note">After Phase 2 Worker</span></div>
+  <div id="subscriberStats"></div>
+
+  <div id="regionBreakdown"></div>
+
+  <h2>&#9998; Compose Issue</h2>
+  <div class="editor-grid">
+    <div class="editor-panel">
+      <label>Subject Line</label>
+      <input type="text" id="subjectInput" placeholder="The Studio Weekly — Issue #4">
+      <label style="margin-top:14px">Email Body (HTML)</label>
+      <textarea id="bodyInput" placeholder="Paste your newsletter HTML here..."></textarea>
+      <div class="hint">Use &#123;&#123;NAME&#125;&#125; for personalization, &#123;&#123;REF_CODE&#125;&#125; for referral link</div>
+      <div class="action-bar">
+        <button class="btn-blue" onclick="previewIssue()">&#9654; Preview</button>
+        <button class="btn-green" onclick="copyHTML()">&#10697; Copy HTML</button>
+        <button class="btn-gold" onclick="sendTest()">&#9993; Send Test</button>
+      </div>
+      <div id="sendStatus"></div>
+    </div>
+    <div class="editor-panel">
+      <label>Preview</label>
+      <div class="preview-frame" id="previewPane">Enter a subject + body, then click Preview.</div>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <span style="font-size:11px;color:#5A7A9F">Edition:</span>
+        <select id="editionSelect" onchange="previewIssue()" style="padding:6px 10px;background:#0A1628;border:1px solid #1E3250;border-radius:4px;color:#CBD5E1;font-size:11px;font-family:'DM Sans',sans-serif">
+          <option value="GH">&#127987; Ghana</option>
+          <option value="UK">&#127988; United Kingdom</option>
+          <option value="NA">&#127482;&#127480; North America</option>
+          <option value="ROW">&#127758; Global</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <div class="placeholder">
-    <div class="placeholder-icon">&#128196;</div>
-    <h3>Newsletter System Coming</h3>
-    <p>Subscribe form is live on the site (Formspree). A proper newsletter management system — with issue creation, subscriber management, and send tracking — will be built in Phases 2–3.</p>
-    <span class="placeholder-tag">Coming in Phase 2–3</span>
+  <h2>&#127760; Brevo Campaign</h2>
+  <p style="font-size:13px;color:#6B7F9A;margin-bottom:16px;line-height:1.6">
+    Subscribers are automatically synced to Brevo when they join. The weekly newsletter is sent from <strong>Brevo dashboard</strong> as an Email Campaign (unlimited sends on free plan).
+  </p>
+  <div class="action-bar">
+    <a href="https://app.brevo.com/campaigns" target="_blank" class="btn-gold" style="display:inline-block;padding:10px 20px;border:none;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;text-decoration:none">Open Brevo Campaigns &#8599;</a>
+    <button class="btn-blue" onclick="fetchBrevoStats()">&#8635; Refresh Brevo Stats</button>
   </div>
+  <div id="brevoStats" style="font-size:12px;color:#5A7A9F;margin-top:8px"></div>
 
-  <div class="section-title"><i>&#128196;</i> Recent Issues</div>
-  <div class="table-wrap">
-    <table>
-      <tr><th>Issue</th><th>Date</th><th>Status</th></tr>
-      <tr><td colspan="3" class="table-empty">No issues published yet. The first issue is being drafted in the static newsletter template.</td></tr>
+  <h2>&#127881; Referral Army <span class="badge" id="referralBadge">0</span></h2>
+  <div class="stats stats-3" id="referralSummary"></div>
+  <div style="overflow-x:auto">
+    <table class="referral-table" id="referralTable">
+      <thead><tr><th>Referrer</th><th>Code</th><th>Referrals</th><th>Reward Tier</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="referralBody"></tbody>
     </table>
   </div>
+
+  <h2>&#128220; Quick Links</h2>
+  <div class="tools">
+    <a href="subscribers.html" class="tool-card">
+      <div class="tool-icon">&#9654;</div>
+      <div class="tool-name">Subscriber List</div>
+      <div class="tool-desc">Full list with geo-tags, editions, and referral codes.</div>
+    </a>
+    <a href="https://app.brevo.com" target="_blank" class="tool-card">
+      <div class="tool-icon">&#9993;</div>
+      <div class="tool-name">Brevo Dashboard</div>
+      <div class="tool-desc">Manage contacts, campaigns, and track open/click rates.</div>
+    </a>
+    <a href="../newsletter/advertise.html" target="_blank" class="tool-card">
+      <div class="tool-icon">&#9733;</div>
+      <div class="tool-name">Sponsorship Page</div>
+      <div class="tool-desc">Current rate card and sponsorship packages.</div>
+    </a>
+  </div>
 </div>
+
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../newsletter/index.html">View Current Issue</a></div>
 <script src="admin.js"></script>
+<script>
+function $(id){return document.getElementById(id)}
+
+function fmtNum(n){if(n===null||n===undefined)return'—';return n.toLocaleString('en-US',{maximumFractionDigits:0})}
+
+// ── Load subscriber stats ──
+function loadStats(){
+  fetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('Status '+r.status);
+    return r.json();
+  }).then(function(d){
+    if(d.status!=='ok') throw new Error(d.message);
+    var s = d.subscribers || {};
+    var ch = d.charts || {};
+
+    // Stats
+    $('subscriberStats').innerHTML = '<div class="stats stats-4">' +
+      '<div class="stat-card"><span class="num green">' + fmtNum(s.total || 0) + '</span><span class="label">Total Subscribers</span><span class="sub">' + (s.this_month ? '+' + fmtNum(s.this_month) + ' this month' : '') + '</span></div>' +
+      '<div class="stat-card"><span class="num blue">' + fmtNum(s.this_month || 0) + '</span><span class="label">This Month</span><span class="sub">New signups</span></div>' +
+      '<div class="stat-card"><span class="num gold">' + fmtNum(d.unique_visitors?.this_month || 0) + '</span><span class="label">Traffic (30d)</span><span class="sub">Unique visitors</span></div>' +
+      '<div class="stat-card"><span class="num pink">' + fmtNum(d.page_views?.total || 0) + '</span><span class="label">Total Page Views</span><span class="sub">All time</span></div>' +
+      '</div>';
+
+    // Referral summary
+    $('referralBadge').textContent = 'Active';
+  }).catch(function(err){
+    $('subscriberStats').innerHTML = '<div style="color:#5A7A9F;font-size:13px;padding:20px;text-align:center">Could not load stats. ' + err.message + '</div>';
+  });
+}
+
+// ── Load referral data ──
+function loadReferrals(){
+  fetch('/admin/api/referrals/list', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('Status '+r.status);
+    return r.json();
+  }).then(function(d){
+    if(d.status!=='ok') throw new Error(d.message);
+    var body = $('referralBody');
+    var summary = $('referralSummary');
+
+    // Summary
+    summary.innerHTML =
+      '<div class="stat-card"><span class="num gold">' + fmtNum(d.total_referrers || 0) + '</span><span class="label">Active Referrers</span><span class="sub">With 1+ referral</span></div>' +
+      '<div class="stat-card"><span class="num green">' + fmtNum(d.total_referrals || 0) + '</span><span class="label">Total Referrals</span><span class="sub">Subscribers referred</span></div>' +
+      '<div class="stat-card"><span class="num blue">' + fmtNum(d.pending_rewards || 0) + '</span><span class="label">Rewards Pending</span><span class="sub">Awaiting approval</span></div>';
+
+    // Table
+    var items = d.referrers || [];
+    if(!items.length){
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#3A5278;padding:24px">No referrals yet. Share your code to start growing!</td></tr>';
+      return;
+    }
+    var html = '';
+    items.forEach(function(r){
+      var rewardLabel = r.next_reward || '—';
+      var statusClass = r.reward_approved ? 'claimed' : 'pending';
+      var statusText = r.reward_approved ? '&#10003; Approved' : 'Pending';
+      var actionBtn = r.reward_approved ? '' :
+        (r.can_claim ? '<button class="approve-btn green" onclick="approveReward(\'' + r.code + '\',\'' + r.tier + '\')">Approve</button>' : '—');
+      html += '<tr><td><strong>' + r.name + '</strong><br><span style="color:#3A5278;font-size:10px">' + r.email + '</span></td>' +
+        '<td><span style="font-family:monospace;color:#C9A84C">' + r.code + '</span></td>' +
+        '<td><strong>' + r.count + '</strong></td>' +
+        '<td>' + rewardLabel + '</td>' +
+        '<td><span class="' + statusClass + '">' + statusText + '</span></td>' +
+        '<td>' + actionBtn + '</td></tr>';
+    });
+    body.innerHTML = html;
+  }).catch(function(){
+    $('referralBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#3A5278;padding:24px">Connect to D1 to see referral data.</td></tr>';
+  });
+}
+
+function approveReward(code, tier){
+  if(!confirm('Approve ' + tier + ' reward for referrer ' + code + '?')) return;
+  fetch('/admin/api/referrals/claim', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({code:code, tier:tier})
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if(d.status==='ok'){ loadReferrals(); }
+    else { alert(d.message || 'Failed'); }
+  }).catch(function(){ alert('Error approving reward'); });
+}
+
+// ── Region breakdown ──
+function loadRegions(){
+  fetch('/admin/api/subscribers?group=edition', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('Status '+r.status);
+    return r.json();
+  }).then(function(d){
+    if(d.status!=='ok') throw new Error(d.message);
+    var editions = d.editions || {};
+    var el = $('regionBreakdown');
+    var html = '<h2>&#127758; Subscribers by Region</h2><div class="region-grid">';
+    var flags = {GH:'&#127987;', UK:'&#127988;', NA:'&#127482;&#127480;', ROW:'&#127758;'};
+    var labels = {GH:'Ghana', UK:'United Kingdom', NA:'North America', ROW:'Rest of World'};
+    var total = 0;
+    Object.keys(editions).forEach(function(k){ total += editions[k]; });
+    html += '<div class="region-item"><span class="count">' + fmtNum(total) + '</span><span class="label">Total</span></div>';
+    ['GH','UK','NA','ROW'].forEach(function(k){
+      var v = editions[k] || 0;
+      var pct = total > 0 ? ((v/total)*100).toFixed(1) : 0;
+      html += '<div class="region-item"><span class="flag">' + (flags[k]||'') + '</span><span class="count">' + fmtNum(v) + '</span><span class="label">' + (labels[k]||k) + ' (' + pct + '%)</span></div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  }).catch(function(){});
+}
+
+// ── Preview ──
+function previewIssue(){
+  var body = $('bodyInput').value;
+  var subj = $('subjectInput').value;
+  var edition = $('editionSelect').value;
+  var preview = $('previewPane');
+  if(!body){ preview.innerHTML = '<div style="color:#999;padding:40px;text-align:center">Enter HTML body and click Preview</div>'; return; }
+  var rendered = body
+    .replace(/\{\{NAME\}\}/g, 'Gideon')
+    .replace(/\{\{REF_CODE\}\}/g, 'GA-ABCD12')
+    .replace(/\{\{EDITION\}\}/g, edition);
+  preview.innerHTML = rendered;
+}
+
+// ── Copy HTML ──
+function copyHTML(){
+  var body = $('bodyInput').value;
+  if(!body){ alert('Enter HTML body first'); return; }
+  navigator.clipboard.writeText(body).then(function(){
+    alert('HTML copied to clipboard! Paste it into Brevo campaign editor.');
+  }).catch(function(){
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = body; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+    alert('HTML copied!');
+  });
+}
+
+// ── Send test ──
+function sendTest(){
+  var body = $('bodyInput').value;
+  var subj = $('subjectInput').value;
+  var status = $('sendStatus');
+  if(!body || !subj){ alert('Enter subject and body first'); return; }
+  status.className = 'active';
+  status.innerHTML = 'Sending test email...';
+  fetch('/admin/api/newsletter/test', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({subject:subj, body:body})
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if(d.status==='ok'){
+      status.innerHTML = '&#10003; Test email sent! Check your inbox.';
+      status.style.color = '#22C55E';
+    } else {
+      status.innerHTML = '&#10007; ' + (d.message || 'Failed');
+      status.style.color = '#EF4444';
+    }
+  }).catch(function(err){
+    status.innerHTML = '&#10007; Error: ' + err.message;
+    status.style.color = '#EF4444';
+  });
+  setTimeout(function(){ status.className = ''; }, 5000);
+}
+
+// ── Brevo Stats (placeholder) ──
+function fetchBrevoStats(){
+  var el = $('brevoStats');
+  el.innerHTML = 'Connecting to Brevo API...';
+  fetch('/admin/api/newsletter/stats', {cache:'no-store'}).then(function(r){
+    return r.json();
+  }).then(function(d){
+    if(d.status==='ok'){
+      el.innerHTML = '&#10003; Contacts: ' + fmtNum(d.contacts) + ' | Campaigns: ' + fmtNum(d.campaigns) + ' | Open rate: ' + (d.open_rate || '—') + ' | Click rate: ' + (d.click_rate || '—');
+    } else if(d.status==='not_configured'){
+      el.innerHTML = '<span style="color:#EAB308">BREVO_API_KEY not set.</span> Add <strong>BREVO_API_KEY</strong> in Cloudflare Pages env vars to sync with Brevo.';
+    } else {
+      el.innerHTML = '<span style="color:#EF4444">' + (d.message || 'Error') + '</span>';
+    }
+  }).catch(function(err){
+    el.innerHTML = '<span style="color:#EF4444">Error: ' + err.message + '</span>';
+  });
+}
+
+// ── Init ──
+loadStats();
+loadReferrals();
+loadRegions();
+fetchBrevoStats();
+setInterval(loadStats, 30000);
+</script>
 </body>
 </html>
