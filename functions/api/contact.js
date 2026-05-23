@@ -4,18 +4,29 @@ export async function onRequest(context) {
 
   // GET — admin subscriber listing (protected by referer check)
   if (request.method === 'GET') {
-    if (!kv) {
-      return new Response(JSON.stringify({ status: 'error', message: 'KV not bound' }), {
-        status: 501, headers: { 'Content-Type': 'application/json' }
-      });
-    }
     const referer = request.headers.get('Referer') || '';
     if (!referer.includes('/admin/')) {
       return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
         status: 403, headers: { 'Content-Type': 'application/json' }
       });
     }
+    const db = env.DB;
     try {
+      // Prefer D1 if bound
+      if (db) {
+        const { results } = await db.prepare(
+          "SELECT * FROM subscribers ORDER BY subscribed_at DESC"
+        ).all();
+        return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      // Fallback to KV
+      if (!kv) {
+        return new Response(JSON.stringify({ status: 'error', message: 'No database bound' }), {
+          status: 501, headers: { 'Content-Type': 'application/json' }
+        });
+      }
       const list = await kv.list({ prefix: 'subscriber:' });
       const items = [];
       for (const key of list.keys) {
@@ -52,7 +63,15 @@ export async function onRequest(context) {
     }
     const payload = { name, email, book, timestamp: new Date().toISOString(), source: book };
 
-    // Store in KV if bound
+    // Store in D1 if bound
+    const db = env.DB;
+    if (db && email) {
+      await db.prepare(
+        `INSERT OR IGNORE INTO subscribers (name, email, source, book) VALUES (?, ?, ?, ?)`
+      ).bind(name, email, book || 'contact', book || '').run().catch(function(){});
+    }
+
+    // Store in KV if bound (legacy fallback)
     if (kv && email) {
       await kv.put('subscriber:' + email, JSON.stringify(payload));
     }
