@@ -796,6 +796,14 @@ var CHECKS = {
   "1.8": [ // Flutterwave decal PDF
     {i:0, label:"Decal PDF exists", check:function(){return checkFileExists("../assets/flutterwave-decal.pdf")}},
     {i:1, label:"Download link on page", check:function(){return checkPageContains("../index.html","flutterwave-decal.pdf")}}
+  ],
+  "1.9": [ // Mobile & UX Optimization
+    {i:0, label:"UTF-8 encoding fixed (advertise.html)", check:function(){return checkPageContains("../newsletter/advertise.html","\u2014")}},
+    {i:1, label:"prefers-reduced-motion in CSS", check:function(){return checkPageContains("../assets/css/main.css","prefers-reduced-motion")}},
+    {i:2, label:"prefers-color-scheme in CSS", check:function(){return checkPageContains("../assets/css/main.css","prefers-color-scheme")}},
+    {i:3, label:"touch-action: manipulation in CSS", check:function(){return checkPageContains("../assets/css/main.css","touch-action")}},
+    {i:4, label:"loading='lazy' on below-fold images", check:function(){return checkPageContains("../index.html",'loading="lazy"')}},
+    {i:5, label:"font-display strategy defined", check:function(){return checkPageContains("../assets/css/main.css","font-display")}}
   ]
 };
 
