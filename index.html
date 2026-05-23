@@ -235,7 +235,7 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
     <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
-<div class="nav-mobile-overlay" onclick="toggleNav()"></div>
+<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
