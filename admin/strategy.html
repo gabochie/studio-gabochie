@@ -183,19 +183,182 @@
 
   <!-- ============ RECOMMENDED NEXT STEPS ============ -->
   <h2>Recommended Next Steps</h2>
-  <div class="next-steps">
-    <ol>
-      <li><strong>Enable Cloudflare Web Analytics</strong> — so you know your actual traffic (free, 2 clicks in dashboard, no code change)</li>
-      <li><strong>Pick one revenue stream to prove first</strong> — donations are already live; focus on making them work before adding complexity</li>
-      <li><strong>Add a recurring "Monthly Patron" option</strong> — Flutterwave supports recurring payments; GH¢50/mo is a low-friction ask</li>
-      <li><strong>Stop calling everything free</strong> — books can be "pay what you want" (GH¢0-100) instead of "get free copy" — many will pay</li>
-      <li><strong>Only pursue sponsorships once you have 1,000+ confirmed subscribers</strong> — you can't sell an audience you haven't built yet</li>
-    </ol>
-  </div>
-
+  <p>Each step auto-verifies against the live site. Click the checkbox to mark done, or use the action button to execute.</p>
+  <div id="strategyTodos"></div>
+  <p style="margin-top:16px;"><button onclick="resetStrategyTodos()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Reset All Progress</button> <button onclick="reverifyStrategy()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Re-run Checks</button></p>
   <p>The existing code already supports most of this — Flutterwave webhook, D1 logging, admin dashboard. The missing pieces are product/pricing strategy (code changes are minimal) and <strong>traffic</strong>.</p>
-
   <div class="footer" style="margin-top:60px;padding:20px 0 40px;border-top:1px solid #1E3250;font-size:12px;color:#475569">Last updated: May 2026</div>
 </div>
+
+<style>
+.strategy-list{margin:16px 0}
+.strategy-item{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s,opacity .2s}
+.strategy-item.done{opacity:.5;border-color:rgba(34,197,94,.2)}
+.strategy-item.partial{border-color:rgba(234,179,8,.2)}
+.strategy-check{width:22px;height:22px;border:2px solid #3A5278;border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s;font-size:12px;color:transparent}
+.strategy-check:hover{border-color:#5A7A9F}
+.strategy-check.checked{background:#22C55E;border-color:#22C55E;color:#fff}
+.strategy-check.verified{background:#16A34A;border-color:#16A34A;color:#fff}
+.strategy-body{flex:1;min-width:0}
+.strategy-title{font-weight:600;color:#F1F5F9;font-size:14px;margin-bottom:4px}
+.strategy-desc{font-size:13px;color:#6B7F9A;line-height:1.6}
+.strategy-actions{display:flex;gap:8px;flex-shrink:0;align-items:center}
+.strategy-execute{background:#C9A84C;border:none;color:#0A1628;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif}
+.strategy-execute:hover{background:#D9B85C}
+.strategy-verify-btn{background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.strategy-verify-btn:hover{border-color:#C9A84C;color:#C9A84C}
+.strategy-verify-btn.auto{color:#22C55E;border-color:rgba(34,197,94,.3)}
+.auto-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;margin-left:6px}
+.auto-badge.pass{background:rgba(34,197,94,.12);color:#22C55E}
+.auto-badge.fail{background:rgba(239,68,68,.12);color:#EF4444}
+.auto-badge.na{background:rgba(100,116,139,.12);color:#64748B}
+</style>
+
+<script>
+var STORAGE_KEY = 'gideon_strategy_state';
+var state = loadStrategyState();
+
+var STRATEGY = [
+  {id:'cwa', title:'Enable Cloudflare Web Analytics',
+   desc:'So you know your actual traffic. Free, 2 clicks in Cloudflare dashboard, no code change.',
+   verify:function(){return checkPageContains('../index.html','cloudflare')},
+   execute:function(){window.open('https://dash.cloudflare.com','_blank')},
+   executeLabel:'Open Dashboard'},
+  {id:'revenue', title:'Pick one revenue stream to prove first',
+   desc:'Donations are already live. Focus on making them work before adding complexity.',
+   verify:false,
+   executeLabel:'Mark Done'},
+  {id:'patron', title:'Add a recurring "Monthly Patron" option',
+   desc:'Flutterwave supports recurring payments. GH¢50/mo is a low-friction ask for supporters.',
+   verify:function(){return checkPageContains('../index.html','monthly') || checkPageContains('../index.html','patron') || checkPageContains('../index.html','recurring')},
+   execute:function(){openModal();},
+   executeLabel:'Add to Donate Page'},
+  {id:'books', title:'Stop calling everything "free"',
+   desc:'Books can be "pay what you want" (GH¢0-100) instead of "get free copy". Many will pay.',
+   verify:function(){return checkPageContains('../index.html','pay what you want')},
+   executeLabel:'Edit Book Buttons'},
+  {id:'sponsors', title:'Only pursue sponsorships once you have 1,000+ confirmed subscribers',
+   desc:'You cannot sell an audience you have not built yet. Focus on subscriber growth first.',
+   verify:function(){return checkSubCount()},
+   execute:function(){window.open('subscribers.html','_blank')},
+   executeLabel:'Check Sub Count'}
+];
+
+function loadStrategyState() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e){}
+  var def = {};
+  STRATEGY.forEach(function(s){def[s.id]={done:false,auto:null}});
+  return def;
+}
+
+function saveStrategyState() {localStorage.setItem(STORAGE_KEY, JSON.stringify(state))}
+
+function resetStrategyTodos() {
+  if (!confirm('Reset all strategy progress?')) return;
+  state = {}; STRATEGY.forEach(function(s){state[s.id]={done:false,auto:null}});
+  saveStrategyState(); renderStrategy();
+}
+
+function toggleStrategy(id) {
+  state[id].done = !state[id].done;
+  saveStrategyState(); renderStrategy();
+}
+
+function checkPageContains(url, substr) {
+  return fetch(url, {cache:'no-store'}).then(function(r){
+    if (!r.ok) return false;
+    return r.text().then(function(t){return t.indexOf(substr) !== -1});
+  }).catch(function(){return false});
+}
+
+function checkSubCount() {
+  return fetch('subscribers.html', {cache:'no-store'}).then(function(r){
+    if (!r.ok) return false;
+    return r.text().then(function(t){
+      // Look for subscriber count in the admin page
+      var m = t.match(/(\d+)\s*subscriber/i) || t.match(/total.*?(\d+)/i);
+      return m && parseInt(m[1]) >= 1000;
+    });
+  }).catch(function(){return false});
+}
+
+function openModal() {
+  var html = '<div id="patronModal" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px" onclick="if(event.target===this)closeModal()">';
+  html += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:32px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto">';
+  html += '<h2 style="color:#F1F5F9;font-size:20px;margin-bottom:16px">Add Monthly Patron Option</h2>';
+  html += '<p style="color:#6B7F9A;font-size:13px;margin-bottom:20px">Add the following donation tier to <strong>index.html</strong> in the donation amount picker:</p>';
+  html += '<pre style="background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:16px;font-size:12px;color:#CBD5E1;overflow-x:auto;margin-bottom:16px;line-height:1.5">' +
+    '&lt;button class="donate-amount" data-amount="50" data-recurring="true"&gt;\n' +
+    '  GH¢ 50/mo\n' +
+    '&lt;/button&gt;\n' +
+    '&lt;small style="color:#C9A84C;font-size:10px"&gt;Monthly Patron&lt;/small&gt;';
+  html += '</pre>';
+  html += '<p style="color:#6B7F9A;font-size:12px;margin-bottom:20px">Also update Flutterwave checkout call to pass <code>payment_plan</code> parameter for recurring.</p>';
+  html += '<button onclick="closeModal()" style="width:100%;padding:12px;border:none;border-radius:8px;background:#C9A84C;color:#0A1628;font-weight:600;cursor:pointer;font-size:13px">Got it</button>';
+  html += '</div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function closeModal() {
+  var el = document.getElementById('patronModal');
+  if (el) el.remove();
+}
+
+function reverifyStrategy() {
+  var promises = [];
+  STRATEGY.forEach(function(s){
+    if (s.verify) {
+      var p = s.verify().then(function(passed){
+        state[s.id].auto = passed;
+        if (passed) state[s.id].done = true;
+      }).catch(function(){
+        state[s.id].auto = false;
+      });
+      promises.push(p);
+    }
+  });
+  Promise.all(promises).then(function(){
+    saveStrategyState(); renderStrategy();
+  });
+}
+
+function renderStrategy() {
+  var html = '<div class="strategy-list">';
+  STRATEGY.forEach(function(s){
+    var st = state[s.id] || {done:false,auto:null};
+    var doneCls = st.done ? 'done' : '';
+    var checkCls = st.auto === true ? 'verified' : (st.done ? 'checked' : '');
+    var autoBadge = '';
+    if (s.verify && st.auto !== null) {
+      autoBadge = '<span class="auto-badge ' + (st.auto ? 'pass' : 'fail') + '">' + (st.auto ? 'verified' : 'fails') + '</span>';
+    } else if (!s.verify) {
+      autoBadge = '<span class="auto-badge na">manual</span>';
+    }
+
+    html += '<div class="strategy-item ' + doneCls + '">';
+    html += '<div class="strategy-check ' + checkCls + '" onclick="toggleStrategy(\'' + s.id + '\')">' + (st.done ? '&#10003;' : '') + '</div>';
+    html += '<div class="strategy-body">';
+    html += '<div class="strategy-title">' + s.title + ' ' + autoBadge + '</div>';
+    html += '<div class="strategy-desc">' + s.desc + '</div>';
+    html += '</div>';
+    html += '<div class="strategy-actions">';
+    if (s.verify) {
+      html += '<button class="strategy-verify-btn" onclick="var self=this;self.disabled=true;self.textContent=\'…\';s.verify().then(function(p){state[s.id].auto=p;if(p)state[s.id].done=true;saveStrategyState();renderStrategy()})">Verify</button>';
+    }
+    if (s.execute) {
+      html += '<button class="strategy-execute" onclick="s.execute()">' + (s.executeLabel||'Execute') + '</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('strategyTodos').innerHTML = html;
+}
+
+renderStrategy();
+if (!state || Object.keys(state).length < 2) { setTimeout(reverifyStrategy, 300); }
+</script>
 </body>
 </html>
