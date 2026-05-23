@@ -19,11 +19,10 @@ function toggleFaq(btn) {
 function toggleNav(el) {
   var nav = document.querySelector('.nav-links');
   var overlay = document.querySelector('.nav-mobile-overlay');
-  var toggle = document.querySelector('.nav-toggle');
+  var btn = document.querySelector('.nav-toggle');
   if (!nav) return;
-  var opening = !nav.classList.contains('open');
   nav.classList.toggle('open');
-  if (toggle) toggle.classList.toggle('active');
   if (overlay) overlay.classList.toggle('open');
-  document.body.style.overflow = opening ? 'hidden' : '';
+  if (btn) btn.classList.toggle('active');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
 }
