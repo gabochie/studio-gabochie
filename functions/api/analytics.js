@@ -39,12 +39,12 @@ export async function onRequest(context) {
   }
 
   try {
-    const timeseriesQuery = `{
+    const result = await graphql(token, zoneId, `{
       viewer {
         zones(filter: {zoneTag: "${zoneId}"}) {
           httpRequests1mGroups(
             orderBy: [datetimeMinute_ASC]
-            limit: 5000
+            limit: 10000
             filter: { datetimeMinute_geq: "${since}", datetimeMinute_leq: "${until}" }
           ) {
             dimensions { datetimeMinute }
@@ -53,40 +53,9 @@ export async function onRequest(context) {
           }
         }
       }
-    }`;
+    }`);
 
-    const pagesQuery = `{
-      viewer {
-        zones(filter: {zoneTag: "${zoneId}"}) {
-          httpRequestsAdaptiveGroups(
-            limit: 200
-            filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
-          ) {
-            dimensions { clientRequestPath clientCountryName }
-            sum { requests }
-          }
-        }
-      }
-    }`;
-
-    const [timeseriesResult, breakdownsResult] = await Promise.all([
-      graphql(token, zoneId, timeseriesQuery),
-      graphql(token, zoneId, pagesQuery)
-    ]);
-
-    const rawGroups = timeseriesResult.viewer.zones[0].httpRequests1mGroups || [];
-    const rawBreakdowns = breakdownsResult.viewer.zones[0].httpRequestsAdaptiveGroups || [];
-
-    const topPagesMap = {};
-    const countryMap = {};
-
-    (rawBreakdowns || []).forEach(g => {
-      const path = g.dimensions.clientRequestPath || '/';
-      const country = g.dimensions.clientCountryName || 'Unknown';
-      const reqs = g.sum.requests || 0;
-      topPagesMap[path] = (topPagesMap[path] || 0) + reqs;
-      countryMap[country] = (countryMap[country] || 0) + reqs;
-    });
+    const rawGroups = result.viewer.zones[0].httpRequests1mGroups || [];
 
     let byDay = {};
     let totalRequests = 0, totalBandwidth = 0, totalUniques = 0;
@@ -109,16 +78,6 @@ export async function onRequest(context) {
       uniques: byDay[d].uniques || 0
     }));
 
-    const topPages = Object.keys(topPagesMap)
-      .sort((a, b) => topPagesMap[b] - topPagesMap[a])
-      .slice(0, 10)
-      .map(path => ({ path, count: topPagesMap[path] }));
-
-    const countries = Object.keys(countryMap)
-      .sort((a, b) => countryMap[b] - countryMap[a])
-      .slice(0, 15)
-      .map(c => ({ country: c, count: countryMap[c] }));
-
     return new Response(JSON.stringify({
       status: 'ok',
       range,
@@ -129,8 +88,6 @@ export async function onRequest(context) {
         uniques: totalUniques
       },
       daily,
-      top_pages: topPages,
-      top_countries: countries,
       last_updated: new Date().toISOString()
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
