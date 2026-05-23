@@ -27,3 +27,13 @@ function toggleNav(el) {
   if (overlay) overlay.classList.toggle('open', opening);
   document.body.style.overflow = opening ? 'hidden' : '';
 }
+
+/* ── Page View Tracking ── */
+(function(){
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
+  var page = window.location.pathname;
+  try {
+    var ref = document.referrer || '';
+    navigator.sendBeacon('/api/track', JSON.stringify({page:page, referrer:ref}));
+  } catch(e) { console.log(e); }
+})();

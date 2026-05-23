@@ -81,3 +81,10 @@ CREATE INDEX IF NOT EXISTS idx_stats_active ON stats(active);
 CREATE INDEX IF NOT EXISTS idx_gallery_active ON gallery(active);
 CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page);
 CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at);
+
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT '',
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false');

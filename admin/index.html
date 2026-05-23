@@ -6,9 +6,106 @@
 <title>Admin Dashboard — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
+<style>
+/* ── Live stat cards ── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px;position:relative;overflow:hidden}
+.stat-card .num{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3vw,38px);font-weight:700;line-height:1;display:block}
+.stat-card .num.gold{color:#C9A84C}
+.stat-card .num.green{color:#22C55E}
+.stat-card .num.blue{color:#3B82F6}
+.stat-card .num.pink{color:#EC4899}
+.stat-card .num .delta{font-size:12px;margin-left:6px;font-family:'DM Sans',sans-serif}
+.stat-card .num .delta.up{color:#22C55E}
+.stat-card .num .delta.down{color:#EF4444}
+.stat-card .label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:4px}
+.stat-card .sub{font-size:10px;color:#3A5278;margin-top:2px}
+.stat-loading{opacity:.4}
+.stat-error{color:#EF4444;font-size:11px;margin-top:4px}
+
+/* ── Chart sections ── */
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:#F1F5F9;margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid #1E3250;display:flex;align-items:center;gap:10px}
+.section-title .badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(59,130,246,.12);color:#3B82F6;font-family:'DM Sans',sans-serif;font-weight:500;text-transform:none;letter-spacing:0}
+
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:860px){.chart-grid{grid-template-columns:1fr}}
+
+.chart-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px}
+.chart-card .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.chart-card .card-title{font-size:13px;font-weight:600;color:#F1F5F9}
+.chart-card .card-sub{font-size:11px;color:#5A7A9F}
+
+/* ── Bar chart ── */
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:140px;padding:0 4px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.chart-bar{width:100%;min-height:4px;border-radius:3px 3px 0 0;transition:height .6s ease;position:relative;max-width:40px}
+.chart-bar.gold{background:linear-gradient(180deg,#C9A84C,#8B7034)}
+.chart-bar.green{background:linear-gradient(180deg,#22C55E,#166534)}
+.chart-bar.blue{background:linear-gradient(180deg,#3B82F6,#1D4ED8)}
+.chart-bar.pink{background:linear-gradient(180deg,#EC4899,#BE185D)}
+.chart-bar-label{font-size:9px;color:#3A5278;margin-top:6px;text-align:center;font-weight:500;white-space:nowrap}
+.chart-bar:hover{opacity:.8}
+.chart-bar .tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:4px 8px;font-size:10px;color:#CBD5E1;white-space:nowrap;margin-bottom:4px;z-index:10}
+.chart-bar:hover .tooltip{display:block}
+
+/* ── Top pages list ── */
+.page-list{margin:0}
+.page-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(30,50,80,.4);font-size:12px}
+.page-row:last-child{border:none}
+.page-row .page-name{color:#CBD5E1}
+.page-row .page-count{color:#5A7A9F;font-weight:600}
+.page-row .page-bar{flex:1;height:4px;background:#1E3250;border-radius:2px;margin:0 12px;overflow:hidden}
+.page-row .page-bar-fill{height:100%;background:#3B82F6;border-radius:2px;transition:width .5s ease}
+
+/* ── Activity feed ── */
+.activity-feed{margin:0}
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(30,50,80,.3);align-items:flex-start}
+.activity-item:last-child{border:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.activity-dot.donation{background:#22C55E}
+.activity-dot.subscriber{background:#3B82F6}
+.activity-dot.booking{background:#C9A84C}
+.activity-body{flex:1;min-width:0}
+.activity-body .text{font-size:12px;color:#CBD5E1;line-height:1.4}
+.activity-body .text strong{color:#F1F5F9}
+.activity-body .time{font-size:10px;color:#3A5278;margin-top:2px}
+.activity-empty{color:#3A5278;font-size:13px;padding:20px;text-align:center}
+
+/* ── Booking status pills ── */
+.status-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.status-pill.pending{background:rgba(234,179,8,.12);color:#EAB308}
+.status-pill.active{background:rgba(34,197,94,.12);color:#22C55E}
+.status-pill.completed{background:rgba(59,130,246,.12);color:#3B82F6}
+
+/* ── Loading / Error ── */
+.loading-pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3A5278;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ── Date filter ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.filter-btn:hover{border-color:#3A5278;color:#94A3B8}
+.filter-btn.active{background:rgba(59,130,246,.1);border-color:#3B82F6;color:#3B82F6}
+
+/* ── Coming Soon Toggle ── */
+.cs-bar{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cs-bar.active{border-color:rgba(234,179,8,.3);background:#1E2A1E}
+.cs-bar .cs-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cs-bar .cs-icon.off{background:rgba(34,197,94,.1);color:#22C55E}
+.cs-bar .cs-icon.on{background:rgba(234,179,8,.15);color:#EAB308}
+.cs-bar .cs-info{flex:1;min-width:150px}
+.cs-bar .cs-label{font-size:13px;font-weight:600;color:#F1F5F9}
+.cs-bar .cs-desc{font-size:11px;color:#5A7A9F;margin-top:2px}
+.cs-toggle{position:relative;width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;transition:all .2s;flex-shrink:0}
+.cs-toggle.off{background:#1E3250}
+.cs-toggle.on{background:#EAB308}
+.cs-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.cs-toggle.on::after{transform:translateX(22px)}
+.cs-toggle:disabled{opacity:.4;cursor:not-allowed}
+.cs-toggle-label{font-size:11px;color:#3A5278;font-weight:600;min-width:40px}
+</style>
 </head>
 <body>
-
 <div class="wrap">
   <div class="header">
     <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
@@ -24,48 +121,88 @@
     </div>
   </div>
 
-  <h1 class="page-title">Analytics <span>Dashboard</span></h1>
-  <p class="page-desc">Live site health, page view tracking, and infrastructure status. Data is stored locally until backend deployment.</p>
+  <h1 class="page-title">Live <span>Dashboard</span></h1>
+  <p class="page-desc" style="margin-bottom:20px">Real-time data from D1 database. <span style="color:#3A5278" id="lastUpdated">Loading...</span></p>
 
   <!-- Stats -->
-  <div class="stats">
-    <div class="stat-card"><span class="stat-num green" id="totalViews">0</span><span class="stat-label">Page Views</span><span class="stat-sub">Tracked locally</span></div>
-    <div class="stat-card"><span class="stat-num green" id="pageCount">0</span><span class="stat-label">Site Pages</span><span class="stat-sub">All online</span></div>
-    <div class="stat-card"><span class="stat-num">4</span><span class="stat-label">Books</span><span class="stat-sub">Free downloads</span></div>
-    <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">Donation Platforms</span><span class="stat-sub">Flutterwave, Ko-fi, BMC</span></div>
-    <div class="stat-card"><span class="stat-num">4</span><span class="stat-label">Social Links</span><span class="stat-sub">X, FB, IG, TikTok</span></div>
-    <div class="stat-card"><span class="stat-num green">Phase 3</span><span class="stat-label">Current Phase</span><span class="stat-sub">Step 3.1 done — next: Flutterwave payments</span></div>
-  </div>
-
-  <!-- Site Health -->
-  <div class="section-title">&#10003; Site Health</div>
-  <div class="health-row" id="healthContainer"></div>
-
-  <!-- Two column: Visits + Daily Chart -->
-  <div class="col2">
-    <div class="card">
-      <div class="card-title">Page Views (localStorage)</div>
-      <div class="visit-list" id="visitList"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Views This Week</div>
-      <div class="bar-container" id="barContainer"></div>
+  <div class="stats" id="statsContainer">
+    <div class="stat-card"><span class="num gold stat-loading" id="statDonations">—</span><span class="label">Donations (successful)</span><span class="sub" id="statDonationsSub">Loading...</span></div>
+    <div class="stat-card"><span class="num green" id="statSubs">—</span><span class="label">Subscribers</span><span class="sub" id="statSubsSub">Loading...</span></div>
+    <div class="stat-card"><span class="num blue" id="statViews">—</span><span class="label">Page Views</span><span class="sub" id="statViewsSub">This month</span></div>
+    <div class="stat-card"><span class="num gold" id="statRevenue">—</span><span class="label">Revenue (GHS)</span><span class="sub" id="statRevenueSub">Loading...</span></div>
+    <div class="stat-card" id="statBookings">
+      <div style="display:flex;gap:12px;align-items:baseline">
+        <span class="num gold" id="statBookingsPending">—</span>
+        <span class="num green" style="font-size:clamp(18px,2vw,26px)" id="statBookingsActive">—</span>
+        <span class="num blue" style="font-size:clamp(18px,2vw,26px)" id="statBookingsDone">—</span>
+      </div>
+      <span class="label">Bookings <span style="color:#EAB308;font-size:10px">pending</span> <span style="color:#22C55E;font-size:10px">active</span> <span style="color:#3B82F6;font-size:10px">done</span></span>
+      <span class="sub" id="statBookingsSub">Click to manage</span>
     </div>
   </div>
 
-  <!-- Infrastructure -->
-  <div class="section-title">&#9881; Infrastructure</div>
-  <div class="table-wrap">
-    <table>
-      <tr><th>Phase</th><th>Name</th><th>Platform</th><th>Status</th></tr>
-      <tr><td>1</td><td>Static Site Launch</td><td>Cloudflare Pages</td><td><span class="status-pill live">Deployed</span></td></tr>
-      <tr><td>2</td><td>Serverless Functions</td><td>Cloudflare Workers</td><td><span class="status-pill live">Deployed</span></td></tr>
-      <tr><td>3</td><td>Revenue Backend (Workers + D1)</td><td>Cloudflare D1 + Workers</td><td><span class="status-pill live">In Progress</span></td></tr>
-      <tr><td>4</td><td>Growth &amp; Automation</td><td>Workers + D1 + Email API</td><td><span class="status-pill future">Future</span></td></tr>
-    </table>
+  <!-- Coming Soon Toggle -->
+  <div class="cs-bar" id="csBar">
+    <div class="cs-icon off" id="csIcon">&#9881;</div>
+    <div class="cs-info">
+      <div class="cs-label" id="csLabel">Site is live</div>
+      <div class="cs-desc" id="csDesc">Visitors see all pages normally</div>
+    </div>
+    <span class="cs-toggle-label" id="csToggleLabel">Off</span>
+    <button class="cs-toggle off" id="csToggle" onclick="toggleComingSoon()" aria-label="Toggle coming soon mode"></button>
   </div>
 
-  <!-- Quick Tools -->
+  <!-- Charts -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Revenue (Monthly)</span>
+        <span class="card-sub" id="revenueTotal">GHS 0</span>
+      </div>
+      <div class="chart-bars" id="revenueChart"><span class="loading-pulse"></span></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Subscribers (Monthly)</span>
+        <span class="card-sub" id="subsTotal">0 total</span>
+      </div>
+      <div class="chart-bars" id="subsChart"><span class="loading-pulse"></span></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Page Views (Last 30 Days)</span>
+        <span class="card-sub" id="viewsTotal">0</span>
+      </div>
+      <div class="chart-bars" id="viewsChart"><span class="loading-pulse"></span></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Top Pages (30 Days)</span>
+        <span class="card-sub" id="topPagesTotal">0 views</span>
+      </div>
+      <div class="page-list" id="topPages"><span class="loading-pulse"></span></div>
+    </div>
+  </div>
+
+  <!-- Site Health & Activity side by side -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">&#10003; Site Health</span>
+        <span class="card-sub">All pages online</span>
+      </div>
+      <div class="health-row" id="healthContainer"></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Recent Activity</span>
+        <span class="card-sub" id="activityCount">0</span>
+      </div>
+      <div class="activity-feed" id="activityFeed"><span class="loading-pulse"></span></div>
+    </div>
+  </div>
+
+  <!-- Admin Tools -->
   <div class="section-title">&#9874; Admin Tools</div>
   <div class="tools">
     <a href="roadmap.html" class="tool-card">
@@ -78,26 +215,269 @@
       <div class="tool-name">Subscriber List</div>
       <div class="tool-desc">View and export all email captures from forms and newsletter signups.</div>
     </a>
-    <a href="submissions.html" class="tool-card">
-      <div class="tool-icon">&#9993;</div>
-      <div class="tool-name">Form Submissions</div>
-      <div class="tool-desc">Lead capture and manifesto download requests.</div>
-    </a>
     <a href="donations.html" class="tool-card">
       <div class="tool-icon">&#9829;</div>
       <div class="tool-name">Donation Log</div>
-      <div class="tool-desc">Track incoming donations (connects in Phase 3).</div>
+      <div class="tool-desc">Track incoming donations with totals and charts.</div>
+    </a>
+    <a href="bookings.html" class="tool-card">
+      <div class="tool-icon">&#9993;</div>
+      <div class="tool-name">Sponsor Requests</div>
+      <div class="tool-desc">Manage sponsorship placement requests.</div>
     </a>
     <a href="content.html" class="tool-card">
       <div class="tool-icon">&#9998;</div>
       <div class="tool-name">Content Manager</div>
-      <div class="tool-desc">Manage testimonials, stats, gallery (connects in Phase 3).</div>
+      <div class="tool-desc">Manage testimonials, stats, gallery.</div>
     </a>
   </div>
 </div>
 
-<div class="footer"><a href="../index.html">&larr; Back to site</a> &nbsp; <a href="roadmap.html">Roadmap</a> &nbsp; <a href="/admin/api/logout" class="logout" onclick="return confirm('Sign out?')">Sign Out</a></div>
+<div class="footer"><a href="../index.html">&larr; Back to site</a> &nbsp; <a href="roadmap.html">Roadmap</a> &nbsp; <a href="../functions/admin/api/logout" class="logout" onclick="return confirm('Sign out?')">Sign Out</a></div>
 
 <script src="admin.js"></script>
+<script>
+var DASH_KEY = 'gideon_dash_cache';
+
+function $(id){return document.getElementById(id)}
+
+function fmtNum(n){if(n===null||n===undefined)return'—';return n.toLocaleString('en-US',{maximumFractionDigits:0})}
+
+function fmtTime(iso){
+  try{
+    var d=new Date(iso),now=new Date(),diff=Math.round((now-d)/60000);
+    if(diff<1)return'just now';
+    if(diff<60)return diff+'m ago';
+    var hrs=Math.round(diff/60);
+    if(hrs<24)return hrs+'h ago';
+    return d.toLocaleDateString();
+  }catch(e){return''}
+}
+
+function money(amount,currency){
+  return currency==='USD'||currency==='usd'
+    ?'$'+Number(amount).toFixed(2)
+    :'GHS '+Number(amount).toFixed(2);
+}
+
+function barChart(containerId, data, labelKey, valueKey, colorClass, maxVal){
+  var el = $(containerId);
+  if (!el) return;
+  if (!data || !data.length){
+    el.innerHTML = '<div style="color:#3A5278;font-size:12px;padding:40px 0;text-align:center">No data yet</div>';
+    return;
+  }
+  var max = maxVal || Math.max.apply(null, data.map(function(d){return d[valueKey]})) || 1;
+  var html = data.map(function(d){
+    var h = Math.max(4, (d[valueKey] / max) * 130);
+    var label = d[labelKey];
+    if (label && label.length > 7) label = label.replace('https://','').replace('http://','').replace('www.','').slice(0,12);
+    return '<div class="chart-bar-wrap"><div class="chart-bar ' + colorClass + '" style="height:' + h + 'px"><span class="tooltip">' + d[labelKey] + ': ' + fmtNum(d[valueKey]) + '</span></div><div class="chart-bar-label">' + (label||'') + '</div></div>';
+  }).join('');
+  el.innerHTML = html;
+}
+
+function renderTopPages(data){
+  var el = $('topPages');
+  if (!el) return;
+  if (!data || !data.length){
+    el.innerHTML = '<div style="color:#3A5278;font-size:12px;padding:20px;text-align:center">No page views yet</div>';
+    return;
+  }
+  var max = data[0].count || 1;
+  var html = data.map(function(p){
+    var pc = (p.count / max) * 100;
+    var name = p.page || '/';
+    if (name.length > 30) name = name.slice(0,30)+'…';
+    return '<div class="page-row"><span class="page-name">' + name + '</span><div class="page-bar"><div class="page-bar-fill" style="width:' + pc + '%"></div></div><span class="page-count">' + fmtNum(p.count) + '</span></div>';
+  }).join('');
+  el.innerHTML = html;
+}
+
+function renderActivity(data){
+  var el = $('activityFeed');
+  var count = $('activityCount');
+  if (!el) return;
+  if (!data || !data.length){
+    el.innerHTML = '<div class="activity-empty">No activity recorded yet</div>';
+    if(count)count.textContent='0';
+    return;
+  }
+  if(count)count.textContent=data.length;
+  var html = data.map(function(a){
+    var dot = a.type || 'donation';
+    var text = '';
+    if (a.type === 'donation') text = '<strong>' + (a.name||'Anonymous') + '</strong> donated ' + money(a.val) + ' <span style="color:#5A7A9F">(' + (a.note||'pending') + ')</span>';
+    else if (a.type === 'subscriber') text = '<strong>' + (a.val||'New subscriber') + '</strong> subscribed <span style="color:#5A7A9F">via ' + (a.note||'web') + '</span>';
+    else if (a.type === 'booking') text = '<strong>' + (a.name||'Someone') + '</strong> requested <span style="color:#C9A84C">' + a.val + '</span> <span style="color:#5A7A9F">(' + a.note + ')</span>';
+    return '<div class="activity-item"><div class="activity-dot ' + dot + '"></div><div class="activity-body"><div class="text">' + text + '</div><div class="time">' + fmtTime(a.ts) + '</div></div></div>';
+  }).join('');
+  el.innerHTML = html;
+}
+
+function loadSummary(){
+  var t = $('lastUpdated');
+  if(t)t.textContent='Fetching live data…';
+
+  fetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('API returned '+r.status);
+    return r.json();
+  }).then(function(d){
+    if(d.status!=='ok')throw new Error(d.message||'API error');
+
+    var s = d.subscribers || {};
+    var don = d.donations || {};
+    var bok = d.bookings || {};
+    var vws = d.page_views || {};
+    var ch  = d.charts || {};
+
+    // Stats
+    $('statDonations').textContent = fmtNum(don.count || 0);
+    $('statDonations').className = 'num gold';
+    $('statDonationsSub').textContent = don.month_successful ? money(don.month_successful) + ' this month' : 'No donations yet';
+
+    $('statSubs').textContent = fmtNum(s.total || 0);
+    $('statSubs').className = 'num green';
+    $('statSubsSub').textContent = s.this_month ? '+' + fmtNum(s.this_month) + ' this month' : 'No subscribers yet';
+
+    $('statViews').textContent = fmtNum(vws.total || 0);
+    $('statViews').className = 'num blue';
+    $('statViewsSub').textContent = fmtNum(vws.this_month || 0) + ' this month';
+
+    $('statRevenue').textContent = don.total_successful ? 'GHS ' + fmtNum(don.total_successful) : 'GHS 0';
+    $('statRevenue').className = 'num gold';
+    $('statRevenueSub').textContent = don.count ? fmtNum(don.count) + ' payments' : 'No revenue yet';
+
+    $('statBookingsPending').textContent = fmtNum(bok.pending || 0);
+    $('statBookingsActive').textContent = fmtNum(bok.active || 0);
+    $('statBookingsDone').textContent = fmtNum(bok.completed || 0);
+
+    // Charts
+    barChart('revenueChart', ch.donations_by_month||[], 'month', 'total', 'chart-bar gold');
+    $('revenueTotal').textContent = don.total_successful ? 'GHS ' + fmtNum(don.total_successful) : 'GHS 0';
+
+    barChart('subsChart', ch.subs_by_month||[], 'month', 'count', 'chart-bar green');
+    $('subsTotal').textContent = fmtNum(s.total || 0) + ' total';
+
+    barChart('viewsChart', ch.views_by_day||[], 'day', 'count', 'chart-bar blue');
+    $('viewsTotal').textContent = fmtNum(vws.this_month || 0);
+
+    renderTopPages(ch.views_by_page||[]);
+    renderActivity(d.recent||[]);
+
+    $('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+  }).catch(function(err){
+    var msg = 'D1 not connected — showing local data';
+    if(t)t.textContent = msg + ' (' + err.message + ')';
+    // Fallback: show local localStorage stats
+    fallbackLocalStats();
+  });
+}
+
+function fallbackLocalStats(){
+  var visits = window.__visits || {};
+  var total = 0;
+  Object.keys(visits).forEach(function(p){total+=visits[p]});
+  $('statDonations').textContent = '—';
+  $('statDonations').className = 'num gold';
+  $('statDonationsSub').textContent = 'Connect D1 for live data';
+  $('statSubs').textContent = '—';
+  $('statSubs').className = 'num green';
+  $('statSubsSub').textContent = 'Connect D1 for live data';
+  $('statViews').textContent = fmtNum(total || 0);
+  $('statViews').className = 'num blue';
+  $('statViewsSub').textContent = 'localStorage only';
+  $('statRevenue').textContent = '—';
+  $('statRevenue').className = 'num gold';
+  $('statRevenueSub').textContent = 'Connect D1 for live data';
+
+  $('revenueChart').innerHTML = '<div style="color:#3A5278;font-size:12px;padding:40px 0;text-align:center">Connect D1 database for revenue charts</div>';
+  $('subsChart').innerHTML = '<div style="color:#3A5278;font-size:12px;padding:40px 0;text-align:center">Connect D1 database for subscriber charts</div>';
+  $('viewsChart').innerHTML = '<div style="color:#3A5278;font-size:12px;padding:40px 0;text-align:center">Connect D1 database for view charts</div>';
+  $('topPages').innerHTML = '<div style="color:#3A5278;font-size:12px;padding:20px;text-align:center">Connect D1 database for top pages</div>';
+  $('activityFeed').innerHTML = '<div class="activity-empty">Connect D1 database for live activity</div>';
+
+  // Show localStorage visit data as fallback
+  if(Object.keys(visits).length){
+    var html = Object.keys(visits).sort(function(a,b){return visits[b]-visits[a]}).map(function(p){
+      return '<div class="page-row"><span class="page-name">' + p + '</span><span class="page-count">' + visits[p] + '</span></div>';
+    }).join('');
+    $('topPages').innerHTML = html;
+  }
+}
+
+// Track this page view
+(function trackVisit(){
+  fetch('/api/track', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({page:'/admin/', referrer:document.referrer||''}),
+    cache:'no-store'
+  }).catch(function(){});
+})();
+
+// ── Coming Soon Toggle ──
+function loadComingSoonStatus(){
+  fetch('/admin/api/coming-soon', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('Failed');
+    return r.json();
+  }).then(function(d){
+    if(d.status==='ok') setCS(d.active);
+  }).catch(function(){});
+}
+
+function setCS(active){
+  var bar = $('csBar');
+  var icon = $('csIcon');
+  var label = $('csLabel');
+  var desc = $('csDesc');
+  var toggle = $('csToggle');
+  var toggleLabel = $('csToggleLabel');
+  if(active){
+    bar.className = 'cs-bar active';
+    icon.className = 'cs-icon on';
+    icon.innerHTML = '&#9888;';
+    label.textContent = 'Coming Soon mode is ON';
+    desc.textContent = 'All public visitors see the coming soon page. Admin and API still work.';
+    toggle.className = 'cs-toggle on';
+    toggleLabel.textContent = 'On';
+  } else {
+    bar.className = 'cs-bar';
+    icon.className = 'cs-icon off';
+    icon.innerHTML = '&#9881;';
+    label.textContent = 'Site is live';
+    desc.textContent = 'Visitors see all pages normally';
+    toggle.className = 'cs-toggle off';
+    toggleLabel.textContent = 'Off';
+  }
+}
+
+function toggleComingSoon(){
+  var toggle = $('csToggle');
+  toggle.disabled = true;
+  var active = toggle.classList.contains('off');
+  fetch('/admin/api/coming-soon', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({active:active}),
+    cache:'no-store'
+  }).then(function(r){
+    if(!r.ok) throw new Error('Failed');
+    return r.json();
+  }).then(function(d){
+    if(d.status==='ok') setCS(d.active);
+    toggle.disabled = false;
+  }).catch(function(){
+    toggle.disabled = false;
+    alert('Failed to toggle. Make sure D1 is connected.');
+  });
+}
+
+// ── Init ──
+loadSummary();
+loadComingSoonStatus();
+setInterval(loadSummary, 30000);
+</script>
 </body>
 </html>
