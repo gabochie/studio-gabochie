@@ -14,3 +14,15 @@
 function toggleFaq(btn) {
   btn.parentElement.classList.toggle('open');
 }
+
+/* ── Mobile Nav Toggle ── */
+function toggleNav(el) {
+  var nav = document.querySelector('.nav-links');
+  var overlay = document.querySelector('.nav-mobile-overlay');
+  var btn = el || document.querySelector('.nav-toggle');
+  if (!nav) return;
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('active');
+  if (overlay) overlay.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}

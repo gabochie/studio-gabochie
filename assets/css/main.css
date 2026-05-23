@@ -20,7 +20,20 @@ nav .container{display:flex;align-items:center;justify-content:space-between;wid
 .nav-links a:hover{color:#fff;background:rgba(255,255,255,0.06)}
 .nav-donate{padding:8px 18px!important;background:#C9A84C!important;color:#0A1628!important;border-radius:6px!important;font-weight:600!important;font-size:13px!important;font-family:'DM Sans',system-ui,-apple-system,sans-serif!important}
 .nav-donate:hover{background:#D9B85C!important;color:#0A1628!important}
-@media(max-width:640px){.nav-links a:not(.nav-donate){display:none}}
+.nav-toggle{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:8px;z-index:101}
+.nav-toggle span{display:block;width:22px;height:2px;background:#CBD5E1;border-radius:2px;transition:transform .3s,opacity .3s}
+.nav-toggle.active span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.nav-toggle.active span:nth-child(2){opacity:0}
+.nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.nav-mobile-overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,0.5);z-index:98}
+.nav-mobile-overlay.open{display:block}
+@media(max-width:640px){
+  .nav-toggle{display:flex}
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.06);z-index:99;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .nav-links.open{display:flex}
+  .nav-links a{display:block;padding:12px 16px;font-size:14px;border-radius:8px;width:100%}
+  .nav-donate{text-align:center;margin-top:4px}
+}
 
 /* ── Utilities ── */
 .text-center{text-align:center}
