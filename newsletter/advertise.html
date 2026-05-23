@@ -64,6 +64,26 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 .footer-links a:hover{color:var(--gold-lt)}
 .footer-copy{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(250,250,250,.18);letter-spacing:.1em;text-transform:uppercase}
 
+/* Booking modal */
+.booking-overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,0.6);z-index:200;align-items:center;justify-content:center;padding:20px}
+.booking-overlay.open{display:flex}
+.booking-modal{background:var(--paper);border-radius:12px;padding:40px;max-width:480px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.booking-modal .close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--ink-lt);padding:4px}
+.booking-modal h3{font-family:'Libre Baskerville',serif;font-size:24px;margin-bottom:6px;color:var(--ink)}
+.booking-modal .slot-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:20px}
+.booking-modal .field{margin-bottom:14px}
+.booking-modal .field label{display:block;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:4px}
+.booking-modal .field input,.booking-modal .field textarea{width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--ink);outline:none}
+.booking-modal .field input:focus,.booking-modal .field textarea:focus{border-color:var(--gold)}
+.booking-modal .field textarea{resize:vertical;min-height:80px}
+.booking-modal .submit{width:100%;padding:14px;border:none;border-radius:6px;background:var(--gold);color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.booking-modal .submit:hover{background:var(--gold-lt)}
+.booking-modal .submit:disabled{opacity:.5;cursor:not-allowed}
+.booking-modal .success{display:none;text-align:center;padding:20px}
+.booking-modal .success .check{font-size:40px;color:var(--gold);display:block;margin-bottom:10px}
+.booking-modal .success h4{font-family:'Libre Baskerville',serif;font-size:20px;color:var(--ink);margin-bottom:6px}
+.booking-modal .success p{font-family:'Barlow',sans-serif;font-size:14px;color:var(--ink-lt)}
+
 /* Responsive */
 @media(max-width:900px){
   .page-wrap{padding:0 20px}
@@ -156,7 +176,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price">GH¢2,500</div>
           <div class="rate-item-price-sub">$150 / week · High visibility</div>
           <div class="rate-item-desc">Prime placement above the lead story. Maximum exposure for your brand across all devices.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Leaderboard%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+          <a href="#" class="rate-item-cta" onclick="event.preventDefault();openBooking('Leaderboard Banner')">Book Now</a>
         </div>
         <div class="rate-item">
           <div class="rate-item-icon">▨</div>
@@ -165,7 +185,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price">GH¢3,500</div>
           <div class="rate-item-price-sub">$200 / month · Sidebar placement</div>
           <div class="rate-item-desc">Ideal for campaigns, product launches, and events. Sits alongside editorial content for natural engagement.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Rectangle%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+          <a href="#" class="rate-item-cta" onclick="event.preventDefault();openBooking('Medium Rectangle')">Book Now</a>
         </div>
         <div class="rate-item">
           <div class="rate-item-icon">✦</div>
@@ -174,7 +194,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price">GH¢5,000</div>
           <div class="rate-item-price-sub">$300 / placement · Custom content</div>
           <div class="rate-item-desc">Full native article written in collaboration with our editorial team. Tell your story authentically to our audience.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Sponsored%20Article%20Inquiry" class="rate-item-cta">Book Now</a>
+          <a href="#" class="rate-item-cta" onclick="event.preventDefault();openBooking('Sponsored Article')">Book Now</a>
         </div>
         <div class="rate-item">
           <div class="rate-item-icon">◈</div>
@@ -183,7 +203,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price">GH¢2,000</div>
           <div class="rate-item-price-sub">$120 / week · Persistent placement</div>
           <div class="rate-item-desc">Cost-effective banner at the close of every issue. Seen by readers who consume the full newsletter.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Footer%20Ad%20Inquiry" class="rate-item-cta">Book Now</a>
+          <a href="#" class="rate-item-cta" onclick="event.preventDefault();openBooking('Footer Banner')">Book Now</a>
         </div>
         <div class="rate-item">
           <div class="rate-item-icon">⊞</div>
@@ -192,7 +212,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price">GH¢10,000</div>
           <div class="rate-item-price-sub">$600 / month · Best value</div>
           <div class="rate-item-desc">Leaderboard + Rectangle + Sponsored Article + Footer. Full coverage across the entire issue for maximum impact.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Premium%20Package%20Inquiry" class="rate-item-cta">Book Now</a>
+          <a href="#" class="rate-item-cta" onclick="event.preventDefault();openBooking('Premium Package')">Book Now</a>
         </div>
         <div class="rate-item" style="border:2px solid var(--gold);">
           <div class="rate-item-icon">◉</div>
@@ -201,7 +221,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
           <div class="rate-item-price" style="color:var(--gold);">GH¢25,000</div>
           <div class="rate-item-price-sub">$1,500 / quarter · Exclusive</div>
           <div class="rate-item-desc">Be the sole sponsor for an entire quarter. Logo placement in every issue, dedicated editorial feature, and social media amplification.</div>
-          <a href="mailto:info@gideonabochie.com?subject=Founding%20Sponsor%20Inquiry" class="rate-item-cta" style="background:var(--gold);">Enquire</a>
+          <a href="#" class="rate-item-cta" style="background:var(--gold);" onclick="event.preventDefault();openBooking('Founding Sponsor')">Enquire</a>
         </div>
       </div>
 
@@ -209,6 +229,44 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
         All prices in Ghana Cedis (GH¢) and USD ($). Discounts available for 3-month+ commitments.
         <br>Contact <a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a> for custom packages or multi-issue deals.
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="booking-overlay" id="bookingModal" onclick="if(event.target===this)closeBooking()">
+  <div class="booking-modal">
+    <button class="close" onclick="closeBooking()">&times;</button>
+    <h3>Book Your Ad</h3>
+    <div class="slot-label" id="bookingSlot">Leaderboard Banner</div>
+    <form id="bookingForm">
+      <div class="field">
+        <label>Your Name *</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" name="phone">
+      </div>
+      <div class="field">
+        <label>Company / Organization</label>
+        <input type="text" name="company">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea name="message" placeholder="Tell us about your campaign, dates, or special requests."></textarea>
+      </div>
+      <input type="hidden" name="slot" id="bookingSlotInput" value="">
+      <button type="submit" class="submit" id="bookingSubmit">Send Inquiry</button>
+    </form>
+    <div class="success" id="bookingSuccess">
+      <span class="check">&#10003;</span>
+      <h4>Inquiry Sent!</h4>
+      <p>Thanks for your interest. We'll respond within 24 hours.</p>
     </div>
   </div>
 </div>
