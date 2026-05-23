@@ -357,13 +357,26 @@ var DATA = {
             "Create /api/booking Worker to process inquiries ✓",
             "Add rate card PDF download (optional)"
           ]
+        },
+        {
+          "id": "2.5",
+          "task": "KV subscriber storage & admin list",
+          "launch": [{"label":"Subscribers page","url":"subscribers.html","local":true},{"label":"KV setup guide","url":"https://developers.cloudflare.com/pages/functions/bindings/#kv-namespaces"}],
+          "items": [
+            "Create KV namespace GAHQ_SUBSCRIBERS in Cloudflare dashboard",
+            "Bind SUBSCRIBERS variable to Pages project",
+            "Workers write form submissions to KV ✓",
+            "Admin subscriber list page at /admin/subscribers.html ✓",
+            "CSV export + search enabled ✓"
+          ]
         }
       ],
       "acceptance_criteria": [
         "Form submissions work without Formspree",
-        "Newsletter subscribe captures emails",
+        "Newsletter subscribe captures emails to KV",
         "News aggregator works reliably",
-        "Ad inquiries submit without exposing raw email"
+        "Ad inquiries submit without exposing raw email",
+        "Admin can view and export subscriber list"
       ]
     },
     {
@@ -851,6 +864,10 @@ var CHECKS = {
     {i:1, label:"Lead form uses /api/contact", check:function(){return checkPageContains("../index.html","/api/contact")}},
     {i:2, label:"Newsletter form uses /api/contact", check:function(){return checkPageContains("../newsletter/index.html","/api/contact")}}
   ],
+  "2.2": [ // Newsletter subscribe system
+    {i:0, label:"Subscribe form has AJAX handler", check:function(){return checkPageContains("../newsletter/index.html","subscribeForm")}},
+    {i:1, label:"Success message present", check:function(){return checkPageContains("../newsletter/index.html","subscribeSuccess")}}
+  ],
   "2.3": [ // News aggregation Worker
     {i:0, label:"News API exists", check:function(){return checkFileExists("../functions/api/news.js")}},
     {i:1, label:"Newsletter uses /api/news", check:function(){return checkPageContains("../newsletter/index.html","/api/news")}}
@@ -858,7 +875,12 @@ var CHECKS = {
   "2.4": [ // Ad booking form
     {i:0, label:"Booking API exists", check:function(){return checkFileExists("../functions/api/booking.js")}},
     {i:1, label:"openBooking function present", check:function(){return checkPageContains("../newsletter/advertise.html","openBooking")}},
-    {i:2, label:"Mailto replaced with booking form", check:function(){return checkPageContains("../newsletter/advertise.html","bookingModal")}}
+    {i:2, label:"Booking modal on page", check:function(){return checkPageContains("../newsletter/advertise.html","bookingModal")}}
+  ],
+  "2.5": [ // KV subscriber storage
+    {i:0, label:"Contact Worker writes to KV", check:function(){return checkPageContains("../functions/api/contact.js","SUBSCRIBERS")}},
+    {i:1, label:"Subscriber admin page exists", check:function(){return checkPageContains("subscribers.html","subsBody")}},
+    {i:2, label:"Admin nav links to subscribers", check:function(){return checkPageContains("index.html","subscribers.html")}}
   ]
 };
 

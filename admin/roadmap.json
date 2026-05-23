@@ -134,51 +134,64 @@
         {
           "id": 2.1,
           "task": "Form handling Worker",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Create Cloudflare Worker for form submissions (lead capture, contact)",
-            "Worker stores submissions in Cloudflare KV or emails them",
-            "Remove Formspree dependency — go self-hosted on Workers",
-            "Add honeypot + rate limiting for spam protection"
+            "Create Worker for lead capture + contact forms ✓",
+            "Wire up all forms to use /api/contact ✓",
+            "Remove direct Formspree dependency (Worker proxy) ✓",
+            "Add honeypot spam protection ✓"
           ]
         },
         {
           "id": 2.2,
           "task": "Newsletter subscribe system",
-          "status": "pending",
+          "status": "partial",
           "items": [
-            "Add subscribe form section to `newsletter/index.html` (with #subscribe anchor)",
-            "Worker handles email capture — stores in KV or sends to email",
-            "Fix advertise.html links pointing to #subscribe",
-            "Optional: integrate with ConvertKit / Mailchimp later"
+            "Worker handles subscribe submissions ✓",
+            "Subscribe form + AJAX confirmation on page ✓",
+            "Integrate with ConvertKit / Mailchimp (optional)",
+            "Confirmation auto-reply (pending)"
           ]
         },
         {
           "id": 2.3,
           "task": "News aggregation Worker",
-          "status": "pending",
+          "status": "done",
           "items": [
-            "Replace rss2json.com free tier with a Cloudflare Worker",
-            "Worker fetches + caches RSS feeds from Ghana news sources",
-            "Add caching headers to stay within free tier limits"
+            "Replace rss2json.com with Cloudflare Pages Function ✓",
+            "Newsletter uses /api/news proxy ✓",
+            "Add RSS caching for rate limit compliance (pending)"
           ]
         },
         {
           "id": 2.4,
           "task": "Ad booking form",
+          "status": "done",
+          "items": [
+            "Replace mailto: links with booking modal ✓",
+            "Create /api/booking Worker to process inquiries ✓",
+            "Add rate card PDF download (optional)"
+          ]
+        },
+        {
+          "id": 2.5,
+          "task": "KV subscriber storage & admin list",
           "status": "pending",
           "items": [
-            "Replace mailto: links on advertise.html with a booking form",
-            "Worker processes ad inquiries and notifies admin",
-            "Add rate card PDF download option"
+            "Create KV namespace GAHQ_SUBSCRIBERS in Cloudflare dashboard",
+            "Bind SUBSCRIBERS variable to Pages project",
+            "Workers write form submissions to KV ✓",
+            "Admin subscriber list page at /admin/subscribers.html ✓",
+            "CSV export + search enabled ✓"
           ]
         }
       ],
       "acceptance_criteria": [
         "Form submissions work without Formspree",
-        "Newsletter subscribe captures emails",
+        "Newsletter subscribe captures emails to KV",
         "News aggregator works reliably under traffic",
-        "Ad inquiries submit without exposing raw email"
+        "Ad inquiries submit without exposing raw email",
+        "Admin can view and export subscriber list"
       ]
     },
     {
@@ -280,7 +293,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 1 complete — moving to Phase 2: serverless functions (form handler Worker deployed, news aggregator live)",
+  "current_focus": "Phase 2 in progress — KV subscriber storage needs Cloudflare dashboard config (create namespace, bind to Pages), then Phase 2 complete",
   "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

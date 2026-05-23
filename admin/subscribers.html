@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscribers — GAHQ Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.kv-status{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:20px}
+.kv-status.ok{background:rgba(52,199,123,0.1);border:1px solid rgba(52,199,123,0.2);color:#34C77B}
+.kv-status.pending{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#C9A84C}
+.kv-status.error{background:rgba(232,99,122,0.1);border:1px solid rgba(232,99,122,0.2);color:#E8637A}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.search-input{padding:8px 14px;border:1px solid #1E3250;border-radius:6px;background:#0F1E38;color:#CBD5E1;font-size:13px;outline:none;flex:1;min-width:200px;max-width:320px}
+.search-input:focus{border-color:#C9A84C}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C}
+.btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
+.btn-outline:hover{background:#C9A84C;color:#0A1628}
+.empty-state{text-align:center;padding:60px 24px;background:#0F1E38;border:1px dashed #1E3250;border-radius:12px}
+.empty-state h3{font-size:18px;color:#E8EEF7;margin-bottom:8px}
+.empty-state p{font-size:13px;color:#5A7A9F}
+.table-wrap .source-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(90,122,159,0.12);color:#5A7A9F;text-transform:uppercase}
+.table-wrap .source-tag.subscribe{background:rgba(52,199,123,0.12);color:#34C77B}
+.table-wrap .source-tag.booking{background:rgba(201,168,76,0.12);color:#C9A84C}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="subscribers.html" class="active">Subscribers</a>
+      <a href="submissions.html">Submissions</a>
+      <a href="donations.html">Donations</a>
+      <a href="content.html">Content</a>
+      <a href="newsletter.html">Newsletter</a>
+      <a href="bookings.html">Bookings</a>
+      <a href="roadmap.html">Roadmap</a>
+    </div>
+  </div>
+
+  <h1 class="page-title">Subscriber <span>List</span></h1>
+  <p class="page-desc">All email captures from lead forms, newsletter subscribe, and ad booking inquiries. Stored in Cloudflare KV.</p>
+
+  <div id="kvStatus" class="kv-status pending">Checking KV connection&hellip;</div>
+
+  <div class="stats" id="statsRow">
+    <div class="stat-card"><span class="stat-num" id="statTotal">-</span><span class="stat-label">Total Subscribers</span></div>
+    <div class="stat-card"><span class="stat-num green" id="statNewsletter">-</span><span class="stat-label">Newsletter</span></div>
+    <div class="stat-card"><span class="stat-num" id="statBookings">-</span><span class="stat-label">Ad Inquiries</span></div>
+    <div class="stat-card"><span class="stat-num dim" id="statLeads">-</span><span class="stat-label">Book Leads</span></div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-input" id="searchInput" placeholder="Search by name or email&hellip;" oninput="filterTable()">
+    <button class="btn btn-gold" onclick="exportCSV()">Export CSV</button>
+    <button class="btn btn-outline" onclick="refresh()">Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="subsBody">
+        <tr><td colspan="4" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+var _items = [];
+
+function refresh() {
+  document.getElementById('subsBody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>';
+  document.getElementById('kvStatus').className = 'kv-status pending';
+  document.getElementById('kvStatus').textContent = 'Fetching subscriber data&hellip;';
+
+  fetch('/api/contact').then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.message || 'Unknown error');
+    _items = data.items || [];
+    renderTable(_items);
+    renderStats(_items);
+    document.getElementById('kvStatus').className = 'kv-status ok';
+    document.getElementById('kvStatus').textContent = 'KV connected — ' + _items.length + ' subscriber(s) found';
+  }).catch(function(err) {
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px"><div class="empty-state"><h3>KV Not Connected</h3><p>' + err.message + '.<br>Make sure the SUBSCRIBERS KV namespace is created and bound to this Pages project in the Cloudflare dashboard.</p></div></td></tr>';
+    document.getElementById('kvStatus').className = 'kv-status error';
+    document.getElementById('kvStatus').textContent = 'KV error: ' + err.message;
+  });
+}
+
+function renderTable(items) {
+  var q = (document.getElementById('searchInput').value || '').toLowerCase();
+  var filtered = items.filter(function(i) {
+    return !q || (i.email && i.email.toLowerCase().indexOf(q) !== -1) || (i.name && i.name.toLowerCase().indexOf(q) !== -1) || (i.slot && i.slot.toLowerCase().indexOf(q) !== -1);
+  });
+  if (!filtered.length) {
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:#3A5278">No subscribers found.</td></tr>';
+    return;
+  }
+  var html = '';
+  filtered.forEach(function(item) {
+    var source = item.source || item.book || 'unknown';
+    var srcClass = source.indexOf('booking') !== -1 ? 'booking' : source.indexOf('subscribe') !== -1 || source === 'The Studio Weekly' ? 'subscribe' : '';
+    var srcLabel = source.indexOf('booking:') === 0 ? source.replace('booking:', '') : source === 'subscribe' || source === 'The Studio Weekly' ? 'Newsletter' : source || 'Lead Form';
+    var date = item.timestamp ? new Date(item.timestamp).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-';
+    html += '<tr><td>' + (item.email || '-') + '</td><td>' + (item.name || '-') + '</td><td><span class="source-tag ' + srcClass + '">' + srcLabel + '</span></td><td style="font-size:11px;color:#5A7A9F">' + date + '</td></tr>';
+  });
+  document.getElementById('subsBody').innerHTML = html;
+}
+
+function renderStats(items) {
+  var total = items.length;
+  var newsletter = items.filter(function(i) { return (i.source || '').indexOf('New Studio Weekly') !== -1 || (i.source || '').indexOf('subscribe') !== -1 || (i.book || '').indexOf('subscribe') !== -1; }).length;
+  var bookings = items.filter(function(i) { return (i.source || '').indexOf('booking') === 0; }).length;
+  var leads = total - newsletter - bookings;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statNewsletter').textContent = newsletter;
+  document.getElementById('statBookings').textContent = bookings;
+  document.getElementById('statLeads').textContent = leads;
+}
+
+function filterTable() {
+  renderTable(_items);
+}
+
+function exportCSV() {
+  if (!_items.length) return alert('No data to export.');
+  var rows = [['Email','Name','Source','Date']];
+  _items.forEach(function(i) {
+    var src = i.source || i.book || '';
+    if (src.indexOf('booking:') === 0) src = src.replace('booking:', '');
+    rows.push([i.email || '', i.name || '', src, i.timestamp || '']);
+  });
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'subscribers-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+refresh();
+</script>
+</body>
+</html>

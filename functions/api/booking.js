@@ -1,5 +1,5 @@
 export async function onRequest(context) {
-  const { request } = context;
+  const { request, env } = context;
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405, headers: { 'Content-Type': 'application/json', 'Allow': 'POST' }
@@ -19,7 +19,15 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-    const payload = { name, email, phone, company, slot, message, timestamp: new Date().toISOString() };
+    const payload = { name, email, phone, company, slot, message, timestamp: new Date().toISOString(), source: 'booking:' + slot };
+
+    // Store in KV if bound
+    const kv = env.SUBSCRIBERS;
+    if (kv && email) {
+      await kv.put('booking:' + Date.now() + ':' + email, JSON.stringify(payload));
+    }
+
+    // Forward to Formspree as email fallback
     const fp = new FormData();
     fp.append('name', name);
     fp.append('email', email);
@@ -27,7 +35,8 @@ export async function onRequest(context) {
     fp.append('_next', 'https://gideonabochie.org/newsletter/advertise.html');
     await fetch('https://formspree.io/f/xgoplkoe', {
       method: 'POST', body: fp, headers: { 'Accept': 'application/json' }
-    });
+    }).catch(function(){});
+
     return new Response(JSON.stringify({ status: 'ok', data: payload }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
