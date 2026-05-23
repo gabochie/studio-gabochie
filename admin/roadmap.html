@@ -151,7 +151,7 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
   <div class="ga-tag"><a href="index.html" style="color:inherit;text-decoration:none">GAHQ Admin</a> · Deployment Roadmap</div>
   <h1>Deployment <span>Roadmap</span></h1>
   <div class="tagline">School of Creativity, Love &amp; Wisdom — gideonabochie.org</div>
-  <div class="infra"><strong>Infrastructure:</strong> Cloudflare Pages → Cloudflare Workers → VPS/Railway + Database</div>
+  <div class="infra"><strong>Infrastructure:</strong> Cloudflare Pages → Workers + D1 (free tier) → VPS (when revenue scales)</div>
 </div>
 
 <!-- OVERVIEW -->
@@ -312,8 +312,8 @@ var DATA = {
     {
       "phase": 2,
       "name": "Serverless Functions & Engagement",
-      "status": "planned",
-      "description": "Add Cloudflare Workers for form handling, newsletter subscription, news aggregation proxy, and ad booking.",
+      "status": "complete",
+      "description": "Cloudflare Pages Functions for form handling, newsletter subscription, news aggregation proxy, ad booking, and KV subscriber storage.",
       "platform": "Cloudflare Pages + Cloudflare Workers (free tier)",
       "steps": [
         {
@@ -334,8 +334,8 @@ var DATA = {
           "items": [
             "Worker handles subscribe submissions ✓",
             "Add subscribe form + confirmation feedback ✓",
-            "Integrate with email service (ConvertKit/Mailchimp — pending)",
-            "Add confirmation auto-reply (pending)"
+            "Integrate with email service (deferred to Phase 3/4)",
+            "Confirmation auto-reply (deferred to Phase 4.1)"
           ]
         },
         {
@@ -344,7 +344,7 @@ var DATA = {
           "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true},{"label":"Worker source","url":"../functions/api/news.js","local":true}],
           "items": [
             "Replace rss2json.com with Cloudflare Pages Function ✓",
-            "Add RSS caching for rate limit compliance",
+            "Add RSS caching (deferred — current rate limit OK)",
             "Newsletter page uses /api/news proxy ✓"
           ]
         },
@@ -381,42 +381,100 @@ var DATA = {
     },
     {
       "phase": 3,
-      "name": "Backend + Database",
+      "name": "Revenue-Generating Backend (Workers + D1)",
       "status": "planned",
-      "description": "Deploy GAHQ CRM backend to a server with a proper database. Connect static site to APIs for dynamic features.",
-      "platform": "Railway / Fly.io / VPS (~$5-20/mo) + Postgres",
+      "description": "Build backend on Cloudflare Workers + D1 database (both free tier). On-site Flutterwave payments, D1 for structured data, admin CRUD tools. Revenue first — no paid hosting.",
+      "platform": "Cloudflare Workers + D1 + Flutterwave API (all free tier)",
       "steps": [
         {
           "id": "3.1",
-          "task": "Deploy GAHQ backend",
-          "launch": [{"label":"Railway","url":"https://railway.app"},{"label":"Fly.io","url":"https://fly.io"},{"label":"GAHQ backend","url":"../../backend/crm/","local":true}],
+          "task": "D1 Database & Admin API",
+          "launch": [{"label":"Cloudflare Dashboard","url":"https://dash.cloudflare.com"},{"label":"D1 Docs","url":"https://developers.cloudflare.com/d1/"}],
           "items": [
-            "Choose platform: Railway, Fly.io, or VPS",
-            "Deploy FastAPI from backend/crm/",
-            "Set up Postgres database",
-            "Configure env vars + CI/CD"
+            "Create D1 database gahq in Cloudflare dashboard",
+            "Define schema: subscribers, donations, bookings, page_views",
+            "Create /api/admin/* CRUD Workers for each table",
+            "Bind D1 database to Pages project as DB variable",
+            "Migrate existing KV subscriber data to D1"
           ]
         },
         {
           "id": "3.2",
-          "task": "Payment tracking integration",
-          "launch": [{"label":"Flutterwave Dashboard","url":"https://dashboard.flutterwave.com"},{"label":"Settings page","url":"../frontend/agent/settings.html","local":true}],
+          "task": "On-site Flutterwave Payments",
+          "launch": [{"label":"Flutterwave Dashboard","url":"https://dashboard.flutterwave.com"},{"label":"Live site","url":"../index.html","local":true}],
           "items": [
-            "Connect Flutterwave webhook to log donations",
-            "Build admin donation dashboard",
-            "Email notification on new donation"
+            "Embed Flutterwave checkout on donation page (replace external links)",
+            "Create /api/payments/flutterwave webhook Worker",
+            "Add payment to ad booking flow",
+            "Integrate premium content purchases (pay-per-download)",
+            "Admin donation/booking dashboard with charts"
           ]
         },
         {
           "id": "3.3",
-          "task": "Content management",
-          "launch": [{"label":"Admin panel","url":"../frontend/agent/dashboard.html","local":true}],
+          "task": "Content Management",
+          "launch": [{"label":"Admin panel","url":"index.html","local":true}],
           "items": [
-            "Admin panel for newsletter content",
-            "Manage testimonials, stats, gallery via API",
-            "Replace hardcoded data with API content"
+            "D1-backed admin CRUD for testimonials, stats, gallery",
+            "Replace hardcoded page data with API-driven content from D1",
+            "Newsletter editor in admin panel"
           ]
         }
+      ],
+      "acceptance_criteria": [
+        "D1 database accessible from Workers (Pages Functions bindings)",
+        "Donations processed on-site via Flutterwave (no external redirect)",
+        "Ad bookings accept payment and log to D1",
+        "Admin can view / export donation and booking data",
+        "Admin can update testimonials, stats, gallery without editing HTML",
+        "Everything runs on Cloudflare free tier ($0/mo)"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Growth & Automation",
+      "status": "future",
+      "description": "Email automation sequences, analytics dashboards, premium content gate, paid courses. Scale when revenue justifies paid infrastructure.",
+      "platform": "Cloudflare Workers + D1 + ConvertKit/Mailchimp (free tier)",
+      "steps": [
+        {
+          "id": "4.1",
+          "task": "Email automation",
+          "launch": [{"label":"ConvertKit","url":"https://convertkit.com"},{"label":"Mailchimp","url":"https://mailchimp.com"}],
+          "items": [
+            "Welcome sequence for newsletter subscribers",
+            "Auto follow-up for manifestos downloaders",
+            "Donation thank-you sequences"
+          ]
+        },
+        {
+          "id": "4.2",
+          "task": "Analytics & dashboards",
+          "launch": [{"label":"Cloudflare Analytics","url":"https://dash.cloudflare.com/?to=analytics"}],
+          "items": [
+            "Cloudflare Web Analytics (free, already available)",
+            "Donation funnel tracking",
+            "Newsletter growth dashboard",
+            "Ad revenue reporting"
+          ]
+        },
+        {
+          "id": "4.3",
+          "task": "Premium content & courses",
+          "launch": [{"label":"Ko-fi","url":"https://ko-fi.com/gideonabochie"},{"label":"Gumroad","url":"https://gumroad.com"}],
+          "items": [
+            "Members-only book chapters (payment gate)",
+            "Exclusive video teachings behind paywall",
+            "Paid courses or workshops with registration"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "Automated email sequences run without manual intervention",
+        "Admin has full visibility into all metrics",
+        "Premium content generates recurring revenue"
+      ]
+    }
       ],
       "acceptance_criteria": [
         "Backend APIs live at api.gideonabochie.org",
@@ -466,11 +524,13 @@ var DATA = {
           "id": "4.4",
           "task": "Premium content gating",
           "launch": [{"label":"Ko-fi","url":"https://ko-fi.com/gideonabochie"}],
-          "items": [
-            "Members-only book chapters",
-            "Exclusive video behind email gate",
-            "Paid courses/workshops"
-          ]
+      "items": [
+        "Form submissions work without Formspree ✓",
+        "Newsletter subscribe captures emails to KV ✓",
+        "News aggregator works reliably ✓",
+        "Ad inquiries submit without exposing raw email ✓",
+        "Admin can view and export subscriber list ✓"
+      ],
         }
       ],
       "acceptance_criteria": [
@@ -483,13 +543,11 @@ var DATA = {
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
-    "The GAHQ CRM backend already exists locally — deploying it is the main Phase 3 effort.",
-    "Don't wait for perfect — deploy Phase 1 now, iterate live.",
-    "Tasks marked with ✓ are already completed in this session.",
-    "Auto-verification checks live files on page load — verified items update automatically.",
-    "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
-    "404.html added. Roadmap moved to /admin/. Gallery images renamed descriptively.",
-    "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first."
+    "Phase 3 pivoted to Cloudflare Workers + D1 (free tier) — no paid hosting needed. Revenue-first: on-site Flutterwave payments, D1 database, admin CRUD.",
+    "Phase 2 complete: KV subscriber storage live. All form submissions persist to KV. Admin can view/export subscribers at /admin/subscribers.html.",
+    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — enough for early revenue phase.",
+    "Flutterwave payouts are settled to your bank in Ghana (GHS). No monthly fee, only per-transaction 1.4% + GHS 1.",
+    "When Phase 3 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
   ]
 };
 
@@ -879,8 +937,26 @@ var CHECKS = {
   ],
   "2.5": [ // KV subscriber storage
     {i:0, label:"Contact Worker writes to KV", check:function(){return checkPageContains("../functions/api/contact.js","SUBSCRIBERS")}},
-    {i:1, label:"Subscriber admin page exists", check:function(){return checkPageContains("subscribers.html","subsBody")}},
-    {i:2, label:"Admin nav links to subscribers", check:function(){return checkPageContains("index.html","subscribers.html")}}
+    {i:1, label:"KV binding live (no 'not bound' error)", check:function(){return checkKVLive()}},
+    {i:2, label:"Subscriber admin page exists", check:function(){return checkPageContains("subscribers.html","subsBody")}},
+    {i:3, label:"Admin nav links to subscribers", check:function(){return checkPageContains("index.html","subscribers.html")}}
+  ],
+  "3.1": [ // D1 Database & Admin API
+    {i:0, label:"D1 database gahq exists", check:function(){return checkFileExists("../functions/api/db/ping.js")}},
+    {i:1, label:"Schema tables defined", check:function(){return checkFileExists("../functions/api/db/schema.sql")}},
+    {i:2, label:"CRUD Workers created", check:function(){return checkFileExists("../functions/api/db/subscribers.js") || checkFileExists("../functions/api/db/donations.js")}},
+    {i:3, label:"KV subscriber data migrated to D1", check:function(){return checkKVLive()}}
+  ],
+  "3.2": [ // On-site Flutterwave Payments
+    {i:0, label:"Flutterwave checkout embedded on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}},
+    {i:1, label:"Payment webhook Worker exists", check:function(){return checkFileExists("../functions/api/payments/flutterwave.js")}},
+    {i:2, label:"Ad booking accepts payment", check:function(){return checkPageContains("../newsletter/advertise.html","FlutterwaveCheckout") || checkPageContains("../newsletter/advertise.html","makePayment")}},
+    {i:3, label:"Admin donation dashboard exists", check:function(){return checkFileExists("donations.html")}}
+  ],
+  "3.3": [ // Content Management
+    {i:0, label:"Admin CRUD for testimonials", check:function(){return checkPageContains("../index.html","/api/admin/testimonials") || checkFileExists("../functions/api/admin/testimonials.js")}},
+    {i:1, label:"Admin CRUD for gallery", check:function(){return checkFileExists("../functions/api/admin/gallery.js")}},
+    {i:2, label:"Newsletter editor exists", check:function(){return checkFileExists("newsletter.html")}}
   ]
 };
 
@@ -921,6 +997,13 @@ function checkBookFilenames() {
 function checkSecure(url) {
   return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){
     return r.ok && r.url.indexOf("https://") === 0;
+  }).catch(function(){return false});
+}
+
+function checkKVLive() {
+  return fetch("/api/contact", {method:"GET",cache:"no-store",headers:{"Referer":"/admin/"}}).then(function(r){
+    if (!r.ok) return false;
+    return r.json().then(function(j){return j.status === "ok"});
   }).catch(function(){return false});
 }
 

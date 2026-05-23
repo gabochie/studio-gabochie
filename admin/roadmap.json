@@ -2,7 +2,7 @@
   "project": "GideonAbochie Studio — gideonabochie.org",
   "tagline": "School of Creativity, Love & Wisdom",
   "domain": "https://gideonabochie.org",
-  "infrastructure_plan": "Cloudflare Pages (static) → Cloudflare Workers (serverless) → VPS/Railway (backend+DB)",
+  "infrastructure_plan": "Cloudflare Pages (static) → Cloudflare Workers + D1 (serverless backend, free tier) → VPS (scale when revenue justifies)",
   "phases": [
     {
       "phase": 1,
@@ -145,12 +145,12 @@
         {
           "id": 2.2,
           "task": "Newsletter subscribe system",
-          "status": "partial",
+          "status": "done",
           "items": [
             "Worker handles subscribe submissions ✓",
             "Subscribe form + AJAX confirmation on page ✓",
-            "Integrate with ConvertKit / Mailchimp (optional)",
-            "Confirmation auto-reply (pending)"
+            "Integrate with ConvertKit / Mailchimp (deferred to Phase 3/4)",
+            "Confirmation auto-reply (deferred to Phase 4.1)"
           ]
         },
         {
@@ -160,7 +160,7 @@
           "items": [
             "Replace rss2json.com with Cloudflare Pages Function ✓",
             "Newsletter uses /api/news proxy ✓",
-            "Add RSS caching for rate limit compliance (pending)"
+            "Add RSS caching (deferred — current rate limit OK)"
           ]
         },
         {
@@ -176,7 +176,7 @@
         {
           "id": 2.5,
           "task": "KV subscriber storage & admin list",
-          "status": "pending",
+          "status": "done",
           "items": [
             "Create KV namespace GAHQ_SUBSCRIBERS in Cloudflare dashboard",
             "Bind SUBSCRIBERS variable to Pages project",
@@ -196,69 +196,64 @@
     },
     {
       "phase": 3,
-      "name": "Backend + Database",
+      "name": "Revenue-Generating Backend (Workers + D1)",
       "status": "planned",
-      "description": "Deploy GAHQ CRM backend to a server with a proper database. Connect static site to backend APIs for dynamic features.",
-      "platform": "Railway / Fly.io / VPS (paid ~$5-20/mo) + Cloudflare DNS + Postgres/SQLite",
+      "description": "Build backend on Cloudflare Workers + D1 database (both free tier). On-site Flutterwave payments, D1 for structured data, admin CRUD tools. Revenue features first — no paid hosting needed.",
+      "platform": "Cloudflare Workers + D1 + Flutterwave API (all free tier)",
       "steps": [
         {
           "id": 3.1,
-          "task": "Deploy GAHQ backend",
+          "task": "D1 Database & Admin API",
           "status": "pending",
           "items": [
-            "Choose platform: Railway (simplest), Fly.io, or a $5 VPS",
-            "Deploy FastAPI backend from `backend/crm/`",
-            "Set up database (Postgres on Railway or SQLite on VPS)",
-            "Configure environment variables (API keys, DB URL)",
-            "Set up CI/CD from GitHub repo"
+            "Create D1 database gahq in Cloudflare dashboard",
+            "Define schema: subscribers, donations, bookings, page_views",
+            "Create /api/admin/* CRUD Workers for each table",
+            "Bind D1 database to Pages project as DB variable",
+            "Migrate existing KV subscriber data to D1"
           ]
         },
         {
           "id": 3.2,
-          "task": "Payment tracking integration",
+          "task": "On-site Flutterwave Payments",
           "status": "pending",
           "items": [
-            "Connect Flutterwave webhook to log donations in database",
-            "Build simple donation dashboard (admin-only)",
-            "Set up email notification on new donation"
+            "Embed Flutterwave checkout on donation page (replace external links)",
+            "Create /api/payments/flutterwave webhook Worker to verify + log to D1",
+            "Add payment to ad booking flow (charge on submit)",
+            "Integrate premium content purchases (pay-per-download chapters)",
+            "Admin donation/booking dashboard with charts"
           ]
         },
         {
           "id": 3.3,
-          "task": "Content management",
+          "task": "Content Management",
           "status": "pending",
           "items": [
-            "Build admin panel for updating newsletter content",
-            "Add ability to manage testimonials, stats, gallery from admin",
-            "Replace hardcoded static data with API-driven content"
+            "D1-backed admin CRUD for testimonials, stats, gallery",
+            "Replace hardcoded page data with API-driven content from D1",
+            "Newsletter editor in admin panel"
           ]
         }
       ],
       "acceptance_criteria": [
-        "Backend APIs accessible via API.gideonabochie.org (subdomain)",
-        "Donations logged in database",
-        "Admin can update content without editing HTML",
-        "Forms submit to backend, not external services"
+        "D1 database accessible from Workers (Pages Functions bindings)",
+        "Donations processed on-site via Flutterwave (no external redirect)",
+        "Ad bookings accept payment and log to D1",
+        "Admin can view / export donation and booking data",
+        "Admin can update testimonials, stats, gallery without editing HTML",
+        "Everything runs on Cloudflare free tier ($0/mo)"
       ]
     },
     {
       "phase": 4,
-      "name": "Full Product",
+      "name": "Growth & Automation",
       "status": "future",
-      "description": "Revenue-generating features: ad booking with payment, premium content, email automation, analytics dashboard.",
-      "platform": "Cloudflare Pages + Backend VPS + Third-party APIs",
+      "description": "Email automation sequences, analytics dashboards, premium content gate, paid courses. Scale when revenue justifies paid infrastructure.",
+      "platform": "Cloudflare Workers + D1 + ConvertKit/Mailchimp (free tier)",
       "steps": [
         {
           "id": 4.1,
-          "task": "Ad booking with payment",
-          "items": [
-            "Accept ad payments via Flutterwave directly on site",
-            "Automated ad slot calendar and booking confirmation",
-            "Rate card PDF generator"
-          ]
-        },
-        {
-          "id": 4.2,
           "task": "Email automation",
           "items": [
             "Welcome sequence for newsletter subscribers",
@@ -267,33 +262,33 @@
           ]
         },
         {
-          "id": 4.3,
+          "id": 4.2,
           "task": "Analytics & dashboards",
           "items": [
-            "Page view analytics (Cloudflare Web Analytics — free)",
+            "Cloudflare Web Analytics (free, already available)",
             "Donation funnel tracking",
             "Newsletter growth dashboard",
             "Ad revenue reporting"
           ]
         },
         {
-          "id": 4.4,
-          "task": "Premium content gating",
+          "id": 4.3,
+          "task": "Premium content & courses",
           "items": [
-            "Members-only book chapters",
-            "Exclusive video teachings behind email gate",
-            "Paid courses or workshops"
+            "Members-only book chapters (payment gate)",
+            "Exclusive video teachings behind paywall",
+            "Paid courses or workshops with registration"
           ]
         }
       ],
       "acceptance_criteria": [
-        "Site generates revenue beyond donations (ads, subscriptions)",
+        "Automated email sequences run without manual intervention",
         "Admin has full visibility into all metrics",
-        "Automated email sequences run without manual intervention"
+        "Premium content generates recurring revenue"
       ]
     }
   ],
-  "current_focus": "Phase 2 in progress — KV subscriber storage needs Cloudflare dashboard config (create namespace, bind to Pages), then Phase 2 complete",
+  "current_focus": "Phase 2 complete. Phase 3 planned — pivoted from Railway/VPS to Cloudflare Workers + D1 (free tier). Revenue-first approach: on-site Flutterwave payments, D1 database, admin content management. Start with Step 3.1: create D1 database + bind to Pages.",
   "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
@@ -308,6 +303,9 @@
     "Sales chat widget with animated dice mascot added to donation page.",
     "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first.",
     "Phase 1 complete. All deployment blockers fixed, domain secured, admin gated, images compressed, mobile UX optimized.",
-    "Phase 2 started: form handler Worker deployed (replaces Formspree), news aggregation Worker live."
+    "Phase 2 started: form handler Worker deployed (replaces Formspree), news aggregation Worker live.",
+    "Phase 2 complete: KV subscriber storage live. All form submissions persist to KV. Admin can view/export subscribers at /admin/subscribers.html.",
+    "Phase 3 pivoted to Cloudflare Workers + D1 (free tier) instead of Railway/Fly.io. Revenue-first: on-site Flutterwave payments, D1 database, admin CRUD. No paid hosting needed.",
+    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — more than enough for early revenue phase."
   ]
 }
