@@ -379,7 +379,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     <div class="section-label" style="justify-content:center">Stay Connected</div>
     <div class="section-title" style="font-size:clamp(24px,3vw,36px);margin-bottom:12px">Get The Studio Weekly <span style="color:var(--gold)">in Your Inbox</span></div>
     <p style="font-family:'Barlow',sans-serif;font-size:15px;color:var(--ink-lt);max-width:500px;margin:0 auto 28px;line-height:1.6">Creativity, love, wisdom, and Ghana's top stories — delivered every week. No spam, unsubscribe anytime.</p>
-    <form action="https://formspree.io/f/xgoplkoe" method="POST" style="display:flex;gap:12px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center">
+    <form action="/api/contact" method="POST" style="display:flex;gap:12px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center">
       <input type="email" name="email" placeholder="Your email address" required style="flex:1;min-width:220px;padding:14px 18px;border:1px solid var(--rule);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);outline:none">
       <input type="hidden" name="_subject" value="New Studio Weekly subscriber">
       <button type="submit" style="padding:14px 28px;border:none;border-radius:6px;background:var(--gold);color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s">Subscribe</button>

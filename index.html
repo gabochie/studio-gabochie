@@ -773,10 +773,9 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
   var form = this;
   var data = new FormData(form);
   data.append('_next', window.location.href);
-  fetch('https://formspree.io/f/xgoplkoe', {
+  fetch('/api/contact', {
     method: 'POST',
-    body: data,
-    headers: { 'Accept': 'application/json' }
+    body: data
   }).then(function() {
     form.style.display = 'none';
     document.getElementById('leadSuccess').classList.add('show');
