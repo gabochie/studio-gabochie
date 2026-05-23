@@ -62,7 +62,7 @@ export async function onRequest(context) {
             limit: 200
             filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
           ) {
-            dimensions { requestPath clientCountryName }
+            dimensions { clientRequestPath clientCountryName }
             sum { requests }
           }
         }
@@ -81,7 +81,7 @@ export async function onRequest(context) {
     const countryMap = {};
 
     (rawBreakdowns || []).forEach(g => {
-      const path = g.dimensions.requestPath || '/';
+      const path = g.dimensions.clientRequestPath || '/';
       const country = g.dimensions.clientCountryName || 'Unknown';
       const reqs = g.sum.requests || 0;
       topPagesMap[path] = (topPagesMap[path] || 0) + reqs;
