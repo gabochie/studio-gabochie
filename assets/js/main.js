@@ -21,7 +21,9 @@ function toggleNav(el) {
   var overlay = document.querySelector('.nav-mobile-overlay');
   var btn = document.querySelector('.nav-toggle');
   if (!nav) return;
-  if (!el) { nav.classList.remove('open'); if (overlay) overlay.classList.remove('open'); if (btn) btn.classList.remove('active'); }
-  else { nav.classList.toggle('open'); el.classList.toggle('active'); if (overlay) overlay.classList.toggle('open'); }
-  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+  var opening = !nav.classList.contains('open');
+  nav.classList.toggle('open');
+  if (btn) btn.classList.toggle('active', opening);
+  if (overlay) overlay.classList.toggle('open', opening);
+  document.body.style.overflow = opening ? 'hidden' : '';
 }
