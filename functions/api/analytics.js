@@ -61,7 +61,7 @@ export async function onRequest(context) {
           httpRequestsAdaptiveGroups(
             limit: 200
             filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
-            orderBy: [sum_requests_DESC]
+            orderBy: [requests_DESC]
           ) {
             dimensions { requestPath clientCountryName }
             sum { requests }
