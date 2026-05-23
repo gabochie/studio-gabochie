@@ -17,7 +17,7 @@
           "status": "done",
           "items": [
             "Replace Formspree placeholder `your-form-id` with real ID ✓",
-            "Fix `newsletter/advertise.html` links pointing to `index.html#subscribe` ✓",
+            "Replace Formspree placeholder `your-form-id` with real ID ✓",
             "Delete duplicate `gideonabochie-org/images books and socials/` directory ✓",
             "Rename book files to remove spaces (use hyphens) ✓"
           ]
@@ -165,7 +165,7 @@
         },
         {
           "id": 2.4,
-          "task": "Ad booking form",
+          "task": "Sponsorship booking form",
           "status": "done",
           "items": [
             "Replace mailto: links with booking modal ✓",
@@ -239,7 +239,7 @@
       "acceptance_criteria": [
         "D1 database accessible from Workers (Pages Functions bindings)",
         "Donations processed on-site via Flutterwave (no external redirect)",
-        "Ad bookings accept payment and log to D1",
+        "Sponsorship bookings accept payment and log to D1",
         "Admin can view / export donation and booking data",
         "Admin can update testimonials, stats, gallery without editing HTML",
         "Everything runs on Cloudflare free tier ($0/mo)"
@@ -288,7 +288,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 3 in progress — Step 3.1 done (D1 database live, admin CRUD Workers deployed). Next: Step 3.2 — embed Flutterwave checkout on-site, payment webhook, start accepting donations without external redirects.",
+  "current_focus": "Phase 3 in progress — Step 3.1 done (D1 database live, admin CRUD Workers deployed). Step 3.2 in progress (Flutterwave checkout embedded on index.html, donate.html created, webhook deployed). Advertise page reframed as sponsorship packages.",
   "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

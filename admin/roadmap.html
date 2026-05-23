@@ -351,11 +351,9 @@ var DATA = {
         {
           "id": "2.4",
           "task": "Ad booking form",
-          "launch": [{"label":"Advertise page","url":"../newsletter/advertise.html","local":true},{"label":"Booking API","url":"../functions/api/booking.js","local":true}],
-          "items": [
-            "Replace mailto: links with inline booking modal ✓",
-            "Create /api/booking Worker to process inquiries ✓",
-            "Add rate card PDF download (optional)"
+            "launch": [{"label":"Sponsorship page","url":"../newsletter/advertise.html","local":true},{"label":"Booking API","url":"../functions/api/booking.js","local":true}],
+
+            "Add sponsorship PDF download (optional)"
           ]
         },
         {
@@ -951,7 +949,7 @@ var CHECKS = {
   "3.2": [ // On-site Flutterwave Payments
     {i:0, label:"Flutterwave checkout embedded on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}},
     {i:1, label:"Payment webhook Worker exists", check:function(){return checkFileExists("../functions/api/payments/flutterwave.js")}},
-    {i:2, label:"Ad booking accepts payment", check:function(){return checkPageContains("../newsletter/advertise.html","FlutterwaveCheckout") || checkPageContains("../newsletter/advertise.html","makePayment")}},
+    {i:2, label:"Sponsorship booking accepts payment", check:function(){return checkPageContains("../newsletter/advertise.html","FlutterwaveCheckout") || checkPageContains("../newsletter/advertise.html","makePayment")}},
     {i:3, label:"Admin donation dashboard exists", check:function(){return checkFileExists("donations.html")}}
   ],
   "3.3": [ // Content Management
