@@ -39,37 +39,40 @@ export async function onRequest(context) {
   }
 
   try {
+    const timeseriesQuery = `{
+      viewer {
+        zones(filter: {zoneTag: "${zoneId}"}) {
+          httpRequests1mGroups(
+            orderBy: [datetimeMinute_ASC]
+            limit: 5000
+            filter: { datetimeMinute_geq: "${since}", datetimeMinute_leq: "${until}" }
+          ) {
+            dimensions { datetimeMinute }
+            sum { requests bytes }
+            uniq { uniques }
+          }
+        }
+      }
+    }`;
+
+    const pagesQuery = `{
+      viewer {
+        zones(filter: {zoneTag: "${zoneId}"}) {
+          httpRequestsAdaptiveGroups(
+            limit: 200
+            filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
+            orderBy: [sum_requests_DESC]
+          ) {
+            dimensions { requestPath clientCountryName }
+            sum { requests }
+          }
+        }
+      }
+    }`;
+
     const [timeseriesResult, breakdownsResult] = await Promise.all([
-      graphql(token, zoneId, `{
-        viewer {
-          zones(filter: {zoneTag: "${zoneId}"}) {
-            httpRequests1mGroups(
-              orderBy: [datetimeMinute_ASC]
-              limit: 5000
-              filter: { datetimeMinute_geq: "${since}", datetimeMinute_leq: "${until}" }
-            ) {
-              dimensions { datetimeMinute }
-              sum { browserMap { pageViews, uaBrowserFamily } bytes count requests }
-              uniq { uniques }
-            }
-          }
-        }
-      }`),
-      graphql(token, zoneId, `{
-        viewer {
-          zones(filter: {zoneTag: "${zoneId}"}) {
-            httpRequestsAdaptiveGroups(
-              limit: 100
-              filter: { datetime_geq: "${since}", datetime_leq: "${until}" }
-              orderBy: [count_DESC]
-            ) {
-              dimensions { requestPath clientCountryName clientRequestHTTPHost clientRequestHTTPProtocol clientASNDescription }
-              count
-              sum { responseBodySize }
-            }
-          }
-        }
-      }`)
+      graphql(token, zoneId, timeseriesQuery),
+      graphql(token, zoneId, pagesQuery)
     ]);
 
     const rawGroups = timeseriesResult.viewer.zones[0].httpRequests1mGroups || [];
@@ -77,14 +80,13 @@ export async function onRequest(context) {
 
     const topPagesMap = {};
     const countryMap = {};
-    const statusMap = {};
 
     (rawBreakdowns || []).forEach(g => {
       const path = g.dimensions.requestPath || '/';
       const country = g.dimensions.clientCountryName || 'Unknown';
-      topPagesMap[path] = (topPagesMap[path] || 0) + g.count;
-      countryMap[country] = (countryMap[country] || 0) + g.count;
-      const statusCode = Math.floor(g.dimensions.clientRequestHTTPHost ? 200 : 500);
+      const reqs = g.sum.requests || 0;
+      topPagesMap[path] = (topPagesMap[path] || 0) + reqs;
+      countryMap[country] = (countryMap[country] || 0) + reqs;
     });
 
     let byDay = {};
@@ -93,10 +95,10 @@ export async function onRequest(context) {
     (rawGroups || []).forEach(g => {
       const day = g.dimensions.datetimeMinute.slice(0, 10);
       if (!byDay[day]) byDay[day] = { requests: 0, bytes: 0, uniques: 0 };
-      byDay[day].requests += g.sum.count || 0;
+      byDay[day].requests += g.sum.requests || 0;
       byDay[day].bytes += g.sum.bytes || 0;
       byDay[day].uniques += g.uniq ? g.uniq.uniques || 0 : 0;
-      totalRequests += g.sum.count || 0;
+      totalRequests += g.sum.requests || 0;
       totalBandwidth += g.sum.bytes || 0;
       totalUniques += g.uniq ? g.uniq.uniques || 0 : 0;
     });
@@ -109,12 +111,12 @@ export async function onRequest(context) {
     }));
 
     const topPages = Object.keys(topPagesMap)
-      .sort((a,b) => topPagesMap[b] - topPagesMap[a])
+      .sort((a, b) => topPagesMap[b] - topPagesMap[a])
       .slice(0, 10)
       .map(path => ({ path, count: topPagesMap[path] }));
 
     const countries = Object.keys(countryMap)
-      .sort((a,b) => countryMap[b] - countryMap[a])
+      .sort((a, b) => countryMap[b] - countryMap[a])
       .slice(0, 15)
       .map(c => ({ country: c, count: countryMap[c] }));
 
