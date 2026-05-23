@@ -243,6 +243,46 @@ var DATA = {
           ]
         },
         {
+          "id": "1.5",
+          "task": "Custom domain & HTTPS",
+          "launch": [{"label":"Live site","url":"https://gideonabochie.org"},{"label":"Cloudflare DNS","url":"https://dash.cloudflare.com"}],
+          "items": [
+            "gideonabochie.org resolves with valid HTTPS ✓",
+            "Root domain redirects to www (or apex preferred) ✓"
+          ]
+        },
+        {
+          "id": "1.6",
+          "task": "Cloudflare Access admin security",
+          "launch": [{"label":"Admin page","url":"../admin/index.html","local":true}],
+          "items": [
+            "Admin routes protected by Cloudflare Access login ✓",
+            "Public pages (newsletter, etc.) remain open ✓"
+          ]
+        },
+        {
+          "id": "1.7",
+          "task": "Compress gallery images",
+          "launch": [{"label":"Gallery folder","url":"../assets/images/gallery/","local":true}],
+          "items": [
+            "teaching-session.jpg < 300KB ✓",
+            "creative-workshop.jpg < 300KB ✓",
+            "community-outreach.jpg < 300KB ✓",
+            "book-launch.jpg < 300KB ✓",
+            "behind-scenes.jpg < 300KB ✓",
+            "ministry-moment.jpg < 300KB ✓"
+          ]
+        },
+        {
+          "id": "1.8",
+          "task": "Flutterwave decal PDF",
+          "launch": [{"label":"Download PDF","url":"../assets/flutterwave-decal.pdf","local":true},{"label":"Check page","url":"../index.html","local":true}],
+          "items": [
+            "Decal PDF exists in assets/ ✓",
+            "Download link present on homepage ✓"
+          ]
+        },
+        {
           "id": "1.9",
           "task": "Mobile & UX Optimization",
           "launch": [{"label":"advertise.html","url":"../newsletter/advertise.html","local":true},{"label":"main.css","url":"../assets/css/main.css","local":true},{"label":"Lighthouse","url":"https://pagespeed.web.dev"}],

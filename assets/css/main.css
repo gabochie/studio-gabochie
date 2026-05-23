@@ -46,3 +46,24 @@ nav .container{display:flex;align-items:center;justify-content:space-between;wid
 .reveal-scroll{opacity:0;transform:translateY(20px);transition:opacity .65s,transform .65s}
 .reveal-scroll.in{opacity:1;transform:translateY(0)}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Font-Display Strategy ── */
+@font-face{font-family:'Libre Baskerville';font-style:normal;font-weight:400;font-display:swap;src:local('Libre Baskerville'),local('LibreBaskerville-Regular'),url(https://fonts.gstatic.com/s/librebaskerville/v14/kmKnZrc3Hgf_IQ1YJtQW7LcpvP9E4cE.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Libre Baskerville';font-style:italic;font-weight:400;font-display:swap;src:local('Libre Baskerville Italic'),local('LibreBaskerville-Italic'),url(https://fonts.gstatic.com/s/librebaskerville/v14/kmKhZrc3Hgf_IQ1YJtQW7LcpvP9E4ceRsY0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Libre Baskerville';font-style:normal;font-weight:700;font-display:swap;src:local('Libre Baskerville Bold'),local('LibreBaskerville-Bold'),url(https://fonts.gstatic.com/s/librebaskerville/v14/kmKiZrc3Hgf_IQ1YJtQW7LcpvP9E4cE1cZi.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+/* ── Touch Interaction ── */
+button,a,.btn,.nav-toggle,.gallery-item,.rate-item-cta,input,textarea,select{touch-action:manipulation}
+
+/* ── Reduced Motion ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* ── Color Scheme ── */
+@media(prefers-color-scheme:light){
+  :root{background:#fff;color:#1a1a2e}
+}
+@media(prefers-color-scheme:dark){
+  :root{background:#0A1628;color:#CBD5E1}
+}
