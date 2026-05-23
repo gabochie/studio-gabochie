@@ -286,5 +286,39 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 </div>
 
 <script src="../assets/js/main.js"></script>
+<script>
+function openBooking(slot) {
+  document.getElementById('bookingSlot').textContent = slot;
+  document.getElementById('bookingSlotInput').value = slot;
+  document.getElementById('bookingForm').style.display = '';
+  document.getElementById('bookingSuccess').style.display = 'none';
+  document.getElementById('bookingSubmit').disabled = false;
+  document.getElementById('bookingSubmit').textContent = 'Send Inquiry';
+  document.getElementById('bookingModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeBooking() {
+  document.getElementById('bookingModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeBooking();
+});
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var btn = document.getElementById('bookingSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Sending\u2026';
+  var fd = new FormData(this);
+  fetch('/api/booking', { method: 'POST', body: fd }).then(function() {
+    this.style.display = 'none';
+    document.getElementById('bookingSuccess').style.display = 'block';
+  }.bind(this)).catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Send Inquiry';
+    alert('Something went wrong. Please email info@gideonabochie.com directly.');
+  });
+});
+</script>
 </body>
 </html>

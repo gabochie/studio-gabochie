@@ -319,12 +319,12 @@ var DATA = {
         {
           "id": "2.1",
           "task": "Form handling Worker",
-          "launch": [{"label":"Cloudflare Workers","url":"https://dash.cloudflare.com/?to=workers"},{"label":"Workers Docs","url":"https://developers.cloudflare.com/workers/"}],
+          "launch": [{"label":"Contact API","url":"../functions/api/contact.js","local":true},{"label":"Live test","url":"../index.html","local":true}],
           "items": [
-            "Create Worker for lead capture + contact forms",
-            "Store submissions in Cloudflare KV or email",
-            "Remove Formspree dependency",
-            "Add honeypot + rate limiting"
+            "Create Worker for lead capture + contact forms ✓",
+            "Wire up all forms to use /api/contact ✓",
+            "Remove direct Formspree dependency (use Worker proxy) ✓",
+            "Add honeypot spam protection ✓"
           ]
         },
         {
@@ -332,29 +332,30 @@ var DATA = {
           "task": "Newsletter subscribe system",
           "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
           "items": [
-            "Worker handles email capture to KV/email",
-            "Integrate with ConvertKit/Mailchimp (optional)",
-            "Add confirmation auto-reply"
+            "Worker handles subscribe submissions ✓",
+            "Add subscribe form + confirmation feedback ✓",
+            "Integrate with email service (ConvertKit/Mailchimp — pending)",
+            "Add confirmation auto-reply (pending)"
           ]
         },
         {
           "id": "2.3",
           "task": "News aggregation Worker",
-          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
+          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true},{"label":"Worker source","url":"../functions/api/news.js","local":true}],
           "items": [
-            "Replace rss2json.com with Cloudflare Worker",
+            "Replace rss2json.com with Cloudflare Pages Function ✓",
             "Add RSS caching for rate limit compliance",
-            "Test with real traffic"
+            "Newsletter page uses /api/news proxy ✓"
           ]
         },
         {
           "id": "2.4",
           "task": "Ad booking form",
-          "launch": [{"label":"Advertise page","url":"../newsletter/advertise.html","local":true}],
+          "launch": [{"label":"Advertise page","url":"../newsletter/advertise.html","local":true},{"label":"Booking API","url":"../functions/api/booking.js","local":true}],
           "items": [
-            "Replace mailto: links with booking form",
-            "Worker processes + emails inquiries",
-            "Add rate card PDF download"
+            "Replace mailto: links with inline booking modal ✓",
+            "Create /api/booking Worker to process inquiries ✓",
+            "Add rate card PDF download (optional)"
           ]
         }
       ],
@@ -844,6 +845,20 @@ var CHECKS = {
     {i:3, label:"touch-action: manipulation in CSS", check:function(){return checkPageContains("../assets/css/main.css","touch-action")}},
     {i:4, label:"loading='lazy' on below-fold images", check:function(){return checkPageContains("../index.html",'loading="lazy"')}},
     {i:5, label:"font-display strategy defined", check:function(){return checkPageContains("../assets/css/main.css","font-display")}}
+  ],
+  "2.1": [ // Form handling Worker
+    {i:0, label:"Contact API exists", check:function(){return checkFileExists("../functions/api/contact.js")}},
+    {i:1, label:"Lead form uses /api/contact", check:function(){return checkPageContains("../index.html","/api/contact")}},
+    {i:2, label:"Newsletter form uses /api/contact", check:function(){return checkPageContains("../newsletter/index.html","/api/contact")}}
+  ],
+  "2.3": [ // News aggregation Worker
+    {i:0, label:"News API exists", check:function(){return checkFileExists("../functions/api/news.js")}},
+    {i:1, label:"Newsletter uses /api/news", check:function(){return checkPageContains("../newsletter/index.html","/api/news")}}
+  ],
+  "2.4": [ // Ad booking form
+    {i:0, label:"Booking API exists", check:function(){return checkFileExists("../functions/api/booking.js")}},
+    {i:1, label:"openBooking function present", check:function(){return checkPageContains("../newsletter/advertise.html","openBooking")}},
+    {i:2, label:"Mailto replaced with booking form", check:function(){return checkPageContains("../newsletter/advertise.html","bookingModal")}}
   ]
 };
 
