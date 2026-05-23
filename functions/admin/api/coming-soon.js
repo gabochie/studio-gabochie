@@ -13,12 +13,25 @@ export async function onRequest(context) {
   }
   try {
     if (request.method === 'GET') {
-      const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
-      return new Response(JSON.stringify({ status: 'ok', active: row?.value === 'true' }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      try {
+        const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
+        return new Response(JSON.stringify({ status: 'ok', active: row?.value === 'true' }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } catch (e) {
+        // Settings table doesn't exist yet — create it
+        await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))").run();
+        await env.DB.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')").run();
+        return new Response(JSON.stringify({ status: 'ok', active: false }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
     if (request.method === 'POST') {
+      // Ensure table exists
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))").run();
+      await env.DB.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')").run();
+
       const body = await request.json();
       const active = body.active === true;
       await env.DB.prepare("UPDATE settings SET value = ?, updated_at = datetime('now') WHERE key = 'coming_soon'")

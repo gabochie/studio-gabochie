@@ -103,6 +103,16 @@
 .cs-toggle.on::after{transform:translateX(22px)}
 .cs-toggle:disabled{opacity:.4;cursor:not-allowed}
 .cs-toggle-label{font-size:11px;color:#3A5278;font-weight:600;min-width:40px}
+
+/* ── Cloudflare Analytics ── */
+.cf-bar{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:12px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cf-bar .cf-status{font-size:11px;color:#5A7A9F;flex:1}
+.cf-bar .cf-status .connected{color:#22C55E;font-weight:600}
+.cf-bar .cf-status .disconnected{color:#EAB308;font-weight:600}
+.country-list{display:flex;flex-wrap:wrap;gap:6px}
+.country-item{padding:4px 10px;border-radius:4px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.1);font-size:11px;color:#94A3B8;display:flex;align-items:center;gap:6px}
+.country-item .flag{font-size:14px}
+.country-item .count{color:#3B82F6;font-weight:600;margin-left:auto}
 </style>
 </head>
 <body>
@@ -150,6 +160,41 @@
     </div>
     <span class="cs-toggle-label" id="csToggleLabel">Off</span>
     <button class="cs-toggle off" id="csToggle" onclick="toggleComingSoon()" aria-label="Toggle coming soon mode"></button>
+  </div>
+
+  <!-- Cloudflare Analytics Stats -->
+  <div class="section-title">&#9729; Traffic Analytics <span class="badge" id="cfRange">7 days</span></div>
+  <div class="cf-bar">
+    <span class="cf-status" id="cfStatus">Checking connection...</span>
+    <div class="filter-bar" style="margin:0">
+      <button class="filter-btn active" onclick="setRange('7d',this)">7 Days</button>
+      <button class="filter-btn" onclick="setRange('30d',this)">30 Days</button>
+      <button class="filter-btn" onclick="setRange('today',this)">Today</button>
+    </div>
+  </div>
+  <div class="stats" id="cfStatsContainer">
+    <div class="stat-card"><span class="num blue stat-loading" id="cfUniques">—</span><span class="label">Unique Visitors</span><span class="sub" id="cfUniquesSub">Cloudflare Analytics</span></div>
+    <div class="stat-card"><span class="num blue stat-loading" id="cfRequests">—</span><span class="label">Total Requests</span><span class="sub" id="cfRequestsSub">Cloudflare Analytics</span></div>
+    <div class="stat-card"><span class="num blue stat-loading" id="cfBandwidth">—</span><span class="label">Bandwidth</span><span class="sub" id="cfBandwidthSub">Cloudflare Analytics</span></div>
+    <div class="stat-card"><span class="num blue stat-loading" id="cfStatusCodes">—</span><span class="label">Status Codes</span><span class="sub" id="cfStatusCodesSub">2xx / 4xx / 5xx</span></div>
+  </div>
+
+  <!-- CF Chart + Countries -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Daily Traffic</span>
+        <span class="card-sub" id="cfDailyTotal">Loading...</span>
+      </div>
+      <div class="chart-bars" id="cfDailyChart"><span class="loading-pulse"></span></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Top Countries</span>
+        <span class="card-sub" id="cfCountryCount">0</span>
+      </div>
+      <div class="country-list" id="cfCountries"><span class="loading-pulse"></span></div>
+    </div>
   </div>
 
   <!-- Charts -->
@@ -229,6 +274,11 @@
       <div class="tool-icon">&#9998;</div>
       <div class="tool-name">Content Manager</div>
       <div class="tool-desc">Manage testimonials, stats, gallery.</div>
+    </a>
+    <a href="/api/db/setup" target="_blank" class="tool-card" style="border-color:rgba(234,179,8,.2)">
+      <div class="tool-icon" style="color:#EAB308">&#9881;</div>
+      <div class="tool-name">Run DB Setup</div>
+      <div class="tool-desc">Apply pending database migrations (settings table, indexes).</div>
     </a>
   </div>
 </div>
@@ -470,14 +520,74 @@ function toggleComingSoon(){
     toggle.disabled = false;
   }).catch(function(){
     toggle.disabled = false;
-    alert('Failed to toggle. Make sure D1 is connected.');
+    alert('Failed to toggle. Try visiting /api/db/setup to run migrations first, then try again.');
+  });
+}
+
+// ── Cloudflare Analytics ──
+var cfRange = '7d';
+
+function setRange(range, btn){
+  cfRange = range;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+  if(btn) btn.classList.add('active');
+  $('cfRange').textContent = range === 'today' ? 'Today' : (range === '30d' ? '30 days' : '7 days');
+  loadCFAnalytics();
+}
+
+function loadCFAnalytics(){
+  $('cfStatus').innerHTML = 'Fetching from Cloudflare API...';
+  fetch('/api/analytics?range=' + cfRange, {cache:'no-store'}).then(function(r){
+    return r.json();
+  }).then(function(d){
+    if(d.status === 'not_configured'){
+      $('cfStatus').innerHTML = '<span class="disconnected">CF_API_TOKEN not set</span> — add <strong>CF_API_TOKEN</strong> and <strong>CF_ZONE_ID</strong> in Cloudflare Pages env vars';
+      return;
+    }
+    if(d.status !== 'ok') throw new Error(d.message || 'Unknown error');
+
+    $('cfStatus').innerHTML = '<span class="connected">&#10003; Connected</span> — updated ' + new Date(d.last_updated).toLocaleTimeString();
+
+    var t = d.total || {};
+    $('cfUniques').textContent = fmtNum(t.uniques || 0);
+    $('cfUniques').className = 'num blue';
+    $('cfUniquesSub').textContent = 'Unique visitors';
+
+    $('cfRequests').textContent = fmtNum(t.requests || 0);
+    $('cfRequests').className = 'num blue';
+    $('cfRequestsSub').textContent = 'Total HTTP requests';
+
+    $('cfBandwidth').textContent = t.bandwidth_gb ? (t.bandwidth_gb < 1 ? Math.round(t.bandwidth_gb * 1024) + ' MB' : t.bandwidth_gb.toFixed(1) + ' GB') : '0 GB';
+    $('cfBandwidth').className = 'num blue';
+    $('cfBandwidthSub').textContent = 'Edge bandwidth';
+
+    // Daily chart
+    var daily = d.daily || [];
+    $('cfDailyTotal').textContent = fmtNum(t.requests || 0) + ' requests';
+    barChart('cfDailyChart', daily, 'date', 'uniques', 'chart-bar blue', 0);
+
+    // Countries
+    var countries = d.top_countries || [];
+    $('cfCountryCount').textContent = countries.length + ' countries';
+    if(countries.length){
+      var html = countries.map(function(c){
+        return '<div class="country-item"><span class="flag">' + (c.country === 'Unknown' ? '&#127759;' : '') + '</span>' + c.country + ' <span class="count">' + fmtNum(c.count) + '</span></div>';
+      }).join('');
+      $('cfCountries').innerHTML = html;
+    } else {
+      $('cfCountries').innerHTML = '<span style="color:#3A5278;font-size:12px">No country data yet</span>';
+    }
+  }).catch(function(err){
+    $('cfStatus').innerHTML = '<span class="disconnected">Error: ' + err.message + '</span>';
   });
 }
 
 // ── Init ──
 loadSummary();
 loadComingSoonStatus();
+loadCFAnalytics();
 setInterval(loadSummary, 30000);
+setInterval(loadCFAnalytics, 60000);
 </script>
 </body>
 </html>
