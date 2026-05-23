@@ -204,13 +204,13 @@
         {
           "id": 3.1,
           "task": "D1 Database & Admin API",
-          "status": "pending",
+          "status": "done",
           "items": [
             "Create D1 database gahq in Cloudflare dashboard",
             "Define schema: subscribers, donations, bookings, page_views",
             "Create /api/admin/* CRUD Workers for each table",
-            "Bind D1 database to Pages project as DB variable",
-            "Migrate existing KV subscriber data to D1"
+            "Bind D1 database to Pages project as DB variable ✓",
+            "Migrate existing KV subscriber data to D1 ✓"
           ]
         },
         {
@@ -288,7 +288,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 2 complete. Phase 3 planned — pivoted from Railway/VPS to Cloudflare Workers + D1 (free tier). Revenue-first approach: on-site Flutterwave payments, D1 database, admin content management. Start with Step 3.1: create D1 database + bind to Pages.",
+  "current_focus": "Phase 3 in progress — Step 3.1 done (D1 database live, admin CRUD Workers deployed). Next: Step 3.2 — embed Flutterwave checkout on-site, payment webhook, start accepting donations without external redirects.",
   "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

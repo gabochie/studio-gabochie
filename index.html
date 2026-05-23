@@ -521,14 +521,14 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
       <p>Your generosity makes every book, video, and teaching possible. Help us reach more people with the message of creativity, love, and wisdom — freely and faithfully.</p>
 
       <div class="give-options">
-        <a href="https://flutterwave.com/donate/xcb7pf9xbi0d" target="_blank" rel="noopener" class="give-btn">
+        <button onclick="openDonationModal()" class="give-btn" style="cursor:pointer;text-align:left;width:100%;border:none">
           <div class="give-btn-icon flutterwave"><i class="ti ti-credit-card"></i></div>
           <div class="give-btn-text">
             <strong>Donate via Card (Flutterwave)</strong>
             <span>One-time or monthly — all major cards accepted</span>
           </div>
           <span class="give-badge">Recommended</span>
-        </a>
+        </button>
 
         <a href="https://ko-fi.com/gideonabochie" target="_blank" rel="noopener" class="give-btn">
           <div class="give-btn-icon kofi"><i class="ti ti-mug"></i></div>
@@ -960,6 +960,124 @@ function handleQuery(text) {
   } else {
     addBotMsg('Great question! For a detailed answer, please email <a href="mailto:info@gideonabochie.com" style="color:#C9A84C;text-decoration:underline">info@gideonabochie.com</a> and we\'ll get back to you within 24 hours. Or try one of the quick topics below:', quickReplies);
   }
+}
+</script>
+
+<!-- DONATION MODAL -->
+<div id="donationOverlay" onclick="closeDonationModal(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px">
+  <div onclick="event.stopPropagation()" style="background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px;max-width:420px;width:100%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff">Choose Amount</h3>
+      <button onclick="closeDonationModal()" style="background:0 0;border:none;color:#5A7A9F;font-size:24px;cursor:pointer;padding:0;line-height:1">&times;</button>
+    </div>
+    <p style="color:#8A9BB5;font-size:13px;margin-bottom:20px">Select an amount to donate. All payments processed securely by Flutterwave.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <button class="donate-amount" data-amount="50" onclick="selectAmount(this,50)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GH¢ 50</button>
+      <button class="donate-amount" data-amount="100" onclick="selectAmount(this,100)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GH¢ 100</button>
+      <button class="donate-amount" data-amount="250" onclick="selectAmount(this,250)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GH¢ 250</button>
+      <button class="donate-amount" data-amount="500" onclick="selectAmount(this,500)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GH¢ 500</button>
+      <button class="donate-amount" data-amount="1000" onclick="selectAmount(this,1000)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GH¢ 1000</button>
+      <button class="donate-amount" data-amount="custom" onclick="selectAmount(this,'custom')" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#5A7A9F;font-size:14px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">Custom</button>
+    </div>
+    <div id="customAmountWrap" style="display:none;margin-bottom:16px">
+      <input id="customAmount" type="number" min="10" placeholder="Enter amount (GHS)" oninput="updateCustomAmount()" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:16px;font-family:inherit">
+    </div>
+    <button id="payBtn" onclick="startPayment()" disabled style="width:100%;padding:14px;border:none;border-radius:10px;background:rgba(201,168,76,.12);color:#5A7A9F;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:not-allowed;transition:all .2s">Select Amount First</button>
+    <p style="color:#3A5278;font-size:11px;text-align:center;margin-top:12px"><i class="ti ti-lock"></i> Secured by Flutterwave</p>
+  </div>
+</div>
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script>
+var selectedAmount = null;
+var selectedName = '';
+var selectedEmail = '';
+
+function openDonationModal() {
+  selectedAmount = null;
+  document.getElementById('donationOverlay').style.display = 'flex';
+  document.querySelectorAll('.donate-amount').forEach(function(b) { b.style.background = 'transparent'; b.style.borderColor = '#1E3250'; b.style.color = b.dataset.amount === 'custom' ? '#5A7A9F' : '#E8EEF7'; });
+  document.getElementById('customAmountWrap').style.display = 'none';
+  document.getElementById('payBtn').disabled = true;
+  document.getElementById('payBtn').style.cursor = 'not-allowed';
+  document.getElementById('payBtn').style.background = 'rgba(201,168,76,.12)';
+  document.getElementById('payBtn').style.color = '#5A7A9F';
+  document.getElementById('payBtn').textContent = 'Select Amount First';
+  document.getElementById('customAmount').value = '';
+  selectedName = prompt('Enter your name (optional):') || 'Anonymous';
+  selectedEmail = prompt('Enter your email (optional, for receipt):') || 'donor@anonymous.invalid';
+}
+
+function closeDonationModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('donationOverlay').style.display = 'none';
+}
+
+function selectAmount(btn, amount) {
+  document.querySelectorAll('.donate-amount').forEach(function(b) { b.style.background = 'transparent'; b.style.borderColor = '#1E3250'; b.style.color = b.dataset.amount === 'custom' ? '#5A7A9F' : '#E8EEF7'; });
+  btn.style.background = 'rgba(201,168,76,.12)';
+  btn.style.borderColor = '#C9A84C';
+  btn.style.color = '#C9A84C';
+  if (amount === 'custom') {
+    document.getElementById('customAmountWrap').style.display = 'block';
+    document.getElementById('payBtn').disabled = true;
+    document.getElementById('payBtn').style.cursor = 'not-allowed';
+    document.getElementById('payBtn').style.background = 'rgba(201,168,76,.12)';
+    document.getElementById('payBtn').style.color = '#5A7A9F';
+    document.getElementById('payBtn').textContent = 'Enter Amount';
+  } else {
+    selectedAmount = amount;
+    document.getElementById('customAmountWrap').style.display = 'none';
+    document.getElementById('payBtn').disabled = false;
+    document.getElementById('payBtn').style.cursor = 'pointer';
+    document.getElementById('payBtn').style.background = '#C9A84C';
+    document.getElementById('payBtn').style.color = '#0A1628';
+    document.getElementById('payBtn').textContent = 'Donate GH¢ ' + amount;
+  }
+}
+
+function updateCustomAmount() {
+  var val = parseFloat(document.getElementById('customAmount').value);
+  if (val && val >= 10) {
+    selectedAmount = val;
+    document.getElementById('payBtn').disabled = false;
+    document.getElementById('payBtn').style.cursor = 'pointer';
+    document.getElementById('payBtn').style.background = '#C9A84C';
+    document.getElementById('payBtn').style.color = '#0A1628';
+    document.getElementById('payBtn').textContent = 'Donate GH¢ ' + val;
+  } else {
+    document.getElementById('payBtn').disabled = true;
+    document.getElementById('payBtn').style.background = 'rgba(201,168,76,.12)';
+    document.getElementById('payBtn').style.color = '#5A7A9F';
+    document.getElementById('payBtn').textContent = 'Enter Valid Amount';
+  }
+}
+
+function startPayment() {
+  if (!selectedAmount || selectedAmount < 10) return;
+  var tx_ref = 'donation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  document.getElementById('payBtn').disabled = true;
+  document.getElementById('payBtn').textContent = 'Opening...';
+  FlutterwaveCheckout({
+    public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+    tx_ref: tx_ref,
+    amount: selectedAmount,
+    currency: 'GHS',
+    payment_options: 'card, mobilemoneyghana, ussd',
+    customer: { email: selectedEmail, name: selectedName },
+    callback: function(response) {
+      window.location.href = '/donate.html?tx_ref=' + response.transaction_id + '&flw_ref=' + tx_ref;
+    },
+    onclose: function() {
+      document.getElementById('payBtn').disabled = false;
+      document.getElementById('payBtn').textContent = 'Donate GH¢ ' + selectedAmount;
+    },
+    customizations: {
+      title: 'GideonAbochie Studio',
+      description: 'Support the mission',
+      logo: 'https://gideonabochie.org/assets/images/logo.png',
+    }
+  });
 }
 </script>
 

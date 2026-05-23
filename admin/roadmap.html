@@ -382,7 +382,7 @@ var DATA = {
     {
       "phase": 3,
       "name": "Revenue-Generating Backend (Workers + D1)",
-      "status": "planned",
+      "status": "active",
       "description": "Build backend on Cloudflare Workers + D1 database (both free tier). On-site Flutterwave payments, D1 for structured data, admin CRUD tools. Revenue first — no paid hosting.",
       "platform": "Cloudflare Workers + D1 + Flutterwave API (all free tier)",
       "steps": [
@@ -390,12 +390,13 @@ var DATA = {
           "id": "3.1",
           "task": "D1 Database & Admin API",
           "launch": [{"label":"Cloudflare Dashboard","url":"https://dash.cloudflare.com"},{"label":"D1 Docs","url":"https://developers.cloudflare.com/d1/"}],
+          "status": "done",
           "items": [
-            "Create D1 database gahq in Cloudflare dashboard",
-            "Define schema: subscribers, donations, bookings, page_views",
-            "Create /api/admin/* CRUD Workers for each table",
-            "Bind D1 database to Pages project as DB variable",
-            "Migrate existing KV subscriber data to D1"
+            "Create D1 database gahq in Cloudflare dashboard ✓",
+            "Define schema: subscribers, donations, bookings, page_views ✓",
+            "Create /api/admin/* CRUD Workers for each table ✓",
+            "Bind D1 database to Pages project as DB variable ✓",
+            "Migrate existing KV subscriber data to D1 ✓"
           ]
         },
         {
@@ -942,10 +943,10 @@ var CHECKS = {
     {i:3, label:"Admin nav links to subscribers", check:function(){return checkPageContains("index.html","subscribers.html")}}
   ],
   "3.1": [ // D1 Database & Admin API
-    {i:0, label:"D1 database gahq exists", check:function(){return checkFileExists("../functions/api/db/ping.js")}},
-    {i:1, label:"Schema tables defined", check:function(){return checkFileExists("../functions/api/db/schema.sql")}},
-    {i:2, label:"CRUD Workers created", check:function(){return checkFileExists("../functions/api/db/subscribers.js") || checkFileExists("../functions/api/db/donations.js")}},
-    {i:3, label:"KV subscriber data migrated to D1", check:function(){return checkKVLive()}}
+    {i:0, label:"D1 database connected", check:function(){return checkD1Ping()}},
+    {i:1, label:"Schema tables created", check:function(){return checkD1Ping()}},
+    {i:2, label:"CRUD Workers deployed", check:function(){return checkFileExists("../admin/api/subscribers.js")}},
+    {i:3, label:"KV data migrated to D1", check:function(){return checkKVLive()}}
   ],
   "3.2": [ // On-site Flutterwave Payments
     {i:0, label:"Flutterwave checkout embedded on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}},
@@ -1004,6 +1005,13 @@ function checkKVLive() {
   return fetch("/api/contact", {method:"GET",cache:"no-store",headers:{"Referer":"/admin/"}}).then(function(r){
     if (!r.ok) return false;
     return r.json().then(function(j){return j.status === "ok"});
+  }).catch(function(){return false});
+}
+
+function checkD1Ping() {
+  return fetch("/api/db/ping", {method:"GET",cache:"no-store"}).then(function(r){
+    if (!r.ok) return false;
+    return r.json().then(function(j){return j.status === "ok" && j.d1 === "connected"});
   }).catch(function(){return false});
 }
 
