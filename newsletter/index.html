@@ -365,12 +365,15 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       <div class="news-cat-nav">
         <button class="news-cat-btn active" data-cat="all">All</button>
         <button class="news-cat-btn" data-cat="business">Business</button>
+        <button class="news-cat-btn" data-cat="education">Education</button>
         <button class="news-cat-btn" data-cat="technology">Technology</button>
         <button class="news-cat-btn" data-cat="ai">AI News</button>
         <button class="news-cat-btn" data-cat="religion">Religion</button>
+        <button class="news-cat-btn" data-cat="entertainment">Entertainment</button>
         <button class="news-cat-btn" data-cat="health">Health</button>
         <button class="news-cat-btn" data-cat="sports">Sports</button>
         <button class="news-cat-btn" data-cat="politics">Politics</button>
+        <button class="news-cat-btn" data-cat="world">World</button>
       </div>
 
       <div id="newsContainer" class="news-grid"></div>
@@ -442,6 +445,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
         'https://www.myjoyonline.com/business/feed/',
         'https://thebftonline.com/feed/'
       ],
+      education: [
+        'https://www.myjoyonline.com/feed/',
+        'https://3news.com/feed/'
+      ],
       technology: [
         'https://www.myjoyonline.com/feed/',
         'https://3news.com/feed/'
@@ -451,6 +458,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       ],
       religion: [
         'https://www.myjoyonline.com/lifestyle/feed/'
+      ],
+      entertainment: [
+        'https://www.myjoyonline.com/lifestyle/feed/',
+        'https://www.adomonline.com/feed/'
       ],
       health: [
         'https://www.myjoyonline.com/feed/',
@@ -463,15 +474,22 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       politics: [
         'https://www.myjoyonline.com/news/politics/feed/',
         'https://www.adomonline.com/feed/'
+      ],
+      world: [
+        'https://www.myjoyonline.com/feed/',
+        'https://3news.com/feed/'
       ]
     };
 
     var CAT_KEYWORDS = {
+      education: ['education', 'school', 'university', 'student', 'teacher', 'college', 'exam', 'SHS', 'JHS', 'tertiary', 'scholarship', 'WASSCE', 'curriculum', 'academic', 'classroom', 'tuition', 'enrollment', 'graduate', 'degree'],
       technology: ['technology', 'tech', 'digital', 'startup', 'software', 'app', 'innovation', 'smartphone', 'computer', 'cyber', 'IT'],
       ai: ['artificial intelligence', 'AI', 'machine learning', 'deep learning', 'neural', 'GPT', 'LLM', 'automation', 'robotics', 'data science', 'chatbot', 'generative'],
+      entertainment: ['entertainment', 'music', 'movie', 'film', 'celebrity', 'concert', 'festival', 'dance', 'fashion', 'art', 'culture', 'comedy', 'TV', 'actor', 'musician', 'singer', 'album', 'award'],
       health: ['health', 'hospital', 'disease', 'medical', 'doctor', 'patient', 'vaccine', 'malaria', 'covid', 'wellness', 'nutrition'],
       sports: ['sports', 'football', 'soccer', 'athlete', 'Black Stars', 'boxing', 'Premier League', 'basketball', 'championship'],
-      politics: ['politics', 'parliament', 'government', 'minister', 'president', 'election', 'MP', 'NDC', 'NPP', 'constitution', 'policy']
+      politics: ['politics', 'parliament', 'government', 'minister', 'president', 'election', 'MP', 'NDC', 'NPP', 'constitution', 'policy'],
+      world: ['world', 'international', 'global', 'Africa', 'foreign', 'US', 'China', 'UK', 'UN', 'diaspora', 'abroad', 'embassy', 'trade', 'summit', 'peacekeeping']
     };
 
     function extractDomain(url) {
