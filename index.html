@@ -62,14 +62,46 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
 @media(max-width:860px){.pillars-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:500px){.pillars-grid{grid-template-columns:1fr}}
 .books{background:#0A1628}
+
 .books-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
 .book-card{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:32px;display:flex;flex-direction:column;transition:all 0.3s}
+
 .book-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);border-color:#C9A84C}
+
 .book-card .book-icon{width:64px;height:64px;border-radius:14px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:28px;color:#C9A84C}
+
 .book-card h3{font-size:18px;margin-bottom:8px;color:#E8EEF7}
+
 .book-card p{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;line-height:1.7;margin-bottom:16px;flex:1}
+
 .book-card .book-meta{font-family:'Courier Prime',monospace;font-size:11px;color:#5A7A9F;margin-bottom:12px}
+
 @media(max-width:640px){.books-grid{grid-template-columns:1fr}}
+
+/* ── LEAD MODAL ── */
+.lead-overlay{position:fixed;inset:0;background:rgba(10,22,40,.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s}
+.lead-overlay.open{opacity:1;pointer-events:auto}
+.lead-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:40px 32px;max-width:420px;width:100%;text-align:center;transform:translateY(20px);transition:transform .3s}
+.lead-overlay.open .lead-modal{transform:translateY(0)}
+.lead-modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:28px;cursor:pointer;line-height:1;padding:4px;font-family:serif}
+.lead-modal .close:hover{color:#E8637A}
+.lead-modal .icon{font-size:36px;margin-bottom:8px;display:block}
+.lead-modal h3{font-size:22px;color:#E8EEF7;margin-bottom:4px}
+.lead-modal .book-name{font-family:'Barlow',sans-serif;font-size:13px;color:#C9A84C;margin-bottom:24px}
+.lead-modal form{display:flex;flex-direction:column;gap:12px}
+.lead-modal input{padding:14px 16px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#E8EEF7;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.lead-modal input:focus{border-color:#C9A84C}
+.lead-modal input::placeholder{color:#3A5278}
+.lead-modal .submit{width:100%;padding:14px;border-radius:8px;border:none;background:#C9A84C;color:#0A1628;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif}
+.lead-modal .submit:hover{background:#D9B85C}
+.lead-modal .submit:disabled{opacity:.5;cursor:not-allowed}
+.lead-modal .note{font-family:'Barlow',sans-serif;font-size:11px;color:#3A5278;margin-top:16px}
+.lead-modal .success{display:none}
+.lead-modal .success.show{display:block}
+.lead-modal .success .check{font-size:40px;margin-bottom:8px;display:block}
+.lead-modal .success h4{color:#E8EEF7;font-size:18px;margin-bottom:4px}
+.lead-modal .success p{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5}
 .tiktok{background:#0F1E38}
 .tiktok-intro{text-align:center;margin-bottom:48px}
 .tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -288,28 +320,28 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
         <h3>The Bible as Kingdom OS</h3>
         <p>A paradigm-shifting exploration of the Bible not as a religious textbook, but as the operating system of the Kingdom of God. Learn to see Scripture as the living, active framework for every area of life — from creativity to relationships to purpose.</p>
         <div class="book-meta">PDF · 221 KB · Full-length book</div>
-        <a href="books/the-bible-as-kingdom-os.pdf" target="_blank" rel="noopener" class="btn btn-gold btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('The Bible as Kingdom OS', 'books/the-bible-as-kingdom-os.pdf')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-code"></i></div>
         <h3>The Divine Algorithm</h3>
         <p>An interactive report exploring the divine patterns, codes, and algorithms hidden in Scripture. Discover how the mathematical and creative genius of God is woven into every page of the Bible, and how understanding these patterns unlocks a new dimension of faith.</p>
         <div class="book-meta">HTML Report · Full interactive document</div>
-        <a href="books/divine_algorithm_report.html" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="align-self:flex-start"><i class="ti ti-eye"></i> View Online</a>
+        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('The Divine Algorithm', 'books/divine_algorithm_report.html')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-rocket"></i></div>
         <h3>AI-Powered Strategic Accelerated National Development For Ghana</h3>
         <p>A visionary blueprint for leveraging artificial intelligence to accelerate Ghana's national development across every sector — education, healthcare, agriculture, infrastructure, and governance. A must-read for leaders, policymakers, and change-makers.</p>
         <div class="book-meta">DOCX · 14 KB · Strategic paper</div>
-        <a href="books/ai-powered-strategic-national-development-ghana.docx" target="_blank" rel="noopener" class="btn btn-gold btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('AI-Powered Strategic Development', 'books/ai-powered-strategic-national-development-ghana.docx')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-users"></i></div>
         <h3>Ghana Does Not Need 1 Million Coders Manifesto</h3>
         <p>A bold manifesto challenging the popular "1 million coders" narrative. Argues for a more holistic approach to national development — one that combines technical skills with creativity, wisdom, and biblical worldview as the true foundation for transformation.</p>
         <div class="book-meta">PDF · 246 KB · Manifesto</div>
-        <a href="books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="align-self:flex-start"><i class="ti ti-download"></i> Read Free</a>
+        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('1 Million Coders Manifesto', 'books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
     </div>
   </div>
@@ -684,6 +716,73 @@ if (el) observer.observe(el);
     resizeTimer = setTimeout(resize, 200);
   });
 })();
+</script>
+
+<!-- LEAD MODAL -->
+<div class="lead-overlay" id="leadModal">
+  <div class="lead-modal" style="position:relative">
+    <button class="close" onclick="closeLead()">&times;</button>
+    <span class="icon">&#x1F4D6;</span>
+    <h3>Get Your Free Copy</h3>
+    <p class="book-name" id="leadBookName"></p>
+    <form id="leadForm">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email" required>
+      <input type="hidden" name="book" id="leadBookInput" value="">
+      <input type="hidden" name="_subject" value="Book download request">
+      <button type="submit" class="submit" id="leadSubmitBtn">Send Me the Book &rarr;</button>
+    </form>
+    <p class="note">No spam. Unsubscribe anytime.</p>
+    <div class="success" id="leadSuccess">
+      <span class="check">&#x2714;</span>
+      <h4>You're All Set!</h4>
+      <p>Redirecting you to your free download&hellip;</p>
+    </div>
+  </div>
+</div>
+
+<script>
+var _leadUrl = '';
+function openLead(name, url) {
+  _leadUrl = url;
+  document.getElementById('leadBookName').textContent = name;
+  document.getElementById('leadBookInput').value = name;
+  document.getElementById('leadForm').style.display = '';
+  document.getElementById('leadSubmitBtn').disabled = false;
+  document.getElementById('leadSuccess').classList.remove('show');
+  document.getElementById('leadModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLead() {
+  document.getElementById('leadModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('leadModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLead();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLead();
+});
+document.getElementById('leadForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var btn = document.getElementById('leadSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending\u2026';
+  var form = this;
+  var data = new FormData(form);
+  data.append('_next', window.location.href);
+  fetch('https://formspree.io/f/xgoplkoe', {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(function() {
+    form.style.display = 'none';
+    document.getElementById('leadSuccess').classList.add('show');
+    setTimeout(function() { window.location.href = _leadUrl; }, 1500);
+  }).catch(function() {
+    window.location.href = _leadUrl;
+  });
+});
 </script>
 
 </body>
