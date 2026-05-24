@@ -785,5 +785,152 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
 });
 </script>
 
+<style>
+/* ── CHAT WIDGET ── */
+.chat-btn{position:fixed;bottom:24px;right:24px;z-index:999;width:56px;height:56px;border-radius:50%;background:#C9A84C;border:none;color:#0A1628;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.35);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center}
+.chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(201,168,76,.45)}
+.chat-btn svg{width:26px;height:26px;fill:currentColor}
+.chat-box{position:fixed;bottom:90px;right:24px;z-index:999;width:340px;max-height:480px;background:#0F1E38;border:1px solid #1E3250;border-radius:14px;display:none;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.5);overflow:hidden;animation:chatIn .25s ease}
+@keyframes chatIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.chat-box.open{display:flex}
+.chat-header{background:#0A1628;padding:16px 20px;border-bottom:1px solid #1E3250;display:flex;align-items:center;gap:10px}
+.chat-header .avatar{width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,.15);color:#C9A84C;display:flex;align-items:center;justify-content:center;font-size:14px}
+.chat-header .info{flex:1}
+.chat-header .info strong{display:block;font-size:14px;color:#E8EEF7;font-family:'DM Sans',sans-serif}
+.chat-header .info small{font-size:11px;color:#5A7A9F;font-family:'DM Sans',sans-serif}
+.chat-header .close-btn{background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px;font-family:serif;line-height:1}
+.chat-header .close-btn:hover{color:#E8637A}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:320px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.5;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg.bot{align-self:flex-start;background:#0A1628;color:#CBD5E1;border-bottom-left-radius:4px}
+.chat-msg.user{align-self:flex-end;background:#C9A84C;color:#0A1628;border-bottom-right-radius:4px}
+.chat-msg .typing{display:flex;gap:4px;padding:4px 0}
+.chat-msg .typing span{width:6px;height:6px;border-radius:50%;background:#5A7A9F;animation:typing 1.2s infinite}
+.chat-msg .typing span:nth-child(2){animation-delay:.2s}
+.chat-msg .typing span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chat-options{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.chat-options button{padding:6px 12px;border-radius:6px;border:1px solid #1E3250;background:0 0;color:#C9A84C;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s}
+.chat-options button:hover{background:rgba(201,168,76,.1);border-color:#C9A84C}
+.chat-input-wrap{display:flex;border-top:1px solid #1E3250;padding:10px 12px;gap:8px;background:#0A1628}
+.chat-input-wrap input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid #1E3250;background:#0F1E38;color:#E8EEF7;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.chat-input-wrap input:focus{border-color:#C9A84C}
+.chat-input-wrap input::placeholder{color:#3A5278}
+.chat-input-wrap .send{width:38px;height:38px;border-radius:8px;border:none;background:#C9A84C;color:#0A1628;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+.chat-input-wrap .send:hover{background:#D9B85C}
+.chat-input-wrap .send svg{width:18px;height:18px;fill:currentColor}
+.chat-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:#E8637A;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif}
+@media(max-width:500px){.chat-box{width:calc(100vw - 32px);right:16px;bottom:80px;max-height:70vh}}
+</style>
+
+<!-- CHAT WIDGET -->
+<button class="chat-btn" id="chatBtn" onclick="toggleChat()" aria-label="Chat with us">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+</button>
+
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">
+    <div class="avatar">&#x1F4AC;</div>
+    <div class="info">
+      <strong>GideonAbochie Studio</strong>
+      <small>Donation Support</small>
+    </div>
+    <button class="close-btn" onclick="toggleChat()">&times;</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="chat-input-wrap">
+    <input type="text" id="chatInput" placeholder="Type your question\u2026" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div>
+</div>
+
+<script>
+/* ── DONATION CHAT BOT ── */
+var chatOpen = false;
+var chatFirst = true;
+
+var FAQ = {
+  'where does my donation go': '100% of donations directly support the creation and distribution of free books, videos, and teachings on creativity, love, and wisdom. This includes production costs, platform reach, and keeping every resource freely available.',
+  'is my donation secure': 'Absolutely. Payments are processed by Flutterwave, a PCI-DSS Level 1 compliant payment gateway — the same standard banks use. Your card and mobile money details are encrypted end-to-end.',
+  'can i donate from outside ghana': 'Yes! Flutterwave accepts international cards and mobile money. Donors from North America, Europe, and the diaspora can give in USD, GBP, EUR, and more.',
+  'is it tax deductible': 'GideonAbochie Studio is based in Ghana. Depending on your country, donations may be tax-deductible. Consult your local tax advisor. We provide a donation receipt for every gift.',
+  'what is flutterwave': 'Flutterwave is a leading African payment processor trusted by businesses like Uber, Facebook, and MTN. It securely processes payments in over 30 currencies across 150+ countries.',
+  'can i use mobile money': 'Yes — Flutterwave supports mobile money (Momo) for Ghana, Kenya, Uganda, Tanzania, Rwanda, Zambia, and more. Select Mobile Money at checkout.',
+  'how do i know you received my donation': 'After a successful payment, Flutterwave displays a confirmation screen and sends you an email receipt. You will also receive a confirmation from us at admin@gideonabochie.com.',
+  'what if i have another question': 'No problem! Email us at <a href="mailto:admin@gideonabochie.com" style="color:#C9A84C;text-decoration:underline">admin@gideonabochie.com</a> and we will get back to you within 24 hours.'
+};
+
+var quickReplies = [
+  'Where does my donation go?',
+  'Is my donation secure?',
+  'Can I donate from outside Ghana?',
+  'Can I use mobile money?'
+];
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  var box = document.getElementById('chatBox');
+  box.classList.toggle('open', chatOpen);
+  if (chatOpen && chatFirst) {
+    chatFirst = false;
+    setTimeout(function() { addBotMsg('Hey there! \uD83D\uDC4B I\'m here to help with any questions about supporting the Studio. What\'s on your mind?', quickReplies); }, 400);
+  }
+}
+
+function addBotMsg(text, options) {
+  var msgs = document.getElementById('chatMsgs');
+  var div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  if (options) {
+    div.innerHTML = text + '<div class="chat-options">' + options.map(function(o) { return '<button onclick="quickReply(\'' + o.replace(/'/g, "\\'") + '\')">' + o + '</button>'; }).join('') + '</div>';
+  } else {
+    div.textContent = text;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMsg(text) {
+  var msgs = document.getElementById('chatMsgs');
+  var div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function quickReply(text) {
+  addUserMsg(text);
+  var input = document.getElementById('chatInput');
+  input.value = text;
+  setTimeout(function() { handleQuery(text); }, 300);
+}
+
+function sendMsg() {
+  var input = document.getElementById('chatInput');
+  var text = input.value.trim();
+  if (!text) return;
+  addUserMsg(text);
+  input.value = '';
+  setTimeout(function() { handleQuery(text); }, 300);
+}
+
+function handleQuery(text) {
+  var q = text.toLowerCase().trim();
+  var answer = null;
+  for (var key in FAQ) {
+    var words = key.split(' ');
+    var match = words.every(function(w) { return q.indexOf(w) !== -1; });
+    if (match) { answer = FAQ[key]; break; }
+  }
+  if (answer) {
+    addBotMsg(answer);
+  } else {
+    addBotMsg('Great question! For a detailed answer, please email <a href="mailto:admin@gideonabochie.com" style="color:#C9A84C;text-decoration:underline">admin@gideonabochie.com</a> and we\'ll get back to you within 24 hours. Or try one of the quick topics below:', quickReplies);
+  }
+}
+</script>
+
 </body>
 </html>
