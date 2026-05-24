@@ -786,15 +786,36 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
 </script>
 
 <style>
+/* ── DICE MASCOT ── */
+.dice{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.dice-face{width:60%;height:60%;background:linear-gradient(145deg,#E8EEF7,#C9D1DE);border-radius:6px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:6px;box-shadow:inset 0 -2px 3px rgba(0,0,0,.15),0 2px 6px rgba(0,0,0,.25);position:relative}
+.dice-face .dot{width:5px;height:5px;border-radius:50%;background:#0A1628;justify-self:center;align-self:center;display:none}
+.dice-face .dot.br{display:block;grid-column:3;grid-row:3}
+.dice-face .dot.tl{display:block;grid-column:1;grid-row:1}
+.dice-face .dot.tm{display:block;grid-column:2;grid-row:1}
+.dice-face .dot.mm{display:block;grid-column:2;grid-row:2}
+.dice-face .dot.bm{display:block;grid-column:2;grid-row:3}
+.dice-face .dot.tr{display:block;grid-column:3;grid-row:1}
+.dice-face .dot.bl{display:block;grid-column:1;grid-row:3}
+.dice-face .dot.ml{display:block;grid-column:1;grid-row:2}
+.dice-face .dot.mr{display:block;grid-column:3;grid-row:2}
+@keyframes diceIdle{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-2px) rotate(3deg)}75%{transform:translateY(-1px) rotate(-2deg)}}
+@keyframes diceIdleSmall{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-1px) rotate(4deg)}75%{transform:translateY(-1px) rotate(-3deg)}}
+@keyframes diceRoll{0%{transform:rotate(0deg) scale(1)}20%{transform:rotate(60deg) scale(1.15)}40%{transform:rotate(180deg) scale(.95)}60%{transform:rotate(260deg) scale(1.08)}80%{transform:rotate(340deg) scale(.98)}100%{transform:rotate(360deg) scale(1)}}
+.dice-btn{animation:diceIdle 3s ease-in-out infinite}
+.chat-btn:hover .dice-btn{animation:diceRoll .5s ease-out}
+.chat-btn.roll .dice-btn{animation:diceRoll .5s ease-out!important}
+
 /* ── CHAT WIDGET ── */
-.chat-btn{position:fixed;bottom:24px;right:24px;z-index:999;width:56px;height:56px;border-radius:50%;background:#C9A84C;border:none;color:#0A1628;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.35);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center}
-.chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(201,168,76,.45)}
-.chat-btn svg{width:26px;height:26px;fill:currentColor}
+.chat-btn{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#B8962E);border:none;color:#0A1628;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center}
+.chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(201,168,76,.5)}
 .chat-box{position:fixed;bottom:90px;right:24px;z-index:999;width:340px;max-height:480px;background:#0F1E38;border:1px solid #1E3250;border-radius:14px;display:none;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.5);overflow:hidden;animation:chatIn .25s ease}
 @keyframes chatIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .chat-box.open{display:flex}
 .chat-header{background:#0A1628;padding:16px 20px;border-bottom:1px solid #1E3250;display:flex;align-items:center;gap:10px}
-.chat-header .avatar{width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,.15);color:#C9A84C;display:flex;align-items:center;justify-content:center;font-size:14px}
+.chat-header .avatar{width:34px;height:34px;border-radius:8px;background:#C9A84C;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:diceIdleSmall 2.5s ease-in-out infinite}
+.chat-header .avatar .dice-face{width:70%;height:70%;background:linear-gradient(145deg,#fff,#E8EEF7)}
+.chat-header .avatar .dice-face .dot{width:4px;height:4px}
 .chat-header .info{flex:1}
 .chat-header .info strong{display:block;font-size:14px;color:#E8EEF7;font-family:'DM Sans',sans-serif}
 .chat-header .info small{font-size:11px;color:#5A7A9F;font-family:'DM Sans',sans-serif}
@@ -826,12 +847,18 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
 
 <!-- CHAT WIDGET -->
 <button class="chat-btn" id="chatBtn" onclick="toggleChat()" aria-label="Chat with us">
-  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+  <div class="dice dice-btn">
+    <div class="dice-face">
+      <span class="dot tl"></span><span class="dot tm"></span><span class="dot tr"></span>
+      <span class="dot ml"></span><span class="dot mm"></span><span class="dot mr"></span>
+      <span class="dot bl"></span><span class="dot bm"></span><span class="dot br"></span>
+    </div>
+  </div>
 </button>
 
 <div class="chat-box" id="chatBox">
   <div class="chat-header">
-    <div class="avatar">&#x1F4AC;</div>
+    <div class="avatar"><div class="dice-face"><span class="dot tl"></span><span class="dot mm"></span><span class="dot br"></span></div></div>
     <div class="info">
       <strong>GideonAbochie Studio</strong>
       <small>Donation Support</small>
@@ -870,6 +897,9 @@ var quickReplies = [
 
 function toggleChat() {
   chatOpen = !chatOpen;
+  var btn = document.getElementById('chatBtn');
+  btn.classList.add('roll');
+  setTimeout(function() { btn.classList.remove('roll'); }, 600);
   var box = document.getElementById('chatBox');
   box.classList.toggle('open', chatOpen);
   if (chatOpen && chatFirst) {
