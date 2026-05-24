@@ -432,15 +432,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     var NEWS_SOURCES = {
       all: [
         'https://www.myjoyonline.com/feed/',
-        'https://www.ghanaweb.com/GhanaHomePage/rss/news.php',
-        'https://citinewsroom.com/feed/'
+        'https://3news.com/feed/',
+        'https://www.adomonline.com/feed/'
       ],
       business: [
         'https://www.myjoyonline.com/business/feed/',
-        'https://www.ghanaweb.com/GhanaHomePage/rss/business.php'
+        'https://thebftonline.com/feed/'
       ],
       technology: [
-        'https://www.myjoyonline.com/technology/feed/'
+        'https://www.myjoyonline.com/feed/',
+        'https://3news.com/feed/'
       ],
       ai: [
         'https://www.myjoyonline.com/feed/'
@@ -449,20 +450,25 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
         'https://www.myjoyonline.com/lifestyle/feed/'
       ],
       health: [
-        'https://www.myjoyonline.com/health/feed/'
+        'https://www.myjoyonline.com/feed/',
+        'https://3news.com/feed/'
       ],
       sports: [
         'https://www.myjoyonline.com/sports/feed/',
-        'https://www.ghanaweb.com/GhanaHomePage/rss/sports.php'
+        'https://www.adomonline.com/feed/'
       ],
       politics: [
         'https://www.myjoyonline.com/news/politics/feed/',
-        'https://www.ghanaweb.com/GhanaHomePage/rss/politics.php'
+        'https://www.adomonline.com/feed/'
       ]
     };
 
     var CAT_KEYWORDS = {
-      ai: ['artificial intelligence', 'AI', 'machine learning', 'deep learning', 'neural', 'GPT', 'LLM', 'automation', 'robotics', 'data science', 'chatbot', 'generative']
+      technology: ['technology', 'tech', 'digital', 'startup', 'software', 'app', 'innovation', 'smartphone', 'computer', 'cyber', 'IT'],
+      ai: ['artificial intelligence', 'AI', 'machine learning', 'deep learning', 'neural', 'GPT', 'LLM', 'automation', 'robotics', 'data science', 'chatbot', 'generative'],
+      health: ['health', 'hospital', 'disease', 'medical', 'doctor', 'patient', 'vaccine', 'malaria', 'covid', 'wellness', 'nutrition'],
+      sports: ['sports', 'football', 'soccer', 'athlete', 'Black Stars', 'boxing', 'Premier League', 'basketball', 'championship'],
+      politics: ['politics', 'parliament', 'government', 'minister', 'president', 'election', 'MP', 'NDC', 'NPP', 'constitution', 'policy']
     };
 
     function extractDomain(url) {
