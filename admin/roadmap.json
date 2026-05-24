@@ -75,7 +75,7 @@
             "Sign up for Zero Trust Free plan (50 users, email OTP)",
             "Zero Trust dashboard → Access → Applications → Add self-hosted",
             "Domain: gideonabochie.org, Path: admin/*",
-            "Policy: Email OTP → authorize admin@gideonabochie.com",
+            "Policy: Email OTP → authorize info@gideonabochie.com",
             "Verify admin pages are login-gated"
           ]
         },
