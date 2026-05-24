@@ -750,6 +750,35 @@ var CHECKS = {
   "1.3": [ // Cloudflare config
     {i:0, label:"_headers exists", check:function(){return checkFileExists("../_headers")}},
     {i:1, label:"_redirects exists", check:function(){return checkFileExists("../_redirects")}}
+  ],
+  "1.4": [ // Deploy to Cloudflare Pages
+    {i:0, label:"Site deployed and reachable", check:function(){return checkPageExists("../index.html")}},
+    {i:1, label:"HTTPS working", check:function(){return checkPageExists("https://gideonabochie-org.pages.dev/")}},
+    {i:2, label:"Nav links work on all pages", check:function(){return checkPageExists("../manifesto/index.html") && checkPageExists("../newsletter/index.html")}},
+    {i:3, label:"Donation buttons present", check:function(){return checkPageContains("../index.html","flutterwave")}},
+    {i:4, label:"Books downloadable", check:function(){return checkBookFilenames()}},
+    {i:5, label:"Legal pages accessible", check:function(){return checkPageExists("../legal/privacy.html") && checkPageExists("../legal/terms.html")}},
+    {i:6, label:"Lead form submits (Formspree)", check:function(){return checkPageContains("../index.html","xgoplkoe")}}
+  ],
+  "1.5": [ // Custom domain
+    {i:0, label:"gideonabochie.org resolves", check:function(){return checkPageExists("https://gideonabochie.org/")}},
+    {i:1, label:"HTTPS cert active", check:function(){return checkSecure("https://gideonabochie.org/")}}
+  ],
+  "1.6": [ // Cloudflare Access
+    {i:0, label:"Admin redirects to Access login", check:function(){return checkAccessGate("../admin/")}},
+    {i:1, label:"Newsletter not gated (public)", check:function(){return checkPageExists("../newsletter/index.html")}}
+  ],
+  "1.7": [ // Compress gallery images
+    {i:0, label:"teaching-session.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/teaching-session.jpg",300)}},
+    {i:1, label:"creative-workshop.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/creative-workshop.jpg",300)}},
+    {i:2, label:"community-outreach.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/community-outreach.jpg",300)}},
+    {i:3, label:"book-launch.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/book-launch.jpg",300)}},
+    {i:4, label:"behind-scenes.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/behind-scenes.jpg",300)}},
+    {i:5, label:"ministry-moment.jpg < 300KB", check:function(){return checkFileSmall("../assets/images/gallery/ministry-moment.jpg",300)}}
+  ],
+  "1.8": [ // Flutterwave decal PDF
+    {i:0, label:"Decal PDF exists", check:function(){return checkFileExists("../assets/flutterwave-decal.pdf")}},
+    {i:1, label:"Download link on page", check:function(){return checkPageContains("../index.html","flutterwave-decal.pdf")}}
   ]
 };
 
@@ -785,6 +814,20 @@ function checkBookFilenames() {
   return Promise.all(books.map(function(b){return checkFileExists("../books/"+b)})).then(function(results){
     return results.every(function(r){return r});
   });
+}
+
+function checkSecure(url) {
+  return fetch(url, {method:"HEAD",cache:"no-store"}).then(function(r){
+    return r.ok && r.url.indexOf("https://") === 0;
+  }).catch(function(){return false});
+}
+
+function checkAccessGate(url) {
+  return fetch(url, {method:"HEAD",cache:"no-store",redirect:"manual"}).then(function(r){
+    var status = r.status;
+    var loc = r.headers.get("location") || "";
+    return (status >= 301 && status <= 308) || loc.indexOf("cloudflareaccess") !== -1 || status === 302;
+  }).catch(function(){return false});
 }
 
 function verifyStepContent(stepId) {
