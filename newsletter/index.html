@@ -608,6 +608,48 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       });
     }
 
+    var POLL_INTERVAL = 300000;
+    var pollTimer = null;
+
+    function showNewBadge() {
+      var existing = document.querySelector('.news-new-badge');
+      if (existing) return;
+      var badge = document.createElement('div');
+      badge.className = 'news-new-badge';
+      badge.innerHTML = '&bull; New articles available &mdash; <a href="#" id="newsRefreshLink" style="color:inherit;text-decoration:underline">Refresh</a>';
+      badge.style.cssText = 'text-align:center;padding:10px 16px;margin-top:16px;font-family:"Barlow",sans-serif;font-size:12px;color:#C9A84C;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:6px';
+      newsContainer.parentNode.insertBefore(badge, newsContainer.nextSibling);
+      document.getElementById('newsRefreshLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        var active = document.querySelector('.news-cat-btn.active');
+        var cat = active ? active.getAttribute('data-cat') : 'all';
+        delete newsCache[cat];
+        loadCategory(cat);
+        var b = document.querySelector('.news-new-badge');
+        if (b) b.remove();
+      });
+    }
+
+    function startPolling() {
+      stopPolling();
+      pollTimer = setInterval(function() {
+        var active = document.querySelector('.news-cat-btn.active');
+        var cat = active ? active.getAttribute('data-cat') : 'all';
+        var sources = NEWS_SOURCES[cat] || NEWS_SOURCES.all;
+        var keywords = CAT_KEYWORDS[cat] || null;
+        fetchFeeds(sources, keywords).then(function(fresh) {
+          var cached = newsCache[cat] || [];
+          if (fresh.length > cached.length) {
+            showNewBadge();
+          }
+        });
+      }, POLL_INTERVAL);
+    }
+
+    function stopPolling() {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    }
+
     window.loadNews = function() {
       var active = document.querySelector('.news-cat-btn.active');
       var cat = active ? active.getAttribute('data-cat') : 'all';
@@ -625,6 +667,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     });
 
     loadCategory('all');
+    startPolling();
   })();
 </script>
 
