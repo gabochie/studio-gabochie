@@ -35,6 +35,7 @@ function parseRSS(xml, feedUrl) {
       link: extractTag(block, 'link'),
       description: extractTag(block, 'description'),
       pubDate: extractTag(block, 'pubDate'),
+      image: extractImage(block),
       source
     });
   }
@@ -46,6 +47,19 @@ function extractTag(xml, tag) {
   const m = re.exec(xml);
   if (!m) return '';
   return (m[1] || m[2] || '').replace(/<[^>]+>/g, '').trim();
+}
+
+function extractImage(xml) {
+  var m;
+  m = /<media:content[^>]*\surl="([^"]*)"[^>]*medium="image"/i.exec(xml);
+  if (m) return m[1];
+  m = /<media:thumbnail[^>]*\surl="([^"]*)"/i.exec(xml);
+  if (m) return m[1];
+  m = /<enclosure[^>]*\surl="([^"]*)"[^>]*type="image\//i.exec(xml);
+  if (m) return m[1];
+  m = /<img[^>]*\ssrc="([^"]*)"/i.exec(xml);
+  if (m) return m[1];
+  return '';
 }
 
 function extractDomain(url) {
