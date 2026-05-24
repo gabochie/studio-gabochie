@@ -52,8 +52,52 @@
             "Upload entire `gideonabochie-org/` folder",
             "Set custom domain: gideonabochie.org",
             "Add CNAME DNS record: gideonabochie.org → gideonabochie.pages.dev",
-            "Verify HTTPS is working",
-            "Test all pages, links, donation buttons"
+        "Verify HTTPS is working",
+        "Test all pages, links, donation buttons"
+          ]
+        },
+        {
+          "id": 1.5,
+          "task": "Custom domain on Cloudflare Pages",
+          "status": "pending",
+          "items": [
+            "Add gideonabochie.org to Cloudflare Pages project",
+            "Add CNAME DNS record: gideonabochie.org → gideonabochie-org.pages.dev",
+            "Wait for SSL cert provisioning (automatic)",
+            "Verify domain resolves and HTTPS works"
+          ]
+        },
+        {
+          "id": 1.6,
+          "task": "Admin security — Cloudflare Access",
+          "status": "pending",
+          "items": [
+            "Sign up for Zero Trust Free plan (50 users, email OTP)",
+            "Zero Trust dashboard → Access → Applications → Add self-hosted",
+            "Domain: gideonabochie.org, Path: admin/*",
+            "Policy: Email OTP → authorize admin@gideonabochie.com",
+            "Verify admin pages are login-gated"
+          ]
+        },
+        {
+          "id": 1.7,
+          "task": "Compress gallery images",
+          "status": "pending",
+          "items": [
+            "teaching-session.jpg (550KB), creative-workshop.jpg, community-outreach.jpg",
+            "book-launch.jpg, behind-scenes.jpg, ministry-moment.jpg",
+            "Target: ~200KB each via TinyPNG or PowerShell compression",
+            "Update src paths if filenames change"
+          ]
+        },
+        {
+          "id": 1.8,
+          "task": "Flutterwave decal PDF",
+          "status": "pending",
+          "items": [
+            "Create/download Flutterwave donation decal PDF",
+            "Place in assets/ as flutterwave-decal.pdf",
+            "Add download link on landing page (index.html footer or give section)"
           ]
         }
       ],
@@ -223,8 +267,8 @@
       ]
     }
   ],
-  "current_focus": "Phase 1 — deploy static site to Cloudflare Pages (refactored, verified, ready)",
-  "last_updated": "2026-05-23 (refactored + auto-verify added)",
+  "current_focus": "Phase 1 — remaining deployment tasks: custom domain, Cloudflare Access, image compression, decal PDF",
+  "last_updated": "2026-05-24",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
@@ -232,6 +276,10 @@
     "Don't wait for perfect — deploy Phase 1 now, iterate live.",
     "Roadmap now has auto-verification: checks live files on load, auto-marks done items.",
     "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
-    "404.html added. Gallery images renamed. Roadmap moved to /admin/."
+    "404.html added. Gallery images renamed. Roadmap moved to /admin/.",
+    "RSS news proxy (Pages Function) replaces rss2json.com — live Ghana news feed.",
+    "Books converted to lead magnets (email capture modal via Formspree).",
+    "Sales chat widget with animated dice mascot added to donation page.",
+    "Remaining: custom domain, Cloudflare Access, image compression, decal PDF."
   ]
 }
