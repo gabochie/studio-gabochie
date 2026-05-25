@@ -1081,7 +1081,8 @@ function startPayment() {
     payment_options: 'card, mobilemoneyghana, ussd',
     customer: { email: selectedEmail, name: selectedName },
     callback: function(response) {
-      window.location.href = '/donate.html?tx_ref=' + response.transaction_id + '&flw_ref=' + tx_ref;
+      window.location.href = '/donate.html?tx_ref=' + tx_ref + '&status=' + (response.status || 'successful') + '&amount=' + selectedAmount;
+
     },
     onclose: function() {
       document.getElementById('payBtn').disabled = false;

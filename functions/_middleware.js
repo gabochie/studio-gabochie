@@ -80,6 +80,8 @@ export async function onRequest(context) {
     path.startsWith('/api/') ||
     path.startsWith('/assets/') ||
     path === '/coming-soon.html' ||
+    path === '/donate.html' ||
+    path === '/donate' ||
     path === '/favicon.ico' ||
     path === '/robots.txt'
   ) {

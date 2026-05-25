@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donation Received — GideonAbochie Studio</title>
+<title>Donation — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
 .card{max-width:480px;width:100%;background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:48px 32px}
-.icon{font-size:56px;margin-bottom:16px}
 h1{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#fff;margin-bottom:8px}
 h1 span{color:#C9A84C}
 p{color:#8A9BB5;line-height:1.7;margin-bottom:24px;font-size:15px}
@@ -18,23 +17,57 @@ p{color:#8A9BB5;line-height:1.7;margin-bottom:24px;font-size:15px}
 .detail strong{color:#C9A84C;font-size:15px;word-break:break-all}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;background:#C9A84C;color:#0A1628;transition:all .2s}
 .btn:hover{background:#D9B85C;transform:translateY(-1px)}
+.success{display:block}
+.failure{display:none}
+.failure h1 span{color:#EF4444}
+.failure .btn{background:#EF4444}
+.failure .btn:hover{background:#F87171}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="icon">&#10003;</div>
-  <h1>Thank <span>You</span></h1>
-  <p>Your generous gift makes every book, video, and teaching possible. You'll receive a confirmation email shortly.</p>
-  <div class="detail" id="txDetail">
-    <span>Transaction Reference</span>
-    <strong id="txRef">—</strong>
+<div class="card" id="successView">
+  <div class="success">
+    <div style="font-size:56px;margin-bottom:16px">&#10003;</div>
+    <h1>Thank <span>You</span></h1>
+    <p>Your generous gift makes every book, video, and teaching possible. Your transaction is being processed and a confirmation will appear in the admin panel shortly.</p>
+    <div class="detail">
+      <span>Transaction Reference</span>
+      <strong id="txRef">—</strong>
+    </div>
+    <div class="detail" id="amountDetail" style="display:none">
+      <span>Amount</span>
+      <strong id="amountRef">—</strong>
+    </div>
+    <a href="index.html" class="btn">&larr; Back to Home</a>
   </div>
-  <a href="index.html" class="btn">&larr; Back to Home</a>
 </div>
+
+<div class="card" id="failureView" style="display:none">
+  <div class="failure" style="display:block">
+    <div style="font-size:56px;margin-bottom:16px">&#10007;</div>
+    <h1>Payment <span>Failed</span></h1>
+    <p>Your payment did not go through. No charges were made. You can try again or use an alternative method.</p>
+    <a href="index.html#give" class="btn" style="background:#EF4444">Try Again &larr;</a>
+  </div>
+</div>
+
 <script>
 var params = new URLSearchParams(window.location.search);
-var tx = params.get('tx_ref') || params.get('transaction_id') || '—';
-document.getElementById('txRef').textContent = tx;
+var tx = params.get('tx_ref') || '—';
+var status = params.get('status') || '';
+var amount = params.get('amount') || '';
+
+if (status === 'successful' || status === 'completed' || !status) {
+  document.getElementById('txRef').textContent = tx;
+  if (amount) {
+    document.getElementById('amountDetail').style.display = 'block';
+    document.getElementById('amountRef').textContent = 'GHS ' + amount;
+  }
+  // Success view is shown by default
+} else {
+  document.getElementById('successView').style.display = 'none';
+  document.getElementById('failureView').style.display = 'block';
+}
 </script>
 </body>
 </html>
