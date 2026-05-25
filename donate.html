@@ -8,46 +8,65 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
-.card{max-width:480px;width:100%;background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:48px 32px}
+.card{max-width:520px;width:100%;background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px 28px}
 h1{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#fff;margin-bottom:8px}
 h1 span{color:#C9A84C}
 p{color:#8A9BB5;line-height:1.7;margin-bottom:24px;font-size:15px}
-.detail{background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px;padding:16px;margin-bottom:24px;font-size:13px}
-.detail span{color:#5A7A9F;display:block;margin-bottom:4px}
-.detail strong{color:#C9A84C;font-size:15px;word-break:break-all}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;background:#C9A84C;color:#0A1628;transition:all .2s}
-.btn:hover{background:#D9B85C;transform:translateY(-1px)}
-.success{display:block}
+.receipt{background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:10px;padding:20px;margin-bottom:24px;text-align:left}
+.receipt h2{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:#C9A84C;margin-bottom:16px;text-align:center;text-transform:uppercase;letter-spacing:.12em}
+.receipt table{width:100%;border-collapse:collapse}
+.receipt td{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+.receipt td:first-child{color:#5A7A9F;width:40%}
+.receipt td:last-child{color:#E8EEF7;text-align:right;font-weight:500}
+.receipt .amount{color:#C9A84C;font-size:18px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
+.receipt .status{color:#22C55E}
+.btn-group{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-primary{background:#C9A84C;color:#0A1628}
+.btn-primary:hover{background:#D9B85C;transform:translateY(-1px)}
+.btn-secondary{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
+.btn-secondary:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.btn-danger{background:#EF4444;color:#fff}
+.btn-danger:hover{background:#F87171;transform:translateY(-1px)}
 .failure{display:none}
 .failure h1 span{color:#EF4444}
-.failure .btn{background:#EF4444}
-.failure .btn:hover{background:#F87171}
+.email-note{margin-top:16px;padding:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);border-radius:8px;font-size:12px;color:#6EE7B7;line-height:1.5}
+@media print{body{background:#fff;color:#000;padding:0;display:block}.card{border:none;box-shadow:none;padding:20px;max-width:100%;background:#fff}h1{color:#000}h1 span{color:#C9A84C}p{color:#555}.receipt{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px}.receipt td:first-child{color:#64748B}.receipt td:last-child{color:#1E293B}.btn-group{display:none}.email-note{display:none}.no-print{display:none!important}}
 </style>
 </head>
 <body>
 <div class="card" id="successView">
-  <div class="success">
-    <div style="font-size:56px;margin-bottom:16px">&#10003;</div>
-    <h1>Thank <span>You</span></h1>
-    <p>Your generous gift makes every book, video, and teaching possible. Your transaction is being processed and a confirmation will appear in the admin panel shortly.</p>
-    <div class="detail">
-      <span>Transaction Reference</span>
-      <strong id="txRef">—</strong>
-    </div>
-    <div class="detail" id="amountDetail" style="display:none">
-      <span>Amount</span>
-      <strong id="amountRef">—</strong>
-    </div>
-    <a href="index.html" class="btn">&larr; Back to Home</a>
+  <div style="font-size:56px;margin-bottom:8px;color:#22C55E">&#10003;</div>
+  <h1>Thank <span>You</span></h1>
+  <p>Your generous gift makes every book, video, and teaching possible. A receipt has been emailed to you.</p>
+  <div class="receipt" id="receiptCard">
+    <h2>Donation Receipt</h2>
+    <table>
+      <tr><td>Receipt No.</td><td id="rTxRef" style="font-family:monospace;font-size:11px;word-break:break-all">—</td></tr>
+      <tr><td>Date</td><td id="rDate">—</td></tr>
+      <tr><td>Donor</td><td id="rName">—</td></tr>
+      <tr><td>Email</td><td id="rEmail" style="font-size:11px;word-break:break-all">—</td></tr>
+      <tr id="phoneRow" style="display:none"><td>Phone</td><td id="rPhone">—</td></tr>
+      <tr><td>Amount</td><td class="amount" id="rAmount">—</td></tr>
+      <tr><td>Status</td><td class="status" id="rStatus">Confirmed</td></tr>
+    </table>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="window.print()">&#128424; Print Receipt</button>
+    <a href="index.html" class="btn btn-secondary">&larr; Back to Home</a>
+  </div>
+  <div class="email-note" id="emailNote" style="display:none">
+    &#9993; A receipt has also been sent to <strong id="emailNoteAddr"></strong>. If you don't see it, check your spam folder.
   </div>
 </div>
 
 <div class="card" id="failureView" style="display:none">
-  <div class="failure" style="display:block">
-    <div style="font-size:56px;margin-bottom:16px">&#10007;</div>
-    <h1>Payment <span>Failed</span></h1>
-    <p>Your payment did not go through. No charges were made. You can try again or use an alternative method.</p>
-    <a href="index.html#give" class="btn" style="background:#EF4444">Try Again &larr;</a>
+  <div style="font-size:56px;margin-bottom:8px;color:#EF4444">&#10007;</div>
+  <h1>Payment <span>Failed</span></h1>
+  <p>Your payment did not go through. No charges were made. You can try again or use an alternative method.</p>
+  <div class="btn-group">
+    <a href="index.html#give" class="btn btn-danger">Try Again</a>
+    <a href="index.html" class="btn btn-secondary">&larr; Back to Home</a>
   </div>
 </div>
 
@@ -56,14 +75,24 @@ var params = new URLSearchParams(window.location.search);
 var tx = params.get('tx_ref') || '—';
 var status = params.get('status') || '';
 var amount = params.get('amount') || '';
+var name = params.get('name') || '';
+var email = params.get('email') || '';
+var phone = params.get('phone') || '';
 
 if (status === 'successful' || status === 'completed' || !status) {
-  document.getElementById('txRef').textContent = tx;
-  if (amount) {
-    document.getElementById('amountDetail').style.display = 'block';
-    document.getElementById('amountRef').textContent = 'GHS ' + amount;
+  document.getElementById('rTxRef').textContent = tx;
+  document.getElementById('rDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('rName').textContent = name || 'Anonymous';
+  document.getElementById('rEmail').textContent = email || '—';
+  if (phone) {
+    document.getElementById('phoneRow').style.display = '';
+    document.getElementById('rPhone').textContent = phone;
   }
-  // Success view is shown by default
+  document.getElementById('rAmount').textContent = amount ? 'GHS ' + amount : '—';
+  if (email && email !== 'donor@anonymous.invalid' && email !== '—') {
+    document.getElementById('emailNote').style.display = 'block';
+    document.getElementById('emailNoteAddr').textContent = email;
+  }
 } else {
   document.getElementById('successView').style.display = 'none';
   document.getElementById('failureView').style.display = 'block';

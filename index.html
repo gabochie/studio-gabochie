@@ -997,6 +997,11 @@ function handleQuery(text) {
     <div id="customAmountWrap" style="display:none;margin-bottom:16px">
       <input id="customAmount" type="number" min="10" placeholder="Enter amount (GHS)" oninput="updateCustomAmount()" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:16px;font-family:inherit">
     </div>
+    <div style="border-top:1px solid #1E3250;padding-top:16px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px">
+      <input id="donorName" type="text" placeholder="Your name (optional)" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit">
+      <input id="donorEmail" type="email" placeholder="Your email (optional, for receipt)" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit">
+      <input id="donorPhone" type="tel" placeholder="Phone / WhatsApp (optional)" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit">
+    </div>
     <button id="payBtn" onclick="startPayment()" disabled style="width:100%;padding:14px;border:none;border-radius:10px;background:rgba(201,168,76,.12);color:#5A7A9F;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:not-allowed;transition:all .2s">Select Amount First</button>
     <p style="color:#3A5278;font-size:11px;text-align:center;margin-top:12px"><i class="ti ti-lock"></i> Secured by Flutterwave</p>
   </div>
@@ -1005,11 +1010,12 @@ function handleQuery(text) {
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script>
 var selectedAmount = null;
-var selectedName = '';
-var selectedEmail = '';
 
 function openDonationModal() {
   selectedAmount = null;
+  document.getElementById('donorName').value = '';
+  document.getElementById('donorEmail').value = '';
+  document.getElementById('donorPhone').value = '';
   document.getElementById('donationOverlay').style.display = 'flex';
   document.querySelectorAll('.donate-amount').forEach(function(b) { b.style.background = 'transparent'; b.style.borderColor = '#1E3250'; b.style.color = b.dataset.amount === 'custom' ? '#5A7A9F' : '#E8EEF7'; });
   document.getElementById('customAmountWrap').style.display = 'none';
@@ -1019,8 +1025,6 @@ function openDonationModal() {
   document.getElementById('payBtn').style.color = '#5A7A9F';
   document.getElementById('payBtn').textContent = 'Select Amount First';
   document.getElementById('customAmount').value = '';
-  selectedName = prompt('Enter your name (optional):') || 'Anonymous';
-  selectedEmail = prompt('Enter your email (optional, for receipt):') || 'donor@anonymous.invalid';
 }
 
 function closeDonationModal(e) {
@@ -1070,6 +1074,9 @@ function updateCustomAmount() {
 
 function startPayment() {
   if (!selectedAmount || selectedAmount < 10) return;
+  var name = document.getElementById('donorName').value.trim() || 'Anonymous';
+  var email = document.getElementById('donorEmail').value.trim() || 'donor@anonymous.invalid';
+  var phone = document.getElementById('donorPhone').value.trim() || '';
   var tx_ref = 'donation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   document.getElementById('payBtn').disabled = true;
   document.getElementById('payBtn').textContent = 'Opening...';
@@ -1079,10 +1086,9 @@ function startPayment() {
     amount: selectedAmount,
     currency: 'GHS',
     payment_options: 'card, mobilemoneyghana, ussd',
-    customer: { email: selectedEmail, name: selectedName },
+    customer: { email: email, name: name, phone: phone },
     callback: function(response) {
-      window.location.href = '/donate.html?tx_ref=' + tx_ref + '&status=' + (response.status || 'successful') + '&amount=' + selectedAmount;
-
+      window.location.href = '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) + '&status=' + encodeURIComponent(response.status || 'successful') + '&amount=' + encodeURIComponent(selectedAmount) + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
     },
     onclose: function() {
       document.getElementById('payBtn').disabled = false;

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS donations (
   currency TEXT NOT NULL DEFAULT 'GHS',
   donor_name TEXT DEFAULT '',
   donor_email TEXT DEFAULT '',
+  donor_phone TEXT DEFAULT '',
   status TEXT NOT NULL DEFAULT 'pending',
   flw_id TEXT DEFAULT '',
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -114,3 +115,4 @@ ALTER TABLE subscribers ADD COLUMN ref_code TEXT DEFAULT '';
 ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT '';
 ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0;
 ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT '';
+ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT '';
