@@ -79,6 +79,8 @@ export async function onRequest(context) {
     path.startsWith('/admin/') ||
     path.startsWith('/api/') ||
     path.startsWith('/assets/') ||
+    path.startsWith('/school/') ||
+    path.startsWith('/dashboard/') ||
     path === '/coming-soon.html' ||
     path === '/donate.html' ||
     path === '/donate' ||

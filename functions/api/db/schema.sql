@@ -107,6 +107,44 @@ CREATE TABLE IF NOT EXISTS referrals (
 CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referrer_code);
 CREATE INDEX IF NOT EXISTS idx_referrals_reward ON referrals(reward_claimed);
 
+CREATE TABLE IF NOT EXISTS programs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  tagline TEXT DEFAULT '',
+  description TEXT NOT NULL DEFAULT '',
+  duration TEXT NOT NULL DEFAULT 'Self-paced',
+  price REAL DEFAULT 0,
+  price_label TEXT DEFAULT 'Free',
+  status TEXT NOT NULL DEFAULT 'active',
+  sample_content TEXT DEFAULT '',
+  sort_order INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  program_id INTEGER NOT NULL,
+  student_name TEXT NOT NULL,
+  student_email TEXT NOT NULL,
+  student_phone TEXT DEFAULT '',
+  access_token TEXT NOT NULL UNIQUE,
+  status TEXT NOT NULL DEFAULT 'pending',
+  payment_ref TEXT DEFAULT '',
+  payment_amount REAL DEFAULT 0,
+  enrolled_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (program_id) REFERENCES programs(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_enrollments_email ON enrollments(student_email);
+CREATE INDEX IF NOT EXISTS idx_enrollments_token ON enrollments(access_token);
+CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status);
+CREATE INDEX IF NOT EXISTS idx_programs_slug ON programs(slug);
+
+INSERT OR IGNORE INTO programs (title, slug, tagline, description, duration, price, price_label, status, sample_content, sort_order) VALUES
+('Systems Thinking Program', 'systems-thinking', 'See the whole. Solve the root. Design the future.', 'Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work — whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you''ll develop the lens of a systems thinker.', 'Self-paced', 250, 'Free Sample · Full Access GH¢ 250', 'active', '<h2>Welcome to the Systems Thinking Program</h2><p>Before we dive into the models, let''s start with a simple exercise. Look around you right now. Pick one problem — in your work, your community, or your life — and ask: <em>What keeps this problem in place?</em></p><p>That''s the first step. Systems thinking begins not with answers, but with better questions.</p><h3>Your First Tool: The Iceberg Model</h3><p>Most people react to events. Systems thinkers look deeper:</p><ul><li><strong>Events</strong> — What happened? (the tip)</li><li><strong>Patterns</strong> — What''s been happening over time?</li><li><strong>Structure</strong> — What forces are driving these patterns?</li><li><strong>Mental Models</strong> — What beliefs keep this structure in place?</li></ul><p>For the full program, you''ll get video walkthroughs, real-world case studies, worksheets, and community exercises.</p>', 1),
+('Architectural Thinking Program', 'architectural-thinking', 'Coming Soon', 'Learn to think like an architect — structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you''ll learn how to design solutions that stand the test of time.', 'Self-paced', 0, 'Coming Soon', 'coming_soon', '', 2);
+
 -- Migrate existing page_views table (safe to run even if columns already exist)
 ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT '';
 ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT '';

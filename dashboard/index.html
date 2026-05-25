@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh}
+.wrap{max-width:720px;margin:0 auto;padding:40px 24px}
+h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:6px}
+h1 span{color:#C9A84C}
+.subtitle{color:#8A9BB5;font-size:14px;margin-bottom:32px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:28px;margin-bottom:20px}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:12px}
+.card h2 span{color:#C9A84C}
+.program-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.program-header h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#E8EEF7}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-active{background:rgba(34,197,94,.12);color:#22C55E}
+.badge-pending{background:rgba(201,168,76,.12);color:#C9A84C}
+.sample-content{background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px;padding:20px;margin-top:16px;line-height:1.8;font-size:14px;color:#CBD5E1}
+.sample-content h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#C9A84C;margin:20px 0 10px;padding:0;border:none}
+.sample-content h3{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#E8EEF7;margin:16px 0 8px}
+.sample-content ul{margin:8px 0 8px 20px;color:#94A3B8}
+.sample-content li{margin-bottom:6px}
+.sample-content strong{color:#E8EEF7}
+.sample-content em{color:#C9A84C}
+.loading{text-align:center;padding:60px 0;color:#5A7A9F;font-size:14px}
+.error-msg{text-align:center;padding:60px 0}
+.error-msg h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#EF4444;margin-bottom:8px}
+.error-msg p{color:#8A9BB5;font-size:14px;margin-bottom:20px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-primary{background:#C9A84C;color:#0A1628}
+.btn-primary:hover{background:#D9B85C}
+.btn-secondary{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
+.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.no-print{display:block}
+@media print{body{background:#fff;color:#000}.card,.sample-content{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.sample-content h2{color:#000}.no-print{display:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="loadingView">
+  <div class="loading">Verifying your access...</div>
+</div>
+<div class="wrap" id="errorView" style="display:none">
+  <div class="error-msg">
+    <h2>Access Denied</h2>
+    <p id="errorMsg">Invalid or missing access token.</p>
+    <a href="../school/" class="btn btn-primary">Browse Programs</a>
+    <a href="../index.html" class="btn btn-secondary">Back to Home</a>
+  </div>
+</div>
+<div class="wrap" id="dashboardView" style="display:none">
+  <h1>Student <span>Dashboard</span></h1>
+  <div class="subtitle" id="studentInfo"></div>
+  <div class="card">
+    <div class="program-header">
+      <h3 id="programTitle">—</h3>
+      <span class="badge badge-active" id="statusBadge">Active</span>
+    </div>
+    <div style="font-size:13px;color:#5A7A9F;margin-bottom:8px">
+      <span id="programTagline"></span>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:16px;font-size:12px;color:#5A7A9F;flex-wrap:wrap">
+      <span id="programDuration"></span>
+      <span id="programPrice"></span>
+    </div>
+    <button class="btn btn-secondary no-print" onclick="window.print()">&#128424; Print This Page</button>
+  </div>
+  <div class="card">
+    <h2>Your <span>First Module</span></h2>
+    <div class="sample-content" id="sampleContent"></div>
+  </div>
+  <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3)">
+    <h2>Unlock <span>Full Access</span></h2>
+    <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
+    <button class="btn btn-primary" onclick="alert('Full access payments coming soon. Stay tuned!')">Upgrade — GH¢ 250</button>
+  </div>
+</div>
+
+<script>
+var params = new URLSearchParams(window.location.search);
+var token = params.get('token') || '';
+
+if (!token) {
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('errorView').style.display = 'block';
+  document.getElementById('errorMsg').textContent = 'No access token provided. Use the link from your enrollment email.';
+} else {
+  fetch('/api/enroll?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('loadingView').style.display = 'none';
+      if (data.status !== 'ok' || !data.enrollment) {
+        document.getElementById('errorView').style.display = 'block';
+        document.getElementById('errorMsg').textContent = data.message || 'Invalid or expired access token.';
+        return;
+      }
+      var e = data.enrollment;
+      document.getElementById('dashboardView').style.display = 'block';
+      document.getElementById('studentInfo').textContent = 'Welcome, ' + e.student_name + ' (' + e.student_email + ')';
+      document.getElementById('programTitle').textContent = e.program_title;
+      document.getElementById('programTagline').textContent = e.tagline;
+      document.getElementById('programDuration').innerHTML = 'Duration: <strong>' + e.duration + '</strong>';
+      document.getElementById('programPrice').innerHTML = 'Status: <strong>' + e.price_label + '</strong>';
+      if (e.sample_content) {
+        document.getElementById('sampleContent').innerHTML = e.sample_content;
+      } else {
+        document.getElementById('sampleContent').innerHTML = '<p style="color:#5A7A9F">Sample content will appear here once available.</p>';
+      }
+      if (e.price && e.price > 0) {
+        document.getElementById('upgradeCard').style.display = 'block';
+        document.getElementById('upgradeCard').querySelector('button').textContent = 'Upgrade — GH¢ ' + e.price;
+      } else {
+        document.getElementById('upgradeCard').style.display = 'none';
+      }
+    })
+    .catch(function() {
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('errorView').style.display = 'block';
+      document.getElementById('errorMsg').textContent = 'Could not verify your access. Please check your connection and try again.';
+    });
+}
+</script>
+</body>
+</html>

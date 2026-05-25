@@ -5,6 +5,10 @@
 /newsletter /newsletter/ 200
 /advertise /newsletter/advertise 200
 
+# School
+/school /school/ 200
+/dashboard /dashboard/ 200
+
 # Manifesto
 /manifesto /manifesto/ 200
 

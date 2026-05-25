@@ -24,6 +24,10 @@ export async function onRequest(context) {
       "SELECT COALESCE(SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END),0) AS pending, COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COALESCE(SUM(CASE WHEN status='completed' THEN 1 ELSE 0 END),0) AS completed FROM bookings"
     ).first();
 
+    const enrollments = await env.DB.prepare(
+      "SELECT COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COUNT(*) AS total FROM enrollments"
+    ).first();
+
     const views = await env.DB.prepare(
       "SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN viewed_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END), 0) AS this_week, COALESCE(SUM(CASE WHEN viewed_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END), 0) AS this_month FROM page_views"
     ).first();
@@ -76,6 +80,7 @@ export async function onRequest(context) {
         month_successful: donations.month_successful
       },
       bookings: { pending: bookings.pending, active: bookings.active, completed: bookings.completed },
+      enrollments: { total: enrollments.total, active: enrollments.active },
       page_views: { total: views.total, this_week: views.this_week, this_month: views.this_month },
       unique_visitors: {
         total: uniqueVisitors.total,

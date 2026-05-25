@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School — GideonAbochie Studio</title>
+<meta name="description" content="Enroll in the School of Creativity, Love & Wisdom. Free sample, paid to continue. Self-paced programs in Systems Thinking and Architectural Thinking.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh}
+.top{background:linear-gradient(135deg,#0A1628 0,#1a2a4a 100%);padding:60px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.top::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.06) 0,transparent 60%)}
+.top-content{position:relative;max-width:640px;margin:0 auto}
+.top h1{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,5vw,44px);color:#F1F5F9;margin-bottom:12px}
+.top h1 span{color:#C9A84C}
+.top .tagline{font-family:'Libre Baskerville',serif;font-style:italic;font-size:15px;color:#C9A84C;margin-bottom:20px}
+.top p{color:#8A9BB5;font-size:15px;line-height:1.8;max-width:500px;margin:0 auto}
+.programs{max-width:900px;margin:0 auto;padding:40px 24px 80px;display:grid;gap:24px}
+.card{background:linear-gradient(135deg,#0F1E38,#132644);border:1px solid #1E3250;border-radius:16px;padding:36px 32px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:#C9A84C;transform:translateY(-2px)}
+.card .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.badge-free{background:rgba(34,197,94,.12);color:#22C55E}
+.badge-soon{background:rgba(201,168,76,.12);color:#C9A84C}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:6px}
+.card .slugline{font-family:'Libre Baskerville',serif;font-style:italic;color:#C9A84C;font-size:13px;margin-bottom:16px}
+.card .desc{color:#8A9BB5;font-size:14px;line-height:1.8;margin-bottom:16px}
+.card .meta{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.card .meta span{font-size:12px;color:#5A7A9F}
+.card .meta strong{color:#CBD5E1;font-weight:500}
+.card .price{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#C9A84C;margin-bottom:20px}
+.enroll-form{display:none;border-top:1px solid #1E3250;padding-top:20px;margin-top:4px}
+.enroll-form.open{display:block}
+.enroll-form input{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:10px}
+.enroll-form input:focus{outline:none;border-color:#C9A84C}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-enroll{background:#C9A84C;color:#0A1628}
+.btn-enroll:hover{background:#D9B85C;transform:translateY(-1px)}
+.btn-disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed;pointer-events:none}
+.btn-submit{background:#22C55E;color:#0A1628;width:100%;justify-content:center;padding:14px}
+.btn-submit:hover{background:#34D96B;transform:translateY(-1px)}
+.btn-submit:disabled{background:rgba(34,197,94,.2);color:#5A7A9F;cursor:not-allowed;transform:none}
+.msg{display:none;margin-top:12px;padding:14px;border-radius:8px;font-size:13px;line-height:1.5}
+.msg-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
+.msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
+.msg a{color:#C9A84C;text-decoration:underline}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;max-width:900px;margin:0 auto}
+.nav a{color:#8A9BB5;text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}
+.nav a:hover{color:#C9A84C}
+</style>
+</head>
+<body>
+<div class="nav">
+  <a href="../index.html">&larr; GideonAbochie Studio</a>
+  <a href="../manifesto/">Manifesto</a>
+</div>
+<div class="top">
+  <div class="top-content">
+    <h1>School of <span>Creativity</span>, Love &amp; <span>Wisdom</span></h1>
+    <div class="tagline">Learn to see differently. Think clearly. Build what matters.</div>
+    <p>Self-paced programs designed for a world that rewards systems thinkers and architectural minds. Start free. Continue when you're ready.</p>
+  </div>
+</div>
+<div class="programs">
+  <div class="card" id="systems-thinking-card">
+    <span class="badge badge-free">Free Sample</span>
+    <h2>Systems Thinking Program</h2>
+    <div class="slugline">See the whole. Solve the root. Design the future.</div>
+    <div class="desc">Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work — whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you'll develop the lens of a systems thinker.</div>
+    <div class="meta">
+      <span>Duration: <strong>Self-paced</strong></span>
+      <span>Full Access: <strong>GH¢ 250</strong></span>
+    </div>
+    <div class="price">Free sample module — upgrade anytime</div>
+    <button class="btn btn-enroll" onclick="openForm('systems-thinking')">Enroll Now — Free</button>
+    <div class="enroll-form" id="form-systems-thinking">
+      <input type="text" id="name-st" placeholder="Your name" required>
+      <input type="email" id="email-st" placeholder="Your email" required>
+      <input type="tel" id="phone-st" placeholder="Phone / WhatsApp (optional)">
+      <button class="btn btn-submit" id="submit-st" onclick="submitEnroll('systems-thinking')">Start Learning</button>
+      <div class="msg" id="msg-st"></div>
+    </div>
+  </div>
+
+  <div class="card" style="opacity:.6">
+    <span class="badge badge-soon">Coming Soon</span>
+    <h2>Architectural Thinking Program</h2>
+    <div class="slugline">Coming Soon</div>
+    <div class="desc">Learn to think like an architect — structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you'll learn how to design solutions that stand the test of time.</div>
+    <div class="meta">
+      <span>Duration: <strong>Self-paced</strong></span>
+    </div>
+    <button class="btn btn-disabled">Coming Soon</button>
+  </div>
+</div>
+
+<script>
+function openForm(slug) {
+  var form = document.getElementById('form-' + slug);
+  var allForms = document.querySelectorAll('.enroll-form');
+  allForms.forEach(function(f) { if (f.id !== 'form-' + slug) f.classList.remove('open'); });
+  form.classList.toggle('open');
+  if (form.classList.contains('open')) {
+    document.getElementById('name-' + (slug === 'systems-thinking' ? 'st' : 'at')).focus();
+  }
+}
+
+function submitEnroll(slug) {
+  var prefix = slug === 'systems-thinking' ? 'st' : 'at';
+  var name = document.getElementById('name-' + prefix).value.trim();
+  var email = document.getElementById('email-' + prefix).value.trim();
+  var phone = document.getElementById('phone-' + prefix).value.trim();
+  var btn = document.getElementById('submit-' + prefix);
+  var msg = document.getElementById('msg-' + prefix);
+
+  if (!name || !email) {
+    msg.className = 'msg msg-error';
+    msg.style.display = 'block';
+    msg.textContent = 'Name and email are required.';
+    return;
+  }
+  if (!email.includes('@')) {
+    msg.className = 'msg msg-error';
+    msg.style.display = 'block';
+    msg.textContent = 'Please enter a valid email.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enrolling...';
+  msg.style.display = 'none';
+
+  fetch('/api/enroll', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ program_slug: slug, name: name, email: email, phone: phone })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status === 'ok') {
+      msg.className = 'msg msg-success';
+      msg.style.display = 'block';
+      msg.innerHTML = 'Welcome to the program! Check your email for dashboard access. <a href="/dashboard/?token=' + data.enrollment.access_token + '">Go to your dashboard &rarr;</a>';
+      btn.textContent = 'Enrolled!';
+      btn.style.background = 'rgba(34,197,94,.2)';
+      btn.style.color = '#6EE7B7';
+    } else {
+      msg.className = 'msg msg-error';
+      msg.style.display = 'block';
+      msg.textContent = data.message || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Try Again';
+    }
+  }).catch(function() {
+    msg.className = 'msg msg-error';
+    msg.style.display = 'block';
+    msg.textContent = 'Network error. Please check your connection and try again.';
+    btn.disabled = false;
+    btn.textContent = 'Start Learning';
+  });
+}
+</script>
+</body>
+</html>
