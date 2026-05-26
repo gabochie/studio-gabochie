@@ -2,7 +2,7 @@
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;line-height:1.6;min-height:100vh}
 
-.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.wrap{max-width:100%;padding:0 32px}
 .header{padding:28px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .header-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
 .header-brand img{height:40px;width:auto;display:block}
