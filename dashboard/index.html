@@ -52,6 +52,17 @@ h1 span{color:#C9A84C}
 .module-title{font-size:14px;color:#CBD5E1;flex:1}
 .module-title.done{color:#22C55E;text-decoration:line-through;opacity:.6}
 .module-date{font-size:11px;color:#5A7A9F;flex-shrink:0}
+/* Login form */
+.login-form{max-width:400px;margin:24px auto 0;text-align:left}
+.login-form label{display:block;color:#8A9BB5;font-size:12px;margin-bottom:4px}
+.login-form input{width:100%;padding:12px 16px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;box-sizing:border-box}
+.login-form input:focus{border-color:#C9A84C;outline:none}
+.login-form .login-btn{width:100%;padding:12px;border:none;border-radius:8px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.login-form .login-btn:hover{background:#D9B85C}
+.login-form .login-btn:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed}
+.login-form .login-msg{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none}
+.login-form .login-msg.success{display:block;background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
+.login-form .login-msg.error{display:block;background:rgba(232,99,122,.1);color:#E8637A;border:1px solid rgba(232,99,122,.2)}
 @media print{body{background:#fff;color:#000}.card,.content-area{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.content-area h2{color:#000}.no-print{display:none!important}}
 </style>
 </head>
@@ -61,10 +72,19 @@ h1 span{color:#C9A84C}
 </div>
 <div class="wrap" id="errorView" style="display:none">
   <div class="error-msg">
-    <h2>Access Denied</h2>
+    <h2 id="errTitle">Access Denied</h2>
     <p id="errorMsg">Invalid or missing access token.</p>
-    <a href="../school/" class="btn btn-primary">Browse Programs</a>
-    <a href="../index.html" class="btn btn-secondary">Back to Home</a>
+    <div class="login-form" id="loginForm">
+      <p style="color:#8A9BB5;font-size:13px;margin-bottom:16px">Enter the email you used to enroll and we'll look up your dashboard.</p>
+      <label for="loginEmail">Email address</label>
+      <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      <button class="login-btn" id="loginBtn" onclick="handleLogin()">Send Dashboard Link</button>
+      <div class="login-msg" id="loginMsg"></div>
+    </div>
+    <div style="margin-top:20px">
+      <a href="../school/" class="btn btn-primary">Browse Programs</a>
+      <a href="../index.html" class="btn btn-secondary">Back to Home</a>
+    </div>
   </div>
 </div>
 <div class="wrap" id="dashboardView" style="display:none">
@@ -291,6 +311,56 @@ function handleUpgrade() {
 }
 
 document.getElementById('upgradeBtn').addEventListener('click', handleUpgrade);
+
+function handleLogin() {
+  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var btn = document.getElementById('loginBtn');
+  var msg = document.getElementById('loginMsg');
+  if (!email) { msg.className = 'login-msg error'; msg.textContent = 'Please enter your email.'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Looking up...';
+  msg.className = 'login-msg hidden';
+  msg.style.display = 'none';
+  fetch('/api/enroll/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.status === 'ok' && d.multiple && d.enrollments && d.enrollments.length > 1) {
+      var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">You are enrolled in multiple programs. Choose one:</p>';
+      d.enrollments.forEach(function(e) {
+        listHtml += '<button class="login-btn" style="margin-bottom:8px" onclick="window.location.href=\'/dashboard/?token=' + encodeURIComponent(e.token) + '\'">' + e.program_title + ' <span style="opacity:.6;font-size:11px">(' + e.status + ')</span></button>';
+      });
+      document.getElementById('loginForm').innerHTML = listHtml;
+    } else if (d.status === 'ok' && d.token) {
+      window.location.href = '/dashboard/?token=' + encodeURIComponent(d.token);
+    } else {
+      msg.className = 'login-msg error';
+      msg.textContent = d.message || 'No enrollment found for this email.';
+      msg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Send Dashboard Link';
+    }
+  })
+  .catch(function(){
+    msg.className = 'login-msg error';
+    msg.textContent = 'Could not connect. Please try again.';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send Dashboard Link';
+  });
+}
+
+// If no token, allow Enter key on email field to trigger login
+document.addEventListener('DOMContentLoaded', function(){
+  var input = document.getElementById('loginEmail');
+  if (input) {
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') handleLogin(); });
+  }
+});
+
 loadDashboard();
 </script>
 </body>
