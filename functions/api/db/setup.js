@@ -202,6 +202,20 @@
       )`,
       `CREATE INDEX IF NOT EXISTS idx_sponsors_email ON sponsors(email)`,
       `CREATE INDEX IF NOT EXISTS idx_sponsor_sessions_token ON sponsor_sessions(token)`,
+      // Email automation queue
+      `CREATE TABLE IF NOT EXISTS email_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_email TEXT NOT NULL,
+        to_name TEXT DEFAULT '',
+        subject TEXT NOT NULL,
+        html_content TEXT NOT NULL,
+        email_type TEXT NOT NULL DEFAULT 'manual',
+        scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        sent_at TEXT DEFAULT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
       // Seed test sponsor
       `INSERT OR IGNORE INTO sponsors (email, company, access_code) VALUES ('sponsor@test.com', 'Test Corp', 'SPONSOR2026')`,
       `INSERT OR IGNORE INTO tasks (title, description, phase, status, source, priority) VALUES
@@ -233,7 +247,12 @@
         ('Write Architectural Thinking module 1: Blueprint Thinking', 'Structuring ideas and projects with clarity and purpose', 6, 'pending', 'agent', 'medium'),
         ('Write Architectural Thinking module 2: Design Principles', 'Core principles for building anything that matters', 6, 'pending', 'agent', 'medium'),
         ('Write Architectural Thinking module 3: Strategic Frameworks', 'Mental models and frameworks for strategic planning', 6, 'pending', 'agent', 'medium'),
-        ('Write Architectural Thinking module 4: Execution & Systems', 'From blueprint to execution — making it real', 6, 'pending', 'agent', 'medium')
+        ('Write Architectural Thinking module 4: Execution & Systems', 'From blueprint to execution — making it real', 6, 'pending', 'agent', 'medium'),
+        ('Welcome sequence for newsletter subscribers', 'Build welcome email + day 3 follow-up with school invite', 4, 'done', 'agent', 'high'),
+        ('Auto follow-up for manifesto downloaders', 'Day 3 follow-up email with download link and share request', 4, 'done', 'agent', 'high'),
+        ('Donation thank-you sequences', 'Receipt email + day 3 impact update follow-up', 4, 'done', 'agent', 'high'),
+        ('Create email_queue D1 table', 'Store pending/scheduled emails for automation sequences', 4, 'done', 'agent', 'high'),
+        ('Build email queue processing endpoint', '/api/email/process — sends due queued emails via Brevo SMTP', 4, 'done', 'agent', 'high')
       `,
       `INSERT OR IGNORE INTO programs (title, slug, tagline, description, duration, price, price_label, status, sample_content, full_content, sort_order) VALUES ('Systems Thinking Program', 'systems-thinking', 'See the whole. Solve the root. Design the future.', 'Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work - whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you will develop the lens of a systems thinker.', 'Self-paced', 250, 'Free Sample · Full Access GH¢ 250', 'active', '<h2>Welcome to the Systems Thinking Program</h2><p>Before we dive into the models, let us start with a simple exercise. Look around you right now. Pick one problem - in your work, your community, or your life - and ask: <em>What keeps this problem in place?</em></p><p>That is the first step. Systems thinking begins not with answers, but with better questions.</p><h3>Your First Tool: The Iceberg Model</h3><p>Most people react to events. Systems thinkers look deeper:</p><ul><li><strong>Events</strong> - What happened? (the tip)</li><li><strong>Patterns</strong> - What has been happening over time?</li><li><strong>Structure</strong> - What forces are driving these patterns?</li><li><strong>Mental Models</strong> - What beliefs keep this structure in place?</li></ul><p>For the full program, you will get video walkthroughs, real-world case studies, worksheets, and community exercises.</p>', '', 1), ('Architectural Thinking Program', 'architectural-thinking', 'Coming Soon', 'Learn to think like an architect - structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you will learn how to design solutions that stand the test of time.', 'Self-paced', 0, 'Coming Soon', 'coming_soon', '', '', 2)`
     ];

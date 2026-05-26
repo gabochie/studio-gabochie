@@ -1,3 +1,5 @@
+import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   const kv = env.SUBSCRIBERS;
@@ -69,6 +71,12 @@ export async function onRequest(context) {
       await db.prepare(
         `INSERT OR IGNORE INTO subscribers (name, email, source, book) VALUES (?, ?, ?, ?)`
       ).bind(name, email, book || 'contact', book || '').run().catch(function(){});
+      // Queue manifesto follow-up (day 3) if a book download
+      if (book) {
+        try {
+          await queueEmail(env, email, name, 'Did You Get Your Free Copy?', manifestoFollowup(name, book), 'manifesto_followup', daysFromNow(3));
+        } catch (_) {}
+      }
     }
 
     // Store in KV if bound (legacy fallback)

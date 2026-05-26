@@ -21,6 +21,8 @@ const REWARD_TIERS = [
   { min: 50, tier: 'premium', label: 'Premium Package (1 month)', value: 'GH¢10,000' },
 ];
 
+import { queueEmail, welcomeFollowup, daysFromNow } from './email/_send.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') {
@@ -187,6 +189,11 @@ export async function onRequest(context) {
             htmlContent: welcomeHtml
           })
         });
+      } catch (_e) {}
+
+      // Queue day 3 follow-up
+      try {
+        await queueEmail(env, email, name, 'Have You Explored the School?', welcomeFollowup(name), 'welcome_followup', daysFromNow(3));
       } catch (_e) {}
     }
 

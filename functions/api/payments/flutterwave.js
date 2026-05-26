@@ -1,3 +1,5 @@
+import { queueEmail, donationImpactFollowup, daysFromNow } from '../email/_send.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') {
@@ -117,6 +119,10 @@ export async function onRequest(context) {
             htmlContent: receiptHtml
           })
         });
+        // Queue day 3 impact follow-up
+        try {
+          await queueEmail(env, donor_email, donor_name, 'Your Impact in Action', donationImpactFollowup(donor_name), 'donation_impact', daysFromNow(3));
+        } catch (_e2) {}
       } catch (_e) {}
     }
 
