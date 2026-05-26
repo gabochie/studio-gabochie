@@ -4,115 +4,300 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School — GideonAbochie Studio</title>
-<meta name="description" content="Enroll in the School of Creativity, Love & Wisdom. Free sample, paid to continue. Self-paced programs in Systems Thinking and Architectural Thinking.">
+<meta name="description" content="Self-paced programs in Systems Thinking and Architectural Thinking. Start free, learn at your own pace, and build the skills to think clearly and create what matters.">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--content-max:1440px}
 body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh}
-.top{background:linear-gradient(135deg,#0A1628 0,#1a2a4a 100%);padding:60px 24px 80px;text-align:center;position:relative;overflow:hidden}
-.top::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.06) 0,transparent 60%)}
-.top-content{position:relative;max-width:640px;margin:0 auto}
-.top h1{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,5vw,44px);color:#F1F5F9;margin-bottom:12px}
-.top h1 span{color:#C9A84C}
-.top .tagline{font-family:'Libre Baskerville',serif;font-style:italic;font-size:15px;color:#C9A84C;margin-bottom:20px}
-.top p{color:#8A9BB5;font-size:15px;line-height:1.8;max-width:500px;margin:0 auto}
-.programs{max-width:var(--content-max);margin:0 auto;padding:40px 24px 80px;display:grid;gap:24px}
-.card{background:linear-gradient(135deg,#0F1E38,#132644);border:1px solid #1E3250;border-radius:16px;padding:36px 32px;transition:border-color .2s,transform .2s}
+
+/* Navigation */
+.nav{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;max-width:var(--content-max);margin:0 auto}
+.nav-links{display:flex;gap:20px;align-items:center}
+.nav a{color:#8A9BB5;text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}
+.nav a:hover{color:#C9A84C}
+.nav .login-link{padding:6px 14px;border:1px solid #1E3250;border-radius:6px;font-size:12px}
+.nav .login-link:hover{border-color:#C9A84C;color:#C9A84C}
+
+/* Hero */
+.hero{max-width:var(--content-max);margin:0 auto;padding:60px 24px 40px;text-align:center}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;color:#fff;line-height:.92;letter-spacing:-.02em;margin-bottom:16px}
+.hero h1 span{color:#C9A84C}
+.hero p{font-size:16px;color:#8A9BB5;max-width:600px;margin:0 auto 32px;line-height:1.7}
+
+/* How it works */
+.how-section{max-width:var(--content-max);margin:0 auto;padding:40px 24px}
+.section-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:#5A7A9F;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:#1E3250;max-width:60px}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3.5vw,42px);font-weight:700;color:#fff;margin-bottom:32px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:48px}
+.step{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:28px;transition:border-color .2s}
+.step:hover{border-color:#C9A84C}
+.step-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:rgba(201,168,76,.15);line-height:1;margin-bottom:4px}
+.step h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:8px}
+.step p{font-size:13px;color:#8A9BB5;line-height:1.6}
+
+/* Program cards */
+.programs{max-width:var(--content-max);margin:0 auto;padding:40px 24px}
+.program-grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.card{background:linear-gradient(135deg,#0F1E38,#132644);border:1px solid #1E3250;border-radius:16px;padding:36px 32px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
 .card:hover{border-color:#C9A84C;transform:translateY(-2px)}
-.card .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.card .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;align-self:flex-start}
 .badge-free{background:rgba(34,197,94,.12);color:#22C55E}
-.badge-soon{background:rgba(201,168,76,.12);color:#C9A84C}
-.card h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:6px}
-.card .slugline{font-family:'Libre Baskerville',serif;font-style:italic;color:#C9A84C;font-size:13px;margin-bottom:16px}
-.card .desc{color:#8A9BB5;font-size:14px;line-height:1.8;margin-bottom:16px}
-.card .meta{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.badge-paid{background:rgba(201,168,76,.12);color:#C9A84C}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.card .slugline{font-style:italic;color:#C9A84C;font-size:13px;margin-bottom:12px}
+.card .desc{color:#8A9BB5;font-size:14px;line-height:1.7;margin-bottom:16px;flex:1}
+.card .meta{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
 .card .meta span{font-size:12px;color:#5A7A9F}
 .card .meta strong{color:#CBD5E1;font-weight:500}
-.card .price{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#C9A84C;margin-bottom:20px}
-.enroll-form{display:none;border-top:1px solid #1E3250;padding-top:20px;margin-top:4px}
-.enroll-form.open{display:block}
-.enroll-form input{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:10px}
-.enroll-form input:focus{outline:none;border-color:#C9A84C}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
-.btn-enroll{background:#C9A84C;color:#0A1628}
-.btn-enroll:hover{background:#D9B85C;transform:translateY(-1px)}
-.btn-disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed;pointer-events:none}
-.btn-submit{background:#22C55E;color:#0A1628;width:100%;justify-content:center;padding:14px}
-.btn-submit:hover{background:#34D96B;transform:translateY(-1px)}
-.btn-submit:disabled{background:rgba(34,197,94,.2);color:#5A7A9F;cursor:not-allowed;transform:none}
-.msg{display:none;margin-top:12px;padding:14px;border-radius:8px;font-size:13px;line-height:1.5}
+.card .topics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.card .topic-tag{padding:4px 10px;border-radius:20px;font-size:11px;background:rgba(255,255,255,.04);color:#5A7A9F;border:1px solid #1E3250}
+.card .price-area{font-size:13px;color:#C9A84C;margin-bottom:16px;padding-top:12px;border-top:1px solid #1E3250}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s;width:100%}
+.btn-primary{background:#C9A84C;color:#0A1628}
+.btn-primary:hover{background:#D9B85C;transform:translateY(-1px)}
+.btn-primary:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed;transform:none}
+.btn-secondary{background:rgba(255,255,255,.06);border:1px solid #1E3250;color:#CBD5E1}
+.btn-secondary:hover{background:rgba(255,255,255,.1)}
+
+/* Enrollment flow */
+.enroll-flow{max-width:600px;margin:40px auto;display:none}
+.enroll-flow.open{display:block}
+.enroll-step{display:none}
+.enroll-step.active{display:block}
+.enroll-step h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:8px}
+.enroll-step p{color:#8A9BB5;font-size:14px;margin-bottom:20px;line-height:1.6}
+.enroll-option{display:flex;align-items:center;gap:12px;padding:16px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.enroll-option:hover,.enroll-option.selected{border-color:#C9A84C;background:rgba(201,168,76,.04)}
+.enroll-option .radio{width:20px;height:20px;border-radius:50%;border:2px solid #1E3250;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.enroll-option.selected .radio{border-color:#C9A84C}
+.enroll-option.selected .radio::after{content:'';width:10px;height:10px;border-radius:50%;background:#C9A84C}
+.enroll-option .opt-label{font-size:14px;font-weight:500;color:#E8EEF7}
+.enroll-option .opt-desc{font-size:12px;color:#5A7A9F}
+.enroll-flow input[type="text"],.enroll-flow input[type="email"],.enroll-flow input[type="tel"]{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;transition:border-color .2s}
+.enroll-flow input:focus{outline:none;border-color:#C9A84C}
+.enroll-flow .btn-submit{background:#22C55E;color:#0A1628;width:100%;justify-content:center;padding:14px;margin-top:4px}
+.enroll-flow .btn-submit:hover{background:#34D96B}
+.enroll-flow .btn-submit:disabled{background:rgba(34,197,94,.2);color:#5A7A9F;cursor:not-allowed}
+.msg{display:none;padding:14px;border-radius:8px;font-size:13px;line-height:1.5;margin-top:12px}
 .msg-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
 .msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
 .msg a{color:#C9A84C;text-decoration:underline}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;max-width:var(--content-max);margin:0 auto}
-.nav a{color:#8A9BB5;text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}
-.nav a:hover{color:#C9A84C}
+.enroll-nav{display:flex;gap:12px;margin-top:16px}
+.enroll-nav .btn{flex:1}
+
+/* FAQ */
+.faq-section{max-width:720px;margin:40px auto 0;padding:40px 24px 60px}
+.faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
+.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q::after{content:'+';font-size:16px;color:#C9A84C}
+.faq-q.open::after{content:'\2212'}
+.faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
+.faq-a.open{display:block}
+
+@media(max-width:640px){.program-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
 <div class="nav">
   <a href="../index.html">&larr; GideonAbochie Studio</a>
-  <a href="../manifesto/">Manifesto</a>
-</div>
-<div class="top">
-  <div class="top-content">
-    <h1>School of <span>Creativity</span>, Love &amp; <span>Wisdom</span></h1>
-    <div class="tagline">Learn to see differently. Think clearly. Build what matters.</div>
-    <p>Self-paced programs designed for a world that rewards systems thinkers and architectural minds. Start free. Continue when you're ready.</p>
+  <div class="nav-links">
+    <a href="../support/">Support</a>
+    <a href="../dashboard/" class="login-link">Student Login</a>
   </div>
 </div>
-<div class="programs">
-  <div class="card" id="systems-thinking-card">
-    <span class="badge badge-free">Free Sample</span>
-    <h2>Systems Thinking Program</h2>
-    <div class="slugline">See the whole. Solve the root. Design the future.</div>
-    <div class="desc">Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work — whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you'll develop the lens of a systems thinker.</div>
-    <div class="meta">
-      <span>Duration: <strong>Self-paced</strong></span>
-      <span>Full Access: <strong>GH¢ 250</strong></span>
-    </div>
-    <div class="price">Free sample module — upgrade anytime</div>
-    <button class="btn btn-enroll" onclick="openForm('systems-thinking')">Enroll Now — Free</button>
-    <div class="enroll-form" id="form-systems-thinking">
-      <input type="text" id="name-st" placeholder="Your name" required>
-      <input type="email" id="email-st" placeholder="Your email" required>
-      <input type="tel" id="phone-st" placeholder="Phone / WhatsApp (optional)">
-      <button class="btn btn-submit" id="submit-st" onclick="submitEnroll('systems-thinking')">Start Learning</button>
-      <div class="msg" id="msg-st"></div>
-    </div>
-  </div>
 
-  <div class="card" style="opacity:.6">
-    <span class="badge badge-soon">Coming Soon</span>
-    <h2>Architectural Thinking Program</h2>
-    <div class="slugline">Coming Soon</div>
-    <div class="desc">Learn to think like an architect — structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you'll learn how to design solutions that stand the test of time.</div>
-    <div class="meta">
-      <span>Duration: <strong>Self-paced</strong></span>
+<div class="hero">
+  <div class="hero-eyebrow">School of Creativity, Love &amp; Wisdom</div>
+  <h1>Start <span>Learning</span> Today</h1>
+  <p>Two self-paced programs designed to change how you think, build, and create. Start with free samples — upgrade when you're ready.</p>
+</div>
+
+<div class="how-section">
+  <div class="section-label">How It Works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Choose Your Path</h3>
+      <p>Systems Thinking or Architectural Thinking — or both. Each program starts with a free sample so you can try before you commit.</p>
     </div>
-    <button class="btn btn-disabled">Coming Soon</button>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Learn at Your Pace</h3>
+      <p>Self-paced modules with practical exercises, real-world case studies, and mental models you can apply immediately to your work and life.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Go Deeper When Ready</h3>
+      <p>Unlock the full curriculum with video walkthroughs, worksheets, and community exercises. No deadlines, no pressure — just growth.</p>
+    </div>
+  </div>
+</div>
+
+<div class="programs" id="programs">
+  <div class="section-label">Programs</div>
+  <h2 class="section-title">Pick Your <span style="color:#C9A84C">Path</span></h2>
+  <div class="program-grid">
+    <div class="card">
+      <span class="badge badge-free">Free Sample</span>
+      <h2>Systems Thinking</h2>
+      <div class="slugline">See the whole. Solve the root. Design the future.</div>
+      <div class="desc">Understand the hidden patterns that shape our world. Learn to see interconnected systems, anticipate ripple effects, and design solutions that actually work — in business, society, or your personal life.</div>
+      <div class="topics">
+        <span class="topic-tag">Iceberg Model</span>
+        <span class="topic-tag">Feedback Loops</span>
+        <span class="topic-tag">Leverage Points</span>
+        <span class="topic-tag">Mental Models</span>
+      </div>
+      <div class="meta">
+        <span>Duration: <strong>Self-paced</strong></span>
+        <span>Full Access: <strong>GH¢ 250</strong></span>
+      </div>
+      <div class="price-area">4 modules &middot; Free sample &middot; Pay once, own forever</div>
+      <button class="btn btn-primary" onclick="startEnroll('systems-thinking')">Start Free Sample</button>
+    </div>
+
+    <div class="card">
+      <span class="badge badge-free">Free Sample</span>
+      <h2>Architectural Thinking</h2>
+      <div class="slugline">From Blueprint to Masterpiece</div>
+      <div class="desc">Think like an architect — structuring ideas, projects, and systems with clarity and purpose. Mental models, design principles, and strategic frameworks for building anything that matters.</div>
+      <div class="topics">
+        <span class="topic-tag">Blueprint Thinking</span>
+        <span class="topic-tag">Design Principles</span>
+        <span class="topic-tag">Strategic Frameworks</span>
+        <span class="topic-tag">Execution &amp; Systems</span>
+      </div>
+      <div class="meta">
+        <span>Duration: <strong>Self-paced</strong></span>
+      </div>
+      <div class="price-area">4 modules &middot; Free sample</div>
+      <button class="btn btn-primary" onclick="startEnroll('architectural-thinking')">Start Free Sample</button>
+    </div>
+  </div>
+</div>
+
+<!-- Enrollment flow (step by step) -->
+<div class="enroll-flow" id="enrollFlow">
+  <div class="enroll-step active" id="step-welcome">
+    <h2>Get Started</h2>
+    <p id="stepDesc">Great choice! Just a few quick questions so we know where to point you.</p>
+
+    <!-- Step 1: What brings you here? -->
+    <div id="q-purpose">
+      <p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">What best describes what you're looking for?</p>
+      <div class="enroll-option" onclick="selectPurpose(this,'solving')">
+        <div class="radio"></div>
+        <div><div class="opt-label">I want to solve complex problems</div><div class="opt-desc">Understanding systems, root causes, and ripple effects</div></div>
+      </div>
+      <div class="enroll-option" onclick="selectPurpose(this,'building')">
+        <div class="radio"></div>
+        <div><div class="opt-label">I want to build better projects</div><div class="opt-desc">Structuring ideas, designing systems, executing plans</div></div>
+      </div>
+      <div class="enroll-option" onclick="selectPurpose(this,'both')">
+        <div class="radio"></div>
+        <div><div class="opt-label">Both — I want the full picture</div><div class="opt-desc">Systems thinking to analyze + architectural thinking to build</div></div>
+      </div>
+      <div class="enroll-nav">
+        <button class="btn btn-primary" onclick="nextStep()" id="nextPurposeBtn" disabled>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Your details (shown after purpose) -->
+    <div id="q-details" style="display:none">
+      <p style="color:#8A9BB5;font-size:13px;margin-bottom:16px">Almost there! Enter your details to start learning.</p>
+      <div id="recommendBox" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#C9A84C"></div>
+      <input type="text" id="enrollName" placeholder="Your name" autocomplete="name">
+      <input type="email" id="enrollEmail" placeholder="Your email" autocomplete="email">
+      <input type="tel" id="enrollPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
+      <button class="btn btn-submit" id="enrollSubmit" onclick="submitEnroll()">Start Learning</button>
+      <div class="msg" id="enrollMsg"></div>
+      <div class="enroll-nav">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="faq-section">
+  <div class="section-label">Questions</div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do I need any experience?</div>
+    <div class="faq-a">None. These programs are designed for beginners and experienced practitioners alike. The concepts are accessible, the exercises make them stick.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I switch programs later?</div>
+    <div class="faq-a">Yes. You can enroll in both programs at any time. Each has its own dashboard and progress tracking.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What happens after I enroll?</div>
+    <div class="faq-a">You get immediate access to the free sample module and a private dashboard. A welcome email with your dashboard link is sent to your inbox. Upgrade anytime to unlock the full curriculum.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I get back to my dashboard?</div>
+    <div class="faq-a">Visit <a href="../dashboard/" style="color:#C9A84C">gideonabochie.org/dashboard/</a> and enter the email you used to enroll. We'll look up your dashboard automatically.</div>
   </div>
 </div>
 
 <script>
-function openForm(slug) {
-  var form = document.getElementById('form-' + slug);
-  var allForms = document.querySelectorAll('.enroll-form');
-  allForms.forEach(function(f) { if (f.id !== 'form-' + slug) f.classList.remove('open'); });
-  form.classList.toggle('open');
-  if (form.classList.contains('open')) {
-    document.getElementById('name-' + (slug === 'systems-thinking' ? 'st' : 'at')).focus();
-  }
+var selectedPurpose = '';
+var selectedSlug = '';
+
+function startEnroll(slug) {
+  selectedSlug = slug;
+  document.getElementById('enrollFlow').classList.add('open');
+  document.getElementById('step-welcome').classList.add('active');
+  document.getElementById('q-purpose').style.display = 'block';
+  document.getElementById('q-details').style.display = 'none';
+  selectedPurpose = '';
+  document.getElementById('nextPurposeBtn').disabled = true;
+  document.getElementById('recommendBox').textContent = '';
+  document.getElementById('enrollName').value = '';
+  document.getElementById('enrollEmail').value = '';
+  document.getElementById('enrollPhone').value = '';
+  document.getElementById('enrollMsg').className = 'msg';
+  document.getElementById('enrollMsg').style.display = 'none';
+  document.getElementById('stepDesc').textContent = slug === 'systems-thinking'
+    ? 'You picked Systems Thinking — great for understanding how things really work. One quick question:'
+    : 'You picked Architectural Thinking — perfect for learning how to build things that last. One quick question:';
+  document.getElementById('enrollFlow').scrollIntoView({behavior:'smooth'});
 }
 
-function submitEnroll(slug) {
-  var prefix = slug === 'systems-thinking' ? 'st' : 'at';
-  var name = document.getElementById('name-' + prefix).value.trim();
-  var email = document.getElementById('email-' + prefix).value.trim();
-  var phone = document.getElementById('phone-' + prefix).value.trim();
-  var btn = document.getElementById('submit-' + prefix);
-  var msg = document.getElementById('msg-' + prefix);
+function selectPurpose(el, val) {
+  selectedPurpose = val;
+  document.querySelectorAll('.enroll-option').forEach(function(o){o.classList.remove('selected')});
+  el.classList.add('selected');
+  document.getElementById('nextPurposeBtn').disabled = false;
+}
+
+function nextStep() {
+  var rec = document.getElementById('recommendBox');
+  if (selectedPurpose === 'solving' || selectedSlug === 'systems-thinking') {
+    rec.textContent = '\u2b50 Suggested: Systems Thinking — understanding systems is the fastest path to solving complex problems.';
+  } else if (selectedPurpose === 'building' || selectedSlug === 'architectural-thinking') {
+    rec.textContent = '\u2b50 Suggested: Architectural Thinking — learn to structure and execute projects with clarity.';
+  } else {
+    rec.textContent = '\u2b50 Suggested: Start with Systems Thinking to understand problems, then Architectural Thinking to build solutions. You can enroll in both.';
+  }
+  document.getElementById('q-purpose').style.display = 'none';
+  document.getElementById('q-details').style.display = 'block';
+}
+
+function prevStep() {
+  document.getElementById('q-purpose').style.display = 'block';
+  document.getElementById('q-details').style.display = 'none';
+}
+
+function submitEnroll() {
+  var name = document.getElementById('enrollName').value.trim();
+  var email = document.getElementById('enrollEmail').value.trim();
+  var phone = document.getElementById('enrollPhone').value.trim();
+  var btn = document.getElementById('enrollSubmit');
+  var msg = document.getElementById('enrollMsg');
 
   if (!name || !email) {
     msg.className = 'msg msg-error';
@@ -134,15 +319,16 @@ function submitEnroll(slug) {
   fetch('/api/enroll', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ program_slug: slug, name: name, email: email, phone: phone })
+    body: JSON.stringify({ program_slug: selectedSlug, name: name, email: email, phone: phone })
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data.status === 'ok') {
       msg.className = 'msg msg-success';
       msg.style.display = 'block';
-      msg.innerHTML = 'Welcome to the program! Check your email for dashboard access. <a href="/dashboard/?token=' + data.enrollment.access_token + '">Go to your dashboard &rarr;</a>';
+      msg.innerHTML = '<strong>Welcome to the program!</strong> Check your email for dashboard access. <a href="/dashboard/?token=' + data.enrollment.access_token + '">Go to your dashboard &rarr;</a>';
       btn.textContent = 'Enrolled!';
       btn.style.background = 'rgba(34,197,94,.2)';
       btn.style.color = '#6EE7B7';
+      btn.disabled = true;
     } else {
       msg.className = 'msg msg-error';
       msg.style.display = 'block';
@@ -159,5 +345,6 @@ function submitEnroll(slug) {
   });
 }
 </script>
+
 </body>
 </html>
