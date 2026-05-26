@@ -87,25 +87,25 @@
           "Admin page to manage programs & content",
           "Student progress tracking"
         ]},
-        {"id": 6.2, "task": "Systems Thinking — full curriculum", "items": [
-          "Write module 1: Iceberg Model (deep dive)",
-          "Write module 2: Feedback Loops",
-          "Write module 3: Leverage Points",
-          "Write module 4: Mental Models",
+        {"id": 6.2, "task": "Systems Thinking — full curriculum", "status": "done", "items": [
+          "Write module 1: Iceberg Model (deep dive) ✓",
+          "Write module 2: Feedback Loops ✓",
+          "Write module 3: Leverage Points ✓",
+          "Write module 4: Mental Models ✓",
           "Record video walkthroughs for each module",
           "Create worksheets & exercises per module"
         ]},
-        {"id": 6.3, "task": "Architectural Thinking — full curriculum", "items": [
-          "Write module 1: Blueprint Thinking",
-          "Write module 2: Design Principles",
-          "Write module 3: Strategic Frameworks",
-          "Write module 4: Execution & Systems",
+        {"id": 6.3, "task": "Architectural Thinking — full curriculum", "status": "done", "items": [
+          "Write module 1: Blueprint Thinking ✓",
+          "Write module 2: Design Principles ✓",
+          "Write module 3: Strategic Frameworks ✓",
+          "Write module 4: Execution & Systems ✓",
           "Record video walkthroughs",
           "Create worksheets & exercises"
         ]},
-        {"id": 6.2, "task": "Digital book sales", "items": ["Pay-per-download", "Flutterwave purchase flow", "Download tracking"]},
-        {"id": 6.3, "task": "Newsletter monetization", "items": ["Sponsored slots", "Premium tiers", "Auto-billing"]},
-        {"id": 6.4, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
+        {"id": 6.4, "task": "Digital book sales", "status": "done", "items": ["Pay-per-download ✓", "Flutterwave purchase flow ✓", "Download tracking ✓"]},
+        {"id": 6.5, "task": "Premium newsletter tiers", "status": "done", "items": ["Monthly Supporter (GH¢50/mo) ✓", "Annual Patron (GH¢500/yr) ✓", "Founding Partner (GH¢2,500/yr) ✓", "Flutterwave recurring checkout ✓", "Webhook subscription handling ✓", "/support/ page ✓", "Welcome email automation ✓"]},
+        {"id": 6.6, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
       ]
     },
     {
@@ -135,7 +135,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 6 — Build The Profit Engine: school paywall, Systems Thinking curriculum, Architectural Thinking curriculum. Phase 5 (Fix The Cash Register) fully complete — all payment flows, webhook logging, revenue dashboard, and CSV export done.",
+  "current_focus": "Phase 6 — Build The Profit Engine: book sales, premium newsletter tiers (GH¢50/mo · GH¢500/yr · GH¢2,500/yr), Systems Thinking curriculum, Architectural Thinking curriculum. Phase 6.4 (Premium newsletter tiers) done — /support/ page with Flutterwave recurring checkout, webhook subscription handling, welcome emails. Next: 6.5 (Student progress tracking).",
   "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

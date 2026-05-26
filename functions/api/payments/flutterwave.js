@@ -132,6 +132,68 @@ export async function onRequest(context) {
       }
     }
 
+    // Handle subscription payments (tx_ref prefix: sub_)
+    if (event === 'charge.completed' && tx_ref.startsWith('sub_')) {
+      const tierMap = { monthly: 'Monthly Supporter', annual: 'Annual Patron', founding: 'Founding Partner' };
+      const tier = data.plan ? (data.plan.name || '').toLowerCase().replace(/[^a-z]/g, '') : 'monthly';
+      const subAmount = parseFloat(data.plan ? data.plan.amount : verifiedAmount) || 50;
+      const subCurrency = data.plan ? (data.plan.currency || 'GHS') : verifiedCurrency;
+      const flwSubscriptionId = String(data.id || data.subscription_id || '');
+      const flwPlanId = String(data.plan ? data.plan.id : '');
+      const nextBilling = data.next_payment_date || data.next_charge_date || '';
+      await db.prepare(
+        `UPDATE subscriptions SET status = 'active', amount = ?, currency = ?, flw_subscription_id = ?, flw_plan_id = ?, next_billing = ? WHERE tx_ref = ?`
+      ).bind(subAmount, subCurrency, flwSubscriptionId, flwPlanId, nextBilling, tx_ref).run();
+      const tierName = tierMap[tier] || 'Supporter';
+      if (donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+        try {
+          const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+          const welcomeHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
+          <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
+          <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+          <tr><td style="background:#0A1628;padding:32px;text-align:center">
+          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>
+          <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Welcome, ${tierName}!</p>
+          </td></tr>
+          <tr><td style="padding:32px">
+          <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${donor_name},</p>
+          <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for becoming a <strong style="color:#C9A84C">${tierName}</strong>. Your recurring support makes every book, video, and teaching possible.</p>
+          <table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">
+          <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Plan</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">${tierName}</td></tr>
+          <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${subCurrency} ${subAmount.toFixed(2)}</td></tr>
+          <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:12px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${tx_ref}</td></tr>
+          </table>
+          <p style="color:#64748B;font-size:13px;line-height:1.6;margin:0 0 20px">What happens next?</p>
+          <ul style="color:#475569;font-size:13px;line-height:1.7;padding-left:20px;margin:0 0 24px">
+          <li>You will receive your supporter benefits within 24 hours</li>
+          <li>Your recurring payment will be processed automatically each period</li>
+          <li>You can cancel or change your plan anytime by replying to this email</li>
+          </ul>
+          <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a></p>
+          </td></tr></table></td></tr></table></body></html>`;
+          await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+            body: JSON.stringify({
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              to: [{ email: donor_email, name: donor_name }],
+              subject: 'Welcome to the ' + tierName + ' Tier — GideonAbochie Studio',
+              htmlContent: welcomeHtml
+            })
+          });
+        } catch (_e) {}
+      }
+    }
+
+    // Handle recurring subscription payment notifications
+    if (tx_ref.startsWith('sub_') && data.subscription_id && event !== 'charge.completed') {
+      const subStatus = verifiedStatus === 'successful' ? 'active' : (verifiedStatus === 'failed' ? 'past_due' : verifiedStatus);
+      const nextBilling = data.next_payment_date || data.next_charge_date || '';
+      await db.prepare(
+        `UPDATE subscriptions SET status = ?, next_billing = ? WHERE flw_subscription_id = ?`
+      ).bind(subStatus, nextBilling, String(data.subscription_id)).run();
+    }
+
     // Send receipt email via Brevo for successful donations
     if ((event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
       try {

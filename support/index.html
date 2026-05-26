@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<style>
+:root{--bg:#FAFAFA;--paper:#FFFFFF;--ink:#0A1628;--ink-mid:#2A3A5C;--ink-lt:#6B7F9A;--rule:#E2E6ED;--gold:#C9A84C;--gold-lt:#D9B85C;--gold-soft:rgba(201,168,76,0.12);--red:#8C2020;--green:#22C55E;--content-max:1440px}
+body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georgia,serif;font-size:16px;line-height:1.75;padding-top:64px}
+
+.page-wrap{max-width:var(--content-max);margin:0 auto;padding:0 40px;width:100%}
+
+/* Hero */
+.hero{text-align:center;padding:80px 0 48px}
+.hero-eyebrow{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:700;color:var(--ink);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{font-size:17px;color:var(--ink-lt);max-width:640px;margin:0 auto 32px;line-height:1.7}
+
+/* Mission stat */
+.mission-strip{background:var(--ink);padding:40px;border-radius:12px;margin:0 auto 64px;max-width:900px;text-align:center}
+.mission-strip p{color:rgba(250,250,250,.7);font-size:14px;max-width:600px;margin:0 auto 20px;line-height:1.6}
+.mission-strip .stat-row{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.mission-strip .stat{text-align:center}
+.mission-strip .stat-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:var(--gold-lt);display:block;line-height:1}
+.mission-strip .stat-label{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(250,250,250,.35);text-transform:uppercase;letter-spacing:.15em;margin-top:6px;display:block}
+
+/* Tiers */
+.tier-section{padding:0 0 80px}
+.section-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.35em;color:var(--ink-lt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--gold);opacity:.2;max-width:60px}
+.section-title{font-family:'Libre Baskerville',serif;font-size:clamp(32px,4vw,54px);font-weight:700;line-height:1.1;color:var(--ink);margin-bottom:16px}
+.section-sub{font-size:15px;color:var(--ink-lt);max-width:600px;margin-bottom:40px}
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:40px}
+.tier-card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:36px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;position:relative}
+.tier-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
+.tier-card.popular{border-color:var(--gold);border-width:2px;box-shadow:0 0 0 1px var(--gold-soft)}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:4px 20px;border-radius:20px}
+.tier-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.tier-price{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:var(--gold);line-height:1;margin:12px 0 4px}
+.tier-price small{font-size:18px;font-weight:400;color:var(--ink-lt)}
+.tier-desc{font-size:13px;color:var(--ink-lt);line-height:1.6;margin-bottom:20px;flex:1}
+.tier-features{list-style:none;padding:0;margin:0 0 24px}
+.tier-features li{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink-mid);padding:6px 0;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.tier-features li:last-child{border-bottom:none}
+.tier-features li::before{content:'\2713';color:var(--gold);font-weight:700;font-size:14px}
+.subscribe-btn{width:100%;padding:14px;border:2px solid var(--gold);border-radius:8px;background:transparent;color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .25s;text-align:center;text-decoration:none;display:block;box-sizing:border-box}
+.subscribe-btn:hover{background:var(--gold);color:var(--ink)}
+.subscribe-btn.popular-btn{background:var(--gold);color:var(--ink)}
+.subscribe-btn.popular-btn:hover{background:var(--gold-lt)}
+
+/* FAQ */
+.faq-section{padding:0 0 80px;max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--rule);padding:16px 0}
+.faq-q{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q::after{content:'+';font-size:18px;color:var(--gold);transition:transform .25s}
+.faq-q.open::after{content:'\2212'}
+.faq-a{padding-top:12px;font-size:14px;color:var(--ink-lt);line-height:1.7;display:none}
+.faq-a.open{display:block}
+
+/* Footer */
+.footer{background:var(--ink);padding:48px 40px;text-align:center;margin-top:80px}
+.footer-links{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-bottom:20px}
+.footer-links a{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.2em;color:rgba(250,250,250,.35);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--gold-lt)}
+.footer-copy{font-family:'Courier Prime',monospace;font-size:10px;color:rgba(250,250,250,.18);letter-spacing:.1em;text-transform:uppercase}
+
+/* Form */
+.form-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
+.form-overlay.open{display:flex}
+.form-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto}
+.form-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:8px}
+.form-modal .selected-plan{font-family:'Courier Prime',monospace;font-size:11px;color:var(--gold);margin-bottom:20px}
+.form-modal label{display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5;margin-bottom:4px}
+.form-modal input{width:100%;padding:12px 16px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:16px;box-sizing:border-box}
+.form-modal input:focus{border-color:var(--gold);outline:none}
+.form-modal .submit-btn{width:100%;padding:14px;border:none;border-radius:10px;background:var(--gold);color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.form-modal .submit-btn:hover{background:var(--gold-lt)}
+.form-modal .submit-btn:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed}
+.form-modal .secure-badge{font-family:'DM Sans',sans-serif;font-size:11px;color:#3A5278;text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.form-modal .close-btn{background:0 0;border:none;color:#5A7A9F;font-size:24px;cursor:pointer;float:right;line-height:1;padding:0}
+.form-modal .close-btn:hover{color:#E8637A}
+
+@media(max-width:640px){.tier-grid{grid-template-columns:1fr}.page-wrap{padding:0 20px}.mission-strip{margin-left:20px;margin-right:20px}}
+</style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">GIDEONABOCHIE <span class="nav-logo-rule">|</span> <span class="nav-logo-studio">STUDIO</span></a>
+    <button class="nav-toggle" onclick="document.getElementById('topnav').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/school/">School</a>
+      <a href="/newsletter/">Newsletter</a>
+      <a href="/books/">Books</a>
+      <a href="/support/" class="active">Support</a>
+      <a href="/manifesto/">Manifesto</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<div class="hero">
+  <div class="hero-eyebrow">Fuel the Mission</div>
+  <h1>Support the <em>Studio</em></h1>
+  <p>Every book, video, and teaching is free because of people like you. Choose how you want to support this work — one-time or monthly.</p>
+</div>
+
+<div class="mission-strip">
+  <p>Your support keeps the School of Creativity, Love &amp; Wisdom accessible to everyone — no paywalls, no ads, no gatekeeping. Every contribution goes directly into creating free resources, reaching more people, and building a better future for creative education in Africa and beyond.</p>
+  <div class="stat-row">
+    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Free Content</span></div>
+    <div class="stat"><span class="stat-num">Free</span><span class="stat-label">Books &amp; Resources</span></div>
+    <div class="stat"><span class="stat-num">You</span><span class="stat-label">Make It Possible</span></div>
+  </div>
+</div>
+
+<div class="tier-section">
+  <div class="section-label">Recurring Support</div>
+  <h2 class="section-title">Choose Your Tier</h2>
+  <p class="section-sub">Pick a recurring plan that fits your capacity. All payments are processed securely by Flutterwave. You can cancel anytime.</p>
+  <div class="tier-grid" id="tierGrid">
+    <div class="loading" style="grid-column:1/-1;text-align:center;padding:60px;color:var(--ink-lt)">Loading plans...</div>
+  </div>
+</div>
+
+<div class="faq-section">
+  <div class="section-label">Questions</div>
+  <h2 class="section-title" style="margin-bottom:24px">Frequently Asked</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I change or cancel my subscription?</div>
+    <div class="faq-a">Yes, anytime. Contact us at <a href="mailto:info@gideonabochie.com" style="color:var(--gold)">info@gideonabochie.com</a> and we will handle the change or cancellation within 24 hours. No lock-in contracts.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I pay with mobile money?</div>
+    <div class="faq-a">Yes! Flutterwave supports mobile money (Momo) for Ghana, as well as international cards and bank transfers. Mobile money is available at checkout.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What if I prefer to make a one-time donation?</div>
+    <div class="faq-a">You can make a one-time donation through the <a href="/donate/" style="color:var(--gold)">donation page</a> or via PayPal, Ko-fi, or Buy Me a Coffee.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Is my payment secure?</div>
+    <div class="faq-a">Absolutely. Flutterwave is PCI-DSS Level 1 compliant — the same security standard banks use. Your card and payment details are encrypted end-to-end.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can international supporters subscribe?</div>
+    <div class="faq-a">Yes. Flutterwave accepts international cards (Visa, Mastercard) and displays the equivalent in your currency at checkout.</div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/school/">School</a>
+    <a href="/newsletter/">Newsletter</a>
+    <a href="/books/">Books</a>
+    <a href="/support/">Support</a>
+    <a href="/manifesto/">Manifesto</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 GideonAbochie Studio &mdash; School of Creativity, Love &amp; Wisdom &middot; Accra, Ghana &middot; All rights reserved</div>
+</div>
+
+<!-- Subscription form overlay -->
+<div class="form-overlay" id="formOverlay">
+  <div class="form-modal">
+    <button class="close-btn" onclick="closeForm()">&times;</button>
+    <h3 id="formTitle">Start Supporting</h3>
+    <div class="selected-plan" id="formPlan">Monthly Supporter &middot; GH¢50/mo</div>
+    <label for="formName">Your name</label>
+    <input id="formName" type="text" placeholder="e.g. Kwame Asante" autocomplete="name">
+    <label for="formEmail">Email address</label>
+    <input id="formEmail" type="email" placeholder="e.g. kwame@example.com" autocomplete="email">
+    <label for="formPhone">Phone (optional)</label>
+    <input id="formPhone" type="tel" placeholder="+233 XX XXX XXXX" autocomplete="tel">
+    <button class="submit-btn" id="formSubmit" onclick="startSubscription()">Continue to Payment</button>
+    <div class="secure-badge"><i class="ti ti-lock"></i> Secured by Flutterwave &middot; Cancel anytime</div>
+  </div>
+</div>
+
+<script>
+var selectedTier = null;
+var plans = [];
+var publicKey = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
+
+function trackEvent(type, data) {
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/event', JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}));
+  } else {
+    fetch('/api/event', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}),cache:'no-store'}).catch(function(){});
+  }
+}
+
+function loadPlans() {
+  fetch('/api/subscription/plans').then(function(r){return r.json()}).then(function(d){
+    if (d.status !== 'ok') throw new Error('Failed to load');
+    plans = d.plans;
+    publicKey = d.public_key || publicKey;
+    renderPlans();
+  }).catch(function(){
+    // Fallback plans if API fails
+    plans = [
+      {id:'monthly', name:'Monthly Supporter', amount:50, currency:'GHS', per:'/mo', popular:false, features:['Early access to new content','Supporter badge','Monthly teaching video','Ad-free newsletter']},
+      {id:'annual', name:'Annual Patron', amount:500, currency:'GHS', per:'/yr', popular:true, features:['All Monthly benefits','All books in PDF','Monthly Q&A sessions','Ad-free newsletter','Supporter roll listing']},
+      {id:'founding', name:'Founding Partner', amount:2500, currency:'GHS', per:'/yr', popular:false, features:['All Annual benefits','Name on website','Quarterly video call','Private community','Co-branded content']}
+    ];
+    renderPlans();
+  });
+}
+
+function renderPlans() {
+  var grid = document.getElementById('tierGrid');
+  grid.innerHTML = '';
+  plans.forEach(function(p, i){
+    var isPopular = p.popular;
+    var featuresHtml = '';
+    (p.features || []).forEach(function(f){
+      featuresHtml += '<li>' + f + '</li>';
+    });
+    grid.innerHTML +=
+      '<div class="tier-card' + (isPopular ? ' popular' : '') + '">' +
+      (isPopular ? '<div class="popular-badge">Best Value</div>' : '') +
+      '<div class="tier-name">' + p.name + '</div>' +
+      '<div class="tier-price">GH¢ ' + p.amount + ' <small>' + (p.per || '/mo') + '</small></div>' +
+      '<div class="tier-desc">' + (p.description || '') + '</div>' +
+      '<ul class="tier-features">' + featuresHtml + '</ul>' +
+      '<button class="subscribe-btn' + (isPopular ? ' popular-btn' : '') + '" onclick="openForm(' + i + ')">Subscribe Now</button>' +
+      '</div>';
+  });
+}
+
+function openForm(index) {
+  selectedTier = plans[index];
+  document.getElementById('formTitle').textContent = 'Start Supporting';
+  document.getElementById('formPlan').textContent = selectedTier.name + ' \u00b7 GH\u00a2' + selectedTier.amount + (selectedTier.per || '/mo');
+  document.getElementById('formName').value = '';
+  document.getElementById('formEmail').value = '';
+  document.getElementById('formPhone').value = '';
+  document.getElementById('formSubmit').disabled = false;
+  document.getElementById('formSubmit').textContent = 'Continue to Payment';
+  document.getElementById('formOverlay').classList.add('open');
+  trackEvent('subscription_form_open', selectedTier.id);
+}
+
+function closeForm() {
+  document.getElementById('formOverlay').classList.remove('open');
+}
+
+function startSubscription() {
+  var name = document.getElementById('formName').value.trim();
+  var email = document.getElementById('formEmail').value.trim();
+  var phone = document.getElementById('formPhone').value.trim();
+  if (!email) {
+    document.getElementById('formEmail').style.borderColor = '#E8637A';
+    return;
+  }
+  if (!name) {
+    document.getElementById('formName').style.borderColor = '#E8637A';
+    return;
+  }
+  var btn = document.getElementById('formSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Opening...';
+  trackEvent('subscription_started', selectedTier.id + ':' + selectedTier.amount);
+  // Create pending subscription in D1
+  fetch('/api/subscription/create', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      tier: selectedTier.id,
+      name: name,
+      email: email,
+      phone: phone,
+      amount: selectedTier.amount,
+      currency: selectedTier.currency || 'GHS',
+      plan_id: selectedTier.plan_id || ''
+    })
+  }).then(function(r){return r.json()}).then(function(data){
+    if (data.status !== 'ok') throw new Error(data.error || 'Failed to create');
+    FlutterwaveCheckout({
+      public_key: publicKey,
+      tx_ref: data.tx_ref,
+      amount: data.amount,
+      currency: data.currency || 'GHS',
+      payment_plan: selectedTier.plan_id ? parseInt(selectedTier.plan_id) : undefined,
+      payment_options: 'card, mobilemoneyghana, ussd',
+      customer: { email: email, name: name, phone: phone },
+      customizations: {
+        title: 'GideonAbochie Studio',
+        description: selectedTier.name + ' \u2014 ' + selectedTier.amount + (selectedTier.per || '/mo'),
+        logo: 'https://gideonabochie.org/assets/images/logo.png'
+      },
+      callback: function(response) {
+        trackEvent('subscription_success', data.tx_ref);
+        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=' + encodeURIComponent(response.status || 'successful') + '&tier=' + encodeURIComponent(selectedTier.id);
+      },
+      onclose: function() {
+        trackEvent('subscription_cancelled', selectedTier.id);
+        btn.disabled = false;
+        btn.textContent = 'Continue to Payment';
+      }
+    });
+  }).catch(function(err){
+    trackEvent('subscription_error', err.message);
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+    alert('Something went wrong. Please try again or email info@gideonabochie.com');
+  });
+}
+
+// Show success message if returning from payment
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var tx_ref = params.get('tx_ref');
+  var status = params.get('status');
+  var tier = params.get('tier');
+  if (tx_ref && (status === 'successful' || status === 'completed')) {
+    var tierName = {monthly:'Monthly Supporter', annual:'Annual Patron', founding:'Founding Partner'}[tier] || 'supporter';
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px';
+    overlay.innerHTML = '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px;max-width:460px;width:100%;text-align:center">' +
+      '<div style="font-size:48px;margin-bottom:16px">\u2705</div>' +
+      '<h2 style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">Welcome, ' + tierName + '!</h2>' +
+      '<p style="color:#8A9BB5;font-size:14px;line-height:1.6;margin-bottom:24px">Your recurring support has been set up. You will receive a confirmation email shortly. Thank you for fueling this mission.</p>' +
+      '<a href="/" class="subscribe-btn popular-btn" style="display:inline-block;width:auto;padding:12px 32px;text-decoration:none">Back to Home</a>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    setTimeout(function(){ overlay.querySelector('a').focus(); }, 100);
+  }
+})();
+
+loadPlans();
+</script>
+
+</body>
+</html>

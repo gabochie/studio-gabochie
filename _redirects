@@ -21,6 +21,9 @@
 /donations /legal/donations 200
 /disclaimer /legal/disclaimer 200
 
+# Support / Subscriptions
+/support /support/ 200
+
 # Books
 /books /books/ 200
 /books/download /books/download/ 200
