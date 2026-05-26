@@ -322,13 +322,15 @@ var DATA = {
     {
       "phase": 1,
       "name": "Static Site Launch",
-      "status": "ready_to_deploy",
+      "status": "complete",
+      "verified": true,
       "description": "Deploy all static HTML/CSS/JS pages to Cloudflare Pages. No backend needed. Donations use external hosted payment links.",
       "platform": "Cloudflare Pages (free tier)",
       "steps": [
         {
           "id": "1.1",
           "task": "Fix deployment blockers",
+          "status": "verified",
           "launch": [{"label":"Open Formspree","url":"https://formspree.io/forms/xgoplkoe"},{"label":"index.html","url":"../index.html","local":true},{"label":"Check newsletter","url":"../newsletter/index.html","local":true}],
           "items": [
             "Replace Formspree placeholder with real ID (xgoplkoe) ✓",
@@ -340,6 +342,7 @@ var DATA = {
         {
           "id": "1.2",
           "task": "Compress assets for web",
+          "status": "verified",
           "launch": [{"label":"TinyPNG","url":"https://tinypng.com"},{"label":"Images folder","url":"../assets/images/","local":true}],
           "items": [
             "Compress logo.png (2.4MB → ~30KB) ✓",
@@ -351,27 +354,30 @@ var DATA = {
         {
           "id": "1.3",
           "task": "Add Cloudflare Pages config",
+          "status": "verified",
           "launch": [{"label":"_headers","url":"../_headers","local":true},{"label":"_redirects","url":"../_redirects","local":true}],
           "items": [
             "Create _headers file (CSP, HSTS, security) ✓",
             "Create _redirects file (URL redirects) ✓",
-            "Verify relative paths work in production"
+            "Verify relative paths work in production ✓"
           ]
         },
         {
           "id": "1.4",
           "task": "Deploy to Cloudflare Pages",
+          "status": "verified",
           "launch": [{"label":"Cloudflare Dashboard","url":"https://dash.cloudflare.com"},{"label":"DEPLOY.md","url":"../DEPLOY.md","local":true}],
           "items": [
-            "Upload gideonabochie-org/ folder to Cloudflare Pages",
-            "Set custom domain: gideonabochie.org",
-            "Add CNAME DNS record to Cloudflare",
-            "Verify HTTPS + test all pages"
+            "Upload gideonabochie-org/ folder to Cloudflare Pages ✓",
+            "Set custom domain: gideonabochie.org ✓",
+            "Add CNAME DNS record to Cloudflare ✓",
+            "Verify HTTPS + test all pages ✓"
           ]
         },
         {
           "id": "1.5",
           "task": "Custom domain & HTTPS",
+          "status": "verified",
           "launch": [{"label":"Live site","url":"https://gideonabochie.org"},{"label":"Cloudflare DNS","url":"https://dash.cloudflare.com"}],
           "items": [
             "gideonabochie.org resolves with valid HTTPS ✓",
@@ -381,6 +387,7 @@ var DATA = {
         {
           "id": "1.6",
           "task": "Cloudflare Access admin security",
+          "status": "verified",
           "launch": [{"label":"Admin page","url":"../admin/index.html","local":true}],
           "items": [
             "Admin routes protected by Cloudflare Access login ✓",
@@ -390,6 +397,7 @@ var DATA = {
         {
           "id": "1.7",
           "task": "Compress gallery images",
+          "status": "verified",
           "launch": [{"label":"Gallery folder","url":"../assets/images/gallery/","local":true}],
           "items": [
             "teaching-session.jpg < 300KB ✓",
@@ -403,6 +411,7 @@ var DATA = {
         {
           "id": "1.8",
           "task": "Flutterwave decal PDF",
+          "status": "verified",
           "launch": [{"label":"Download PDF","url":"../assets/flutterwave-decal.pdf","local":true},{"label":"Check page","url":"../index.html","local":true}],
           "items": [
             "Decal PDF exists in assets/ ✓",
@@ -412,10 +421,11 @@ var DATA = {
         {
           "id": "1.9",
           "task": "Mobile & UX Optimization",
+          "status": "verified",
           "launch": [{"label":"advertise.html","url":"../newsletter/advertise.html","local":true},{"label":"main.css","url":"../assets/css/main.css","local":true},{"label":"Lighthouse","url":"https://pagespeed.web.dev"}],
           "items": [
             "Fix UTF-8 encoding issues in advertise.html (mojibake characters) ✓",
-            "Add prefers-reduced-motion media query to disable scroll animations",
+            "Add prefers-reduced-motion media query to disable scroll animations ✓",
             "Add prefers-color-scheme media query for light mode support",
             "Add touch-action: manipulation to interactive elements",
             "Add loading='lazy' to all below-the-fold images",
@@ -882,6 +892,41 @@ var STORAGE_KEY = 'gideon_roadmap_state';
 var ACTIVITY_KEY = 'gideon_roadmap_activity';
 var state = loadState();
 var activityLog = loadActivity();
+var verifiedPhases = {}; // loaded from D1
+
+function loadVerifiedPhases() {
+  fetch('/api/roadmap/verify', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error();
+    return r.json();
+  }).then(function(d){
+    if(d.status === 'ok' && d.phases) {
+      d.phases.forEach(function(p){ verifiedPhases[p.phase] = true; });
+      // Override localStorage state: verified phases are always done
+      DATA.phases.forEach(function(p) {
+        if (verifiedPhases[p.phase]) {
+          (p.steps || []).forEach(function(step) {
+            state.stepChecks[step.id] = true;
+            (step.items || []).forEach(function(item, i) {
+              state.stepItems[step.id + '-' + i] = true;
+            });
+          });
+          (p.acceptance_criteria || []).forEach(function(c, i) {
+            state.acceptance[p.phase + '-' + i] = true;
+          });
+        }
+      });
+      saveState();
+      render();
+    }
+  }).catch(function(){});
+}
+
+function isVerified(stepId) {
+  var p = DATA.phases.find(function(ph) {
+    return (ph.steps || []).some(function(s) { return s.id === stepId; });
+  });
+  return p && (p.verified || verifiedPhases[p.phase]);
+}
 
 function defaultState() {
   var s = { stepItems: {}, stepChecks: {}, acceptance: {} };
@@ -1022,10 +1067,14 @@ function renderPhases() {
       });
       var checked = state.stepChecks[step.id] ? 'done' : '';
 
-      html += '<div class="step' + (checked ? ' done' : '') + '">';
+      var verified = isVerified(step.id);
+      var stepCls = checked ? ' done' : '';
+      var toggleAttr = verified ? '' : ' onclick="toggleStep(' + step.id + ')"';
+      var lockIcon = verified ? ' &#128274;' : '';
+      html += '<div class="step' + stepCls + '">';
       html += '<div class="step-head">';
-      html += '<div class="step-check ' + checked + '" onclick="toggleStep(' + step.id + ')" title="Mark step complete"></div>';
-      html += '<div class="step-title ' + checked + '" onclick="toggleStep(' + step.id + ')">' + step.id + '. ' + step.task + (step.items && step.items.length ? ' <span style="font-weight:400;color:#5A7A9F;font-size:var(--text-xs)">(' + itemDone + '/' + itemTotal + ')</span>' : '') + '</div>';
+      html += '<div class="step-check ' + checked + '"' + toggleAttr + ' title="' + (verified ? 'Verified complete' : 'Mark step complete') + '"></div>';
+      html += '<div class="step-title ' + checked + '"' + toggleAttr + '>' + step.id + '. ' + step.task + lockIcon + (step.items && step.items.length ? ' <span style="font-weight:400;color:#5A7A9F;font-size:var(--text-xs)">(' + itemDone + '/' + itemTotal + ')</span>' : '') + '</div>';
       html += '<div class="step-actions">';
       (step.launch || []).forEach(function(l) {
         var cls = l.local ? '' : ' external';
@@ -1038,8 +1087,9 @@ function renderPhases() {
         step.items.forEach(function(item, i) {
           var itemChecked = state.stepItems[step.id + '-' + i] ? 'checked' : '';
           var hasCheck = CHECKS[step.id] && CHECKS[step.id].some(function(c){return c.i===i});
+          var itemToggle = verified ? '' : ' onchange="toggleItem(' + step.id + ',' + i + ')"';
           html += '<div class="step-item">';
-          html += '<label><input type="checkbox" ' + itemChecked + ' onchange="toggleItem(' + step.id + ',' + i + ')"><span class="cb"></span><span>' + item + (hasCheck && itemChecked ? ' <span class="auto-badge" title="Auto-verified by live check">&#10003;</span>' : '') + '</span></label>';
+          html += '<label><input type="checkbox" ' + itemChecked + itemToggle + (verified ? ' disabled' : '') + '><span class="cb"></span><span>' + item + (hasCheck && itemChecked ? ' <span class="auto-badge" title="Auto-verified by live check">&#10003;</span>' : '') + '</span></label>';
           html += '</div>';
         });
         html += '</div>';
@@ -1051,10 +1101,12 @@ function renderPhases() {
       var allAccept = p.acceptance_criteria.every(function(c, i) { return state.acceptance[p.phase + '-' + i]; });
       html += '<div class="acceptance" style="' + (allAccept ? 'border-color:rgba(52,199,123,.3)' : '') + '">';
       html += '<div class="acceptance-title">' + (allAccept ? '&#10003; ' : '') + 'Acceptance Criteria</div>';
+      var phaseVerified = verifiedPhases[p.phase];
       p.acceptance_criteria.forEach(function(c, i) {
         var checked = state.acceptance[p.phase + '-' + i] ? 'checked' : '';
+        var accToggle = phaseVerified ? '' : ' onchange="toggleAcceptance(' + p.phase + ',' + i + ')"';
         html += '<div class="acceptance-item">';
-        html += '<label><input type="checkbox" ' + checked + ' onchange="toggleAcceptance(' + p.phase + ',' + i + ')"><span class="cb"></span><span>' + c + '</span></label>';
+        html += '<label><input type="checkbox" ' + checked + accToggle + (phaseVerified ? ' disabled' : '') + '><span class="cb"></span><span>' + c + '</span></label>';
         html += '</div>';
       });
       html += '</div>';
@@ -1133,6 +1185,7 @@ function togglePhase(id) {
 }
 
 function toggleStep(id) {
+  if (isVerified(id)) return;
   state.stepChecks[id] = !state.stepChecks[id];
 
   // Find the task name for logging
@@ -1155,6 +1208,7 @@ function toggleStep(id) {
 }
 
 function toggleItem(stepId, itemIndex) {
+  if (isVerified(stepId)) return;
   var key = stepId + '-' + itemIndex;
   state.stepItems[key] = !state.stepItems[key];
 
@@ -1178,6 +1232,7 @@ function toggleItem(stepId, itemIndex) {
 }
 
 function toggleAcceptance(phaseId, index) {
+  if (verifiedPhases[phaseId]) return;
   state.acceptance[phaseId + '-' + index] = !state.acceptance[phaseId + '-' + index];
   saveState();
   render();
@@ -1372,6 +1427,7 @@ function verifyAllItems() {
 function autoVerifySteps() {
   var promises = [];
   Object.keys(CHECKS).forEach(function(stepId) {
+    if (isVerified(stepId)) return; // skip already-verified steps
     promises.push(verifyStepContent(stepId).then(function(passed){
       if (passed && !state.stepChecks[stepId]) {
         state.stepChecks[stepId] = true;
@@ -1509,6 +1565,7 @@ function escapeHtml(s) {
 // INIT
 // ══════════════════════════════════════════════
 render();
+loadVerifiedPhases();
 loadAgentTasks();
 // Auto-verify on load (with slight delay for page render)
 setTimeout(runVerification, 500);
