@@ -50,6 +50,7 @@ a{text-decoration:none;color:inherit}
 
 /* ── Container ── */
 .container{padding:0 var(--space-6)}
+.home .container{max-width:1920px;margin:0 auto;width:100%}
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:64px;display:flex;align-items:center;font-family:var(--font-body)}
