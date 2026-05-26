@@ -451,24 +451,7 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
     <div class="section-label" style="justify-content:center;color:rgba(201,168,76,0.8)"><i class="ti ti-trending-up"></i> Reach</div>
     <h2 class="section-heading">Sharing Truth, <span>Changing Lives</span></h2>
     <p class="section-sub" style="margin-left:auto;margin-right:auto">Every video, book, and teaching is freely available — your support helps us reach more people with the message of creativity, love, and wisdom.</p>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <span class="stat-number" data-target="10000">0</span>
-        <span class="stat-label">TikTok Followers & Growing</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number" data-target="2">0</span>
-        <span class="stat-label">Books Published</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number" data-target="500">0</span>
-        <span class="stat-label">Daily Video Views</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number" data-target="1">0</span>
-        <span class="stat-label">Mission Year</span>
-      </div>
-    </div>
+    <div class="stats-grid" id="statsGrid"></div>
   </div>
 </section>
 
@@ -480,28 +463,7 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
       <h2 class="section-heading">What People <span>Are Saying</span></h2>
       <p class="section-sub" style="margin-left:auto;margin-right:auto">The message of creativity, love, and wisdom is resonating with hearts around the world.</p>
     </div>
-    <div class="testimonial-grid">
-      <div class="testimonial-card">
-        <div class="quote">Gideon's teaching on creativity as worship completely shifted how I see my work. I finally understand that my art is not separate from my faith — it IS my faith expressed.</div>
-        <div class="author">
-          <div class="avatar">S</div>
-          <div>
-            <div class="name">Sarah</div>
-            <div class="role">Creative Professional</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="quote">The Bible as Kingdom OS opened my eyes to see Scripture in a whole new way. It's not just stories — it's a living system designed to transform every part of my life.</div>
-        <div class="author">
-          <div class="avatar">J</div>
-          <div>
-            <div class="name">James</div>
-            <div class="role">Bible Study Leader</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="testimonial-grid" id="testimonialsGrid"></div>
   </div>
 </section>
 
@@ -512,32 +474,7 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
       <div class="section-label" style="justify-content:center"><i class="ti ti-photo"></i> Gallery</div>
       <h2 class="section-heading">Moments from the <span>Journey</span></h2>
     </div>
-    <div class="gallery-grid">
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/teaching-session.webp" type="image/webp"><img src="assets/images/gallery/teaching-session.jpg" alt="Teaching Session" loading="lazy"></picture>
-<div class="gallery-label">Teaching Session</div>
-</div>
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/creative-workshop.webp" type="image/webp"><img src="assets/images/gallery/creative-workshop.jpg" alt="Creative Workshop" loading="lazy"></picture>
-<div class="gallery-label">Creative Workshop</div>
-</div>
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/community-outreach.webp" type="image/webp"><img src="assets/images/gallery/community-outreach.jpg" alt="Community Outreach" loading="lazy"></picture>
-<div class="gallery-label">Community Outreach</div>
-</div>
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/book-launch.webp" type="image/webp"><img src="assets/images/gallery/book-launch.jpg" alt="Book Launch" loading="lazy"></picture>
-<div class="gallery-label">Book Launch</div>
-</div>
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/behind-scenes.webp" type="image/webp"><img src="assets/images/gallery/behind-scenes.jpg" alt="Behind the Scenes" loading="lazy"></picture>
-<div class="gallery-label">Behind the Scenes</div>
-</div>
-<div class="gallery-item">
-<picture><source srcset="assets/images/gallery/ministry-moment.webp" type="image/webp"><img src="assets/images/gallery/ministry-moment.jpg" alt="Ministry Moment" loading="lazy"></picture>
-<div class="gallery-label">Ministry Moment</div>
-</div>
-    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
   </div>
 </section>
 
@@ -1126,6 +1063,48 @@ function startPayment() {
     }
   });
 }
+</script>
+
+<script>
+// ─── Load homepage content from D1 APIs ───
+function loadHomepageContent() {
+  // Testimonials
+  fetch('/api/testimonials').then(function(r){return r.json()}).then(function(d){
+    var grid = document.getElementById('testimonialsGrid');
+    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    grid.innerHTML = '';
+    d.items.forEach(function(t){
+      var initial = (t.author || '?').charAt(0).toUpperCase();
+      var stars = '';
+      for (var i = 0; i < (t.rating || 5); i++) stars += '&#9733;';
+      grid.innerHTML += '<div class="testimonial-card"><div class="quote">' + t.content + '</div><div class="author"><div class="avatar">' + initial + '</div><div><div class="name">' + t.author + '</div><div class="role">' + (t.role || '') + '</div></div></div></div>';
+    });
+  }).catch(function(){});
+
+  // Stats
+  fetch('/api/stats').then(function(r){return r.json()}).then(function(d){
+    var grid = document.getElementById('statsGrid');
+    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    grid.innerHTML = '';
+    d.items.forEach(function(s){
+      grid.innerHTML += '<div class="stat-card"><span class="stat-number" data-target="' + s.value + '">0</span><span class="stat-label">' + s.label + '</span></div>';
+    });
+    // Re-trigger counter animation
+    if (window.animateCounters) { animateCounters(); }
+  }).catch(function(){});
+
+  // Gallery
+  fetch('/api/gallery').then(function(r){return r.json()}).then(function(d){
+    var grid = document.getElementById('galleryGrid');
+    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    grid.innerHTML = '';
+    d.items.forEach(function(g){
+      var slug = g.image_url.replace(/.*\/([^\/]+?)(\.[^.]+)?$/, '$1');
+      grid.innerHTML += '<div class="gallery-item"><picture><source srcset="' + g.image_url.replace(/\.\w+$/, '.webp') + '" type="image/webp"><img src="' + g.image_url + '" alt="' + g.title + '" loading="lazy"></picture><div class="gallery-label">' + g.title + '</div></div>';
+    });
+  }).catch(function(){});
+}
+document.addEventListener('DOMContentLoaded', loadHomepageContent);
 </script>
 
 </body>

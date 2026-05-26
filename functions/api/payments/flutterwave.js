@@ -77,12 +77,9 @@ export async function onRequest(context) {
     ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
 
     if (tx_ref.startsWith('booking_')) {
-      const bookingId = tx_ref.replace('booking_', '').split('_')[0];
-      if (bookingId) {
-        await db.prepare(
-          `UPDATE bookings SET status = ?, payment_tx_ref = ? WHERE id = ?`
-        ).bind('active', tx_ref, bookingId).run();
-      }
+      await db.prepare(
+        `UPDATE bookings SET status = ? WHERE payment_tx_ref = ?`
+      ).bind('confirmed', tx_ref).run();
     }
 
     // Send receipt email via Brevo for successful donations

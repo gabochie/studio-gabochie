@@ -6,6 +6,7 @@
 <title>Sponsor — The Studio Weekly · GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
+<script src="https://checkout.flutterwave.com/v3.js" defer></script>
 <style>
 :root{--bg:#FAFAFA;--paper:#FFFFFF;--ink:#0A1628;--ink-mid:#2A3A5C;--ink-lt:#6B7F9A;--rule:#E2E6ED;--gold:#C9A84C;--gold-lt:#D9B85C;--gold-soft:rgba(201,168,76,0.12);--red:#8C2020;--col-w:680px;--cream:var(--bg);--olive:var(--gold);--olive-lt:var(--gold-lt);--amber:var(--gold);--amber-lt:var(--gold-lt);--content-max:1440px}
 body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georgia,serif;font-size:16px;line-height:1.75;padding-top:64px}
@@ -298,12 +299,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
         <textarea name="message" placeholder="Tell us about your campaign, dates, or special requests."></textarea>
       </div>
       <input type="hidden" name="slot" id="bookingSlotInput" value="">
-      <button type="submit" class="submit" id="bookingSubmit">Send Inquiry</button>
+      <div class="field" id="bookingPriceRow">
+        <label>Investment</label>
+        <div id="bookingPriceDisplay" style="font-family:'Libre Baskerville',serif;font-size:28px;font-weight:700;color:var(--gold)"></div>
+      </div>
+      <button type="submit" class="submit" id="bookingSubmit">Pay &amp; Submit</button>
     </form>
     <div class="success" id="bookingSuccess">
       <span class="check">&#10003;</span>
-      <h4>Thank You!</h4>
-      <p>Thanks for your interest in sponsoring The Studio Weekly. We'll respond within 24 hours.</p>
+      <h4>Payment Successful!</h4>
+      <p>Thank you for sponsoring The Studio Weekly. Your booking is confirmed and we'll be in touch within 24 hours with placement details.</p>
     </div>
   </div>
 </div>
@@ -404,14 +409,33 @@ function handleSponsorLogout() {
   document.getElementById('loginCode').value = '';
 }
 
+/* ── Booking prices ── */
+var BOOKING_PRICES = {
+  'Leaderboard Banner': 2500,
+  'Medium Rectangle': 3500,
+  'Sponsored Article': 5000,
+  'Footer Banner': 2000,
+  'Premium Package': 10000,
+  'Founding Sponsor': 25000
+};
+var FLW_PUBLIC_KEY = 'FLWPUBK-d3b2f88d1d1f7a3a09660c0079f37906-X';
+var currentSlot = '';
+var currentTxRef = '';
+
 /* ── Booking modal ── */
 function openBooking(slot) {
+  currentSlot = slot;
+  currentTxRef = 'booking_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
   document.getElementById('bookingSlot').textContent = slot;
   document.getElementById('bookingSlotInput').value = slot;
   document.getElementById('bookingForm').style.display = '';
   document.getElementById('bookingSuccess').style.display = 'none';
   document.getElementById('bookingSubmit').disabled = false;
-  document.getElementById('bookingSubmit').textContent = 'Send Inquiry';
+  document.getElementById('bookingSubmit').textContent = 'Pay &amp; Submit';
+  // Show price
+  var price = BOOKING_PRICES[slot] || 0;
+  document.getElementById('bookingPriceDisplay').textContent = 'GH\u00a2 ' + price.toLocaleString();
+  document.getElementById('bookingPriceRow').style.display = price > 0 ? '' : 'none';
   document.getElementById('bookingModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -426,16 +450,87 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
   e.preventDefault();
   var btn = document.getElementById('bookingSubmit');
   btn.disabled = true;
-  btn.textContent = 'Sending\u2026';
-  var fd = new FormData(this);
-  fetch('/api/booking', { method: 'POST', body: fd }).then(function() {
-    this.style.display = 'none';
-    document.getElementById('bookingSuccess').style.display = 'block';
-  }.bind(this)).catch(function() {
+  btn.textContent = 'Opening payment\u2026';
+
+  var name = document.querySelector('#bookingForm input[name="name"]').value.trim();
+  var email = document.querySelector('#bookingForm input[name="email"]').value.trim();
+  var phone = document.querySelector('#bookingForm input[name="phone"]').value.trim();
+  var company = document.querySelector('#bookingForm input[name="company"]').value.trim();
+  var message = document.querySelector('#bookingForm textarea[name="message"]').value.trim();
+  var slot = document.getElementById('bookingSlotInput').value;
+  var price = BOOKING_PRICES[slot] || 0;
+
+  if (!name || !email) {
     btn.disabled = false;
-    btn.textContent = 'Send Inquiry';
-    alert('Something went wrong. Please email info@gideonabochie.com directly.');
-  });
+    btn.textContent = 'Pay &amp; Submit';
+    return;
+  }
+
+  if (price > 0 && typeof FlutterwaveCheckout !== 'undefined') {
+    // Paid slot: open Flutterwave checkout
+    FlutterwaveCheckout({
+      public_key: FLW_PUBLIC_KEY,
+      tx_ref: currentTxRef,
+      amount: price,
+      currency: 'GHS',
+      payment_options: 'card, mobilemoneyghana, ussd',
+      customer: { email: email, name: name, phone: phone },
+      callback: function(payment) {
+        if (payment.status === 'completed' || payment.status === 'successful') {
+          // Submit booking with payment reference
+          var fd = new FormData();
+          fd.append('name', name);
+          fd.append('email', email);
+          fd.append('phone', phone);
+          fd.append('company', company);
+          fd.append('slot', slot);
+          fd.append('message', message);
+          fd.append('tx_ref', currentTxRef);
+          fd.append('amount', price);
+
+          fetch('/api/booking', { method: 'POST', body: fd }).then(function() {
+            document.getElementById('bookingForm').style.display = 'none';
+            document.getElementById('bookingSuccess').style.display = 'block';
+          }).catch(function() {
+            document.getElementById('bookingForm').style.display = 'none';
+            document.getElementById('bookingSuccess').style.display = 'block';
+          });
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Pay &amp; Submit';
+        }
+      },
+      onclose: function() {
+        btn.disabled = false;
+        btn.textContent = 'Pay &amp; Submit';
+      },
+      customizations: {
+        title: 'The Studio Weekly',
+        description: 'Sponsorship: ' + slot,
+        logo: 'https://gideonabochie.org/assets/images/logo.png'
+      }
+    });
+  } else {
+    // Free or fallback: submit as inquiry without payment
+    var fd = new FormData();
+    fd.append('name', name);
+    fd.append('email', email);
+    fd.append('phone', phone);
+    fd.append('company', company);
+    fd.append('slot', slot);
+    fd.append('message', message);
+
+    fetch('/api/booking', { method: 'POST', body: fd }).then(function() {
+      document.getElementById('bookingForm').style.display = 'none';
+      document.getElementById('bookingSuccess').style.display = 'block';
+      document.getElementById('bookingSuccess').querySelector('h4').textContent = 'Inquiry Sent!';
+      document.getElementById('bookingSuccess').querySelector('p').textContent = 'Thanks for your interest. We\u2019ll respond within 24 hours.';
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Pay &amp; Submit';
+      alert('Something went wrong. Please email info@gideonabochie.com directly.');
+    });
+  }
 });
 </script>
 </body>

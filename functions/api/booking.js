@@ -22,11 +22,13 @@ export async function onRequest(context) {
     const payload = { name, email, phone, company, slot, message, timestamp: new Date().toISOString(), source: 'booking:' + slot };
 
     // Store in D1 if bound
+    const tx_ref = formData.get('tx_ref') || '';
+    const amount = parseFloat(formData.get('amount')) || 0;
     const db = env.DB;
     if (db && email) {
       await db.prepare(
-        `INSERT INTO bookings (name, email, company, ad_type, message, status) VALUES (?, ?, ?, ?, ?, ?)`
-      ).bind(name, email, company, slot, message, 'pending').run().catch(function(){});
+        `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref) VALUES (?, ?, ?, ?, ?, ?, ?)`
+      ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref).run().catch(function(){});
     }
 
     // Store in KV if bound (legacy fallback)

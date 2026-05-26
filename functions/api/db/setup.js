@@ -83,6 +83,21 @@
       `CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
+      `INSERT OR IGNORE INTO testimonials (author, role, content, rating) VALUES
+        ('Sarah', 'Creative Professional', 'Gideon''s teaching on creativity as worship completely shifted how I see my work. I finally understand that my art is not separate from my faith \u2014 it IS my faith expressed.', 5),
+        ('James', 'Bible Study Leader', 'The Bible as Kingdom OS opened my eyes to see Scripture in a whole new way. It''s not just stories \u2014 it''s a living system designed to transform every part of my life.', 5)`,
+      `INSERT OR IGNORE INTO stats (label, value, icon, sort_order, active) VALUES
+        ('TikTok Followers & Growing', '10000', '📱', 1, 1),
+        ('Books Published', '2', '📖', 2, 1),
+        ('Daily Video Views', '500', '🎬', 3, 1),
+        ('Mission Year', '1', '🌟', 4, 1)`,
+      `INSERT OR IGNORE INTO gallery (title, description, image_url, category, sort_order) VALUES
+        ('Teaching Session', 'Gideon teaching at a community event', 'assets/images/gallery/teaching-session.jpg', 'events', 1),
+        ('Creative Workshop', 'Interactive creative workshop session', 'assets/images/gallery/creative-workshop.jpg', 'events', 2),
+        ('Community Outreach', 'Engaging with the local community', 'assets/images/gallery/community-outreach.jpg', 'outreach', 3),
+        ('Book Launch', 'Launch event for new publication', 'assets/images/gallery/book-launch.jpg', 'events', 4),
+        ('Behind the Scenes', 'Behind the scenes content creation', 'assets/images/gallery/behind-scenes.jpg', 'content', 5),
+        ('Ministry Moment', 'A moment of ministry and connection', 'assets/images/gallery/ministry-moment.jpg', 'ministry', 6)`,
       // Migrations
       `ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT ''`,
       `ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT ''`,
