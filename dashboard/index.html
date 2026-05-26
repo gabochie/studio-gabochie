@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--content-max:1440px}
@@ -19,15 +20,19 @@ h1 span{color:#C9A84C}
 .program-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
 .program-header h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#E8EEF7}
 .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
-.badge-active{background:rgba(34,197,94,.12);color:#22C55E}
-.badge-pending{background:rgba(201,168,76,.12);color:#C9A84C}
-.sample-content{background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px;padding:20px;margin-top:16px;line-height:1.8;font-size:14px;color:#CBD5E1}
-.sample-content h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#C9A84C;margin:20px 0 10px;padding:0;border:none}
-.sample-content h3{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#E8EEF7;margin:16px 0 8px}
-.sample-content ul{margin:8px 0 8px 20px;color:#94A3B8}
-.sample-content li{margin-bottom:6px}
-.sample-content strong{color:#E8EEF7}
-.sample-content em{color:#C9A84C}
+.badge-active,.badge-full{background:rgba(34,197,94,.12);color:#22C55E}
+.badge-sample{background:rgba(201,168,76,.12);color:#C9A84C}
+.badge-pending{background:rgba(232,99,122,.12);color:#E8637A}
+.content-area{background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px;padding:20px;margin-top:16px;line-height:1.8;font-size:14px;color:#CBD5E1}
+.content-area h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#C9A84C;margin:20px 0 10px;padding:0;border:none}
+.content-area h3{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#E8EEF7;margin:16px 0 8px}
+.content-area h4{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#C9A84C;margin:12px 0 6px}
+.content-area ul{margin:8px 0 8px 20px;color:#94A3B8}
+.content-area li{margin-bottom:6px}
+.content-area strong{color:#E8EEF7}
+.content-area em{color:#C9A84C}
+.content-area p{margin-bottom:12px}
+.content-area hr{border:none;border-top:1px solid #1E3250;margin:20px 0}
 .loading{text-align:center;padding:60px 0;color:#5A7A9F;font-size:14px}
 .error-msg{text-align:center;padding:60px 0}
 .error-msg h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#EF4444;margin-bottom:8px}
@@ -35,10 +40,11 @@ h1 span{color:#C9A84C}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
 .btn-primary{background:#C9A84C;color:#0A1628}
 .btn-primary:hover{background:#D9B85C}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .btn-secondary{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
 .btn-secondary:hover{background:rgba(255,255,255,.1)}
 .no-print{display:block}
-@media print{body{background:#fff;color:#000}.card,.sample-content{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.sample-content h2{color:#000}.no-print{display:none!important}}
+@media print{body{background:#fff;color:#000}.card,.content-area{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.content-area h2{color:#000}.no-print{display:none!important}}
 </style>
 </head>
 <body>
@@ -59,37 +65,51 @@ h1 span{color:#C9A84C}
   <div class="card">
     <div class="program-header">
       <h3 id="programTitle">—</h3>
-      <span class="badge badge-active" id="statusBadge">Active</span>
+      <span class="badge" id="statusBadge">Active</span>
     </div>
     <div style="font-size:13px;color:#5A7A9F;margin-bottom:8px">
       <span id="programTagline"></span>
     </div>
     <div style="display:flex;gap:16px;margin-bottom:16px;font-size:12px;color:#5A7A9F;flex-wrap:wrap">
       <span id="programDuration"></span>
-      <span id="programPrice"></span>
+      <span id="programStatus"></span>
     </div>
     <button class="btn btn-secondary no-print" onclick="window.print()">&#128424; Print This Page</button>
   </div>
-  <div class="card">
-    <h2>Your <span>First Module</span></h2>
-    <div class="sample-content" id="sampleContent"></div>
+
+  <!-- Sample content (shown to all) -->
+  <div class="card" id="sampleCard">
+    <h2>Sample <span>Module</span></h2>
+    <div class="content-area" id="sampleContent"></div>
   </div>
-  <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3)">
+
+  <!-- Full content (shown only when paid) -->
+  <div class="card" id="fullContentCard" style="display:none">
+    <h2>Full <span>Curriculum</span></h2>
+    <div class="content-area" id="fullContent"></div>
+  </div>
+
+  <!-- Upgrade card (shown only for sample access) -->
+  <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
-    <button class="btn btn-primary" onclick="alert('Full access payments coming soon. Stay tuned!')">Upgrade — GH¢ 250</button>
+    <button class="btn btn-primary" id="upgradeBtn">Upgrade — <span id="upgradePrice">GH¢ 250</span></button>
+    <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via Flutterwave</p>
   </div>
 </div>
 
 <script>
-var params = new URLSearchParams(window.location.search);
-var token = params.get('token') || '';
+var FLW_PUBLIC_KEY = 'FLWPUBK-d3b2f88d1d1f7a3a09660c0079f37906-X';
+var token = new URLSearchParams(window.location.search).get('token') || '';
 
-if (!token) {
-  document.getElementById('loadingView').style.display = 'none';
-  document.getElementById('errorView').style.display = 'block';
-  document.getElementById('errorMsg').textContent = 'No access token provided. Use the link from your enrollment email.';
-} else {
+function loadDashboard() {
+  if (!token) {
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('errorView').style.display = 'block';
+    document.getElementById('errorMsg').textContent = 'No access token provided. Use the link from your enrollment email.';
+    return;
+  }
+
   fetch('/api/enroll?token=' + encodeURIComponent(token))
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -99,23 +119,48 @@ if (!token) {
         document.getElementById('errorMsg').textContent = data.message || 'Invalid or expired access token.';
         return;
       }
+
       var e = data.enrollment;
       document.getElementById('dashboardView').style.display = 'block';
       document.getElementById('studentInfo').textContent = 'Welcome, ' + e.student_name + ' (' + e.student_email + ')';
       document.getElementById('programTitle').textContent = e.program_title;
       document.getElementById('programTagline').textContent = e.tagline;
       document.getElementById('programDuration').innerHTML = 'Duration: <strong>' + e.duration + '</strong>';
-      document.getElementById('programPrice').innerHTML = 'Status: <strong>' + e.price_label + '</strong>';
+      document.getElementById('programStatus').innerHTML = 'Status: <strong>' + e.price_label + '</strong>';
+
+      // Set badge
+      var badge = document.getElementById('statusBadge');
+      if (e.status === 'active' && e.price > 0) {
+        badge.textContent = 'Full Access';
+        badge.className = 'badge badge-full';
+      } else if (e.status === 'sample') {
+        badge.textContent = 'Sample Access';
+        badge.className = 'badge badge-sample';
+      } else if (e.status === 'active') {
+        badge.textContent = 'Enrolled';
+        badge.className = 'badge badge-active';
+      } else {
+        badge.textContent = e.status;
+        badge.className = 'badge badge-pending';
+      }
+
+      // Show sample content
       if (e.sample_content) {
         document.getElementById('sampleContent').innerHTML = e.sample_content;
       } else {
         document.getElementById('sampleContent').innerHTML = '<p style="color:#5A7A9F">Sample content will appear here once available.</p>';
       }
-      if (e.price && e.price > 0) {
+
+      // Show full content if paid
+      if (e.full_content) {
+        document.getElementById('fullContentCard').style.display = 'block';
+        document.getElementById('fullContent').innerHTML = e.full_content;
+      }
+
+      // Show upgrade card if sample access and price > 0
+      if (e.status === 'sample' && e.price > 0) {
         document.getElementById('upgradeCard').style.display = 'block';
-        document.getElementById('upgradeCard').querySelector('button').textContent = 'Upgrade — GH¢ ' + e.price;
-      } else {
-        document.getElementById('upgradeCard').style.display = 'none';
+        document.getElementById('upgradePrice').textContent = 'GH¢ ' + e.price;
       }
     })
     .catch(function() {
@@ -124,6 +169,67 @@ if (!token) {
       document.getElementById('errorMsg').textContent = 'Could not verify your access. Please check your connection and try again.';
     });
 }
+
+function handleUpgrade() {
+  var btn = document.getElementById('upgradeBtn');
+  btn.disabled = true;
+  btn.textContent = 'Opening payment...';
+
+  fetch('/api/enroll?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok' || !data.enrollment) throw new Error('Invalid enrollment');
+      var e = data.enrollment;
+      var txRef = 'upgrade_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+      FlutterwaveCheckout({
+        public_key: FLW_PUBLIC_KEY,
+        tx_ref: txRef,
+        amount: e.price,
+        currency: 'GHS',
+        customer: { email: e.student_email, name: e.student_name },
+        payment_options: 'card, mobilemoneyghana, ussd',
+        callback: function(payment) {
+          if (payment.status === 'completed' || payment.status === 'successful') {
+            fetch('/api/enroll/upgrade', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: token, tx_ref: txRef, amount: e.price })
+            }).then(function(r) { return r.json(); }).then(function(res) {
+              if (res.status === 'ok') {
+                btn.textContent = 'Upgrade Complete!';
+                loadDashboard(); // Reload with full access
+              } else {
+                btn.disabled = false;
+                btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
+                document.getElementById('upgradeNote').textContent = 'Payment received but upgrade failed. Contact info@gideonabochie.com.';
+              }
+            }).catch(function() {
+              btn.disabled = false;
+              btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
+              document.getElementById('upgradeNote').textContent = 'Error processing upgrade. Contact info@gideonabochie.com.';
+            });
+          } else {
+            btn.disabled = false;
+            btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
+            document.getElementById('upgradeNote').textContent = 'Payment was not completed. Try again.';
+          }
+        },
+        onclose: function() {
+          btn.disabled = false;
+          btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + (e ? e.price : '');
+        }
+      });
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Upgrade';
+      document.getElementById('upgradeNote').textContent = 'Error loading enrollment. Please refresh.';
+    });
+}
+
+document.getElementById('upgradeBtn').addEventListener('click', handleUpgrade);
+loadDashboard();
 </script>
 </body>
 </html>
