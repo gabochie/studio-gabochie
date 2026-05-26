@@ -13,7 +13,7 @@ export async function onRequest(context) {
       const raw = await request.text();
       let body;
       try { body = JSON.parse(raw); } catch (e) {
-        return new Response(JSON.stringify({ status:'error', raw:'received:' + (raw || '').length + 'bytes:' + (raw || '').substring(0,200), parse_error:e.message }), { status:400, headers:{'Content-Type':'application/json'} });
+        return new Response(JSON.stringify({ status:'error', message:e.message }), { status:400, headers:{'Content-Type':'application/json'} });
       }
       event_type = body.event_type || '';
       event_data = typeof body.event_data === 'object' ? JSON.stringify(body.event_data) : String(body.event_data || '');
@@ -30,7 +30,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ error: 'event_type required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
     await env.DB.prepare(
-      'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, datetime(\'now\'))'
+      'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
     ).bind(event_type, event_data, page, email).run();
     return new Response(JSON.stringify({ status: 'ok' }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
