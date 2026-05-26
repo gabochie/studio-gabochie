@@ -91,6 +91,47 @@ export async function onRequest(context) {
       ).bind('confirmed', tx_ref).run();
     }
 
+    // Mark book purchase as completed
+    if (event === 'charge.completed' && tx_ref.startsWith('books_')) {
+      const bName = donor_name || customer.name || data.full_name || '';
+      const bEmail = donor_email || customer.email || data.email || '';
+      await db.prepare(
+        `UPDATE book_purchases SET status = 'completed', name = COALESCE(NULLIF(name, ''), ?), email = COALESCE(NULLIF(email, ''), ?) WHERE tx_ref = ?`
+      ).bind(bName, bEmail, tx_ref).run();
+      // Send download link email
+      if (bEmail && env.BREVO_API_KEY && bEmail !== 'donor@anonymous.invalid') {
+        try {
+          const downloadHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
+          <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
+          <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+          <tr><td style="background:#0A1628;padding:32px;text-align:center">
+          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>
+          <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Your Books Are Ready</p>
+          </td></tr>
+          <tr><td style="padding:32px">
+          <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${bName},</p>
+          <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for your purchase! Your premium books bundle is ready to download.</p>
+          <table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">
+          <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Transaction</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${tx_ref}</td></tr>
+          <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">GHS ${verifiedAmount.toFixed(2)}</td></tr>
+          </table>
+          <a href="https://gideonabochie.org/books/download?tx_ref=${tx_ref}" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Download Your Books</a>
+          <p style="color:#64748B;font-size:12px;line-height:1.6;margin:24px 0 0">This download link is unique to your purchase. Do not share it.</p>
+          </td></tr></table></td></tr></table></body></html>`;
+          await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+            body: JSON.stringify({
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              to: [{ email: bEmail, name: bName }],
+              subject: 'Your Books Are Ready — GideonAbochie Studio',
+              htmlContent: downloadHtml
+            })
+          });
+        } catch (_e) {}
+      }
+    }
+
     // Send receipt email via Brevo for successful donations
     if ((event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
       try {

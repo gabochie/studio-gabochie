@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Books — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:24px}
+.wrap{max-width:900px;margin:0 auto}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid #1E3250}
+.header img{width:36px;height:36px;border-radius:50%}
+.header h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#F1F5F9}
+.header h1 span{color:#C9A84C}
+.intro{text-align:center;margin-bottom:40px}
+.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.intro h2 span{color:#C9A84C}
+.intro p{color:#6B7F9A;font-size:15px;line-height:1.7;max-width:600px;margin:0 auto}
+.book-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;margin-bottom:16px;display:flex;gap:20px;align-items:flex-start}
+.book-card .icon{width:48px;height:48px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:22px;color:#C9A84C;flex-shrink:0}
+.book-card .info{flex:1}
+.book-card .info h3{font-size:16px;font-weight:600;color:#F1F5F9;margin-bottom:4px}
+.book-card .info p{font-size:13px;color:#6B7F9A;line-height:1.6;margin-bottom:8px}
+.book-card .info .meta{font-size:11px;color:#3A5278}
+.book-card .info .free-badge{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(34,197,94,.1);color:#22C55E;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.bundle-card{background:linear-gradient(135deg,#0F1E38,#1A2A45);border:2px solid #C9A84C;border-radius:16px;padding:32px;text-align:center;margin:40px 0}
+.bundle-card h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;color:#C9A84C;margin-bottom:8px}
+.bundle-card .price{font-size:36px;font-weight:700;color:#F1F5F9;margin:12px 0}
+.bundle-card .price span{font-size:16px;color:#5A7A9F;font-weight:400}
+.bundle-card p{color:#6B7F9A;font-size:14px;line-height:1.6;margin-bottom:20px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C;transform:translateY(-1px)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;border:1px solid #1E3250;color:#CBD5E1}
+.btn-outline:hover{border-color:#C9A84C;color:#C9A84C}
+.free-books{margin-bottom:40px}
+.free-books h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#F1F5F9;margin-bottom:16px}
+.footer{text-align:center;padding:24px 0;font-size:11px;color:#3A5278}
+.footer a{color:#5A7A9F;text-decoration:none}
+.footer a:hover{color:#C9A84C}
+.secure-badge{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;font-size:12px;color:#5A7A9F}
+@media(max-width:600px){.book-card{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <img src="/assets/images/logo.png" alt="">
+    <h1>GideonAbochie <span>Studio</span></h1>
+  </div>
+
+  <div class="intro">
+    <h2>Books That <span>Unlock the Kingdom</span></h2>
+    <p>From Scripture and technology to national transformation — resources that challenge the mind, awaken creativity, and illuminate the wisdom of God for every area of life.</p>
+  </div>
+
+  <div class="free-books" id="freeBooks">
+    <h3>&#128214; Free Downloads</h3>
+    <div id="freeBooksList"></div>
+  </div>
+
+  <div class="bundle-card" id="bundleCard">
+    <h3>&#127775; Premium Books Bundle</h3>
+    <p>Get all 4 published works in one premium download package. Support the mission and unlock the full collection.</p>
+    <div class="price">GH&#8373;300 <span>/ one-time</span></div>
+    <div class="input-group" style="margin-bottom:12px">
+      <input type="email" id="bundleEmail" placeholder="Your email address" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <div class="input-group" style="margin-bottom:16px">
+      <input type="text" id="bundleName" placeholder="Your full name" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <button class="btn btn-gold" id="buyBtn" onclick="buyBundle()">Buy Bundle — GH&#8373;300</button>
+    <div class="secure-badge">&#128274; Secured by Flutterwave</div>
+  </div>
+
+  <div class="footer">
+    <a href="/index.html">&larr; Back to Home</a>
+  </div>
+</div>
+
+<script>
+function loadBooks() {
+  fetch('/api/books').then(function(r){return r.json()}).then(function(d){
+    if(d.status !== 'ok') return;
+    var free = d.items.filter(function(b){return !b.is_premium});
+    var list = document.getElementById('freeBooksList');
+    var html = free.map(function(b){
+      return '<div class="book-card"><div class="icon">&#128214;</div><div class="info"><h3>' + b.title + '</h3><p>' + b.description + '</p><div class="meta"><span class="free-badge">Free</span></div></div><a href="' + b.file_url + '" class="btn btn-outline" target="_blank">Download</a></div>';
+    }).join('');
+    list.innerHTML = html;
+  }).catch(function(){});
+}
+
+function buyBundle() {
+  var email = document.getElementById('bundleEmail').value.trim();
+  var name = document.getElementById('bundleName').value.trim();
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  if (!name) { alert('Please enter your name.'); return; }
+
+  var btn = document.getElementById('buyBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  var tx_ref = 'books_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+
+  // Record purchase in D1
+  fetch('/api/books/purchase', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({tx_ref: tx_ref, email: email, name: name, amount: 300, books: 'premium-bundle'})
+  }).catch(function(){});
+
+  var redirectUrl = window.location.origin + '/books/download?tx_ref=' + encodeURIComponent(tx_ref) + '&email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(name);
+
+  FlutterwaveCheckout({
+    public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+    tx_ref: tx_ref,
+    amount: 300,
+    currency: 'GHS',
+    payment_options: 'card, mobilemoneyghana, ussd',
+    meta: {source: 'books_bundle'},
+    customer: { email: email, name: name },
+    customizations: {
+      title: 'Premium Books Bundle',
+      description: 'All 4 published works',
+      logo: window.location.origin + '/assets/images/logo.png'
+    },
+    callback: function(response) {
+      window.location.href = redirectUrl;
+    },
+    onclose: function() {
+      btn.disabled = false;
+      btn.textContent = 'Buy Bundle — GHS 300';
+    }
+  });
+}
+
+loadBooks();
+</script>
+</body>
+</html>

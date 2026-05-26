@@ -22,6 +22,8 @@
 /disclaimer /legal/disclaimer 200
 
 # Books
+/books /books/ 200
+/books/download /books/download/ 200
 /books/the-bible-as-kingdom-os /books/the-bible-as-kingdom-os.pdf 200
 /books/manifesto /books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf 200
 /books/divine-algorithm /books/divine_algorithm_report 200

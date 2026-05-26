@@ -94,6 +94,29 @@
       `CREATE INDEX IF NOT EXISTS idx_gallery_active ON gallery(active)`,
       `CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page)`,
       `CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at)`,
+      `CREATE TABLE IF NOT EXISTS books (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        description TEXT NOT NULL DEFAULT '',
+        price REAL NOT NULL DEFAULT 0,
+        file_url TEXT NOT NULL DEFAULT '',
+        cover_url TEXT DEFAULT '',
+        is_premium INTEGER NOT NULL DEFAULT 0,
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS book_purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tx_ref TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL DEFAULT '',
+        name TEXT NOT NULL DEFAULT '',
+        amount REAL NOT NULL DEFAULT 0,
+        books_purchased TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        downloaded INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
       // ── Cleanup duplicate rows from repeated seed runs ──
@@ -268,8 +291,18 @@
         ('Create email_queue D1 table', 'Store pending/scheduled emails for automation sequences', 4, 'done', 'agent', 'high'),
         ('Build email queue processing endpoint', '/api/email/process — sends due queued emails via Brevo SMTP', 4, 'done', 'agent', 'high')
       `,
-      // Mark Phase 5 tasks as done (for existing installations)
+      // Mark Phase 6.1 as done (book sales)
+      `UPDATE tasks SET status = 'done' WHERE id IN (SELECT id FROM tasks WHERE title = 'Set up digital book sales with pay-per-download' AND phase = 6)`,
+      `INSERT OR IGNORE INTO books (title, slug, description, price, file_url, is_premium, sort_order) VALUES
+        ('The Bible as Kingdom OS', 'the-bible-as-kingdom-os', 'A paradigm-shifting exploration of the Bible as the operating system of the Kingdom of God.', 0, '/books/the-bible-as-kingdom-os.pdf', 0, 1),
+        ('The Divine Algorithm', 'divine-algorithm', 'An interactive report exploring divine patterns, codes, and algorithms hidden in Scripture.', 0, '/books/divine_algorithm_report.html', 0, 2),
+        ('AI-Powered Strategic National Development For Ghana', 'ai-national-development', 'A visionary blueprint for leveraging AI to accelerate Ghana national development.', 0, '/books/ai-powered-strategic-national-development-ghana.docx', 0, 3),
+        ('1 Million Coders Manifesto', '1-million-coders-manifesto', 'A bold manifesto challenging the popular narrative on tech education in Ghana.', 0, '/books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf', 0, 4),
+        ('Premium Books Bundle', 'premium-bundle', 'All 4 published works in one premium download package.', 300, '', 1, 5)
+      `,
+      // Mark Phase 5 + 6.1 tasks as done (for existing installations)
       `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%book sales%' AND status = 'pending'`,
       `INSERT OR IGNORE INTO programs (title, slug, tagline, description, duration, price, price_label, status, sample_content, full_content, sort_order) VALUES ('Systems Thinking Program', 'systems-thinking', 'See the whole. Solve the root. Design the future.', 'Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work - whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you will develop the lens of a systems thinker.', 'Self-paced', 250, 'Free Sample · Full Access GH¢ 250', 'active', '<h2>Welcome to the Systems Thinking Program</h2><p>Before we dive into the models, let us start with a simple exercise. Look around you right now. Pick one problem - in your work, your community, or your life - and ask: <em>What keeps this problem in place?</em></p><p>That is the first step. Systems thinking begins not with answers, but with better questions.</p><h3>Your First Tool: The Iceberg Model</h3><p>Most people react to events. Systems thinkers look deeper:</p><ul><li><strong>Events</strong> - What happened? (the tip)</li><li><strong>Patterns</strong> - What has been happening over time?</li><li><strong>Structure</strong> - What forces are driving these patterns?</li><li><strong>Mental Models</strong> - What beliefs keep this structure in place?</li></ul><p>For the full program, you will get video walkthroughs, real-world case studies, worksheets, and community exercises.</p>', '', 1), ('Architectural Thinking Program', 'architectural-thinking', 'Coming Soon', 'Learn to think like an architect - structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you will learn how to design solutions that stand the test of time.', 'Self-paced', 0, 'Coming Soon', 'coming_soon', '', '', 2)`
     ];
     const results = [];
