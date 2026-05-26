@@ -274,6 +274,16 @@
       )`,
       `CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(email)`,
       `CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)`,
+      // Student accounts table (registration before enrollment)
+      `CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT DEFAULT '',
+        access_code TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_students_email ON students(email)`,
       // Module progress tracking tables
       `CREATE TABLE IF NOT EXISTS modules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

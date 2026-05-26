@@ -75,10 +75,12 @@ h1 span{color:#C9A84C}
     <h2 id="errTitle">Access Denied</h2>
     <p id="errorMsg">Invalid or missing access token.</p>
     <div class="login-form" id="loginForm">
-      <p style="color:#8A9BB5;font-size:13px;margin-bottom:16px">Enter the email you used to enroll and we'll look up your dashboard.</p>
+      <p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">Log in with your email and access code, or just your email to retrieve your dashboard link.</p>
       <label for="loginEmail">Email address</label>
       <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
-      <button class="login-btn" id="loginBtn" onclick="handleLogin()">Send Dashboard Link</button>
+      <label for="loginCode">Access code (optional)</label>
+      <input id="loginCode" type="password" placeholder="Your access code" autocomplete="current-password" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;box-sizing:border-box">
+      <button class="login-btn" id="loginBtn" onclick="handleLogin()">Log In</button>
       <div class="login-msg" id="loginMsg"></div>
     </div>
     <div style="margin-top:20px">
@@ -314,6 +316,7 @@ document.getElementById('upgradeBtn').addEventListener('click', handleUpgrade);
 
 function handleLogin() {
   var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var code = document.getElementById('loginCode').value.trim();
   var btn = document.getElementById('loginBtn');
   var msg = document.getElementById('loginMsg');
   if (!email) { msg.className = 'login-msg error'; msg.textContent = 'Please enter your email.'; return; }
@@ -321,6 +324,41 @@ function handleLogin() {
   btn.textContent = 'Looking up...';
   msg.className = 'login-msg hidden';
   msg.style.display = 'none';
+
+  // If access code provided, try auth/login first
+  if (code) {
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email: email, access_code: code })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status === 'ok' && d.enrollments && d.enrollments.length > 0) {
+        var enrollments = d.enrollments;
+        if (enrollments.length === 1) {
+          window.location.href = '/dashboard/?token=' + encodeURIComponent(enrollments[0].access_token);
+        } else {
+          var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">Your programs:</p>';
+          enrollments.forEach(function(e) {
+            listHtml += '<button class="login-btn" style="margin-bottom:8px" onclick="window.location.href=\'/dashboard/?token=' + encodeURIComponent(e.access_token) + '\'">' + e.program_title + ' <span style="opacity:.6;font-size:11px">(' + e.status + ')</span></button>';
+          });
+          document.getElementById('loginForm').innerHTML = listHtml;
+        }
+      } else {
+        // Fall back to email-only lookup
+        emailOnlyLogin(email, btn, msg);
+      }
+    })
+    .catch(function(){
+      emailOnlyLogin(email, btn, msg);
+    });
+  } else {
+    emailOnlyLogin(email, btn, msg);
+  }
+}
+
+function emailOnlyLogin(email, btn, msg) {
   fetch('/api/enroll/login', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
@@ -341,7 +379,7 @@ function handleLogin() {
       msg.textContent = d.message || 'No enrollment found for this email.';
       msg.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Send Dashboard Link';
+      btn.textContent = 'Log In';
     }
   })
   .catch(function(){
@@ -349,16 +387,17 @@ function handleLogin() {
     msg.textContent = 'Could not connect. Please try again.';
     msg.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = 'Send Dashboard Link';
+    btn.textContent = 'Log In';
   });
 }
 
-// If no token, allow Enter key on email field to trigger login
+// If no token, allow Enter key on login fields to trigger login
 document.addEventListener('DOMContentLoaded', function(){
-  var input = document.getElementById('loginEmail');
-  if (input) {
-    input.addEventListener('keydown', function(e){ if(e.key==='Enter') handleLogin(); });
-  }
+  var inputs = ['loginEmail', 'loginCode'];
+  inputs.forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) { el.addEventListener('keydown', function(e){ if(e.key==='Enter') handleLogin(); }); }
+  });
 });
 
 loadDashboard();

@@ -63,6 +63,38 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 .btn-secondary{background:rgba(255,255,255,.06);border:1px solid #1E3250;color:#CBD5E1}
 .btn-secondary:hover{background:rgba(255,255,255,.1)}
 
+/* Auth banner */
+.auth-banner{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;margin:0 auto 40px;max-width:600px;text-align:center}
+.auth-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;margin-bottom:8px}
+.auth-banner p{color:#8A9BB5;font-size:13px;margin-bottom:16px;line-height:1.5}
+.auth-banner .auth-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.auth-banner .auth-toggle button{padding:8px 20px;border-radius:6px;border:1px solid #1E3250;background:0 0;color:#8A9BB5;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+.auth-banner .auth-toggle button.active{background:rgba(201,168,76,.12);border-color:#C9A84C;color:#C9A84C}
+.auth-banner .auth-form{display:none}
+.auth-banner .auth-form.active{display:block}
+.auth-banner input{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:10px;transition:border-color .2s;box-sizing:border-box}
+.auth-banner input:focus{outline:none;border-color:#C9A84C}
+.auth-banner .auth-btn{width:100%;padding:12px;border-radius:8px;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;box-sizing:border-box}
+.auth-banner .auth-btn.primary{background:#C9A84C;color:#0A1628}
+.auth-banner .auth-btn.primary:hover{background:#D9B85C}
+.auth-banner .auth-btn.primary:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed}
+.auth-banner .auth-btn.secondary{background:rgba(255,255,255,.06);border:1px solid #1E3250;color:#CBD5E1}
+.auth-banner .auth-btn.secondary:hover{background:rgba(255,255,255,.1)}
+.auth-banner .auth-msg{font-size:12px;margin-top:6px;display:none;padding:8px;border-radius:6px}
+.auth-banner .auth-msg.error{display:block;background:rgba(232,99,122,.1);color:#E8637A;border:1px solid rgba(232,99,122,.2)}
+.auth-banner .auth-msg.success{display:block;background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
+.auth-banner .logged-in{display:none;text-align:center}
+.auth-banner .logged-in.active{display:block}
+.auth-banner .logged-in .greeting{color:#C9A84C;font-size:15px;font-weight:500;margin-bottom:4px}
+.auth-banner .logged-in .sub{color:#5A7A9F;font-size:12px;margin-bottom:12px}
+.auth-banner .logged-in a{color:#C9A84C;font-size:12px;text-decoration:underline}
+
+/* Locked card overlay */
+.card.locked{opacity:.6;position:relative}
+.card.locked .lock-overlay{position:absolute;inset:0;background:rgba(10,22,40,.6);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;z-index:2;backdrop-filter:blur(2px)}
+.card.locked .lock-overlay .lock-icon{font-size:28px}
+.card.locked .lock-overlay .lock-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#fff;letter-spacing:.1em;text-transform:uppercase}
+
 /* Enrollment flow */
 .enroll-flow{max-width:600px;margin:40px auto;display:none}
 .enroll-flow.open{display:block}
@@ -77,7 +109,7 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 .enroll-option.selected .radio::after{content:'';width:10px;height:10px;border-radius:50%;background:#C9A84C}
 .enroll-option .opt-label{font-size:14px;font-weight:500;color:#E8EEF7}
 .enroll-option .opt-desc{font-size:12px;color:#5A7A9F}
-.enroll-flow input[type="text"],.enroll-flow input[type="email"],.enroll-flow input[type="tel"]{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;transition:border-color .2s}
+.enroll-flow input[type="text"],.enroll-flow input[type="email"],.enroll-flow input[type="tel"]{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;transition:border-color .2s;box-sizing:border-box}
 .enroll-flow input:focus{outline:none;border-color:#C9A84C}
 .enroll-flow .btn-submit{background:#22C55E;color:#0A1628;width:100%;justify-content:center;padding:14px;margin-top:4px}
 .enroll-flow .btn-submit:hover{background:#34D96B}
@@ -114,7 +146,45 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 <div class="hero">
   <div class="hero-eyebrow">School of Creativity, Love &amp; Wisdom</div>
   <h1>Start <span>Learning</span> Today</h1>
-  <p>Two self-paced programs designed to change how you think, build, and create. Start with free samples — upgrade when you're ready.</p>
+  <p>Two self-paced programs designed to change how you think, build, and create. Register below to get started.</p>
+</div>
+
+<!-- Auth Banner -->
+<div class="auth-banner" id="authBanner">
+  <!-- Register form -->
+  <div class="auth-form active" id="registerForm">
+    <h3>Create Your Account</h3>
+    <p>Register once to access all programs. You'll use your email and access code to log in anytime.</p>
+    <div class="auth-toggle">
+      <button class="active" id="showRegister" onclick="toggleAuth('register')">Register</button>
+      <button id="showLogin" onclick="toggleAuth('login')">Login</button>
+    </div>
+    <input type="text" id="regName" placeholder="Your name" autocomplete="name">
+    <input type="email" id="regEmail" placeholder="Your email" autocomplete="email">
+    <input type="tel" id="regPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
+    <input type="password" id="regCode" placeholder="Create an access code (4+ characters)" autocomplete="new-password">
+    <button class="auth-btn primary" id="regBtn" onclick="register()">Create Account</button>
+    <div class="auth-msg" id="regMsg"></div>
+  </div>
+  <!-- Login form -->
+  <div class="auth-form" id="loginForm">
+    <h3>Welcome Back</h3>
+    <p>Enter your email and access code to continue where you left off.</p>
+    <div class="auth-toggle">
+      <button id="showRegister2" onclick="toggleAuth('register')">Register</button>
+      <button class="active" id="showLogin2" onclick="toggleAuth('login')">Login</button>
+    </div>
+    <input type="email" id="loginEmail" placeholder="Your email" autocomplete="email">
+    <input type="password" id="loginCode" placeholder="Your access code" autocomplete="current-password">
+    <button class="auth-btn primary" id="loginBtn" onclick="login()">Login</button>
+    <div class="auth-msg" id="loginMsg"></div>
+  </div>
+  <!-- Logged in state -->
+  <div class="logged-in" id="loggedIn">
+    <div class="greeting" id="greeting"></div>
+    <div class="sub">You're registered. Pick a program below to start learning.</div>
+    <a href="../dashboard/" id="dashLink">Go to your dashboard &rarr;</a> &middot; <a href="#" onclick="logout()">Logout</a>
+  </div>
 </div>
 
 <div class="how-section">
@@ -141,8 +211,9 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 <div class="programs" id="programs">
   <div class="section-label">Programs</div>
   <h2 class="section-title">Pick Your <span style="color:#C9A84C">Path</span></h2>
-  <div class="program-grid">
-    <div class="card">
+  <div class="program-grid" id="programGrid">
+    <div class="card locked" id="card-systems">
+      <div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>
       <span class="badge badge-free">Free Sample</span>
       <h2>Systems Thinking</h2>
       <div class="slugline">See the whole. Solve the root. Design the future.</div>
@@ -158,10 +229,11 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
         <span>Full Access: <strong>GH¢ 250</strong></span>
       </div>
       <div class="price-area">4 modules &middot; Free sample &middot; Pay once, own forever</div>
-      <button class="btn btn-primary" onclick="startEnroll('systems-thinking')">Start Free Sample</button>
+      <button class="btn btn-primary" onclick="handleEnroll('systems-thinking')">Start Free Sample</button>
     </div>
 
-    <div class="card">
+    <div class="card locked" id="card-architectural">
+      <div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>
       <span class="badge badge-free">Free Sample</span>
       <h2>Architectural Thinking</h2>
       <div class="slugline">From Blueprint to Masterpiece</div>
@@ -176,7 +248,7 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
         <span>Duration: <strong>Self-paced</strong></span>
       </div>
       <div class="price-area">4 modules &middot; Free sample</div>
-      <button class="btn btn-primary" onclick="startEnroll('architectural-thinking')">Start Free Sample</button>
+      <button class="btn btn-primary" onclick="handleEnroll('architectural-thinking')">Start Free Sample</button>
     </div>
   </div>
 </div>
@@ -246,9 +318,139 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 <script>
 var selectedPurpose = '';
 var selectedSlug = '';
+var studentEmail = '';
+var studentName = '';
 
-function startEnroll(slug) {
+// ——— Auth State ———
+function getStudent() {
+  try { return JSON.parse(sessionStorage.getItem('ga_student') || 'null'); } catch(e){return null}
+}
+
+function setStudent(s) {
+  sessionStorage.setItem('ga_student', JSON.stringify(s));
+}
+
+function clearStudent() {
+  sessionStorage.removeItem('ga_student');
+}
+
+function toggleAuth(form) {
+  document.getElementById('registerForm').classList.toggle('active', form === 'register');
+  document.getElementById('loginForm').classList.toggle('active', form === 'login');
+  document.querySelectorAll('.auth-toggle button').forEach(function(b){b.classList.remove('active')});
+  var btns = document.querySelectorAll('.auth-toggle button');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].id.indexOf(form) !== -1 || btns[i].textContent.toLowerCase() === form) btns[i].classList.add('active');
+  }
+}
+
+function register() {
+  var name = document.getElementById('regName').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var phone = document.getElementById('regPhone').value.trim();
+  var code = document.getElementById('regCode').value.trim();
+  var btn = document.getElementById('regBtn');
+  var msg = document.getElementById('regMsg');
+
+  if (!name || !email || !code) {
+    msg.className = 'auth-msg error'; msg.textContent = 'Name, email, and access code are required.'; return;
+  }
+  if (code.length < 4) {
+    msg.className = 'auth-msg error'; msg.textContent = 'Access code must be at least 4 characters.'; return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  msg.className = 'auth-msg'; msg.style.display = 'none';
+
+  fetch('/api/auth/register', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({name: name, email: email, phone: phone, access_code: code})
+  }).then(function(r){return r.json()}).then(function(d){
+    if (d.status === 'ok') {
+      setStudent({name: d.student.name, email: d.student.email});
+      showLoggedIn(d.student.name);
+    } else {
+      msg.className = 'auth-msg error'; msg.style.display = 'block';
+      msg.textContent = d.message || 'Registration failed.';
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  }).catch(function(){
+    msg.className = 'auth-msg error'; msg.style.display = 'block';
+    msg.textContent = 'Network error. Please try again.';
+    btn.disabled = false; btn.textContent = 'Create Account';
+  });
+}
+
+function login() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var code = document.getElementById('loginCode').value.trim();
+  var btn = document.getElementById('loginBtn');
+  var msg = document.getElementById('loginMsg');
+
+  if (!email || !code) {
+    msg.className = 'auth-msg error'; msg.textContent = 'Email and access code are required.'; return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Logging in...';
+  msg.className = 'auth-msg'; msg.style.display = 'none';
+
+  fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({email: email, access_code: code})
+  }).then(function(r){return r.json()}).then(function(d){
+    if (d.status === 'ok') {
+      setStudent({name: d.student.name, email: d.student.email});
+      showLoggedIn(d.student.name);
+    } else {
+      msg.className = 'auth-msg error'; msg.style.display = 'block';
+      msg.textContent = d.message || 'Invalid credentials.';
+      btn.disabled = false; btn.textContent = 'Login';
+    }
+  }).catch(function(){
+    msg.className = 'auth-msg error'; msg.style.display = 'block';
+    msg.textContent = 'Network error. Please try again.';
+    btn.disabled = false; btn.textContent = 'Login';
+  });
+}
+
+function logout() {
+  clearStudent();
+  location.reload();
+}
+
+function showLoggedIn(name) {
+  document.getElementById('registerForm').classList.remove('active');
+  document.getElementById('loginForm').classList.remove('active');
+  document.getElementById('loggedIn').classList.add('active');
+  document.getElementById('greeting').textContent = 'Welcome, ' + name + '!';
+  document.querySelectorAll('.card.locked').forEach(function(c){c.classList.remove('locked')});
+  var overlays = document.querySelectorAll('.lock-overlay');
+  overlays.forEach(function(o){o.remove()});
+  // Pre-fill the enrollment flow if it was triggered before login
+  if (selectedSlug) { startEnrollFlow(selectedSlug); }
+}
+
+// ——— Enrollment ———
+function handleEnroll(slug) {
+  var s = getStudent();
+  if (!s) {
+    // Scroll to auth banner and show login/register
+    document.getElementById('authBanner').scrollIntoView({behavior:'smooth'});
+    document.getElementById('regEmail').focus();
+    // Store intent so we can continue after login
+    selectedSlug = slug;
+    return;
+  }
+  startEnrollFlow(slug);
+}
+
+function startEnrollFlow(slug) {
   selectedSlug = slug;
+  var s = getStudent();
+  studentEmail = s ? s.email : '';
+  studentName = s ? s.name : '';
   document.getElementById('enrollFlow').classList.add('open');
   document.getElementById('step-welcome').classList.add('active');
   document.getElementById('q-purpose').style.display = 'block';
@@ -256,8 +458,8 @@ function startEnroll(slug) {
   selectedPurpose = '';
   document.getElementById('nextPurposeBtn').disabled = true;
   document.getElementById('recommendBox').textContent = '';
-  document.getElementById('enrollName').value = '';
-  document.getElementById('enrollEmail').value = '';
+  document.getElementById('enrollName').value = studentName;
+  document.getElementById('enrollEmail').value = studentEmail;
   document.getElementById('enrollPhone').value = '';
   document.getElementById('enrollMsg').className = 'msg';
   document.getElementById('enrollMsg').style.display = 'none';
@@ -300,50 +502,39 @@ function submitEnroll() {
   var msg = document.getElementById('enrollMsg');
 
   if (!name || !email) {
-    msg.className = 'msg msg-error';
-    msg.style.display = 'block';
-    msg.textContent = 'Name and email are required.';
-    return;
-  }
-  if (!email.includes('@')) {
-    msg.className = 'msg msg-error';
-    msg.style.display = 'block';
-    msg.textContent = 'Please enter a valid email.';
-    return;
+    msg.className = 'msg msg-error'; msg.style.display = 'block'; msg.textContent = 'Name and email are required.'; return;
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Enrolling...';
-  msg.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Enrolling...'; msg.style.display = 'none';
 
   fetch('/api/enroll', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ program_slug: selectedSlug, name: name, email: email, phone: phone })
-  }).then(function(r) { return r.json(); }).then(function(data) {
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({program_slug: selectedSlug, name: name, email: email, phone: phone})
+  }).then(function(r){return r.json()}).then(function(data){
     if (data.status === 'ok') {
-      msg.className = 'msg msg-success';
-      msg.style.display = 'block';
+      msg.className = 'msg msg-success'; msg.style.display = 'block';
       msg.innerHTML = '<strong>Welcome to the program!</strong> Check your email for dashboard access. <a href="/dashboard/?token=' + data.enrollment.access_token + '">Go to your dashboard &rarr;</a>';
-      btn.textContent = 'Enrolled!';
-      btn.style.background = 'rgba(34,197,94,.2)';
-      btn.style.color = '#6EE7B7';
-      btn.disabled = true;
+      btn.textContent = 'Enrolled!'; btn.style.background = 'rgba(34,197,94,.2)'; btn.style.color = '#6EE7B7'; btn.disabled = true;
     } else {
-      msg.className = 'msg msg-error';
-      msg.style.display = 'block';
+      msg.className = 'msg msg-error'; msg.style.display = 'block';
       msg.textContent = data.message || 'Something went wrong. Please try again.';
-      btn.disabled = false;
-      btn.textContent = 'Try Again';
+      btn.disabled = false; btn.textContent = 'Try Again';
     }
-  }).catch(function() {
-    msg.className = 'msg msg-error';
-    msg.style.display = 'block';
+  }).catch(function(){
+    msg.className = 'msg msg-error'; msg.style.display = 'block';
     msg.textContent = 'Network error. Please check your connection and try again.';
-    btn.disabled = false;
-    btn.textContent = 'Start Learning';
+    btn.disabled = false; btn.textContent = 'Start Learning';
   });
 }
+
+// ——— Init ———
+(function(){
+  var s = getStudent();
+  if (s && s.email) {
+    showLoggedIn(s.name);
+  }
+})();
 </script>
 
 </body>
