@@ -8,304 +8,123 @@
       "phase": 1,
       "name": "Static Site Launch",
       "status": "ready_to_deploy",
-      "description": "Deploy all static HTML/CSS/JS pages to Cloudflare Pages. No backend needed. Donations use external hosted payment links.",
+      "description": "Deploy all static HTML/CSS/JS pages to Cloudflare Pages. No backend needed.",
       "platform": "Cloudflare Pages (free tier)",
       "steps": [
-        {
-          "id": 1.1,
-          "task": "Fix deployment blockers",
-          "status": "done",
-          "items": [
-            "Replace Formspree placeholder `your-form-id` with real ID ✓",
-            "Replace Formspree placeholder `your-form-id` with real ID ✓",
-            "Delete duplicate `gideonabochie-org/images books and socials/` directory ✓",
-            "Rename book files to remove spaces (use hyphens) ✓"
-          ]
-        },
-        {
-          "id": 1.2,
-          "task": "Compress assets for web",
-          "status": "done",
-          "items": [
-            "Compress `logo.png` (2.4MB → ~30KB) ✓",
-            "Compress `neogh-logo.png` (1.9MB → ~33KB) ✓",
-            "Compress gallery images (→ ~200KB each) ✓",
-            "Optional: convert logos to WebP for smaller size"
-          ]
-        },
-        {
-          "id": 1.3,
-          "task": "Add Cloudflare Pages config",
-          "status": "done",
-          "items": [
-            "Create `_headers` file with CSP, HSTS, CORS headers ✓",
-            "Create `_redirects` file for URL redirects ✓",
-            "Verify all relative paths work in production ✓"
-          ]
-        },
-        {
-          "id": 1.4,
-          "task": "Deploy to Cloudflare Pages",
-          "status": "done",
-          "items": [
-            "Upload gideonabochie-org/ folder to Cloudflare Pages ✓",
-            "Set custom domain: gideonabochie.org ✓",
-            "Add CNAME DNS record to Cloudflare ✓",
-            "Verify HTTPS + test all pages ✓"
-          ]
-        },
-        {
-          "id": 1.5,
-          "task": "Custom domain on Cloudflare Pages",
-          "status": "done",
-          "items": [
-            "Add gideonabochie.org to Cloudflare Pages project ✓",
-            "Add CNAME DNS record ✓",
-            "SSL cert provisioned (automatic) ✓",
-            "Domain resolves and HTTPS works ✓"
-          ]
-        },
-        {
-          "id": 1.6,
-          "task": "Admin security — Cloudflare Access",
-          "status": "done",
-          "items": [
-            "Zero Trust Free plan configured (email OTP) ✓",
-            "Access Application: gideonabochie.org/admin/* ✓",
-            "Policy: Email OTP → info@gideonabochie.com ✓",
-            "Admin pages login-gated ✓"
-          ]
-        },
-        {
-          "id": 1.7,
-          "task": "Compress gallery images",
-          "status": "done",
-          "items": [
-            "teaching-session.jpg (188KB) ✓",
-            "creative-workshop.jpg (183KB) ✓",
-            "community-outreach.jpg (159KB) ✓",
-            "book-launch.jpg (193KB) ✓",
-            "behind-scenes.jpg (144KB) ✓",
-            "ministry-moment.jpg (166KB) ✓"
-          ]
-        },
-        {
-          "id": 1.8,
-          "task": "Flutterwave decal PDF",
-          "status": "done",
-          "items": [
-            "Decal PDF placed in assets/flutterwave-decal.pdf ✓",
-            "Download link added to site ✓"
-          ]
-        },
-        {
-          "id": 1.9,
-          "task": "Mobile & UX Optimization",
-          "status": "done",
-          "items": [
-            "Fix UTF-8 encoding issues in advertise.html ✓",
-            "Add prefers-reduced-motion media query ✓",
-            "Add prefers-color-scheme media query ✓",
-            "Add touch-action: manipulation to interactive elements ✓",
-            "Add loading='lazy' to below-fold images ✓",
-            "Consistent font-display strategy across all pages ✓"
-          ]
-        }
-      "acceptance_criteria": [
-        "All pages load via https://gideonabochie.org",
-        "Nav links work on all pages",
-        "Donation buttons (Flutterwave, Ko-fi, BMC) open correct payment pages",
-        "Social links (X, Facebook, TikTok, Instagram) resolve correctly",
-        "Books are downloadable",
-        "Legal pages are accessible",
-        "Lead form submits (or gracefully falls back)",
-        "All pages pass Lighthouse Mobile score ≥ 80",
-        "Animations respect prefers-reduced-motion",
-        "No 300ms tap delay on interactive elements"
+        {"id": 1.1, "task": "Fix deployment blockers", "status": "done", "items": ["Formspree ID set ✓", "#subscribe links fixed ✓", "Duplicate dir removed ✓", "Book filenames use hyphens ✓"]},
+        {"id": 1.2, "task": "Compress assets for web", "status": "done", "items": ["logo.png compressed ✓", "neogh-logo.png compressed ✓"]},
+        {"id": 1.3, "task": "Add Cloudflare Pages config", "status": "done", "items": ["_headers created ✓", "_redirects created ✓"]},
+        {"id": 1.4, "task": "Deploy to Cloudflare Pages", "status": "done", "items": ["Uploaded to Pages ✓", "Custom domain set ✓", "DNS records added ✓", "HTTPS verified ✓"]},
+        {"id": 1.5, "task": "Custom domain & HTTPS", "status": "done", "items": ["Domain resolves ✓", "SSL active ✓"]},
+        {"id": 1.6, "task": "Cloudflare Access admin security", "status": "done", "items": ["Admin gated ✓", "Public pages open ✓"]},
+        {"id": 1.7, "task": "Compress gallery images", "status": "done", "items": ["6 gallery images < 300KB each ✓"]},
+        {"id": 1.8, "task": "Flutterwave decal PDF", "status": "done", "items": ["Decal PDF exists ✓", "Download link on page ✓"]},
+        {"id": 1.9, "task": "Mobile & UX Optimization", "status": "done", "items": ["UTF-8 fixed ✓", "Reduced motion ✓", "Color scheme ✓", "Touch-action ✓", "Lazy loading ✓", "Font-display ✓"]}
       ]
     },
     {
       "phase": 2,
       "name": "Serverless Functions & Engagement",
-      "status": "planned",
-      "description": "Add Cloudflare Workers for form handling, newsletter subscription, news aggregation proxy, and ad booking.",
+      "status": "complete",
+      "description": "Cloudflare Pages Functions for form handling, newsletter subscription, news aggregation, ad booking, KV storage.",
       "platform": "Cloudflare Pages + Cloudflare Workers (free tier)",
       "steps": [
-        {
-          "id": 2.1,
-          "task": "Form handling Worker",
-          "status": "done",
-          "items": [
-            "Create Worker for lead capture + contact forms ✓",
-            "Wire up all forms to use /api/contact ✓",
-            "Remove direct Formspree dependency (Worker proxy) ✓",
-            "Add honeypot spam protection ✓"
-          ]
-        },
-        {
-          "id": 2.2,
-          "task": "Newsletter subscribe system",
-          "status": "done",
-          "items": [
-            "Worker handles subscribe submissions ✓",
-            "Subscribe form + AJAX confirmation on page ✓",
-            "Integrate with ConvertKit / Mailchimp (deferred to Phase 3/4)",
-            "Confirmation auto-reply (deferred to Phase 4.1)"
-          ]
-        },
-        {
-          "id": 2.3,
-          "task": "News aggregation Worker",
-          "status": "done",
-          "items": [
-            "Replace rss2json.com with Cloudflare Pages Function ✓",
-            "Newsletter uses /api/news proxy ✓",
-            "Add RSS caching (deferred — current rate limit OK)"
-          ]
-        },
-        {
-          "id": 2.4,
-          "task": "Sponsorship booking form",
-          "status": "done",
-          "items": [
-            "Replace mailto: links with booking modal ✓",
-            "Create /api/booking Worker to process inquiries ✓",
-            "Add rate card PDF download (optional)"
-          ]
-        },
-        {
-          "id": 2.5,
-          "task": "KV subscriber storage & admin list",
-          "status": "done",
-          "items": [
-            "Create KV namespace GAHQ_SUBSCRIBERS in Cloudflare dashboard",
-            "Bind SUBSCRIBERS variable to Pages project",
-            "Workers write form submissions to KV ✓",
-            "Admin subscriber list page at /admin/subscribers.html ✓",
-            "CSV export + search enabled ✓"
-          ]
-        }
-      ],
-      "acceptance_criteria": [
-        "Form submissions work without Formspree",
-        "Newsletter subscribe captures emails to KV",
-        "News aggregator works reliably under traffic",
-        "Ad inquiries submit without exposing raw email",
-        "Admin can view and export subscriber list"
+        {"id": 2.1, "task": "Form handling Worker", "status": "done", "items": ["/api/contact created ✓", "All forms wired ✓", "Formspree dependency removed ✓", "Honeypot added ✓"]},
+        {"id": 2.2, "task": "Newsletter subscribe system", "status": "done", "items": ["Subscribe handler ✓", "AJAX confirmation ✓"]},
+        {"id": 2.3, "task": "News aggregation Worker", "status": "done", "items": ["/api/news replaces rss2json ✓", "Newsletter uses proxy ✓"]},
+        {"id": 2.4, "task": "Ad booking form", "status": "done", "items": ["Booking modal replaces mailto: ✓", "/api/booking created ✓"]},
+        {"id": 2.5, "task": "KV subscriber storage & admin list", "status": "done", "items": ["KV namespace created ✓", "Workers write to KV ✓", "Admin subscriber list ✓", "CSV export ✓"]}
       ]
     },
     {
       "phase": 3,
       "name": "Revenue-Generating Backend (Workers + D1)",
-      "status": "planned",
-      "description": "Build backend on Cloudflare Workers + D1 database (both free tier). On-site Flutterwave payments, D1 for structured data, admin CRUD tools. Revenue features first — no paid hosting needed.",
+      "status": "active",
+      "description": "Cloudflare Workers + D1 for structured data. On-site Flutterwave payments, admin CRUD. Revenue-first approach.",
       "platform": "Cloudflare Workers + D1 + Flutterwave API (all free tier)",
       "steps": [
-        {
-          "id": 3.1,
-          "task": "D1 Database & Admin API",
-          "status": "done",
-          "items": [
-            "Create D1 database gahq in Cloudflare dashboard",
-            "Define schema: subscribers, donations, bookings, page_views",
-            "Create /api/admin/* CRUD Workers for each table",
-            "Bind D1 database to Pages project as DB variable ✓",
-            "Migrate existing KV subscriber data to D1 ✓"
-          ]
-        },
-        {
-          "id": 3.2,
-          "task": "On-site Flutterwave Payments",
-          "status": "pending",
-          "items": [
-            "Embed Flutterwave checkout on donation page (replace external links)",
-            "Create /api/payments/flutterwave webhook Worker to verify + log to D1",
-            "Add payment to ad booking flow (charge on submit)",
-            "Integrate premium content purchases (pay-per-download chapters)",
-            "Admin donation/booking dashboard with charts"
-          ]
-        },
-        {
-          "id": 3.3,
-          "task": "Content Management",
-          "status": "pending",
-          "items": [
-            "D1-backed admin CRUD for testimonials, stats, gallery",
-            "Replace hardcoded page data with API-driven content from D1",
-            "Newsletter editor in admin panel"
-          ]
-        }
-      ],
-      "acceptance_criteria": [
-        "D1 database accessible from Workers (Pages Functions bindings)",
-        "Donations processed on-site via Flutterwave (no external redirect)",
-        "Sponsorship bookings accept payment and log to D1",
-        "Admin can view / export donation and booking data",
-        "Admin can update testimonials, stats, gallery without editing HTML",
-        "Everything runs on Cloudflare free tier ($0/mo)"
+        {"id": 3.1, "task": "D1 Database & Admin API", "status": "done", "items": ["D1 database created ✓", "Schema defined ✓", "CRUD Workers deployed ✓", "D1 bound to Pages ✓", "KV data migrated ✓"]},
+        {"id": 3.2, "task": "On-site Flutterwave Payments", "status": "in_progress", "items": ["Embed checkout on donate page", "Payment webhook Worker", "Add booking payment flow", "Admin donation dashboard"]},
+        {"id": 3.3, "task": "Content Management", "status": "in_progress", "items": ["D1-backed CRUD for testimonials", "API-driven content from D1", "Newsletter editor"]}
       ]
     },
     {
       "phase": 4,
       "name": "Growth & Automation",
       "status": "future",
-      "description": "Email automation sequences, analytics dashboards, premium content gate, paid courses. Scale when revenue justifies paid infrastructure.",
-      "platform": "Cloudflare Workers + D1 + ConvertKit/Mailchimp (free tier)",
+      "description": "Email automation, analytics dashboards, premium content gate, paid courses.",
+      "platform": "Cloudflare Workers + D1 + Email API",
       "steps": [
-        {
-          "id": 4.1,
-          "task": "Email automation",
-          "items": [
-            "Welcome sequence for newsletter subscribers",
-            "Automated follow-up for manifestos downloaders",
-            "Donation thank-you sequences"
-          ]
-        },
-        {
-          "id": 4.2,
-          "task": "Analytics & dashboards",
-          "items": [
-            "Cloudflare Web Analytics (free, already available)",
-            "Donation funnel tracking",
-            "Newsletter growth dashboard",
-            "Ad revenue reporting"
-          ]
-        },
-        {
-          "id": 4.3,
-          "task": "Premium content & courses",
-          "items": [
-            "Members-only book chapters (payment gate)",
-            "Exclusive video teachings behind paywall",
-            "Paid courses or workshops with registration"
-          ]
-        }
-      ],
-      "acceptance_criteria": [
-        "Automated email sequences run without manual intervention",
-        "Admin has full visibility into all metrics",
-        "Premium content generates recurring revenue"
+        {"id": 4.1, "task": "Email automation", "items": ["Welcome sequence", "Manifesto follow-up", "Donation thank-you"]},
+        {"id": 4.2, "task": "Analytics & dashboards", "items": ["Cloudflare Analytics", "Donation funnel", "Newsletter growth", "Revenue reporting"]},
+        {"id": 4.3, "task": "Premium content & courses", "items": ["Members-only chapters", "Exclusive videos behind paywall", "Paid courses"]}
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Fix The Cash Register",
+      "status": "planned",
+      "description": "Fix every revenue leak: deferred Flutterwave checkout, broken PayPal, booking payment flows.",
+      "platform": "Cloudflare Workers + Flutterwave + PayPal",
+      "steps": [
+        {"id": 5.1, "task": "Deferred Flutterwave checkout", "items": ["Embed payment on donate page", "Webhook Worker", "Log to D1", "Real-time confirmation"]},
+        {"id": 5.2, "task": "PayPal donation integration", "items": ["PayPal Business account", "Button on donate page", "Webhook to D1"]},
+        {"id": 5.3, "task": "Booking payment flow end-to-end", "items": ["Payment on booking submit", "Auto status update", "Admin payment view"]},
+        {"id": 5.4, "task": "Payment + booking dashboard", "items": ["Real-time revenue view", "Reconciliation", "CSV export"]}
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "Build The Profit Engine",
+      "status": "planned",
+      "description": "Revenue beyond donations: courses, digital products, premium subscriptions.",
+      "platform": "Cloudflare Workers + Flutterwave + Email API",
+      "steps": [
+        {"id": 6.1, "task": "School programs paywall", "items": ["Gate premium courses", "Auto access tokens", "Student dashboard"]},
+        {"id": 6.2, "task": "Digital book sales", "items": ["Pay-per-download", "Flutterwave purchase flow", "Download tracking"]},
+        {"id": 6.3, "task": "Newsletter monetization", "items": ["Sponsored slots", "Premium tiers", "Auto-billing"]},
+        {"id": 6.4, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "Strategic Offensive",
+      "status": "planned",
+      "description": "Partnerships, media presence, SEO authority, referral mechanics.",
+      "platform": "Cloudflare Pages + CRMs + Social APIs",
+      "steps": [
+        {"id": 7.1, "task": "Strategic partnerships", "items": ["Outreach to aligned orgs", "Co-branded landing pages", "Referral tracking with rewards"]},
+        {"id": 7.2, "task": "Public relations & media", "items": ["Press kit page", "Media outreach", "Guest content"]},
+        {"id": 7.3, "task": "SEO & content authority", "items": ["JSON-LD structured data", "Sitemap.xml", "Regular long-form content", "Backlinks"]},
+        {"id": 7.4, "task": "Referral & viral mechanics", "items": ["Referral codes", "Share-to-unlock premium content", "Social sharing tracking"]}
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "AI-First Ecosystem",
+      "status": "future",
+      "description": "AI tools that make the mission self-scaling: agentic tasks, AI content, predictions, autonomous outreach.",
+      "platform": "Cloudflare Workers + D1 + AI APIs",
+      "steps": [
+        {"id": 8.1, "task": "Agentic task management", "status": "done", "items": ["D1 tasks table with CRUD API ✓", "AI can create tasks via API ✓", "Admin shows agent tasks ✓", "Persists across sessions ✓"]},
+        {"id": 8.2, "task": "AI content assistant", "items": ["Draft newsletter by API", "Auto SEO meta", "Blog outlines"]},
+        {"id": 8.3, "task": "Predictive analytics", "items": ["Revenue forecasting", "Subscriber predictions", "Anomaly detection"]},
+        {"id": 8.4, "task": "Autonomous outreach", "items": ["Audience segmentation", "Dormant follow-up", "Content recommendations"]}
       ]
     }
   ],
-  "current_focus": "Phase 3 in progress — Step 3.1 done (D1 database live, admin CRUD Workers deployed). Step 3.2 in progress (Flutterwave checkout embedded on index.html, donate.html created, webhook deployed). Advertise page reframed as sponsorship packages.",
-  "last_updated": "2026-05-24",
+  "current_focus": "Phase 3 (Revenue Backend) in progress. Agentic Task Management (Phase 8.1) now live — AI can read/write tasks via D1 API.",
+  "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
-    "The GAHQ CRM backend already exists locally — deploying it is the main Phase 3 effort.",
-    "Don't wait for perfect — deploy Phase 1 now, iterate live.",
-    "Roadmap now has auto-verification: checks live files on load, auto-marks done items.",
-    "Refactored to industry-standard structure: assets/css/main.css + assets/js/main.js.",
-    "404.html added. Gallery images renamed. Roadmap moved to /admin/.",
-    "RSS news proxy (Pages Function) replaces rss2json.com — live Ghana news feed.",
-    "Books converted to lead magnets (email capture modal via Formspree).",
-    "Sales chat widget with animated dice mascot added to donation page.",
-    "Mobile UX polish (step 1.9) should be completed before Phase 2 — users judge the site on mobile first.",
-    "Phase 1 complete. All deployment blockers fixed, domain secured, admin gated, images compressed, mobile UX optimized.",
-    "Phase 2 started: form handler Worker deployed (replaces Formspree), news aggregation Worker live.",
-    "Phase 2 complete: KV subscriber storage live. All form submissions persist to KV. Admin can view/export subscribers at /admin/subscribers.html.",
-    "Phase 3 pivoted to Cloudflare Workers + D1 (free tier) instead of Railway/Fly.io. Revenue-first: on-site Flutterwave payments, D1 database, admin CRUD. No paid hosting needed.",
-    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — more than enough for early revenue phase."
+    "Phase 2 complete: KV subscriber storage live. Admin can view/export subscribers.",
+    "Phase 3 pivoted to Cloudflare Workers + D1 (free tier). Revenue-first: on-site Flutterwave payments.",
+    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — enough for early revenue phase.",
+    "Flutterwave payouts are settled to your bank in Ghana (GHS). No monthly fee, only per-transaction 1.4% + GHS 1.",
+    "Page renamed from Roadmap → ToDo List. Agentic Task Management system live — AI-created tasks persist in D1.",
+    "Phase 8 started early (8.1 done) because the agent needs to track its own work.",
+    "Phase 5 — Fix The Cash Register must be completed before Phase 6 (Profit Engine).",
+    "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
   ]
 }

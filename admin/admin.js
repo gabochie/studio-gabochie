@@ -28,7 +28,7 @@ var SITE_PAGES = [
   { path: '../legal/terms.html', name: 'Terms' },
   { path: '../legal/donations.html', name: 'Donation Policy' },
   { path: '../legal/disclaimer.html', name: 'Disclaimer' },
-  { path: 'roadmap.html', name: 'Roadmap' }
+  { path: 'roadmap.html', name: 'ToDo List' }
 ];
 
 function checkSiteHealth() {

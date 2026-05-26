@@ -137,6 +137,33 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_enrollments_token ON enrollments(access_token)`,
       `CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status)`,
       `CREATE INDEX IF NOT EXISTS idx_programs_slug ON programs(slug)`,
+      `CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        phase INTEGER DEFAULT 0,
+        status TEXT NOT NULL DEFAULT 'pending',
+        source TEXT NOT NULL DEFAULT 'manual',
+        priority TEXT NOT NULL DEFAULT 'medium',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source)`,
+      `INSERT OR IGNORE INTO tasks (title, description, phase, status, source, priority) VALUES
+        ('Embed Flutterwave checkout on donation page', 'Replace external payment links with embedded Flutterwave checkout and webhook', 5, 'pending', 'agent', 'high'),
+        ('Create PayPal Business account + donate button', 'Accept PayPal donations alongside Flutterwave for broader reach', 5, 'pending', 'agent', 'high'),
+        ('Fix ad booking payment flow end-to-end', 'Booking modal must capture payment on submit, auto-update status', 5, 'pending', 'agent', 'high'),
+        ('Build revenue dashboard with reconciliation', 'Admin view showing real donation/booking revenue with CSV export', 5, 'pending', 'agent', 'medium'),
+        ('Gate school program courses behind payment', 'Auto-generate access tokens on purchase, student dashboard', 6, 'pending', 'agent', 'medium'),
+        ('Set up digital book sales with pay-per-download', 'Purchase flow via Flutterwave, track downloads per customer', 6, 'pending', 'agent', 'medium'),
+        ('Create sponsored slot pricing + newsletter tiers', 'Premium newsletter tiers with auto-billing for subscribers', 6, 'pending', 'agent', 'low'),
+        ('Build strategic partnership outreach system', 'Co-branded landing pages, referral tracking with rewards', 7, 'pending', 'agent', 'low'),
+        ('Create press kit and pitch to Ghanaian media', 'Bio, photos, book synopses for media outreach and guest content', 7, 'pending', 'agent', 'low'),
+        ('Add JSON-LD structured data + sitemap.xml', 'Submit to Google Search Console for organic SEO growth', 7, 'pending', 'agent', 'medium'),
+        ('Build AI content assistant for newsletter', 'Draft newsletters via API, auto-generate SEO meta descriptions', 8, 'pending', 'agent', 'low'),
+        ('Create predictive analytics dashboard', 'Revenue forecasting, subscriber growth predictions, anomaly detection', 8, 'pending', 'agent', 'low')
+      `,
       `INSERT OR IGNORE INTO programs (title, slug, tagline, description, duration, price, price_label, status, sample_content, sort_order) VALUES ('Systems Thinking Program', 'systems-thinking', 'See the whole. Solve the root. Design the future.', 'Understand the hidden patterns that shape our world. This program teaches you to see interconnected systems, anticipate ripple effects, and design solutions that actually work - whether in business, society, or your personal life. Through case studies, mental models, and practical exercises, you will develop the lens of a systems thinker.', 'Self-paced', 250, 'Free Sample · Full Access GH¢ 250', 'active', '<h2>Welcome to the Systems Thinking Program</h2><p>Before we dive into the models, let us start with a simple exercise. Look around you right now. Pick one problem - in your work, your community, or your life - and ask: <em>What keeps this problem in place?</em></p><p>That is the first step. Systems thinking begins not with answers, but with better questions.</p><h3>Your First Tool: The Iceberg Model</h3><p>Most people react to events. Systems thinkers look deeper:</p><ul><li><strong>Events</strong> - What happened? (the tip)</li><li><strong>Patterns</strong> - What has been happening over time?</li><li><strong>Structure</strong> - What forces are driving these patterns?</li><li><strong>Mental Models</strong> - What beliefs keep this structure in place?</li></ul><p>For the full program, you will get video walkthroughs, real-world case studies, worksheets, and community exercises.</p>', 1), ('Architectural Thinking Program', 'architectural-thinking', 'Coming Soon', 'Learn to think like an architect - structuring ideas, projects, and systems with clarity and purpose. This program covers mental models, design principles, and strategic frameworks for building anything that matters. From blueprints to execution, you will learn how to design solutions that stand the test of time.', 'Self-paced', 0, 'Coming Soon', 'coming_soon', '', 2)`
     ];
     const results = [];

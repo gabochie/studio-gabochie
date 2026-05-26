@@ -154,3 +154,17 @@ ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT '';
 ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0;
 ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT '';
 ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT '';
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  phase INTEGER DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'pending',
+  source TEXT NOT NULL DEFAULT 'manual',
+  priority TEXT NOT NULL DEFAULT 'medium',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source);

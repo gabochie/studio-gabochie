@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAHQ — GideonAbochie Studio Roadmap</title>
+<title>GAHQ — GideonAbochie Studio ToDo List</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -129,6 +129,43 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 .auto-badge{display:inline;color:#34C77B;font-size:11px;font-weight:700;margin-left:4px}
 .btn:disabled{opacity:0.4;cursor:not-allowed}
 
+/* Agent tasks */
+.agent-section{margin:32px 0;background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px}
+.agent-section .header{display:flex;justify-content:space-between;align-items:center;padding:0 0 16px;border-bottom:1px solid #1E3250}
+.agent-section .header h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#C9A84C;margin:0}
+.agent-section .header .sub{font-size:11px;color:#5A7A9F}
+.agent-tasks{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.agent-task{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;transition:all .2s}
+.agent-task:hover{border-color:rgba(201,168,76,.15)}
+.agent-task .task-badge{flex-shrink:0;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em}
+.agent-task .task-badge.agent{background:rgba(59,130,246,.12);color:#3B82F6}
+.agent-task .task-badge.manual{background:rgba(201,168,76,.12);color:#C9A84C}
+.agent-task .task-body{flex:1;min-width:0}
+.agent-task .task-title{font-size:13px;font-weight:600;color:#E8EEF7}
+.agent-task .task-desc{font-size:11px;color:#5A7A9F;margin-top:2px;line-height:1.4}
+.agent-task .task-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.agent-task .task-meta span{font-size:10px;color:#3A5278}
+.agent-task .task-meta .phase-tag{background:rgba(201,168,76,.08);padding:1px 6px;border-radius:3px}
+.agent-task .task-status{flex-shrink:0;display:flex;gap:4px}
+.agent-task .status-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid #3A5278;background:0 0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;color:#3A5278}
+.agent-task .status-btn:hover{transform:scale(1.1)}
+.agent-task .status-btn.done{background:#34C77B;border-color:#34C77B;color:#0A1628}
+.agent-task .status-btn.cancel{background:#E8637A;border-color:#E8637A;color:#0A1628}
+.agent-task .status-btn.in-progress{background:#3B82F6;border-color:#3B82F6;color:#fff}
+.agent-task .status-btn.active{background:rgba(201,168,76,.2);border-color:#C9A84C;color:#C9A84C}
+.agent-task .task-priority{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+.agent-task .task-priority.high{background:rgba(232,99,122,.12);color:#E8637A}
+.agent-task .task-priority.medium{background:rgba(201,168,76,.12);color:#C9A84C}
+.agent-task .task-priority.low{background:rgba(90,122,159,.12);color:#5A7A9F}
+.agent-form{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.agent-form input,.agent-form select{background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:8px 12px;font-size:12px;color:#E8EEF7;font-family:'DM Sans',sans-serif;outline:0;transition:border-color .2s}
+.agent-form input:focus,.agent-form select:focus{border-color:#C9A84C}
+.agent-form input{flex:2;min-width:160px}
+.agent-form select{flex:1;min-width:100px}
+.agent-form button{background:#C9A84C;color:#0A1628;border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.agent-form button:hover{background:#D9B85C;transform:translateY(-1px)}
+.agent-empty{color:#5A7A9F;font-size:13px;text-align:center;padding:20px;font-style:italic}
+
 @media(max-width:700px){
   .overview{grid-template-columns:repeat(2,1fr)}
   .phase-header{flex-wrap:wrap}
@@ -148,8 +185,8 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 
 <!-- HEADER -->
 <div class="header">
-  <div class="ga-tag"><a href="index.html" style="color:inherit;text-decoration:none">GAHQ Admin</a> · Deployment Roadmap</div>
-  <h1>Deployment <span>Roadmap</span></h1>
+  <div class="ga-tag"><a href="index.html" style="color:inherit;text-decoration:none">GAHQ Admin</a> · Strategic ToDo List</div>
+  <h1>Strategic <span>ToDo List</span></h1>
   <div class="tagline">School of Creativity, Love &amp; Wisdom — gideonabochie.org</div>
   <div class="infra"><strong>Infrastructure:</strong> Cloudflare Pages → Workers + D1 (free tier) → VPS (when revenue scales)</div>
 </div>
@@ -159,6 +196,42 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 
 <!-- PHASES -->
 <div id="phases"></div>
+
+<!-- AGENTIC TASKS -->
+<div class="agent-section" id="agentSection">
+  <div class="header">
+    <div>
+      <h3>Tasks from AI Agent</h3>
+      <div class="sub">Created by opencode AI — persists in D1 database</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:11px;color:#5A7A9F" id="agentTaskCount">0 tasks</span>
+    </div>
+  </div>
+  <div class="agent-tasks" id="agentTaskList">
+    <div class="agent-empty">Loading tasks from D1 database...</div>
+  </div>
+  <div class="agent-form" id="agentTaskForm">
+    <input type="text" id="newTaskTitle" placeholder="New task title..." onkeydown="if(event.key==='Enter')addAgentTask()">
+    <select id="newTaskPhase">
+      <option value="0">No phase</option>
+      <option value="1">Phase 1</option>
+      <option value="2">Phase 2</option>
+      <option value="3">Phase 3</option>
+      <option value="4">Phase 4</option>
+      <option value="5">Phase 5</option>
+      <option value="6">Phase 6</option>
+      <option value="7">Phase 7</option>
+      <option value="8">Phase 8</option>
+    </select>
+    <select id="newTaskPriority">
+      <option value="high">High</option>
+      <option value="medium" selected>Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <button onclick="addAgentTask()">Add Task</button>
+  </div>
+</div>
 
 <!-- ACTIVITY LOG -->
 <div class="activity" id="activity">
@@ -473,69 +546,228 @@ var DATA = {
         "Admin has full visibility into all metrics",
         "Premium content generates recurring revenue"
       ]
-    }
-      ],
-      "acceptance_criteria": [
-        "Backend APIs live at api.gideonabochie.org",
-        "Donations logged in database",
-        "Admin edits content without touching HTML",
-        "Forms submit to own backend"
-      ]
     },
     {
-      "phase": 4,
-      "name": "Full Product",
-      "status": "future",
-      "description": "Revenue features: ad booking with payment, premium content gate, email automation, analytics.",
-      "platform": "Cloudflare Pages + Backend VPS + APIs",
+      "phase": 5,
+      "name": "Fix The Cash Register",
+      "status": "planned",
+      "description": "Fix every revenue leak so money flows predictably. Deferred Flutterwave checkout, broken PayPal links, incomplete booking payment flows must all be closed. No new features until revenue works end-to-end.",
+      "platform": "Cloudflare Workers + Flutterwave + PayPal",
       "steps": [
         {
-          "id": "4.1",
-          "task": "Ad booking with payment",
-          "launch": [{"label":"Flutterwave","url":"https://dashboard.flutterwave.com"}],
+          "id": "5.1",
+          "task": "Deferred Flutterwave checkout",
+          "launch": [{"label":"Donate page","url":"../donate/index.html","local":true},{"label":"Flutterwave Dashboard","url":"https://dashboard.flutterwave.com"}],
           "items": [
-            "Accept ad payments via Flutterwave on-site",
-            "Automated slot calendar + booking confirmation",
-            "Rate card PDF generator"
+            "Replace external payment links with embedded Flutterwave checkout",
+            "Create /api/payments/flutterwave webhook Worker",
+            "Log successful payments to D1 donations table",
+            "Show real-time confirmation on frontend"
           ]
         },
         {
-          "id": "4.2",
-          "task": "Email automation",
-          "launch": [{"label":"ConvertKit","url":"https://convertkit.com"}],
+          "id": "5.2",
+          "task": "PayPal donation integration",
+          "launch": [{"label":"PayPal Business","url":"https://www.paypal.com/business"},{"label":"Donate page","url":"../donate/index.html","local":true}],
           "items": [
-            "Welcome sequence for subscribers",
-            "Follow-up for manifesto downloaders",
-            "Donation thank-you sequences"
+            "Create PayPal Business account (or link existing)",
+            "Add PayPal button alongside Flutterwave on donate page",
+            "Log PayPal webhook to D1"
           ]
         },
         {
-          "id": "4.3",
-          "task": "Analytics & dashboards",
-          "launch": [{"label":"Cloudflare Analytics","url":"https://dash.cloudflare.com/?to=analytics"}],
+          "id": "5.3",
+          "task": "Booking payment flow end-to-end",
+          "launch": [{"label":"Advertise page","url":"../newsletter/advertise.html","local":true},{"label":"Booking API","url":"../functions/admin/api/bookings.js","local":true}],
           "items": [
-            "Cloudflare Web Analytics (free)",
-            "Donation funnel tracking",
-            "Newsletter growth + ad revenue reporting"
+            "Ad booking modal captures payment on submit (not deferred)",
+            "Booking status auto-updates on payment confirmation",
+            "Admin can see payment status per booking"
           ]
         },
         {
-          "id": "4.4",
-          "task": "Premium content gating",
-          "launch": [{"label":"Ko-fi","url":"https://ko-fi.com/gideonabochie"}],
-      "items": [
-        "Form submissions work without Formspree ✓",
-        "Newsletter subscribe captures emails to KV ✓",
-        "News aggregator works reliably ✓",
-        "Ad inquiries submit without exposing raw email ✓",
-        "Admin can view and export subscriber list ✓"
-      ],
+          "id": "5.4",
+          "task": "Payment + booking dashboard",
+          "launch": [{"label":"Donations admin","url":"donations.html","local":true},{"label":"Bookings admin","url":"bookings.html","local":true}],
+          "items": [
+            "Admin dashboard shows real donation and booking revenue",
+            "Payment reconciliation view (paid vs pending)",
+            "Export revenue report as CSV"
+          ]
         }
       ],
       "acceptance_criteria": [
-        "Revenue beyond donations (ads, subscriptions)",
-        "Full admin visibility into all metrics",
-        "Automated email sequences running"
+        "Donations process on-site with live confirmation",
+        "PayPal button accepts payments and logs to D1",
+        "Booking payments settle end-to-end without manual follow-up",
+        "Admin has real-time view of all revenue"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "Build The Profit Engine",
+      "status": "planned",
+      "description": "Revenue beyond donations: digital products, premium subscriptions, paid courses. Create a self-sustaining economic engine that funds the mission without grant dependency.",
+      "platform": "Cloudflare Workers + Flutterwave + Email API",
+      "steps": [
+        {
+          "id": "6.1",
+          "task": "School programs paywall",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Programs API","url":"../functions/admin/api/enrollments.js","local":true}],
+          "items": [
+            "Gate premium course content behind payment",
+            "Auto-generate access tokens on purchase",
+            "Student dashboard after enrollment"
+          ]
+        },
+        {
+          "id": "6.2",
+          "task": "Digital book sales",
+          "launch": [{"label":"Books page","url":"../books/index.html","local":true}],
+          "items": [
+            "Set up pay-per-download for premium books",
+            "Add purchase flow via Flutterwave",
+            "Track downloads per customer"
+          ]
+        },
+        {
+          "id": "6.3",
+          "task": "Newsletter subscriber monetization",
+          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Sponsored slot pricing + booking",
+            "Premium newsletter tiers (free vs paid)",
+            "Auto-billing for recurring subscribers"
+          ]
+        },
+        {
+          "id": "6.4",
+          "task": "Automated email sequences",
+          "launch": [{"label":"Brevo","url":"https://brevo.com"},{"label":"ConvertKit","url":"https://convertkit.com"}],
+          "items": [
+            "Welcome sequence for new subscribers",
+            "Abandoned donation follow-up",
+            "Post-purchase upsell for courses and books"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "At least one paid course with active enrollments and payment processing end-to-end",
+        "Premium books available for purchase and download",
+        "Newsletter generates recurring revenue from sponsorships or subscriptions",
+        "Email sequences run without manual trigger"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "Strategic Offensive",
+      "status": "planned",
+      "description": "Go from invisible to unavoidable. Partnerships, media presence, search authority, and referral mechanics that make the mission viral.",
+      "platform": "Cloudflare Pages + CRMs + Social APIs",
+      "steps": [
+        {
+          "id": "7.1",
+          "task": "Strategic partnerships",
+          "launch": [{"label":"Partner page","url":"../partners/index.html","local":true}],
+          "items": [
+            "Identify and outreach to aligned orgs (churches, schools, NGOs)",
+            "Create co-branded landing pages for partners",
+            "Partner referral tracking with rewards"
+          ]
+        },
+        {
+          "id": "7.2",
+          "task": "Public relations & media",
+          "launch": [{"label":"Press kit","url":"../press/index.html","local":true}],
+          "items": [
+            "Create press kit page (bio, photos, book synopses)",
+            "Pitch to Ghanaian and African media outlets",
+            "Guest article / podcast appearance outreach"
+          ]
+        },
+        {
+          "id": "7.3",
+          "task": "SEO & content authority",
+          "launch": [{"label":"Blog/Content page","url":"../content/index.html","local":true},{"label":"Google Search Console","url":"https://search.google.com/search-console"}],
+          "items": [
+            "Add structured data (JSON-LD) to key pages",
+            "Create sitemap.xml and submit to Google",
+            "Publish regular long-form content targeting core topics",
+            "Build backlinks through guest posting"
+          ]
+        },
+        {
+          "id": "7.4",
+          "task": "Referral & viral mechanics",
+          "launch": [{"label":"Referral system","url":"../functions/api/db/schema.sql","local":true}],
+          "items": [
+            "Referral code generation for subscribers",
+            "Share-to-unlock premium content",
+            "Social sharing buttons with tracking"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "At least 3 active partnerships with measurable traffic or conversions",
+        "Media coverage in at least 2 outlets",
+        "Organic traffic grows 50% month over month from SEO",
+        "Referral program generates measurable new subscribers"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "AI-First Ecosystem",
+      "status": "future",
+      "description": "Build AI tools that make the mission self-scaling. Agentic task management, AI content generation, predictive analytics, and autonomous outreach — powered by the same D1 backend.",
+      "platform": "Cloudflare Workers + D1 + AI APIs (OpenAI, Claude, etc.)",
+      "steps": [
+        {
+          "id": "8.1",
+          "task": "Agentic task management (live now)",
+          "launch": [{"label":"Agent tasks","url":"#agent-tasks"}],
+          "items": [
+            "D1-backed tasks table with CRUD API ✓",
+            "AI agent can create and update tasks programmatically via X-Agent-Auth header",
+            "Admin page shows agent-created tasks with source badge",
+            "Tasks survive browser refresh and sync across sessions"
+          ]
+        },
+        {
+          "id": "8.2",
+          "task": "AI content assistant",
+          "launch": [],
+          "items": [
+            "Draft newsletter content via API",
+            "Auto-generate SEO meta descriptions",
+            "AI-powered blog post outlines"
+          ]
+        },
+        {
+          "id": "8.3",
+          "task": "Predictive analytics dashboard",
+          "launch": [],
+          "items": [
+            "Forecast donation revenue based on trends",
+            "Subscriber growth predictions",
+            "Anomaly detection (sudden traffic drops or spikes)"
+          ]
+        },
+        {
+          "id": "8.4",
+          "task": "Autonomous outreach",
+          "launch": [],
+          "items": [
+            "AI segments audience and drafts personalized emails",
+            "Auto-follow-up with dormant subscribers",
+            "Smart content recommendations per visitor"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "AI can autonomously create, update, and close tasks via API",
+        "AI-generated content is published with human review",
+        "Dashboard surfaces AI predictions with confidence scores",
+        "Autonomous email outreach achieves > 30% open rate"
       ]
     }
   ],
@@ -546,7 +778,11 @@ var DATA = {
     "Phase 2 complete: KV subscriber storage live. All form submissions persist to KV. Admin can view/export subscribers at /admin/subscribers.html.",
     "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — enough for early revenue phase.",
     "Flutterwave payouts are settled to your bank in Ghana (GHS). No monthly fee, only per-transaction 1.4% + GHS 1.",
-    "When Phase 3 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
+    "Phase 5 — Fix The Cash Register: Donations, payments, booking flows must all work end-to-end before anything else.",
+    "Phase 6 — Build The Profit Engine: Courses, book sales, premium newsletter tiers create sustainable revenue.",
+    "Phase 7 — Strategic Offensive: Partnerships, media, SEO, and referrals grow the mission beyond organic.",
+    "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
+    "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
   ]
 };
 
@@ -1083,9 +1319,108 @@ function runVerification() {
 }
 
 // ══════════════════════════════════════════════
+// AGENT TASKS
+// ══════════════════════════════════════════════
+function loadAgentTasks() {
+  fetch('/admin/api/tasks', {cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('API error');
+    return r.json();
+  }).then(function(d){
+    if(d.status!=='ok')throw new Error(d.message);
+    renderAgentTasks(d.items||[]);
+  }).catch(function(err){
+    var list = document.getElementById('agentTaskList');
+    if(list) list.innerHTML = '<div class="agent-empty">D1 not connected — ' + err.message + '</div>';
+  });
+}
+
+function renderAgentTasks(tasks) {
+  var list = document.getElementById('agentTaskList');
+  var count = document.getElementById('agentTaskCount');
+  if(!list) return;
+  if(count) count.textContent = tasks.length + ' task' + (tasks.length!==1?'s':'');
+  if(!tasks.length){
+    list.innerHTML = '<div class="agent-empty">No tasks yet. Add one below, or ask the AI agent to create tasks.</div>';
+    return;
+  }
+  var html = '';
+  var statusIcons = {pending:'&#9679;',in_progress:'&#9654;',completed:'&#10003;',cancelled:'&#10007;'};
+  var statusLabels = {pending:'Pending',in_progress:'In Progress',completed:'Done',cancelled:'Cancelled'};
+  var priorityOrder = {high:0,medium:1,low:2};
+  tasks.sort(function(a,b){return (priorityOrder[a.priority]||1)-(priorityOrder[b.priority]||1)});
+  tasks.forEach(function(t){
+    var badge = t.source === 'agent' ? 'agent' : 'manual';
+    var phaseText = t.phase ? 'Phase ' + t.phase : '';
+    var prio = t.priority || 'medium';
+    html += '<div class="agent-task" data-id="' + t.id + '">';
+    html += '<span class="task-badge ' + badge + '">' + badge + '</span>';
+    html += '<div class="task-body">';
+    html += '<div class="task-title">' + escapeHtml(t.title) + (t.description ? ' <span style="font-weight:400;font-size:11px;color:#5A7A9F;display:block;margin-top:2px">' + escapeHtml(t.description) + '</span>' : '') + '</div>';
+    html += '<div class="task-meta">';
+    if(phaseText) html += '<span class="phase-tag">' + phaseText + '</span>';
+    html += '<span class="task-priority ' + prio + '">' + prio + '</span>';
+    html += '<span>' + new Date(t.created_at).toLocaleDateString() + '</span>';
+    html += '<span style="text-transform:capitalize">' + statusLabels[t.status] + '</span>';
+    html += '</div></div>';
+    html += '<div class="task-status">';
+    ['completed','in_progress','pending','cancelled'].forEach(function(s){
+      var active = t.status === s ? ' active' : '';
+      html += '<button class="status-btn' + active + '" onclick="updateTaskStatus(' + t.id + ',\'' + s + '\')" title="' + statusLabels[s] + '">' + statusIcons[s] + '</button>';
+    });
+    html += '</div></div>';
+  });
+  list.innerHTML = html;
+}
+
+function addAgentTask() {
+  var title = document.getElementById('newTaskTitle');
+  var phase = document.getElementById('newTaskPhase');
+  var priority = document.getElementById('newTaskPriority');
+  if(!title.value.trim()) return;
+  fetch('/admin/api/tasks', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      title:title.value.trim(),
+      phase:parseInt(phase.value)||0,
+      priority:priority.value,
+      source:'manual',
+      status:'pending'
+    }),
+    cache:'no-store'
+  }).then(function(r){return r.json()}).then(function(d){
+    if(d.status==='ok'){
+      title.value = '';
+      loadAgentTasks();
+    }
+  }).catch(function(err){
+    alert('Failed to add task: ' + err.message);
+  });
+}
+
+function updateTaskStatus(id, status) {
+  fetch('/admin/api/tasks?id=' + id, {
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({status:status}),
+    cache:'no-store'
+  }).then(function(r){return r.json()}).then(function(d){
+    if(d.status==='ok') loadAgentTasks();
+  }).catch(function(){});
+}
+
+function escapeHtml(s) {
+  if(!s) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(s));
+  return d.innerHTML;
+}
+
+// ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
 render();
+loadAgentTasks();
 // Auto-verify on load (with slight delay for page render)
 setTimeout(runVerification, 500);
 </script>
