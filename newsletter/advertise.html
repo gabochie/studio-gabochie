@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
 <style>
-:root{--bg:#FAFAFA;--paper:#FFFFFF;--ink:#0A1628;--ink-mid:#2A3A5C;--ink-lt:#6B7F9A;--rule:#E2E6ED;--gold:#C9A84C;--gold-lt:#D9B85C;--gold-soft:rgba(201,168,76,0.12);--red:#8C2020;--col-w:680px;--cream:var(--bg);--olive:var(--gold);--olive-lt:var(--gold-lt);--amber:var(--gold);--amber-lt:var(--gold-lt)}
+:root{--bg:#FAFAFA;--paper:#FFFFFF;--ink:#0A1628;--ink-mid:#2A3A5C;--ink-lt:#6B7F9A;--rule:#E2E6ED;--gold:#C9A84C;--gold-lt:#D9B85C;--gold-soft:rgba(201,168,76,0.12);--red:#8C2020;--col-w:680px;--cream:var(--bg);--olive:var(--gold);--olive-lt:var(--gold-lt);--amber:var(--gold);--amber-lt:var(--gold-lt);--content-max:1440px}
 body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georgia,serif;font-size:16px;line-height:1.75;padding-top:64px}
 
 /* Masthead */
@@ -24,7 +24,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 .masthead-nav a:hover{color:var(--gold-lt);background:rgba(255,255,255,.03)}
 
 /* Page wrap */
-.page-wrap{max-width:1160px;margin:0 auto;padding:0 40px}
+.page-wrap{max-width:var(--content-max);margin:0 auto;padding:0 40px;width:100%}
 
 /* Section */
 .section-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.35em;color:var(--ink-lt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}

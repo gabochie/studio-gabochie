@@ -59,11 +59,12 @@ html{scroll-behavior:smooth}
   --radius-sm:6px;
   --radius-md:10px;
   --radius-lg:12px;
+  --content-max:1440px;
 }
 
 body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-body);line-height:var(--leading-normal);min-height:100vh;font-size:var(--text-sm)}
 
-.wrap{padding:0 var(--space-8)}
+.wrap{max-width:var(--content-max);margin:0 auto;padding:0 var(--space-8);width:100%}
 .header{padding:28px 0 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .header-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
 .header-brand img{height:40px;width:auto;display:block}

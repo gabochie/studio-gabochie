@@ -46,11 +46,11 @@ a{text-decoration:none;color:inherit}
   --radius-sm:6px;
   --radius-md:10px;
   --radius-lg:12px;
+  --content-max:1440px;
 }
 
 /* ── Container ── */
-.container{padding:0 var(--space-6)}
-.home .container{max-width:1440px;margin:0 auto;width:100%}
+.container{max-width:var(--content-max);margin:0 auto;padding:0 var(--space-6);width:100%}
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:64px;display:flex;align-items:center;font-family:var(--font-body)}

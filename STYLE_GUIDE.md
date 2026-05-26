@@ -92,14 +92,17 @@ All CSS uses these tokens via `var(--token)`. Defined in `:root` across all styl
 | `--radius-sm` | 6px | Buttons, inputs, small elements |
 | `--radius-md` | 10px | Cards, panels, modals |
 | `--radius-lg` | 12px | Large containers, phase cards |
+| `--content-max` | 1440px | Max-width for all page wrappers (`.container`, `.wrap`, `.page-wrap`) |
 
 ---
 
 ## Component Patterns
 
-### Admin Layout
-- Container: full-width with `padding: 0 32px`
-- Nav: horizontal bar, 64px height, active page gold-highlighted
+### Layout
+- Max-width system: `--content-max: 1440px` applied to all page wrappers (`.container`, `.wrap`, `.page-wrap`)
+- Wrappers centered with `margin: 0 auto; width: 100%`
+- Nav backgrounds bleed full-width (hybrid approach) — `nav{position:fixed;top:0;left:0;right:0}`, inner `.container` constrained by `--content-max`
+- Admin and public pages share the same max-width for consistency
 
 ### Buttons
 ```
