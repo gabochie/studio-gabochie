@@ -8,7 +8,8 @@ All CSS uses these tokens via `var(--token)`. Defined in `:root` across all styl
 
 | Token | rem | px (16px base) | Usage |
 |-------|-----|----------------|-------|
-| `--text-xs` | 0.75rem | 12px | Badges, meta, table headers |
+| `--text-2xs` | 0.688rem | 11px | Tiny badges, priority labels, meta |
+| `--text-xs` | 0.813rem | 13px | Badges, nav links, table headers, meta |
 | `--text-sm` | 0.875rem | 14px | Body text (admin), small body |
 | `--text-base` | 1rem | 16px | Body text (public site) |
 | `--text-lg` | 1.25rem | 20px | Card titles, subheadings |
