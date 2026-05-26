@@ -1353,6 +1353,22 @@ var CHECKS = {
     {i:0, label:"Admin CRUD for testimonials", check:function(){return checkPageContains("../index.html","/api/admin/testimonials") || checkFileExists("../functions/api/admin/testimonials.js")}},
     {i:1, label:"Admin CRUD for gallery", check:function(){return checkFileExists("../functions/api/admin/gallery.js")}},
     {i:2, label:"Newsletter editor exists", check:function(){return checkFileExists("newsletter.html")}}
+  ],
+  "4.1": [
+    {i:0, label:"Email automation sequences live", check:function(){return checkD1TasksPhaseDone(4)}},
+    {i:1, label:"Cron worker + queue processing", check:function(){return checkD1TasksPhaseDone(4)}}
+  ],
+  "5.1": [
+    {i:0, label:"Payment refinements complete", check:function(){return checkD1TasksPhaseDone(5)}}
+  ],
+  "6.1": [
+    {i:0, label:"All Phase 6 tasks done in D1", check:function(){return checkD1TasksPhaseDone(6)}}
+  ],
+  "7.1": [
+    {i:0, label:"All Phase 7 tasks done in D1", check:function(){return checkD1TasksPhaseDone(7)}}
+  ],
+  "8.1": [
+    {i:0, label:"All Phase 8 tasks done in D1", check:function(){return checkD1TasksPhaseDone(8)}}
   ]
 };
 
@@ -1407,6 +1423,16 @@ function checkD1Ping() {
   return fetch("/api/db/ping", {method:"GET",cache:"no-store"}).then(function(r){
     if (!r.ok) return false;
     return r.json().then(function(j){return j.status === "ok" && j.d1 === "connected"});
+  }).catch(function(){return false});
+}
+
+function checkD1TasksPhaseDone(phase) {
+  return fetch('/admin/api/tasks?phase=' + phase, {cache:'no-store'}).then(function(r){
+    if(!r.ok) return false;
+    return r.json().then(function(d){
+      if(d.status !== 'ok') return false;
+      return d.items.every(function(t){ return t.status === 'done'; });
+    });
   }).catch(function(){return false});
 }
 
@@ -1586,6 +1612,12 @@ loadVerifiedPhases();
 loadAgentTasks();
 // Auto-verify on load (with slight delay for page render)
 setTimeout(runVerification, 500);
+// Periodic auto-refresh: re-verify + reload tasks every 30s
+setInterval(function(){
+  loadVerifiedPhases();
+  loadAgentTasks();
+  runVerification();
+}, 30000);
 </script>
 </body>
 </html>

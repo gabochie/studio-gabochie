@@ -10,8 +10,25 @@ export async function onRequest(context) {
 
   if (request.method === 'GET') {
     try {
-      var rows = await db.prepare('SELECT phase, verified_at, verified_by FROM phase_verifications ORDER BY phase').all();
-      return new Response(JSON.stringify({ status: 'ok', phases: rows.results || [] }), {
+      var manualPhases = await db.prepare('SELECT phase, verified_at, verified_by FROM phase_verifications ORDER BY phase').all();
+      // Auto-verify phases where all tasks are done
+      var tasksByPhase = await db.prepare(
+        "SELECT phase, COUNT(*) AS total, SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) AS done_count FROM tasks WHERE phase > 0 GROUP BY phase"
+      ).all();
+      var autoVerified = [];
+      (tasksByPhase.results || []).forEach(function(t) {
+        if (t.total > 0 && t.total === t.done_count) {
+          autoVerified.push({ phase: t.phase, verified_by: 'auto', verified_at: null });
+        }
+      });
+      // Merge: manual takes precedence (appears first), auto fills gaps
+      var seen = {};
+      var merged = [];
+      (manualPhases.results || []).forEach(function(p) { seen[p.phase] = true; merged.push(p); });
+      autoVerified.forEach(function(p) {
+        if (!seen[p.phase]) { seen[p.phase] = true; merged.push(p); }
+      });
+      return new Response(JSON.stringify({ status: 'ok', phases: merged }), {
         headers: { 'Content-Type': 'application/json' }
       });
     } catch (err) {
