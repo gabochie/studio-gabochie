@@ -41,7 +41,8 @@
       <a href="content.html">Content</a>
       <a href="newsletter.html">Newsletter</a>
       <a href="bookings.html">Bookings</a>
-      <a href="roadmap.html">ToDo List</a>
+            <a href="sponsors.html">Sponsors</a>
+<a href="roadmap.html">ToDo List</a>
     </div>
   </div>
 
@@ -167,7 +168,8 @@ function exportCSV() {
   _items.forEach(function(i) {
     rows.push([i.email || '', i.name || '', i.edition || '', i.ref_code || '', i.source || '', i.subscribed_at || '']);
   });
-  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('
+');
   var blob = new Blob([csv], {type:'text/csv'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -180,3 +182,5 @@ refresh();
 </script>
 </body>
 </html>
+
+

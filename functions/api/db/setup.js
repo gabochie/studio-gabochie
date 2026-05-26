@@ -150,6 +150,27 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
       `CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source)`,
+      // Sponsor auth tables
+      `CREATE TABLE IF NOT EXISTS sponsors (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        company TEXT NOT NULL DEFAULT '',
+        access_code TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS sponsor_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        token TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        expires_at TEXT NOT NULL,
+        FOREIGN KEY (email) REFERENCES sponsors(email)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_sponsors_email ON sponsors(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_sponsor_sessions_token ON sponsor_sessions(token)`,
+      // Seed test sponsor
+      `INSERT OR IGNORE INTO sponsors (email, company, access_code) VALUES ('sponsor@test.com', 'Test Corp', 'SPONSOR2026')`,
       `INSERT OR IGNORE INTO tasks (title, description, phase, status, source, priority) VALUES
         ('Embed Flutterwave checkout on donation page', 'Replace external payment links with embedded Flutterwave checkout and webhook', 5, 'pending', 'agent', 'high'),
         ('Create PayPal Business account + donate button', 'Accept PayPal donations alongside Flutterwave for broader reach', 5, 'pending', 'agent', 'high'),
