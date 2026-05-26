@@ -44,6 +44,14 @@ h1 span{color:#C9A84C}
 .btn-secondary{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
 .btn-secondary:hover{background:rgba(255,255,255,.1)}
 .no-print{display:block}
+.module-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:opacity .2s}
+.module-item:last-child{border-bottom:none}
+.module-item:hover{opacity:.8}
+.module-check{width:22px;height:22px;border-radius:50%;border:2px solid #1E3250;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;font-size:12px;color:transparent}
+.module-check.done{border-color:#22C55E;background:rgba(34,197,94,.12);color:#22C55E}
+.module-title{font-size:14px;color:#CBD5E1;flex:1}
+.module-title.done{color:#22C55E;text-decoration:line-through;opacity:.6}
+.module-date{font-size:11px;color:#5A7A9F;flex-shrink:0}
 @media print{body{background:#fff;color:#000}.card,.content-area{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.content-area h2{color:#000}.no-print{display:none!important}}
 </style>
 </head>
@@ -95,6 +103,18 @@ h1 span{color:#C9A84C}
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
     <button class="btn btn-primary" id="upgradeBtn">Upgrade — <span id="upgradePrice">GH¢ 250</span></button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via Flutterwave</p>
+  </div>
+
+  <!-- Progress tracking (shown for active/full-access enrollments) -->
+  <div class="card no-print" id="progressCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2>Your <span>Progress</span></h2>
+      <span id="progressStats" style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#5A7A9F">0 of 0</span>
+    </div>
+    <div style="background:rgba(0,0,0,.3);border-radius:8px;height:8px;overflow:hidden;margin-bottom:20px">
+      <div id="progressBar" style="background:#C9A84C;height:100%;width:0%;border-radius:8px;transition:width .5s ease"></div>
+    </div>
+    <div id="moduleList"></div>
   </div>
 </div>
 
@@ -162,12 +182,54 @@ function loadDashboard() {
         document.getElementById('upgradeCard').style.display = 'block';
         document.getElementById('upgradePrice').textContent = 'GH¢ ' + e.price;
       }
+      // Load progress for active/full-access enrollments
+      if (e.status === 'active') {
+        loadProgress();
+      }
     })
     .catch(function() {
       document.getElementById('loadingView').style.display = 'none';
       document.getElementById('errorView').style.display = 'block';
       document.getElementById('errorMsg').textContent = 'Could not verify your access. Please check your connection and try again.';
     });
+}
+
+function loadProgress() {
+  var progressCard = document.getElementById('progressCard');
+  fetch('/api/enroll/progress?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok' || !d.modules || !d.modules.length) return;
+      progressCard.style.display = 'block';
+      document.getElementById('progressStats').textContent = d.completed_modules + ' of ' + d.total_modules + ' modules';
+      document.getElementById('progressBar').style.width = d.progress_pct + '%';
+      var list = document.getElementById('moduleList');
+      list.innerHTML = '';
+      d.modules.forEach(function(m) {
+        var done = m.completed === 1;
+        var dateStr = m.completed_at ? new Date(m.completed_at).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
+        list.innerHTML +=
+          '<div class="module-item" onclick="toggleModule(\'' + m.slug + '\')">' +
+          '<div class="module-check' + (done ? ' done' : '') + '">' + (done ? '\u2713' : '') + '</div>' +
+          '<div class="module-title' + (done ? ' done' : '') + '">' + m.title + '</div>' +
+          '<div class="module-date">' + dateStr + '</div>' +
+          '</div>';
+      });
+    })
+    .catch(function() {});
+}
+
+function toggleModule(slug) {
+  fetch('/api/enroll/progress', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ token: token, module_slug: slug })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.status === 'ok') loadProgress();
+  })
+  .catch(function() {});
 }
 
 function handleUpgrade() {

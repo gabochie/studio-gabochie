@@ -105,7 +105,8 @@
         ]},
         {"id": 6.4, "task": "Digital book sales", "status": "done", "items": ["Pay-per-download ✓", "Flutterwave purchase flow ✓", "Download tracking ✓"]},
         {"id": 6.5, "task": "Premium newsletter tiers", "status": "done", "items": ["Monthly Supporter (GH¢50/mo) ✓", "Annual Patron (GH¢500/yr) ✓", "Founding Partner (GH¢2,500/yr) ✓", "Flutterwave recurring checkout ✓", "Webhook subscription handling ✓", "/support/ page ✓", "Welcome email automation ✓"]},
-        {"id": 6.6, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
+        {"id": 6.6, "task": "Student progress tracking", "status": "done", "items": ["modules table ✓", "module_completions table ✓", "GET /api/enroll/progress ✓", "POST /api/enroll/progress ✓", "Progress bar on dashboard ✓", "Module completion checkboxes ✓"]},
+        {"id": 6.7, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
       ]
     },
     {
@@ -135,7 +136,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 6 — Build The Profit Engine: book sales, premium newsletter tiers (GH¢50/mo · GH¢500/yr · GH¢2,500/yr), Systems Thinking curriculum, Architectural Thinking curriculum. Phase 6.4 (Premium newsletter tiers) done — /support/ page with Flutterwave recurring checkout, webhook subscription handling, welcome emails. Next: 6.5 (Student progress tracking).",
+  "current_focus": "Phase 6 — Build The Profit Engine: all core features done — school paywall, Systems + Architectural Thinking curricula, book sales, premium newsletter tiers, student progress tracking. Next: Phase 6.7 (Automated email sequences: welcome, abandoned donation, post-purchase).",
   "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
