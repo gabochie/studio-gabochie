@@ -894,6 +894,23 @@ var state = loadState();
 var activityLog = loadActivity();
 var verifiedPhases = {}; // loaded from D1
 
+// Auto-check phases verified in DATA (even before D1 loads)
+DATA.phases.forEach(function(p) {
+  if (p.verified) {
+    verifiedPhases[p.phase] = true;
+    (p.steps || []).forEach(function(step) {
+      state.stepChecks[step.id] = true;
+      (step.items || []).forEach(function(item, i) {
+        state.stepItems[step.id + '-' + i] = true;
+      });
+    });
+    (p.acceptance_criteria || []).forEach(function(c, i) {
+      state.acceptance[p.phase + '-' + i] = true;
+    });
+  }
+});
+saveState();
+
 function loadVerifiedPhases() {
   fetch('/api/roadmap/verify', {cache:'no-store'}).then(function(r){
     if(!r.ok) throw new Error();
@@ -1101,7 +1118,7 @@ function renderPhases() {
       var allAccept = p.acceptance_criteria.every(function(c, i) { return state.acceptance[p.phase + '-' + i]; });
       html += '<div class="acceptance" style="' + (allAccept ? 'border-color:rgba(52,199,123,.3)' : '') + '">';
       html += '<div class="acceptance-title">' + (allAccept ? '&#10003; ' : '') + 'Acceptance Criteria</div>';
-      var phaseVerified = verifiedPhases[p.phase];
+      var phaseVerified = p.verified || verifiedPhases[p.phase];
       p.acceptance_criteria.forEach(function(c, i) {
         var checked = state.acceptance[p.phase + '-' + i] ? 'checked' : '';
         var accToggle = phaseVerified ? '' : ' onchange="toggleAcceptance(' + p.phase + ',' + i + ')"';
