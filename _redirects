@@ -21,6 +21,9 @@
 /donations /legal/donations 200
 /disclaimer /legal/disclaimer 200
 
+# Certificate
+/certificate /certificate/ 200
+
 # Support / Subscriptions
 /support /support/ 200
 

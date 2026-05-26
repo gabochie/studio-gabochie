@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate of Completion — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F4F6FA;font-family:'Libre Baskerville',Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.cert-wrap{max-width:800px;width:100%;margin:0 auto}
+.certificate{background:#fff;border:2px solid #C9A84C;padding:48px;text-align:center;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.cert-border{position:absolute;inset:8px;border:1px solid #C9A84C;pointer-events:none}
+.cert-ornament{font-size:32px;color:#C9A84C;margin-bottom:8px}
+.cert-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.4em;text-transform:uppercase;color:#C9A84C;margin-bottom:20px}
+.cert-title{font-family:'Libre Baskerville',serif;font-size:36px;font-weight:700;color:#0A1628;margin-bottom:24px;line-height:1.2}
+.cert-body{font-size:15px;color:#475569;line-height:1.8;max-width:520px;margin:0 auto 24px}
+.cert-name{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:#0A1628;margin:16px 0 8px;letter-spacing:.02em}
+.cert-program{font-family:'Libre Baskerville',serif;font-style:italic;font-size:18px;color:#C9A84C;margin-bottom:24px}
+.cert-date{font-size:13px;color:#64748B;margin-bottom:32px}
+.cert-footer{display:flex;justify-content:center;gap:60px;margin-top:24px;padding-top:24px;border-top:1px solid #E2E8F0}
+.cert-footer .sig{text-align:center}
+.cert-footer .sig-line{width:180px;height:1px;background:#0A1628;margin-bottom:4px}
+.cert-footer .sig-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#94A3B8}
+.cert-code{font-family:'DM Sans',monospace;font-size:11px;color:#94A3B8;margin-top:16px}
+.loading{padding:60px;text-align:center;color:#94A3B8;font-size:14px}
+.error{text-align:center;padding:60px}
+.error h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#E8637A;margin-bottom:8px}
+.error p{color:#64748B;font-size:14px;margin-bottom:16px}
+.error a{color:#C9A84C;text-decoration:underline}
+@media print{body{background:#fff;padding:0}.cert-wrap{max-width:100%}.certificate{box-shadow:none;border-color:#C9A84C}}
+</style>
+</head>
+<body>
+<div class="cert-wrap" id="loadingView">
+  <div class="loading">Loading certificate...</div>
+</div>
+<div class="cert-wrap" id="errorView" style="display:none">
+  <div class="error">
+    <h2>Certificate Not Found</h2>
+    <p id="errorMsg">Invalid or missing certificate code.</p>
+    <a href="../school/">Browse Programs</a>
+  </div>
+</div>
+<div class="cert-wrap" id="certView" style="display:none">
+  <div class="certificate" id="certContent">
+    <div class="cert-border"></div>
+    <div class="cert-ornament">&#9733;</div>
+    <div class="cert-label">Certificate of Completion</div>
+    <div class="cert-body">This certifies that</div>
+    <div class="cert-name" id="certName"></div>
+    <div class="cert-body">has successfully completed</div>
+    <div class="cert-program" id="certProgram"></div>
+    <div class="cert-date" id="certDate"></div>
+    <div class="cert-footer">
+      <div class="sig">
+        <div class="sig-line"></div>
+        <div class="sig-label">Gideon Abochie</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px">Founder</div>
+      </div>
+      <div class="sig">
+        <div class="sig-line"></div>
+        <div class="sig-label">School of Creativity, Love &amp; Wisdom</div>
+      </div>
+    </div>
+    <div class="cert-code" id="certCode"></div>
+  </div>
+  <div style="text-align:center;margin-top:20px">
+    <button onclick="window.print()" style="padding:10px 24px;border:none;border-radius:6px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Print Certificate</button>
+    <a href="../dashboard/" style="display:inline-block;margin-left:12px;padding:10px 24px;border:1px solid #CBD5E1;border-radius:6px;color:#64748B;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Back to Dashboard</a>
+  </div>
+</div>
+
+<script>
+var code = new URLSearchParams(window.location.search).get('code') || '';
+if (code) {
+  fetch('/api/certificate?code=' + encodeURIComponent(code))
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if (d.status !== 'ok' || !d.certificate) throw new Error('Not found');
+      var c = d.certificate;
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('certView').style.display = 'block';
+      document.getElementById('certName').textContent = c.student_name;
+      document.getElementById('certProgram').textContent = c.program_title;
+      document.getElementById('certCode').textContent = 'Certificate Code: ' + c.certificate_code;
+      var date = new Date(c.issued_at);
+      document.getElementById('certDate').textContent = 'Issued on ' + date.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+    })
+    .catch(function(){
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('errorView').style.display = 'block';
+      document.getElementById('errorMsg').textContent = 'Certificate code not found or invalid.';
+    });
+} else {
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('errorView').style.display = 'block';
+  document.getElementById('errorMsg').textContent = 'No certificate code provided.';
+}
+</script>
+</body>
+</html>

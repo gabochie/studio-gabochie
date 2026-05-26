@@ -308,6 +308,20 @@
       `CREATE INDEX IF NOT EXISTS idx_modules_program ON modules(program_id)`,
       `CREATE INDEX IF NOT EXISTS idx_modules_slug ON modules(slug)`,
       `CREATE INDEX IF NOT EXISTS idx_mc_enrollment ON module_completions(enrollment_id)`,
+      // Certificates table
+      `CREATE TABLE IF NOT EXISTS certificates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enrollment_id INTEGER NOT NULL,
+        student_name TEXT NOT NULL,
+        student_email TEXT NOT NULL,
+        program_title TEXT NOT NULL,
+        program_slug TEXT NOT NULL,
+        certificate_code TEXT NOT NULL UNIQUE,
+        issued_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_certificates_code ON certificates(certificate_code)`,
+      `CREATE INDEX IF NOT EXISTS idx_certificates_email ON certificates(student_email)`,
       // Seed module definitions for Systems Thinking and Architectural Thinking
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) VALUES
         ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 1: The Iceberg Model', 'iceberg-model', 'See below the surface — events, patterns, structure, and mental models.', 1),

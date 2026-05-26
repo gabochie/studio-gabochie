@@ -137,6 +137,12 @@ h1 span{color:#C9A84C}
       <div id="progressBar" style="background:#C9A84C;height:100%;width:0%;border-radius:8px;transition:width .5s ease"></div>
     </div>
     <div id="moduleList"></div>
+    <div id="certSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center">
+      <div style="font-size:32px;margin-bottom:8px">&#9733;</div>
+      <p style="color:#22C55E;font-size:14px;font-weight:600;margin-bottom:12px">All modules completed!</p>
+      <button class="btn btn-primary" id="certBtn" onclick="handleCertificate()">Claim Your Certificate</button>
+      <p id="certLink" style="display:none;margin-top:8px"><a href="#" id="certHref" style="color:#C9A84C;font-size:13px;text-decoration:underline">View your certificate &rarr;</a></p>
+    </div>
   </div>
 </div>
 
@@ -237,8 +243,55 @@ function loadProgress() {
           '<div class="module-date">' + dateStr + '</div>' +
           '</div>';
       });
+      // Show certificate section when all modules complete
+      var certSection = document.getElementById('certSection');
+      var certBtn = document.getElementById('certBtn');
+      var certLink = document.getElementById('certLink');
+      if (d.total_modules > 0 && d.completed_modules >= d.total_modules) {
+        certSection.style.display = 'block';
+        // Check if certificate already exists
+        fetch('/api/certificates/generate', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ token: token })
+        }).then(function(r){return r.json()}).then(function(cd){
+          if (cd.status === 'ok') {
+            certBtn.style.display = 'none';
+            certLink.style.display = 'block';
+            document.getElementById('certHref').href = '/certificate/?code=' + cd.certificate_code;
+          } else {
+            certBtn.style.display = 'block';
+            certLink.style.display = 'none';
+          }
+        }).catch(function(){});
+      } else {
+        certSection.style.display = 'none';
+      }
     })
     .catch(function() {});
+}
+
+function handleCertificate() {
+  var btn = document.getElementById('certBtn');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  fetch('/api/certificates/generate', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ token: token })
+  }).then(function(r){return r.json()}).then(function(d){
+    if (d.status === 'ok') {
+      window.location.href = '/certificate/?code=' + d.certificate_code;
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Claim Your Certificate';
+      alert(d.message || 'Could not generate certificate.');
+    }
+  }).catch(function(){
+    btn.disabled = false;
+    btn.textContent = 'Claim Your Certificate';
+    alert('Network error. Please try again.');
+  });
 }
 
 function toggleModule(slug) {
