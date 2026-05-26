@@ -211,46 +211,7 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 <div class="programs" id="programs">
   <div class="section-label">Programs</div>
   <h2 class="section-title">Pick Your <span style="color:#C9A84C">Path</span></h2>
-  <div class="program-grid" id="programGrid">
-    <div class="card locked" id="card-systems">
-      <div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>
-      <span class="badge badge-free">Free Sample</span>
-      <h2>Systems Thinking</h2>
-      <div class="slugline">See the whole. Solve the root. Design the future.</div>
-      <div class="desc">Understand the hidden patterns that shape our world. Learn to see interconnected systems, anticipate ripple effects, and design solutions that actually work — in business, society, or your personal life.</div>
-      <div class="topics">
-        <span class="topic-tag">Iceberg Model</span>
-        <span class="topic-tag">Feedback Loops</span>
-        <span class="topic-tag">Leverage Points</span>
-        <span class="topic-tag">Mental Models</span>
-      </div>
-      <div class="meta">
-        <span>Duration: <strong>Self-paced</strong></span>
-        <span>Full Access: <strong>GH¢ 250</strong></span>
-      </div>
-      <div class="price-area">4 modules &middot; Free sample &middot; Pay once, own forever</div>
-      <button class="btn btn-primary" onclick="handleEnroll('systems-thinking')">Start Free Sample</button>
-    </div>
-
-    <div class="card locked" id="card-architectural">
-      <div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>
-      <span class="badge badge-free">Free Sample</span>
-      <h2>Architectural Thinking</h2>
-      <div class="slugline">From Blueprint to Masterpiece</div>
-      <div class="desc">Think like an architect — structuring ideas, projects, and systems with clarity and purpose. Mental models, design principles, and strategic frameworks for building anything that matters.</div>
-      <div class="topics">
-        <span class="topic-tag">Blueprint Thinking</span>
-        <span class="topic-tag">Design Principles</span>
-        <span class="topic-tag">Strategic Frameworks</span>
-        <span class="topic-tag">Execution &amp; Systems</span>
-      </div>
-      <div class="meta">
-        <span>Duration: <strong>Self-paced</strong></span>
-      </div>
-      <div class="price-area">4 modules &middot; Free sample</div>
-      <button class="btn btn-primary" onclick="handleEnroll('architectural-thinking')">Start Free Sample</button>
-    </div>
-  </div>
+  <div class="program-grid" id="programGrid"></div>
 </div>
 
 <!-- Enrollment flow (step by step) -->
@@ -425,9 +386,8 @@ function showLoggedIn(name) {
   document.getElementById('loginForm').classList.remove('active');
   document.getElementById('loggedIn').classList.add('active');
   document.getElementById('greeting').textContent = 'Welcome, ' + name + '!';
-  document.querySelectorAll('.card.locked').forEach(function(c){c.classList.remove('locked')});
-  var overlays = document.querySelectorAll('.lock-overlay');
-  overlays.forEach(function(o){o.remove()});
+  // Reload programs to remove lock overlays
+  loadPrograms();
   // Pre-fill the enrollment flow if it was triggered before login
   if (selectedSlug) { startEnrollFlow(selectedSlug); }
 }
@@ -436,10 +396,8 @@ function showLoggedIn(name) {
 function handleEnroll(slug) {
   var s = getStudent();
   if (!s) {
-    // Scroll to auth banner and show login/register
     document.getElementById('authBanner').scrollIntoView({behavior:'smooth'});
     document.getElementById('regEmail').focus();
-    // Store intent so we can continue after login
     selectedSlug = slug;
     return;
   }
@@ -528,12 +486,45 @@ function submitEnroll() {
   });
 }
 
+// ——— Programs ———
+function loadPrograms() {
+  var grid = document.getElementById('programGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">Loading programs...</div>';
+  fetch('/api/programs').then(function(r){return r.json()}).then(function(d){
+    if (d.status !== 'ok' || !d.programs || !d.programs.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F">No programs available yet.</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    d.programs.forEach(function(p){
+      var isLocked = !getStudent();
+      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access GH\u00a2 ' + p.price : 'Free';
+      var card = document.createElement('div');
+      card.className = 'card' + (isLocked ? ' locked' : '');
+      card.innerHTML = (isLocked ? '<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>' : '') +
+        '<span class="badge badge-free">Free Sample</span>' +
+        '<h2>' + p.title + '</h2>' +
+        '<div class="slugline">' + p.tagline + '</div>' +
+        '<div class="desc">' + p.description + '</div>' +
+        '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' +
+        (p.price > 0 ? '<span>Full Access: <strong>GH\u00a2 ' + p.price + '</strong></span>' : '') +
+        '</div>' +
+        '<div class="price-area">' + priceLabel + '</div>' +
+        '<button class="btn btn-primary" onclick="handleEnroll(\'' + p.slug + '\')">Start Free Sample</button>';
+      grid.appendChild(card);
+    });
+  }).catch(function(){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F">Could not load programs. Please refresh.</div>';
+  });
+}
+
 // ——— Init ———
 (function(){
   var s = getStudent();
   if (s && s.email) {
     showLoggedIn(s.name);
   }
+  loadPrograms();
 })();
 </script>
 
