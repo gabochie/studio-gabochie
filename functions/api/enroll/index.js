@@ -32,7 +32,7 @@ export async function onRequest(context) {
         });
       }
       // Only return full_content if enrollment is active (paid or free program)
-      var isPaidAccess = row.status === 'active' && (row.price > 0 || row.status === 'active');
+      var isPaidAccess = row.status === 'active';
       var response = {
         status: 'ok',
         enrollment: {
