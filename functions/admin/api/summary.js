@@ -24,6 +24,11 @@ export async function onRequest(context) {
       "SELECT COALESCE(SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END),0) AS pending, COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COALESCE(SUM(CASE WHEN status='completed' THEN 1 ELSE 0 END),0) AS completed FROM bookings"
     ).first();
 
+    // Booking revenue
+    const bookingRevenue = await env.DB.prepare(
+      "SELECT COUNT(*) AS count, COALESCE(SUM(amount), 0) AS total FROM bookings WHERE status IN ('paid', 'active', 'completed')"
+    ).first();
+
     const enrollments = await env.DB.prepare(
       "SELECT COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COUNT(*) AS total FROM enrollments"
     ).first();
@@ -56,6 +61,16 @@ export async function onRequest(context) {
       "SELECT strftime('%Y-%m', subscribed_at) AS month, COUNT(*) AS count FROM subscribers WHERE subscribed_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month"
     ).all();
 
+    // Event funnel (last 30 days)
+    const events = await env.DB.prepare(
+      "SELECT event_type, COUNT(*) AS count FROM events WHERE created_at >= datetime('now', '-30 days') GROUP BY event_type ORDER BY count DESC"
+    ).all();
+
+    // Subscriber conversion rate (this month subs / page views)
+    const conversion = await env.DB.prepare(
+      "SELECT COALESCE((SELECT COUNT(*) FROM subscribers WHERE subscribed_at >= datetime('now', '-30 days')) * 1.0 / NULLIF((SELECT COUNT(*) FROM page_views WHERE viewed_at >= datetime('now', '-30 days')), 0), 0) AS rate"
+    ).first();
+
     let recent = [];
     const recentDonations = await env.DB.prepare(
       "SELECT 'donation' AS type, donor_name AS name, amount AS val, status AS note, created_at AS ts FROM donations ORDER BY created_at DESC LIMIT 5"
@@ -79,7 +94,7 @@ export async function onRequest(context) {
         total_successful: donations.total_successful,
         month_successful: donations.month_successful
       },
-      bookings: { pending: bookings.pending, active: bookings.active, completed: bookings.completed },
+      bookings: { pending: bookings.pending, active: bookings.active, completed: bookings.completed, revenue: bookingRevenue.total, paid_count: bookingRevenue.count },
       enrollments: { total: enrollments.total, active: enrollments.active },
       page_views: { total: views.total, this_week: views.this_week, this_month: views.this_month },
       unique_visitors: {
@@ -87,6 +102,8 @@ export async function onRequest(context) {
         this_week: uniqueVisitors.this_week,
         this_month: uniqueVisitors.this_month
       },
+      events: { items: events.results },
+      conversion: { rate: conversion.rate },
       charts: {
         views_by_day: viewsByDay.results,
         views_by_page: viewsByPage.results,

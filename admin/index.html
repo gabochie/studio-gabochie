@@ -138,7 +138,8 @@
     <div class="stat-card"><span class="num green" id="statSubs">—</span><span class="label">Subscribers</span><span class="sub" id="statSubsSub">Loading...</span></div>
     <div class="stat-card"><span class="num blue" id="statEnrollments">—</span><span class="label">Enrollments</span><span class="sub" id="statEnrollmentsSub">Loading...</span></div>
     <div class="stat-card"><span class="num blue" id="statViews">—</span><span class="label">Page Views</span><span class="sub" id="statViewsSub">This month</span></div>
-    <div class="stat-card"><span class="num gold" id="statRevenue">—</span><span class="label">Revenue (GHS)</span><span class="sub" id="statRevenueSub">Loading...</span></div>
+    <div class="stat-card"><span class="num gold" id="statRevenue">—</span><span class="label">Donations (GHS)</span><span class="sub" id="statRevenueSub">Loading...</span></div>
+    <div class="stat-card"><span class="num gold" id="statBookingRevenue">—</span><span class="label">Booking Revenue (GHS)</span><span class="sub" id="statBookingRevenueSub">Paid bookings</span></div>
     <div class="stat-card" id="statBookings">
       <div style="display:flex;gap:12px;align-items:baseline">
         <span class="num gold" id="statBookingsPending">—</span>
@@ -166,6 +167,7 @@
   <div class="stats" id="audienceStats">
     <div class="stat-card"><span class="num blue" id="statUniques">-</span><span class="label">Unique Visitors</span><span class="sub" id="statUniquesSub">This month</span></div>
     <div class="stat-card"><span class="num blue" id="statCountries">-</span><span class="label">Countries</span><span class="sub" id="statCountriesSub">Last 30 days</span></div>
+    <div class="stat-card"><span class="num green" id="statConversion">-</span><span class="label">Sub Conversion</span><span class="sub" id="statConversionSub">Visits → Sub (30d)</span></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card">
@@ -186,6 +188,13 @@
 
   <!-- Charts -->
   <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Donation Funnel</span>
+        <span class="card-sub" id="funnelTotal">0 events (30 days)</span>
+      </div>
+      <div class="chart-bars" id="funnelChart"><span class="loading-pulse"></span></div>
+    </div>
     <div class="chart-card">
       <div class="card-header">
         <span class="card-title">Revenue (Monthly)</span>
@@ -411,6 +420,10 @@ function loadSummary(){
     $('statRevenue').className = 'num gold';
     $('statRevenueSub').textContent = don.count ? fmtNum(don.count) + ' payments' : 'No revenue yet';
 
+    $('statBookingRevenue').textContent = bok.revenue ? 'GHS ' + fmtNum(bok.revenue) : 'GHS 0';
+    $('statBookingRevenue').className = 'num gold';
+    $('statBookingRevenueSub').textContent = bok.paid_count ? fmtNum(bok.paid_count) + ' paid bookings' : 'No paid bookings';
+
     $('statBookingsPending').textContent = fmtNum(bok.pending || 0);
     $('statBookingsActive').textContent = fmtNum(bok.active || 0);
     $('statBookingsDone').textContent = fmtNum(bok.completed || 0);
@@ -425,6 +438,24 @@ function loadSummary(){
     $('statCountries').className = 'num blue';
     $('statCountriesSub').textContent = countries.length + ' countries in 30 days';
     renderCountries(countries);
+
+    // Conversion rate
+    var conv = d.conversion || {};
+    var rate = conv.rate || 0;
+    $('statConversion').textContent = (rate * 100).toFixed(2) + '%';
+    $('statConversion').className = 'num green';
+    $('statConversionSub').textContent = 'Page views to subs (30d)';
+
+    // Donation funnel chart
+    var funnelData = (d.events && d.events.items) || [];
+    var funnelOrder = ['donation_modal_open','donation_amount_selected','donation_payment_started','donation_success'];
+    var funnelLabels = {'donation_modal_open':'Opened','donation_amount_selected':'Amount','donation_payment_started':'Paid','donation_success':'Success'};
+    var funnelBarData = funnelOrder.map(function(t){
+      var found = funnelData.filter(function(e){return e.event_type === t});
+      return {label: funnelLabels[t] || t, count: (found[0] && found[0].count) || 0};
+    });
+    barChart('funnelChart', funnelBarData, 'label', 'count', 'chart-bar gold');
+    $('funnelTotal').textContent = (funnelBarData.reduce(function(s, f){return s + f.count}, 0)) + ' events (30 days)';
 
     // Charts
     barChart('revenueChart', ch.donations_by_month||[], 'month', 'total', 'chart-bar gold');

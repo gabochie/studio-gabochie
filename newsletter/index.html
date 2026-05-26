@@ -695,6 +695,15 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
     startPolling();
   })();
 
+  /* ── Event tracking helper ── */
+  function trackEvent(type, data) {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/event', JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}));
+    } else {
+      fetch('/api/event', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}),cache:'no-store'}).catch(function(){});
+    }
+  }
+
   /* ── Subscribe Form ── */
   (function(){
     // Read ref from URL and store in cookie
@@ -720,12 +729,14 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       var ref = getCookie('sw_ref') || '';
       btn.disabled = true;
       btn.textContent = 'Sending\u2026';
+      trackEvent('subscribe_attempt', email);
       fetch('/api/subscribe', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email: email, source: 'newsletter', ref: ref})
       }).then(function(r){ return r.json(); }).then(function(d){
         if(d.status === 'ok'){
+          trackEvent('subscribe_success', email);
           form.style.display = 'none';
           success.style.display = 'block';
           if(d.ref_code){

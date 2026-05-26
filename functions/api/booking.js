@@ -27,8 +27,8 @@ export async function onRequest(context) {
     const db = env.DB;
     if (db && email) {
       await db.prepare(
-        `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref) VALUES (?, ?, ?, ?, ?, ?, ?)`
-      ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref).run().catch(function(){});
+        `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref, amount).run().catch(function(){});
     }
 
     // Store in KV if bound (legacy fallback)

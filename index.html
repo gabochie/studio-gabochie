@@ -971,9 +971,18 @@ function handleQuery(text) {
 
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script>
+function trackEvent(type, data) {
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/event', JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}));
+  } else {
+    fetch('/api/event', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}),cache:'no-store'}).catch(function(){});
+  }
+}
+
 var selectedAmount = null;
 
 function openDonationModal() {
+  trackEvent('donation_modal_open');
   selectedAmount = null;
   document.getElementById('donorName').value = '';
   document.getElementById('donorEmail').value = '';
@@ -1014,6 +1023,7 @@ function selectAmount(btn, amount) {
     document.getElementById('payBtn').style.background = '#C9A84C';
     document.getElementById('payBtn').style.color = '#0A1628';
     document.getElementById('payBtn').textContent = 'Donate GH¢ ' + amount;
+    trackEvent('donation_amount_selected', String(amount));
   }
 }
 
@@ -1040,6 +1050,7 @@ function startPayment() {
   var email = document.getElementById('donorEmail').value.trim() || 'donor@anonymous.invalid';
   var phone = document.getElementById('donorPhone').value.trim() || '';
   var tx_ref = 'donation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  trackEvent('donation_payment_started', String(selectedAmount));
   document.getElementById('payBtn').disabled = true;
   document.getElementById('payBtn').textContent = 'Opening...';
   FlutterwaveCheckout({
@@ -1050,9 +1061,11 @@ function startPayment() {
     payment_options: 'card, mobilemoneyghana, ussd',
     customer: { email: email, name: name, phone: phone },
     callback: function(response) {
+      trackEvent('donation_success', tx_ref);
       window.location.href = '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) + '&status=' + encodeURIComponent(response.status || 'successful') + '&amount=' + encodeURIComponent(selectedAmount) + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
     },
     onclose: function() {
+      trackEvent('donation_cancelled', String(selectedAmount));
       document.getElementById('payBtn').disabled = false;
       document.getElementById('payBtn').textContent = 'Donate GH¢ ' + selectedAmount;
     },

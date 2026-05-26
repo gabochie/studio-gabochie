@@ -39,10 +39,23 @@
       )`,
       `CREATE TABLE IF NOT EXISTS page_views (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        page TEXT NOT NULL,
+        page TEXT NOT NULL DEFAULT '',
         referrer TEXT DEFAULT '',
-        viewed_at TEXT NOT NULL DEFAULT (datetime('now'))
+        viewed_at TEXT NOT NULL DEFAULT (datetime('now')),
+        country TEXT DEFAULT '',
+        city TEXT DEFAULT '',
+        ip TEXT DEFAULT ''
       )`,
+      `CREATE TABLE IF NOT EXISTS events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_type TEXT NOT NULL,
+        event_data TEXT DEFAULT '',
+        page TEXT DEFAULT '',
+        email TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_events_type ON events(event_type)`,
+      `CREATE INDEX IF NOT EXISTS idx_events_created ON events(created_at)`,
       `CREATE TABLE IF NOT EXISTS testimonials (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         author TEXT NOT NULL,
@@ -115,6 +128,7 @@
       `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
       `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
+      `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
       `CREATE TABLE IF NOT EXISTS referrals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         referrer_code TEXT NOT NULL,
