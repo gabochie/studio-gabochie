@@ -1085,39 +1085,60 @@ function loadHomepageContent() {
   // Testimonials
   fetch('/api/testimonials').then(function(r){return r.json()}).then(function(d){
     var grid = document.getElementById('testimonialsGrid');
-    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    if (d.status !== 'ok' || !d.items || !d.items.length) {
+      grid.innerHTML = FALLBACKS.testimonials;
+      return;
+    }
     grid.innerHTML = '';
     d.items.forEach(function(t){
       var initial = (t.author || '?').charAt(0).toUpperCase();
-      var stars = '';
-      for (var i = 0; i < (t.rating || 5); i++) stars += '&#9733;';
       grid.innerHTML += '<div class="testimonial-card"><div class="quote">' + t.content + '</div><div class="author"><div class="avatar">' + initial + '</div><div><div class="name">' + t.author + '</div><div class="role">' + (t.role || '') + '</div></div></div></div>';
     });
-  }).catch(function(){});
+  }).catch(function(){
+    var grid = document.getElementById('testimonialsGrid');
+    if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.testimonials;
+  });
 
   // Stats
   fetch('/api/stats').then(function(r){return r.json()}).then(function(d){
     var grid = document.getElementById('statsGrid');
-    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    if (d.status !== 'ok' || !d.items || !d.items.length) {
+      grid.innerHTML = FALLBACKS.stats;
+      return;
+    }
     grid.innerHTML = '';
     d.items.forEach(function(s){
       grid.innerHTML += '<div class="stat-card"><span class="stat-number" data-target="' + s.value + '">0</span><span class="stat-label">' + s.label + '</span></div>';
     });
-    // Re-trigger counter animation
     if (window.animateCounters) { animateCounters(); }
-  }).catch(function(){});
+  }).catch(function(){
+    var grid = document.getElementById('statsGrid');
+    if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.stats;
+  });
 
   // Gallery
   fetch('/api/gallery').then(function(r){return r.json()}).then(function(d){
     var grid = document.getElementById('galleryGrid');
-    if (d.status !== 'ok' || !d.items || !d.items.length) return;
+    if (d.status !== 'ok' || !d.items || !d.items.length) {
+      grid.innerHTML = FALLBACKS.gallery;
+      return;
+    }
     grid.innerHTML = '';
     d.items.forEach(function(g){
       var slug = g.image_url.replace(/.*\/([^\/]+?)(\.[^.]+)?$/, '$1');
       grid.innerHTML += '<div class="gallery-item"><picture><source srcset="' + g.image_url.replace(/\.\w+$/, '.webp') + '" type="image/webp"><img src="' + g.image_url + '" alt="' + g.title + '" loading="lazy"></picture><div class="gallery-label">' + g.title + '</div></div>';
     });
-  }).catch(function(){});
+  }).catch(function(){
+    var grid = document.getElementById('galleryGrid');
+    if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.gallery;
+  });
 }
+
+var FALLBACKS = {
+  testimonials: '<div class="testimonial-card"><div class="quote">"Gideon has a unique ability to communicate deep spiritual truths in a way that is both accessible and transformative."</div><div class="author"><div class="avatar">S</div><div><div class="name">Sarah K.</div><div class="role">Reader, Accra</div></div></div></div>',
+  stats: '<div class="stat-card"><span class="stat-number" data-target="500">500</span><span class="stat-label">Books Distributed</span></div><div class="stat-card"><span class="stat-number" data-target="50">50</span><span class="stat-label">Videos Published</span></div><div class="stat-card"><span class="stat-number" data-target="12">12</span><span class="stat-label">Countries Reached</span></div>',
+  gallery: '<div class="gallery-item"><i class="ti ti-photo"></i><div class="gallery-label">Teaching Session</div></div><div class="gallery-item"><i class="ti ti-photo"></i><div class="gallery-label">Creative Workshop</div></div>'
+};
 document.addEventListener('DOMContentLoaded', loadHomepageContent);
 </script>
 
