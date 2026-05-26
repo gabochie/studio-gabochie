@@ -80,7 +80,29 @@
       "description": "Revenue beyond donations: courses, digital products, premium subscriptions.",
       "platform": "Cloudflare Workers + Flutterwave + Email API",
       "steps": [
-        {"id": 6.1, "task": "School programs paywall", "items": ["Gate premium courses", "Auto access tokens", "Student dashboard"]},
+        {"id": 6.1, "task": "School programs paywall", "items": [
+          "Wire Flutterwave checkout for program purchase",
+          "Auto-generate full-access token on successful payment",
+          "Distinguish free sample vs paid full access in dashboard",
+          "Admin page to manage programs & content",
+          "Student progress tracking"
+        ]},
+        {"id": 6.2, "task": "Systems Thinking — full curriculum", "items": [
+          "Write module 1: Iceberg Model (deep dive)",
+          "Write module 2: Feedback Loops",
+          "Write module 3: Leverage Points",
+          "Write module 4: Mental Models",
+          "Record video walkthroughs for each module",
+          "Create worksheets & exercises per module"
+        ]},
+        {"id": 6.3, "task": "Architectural Thinking — full curriculum", "items": [
+          "Write module 1: Blueprint Thinking",
+          "Write module 2: Design Principles",
+          "Write module 3: Strategic Frameworks",
+          "Write module 4: Execution & Systems",
+          "Record video walkthroughs",
+          "Create worksheets & exercises"
+        ]},
         {"id": 6.2, "task": "Digital book sales", "items": ["Pay-per-download", "Flutterwave purchase flow", "Download tracking"]},
         {"id": 6.3, "task": "Newsletter monetization", "items": ["Sponsored slots", "Premium tiers", "Auto-billing"]},
         {"id": 6.4, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
@@ -113,7 +135,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 3 (Revenue Backend) in progress. Agentic Task Management (Phase 8.1) now live — AI can read/write tasks via D1 API.",
+  "current_focus": "Phase 6 — Build The Profit Engine: school paywall, Systems Thinking curriculum, Architectural Thinking curriculum. Sponsor login system live. Site-wide 1440px layout applied.",
   "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

@@ -99,10 +99,16 @@ All CSS uses these tokens via `var(--token)`. Defined in `:root` across all styl
 ## Component Patterns
 
 ### Layout
-- Max-width system: `--content-max: 1440px` applied to all page wrappers (`.container`, `.wrap`, `.page-wrap`)
-- Wrappers centered with `margin: 0 auto; width: 100%`
-- Nav backgrounds bleed full-width (hybrid approach) — `nav{position:fixed;top:0;left:0;right:0}`, inner `.container` constrained by `--content-max`
-- Admin and public pages share the same max-width for consistency
+- **Max-width system**: `--content-max: 1440px` token applied to all page wrappers
+- **Wrappers** centered with `margin: 0 auto; width: 100%`
+- **main.css** → `.container` (homepage, legal, manifesto, newsletter, 404, etc.)
+- **admin.css** → `.wrap` (all admin pages)
+- **roadmap.html** → `.container`
+- **advertise.html** → `.page-wrap`
+- **school/index.html** → `.nav`, `.programs`
+- **dashboard/index.html** → `.wrap`
+- **Nav**: background bleeds full-width (fixed bar), inner `.container` constrained to `--content-max`
+- **Footer**: `<footer>` background full-width, inner `.container` constrained to `--content-max`
 
 ### Buttons
 ```

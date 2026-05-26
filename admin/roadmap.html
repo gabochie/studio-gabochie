@@ -671,9 +671,37 @@ var DATA = {
           "task": "School programs paywall",
           "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Programs API","url":"../functions/admin/api/enrollments.js","local":true}],
           "items": [
-            "Gate premium course content behind payment",
-            "Auto-generate access tokens on purchase",
-            "Student dashboard after enrollment"
+            "Wire Flutterwave checkout for program purchase",
+            "Auto-generate full-access token on successful payment",
+            "Distinguish free sample vs paid full access in dashboard",
+            "Admin page to manage programs & content",
+            "Student progress tracking"
+          ]
+        },
+        {
+          "id": "6.2",
+          "task": "Systems Thinking — full curriculum",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "Write module 1: Iceberg Model (deep dive)",
+            "Write module 2: Feedback Loops",
+            "Write module 3: Leverage Points",
+            "Write module 4: Mental Models",
+            "Record video walkthroughs for each module",
+            "Create worksheets & exercises per module"
+          ]
+        },
+        {
+          "id": "6.3",
+          "task": "Architectural Thinking — full curriculum",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "Write module 1: Blueprint Thinking",
+            "Write module 2: Design Principles",
+            "Write module 3: Strategic Frameworks",
+            "Write module 4: Execution & Systems",
+            "Record video walkthroughs",
+            "Create worksheets & exercises"
           ]
         },
         {
@@ -836,8 +864,13 @@ var DATA = {
     "Flutterwave payouts are settled to your bank in Ghana (GHS). No monthly fee, only per-transaction 1.4% + GHS 1.",
     "Phase 5 — Fix The Cash Register: Donations, payments, booking flows must all work end-to-end before anything else.",
     "Phase 6 — Build The Profit Engine: Courses, book sales, premium newsletter tiers create sustainable revenue.",
+    "Phase 6.1 — School programs paywall: Flutterwave checkout, full-access tokens, sample vs paid, admin page, progress tracking.",
+    "Phase 6.2 — Systems Thinking curriculum: 4 modules (Iceberg, Feedback Loops, Leverage Points, Mental Models) plus videos and worksheets.",
+    "Phase 6.3 — Architectural Thinking curriculum: 4 modules (Blueprint Thinking, Design Principles, Strategic Frameworks, Execution) plus videos and worksheets.",
     "Phase 7 — Strategic Offensive: Partnerships, media, SEO, and referrals grow the mission beyond organic.",
     "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
+    "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
+    "Site-wide 1440px max-width applied via --content-max token.",
     "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
   ]
 };
