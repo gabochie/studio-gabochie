@@ -10,7 +10,9 @@ export async function onRequest(context) {
     const ct = request.headers.get('Content-Type') || '';
     let event_type = '', event_data = '', page = '', email = '';
     if (ct.includes('application/json')) {
-      const body = await request.json();
+      const raw = await request.text();
+      console.log('Event body:', raw);
+      const body = JSON.parse(raw);
       event_type = body.event_type || '';
       event_data = typeof body.event_data === 'object' ? JSON.stringify(body.event_data) : String(body.event_data || '');
       page = body.page || '';
