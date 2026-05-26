@@ -89,11 +89,9 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 .auth-banner .logged-in .sub{color:#5A7A9F;font-size:12px;margin-bottom:12px}
 .auth-banner .logged-in a{color:#C9A84C;font-size:12px;text-decoration:underline}
 
-/* Locked card overlay */
-.card.locked{opacity:.6;position:relative}
-.card.locked .lock-overlay{position:absolute;inset:0;background:rgba(10,22,40,.6);border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;z-index:2;backdrop-filter:blur(2px)}
-.card.locked .lock-overlay .lock-icon{font-size:28px}
-.card.locked .lock-overlay .lock-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#fff;letter-spacing:.1em;text-transform:uppercase}
+/* Enroll button states */
+.btn-guest{cursor:pointer}
+.btn-guest:hover{background:#D9B85C}
 
 /* Enrollment flow */
 .enroll-flow{max-width:600px;margin:40px auto;display:none}
@@ -386,21 +384,18 @@ function showLoggedIn(name) {
   document.getElementById('loginForm').classList.remove('active');
   document.getElementById('loggedIn').classList.add('active');
   document.getElementById('greeting').textContent = 'Welcome, ' + name + '!';
-  // Reload programs to remove lock overlays
+  // Reload programs so buttons switch to 'Start Free Sample'
   loadPrograms();
-  // Pre-fill the enrollment flow if it was triggered before login
   if (selectedSlug) { startEnrollFlow(selectedSlug); }
 }
 
 // ——— Enrollment ———
+function scrollToAuth() {
+  document.getElementById('authBanner').scrollIntoView({behavior:'smooth'});
+  document.getElementById('regEmail').focus();
+}
+
 function handleEnroll(slug) {
-  var s = getStudent();
-  if (!s) {
-    document.getElementById('authBanner').scrollIntoView({behavior:'smooth'});
-    document.getElementById('regEmail').focus();
-    selectedSlug = slug;
-    return;
-  }
   startEnrollFlow(slug);
 }
 
@@ -496,12 +491,14 @@ function loadPrograms() {
       return;
     }
     grid.innerHTML = '';
+    var student = getStudent();
     d.programs.forEach(function(p){
-      var isLocked = !getStudent();
-      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access GH\u00a2 ' + p.price : 'Free';
+      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access GH\u00a2 ' + p.price : 'Free for all';
+      var btnLabel = student ? 'Start Free Sample' : 'Register to Enroll';
+      var btnAction = student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()";
       var card = document.createElement('div');
-      card.className = 'card' + (isLocked ? ' locked' : '');
-      card.innerHTML = (isLocked ? '<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">Register to Enroll</div></div>' : '') +
+      card.className = 'card';
+      card.innerHTML =
         '<span class="badge badge-free">Free Sample</span>' +
         '<h2>' + p.title + '</h2>' +
         '<div class="slugline">' + p.tagline + '</div>' +
@@ -510,7 +507,7 @@ function loadPrograms() {
         (p.price > 0 ? '<span>Full Access: <strong>GH\u00a2 ' + p.price + '</strong></span>' : '') +
         '</div>' +
         '<div class="price-area">' + priceLabel + '</div>' +
-        '<button class="btn btn-primary" onclick="handleEnroll(\'' + p.slug + '\')">Start Free Sample</button>';
+        '<button class="btn btn-primary" onclick="' + btnAction + '">' + btnLabel + '</button>';
       grid.appendChild(card);
     });
   }).catch(function(){
