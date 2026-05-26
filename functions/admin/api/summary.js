@@ -29,6 +29,14 @@ export async function onRequest(context) {
       "SELECT COUNT(*) AS count, COALESCE(SUM(amount), 0) AS total FROM bookings WHERE status IN ('paid', 'active', 'completed')"
     ).first();
 
+    // Reconciliation: failed and other donation statuses
+    const reconDonationsFailed = await env.DB.prepare(
+      "SELECT COUNT(*) AS count FROM donations WHERE status IN ('failed', 'transfer_failed', 'refund_failed')"
+    ).first();
+    const reconDonationsOther = await env.DB.prepare(
+      "SELECT COUNT(*) AS count FROM donations WHERE status NOT IN ('successful', 'failed', 'transfer_failed', 'refund_failed') AND status != ''"
+    ).first();
+
     const enrollments = await env.DB.prepare(
       "SELECT COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COUNT(*) AS total FROM enrollments"
     ).first();
@@ -87,6 +95,8 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({
       status: 'ok',
+      recon_donations_failed: reconDonationsFailed.count,
+      recon_donations_other: reconDonationsOther.count,
       subscribers: { total: subs.total, this_week: subs.this_week, this_month: subs.this_month },
       donations: {
         count: donations.count,

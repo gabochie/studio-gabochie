@@ -20,7 +20,6 @@ export async function onRequest(context) {
         status: 401, headers: { 'Content-Type': 'application/json' }
       });
     }
-    // Verify signature against FLW_SECRET_HASH
     const expectedHash = env.FLW_SECRET_HASH;
     if (expectedHash && signature !== expectedHash) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid signature' }), {
@@ -29,28 +28,35 @@ export async function onRequest(context) {
     }
     const body = await request.json();
     const { event, data } = body;
-    if (event !== 'charge.completed' && event !== 'transfer.completed') {
-      return new Response(JSON.stringify({ status: 'ok', message: 'Ignored event' }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
     const tx_ref = data.tx_ref || '';
     const flw_id = String(data.id || '');
     const amount = parseFloat(data.amount) || 0;
     const currency = data.currency || 'GHS';
-    const status = data.status || 'pending';
+    const rawStatus = data.status || 'pending';
     const customer = data.customer || {};
     const donor_name = customer.name || customer.fullName || data.full_name || '';
     const donor_email = customer.email || data.email || '';
     const donor_phone = customer.phone || data.phone || '';
     const created_at = data.created_at || new Date().toISOString();
 
-    // Verify transaction with Flutterwave API
+    // Map Flutterwave event types to canonical statuses
+    const eventStatusMap = {
+      'charge.completed': 'successful',
+      'charge.failed': 'failed',
+      'charge.chargeback': 'chargeback',
+      'charge.chargeback.reversed': 'chargeback_reversed',
+      'refund.completed': 'refunded',
+      'refund.failed': 'refund_failed',
+      'transfer.completed': 'successful',
+      'transfer.failed': 'transfer_failed'
+    };
+    let canonicalStatus = eventStatusMap[event] || rawStatus;
+
+    // Verify transaction with Flutterwave API (only for completed charges)
     let verifiedAmount = amount;
-    let verifiedStatus = status;
+    let verifiedStatus = canonicalStatus;
     let verifiedCurrency = currency;
-    if (env.FLW_SECRET_KEY && flw_id) {
+    if ((event === 'charge.completed' || event === 'charge.failed') && env.FLW_SECRET_KEY && flw_id) {
       try {
         const verifyResp = await fetch(
           `https://api.flutterwave.com/v3/transactions/${flw_id}/verify`,
@@ -78,14 +84,15 @@ export async function onRequest(context) {
          donor_phone = excluded.donor_phone`
     ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
 
-    if (tx_ref.startsWith('booking_')) {
+    // Update booking status on successful charge
+    if (event === 'charge.completed' && tx_ref.startsWith('booking_')) {
       await db.prepare(
         `UPDATE bookings SET status = ? WHERE payment_tx_ref = ?`
       ).bind('confirmed', tx_ref).run();
     }
 
     // Send receipt email via Brevo for successful donations
-    if (verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+    if ((event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
       try {
         const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const receiptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
@@ -119,14 +126,13 @@ export async function onRequest(context) {
             htmlContent: receiptHtml
           })
         });
-        // Queue day 3 impact follow-up
         try {
           await queueEmail(env, donor_email, donor_name, 'Your Impact in Action', donationImpactFollowup(donor_name), 'donation_impact', daysFromNow(3));
         } catch (_e2) {}
       } catch (_e) {}
     }
 
-    return new Response(JSON.stringify({ status: 'ok' }), {
+    return new Response(JSON.stringify({ status: 'ok', event, canonicalStatus }), {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {

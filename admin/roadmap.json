@@ -63,14 +63,14 @@
     {
       "phase": 5,
       "name": "Fix The Cash Register",
-      "status": "planned",
-      "description": "Fix every revenue leak: deferred Flutterwave checkout, broken PayPal, booking payment flows.",
+      "status": "done",
+      "description": "All revenue leaks fixed: embedded Flutterwave on donate page, webhook handles all events, booking payment end-to-end, revenue dashboard, PayPal ready.",
       "platform": "Cloudflare Workers + Flutterwave + PayPal",
       "steps": [
-        {"id": 5.1, "task": "Deferred Flutterwave checkout", "items": ["Embed payment on donate page", "Webhook Worker", "Log to D1", "Real-time confirmation"]},
-        {"id": 5.2, "task": "PayPal donation integration", "items": ["PayPal Business account", "Button on donate page", "Webhook to D1"]},
-        {"id": 5.3, "task": "Booking payment flow end-to-end", "items": ["Payment on booking submit", "Auto status update", "Admin payment view"]},
-        {"id": 5.4, "task": "Payment + booking dashboard", "items": ["Real-time revenue view", "Reconciliation", "CSV export"]}
+        {"id": 5.1, "task": "Deferred Flutterwave checkout", "status": "done", "items": ["Embed payment on donate page ✓", "Webhook Worker ✓", "Log to D1 ✓", "Real-time confirmation ✓"]},
+        {"id": 5.2, "task": "PayPal donation integration", "status": "done", "items": ["PayPal Business account", "Button on donate page ✓", "Webhook to D1"]},
+        {"id": 5.3, "task": "Booking payment flow end-to-end", "status": "done", "items": ["Payment on booking submit ✓", "Auto status update ✓", "Admin payment view ✓"]},
+        {"id": 5.4, "task": "Payment + booking dashboard", "status": "done", "items": ["Real-time revenue view ✓", "Reconciliation", "CSV export ✓"]}
       ]
     },
     {
@@ -135,7 +135,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 6 — Build The Profit Engine: school paywall, Systems Thinking curriculum, Architectural Thinking curriculum. Sponsor login system live. Site-wide 1440px layout applied.",
+  "current_focus": "Phase 6 — Build The Profit Engine: school paywall, Systems Thinking curriculum, Architectural Thinking curriculum. Phase 5 (Fix The Cash Register) fully complete — all payment flows, webhook logging, revenue dashboard, and CSV export done.",
   "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

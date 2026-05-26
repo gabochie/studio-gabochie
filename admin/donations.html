@@ -52,6 +52,7 @@
   <div class="refresh-bar">
     <span class="note" id="lastUpdated">Loading...</span>
     <button class="btn-sm" onclick="loadDonations()">&#8635; Refresh</button>
+    <button class="btn-sm" onclick="exportDonationsCSV()">&#8595; Export CSV</button>
   </div>
   <div class="table-wrap">
     <table>
@@ -69,6 +70,7 @@ async function loadDonations() {
     if (!res.ok) throw new Error('Failed to load');
     var data = await res.json();
     var items = data.items || [];
+    _donations = items;
     var t = data.totals || {};
     var totalReceived = t.count || 0;
     var totalAmount = t.total_successful || 0;
@@ -101,6 +103,23 @@ async function loadDonations() {
     document.getElementById('lastUpdated').textContent = 'Error loading';
   }
 }
+function exportDonationsCSV() {
+  if (!_donations || !_donations.length) return alert('No data to export.');
+  var rows = [['Donor','Email','Amount','Currency','Phone','Status','Tx Ref','Date']];
+  _donations.forEach(function(d) {
+    rows.push([d.donor_name||'', d.donor_email||'', d.amount||0, d.currency||'GHS', d.donor_phone||'', d.status||'', d.tx_ref||'', d.created_at||'']);
+  });
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'donations-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+var _donations = [];
+
 loadDonations();
 </script>
 </body>

@@ -1,6 +1,9 @@
 # Redirect root to home page
 / /index.html 200
 
+# Donate
+/donate /donate/ 200
+
 # Newsletter
 /newsletter /newsletter/ 200
 /advertise /newsletter/advertise 200

@@ -225,6 +225,25 @@
     </div>
   </div>
 
+  <!-- Reconciliation -->
+  <div class="section-title">&#9878; Payment Reconciliation</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Donations</span>
+        <span class="card-sub">Successful vs failed vs pending</span>
+      </div>
+      <div class="chart-bars" id="reconDonations"></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Bookings</span>
+        <span class="card-sub">Paid vs unpaid vs cancelled</span>
+      </div>
+      <div class="chart-bars" id="reconBookings"></div>
+    </div>
+  </div>
+
   <!-- Site Health & Activity side by side -->
   <div class="chart-grid">
     <div class="chart-card">
@@ -469,6 +488,23 @@ function loadSummary(){
 
     renderTopPages(ch.views_by_page||[]);
     renderActivity(d.recent||[]);
+
+    // Reconciliation charts
+    var reconDonations = [
+      {label:'Successful', count: don.count || 0},
+      {label:'Failed', count: d.recon_donations_failed || 0},
+      {label:'Other', count: d.recon_donations_other || 0}
+    ];
+    barChart('reconDonations', reconDonations, 'label', 'count', 'chart-bar green', Math.max(don.count||1, d.recon_donations_failed||1, d.recon_donations_other||1));
+    var paidB = bok.paid_count || 0;
+    var unpaidB = bok.pending || 0;
+    var cancelledB = 0;
+    var reconBookings = [
+      {label:'Paid', count: paidB},
+      {label:'Unpaid', count: unpaidB},
+      {label:'Cancelled', count: cancelledB}
+    ];
+    barChart('reconBookings', reconBookings, 'label', 'count', 'chart-bar gold', Math.max(paidB, unpaidB, 1));
 
     $('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
 
