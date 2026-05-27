@@ -1058,6 +1058,9 @@ function startPayment() {
   var phone = document.getElementById('donorPhone').value.trim() || '';
   var tx_ref = 'donation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   trackEvent('donation_payment_started', String(selectedAmount));
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, amount: selectedAmount}), page: location.pathname, email: email}));
+  }
   document.getElementById('payBtn').disabled = true;
   document.getElementById('payBtn').textContent = 'Opening...';
   FlutterwaveCheckout({

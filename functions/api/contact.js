@@ -2,7 +2,6 @@ import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
-  const kv = env.SUBSCRIBERS;
 
   // GET — admin subscriber listing (protected by referer check)
   if (request.method === 'GET') {
@@ -13,30 +12,16 @@ export async function onRequest(context) {
       });
     }
     const db = env.DB;
+    if (!db) {
+      return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
+        status: 501, headers: { 'Content-Type': 'application/json' }
+      });
+    }
     try {
-      // Prefer D1 if bound
-      if (db) {
-        const { results } = await db.prepare(
-          "SELECT * FROM subscribers ORDER BY subscribed_at DESC"
-        ).all();
-        return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-        });
-      }
-      // Fallback to KV
-      if (!kv) {
-        return new Response(JSON.stringify({ status: 'error', message: 'No database bound' }), {
-          status: 501, headers: { 'Content-Type': 'application/json' }
-        });
-      }
-      const list = await kv.list({ prefix: 'subscriber:' });
-      const items = [];
-      for (const key of list.keys) {
-        const val = await kv.get(key.name);
-        if (val) items.push(JSON.parse(val));
-      }
-      items.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      return new Response(JSON.stringify({ status: 'ok', count: items.length, items }), {
+      const { results } = await db.prepare(
+        "SELECT * FROM subscribers ORDER BY subscribed_at DESC"
+      ).all();
+      return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     } catch (err) {
@@ -63,25 +48,18 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-    const payload = { name, email, book, timestamp: new Date().toISOString(), source: book };
-
-    // Store in D1 if bound
+    // Store in D1
     const db = env.DB;
     if (db && email) {
       await db.prepare(
         `INSERT OR IGNORE INTO subscribers (name, email, source, book) VALUES (?, ?, ?, ?)`
-      ).bind(name, email, book || 'contact', book || '').run().catch(function(){});
+      ).bind(name, email, book || 'contact', book || '').run();
       // Queue manifesto follow-up (day 3) if a book download
       if (book) {
         try {
           await queueEmail(env, email, name, 'Did You Get Your Free Copy?', manifestoFollowup(name, book), 'manifesto_followup', daysFromNow(3));
         } catch (_) {}
       }
-    }
-
-    // Store in KV if bound (legacy fallback)
-    if (kv && email) {
-      await kv.put('subscriber:' + email, JSON.stringify(payload));
     }
 
     // Forward to Formspree as email fallback
@@ -94,7 +72,7 @@ export async function onRequest(context) {
       method: 'POST', body: fp, headers: { 'Accept': 'application/json' }
     }).catch(function(){});
 
-    return new Response(JSON.stringify({ status: 'ok', data: payload }), {
+    return new Response(JSON.stringify({ status: 'ok' }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   } catch (err) {

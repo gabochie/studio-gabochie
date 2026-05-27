@@ -39,13 +39,13 @@
     {
       "phase": 3,
       "name": "Revenue-Generating Backend (Workers + D1)",
-      "status": "active",
+      "status": "complete",
       "description": "Cloudflare Workers + D1 for structured data. On-site Flutterwave payments, admin CRUD. Revenue-first approach.",
       "platform": "Cloudflare Workers + D1 + Flutterwave API (all free tier)",
       "steps": [
         {"id": 3.1, "task": "D1 Database & Admin API", "status": "done", "items": ["D1 database created ✓", "Schema defined ✓", "CRUD Workers deployed ✓", "D1 bound to Pages ✓", "KV data migrated ✓"]},
-        {"id": 3.2, "task": "On-site Flutterwave Payments", "status": "in_progress", "items": ["Embed checkout on donate page", "Payment webhook Worker", "Add booking payment flow", "Admin donation dashboard"]},
-        {"id": 3.3, "task": "Content Management", "status": "in_progress", "items": ["D1-backed CRUD for testimonials", "API-driven content from D1", "Newsletter editor"]}
+        {"id": 3.2, "task": "On-site Flutterwave Payments", "status": "done", "items": ["Embed checkout on donate page ✓", "Payment webhook Worker ✓", "Add booking payment flow ✓", "Admin donation dashboard ✓"]},
+        {"id": 3.3, "task": "Content Management", "status": "done", "items": ["D1-backed CRUD for testimonials ✓", "API-driven content from D1 ✓", "Newsletter editor ✓"]}
       ]
     },
     {
@@ -106,7 +106,7 @@
         {"id": 6.4, "task": "Digital book sales", "status": "done", "items": ["Pay-per-download ✓", "Flutterwave purchase flow ✓", "Download tracking ✓"]},
         {"id": 6.5, "task": "Premium newsletter tiers", "status": "done", "items": ["Monthly Supporter (GH¢50/mo) ✓", "Annual Patron (GH¢500/yr) ✓", "Founding Partner (GH¢2,500/yr) ✓", "Flutterwave recurring checkout ✓", "Webhook subscription handling ✓", "/support/ page ✓", "Welcome email automation ✓"]},
         {"id": 6.6, "task": "Student progress tracking", "status": "done", "items": ["modules table ✓", "module_completions table ✓", "GET /api/enroll/progress ✓", "POST /api/enroll/progress ✓", "Progress bar on dashboard ✓", "Module completion checkboxes ✓"]},
-        {"id": 6.7, "task": "Automated email sequences", "items": ["Welcome sequence", "Abandoned donation follow-up", "Post-purchase upsell"]}
+        {"id": 6.7, "task": "Automated email sequences", "status": "done", "items": ["Enrollment day-3 follow-up ✓", "Abandoned donation reminder ✓", "Post-purchase book upsell ✓", "Cron processes all queues ✓"]}
       ]
     },
     {
@@ -136,7 +136,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 6 — Build The Profit Engine: all core features done — school paywall, Systems + Architectural Thinking curricula, book sales, premium newsletter tiers, student progress tracking. Next: Phase 6.7 (Automated email sequences: welcome, abandoned donation, post-purchase).",
+  "current_focus": "Phase 6 — Build The Profit Engine: Phase 6 complete — all seven sub-phases done. Next: Phase 7 (Strategic Offensive: partnerships, media presence, SEO, referrals).",
   "last_updated": "2026-05-26",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

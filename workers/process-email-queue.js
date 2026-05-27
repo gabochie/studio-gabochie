@@ -1,7 +1,11 @@
 export default {
   async scheduled(event, env, ctx) {
-    const resp = await fetch('https://gideonabochie.org/api/email/process');
-    const data = await resp.json();
-    console.log('[Email Cron]', JSON.stringify(data));
+    const processResp = await fetch('https://gideonabochie.org/api/email/process');
+    const processData = await processResp.json();
+    console.log('[Email Cron] process:', JSON.stringify(processData));
+
+    const abandonedResp = await fetch('https://gideonabochie.org/api/email/process-abandoned');
+    const abandonedData = await abandonedResp.json();
+    console.log('[Email Cron] abandoned:', JSON.stringify(abandonedData));
   },
 };

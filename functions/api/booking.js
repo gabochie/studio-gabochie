@@ -19,22 +19,14 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-    const payload = { name, email, phone, company, slot, message, timestamp: new Date().toISOString(), source: 'booking:' + slot };
-
-    // Store in D1 if bound
+    // Store in D1
     const tx_ref = formData.get('tx_ref') || '';
     const amount = parseFloat(formData.get('amount')) || 0;
     const db = env.DB;
     if (db && email) {
       await db.prepare(
         `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-      ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref, amount).run().catch(function(){});
-    }
-
-    // Store in KV if bound (legacy fallback)
-    const kv = env.SUBSCRIBERS;
-    if (kv && email) {
-      await kv.put('booking:' + Date.now() + ':' + email, JSON.stringify(payload));
+      ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref, amount).run();
     }
 
     // Forward to Formspree as email fallback
@@ -47,7 +39,7 @@ export async function onRequest(context) {
       method: 'POST', body: fp, headers: { 'Accept': 'application/json' }
     }).catch(function(){});
 
-    return new Response(JSON.stringify({ status: 'ok', data: payload }), {
+    return new Response(JSON.stringify({ status: 'ok' }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   } catch (err) {

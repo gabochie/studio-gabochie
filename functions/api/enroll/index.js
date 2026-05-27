@@ -1,3 +1,5 @@
+import { queueEmail, enrollmentFollowup, daysFromNow } from '../email/_send.js';
+
 function genToken() {
   var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   var r = '';
@@ -126,6 +128,13 @@ export async function onRequest(context) {
             htmlContent: emailHtml
           })
         });
+      } catch (_e) {}
+
+      // Queue day-3 enrollment follow-up
+      try {
+        var dashUrl = 'https://gideonabochie.org/dashboard/?token=' + token;
+        var followupHtml = enrollmentFollowup(studentName, program.title, dashUrl);
+        await queueEmail(env, studentEmail, studentName, 'Getting Started with ' + program.title + ' — GideonAbochie Studio', followupHtml, 'enrollment_followup', daysFromNow(3));
       } catch (_e) {}
     }
 

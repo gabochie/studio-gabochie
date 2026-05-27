@@ -153,6 +153,10 @@ function startPayment() {
   var tx_ref = 'donate_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   var redirectUrl = window.location.origin + '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) + '&status=successful&amount=' + amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
 
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, amount: amount}), page: location.pathname, email: email}));
+  }
+
   FlutterwaveCheckout({
     public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
     tx_ref: tx_ref,

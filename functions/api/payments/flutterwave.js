@@ -1,4 +1,4 @@
-import { queueEmail, donationImpactFollowup, daysFromNow } from '../email/_send.js';
+import { queueEmail, donationImpactFollowup, daysFromNow, bookUpsell } from '../email/_send.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -128,6 +128,11 @@ export async function onRequest(context) {
               htmlContent: downloadHtml
             })
           });
+        } catch (_e) {}
+
+        // Queue day-3 book upsell
+        try {
+          await queueEmail(env, bEmail, bName, 'Go Deeper with the Premium Bundle — GideonAbochie Studio', bookUpsell(bName), 'book_upsell', daysFromNow(3));
         } catch (_e) {}
       }
     }
