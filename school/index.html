@@ -119,6 +119,14 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 .enroll-nav{display:flex;gap:12px;margin-top:16px}
 .enroll-nav .btn{flex:1}
 
+/* Coming Soon styles */
+.card-coming{opacity:.6;position:relative}
+.card-coming::before{content:'';position:absolute;inset:0;border-radius:14px;pointer-events:none}
+.badge-coming{background:rgba(201,168,76,.12);color:#C9A84C;border:1px solid rgba(201,168,76,.25)}
+.badge-coming::before{content:'\23F3  '}
+.coming-desc{color:#5A7A9F}
+.btn-coming{background:rgba(90,122,159,.12);color:#5A7A9F;border:1px solid rgba(90,122,159,.2);cursor:not-allowed;font-size:13px;letter-spacing:.08em}
+
 /* FAQ */
 .faq-section{max-width:720px;margin:40px auto 0;padding:40px 24px 60px}
 .faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
@@ -493,21 +501,16 @@ function loadPrograms() {
     grid.innerHTML = '';
     var student = getStudent();
     d.programs.forEach(function(p){
+      var isComing = p.status === 'coming_soon';
       var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access GH\u00a2 ' + p.price : 'Free for all';
-      var btnLabel = student ? 'Start Free Sample' : 'Register to Enroll';
-      var btnAction = student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()";
       var card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML =
-        '<span class="badge badge-free">Free Sample</span>' +
-        '<h2>' + p.title + '</h2>' +
-        '<div class="slugline">' + p.tagline + '</div>' +
-        '<div class="desc">' + p.description + '</div>' +
-        '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' +
-        (p.price > 0 ? '<span>Full Access: <strong>GH\u00a2 ' + p.price + '</strong></span>' : '') +
-        '</div>' +
-        '<div class="price-area">' + priceLabel + '</div>' +
-        '<button class="btn btn-primary" onclick="' + btnAction + '">' + btnLabel + '</button>';
+      card.className = isComing ? 'card card-coming' : 'card';
+      var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : '<span class="badge badge-free">Free Sample</span>';
+      var btnHtml = isComing
+        ? '<button class="btn btn-coming" disabled>Coming Soon</button>'
+        : '<button class="btn btn-primary" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
+      var description = isComing ? '<div class="desc coming-desc">' + p.description + '</div>' : '<div class="desc">' + p.description + '</div>';
+      card.innerHTML = badge + '<h2>' + p.title + '</h2>' + '<div class="slugline">' + p.tagline + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>GH\u00a2 ' + p.price + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div>' + btnHtml;
       grid.appendChild(card);
     });
   }).catch(function(){

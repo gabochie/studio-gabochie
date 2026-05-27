@@ -86,11 +86,16 @@ export async function onRequest(context) {
     }
 
     var program = await db.prepare(
-      'SELECT id, title, slug, price, price_label, sample_content, full_content FROM programs WHERE slug = ? AND status = ?'
-    ).bind(programSlug, 'active').first();
+      'SELECT id, title, slug, price, price_label, sample_content, full_content, status FROM programs WHERE slug = ?'
+    ).bind(programSlug).first();
     if (!program) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Program not found or not available' }), {
+      return new Response(JSON.stringify({ status: 'error', message: 'Program not found' }), {
         status: 404, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    if (program.status !== 'active') {
+      return new Response(JSON.stringify({ status: 'error', message: 'This program is not yet available. It is currently: ' + program.status }), {
+        status: 403, headers: { 'Content-Type': 'application/json' }
       });
     }
 
