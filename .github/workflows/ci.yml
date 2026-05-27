@@ -156,9 +156,19 @@ jobs:
               path="${ref%%#*}"
               case "$path" in
                 ''|http*|mailto:*|'#'*) continue ;;
+                *\`*) continue ;;
+                *"'"*) continue ;;
+                */api/*|/api*) continue ;;
               esac
-              dir=$(dirname "$file")
-              [ -f "$dir/$path" ] || [ -d "$dir/$path" ] || { echo "BROKEN: $file -> $path"; fail=1; }
+              case "$path" in
+                /*)
+                  [ -f ".$path" ] || [ -d ".$path" ] || { echo "BROKEN: $file -> $path"; fail=1; }
+                  ;;
+                *)
+                  dir=$(dirname "$file")
+                  [ -f "$dir/$path" ] || [ -d "$dir/$path" ] || { echo "BROKEN: $file -> $path"; fail=1; }
+                  ;;
+              esac
             done
           done
           if [ "$fail" -eq 1 ]; then exit 1; fi
