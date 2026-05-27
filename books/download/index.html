@@ -62,8 +62,8 @@ if (!tx_ref && !email) {
   document.getElementById('errorView').style.display = 'block';
   document.getElementById('errorMsg').textContent = 'Missing purchase reference.';
 } else {
-  var url = '/api/books/download?tx_ref=' + encodeURIComponent(tx_ref);
-  fetch(url).then(function(r){return r.json()}).then(function(d){
+  var queryStr = tx_ref ? 'tx_ref=' + encodeURIComponent(tx_ref) : 'email=' + encodeURIComponent(email);
+  fetch('/api/books/download?' + queryStr).then(function(r){return r.json()}).then(function(d){
     document.getElementById('loadingView').style.display = 'none';
     if (d.status === 'ok' && d.books && d.books.length) {
       document.getElementById('successView').style.display = 'block';
