@@ -155,19 +155,14 @@ jobs:
             for ref in $(grep -oE '(src|href)="[^"]+"' "$file" | cut -d'"' -f2); do
               path="${ref%%#*}"
               # Skip empty, external, anchor-only
-              case "$path" in
-                ''|http*|mailto:*|'#'*|*+*) continue ;;
-                /api*|*/api*) continue ;;
-              esac
-              case "$path" in
-                /*)
-                  [ -f ".$path" ] || [ -d ".$path" ] || { echo "BROKEN: $file -> $path"; fail=1; }
-                  ;;
-                *)
-                  dir=$(dirname "$file")
-                  [ -f "$dir/$path" ] || [ -d "$dir/$path" ] || { echo "BROKEN: $file -> $path"; fail=1; }
-                  ;;
-              esac
+              echo "$path" | grep -qE '^(|http|mailto:|#)' && continue
+              # Skip JS template literals (contain +) and API routes
+              echo "$path" | grep -qE '[+]|/api' && continue
+              dir=$(dirname "$file")
+              # Handle absolute paths starting with /
+              check="$dir/$path"
+              echo "$path" | grep -qE '^/' && check=".$path"
+              [ -f "$check" ] || [ -d "$check" ] || { echo "BROKEN: $file -> $path"; fail=1; }
             done
           done
           if [ "$fail" -eq 1 ]; then exit 1; fi
