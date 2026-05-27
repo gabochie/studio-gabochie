@@ -57,7 +57,9 @@ export async function onRequest(context) {
       // Queue manifesto follow-up (day 3) if a book download
       if (book) {
         try {
-          await queueEmail(env, email, name, 'Did You Get Your Free Copy?', manifestoFollowup(name, book), 'manifesto_followup', daysFromNow(3));
+          const slugMap = { 'The Bible as Kingdom OS': 'the-bible-as-kingdom-os', 'The Divine Algorithm': 'divine-algorithm', 'AI-Powered Strategic Development': 'ai-national-development', '1 Million Coders Manifesto': '1-million-coders-manifesto' };
+          const slug = slugMap[book] || 'the-bible-as-kingdom-os';
+          await queueEmail(env, email, name, 'Did You Get Your Free Copy?', manifestoFollowup(name, book, email, slug), 'manifesto_followup', daysFromNow(3));
         } catch (_) {}
       }
     }

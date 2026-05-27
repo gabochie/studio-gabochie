@@ -77,7 +77,7 @@ export const welcomeFollowup = (name) => `<!DOCTYPE html><html><body style="font
     </td></tr>
   </table></body></html>`;
 
-export const manifestoFollowup = (name, book) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+export const manifestoFollowup = (name, book, email, slug) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
   <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
     <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">GideonAbochie Studio</span>
@@ -88,7 +88,7 @@ export const manifestoFollowup = (name, book) => `<!DOCTYPE html><html><body sty
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">A few days ago you downloaded <strong>${book || 'one of my books'}</strong>. I hope it is already reshaping how you see your work, your faith, and your world.</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">If you have not had a chance to read it yet, here is the download link again:</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/books/${(book || 'the-bible-as-kingdom-os').toLowerCase().replace(/\s+/g, '-')}.pdf" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Download Again</a>
+        <a href="https://gideonabochie.org/api/books/serve?slug=${slug || 'the-bible-as-kingdom-os'}&email=${encodeURIComponent(email || '')}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Download Again</a>
       </div>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">And if you enjoy it, would you consider leaving a review or sharing it with a friend? Word of mouth is how this mission grows.</p>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Warmly,<br>Gideon Abochie</p>

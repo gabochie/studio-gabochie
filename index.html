@@ -328,28 +328,28 @@ footer .footer-social a:hover{background:#C9A84C;color:#0A1628;border-color:#C9A
         <h3>The Bible as Kingdom OS</h3>
         <p>A paradigm-shifting exploration of the Bible not as a religious textbook, but as the operating system of the Kingdom of God. Learn to see Scripture as the living, active framework for every area of life — from creativity to relationships to purpose.</p>
         <div class="book-meta">PDF · 221 KB · Full-length book</div>
-        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('The Bible as Kingdom OS', 'books/the-bible-as-kingdom-os.pdf')"><i class="ti ti-mail"></i> Get Free Copy</button>
+        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('The Bible as Kingdom OS', 'books/the-bible-as-kingdom-os.pdf', 'the-bible-as-kingdom-os')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-code"></i></div>
         <h3>The Divine Algorithm</h3>
         <p>An interactive report exploring the divine patterns, codes, and algorithms hidden in Scripture. Discover how the mathematical and creative genius of God is woven into every page of the Bible, and how understanding these patterns unlocks a new dimension of faith.</p>
         <div class="book-meta">HTML Report · Full interactive document</div>
-        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('The Divine Algorithm', 'books/divine_algorithm_report.html')"><i class="ti ti-mail"></i> Get Free Copy</button>
+        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('The Divine Algorithm', 'books/divine_algorithm_report.html', 'divine-algorithm')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-rocket"></i></div>
         <h3>AI-Powered Strategic Accelerated National Development For Ghana</h3>
         <p>A visionary blueprint for leveraging artificial intelligence to accelerate Ghana's national development across every sector — education, healthcare, agriculture, infrastructure, and governance. A must-read for leaders, policymakers, and change-makers.</p>
         <div class="book-meta">DOCX · 14 KB · Strategic paper</div>
-        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('AI-Powered Strategic Development', 'books/ai-powered-strategic-national-development-ghana.docx')"><i class="ti ti-mail"></i> Get Free Copy</button>
+        <button class="btn btn-gold btn-sm" style="align-self:flex-start" onclick="openLead('AI-Powered Strategic Development', 'books/ai-powered-strategic-national-development-ghana.docx', 'ai-national-development')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
       <div class="book-card">
         <div class="book-icon"><i class="ti ti-users"></i></div>
         <h3>Ghana Does Not Need 1 Million Coders Manifesto</h3>
         <p>A bold manifesto challenging the popular "1 million coders" narrative. Argues for a more holistic approach to national development — one that combines technical skills with creativity, wisdom, and biblical worldview as the true foundation for transformation.</p>
         <div class="book-meta">PDF · 246 KB · Manifesto</div>
-        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('1 Million Coders Manifesto', 'books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf')"><i class="ti ti-mail"></i> Get Free Copy</button>
+        <button class="btn btn-outline btn-sm" style="align-self:flex-start" onclick="openLead('1 Million Coders Manifesto', 'books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf', '1-million-coders-manifesto')"><i class="ti ti-mail"></i> Get Free Copy</button>
       </div>
     </div>
   </div>
@@ -713,7 +713,7 @@ if (el) observer.observe(el);
     <p class="book-name" id="leadBookName"></p>
     <form id="leadForm">
       <input type="text" name="name" placeholder="Your name" required>
-      <input type="email" name="email" placeholder="Your email" required>
+      <input type="email" name="email" id="leadEmail" placeholder="Your email" required>
       <input type="hidden" name="book" id="leadBookInput" value="">
       <input type="hidden" name="_subject" value="Book download request">
       <button type="submit" class="submit" id="leadSubmitBtn">Send Me the Book &rarr;</button>
@@ -728,9 +728,10 @@ if (el) observer.observe(el);
 </div>
 
 <script>
-var _leadUrl = '';
-function openLead(name, url) {
+var _leadUrl = '', _leadSlug = '';
+function openLead(name, url, slug) {
   _leadUrl = url;
+  _leadSlug = slug || '';
   document.getElementById('leadBookName').textContent = name;
   document.getElementById('leadBookInput').value = name;
   document.getElementById('leadForm').style.display = '';
@@ -763,9 +764,21 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
   }).then(function() {
     form.style.display = 'none';
     document.getElementById('leadSuccess').classList.add('show');
-    setTimeout(function() { window.location.href = _leadUrl; }, 1500);
+    setTimeout(function() {
+      var email = document.getElementById('leadEmail').value;
+      if (_leadSlug && email) {
+        window.location.href = '/api/books/serve?slug=' + encodeURIComponent(_leadSlug) + '&email=' + encodeURIComponent(email);
+      } else {
+        window.location.href = _leadUrl;
+      }
+    }, 1500);
   }).catch(function() {
-    window.location.href = _leadUrl;
+    var email = document.getElementById('leadEmail').value;
+    if (_leadSlug && email) {
+      window.location.href = '/api/books/serve?slug=' + encodeURIComponent(_leadSlug) + '&email=' + encodeURIComponent(email);
+    } else {
+      window.location.href = _leadUrl;
+    }
   });
 });
 </script>

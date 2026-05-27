@@ -27,7 +27,7 @@ export async function onRequest(context) {
     // Mark downloaded
     await env.DB.prepare("UPDATE book_purchases SET downloaded = downloaded + 1 WHERE id = ?").bind(purchase.id).run();
     const books = await env.DB.prepare(
-      "SELECT * FROM books WHERE is_premium = 0 ORDER BY sort_order ASC"
+      "SELECT id, title, slug, description, price, cover_url, is_premium, sort_order FROM books WHERE slug != 'premium-bundle' ORDER BY sort_order ASC"
     ).all();
     return new Response(JSON.stringify({ status: 'ok', books: books.results, purchase: { tx_ref: purchase.tx_ref, email: purchase.email, amount: purchase.amount } }), {
       headers: { 'Content-Type': 'application/json' }

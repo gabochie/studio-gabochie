@@ -10,7 +10,10 @@ export async function onRequest(context) {
       const { results } = await env.DB.prepare(
         "SELECT * FROM books ORDER BY sort_order ASC"
       ).all();
-      return new Response(JSON.stringify({ status: 'ok', items: results }), {
+      const items = results.map(function(b) {
+        return { id: b.id, title: b.title, slug: b.slug, description: b.description, price: b.price, cover_url: b.cover_url, is_premium: b.is_premium, sort_order: b.sort_order };
+      });
+      return new Response(JSON.stringify({ status: 'ok', items: items }), {
         headers: { 'Content-Type': 'application/json' }
       });
     }

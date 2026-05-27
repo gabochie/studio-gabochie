@@ -405,7 +405,7 @@ export async function onRequest(context) {
         ('The Divine Algorithm', 'divine-algorithm', 'An interactive report exploring divine patterns, codes, and algorithms hidden in Scripture.', 0, '/books/divine_algorithm_report.html', 0, 2),
         ('AI-Powered Strategic National Development For Ghana', 'ai-national-development', 'A visionary blueprint for leveraging AI to accelerate Ghana national development.', 0, '/books/ai-powered-strategic-national-development-ghana.docx', 0, 3),
         ('1 Million Coders Manifesto', '1-million-coders-manifesto', 'A bold manifesto challenging the popular narrative on tech education in Ghana.', 0, '/books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf', 0, 4),
-        ('Premium Books Bundle', 'premium-bundle', 'All 4 published works in one premium download package.', 300, '', 1, 5)
+        ('Premium Books Bundle', 'premium-bundle', 'All 4 published works in one premium download package. Plus exclusive thank-you page.', 300, '/books/premium-bundle.html', 1, 5)
       `,
       // Mark Phase 5 + 6.1 tasks as done (for existing installations)
       `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`,

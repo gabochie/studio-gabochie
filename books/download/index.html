@@ -39,7 +39,8 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
   <h1>Your Books Are <span>Ready</span></h1>
   <p>Thank you for your purchase! Download each book below. A copy has also been emailed to you.</p>
   <div class="book-list" id="bookList"></div>
-  <a href="/books/" class="btn btn-outline">&larr; Back to Books</a>
+  <a href="/api/books/serve?slug=premium-bundle&tx_ref=" class="btn btn-gold" id="thankYouBtn" style="display:none" target="_blank">View Premium Thank-You &rarr;</a>
+  <div style="margin-top:12px"><a href="/books/" class="btn btn-outline">&larr; Back to Books</a></div>
 </div>
 <div class="card" id="errorView" style="display:none">
   <div class="icon">&#10007;</div>
@@ -66,10 +67,12 @@ if (!tx_ref && !email) {
     document.getElementById('loadingView').style.display = 'none';
     if (d.status === 'ok' && d.books && d.books.length) {
       document.getElementById('successView').style.display = 'block';
-      var html = d.books.map(function(b){
-        return '<div class="book-item"><span class="title">' + b.title + '</span><a href="' + b.file_url + '" class="badge" target="_blank">Download</a></div>';
+      var html = d.books.filter(function(b){return b.slug !== 'premium-bundle'}).map(function(b){
+        return '<div class="book-item"><span class="title">' + b.title + '</span><a href="/api/books/serve?slug=' + b.slug + '&tx_ref=' + encodeURIComponent(tx_ref) + '" class="badge" target="_blank">Download</a></div>';
       }).join('');
       document.getElementById('bookList').innerHTML = html;
+      var tb = document.getElementById('thankYouBtn');
+      if (tb) { tb.href = '/api/books/serve?slug=premium-bundle&tx_ref=' + encodeURIComponent(tx_ref); tb.style.display = ''; }
     } else {
       document.getElementById('errorView').style.display = 'block';
       document.getElementById('errorMsg').textContent = d.message || 'No valid purchase found.';
