@@ -262,7 +262,7 @@ function loadPlans() {
   fetch('https://api.frankfurter.app/latest?from=GHS&to=USD,EUR,GBP').then(function(r){return r.json()}).then(function(d){
     if (d.rates) {
       exchangeRates = d.rates;
-      if (selectedCurrency !== 'GHS') renderPlans();
+      if (plans.length) renderPlans();
     }
   }).catch(function(){});
   // Fetch subscription plans
