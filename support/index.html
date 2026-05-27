@@ -260,7 +260,10 @@ function trackEvent(type, data) {
 function loadPlans() {
   // Fetch live exchange rates from Frankfurter API (no key needed)
   fetch('https://api.frankfurter.app/latest?from=GHS&to=USD,EUR,GBP').then(function(r){return r.json()}).then(function(d){
-    if (d.rates) exchangeRates = d.rates;
+    if (d.rates) {
+      exchangeRates = d.rates;
+      if (selectedCurrency !== 'GHS') renderPlans();
+    }
   }).catch(function(){});
   // Fetch subscription plans
   fetch('/api/subscription/plans').then(function(r){return r.json()}).then(function(d){
