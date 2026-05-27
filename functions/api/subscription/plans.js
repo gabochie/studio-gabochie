@@ -12,7 +12,7 @@ export async function onRequest(context) {
       amount: 50,
       currency: 'GHS',
       interval: 'monthly',
-      plan_id: env.FLW_PLAN_SUPPORTER || '',
+      plan_id: env.FLW_PLAN_SUPPORTER || '160302',
       per: '/mo',
       description: 'Early access to content, supporter badge on the site, and a monthly teaching video from Gideon.',
       features: [
@@ -30,7 +30,7 @@ export async function onRequest(context) {
       amount: 500,
       currency: 'GHS',
       interval: 'yearly',
-      plan_id: env.FLW_PLAN_PATRON || '',
+      plan_id: env.FLW_PLAN_PATRON || '160303',
       per: '/yr',
       description: 'All Monthly Supporter benefits plus every book in PDF, exclusive Q&A sessions, and the ad-free newsletter.',
       features: [
@@ -49,7 +49,7 @@ export async function onRequest(context) {
       amount: 2500,
       currency: 'GHS',
       interval: 'yearly',
-      plan_id: env.FLW_PLAN_FOUNDING || '',
+      plan_id: env.FLW_PLAN_FOUNDING || '160304',
       per: '/yr',
       description: 'Everything in Annual Patron plus your name featured on the site and a quarterly video call with Gideon.',
       features: [

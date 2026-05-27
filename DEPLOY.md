@@ -66,14 +66,17 @@ Each variable should have values for **Production** (and optionally Preview).
 
 ### Recurring Payment Plans (in Flutterwave dashboard)
 
-1. Go to **Settings** → **Payment Plans**
-2. Create 3 plans:
-   | Plan | Amount | Interval | Token | 
-   |---|---|---|---|
-   | Monthly Supporter | GH 50 | Monthly | `FLW_PLAN_SUPPORTER` |
-   | Annual Patron | GH 500 | Yearly | `FLW_PLAN_PATRON` |
-   | Founding Partner | GH 2500 | Yearly | `FLW_PLAN_FOUNDING` |
-3. Copy each plan's ID (a number like `1234`) into the corresponding env var
+These are already configured in the code with these IDs — no env vars needed
+unless you want to override for different environments:
+
+| Plan | Amount | Interval | ID |
+|---|---|---|---|
+| Monthly Supporter | GH 50 | Monthly | `160302` |
+| Annual Patron | GH 500 | Yearly | `160303` |
+| Founding Partner | GH 2500 | Yearly | `160304` |
+
+To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
+`FLW_PLAN_FOUNDING` env vars in Cloudflare Pages.
 
 ---
 
