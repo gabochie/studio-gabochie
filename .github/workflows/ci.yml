@@ -154,11 +154,10 @@ jobs:
           for file in $(find . -path ./node_modules -prune -o -name '*.html' -print); do
             for ref in $(grep -oE '(src|href)="[^"]+"' "$file" | cut -d'"' -f2); do
               path="${ref%%#*}"
+              # Skip empty, external, anchor-only
               case "$path" in
-                ''|http*|mailto:*|'#'*) continue ;;
-                *\`*) continue ;;
-                *"'"*) continue ;;
-                */api/*|/api*) continue ;;
+                ''|http*|mailto:*|'#'*|*+*) continue ;;
+                /api*|*/api*) continue ;;
               esac
               case "$path" in
                 /*)
