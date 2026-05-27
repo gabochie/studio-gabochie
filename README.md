@@ -1,23 +1,41 @@
-# GideonAbochie.org — Youth Mission Donation Page
+# GideonAbochie Studio
 
-Donation landing page for **Gideon Abochie Youth Mission**.
-Raising purpose-driven leaders in Ghana through mentorship, creative arts, and faith.
+Full-stack platform for the School of Creativity, Love & Wisdom — education,
+payments, email automation, digital products, content management,
+subscriptions, student tracking, certificates, and gamified learning.
+
+**Domain**: https://gideonabochie.org
 
 ## Deploy
 
-1. Push this folder to a GitHub repo
-2. Go to repo **Settings → Pages**
-3. Source: **Deploy from branch** → `main` → `/ (root)`
-4. Set custom domain: `gideonabochie.org`
-5. Done — live in ~2 minutes
+This project requires **Cloudflare Pages with Functions + D1 database**.
+See [DEPLOY.md](DEPLOY.md) for full setup instructions.
 
-Or use **Cloudflare Pages** or **Netlify** for even faster setup (see DEPLOY.md).
+## Development
 
-## Customize
+```bash
+npm install    # Install dependencies + install pre-commit hook
+npm run dev    # Start local server (requires Cloudflare Pages Functions emulator)
+npm test       # Run unit + API tests
+npm run check  # Run lint + tests
+```
 
-- Replace photo placeholders with your images
-- Update the Ko-fi URL (line ~373)
-- Customize the story text
-- Update impact stat numbers
+## Project Structure
 
-Built for GAHQ — Revenue Operations for Ghana SMEs.
+```
+├── functions/         Cloudflare Pages Functions (API endpoints)
+│   ├── api/           Public API routes
+│   └── admin/        Admin-only API routes
+├── tests/             Test suite
+│   ├── unit/          Unit tests (vitest)
+│   ├── api/           API integration tests (vitest)
+│   └── e2e/           E2E tests (Playwright)
+├── admin/             Admin dashboard pages
+├── books/             Digital books pages
+├── school/            School/courses pages
+├── support/           Donation/support pages
+├── .github/           CI/CD workflows
+└── scripts/           Build/utility scripts
+```
+
+Built for Gideon Abochie.

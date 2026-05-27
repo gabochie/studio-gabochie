@@ -69,9 +69,9 @@ export default [
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
-  // Config files (node)
+  // Config + script files (node)
   {
-    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js'],
+    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
