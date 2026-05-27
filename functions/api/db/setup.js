@@ -352,6 +352,19 @@ export async function onRequest(context) {
         FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
         UNIQUE(student_email, enrollment_id, achievement_key)
       )`,
+      // CI/CD pipeline reports
+      `CREATE TABLE IF NOT EXISTS ci_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'unknown',
+        test_count INTEGER NOT NULL DEFAULT 0,
+        test_passed INTEGER NOT NULL DEFAULT 0,
+        test_failed INTEGER NOT NULL DEFAULT 0,
+        coverage_pct REAL NOT NULL DEFAULT 0,
+        branch TEXT NOT NULL DEFAULT 'main',
+        triggered_by TEXT NOT NULL DEFAULT 'push',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
       `CREATE INDEX IF NOT EXISTS idx_sa_enrollment ON student_achievements(enrollment_id)`,
       // Seed module definitions for Systems Thinking and Architectural Thinking
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) VALUES

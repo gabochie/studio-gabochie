@@ -7,17 +7,29 @@
     "test:watch": "vitest",
     "test:api": "vitest run tests/api",
     "test:unit": "vitest run tests/unit",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "lint:html": "htmlhint \"**/*.html\" --ignore \"node_modules/**,books/**\"",
-    "check": "npm run lint && npm run lint:html && npm run test"
+    "audit": "npm audit --audit-level=high",
+    "check": "npm run lint && npm run lint:html && npm run test",
+    "prepare": "node scripts/install-hooks.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@playwright/test": "^1.52.0",
+    "@vitest/coverage-v8": "^3.1.1",
     "eslint": "^9.25.0",
     "globals": "^16.0.0",
     "htmlhint": "^1.1.0",
+    "lint-staged": "^15.5.0",
+    "serve": "^14.2.0",
     "vitest": "^3.1.1"
+  },
+  "lint-staged": {
+    "*.js": "eslint",
+    "*.html": [
+      "htmlhint"
+    ]
   }
 }

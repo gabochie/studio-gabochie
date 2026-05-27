@@ -262,6 +262,20 @@
     </div>
   </div>
 
+  <!-- CI/CD Pipeline -->
+  <div class="section-title">&#9889; CI/CD Pipeline</div>
+  <div class="chart-grid">
+    <div class="chart-card" id="ciCard">
+      <div class="card-header">
+        <span class="card-title">Latest Run</span>
+        <span class="card-sub" id="ciTimestamp">Loading...</span>
+      </div>
+      <div id="ciContent" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;min-height:60px">
+        <div class="loading-pulse"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Admin Tools -->
   <div class="section-title">&#9874; Admin Tools</div>
   <div class="tools">
@@ -624,10 +638,53 @@ function toggleComingSoon(){
   });
 }
 
+// ── CI/CD Status ──
+function loadCI() {
+  fetch('/api/admin/ci/status', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(d){
+    if (d.status !== 'ok' || !d.report) {
+      $('ciTimestamp').textContent = 'No reports yet';
+      $('ciContent').innerHTML = '<span style="color:#5A7F9A;font-size:13px">No CI reports received. Reports appear after the first GitHub Actions run.</span>';
+      return;
+    }
+    var r = d.report;
+    var passed = Number(r.test_passed) || 0;
+    var failed = Number(r.test_failed) || 0;
+    var total = Number(r.test_count) || 0;
+    var coverage = Number(r.coverage_pct) || 0;
+    var ok = r.status === 'success' || r.status === 'ok';
+    var statusColor = ok ? '#22C55E' : '#EF4444';
+    var statusIcon = ok ? '&#10003;' : '&#10007;';
+    $('ciTimestamp').textContent = r.created_at ? fmtTime(r.created_at) : '';
+    $('ciContent').innerHTML =
+      '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
+        '<span style="font-size:28px;color:' + statusColor + '">' + statusIcon + '</span>' +
+        '<div><span style="font-size:20px;font-weight:700;color:#F1F5F9;display:block">' + r.status + '</span>' +
+        '<span style="font-size:11px;color:#5A7F9A">#' + r.run_id + ' &middot; ' + r.branch +
+        ' &middot; ' + r.triggered_by + '</span></div>' +
+        '<div style="border-left:1px solid #1E3250;padding-left:16px">' +
+          '<span style="font-size:11px;color:#5A7F9A;display:block">Tests</span>' +
+          '<span style="font-size:18px;font-weight:700;color:' + (failed > 0 ? '#EF4444' : '#22C55E') + '">' +
+          passed + '/' + total + '</span>' +
+          (failed > 0 ? '<span style="color:#EF4444;font-size:12px;margin-left:4px">' + failed + ' failed</span>' : '') +
+        '</div>' +
+        (coverage > 0 ? '<div style="border-left:1px solid #1E3250;padding-left:16px">' +
+          '<span style="font-size:11px;color:#5A7F9A;display:block">Coverage</span>' +
+          '<span style="font-size:18px;font-weight:700;color:#3B82F6">' + coverage + '%</span>' +
+        '</div>' : '') +
+        '<a href="https://github.com/gabochie/gideonabochie-org/actions" target="_blank" style="margin-left:auto;font-size:11px;color:#3B82F6;text-decoration:none">View on GitHub &#8599;</a>' +
+      '</div>';
+  }).catch(function(){
+    $('ciTimestamp').textContent = 'Unavailable';
+    $('ciContent').innerHTML = '<span style="color:#5A7F9A;font-size:13px">Could not load CI status.</span>';
+  });
+}
+
 // ── Init ──
 loadSummary();
 loadComingSoonStatus();
+loadCI();
 setInterval(loadSummary, 30000);
+setInterval(loadCI, 60000);
 </script>
 </body>
 </html>
