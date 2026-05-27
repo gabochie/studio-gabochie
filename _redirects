@@ -24,6 +24,11 @@
 # Certificate
 /certificate /certificate/ 200
 
+# Partners
+/partners /partners/ 200
+/press /press/ 200
+/content /content/ 200
+
 # Support / Subscriptions
 /support /support/ 200
 
@@ -44,3 +49,6 @@
 
 # Block direct access to premium bundle page
 /books/premium-bundle.html /api/books/serve?slug=premium-bundle 200
+
+# Referral tracking
+/ref /content/ 200
