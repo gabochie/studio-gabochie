@@ -64,6 +64,8 @@ h1 span{color:#C9A84C}
 .login-form .login-msg.success{display:block;background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
 .login-form .login-msg.error{display:block;background:rgba(232,99,122,.1);color:#E8637A;border:1px solid rgba(232,99,122,.2)}
 @media print{body{background:#fff;color:#000}.card,.content-area{background:#F8FAFC;border-color:#E2E8F0;color:#1E293B}.card h2,.program-header h3,.content-area h2{color:#000}.no-print{display:none!important}}
+@keyframes popIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
 </style>
 </head>
 <body>
@@ -136,7 +138,26 @@ h1 span{color:#C9A84C}
     <div style="background:rgba(0,0,0,.3);border-radius:8px;height:8px;overflow:hidden;margin-bottom:20px">
       <div id="progressBar" style="background:#C9A84C;height:100%;width:0%;border-radius:8px;transition:width .5s ease"></div>
     </div>
+    <div class="gami-row" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+      <div class="gami-chip" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:6px;font-size:12px">
+        <span style="color:#5A7A9F">XP</span>
+        <span id="xpDisplay" style="color:#C9A84C;font-weight:700;font-size:14px">0</span>
+      </div>
+      <div class="gami-chip" style="background:rgba(52,199,123,.08);border:1px solid rgba(52,199,123,.15);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:6px;font-size:12px">
+        <span style="color:#5A7A9F">Level</span>
+        <span id="levelDisplay" style="color:#34C77B;font-weight:700;font-size:14px">1</span>
+      </div>
+      <div class="gami-chip" style="background:rgba(90,122,159,.1);border:1px solid rgba(90,122,159,.2);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:6px;font-size:12px">
+        <span style="color:#5A7A9F">Streak</span>
+        <span id="streakDisplay" style="color:#8A9BB5;font-weight:700;font-size:14px">0</span>
+        <span style="color:#5A7A9F;font-size:11px">days</span>
+      </div>
+    </div>
     <div id="moduleList"></div>
+    <div id="achievementsSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)">
+      <h2 style="margin-bottom:12px">Achievements</h2>
+      <div id="achievementsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:8px"></div>
+    </div>
     <div id="certSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center">
       <div style="font-size:32px;margin-bottom:8px">&#9733;</div>
       <p style="color:#22C55E;font-size:14px;font-weight:600;margin-bottom:12px">All modules completed!</p>
@@ -231,6 +252,9 @@ function loadProgress() {
       progressCard.style.display = 'block';
       document.getElementById('progressStats').textContent = d.completed_modules + ' of ' + d.total_modules + ' modules';
       document.getElementById('progressBar').style.width = d.progress_pct + '%';
+      document.getElementById('xpDisplay').textContent = d.xp || 0;
+      document.getElementById('levelDisplay').textContent = d.level || 1;
+      document.getElementById('streakDisplay').textContent = d.streak || 0;
       var list = document.getElementById('moduleList');
       list.innerHTML = '';
       d.modules.forEach(function(m) {
@@ -243,13 +267,14 @@ function loadProgress() {
           '<div class="module-date">' + dateStr + '</div>' +
           '</div>';
       });
+      // Load achievements
+      fetchAchievements();
       // Show certificate section when all modules complete
       var certSection = document.getElementById('certSection');
       var certBtn = document.getElementById('certBtn');
       var certLink = document.getElementById('certLink');
       if (d.total_modules > 0 && d.completed_modules >= d.total_modules) {
         certSection.style.display = 'block';
-        // Check if certificate already exists
         fetch('/api/certificates/generate', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
@@ -267,6 +292,25 @@ function loadProgress() {
       } else {
         certSection.style.display = 'none';
       }
+    })
+    .catch(function() {});
+}
+
+function fetchAchievements() {
+  fetch('/api/enroll/achievements?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok' || !d.achievements || !d.achievements.length) return;
+      document.getElementById('achievementsSection').style.display = 'block';
+      var grid = document.getElementById('achievementsGrid');
+      grid.innerHTML = '';
+      d.achievements.forEach(function(a) {
+        grid.innerHTML +=
+          '<div style="text-align:center;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:10px;padding:12px 6px;transition:transform .2s" title="' + (a.description || a.name) + '">' +
+          '<div style="font-size:24px;margin-bottom:4px">' + (a.icon || '&#127942;') + '</div>' +
+          '<div style="font-size:10px;color:#C9A84C;font-weight:600;line-height:1.2">' + a.name + '</div>' +
+          '</div>';
+      });
     })
     .catch(function() {});
 }
@@ -302,9 +346,44 @@ function toggleModule(slug) {
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
-    if (d.status === 'ok') loadProgress();
+    if (d.status === 'ok') {
+      loadProgress();
+      if (d.xp !== undefined) {
+        document.getElementById('xpDisplay').textContent = d.xp;
+        document.getElementById('levelDisplay').textContent = d.level || 1;
+        document.getElementById('streakDisplay').textContent = d.streak || 0;
+      }
+      if (d.new_achievements && d.new_achievements.length > 0) {
+        d.new_achievements.forEach(function(a) {
+          showAchievementPopup(a);
+        });
+        confettiBurst();
+      }
+    }
   })
   .catch(function() {});
+}
+
+function showAchievementPopup(a) {
+  var popup = document.createElement('div');
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A1628;border:2px solid #C9A84C;border-radius:16px;padding:32px 40px;text-align:center;z-index:9999;box-shadow:0 8px 40px rgba(0,0,0,.5);animation:popIn .4s ease';
+  popup.innerHTML =
+    '<div style="font-size:48px;margin-bottom:8px">' + (a.icon || '&#127942;') + '</div>' +
+    '<div style="font-size:11px;color:#C9A84C;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px">Achievement Unlocked</div>' +
+    '<div style="font-size:18px;color:#fff;font-weight:700;font-family:\'Barlow Condensed\',sans-serif;margin-bottom:4px">' + a.name + '</div>' +
+    '<button onclick="this.parentElement.remove()" style="margin-top:12px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:#C9A84C;padding:6px 20px;border-radius:6px;cursor:pointer;font-size:12px">Awesome!</button>';
+  document.body.appendChild(popup);
+  setTimeout(function() { if (popup.parentElement) popup.remove(); }, 5000);
+}
+
+function confettiBurst() {
+  var colors = ['#C9A84C','#34C77B','#E8637A','#5A7A9F','#fff'];
+  for (var i = 0; i < 60; i++) {
+    var c = document.createElement('div');
+    c.style.cssText = 'position:fixed;width:8px;height:8px;background:' + colors[Math.floor(Math.random()*colors.length)] + ';border-radius:2px;z-index:10000;pointer-events:none;top:-8px;left:' + (Math.random()*100) + 'vw;animation:confettiFall ' + (1 + Math.random()*2) + 's ease-out forwards;animation-delay:' + (Math.random()*0.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(function() { if (c.parentElement) c.remove(); }, 4000);
+  }
 }
 
 function handleUpgrade() {

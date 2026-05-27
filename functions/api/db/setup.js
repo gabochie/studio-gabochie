@@ -322,6 +322,36 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_certificates_code ON certificates(certificate_code)`,
       `CREATE INDEX IF NOT EXISTS idx_certificates_email ON certificates(student_email)`,
+      // Gamification: XP columns on enrollments
+      `ALTER TABLE enrollments ADD COLUMN xp INTEGER DEFAULT 0`,
+      `ALTER TABLE enrollments ADD COLUMN xp_level INTEGER DEFAULT 1`,
+      `ALTER TABLE enrollments ADD COLUMN streak INTEGER DEFAULT 0`,
+      `ALTER TABLE enrollments ADD COLUMN last_module_at TEXT DEFAULT ''`,
+      // Achievements table (definitions)
+      `CREATE TABLE IF NOT EXISTS achievements (
+        key TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        icon TEXT DEFAULT ''
+      )`,
+      `INSERT OR IGNORE INTO achievements (key, name, description, icon) VALUES
+        ('first_step', 'First Step', 'Complete your first module', '🚀'),
+        ('halfway', 'Halfway There', 'Complete 50% of a program', '⭐'),
+        ('scholar', 'Genesis Scholar', 'Complete all modules in a program', '🏆'),
+        ('on_fire', 'On Fire', 'Complete 2 modules in 24 hours', '🔥'),
+        ('perfect_week', 'Perfect Week', 'Complete modules on 5 different days in one week', '📅')
+      `,
+      // Student earned achievements
+      `CREATE TABLE IF NOT EXISTS student_achievements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_email TEXT NOT NULL,
+        enrollment_id INTEGER NOT NULL,
+        achievement_key TEXT NOT NULL,
+        earned_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
+        UNIQUE(student_email, enrollment_id, achievement_key)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_sa_enrollment ON student_achievements(enrollment_id)`,
       // Seed module definitions for Systems Thinking and Architectural Thinking
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) VALUES
         ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 1: The Iceberg Model', 'iceberg-model', 'See below the surface — events, patterns, structure, and mental models.', 1),
