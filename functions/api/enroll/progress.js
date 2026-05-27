@@ -73,7 +73,7 @@ export async function onRequest(context) {
         status: 400, headers: { 'Content-Type': 'application/json' }
       });
     }
-    var enrollment = await db.prepare(
+    enrollment = await db.prepare(
       'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE access_token = ?'
     ).bind(postToken).first();
     if (!enrollment) {
@@ -132,8 +132,8 @@ export async function onRequest(context) {
       var doneMods = await db.prepare(
         'SELECT COUNT(*) AS c FROM module_completions WHERE enrollment_id = ?'
       ).bind(enrollment.id).first();
-      var total = totalMods.c;
-      var done = doneMods.c;
+      total = totalMods.c;
+      done = doneMods.c;
 
       var newAchievements = [];
 

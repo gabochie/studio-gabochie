@@ -111,7 +111,7 @@ export async function onRequest(context) {
       });
     }
 
-    var token = genToken();
+    token = genToken();
 
     await db.prepare(
       'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status) VALUES (?, ?, ?, ?, ?, ?)'
@@ -137,7 +137,7 @@ export async function onRequest(context) {
 
       // Queue day-3 enrollment follow-up
       try {
-        var dashUrl = 'https://gideonabochie.org/dashboard/?token=' + token;
+        dashUrl = 'https://gideonabochie.org/dashboard/?token=' + token;
         var followupHtml = enrollmentFollowup(studentName, program.title, dashUrl);
         await queueEmail(env, studentEmail, studentName, 'Getting Started with ' + program.title + ' — GideonAbochie Studio', followupHtml, 'enrollment_followup', daysFromNow(3));
       } catch (_e) {}

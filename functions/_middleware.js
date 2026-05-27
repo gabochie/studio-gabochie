@@ -65,7 +65,7 @@ function notifyMe(){
     alert('Something went wrong. Please try again or follow us on social media.');
   });
 }
-<\/script>
+</script>
 </body>
 </html>`;
 

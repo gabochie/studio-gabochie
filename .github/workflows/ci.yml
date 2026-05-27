@@ -10,22 +10,44 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  lint-js:
+    name: Lint JavaScript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
 
+  lint-html:
+    name: Lint HTML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Install HTMLHint
         run: npm install -g htmlhint
+      - run: htmlhint "**/*.html" --ignore "node_modules/**,books/**"
 
-      - name: HTML lint
-        run: htmlhint "**/*.html" --ignore "node_modules/**,books/**"
+  test-unit:
+    name: Unit & API tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test
 
+  assets:
+    name: Asset checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Check image sizes
         run: |
           fail=0
@@ -38,7 +60,6 @@ jobs:
           done
           if [ "$fail" -eq 1 ]; then exit 1; fi
           echo "All images under 500KB"
-
       - name: Check for broken internal links
         run: |
           fail=0

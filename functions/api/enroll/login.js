@@ -38,7 +38,7 @@ export async function onRequest(context) {
         token: enrollments.results[0].access_token,
         program_title: enrollments.results[0].program_title,
         program_slug: enrollments.results[0].program_slug,
-        status: enrollments.results[0].status
+        enrollment_status: enrollments.results[0].status
       }), { headers: { 'Content-Type': 'application/json' } });
     }
     // Multiple enrollments — return list

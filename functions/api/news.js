@@ -63,6 +63,6 @@ function extractImage(xml) {
 }
 
 function extractDomain(url) {
-  const m = url.match(/https?:\/\/([^\/]+)/);
+  const m = url.match(/https?:\/\/([^/]+)/);
   return m ? m[1].replace('www.', '') : '';
 }

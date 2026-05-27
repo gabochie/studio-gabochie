@@ -1,1 +1,6 @@
-# Nothing to ignore — static site, all files tracked
+node_modules/
+.wrangler/
+coverage/
+test-results/
+playwright-report/
+*.log
