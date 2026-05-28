@@ -756,49 +756,64 @@ var DATA = {
     {
       "phase": 7,
       "name": "Strategic Offensive",
-      "status": "planned",
+      "status": "in_progress",
       "description": "Go from invisible to unavoidable. Partnerships, media presence, search authority, and referral mechanics that make the mission viral.",
       "platform": "Cloudflare Pages + CRMs + Social APIs",
       "steps": [
         {
           "id": "7.1",
           "task": "Strategic partnerships",
+          "status": "partial",
           "launch": [{"label":"Partner page","url":"../partners/index.html","local":true}],
           "items": [
-            "Identify and outreach to aligned orgs (churches, schools, NGOs)",
-            "Create co-branded landing pages for partners",
-            "Partner referral tracking with rewards"
+            "&#10003; Partners page with inquiry form (partners/index.html)",
+            "&#10003; Referral tracking API (/api/referral/claim, /api/referral/stats)",
+            "Outreach to churches, schools, and NGOs in Ghana/Africa",
+            "Create co-branded landing pages for active partnerships",
+            "Build backlinks from partner websites"
           ]
         },
         {
           "id": "7.2",
           "task": "Public relations & media",
+          "status": "partial",
           "launch": [{"label":"Press kit","url":"../press/index.html","local":true}],
           "items": [
-            "Create press kit page (bio, photos, book synopses)",
-            "Pitch to Ghanaian and African media outlets",
-            "Guest article / podcast appearance outreach"
+            "&#10003; Press kit page with bio, book synopses, topics, media form (press/index.html)",
+            "Pitch to Ghanaian and African media outlets (podcasts, TV, radio)",
+            "Guest article placement in Christian and leadership publications",
+            "Podcast appearance outreach (minimum 5 pitches)"
           ]
         },
         {
           "id": "7.3",
           "task": "SEO & content authority",
-          "launch": [{"label":"Blog/Content page","url":"../content/index.html","local":true},{"label":"Google Search Console","url":"https://search.google.com/search-console"}],
+          "status": "partial",
+          "launch": [{"label":"Content library","url":"../content/index.html","local":true},{"label":"Sitemap","url":"../sitemap.xml","local":true},{"label":"Google Search Console","url":"https://search.google.com/search-console"}],
           "items": [
-            "Add structured data (JSON-LD) to key pages",
-            "Create sitemap.xml and submit to Google",
-            "Publish regular long-form content targeting core topics",
-            "Build backlinks through guest posting"
+            "&#10003; JSON-LD structured data on homepage, school, support, books, donate, partners, press, content",
+            "&#10003; Sitemap.xml created with 14 URLs",
+            "Submit sitemap to Google Search Console",
+            "Install Google Search Console and verify domain",
+            "Publish 6 long-form articles (content library placeholders ready)",
+            "Build backlinks through guest posting on 3+ external sites",
+            "Monitor organic traffic growth monthly"
           ]
         },
         {
           "id": "7.4",
           "task": "Referral & viral mechanics",
-          "launch": [{"label":"Referral system","url":"../functions/api/db/schema.sql","local":true}],
+          "status": "partial",
+          "launch": [{"label":"Referral API","url":"../functions/api/referral/code.js","local":true}],
           "items": [
-            "Referral code generation for subscribers",
-            "Share-to-unlock premium content",
-            "Social sharing buttons with tracking"
+            "&#10003; Referral code generation (/api/referral/code)",
+            "&#10003; Referral claim tracking (/api/referral/claim)",
+            "&#10003; Referral stats endpoint (/api/referral/stats)",
+            "&#10003; Share-to-unlock premium content widget (/api/share/unlock + frontend)",
+            "&#10003; ?ref=CODE param capture on homepage + lead forms",
+            "Promote referral program in newsletter and social media",
+            "Add referral banner to key pages (school, books, content)",
+            "Track and optimize conversion rates"
           ]
         }
       ],
@@ -878,7 +893,7 @@ var DATA = {
     "Phase 6.1 — School programs paywall: Flutterwave checkout, full-access tokens, sample vs paid, admin page, progress tracking.",
     "Phase 6.2 — Systems Thinking curriculum: 4 modules (Iceberg, Feedback Loops, Leverage Points, Mental Models) plus videos and worksheets.",
     "Phase 6.3 — Architectural Thinking curriculum: 4 modules (Blueprint Thinking, Design Principles, Strategic Frameworks, Execution) plus videos and worksheets.",
-    "Phase 7 — Strategic Offensive: Partnerships, media, SEO, and referrals grow the mission beyond organic.",
+    "Phase 7 — Strategic Offensive: Infrastructure complete (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock, ref param capture). Remaining manual work: partner outreach, media pitching, guest articles, backlinks, Google Search Console setup, referral promotion.",
     "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
     "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
     "Site-wide 1440px max-width applied via --content-max token.",
@@ -1366,7 +1381,28 @@ var CHECKS = {
     {i:0, label:"All Phase 6 tasks done in D1", check:function(){return checkD1TasksPhaseDone(6)}}
   ],
   "7.1": [
-    {i:0, label:"All Phase 7 tasks done in D1", check:function(){return checkD1TasksPhaseDone(7)}}
+    {i:0, label:"Partners page exists", check:function(){return checkPageExists("../partners/index.html")}},
+    {i:1, label:"Referral API exists", check:function(){return checkPageExists("../api/referral/code.js")}},
+    {i:2, label:"Referral claim endpoint", check:function(){return checkPageExists("../api/referral/claim.js")}},
+    {i:3, label:"Referral stats endpoint", check:function(){return checkPageExists("../api/referral/stats.js")}}
+  ],
+  "7.2": [
+    {i:0, label:"Press kit page exists", check:function(){return checkPageExists("../press/index.html")}},
+    {i:1, label:"Media inquiry form on press page", check:function(){return checkPageContains("../press/index.html","mediaForm")}}
+  ],
+  "7.3": [
+    {i:0, label:"Content library page exists", check:function(){return checkPageExists("../content/index.html")}},
+    {i:1, label:"Sitemap.xml exists", check:function(){return checkPageExists("../sitemap.xml")}},
+    {i:2, label:"JSON-LD on homepage", check:function(){return checkPageContains("../index.html","application/ld+json")}},
+    {i:3, label:"JSON-LD on school page", check:function(){return checkPageContains("../school/index.html","application/ld+json")}},
+    {i:4, label:"JSON-LD on support page", check:function(){return checkPageContains("../support/index.html","application/ld+json")}},
+    {i:5, label:"JSON-LD on books page", check:function(){return checkPageContains("../books/index.html","application/ld+json")}}
+  ],
+  "7.4": [
+    {i:0, label:"Referral code generation API", check:function(){return checkPageContains("../functions/api/referral/code.js","generateCode")}},
+    {i:1, label:"Share-to-unlock API", check:function(){return checkPageExists("../api/share/unlock.js")}},
+    {i:2, label:"Share-to-unlock on content page", check:function(){return checkPageContains("../content/index.html","shareToUnlock")}},
+    {i:3, label:"Ref param capture on homepage", check:function(){return checkPageContains("../index.html","ref_code")}}
   ],
   "8.1": [
     {i:0, label:"All Phase 8 tasks done in D1", check:function(){return checkD1TasksPhaseDone(8)}}
