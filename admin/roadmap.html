@@ -787,21 +787,44 @@ var DATA = {
         },
         {
           "id": "7.3",
-          "task": "SEO & content authority",
-          "status": "partial",
+          "task": "Pre-launch SEO — search engine submission",
+          "status": "pending",
           "launch": [{"label":"Content library","url":"../content/index.html","local":true},{"label":"Sitemap","url":"../sitemap.xml","local":true},{"label":"Google Search Console","url":"https://search.google.com/search-console"}],
           "items": [
             "&#10003; JSON-LD structured data on homepage, school, support, books, donate, partners, press, content",
             "&#10003; Sitemap.xml created with 14 URLs",
-            "Submit sitemap to Google Search Console",
-            "Install Google Search Console and verify domain",
-            "Publish 6 long-form articles (content library placeholders ready)",
-            "Build backlinks through guest posting on 3+ external sites",
-            "Monitor organic traffic growth monthly"
+            "&#10003; _headers and _redirects configured for SEO",
+            "Submit sitemap to Google Search Console and verify domain ownership",
+            "Submit sitemap to Bing Webmaster Tools",
+            "Register gideonabochie.org in Yandex Webmaster",
+            "Validate all JSON-LD with Google Rich Results Test (no errors)",
+            "Run technical SEO crawl and fix broken links, redirects, duplicate content",
+            "Check page speed / Core Web Vitals on every page template (Lighthouse)",
+            "Verify canonical URLs on every public page",
+            "Verify HTTPS forced everywhere, no mixed content warnings",
+            "Ensure noindex directives are correct on admin vs public pages",
+            "Verify 404 page returns helpful navigation, not a bare error",
+            "Audit heading hierarchy (one H1 per page, logical H2/H3)")
           ]
         },
         {
           "id": "7.4",
+          "task": "Pre-launch SEO — on-page & meta optimization",
+          "status": "pending",
+          "launch": [],
+          "items": [
+            "Verify every page has a unique, keyword-optimized title tag",
+            "Verify every page has a unique meta description",
+            "Audit Open Graph tags (og:title, og:description, og:image, og:url) on all pages",
+            "Add Twitter Card tags to all public pages",
+            "Set social share images on every page",
+            "Audit all images for descriptive alt text",
+            "Check all forms and CTAs work end-to-end on desktop and mobile",
+            "Run mobile responsiveness check on every page template"
+          ]
+        },
+        {
+          "id": "7.5",
           "task": "Referral & viral mechanics",
           "status": "partial",
           "launch": [{"label":"Referral API","url":"../functions/api/referral/code.js","local":true}],
@@ -815,12 +838,45 @@ var DATA = {
             "Add referral banner to key pages (school, books, content)",
             "Track and optimize conversion rates"
           ]
+        },
+        {
+          "id": "7.6",
+          "task": "Content marketing & link building",
+          "status": "pending",
+          "launch": [],
+          "items": [
+            "Publish 6 long-form articles on content library",
+            "Publish new content at least monthly going forward",
+            "Build backlinks through guest posting on 3+ external sites",
+            "Partner mentions and directory listings for backlinks"
+          ]
+        },
+        {
+          "id": "7.7",
+          "task": "Post-launch SEO monitoring (ongoing)",
+          "status": "pending",
+          "launch": [],
+          "items": [
+            "Monitor Google Search Console weekly: crawl errors, indexing status, manual actions",
+            "Request re-indexing via URL Inspection tool after each content update",
+            "Set up Google Alerts for brand mentions (gideonabochie, Gideon Abochie)",
+            "Track backlink profile monthly — new links, lost links, disavow spam",
+            "Review search performance quarterly: impressions, clicks, CTR, avg position",
+            "Bi-annual content audit: refresh outdated content, update stats, improve internal links"
+          ]
         }
       ],
       "acceptance_criteria": [
         "At least 3 active partnerships with measurable traffic or conversions",
         "Media coverage in at least 2 outlets",
+        "Sitemap submitted to Google Search Console, Bing Webmaster Tools, Yandex Webmaster",
+        "Structured data valid (0 errors in Rich Results Test) on all pages with JSON-LD",
+        "Page speed score >= 80 on all page templates (Lighthouse)",
+        "No critical SEO issues: 0 broken links, 0 mixed content, valid canonicals, correct noindex",
+        "OG + Twitter Card tags present on all 8 public pages with share images",
         "Organic traffic grows 50% month over month from SEO",
+        "At least 6 articles published on content library",
+        "At least 3 external backlinks acquired",
         "Referral program generates measurable new subscribers"
       ]
     },
@@ -893,7 +949,7 @@ var DATA = {
     "Phase 6.1 — School programs paywall: Flutterwave checkout, full-access tokens, sample vs paid, admin page, progress tracking.",
     "Phase 6.2 — Systems Thinking curriculum: 4 modules (Iceberg, Feedback Loops, Leverage Points, Mental Models) plus videos and worksheets.",
     "Phase 6.3 — Architectural Thinking curriculum: 4 modules (Blueprint Thinking, Design Principles, Strategic Frameworks, Execution) plus videos and worksheets.",
-    "Phase 7 — Strategic Offensive: Infrastructure complete (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock, ref param capture). Remaining manual work: partner outreach, media pitching, guest articles, backlinks, Google Search Console setup, referral promotion.",
+    "Phase 7 — Strategic Offensive: Infrastructure built (partners, press, content, sitemap.xml, JSON-LD, referral API, share-to-unlock). Pre-launch SEO checklist expanded: submit to Google/Bing/Yandex, validate structured data, fix technical SEO, audit meta/OG/Twitter tags, page speed, heading hierarchy, alt text, 404 page, forms. Post-launch monitoring: weekly GSC, monthly content, monthly backlinks, quarterly review, bi-annual refresh. Manual work: partner outreach, media pitching, guest articles, backlinks.",
     "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
     "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
     "Site-wide 1440px max-width applied via --content-max token.",

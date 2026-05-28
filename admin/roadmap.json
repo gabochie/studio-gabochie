@@ -118,8 +118,29 @@
       "steps": [
         {"id": 7.1, "task": "Strategic partnerships", "items": ["Outreach to aligned orgs", "Co-branded landing pages", "Referral tracking with rewards"]},
         {"id": 7.2, "task": "Public relations & media", "items": ["Press kit page", "Media outreach", "Guest content"]},
-        {"id": 7.3, "task": "SEO & content authority", "items": ["JSON-LD structured data", "Sitemap.xml", "Regular long-form content", "Backlinks"]},
-        {"id": 7.4, "task": "Referral & viral mechanics", "items": ["Referral codes", "Share-to-unlock premium content", "Social sharing tracking"]}
+        {"id": 7.3, "task": "Pre-launch SEO & search engine submission", "items": [
+          "Submit sitemap to Google Search Console",
+          "Submit sitemap to Bing Webmaster Tools",
+          "Register on Yandex Webmaster",
+          "Verify canonical URLs on every page",
+          "Check page speed / Core Web Vitals",
+          "Validate JSON-LD with Rich Results Test",
+          "Fix broken internal links from crawl audit",
+          "Verify HTTPS forced, no mixed content",
+          "Audit OG + Twitter Card tags on all pages",
+          "Check heading hierarchy on every page",
+          "Verify all images have alt text",
+          "Check noindex directives and robots.txt"
+        ]},
+        {"id": 7.4, "task": "Post-launch SEO monitoring & content", "items": [
+          "Monitor GSC weekly for crawl errors + indexing",
+          "Request re-indexing after content changes",
+          "Track backlink profile monthly",
+          "Publish content monthly on content library",
+          "Quarterly search performance review",
+          "Bi-annual content audit and refresh"
+        ]},
+        {"id": 7.5, "task": "Referral & viral mechanics", "items": ["Referral codes", "Share-to-unlock premium content", "Social sharing tracking"]}
       ]
     },
     {
@@ -136,8 +157,8 @@
       ]
     }
   ],
-  "current_focus": "Phase 7 in progress — Strategic Offensive. Partners page, press kit, content library, sitemap.xml, JSON-LD structured data on key pages, referral system (API + frontend), share-to-unlock premium content, and referral tracking live. Next: outreach execution and media pitching.",
-  "last_updated": "2026-05-27",
+  "current_focus": "Phase 7 in progress — Strategic Offensive. Pre-launch SEO checklist: submit to Google/Bing/Yandex, validate structured data, fix technical SEO issues, audit meta tags. Parallel: outreach execution, media pitching, content publishing, and backlink building.",
+  "last_updated": "2026-05-28",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
@@ -149,7 +170,6 @@
     "Phase 8 started early (8.1 done) because the agent needs to track its own work.",
     "Phase 5 — Fix The Cash Register must be completed before Phase 6 (Profit Engine).",
     "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres.",
-    "Phase 7 — Strategic Offensive: Infrastructure built (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock). Manual execution (outreach, pitching, guest content) begins now.",
-    "Phase 7 tasks include: partner outreach to Ghanaian churches/schools/NGOs, podcast pitching to African media, guest article placement, backlink building, and setting up Google Search Console."
+    "Phase 7 — Strategic Offensive: Infrastructure built (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock). Pre-launch SEO checklist added: submit to Google/Bing/Yandex, structured data validation, technical audit, meta tag audit, page speed audit. Post-launch monitoring checklist: weekly GSC checks, monthly content publishing, monthly backlink tracking, quarterly performance reviews, bi-annual content refresh."
   ]
 }
