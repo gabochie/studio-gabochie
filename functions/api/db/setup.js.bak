@@ -1,0 +1,588 @@
+export async function onRequest(context) {
+  const db = context.env.DB;
+  if (!db) {
+    return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
+  }
+  try {
+    const statements = [
+      `CREATE TABLE IF NOT EXISTS subscribers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL UNIQUE,
+        source TEXT NOT NULL DEFAULT '',
+        book TEXT DEFAULT '',
+        subscribed_at TEXT NOT NULL DEFAULT (datetime('now')),
+        metadata TEXT DEFAULT '{}'
+      )`,
+      `CREATE TABLE IF NOT EXISTS donations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tx_ref TEXT NOT NULL UNIQUE,
+        amount REAL NOT NULL,
+        currency TEXT NOT NULL DEFAULT 'GHS',
+        donor_name TEXT DEFAULT '',
+        donor_email TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        flw_id TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        metadata TEXT DEFAULT '{}'
+      )`,
+      `CREATE TABLE IF NOT EXISTS bookings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        company TEXT DEFAULT '',
+        ad_type TEXT NOT NULL DEFAULT '',
+        message TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        payment_tx_ref TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS page_views (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        page TEXT NOT NULL DEFAULT '',
+        referrer TEXT DEFAULT '',
+        viewed_at TEXT NOT NULL DEFAULT (datetime('now')),
+        country TEXT DEFAULT '',
+        city TEXT DEFAULT '',
+        ip TEXT DEFAULT ''
+      )`,
+      `CREATE TABLE IF NOT EXISTS events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_type TEXT NOT NULL,
+        event_data TEXT DEFAULT '',
+        page TEXT DEFAULT '',
+        email TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_events_type ON events(event_type)`,
+      `CREATE INDEX IF NOT EXISTS idx_events_created ON events(created_at)`,
+      `CREATE TABLE IF NOT EXISTS testimonials (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        author TEXT NOT NULL,
+        role TEXT DEFAULT '',
+        content TEXT NOT NULL,
+        rating INTEGER DEFAULT 5,
+        active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS stats (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        label TEXT NOT NULL,
+        value TEXT NOT NULL,
+        icon TEXT DEFAULT '',
+        sort_order INTEGER DEFAULT 0,
+        active INTEGER DEFAULT 1,
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS gallery (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        image_url TEXT NOT NULL,
+        category TEXT DEFAULT '',
+        sort_order INTEGER DEFAULT 0,
+        active INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_donations_tx_ref ON donations(tx_ref)`,
+      `CREATE INDEX IF NOT EXISTS idx_donations_status ON donations(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_bookings_email ON bookings(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_testimonials_active ON testimonials(active)`,
+      `CREATE INDEX IF NOT EXISTS idx_stats_active ON stats(active)`,
+      `CREATE INDEX IF NOT EXISTS idx_gallery_active ON gallery(active)`,
+      `CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page)`,
+      `CREATE INDEX IF NOT EXISTS idx_page_views_viewed_at ON page_views(viewed_at)`,
+      `CREATE TABLE IF NOT EXISTS books (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        description TEXT NOT NULL DEFAULT '',
+        price REAL NOT NULL DEFAULT 0,
+        file_url TEXT NOT NULL DEFAULT '',
+        cover_url TEXT DEFAULT '',
+        is_premium INTEGER NOT NULL DEFAULT 0,
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS book_purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tx_ref TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL DEFAULT '',
+        name TEXT NOT NULL DEFAULT '',
+        amount REAL NOT NULL DEFAULT 0,
+        books_purchased TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        downloaded INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
+      // ── Cleanup duplicate rows from repeated seed runs ──
+      `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`,
+      `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`,
+      `DELETE FROM gallery WHERE id NOT IN (SELECT MIN(id) FROM gallery GROUP BY title, image_url)`,
+      `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`,
+      // ── Unique indexes so INSERT OR IGNORE prevents future duplicates ──
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_testimonials_unique ON testimonials(author, content)`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_stats_unique ON stats(label, value)`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_gallery_unique ON gallery(title, image_url)`,
+      `INSERT OR IGNORE INTO testimonials (author, role, content, rating) VALUES
+        ('Sarah', 'Creative Professional', 'Gideon''s teaching on creativity as worship completely shifted how I see my work. I finally understand that my art is not separate from my faith \u2014 it IS my faith expressed.', 5),
+        ('James', 'Bible Study Leader', 'The Bible as Kingdom OS opened my eyes to see Scripture in a whole new way. It''s not just stories \u2014 it''s a living system designed to transform every part of my life.', 5)`,
+      `INSERT OR IGNORE INTO stats (label, value, icon, sort_order, active) VALUES
+        ('TikTok Followers & Growing', '10000', '📱', 1, 1),
+        ('Books Published', '2', '📖', 2, 1),
+        ('Daily Video Views', '500', '🎬', 3, 1),
+        ('Mission Year', '1', '🌟', 4, 1)`,
+      `INSERT OR IGNORE INTO gallery (title, description, image_url, category, sort_order) VALUES
+        ('Teaching Session', 'Gideon teaching at a community event', 'assets/images/gallery/teaching-session.jpg', 'events', 1),
+        ('Creative Workshop', 'Interactive creative workshop session', 'assets/images/gallery/creative-workshop.jpg', 'events', 2),
+        ('Community Outreach', 'Engaging with the local community', 'assets/images/gallery/community-outreach.jpg', 'outreach', 3),
+        ('Book Launch', 'Launch event for new publication', 'assets/images/gallery/book-launch.jpg', 'events', 4),
+        ('Behind the Scenes', 'Behind the scenes content creation', 'assets/images/gallery/behind-scenes.jpg', 'content', 5),
+        ('Ministry Moment', 'A moment of ministry and connection', 'assets/images/gallery/ministry-moment.jpg', 'ministry', 6)`,
+      // Migrations
+      `ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN device_type TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN user_agent TEXT DEFAULT ''`,
+      `ALTER TABLE page_views ADD COLUMN source TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN ref_code TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
+      `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
+      `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
+      `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
+      `CREATE TABLE IF NOT EXISTS referrals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        referrer_code TEXT NOT NULL,
+        referred_name TEXT DEFAULT '',
+        referred_email TEXT NOT NULL,
+        referred_country TEXT DEFAULT '',
+        referred_at TEXT NOT NULL DEFAULT (datetime('now')),
+        reward_claimed INTEGER DEFAULT 0,
+        reward_tier TEXT DEFAULT '',
+        UNIQUE(referrer_code, referred_email)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referrer_code)`,
+      `CREATE INDEX IF NOT EXISTS idx_referrals_reward ON referrals(reward_claimed)`,
+      // School programs
+      `CREATE TABLE IF NOT EXISTS programs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        tagline TEXT DEFAULT '',
+        description TEXT NOT NULL DEFAULT '',
+        duration TEXT NOT NULL DEFAULT 'Self-paced',
+        price REAL DEFAULT 0,
+        price_label TEXT DEFAULT 'Free',
+        status TEXT NOT NULL DEFAULT 'active',
+        sample_content TEXT DEFAULT '',
+        sort_order INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_id INTEGER NOT NULL,
+        student_name TEXT NOT NULL,
+        student_email TEXT NOT NULL,
+        student_phone TEXT DEFAULT '',
+        access_token TEXT NOT NULL UNIQUE,
+        status TEXT NOT NULL DEFAULT 'pending',
+        payment_ref TEXT DEFAULT '',
+        payment_amount REAL DEFAULT 0,
+        enrolled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (program_id) REFERENCES programs(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_enrollments_email ON enrollments(student_email)`,
+      `CREATE INDEX IF NOT EXISTS idx_enrollments_token ON enrollments(access_token)`,
+      `CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_programs_slug ON programs(slug)`,
+      // Migrations for programs
+      `ALTER TABLE programs ADD COLUMN full_content TEXT DEFAULT ''`,
+      `CREATE TABLE IF NOT EXISTS phase_verifications (
+        phase INTEGER PRIMARY KEY,
+        verified_at TEXT NOT NULL DEFAULT (datetime('now')),
+        verified_by TEXT NOT NULL DEFAULT 'admin'
+      )`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (1, 'admin')`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (2, 'admin')`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (3, 'admin')`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (5, 'admin')`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (6, 'admin')`,
+      `INSERT OR IGNORE INTO phase_verifications (phase, verified_by) VALUES (7, 'admin')`,
+      `CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        phase INTEGER DEFAULT 0,
+        status TEXT NOT NULL DEFAULT 'pending',
+        source TEXT NOT NULL DEFAULT 'manual',
+        priority TEXT NOT NULL DEFAULT 'medium',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source)`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_tasks_title ON tasks(title)`,
+      // Sponsor auth tables
+      `CREATE TABLE IF NOT EXISTS sponsors (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        company TEXT NOT NULL DEFAULT '',
+        access_code TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS sponsor_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        token TEXT NOT NULL UNIQUE,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        expires_at TEXT NOT NULL,
+        FOREIGN KEY (email) REFERENCES sponsors(email)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_sponsors_email ON sponsors(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_sponsor_sessions_token ON sponsor_sessions(token)`,
+      // Email automation queue
+      `CREATE TABLE IF NOT EXISTS email_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_email TEXT NOT NULL,
+        to_name TEXT DEFAULT '',
+        subject TEXT NOT NULL,
+        html_content TEXT NOT NULL,
+        email_type TEXT NOT NULL DEFAULT 'manual',
+        scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        sent_at TEXT DEFAULT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
+      // Seed test sponsor
+      `INSERT OR IGNORE INTO sponsors (email, company, access_code) VALUES ('sponsor@test.com', 'Test Corp', 'SPONSOR2026')`,
+      // Subscriptions table for recurring supporter tiers
+      `CREATE TABLE IF NOT EXISTS subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        name TEXT DEFAULT '',
+        tier TEXT NOT NULL DEFAULT 'monthly',
+        amount REAL NOT NULL DEFAULT 50,
+        currency TEXT NOT NULL DEFAULT 'GHS',
+        flw_subscription_id TEXT DEFAULT '',
+        flw_plan_id TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'active',
+        start_date TEXT NOT NULL DEFAULT (datetime('now')),
+        next_billing TEXT DEFAULT '',
+        cancelled_at TEXT DEFAULT '',
+        tx_ref TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_subscriptions_email ON subscriptions(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions(status)`,
+      // Student accounts table (registration before enrollment)
+      `CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT DEFAULT '',
+        access_code TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_students_email ON students(email)`,
+      // Module progress tracking tables
+      `CREATE TABLE IF NOT EXISTS modules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (program_id) REFERENCES programs(id),
+        UNIQUE(program_id, slug)
+      )`,
+      `CREATE TABLE IF NOT EXISTS module_completions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enrollment_id INTEGER NOT NULL,
+        module_id INTEGER NOT NULL,
+        completed_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
+        FOREIGN KEY (module_id) REFERENCES modules(id),
+        UNIQUE(enrollment_id, module_id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_modules_program ON modules(program_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_modules_slug ON modules(slug)`,
+      `CREATE INDEX IF NOT EXISTS idx_mc_enrollment ON module_completions(enrollment_id)`,
+      // Certificates table
+      `CREATE TABLE IF NOT EXISTS certificates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enrollment_id INTEGER NOT NULL,
+        student_name TEXT NOT NULL,
+        student_email TEXT NOT NULL,
+        program_title TEXT NOT NULL,
+        program_slug TEXT NOT NULL,
+        certificate_code TEXT NOT NULL UNIQUE,
+        issued_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_certificates_code ON certificates(certificate_code)`,
+      `CREATE INDEX IF NOT EXISTS idx_certificates_email ON certificates(student_email)`,
+      // Gamification: XP columns on enrollments
+      `ALTER TABLE enrollments ADD COLUMN xp INTEGER DEFAULT 0`,
+      `ALTER TABLE enrollments ADD COLUMN xp_level INTEGER DEFAULT 1`,
+      `ALTER TABLE enrollments ADD COLUMN streak INTEGER DEFAULT 0`,
+      `ALTER TABLE enrollments ADD COLUMN last_module_at TEXT DEFAULT ''`,
+      // Achievements table (definitions)
+      `CREATE TABLE IF NOT EXISTS achievements (
+        key TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        icon TEXT DEFAULT ''
+      )`,
+      `INSERT OR IGNORE INTO achievements (key, name, description, icon) VALUES
+        ('first_step', 'First Step', 'Complete your first module', '🚀'),
+        ('halfway', 'Halfway There', 'Complete 50% of a program', '⭐'),
+        ('scholar', 'Genesis Scholar', 'Complete all modules in a program', '🏆'),
+        ('on_fire', 'On Fire', 'Complete 2 modules in 24 hours', '🔥'),
+        ('perfect_week', 'Perfect Week', 'Complete modules on 5 different days in one week', '📅')
+      `,
+      // Student earned achievements
+      `CREATE TABLE IF NOT EXISTS student_achievements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_email TEXT NOT NULL,
+        enrollment_id INTEGER NOT NULL,
+        achievement_key TEXT NOT NULL,
+        earned_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
+        UNIQUE(student_email, enrollment_id, achievement_key)
+      )`,
+      // CI/CD pipeline reports
+      `CREATE TABLE IF NOT EXISTS ci_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'unknown',
+        test_count INTEGER NOT NULL DEFAULT 0,
+        test_passed INTEGER NOT NULL DEFAULT 0,
+        test_failed INTEGER NOT NULL DEFAULT 0,
+        coverage_pct REAL NOT NULL DEFAULT 0,
+        branch TEXT NOT NULL DEFAULT 'main',
+        triggered_by TEXT NOT NULL DEFAULT 'push',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS referral_codes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL UNIQUE,
+        owner_email TEXT NOT NULL,
+        owner_name TEXT DEFAULT '',
+        total_conversions INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_ref_codes_code ON referral_codes(code)`,
+      `CREATE TABLE IF NOT EXISTS share_unlocks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        content_slug TEXT NOT NULL,
+        share_platform TEXT DEFAULT '',
+        unlocked_at TEXT NOT NULL DEFAULT (datetime('now')),
+        UNIQUE(email, content_slug)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_sa_enrollment ON student_achievements(enrollment_id)`,
+      `INSERT OR IGNORE INTO tasks (title, description, phase, status, source, priority) VALUES
+        ('Create D1 database and define schema', 'Create D1 database gahq in Cloudflare dashboard with tables: subscribers, donations, bookings, page_views', 3, 'done', 'agent', 'high'),
+        ('Create admin CRUD Workers for each D1 table', 'Deploy /api/admin/* CRUD Workers for donations, bookings, testimonials, stats, gallery', 3, 'done', 'agent', 'high'),
+        ('Bind D1 database to Pages project', 'Configure D1 binding as DB variable in Cloudflare Pages dashboard', 3, 'done', 'agent', 'high'),
+        ('Migrate existing KV subscriber data to D1', 'Port all subscriber records from KV namespace to D1 subscribers table', 3, 'done', 'agent', 'high'),
+        ('Embed Flutterwave checkout on donation page', 'Replace external payment links with embedded Flutterwave checkout and webhook', 3, 'done', 'agent', 'high'),
+        ('Create Flutterwave payment webhook Worker', '/api/payments/flutterwave — handles 8 event types with D1 upsert', 3, 'done', 'agent', 'high'),
+        ('Add payment to ad booking flow', 'Booking modal captures payment via Flutterwave, stores to D1 with status tracking', 3, 'done', 'agent', 'high'),
+        ('Integrate premium content pay-per-download', 'Book bundle GH¢300 purchase flow via Flutterwave with download tracking', 3, 'done', 'agent', 'medium'),
+        ('Build admin donation/booking dashboard with charts', 'Admin dashboard with revenue charts, funnel, CSV export for donations and bookings', 3, 'done', 'agent', 'medium'),
+        ('D1-backed admin CRUD for testimonials, stats, gallery', 'Admin content page with full CRUD; data served to frontend via public API endpoints', 3, 'done', 'agent', 'high'),
+        ('Replace hardcoded page data with API-driven content', 'Homepage testimonials, stats, gallery load from D1 via /api/testimonials, /api/stats, /api/gallery', 3, 'done', 'agent', 'medium'),
+        ('Build newsletter editor in admin panel', 'Admin panel for composing and sending newsletters', 3, 'done', 'agent', 'low'),
+        ('Create PayPal Business account + donate button', 'Accept PayPal donations alongside Flutterwave for broader reach', 5, 'done', 'agent', 'high'),
+        ('Fix donation page redirect to generic PayPal.me', 'Current donation page redirects to PayPal.me which breaks the flow', 5, 'done', 'agent', 'high'),
+        ('Match payment logging to Flutterwave webhook events', 'Log all Flutterwave event types (successful, failed, refunded) to D1', 5, 'done', 'agent', 'high'),
+        ('Fix ad booking payment flow end-to-end', 'Booking modal must capture payment on submit, auto-update status', 5, 'done', 'agent', 'high'),
+        ('Build revenue dashboard with reconciliation', 'Admin view showing real donation/booking revenue with CSV export', 5, 'done', 'agent', 'medium'),
+        ('Restore missing donate page', 'Donate page at /donate/ is missing; donations route through homepage modal only', 5, 'done', 'agent', 'high'),
+        ('Gate school program courses behind payment', 'Auto-generate access tokens on purchase, student dashboard', 6, 'done', 'agent', 'medium'),
+        ('Set up digital book sales with pay-per-download', 'Purchase flow via Flutterwave, track downloads per customer', 6, 'done', 'agent', 'medium'),
+        ('Create sponsored slot pricing + newsletter tiers', 'Premium newsletter tiers with auto-billing for subscribers', 6, 'done', 'agent', 'low'),
+        ('Replace hardcoded homepage content with D1 API', 'Testimonials, stats, gallery should load from D1 not hardcoded HTML', 6, 'done', 'agent', 'medium'),
+        ('Build strategic partnership outreach system', 'Co-branded landing pages, referral tracking with rewards', 7, 'done', 'agent', 'low'),
+        ('Create press kit and pitch to Ghanaian media', 'Bio, photos, book synopses for media outreach and guest content', 7, 'done', 'agent', 'low'),
+        ('Add JSON-LD structured data + sitemap.xml', 'Submit to Google Search Console for organic SEO growth', 7, 'done', 'agent', 'medium'),
+        ('Build referral API endpoints', 'Generate, claim, and track referral codes via /api/referral/*', 7, 'done', 'agent', 'high'),
+        ('Share-to-unlock premium content widget', 'Users share to unlock premium articles and book chapters', 7, 'done', 'agent', 'medium'),
+        ('Partners page with inquiry form', 'partners/index.html with co-branded landing, referral tracking info', 7, 'done', 'agent', 'high'),
+        ('Press kit page', 'press/index.html with bio, book synopses, media inquiry form', 7, 'done', 'agent', 'high'),
+        ('Content library page', 'content/index.html with article feed, newsletter subscribe block', 7, 'done', 'agent', 'high'),
+        ('Outreach to churches, schools, and NGOs', 'Reach out to 10+ aligned organizations in Ghana/Africa for partnerships', 7, 'pending', 'manual', 'high'),
+        ('Set up Google Search Console and submit sitemap', 'Verify domain ownership, submit sitemap.xml, monitor indexing', 7, 'pending', 'manual', 'high'),
+        ('Pitch to Ghanaian/African media outlets', 'Send press kit and pitch to 5+ podcast/TV/radio outlets', 7, 'pending', 'manual', 'high'),
+        ('Publish 6 long-form articles on content library', 'Write and publish the 6 placeholder articles on content page', 7, 'pending', 'manual', 'medium'),
+        ('Build backlinks from 3+ external sites', 'Guest posts, partner mentions, and directory listings', 7, 'pending', 'manual', 'medium'),
+        ('Promote referral program in newsletter and social', 'Add referral CTA to newsletter, social posts, and key pages', 7, 'pending', 'manual', 'low'),
+
+        /* ── Pre-Launch Search Engine & SEO Checklist ── */
+        ('Submit sitemap to Bing Webmaster Tools', 'Verify domain ownership in Bing Webmaster Tools, submit sitemap.xml, monitor crawl status', 7, 'pending', 'manual', 'high'),
+        ('Submit website to Yandex Webmaster', 'Register gideonabochie.org in Yandex.Webmaster, add sitemap, verify domain via meta tag or DNS', 7, 'pending', 'manual', 'medium'),
+        ('Register on Google Business Profile', 'Create or claim Google Business Profile listing for offline presence and local SEO', 7, 'pending', 'manual', 'medium'),
+        ('Run technical SEO audit with Screaming Frog or Sitebulb', 'Crawl all pages, check for broken links, duplicate content, missing meta tags, redirect chains', 7, 'pending', 'manual', 'high'),
+        ('Fix all broken internal links from SEO audit', 'Review crawl report and fix 404s, redirect chains, and broken anchors found in technical audit', 7, 'pending', 'manual', 'high'),
+        ('Verify canonical URLs on every public page', 'Check each page has a self-referencing canonical tag to prevent duplicate content issues', 7, 'pending', 'manual', 'medium'),
+        ('Check page speed and Core Web Vitals on all page templates', 'Run Lighthouse on homepage, school, support, books, donate, content, partners, press; fix LCP/CLS/TBT issues', 7, 'pending', 'manual', 'high'),
+        ('Verify all images have descriptive alt text', 'Audit every img tag across all pages for meaningful alt attributes for accessibility and SEO', 7, 'pending', 'manual', 'medium'),
+        ('Audit heading hierarchy on every page', 'Ensure each page has one H1, logical H2/H3 structure, and no skipped heading levels', 7, 'pending', 'manual', 'medium'),
+        ('Validate structured data with Google Rich Results Test', 'Test all JSON-LD on every page via https://search.google.com/test/rich-results; fix errors', 7, 'pending', 'manual', 'high'),
+        ('Check noindex directives are correct across all pages', 'Verify public pages are indexable and admin/private pages have noindex where appropriate', 7, 'pending', 'manual', 'medium'),
+        ('Verify HTTPS forced and no mixed content warnings', 'Check all pages load over HTTPS with no passive mixed content (http images, fonts, scripts)', 7, 'pending', 'manual', 'high'),
+        ('Verify redirects from non-www to www (or vice versa)', 'Choose canonical domain and ensure consistent redirect; check _redirects file', 7, 'pending', 'manual', 'medium'),
+        ('Audit Open Graph and Twitter Card tags on every page', 'Check og:title, og:description, og:image, og:url, twitter:card on all public pages for share preview', 7, 'pending', 'manual', 'medium'),
+        ('Verify 404 page is helpful with navigation links', 'Test /404 returns the custom error page with search/sitemap links, not a bare server error', 7, 'pending', 'manual', 'low'),
+        ('Check all forms and CTAs work end-to-end', 'Test contact form, subscribe, donate, booking, enrollment on desktop and mobile', 7, 'pending', 'manual', 'high'),
+
+        /* ── Post-Launch Search Engine & SEO Monitoring ── */
+        ('Monitor Google Search Console weekly for crawl errors', 'Review index coverage, crawl errors, and manual actions in GSC every 7 days for first 2 months', 7, 'pending', 'manual', 'high'),
+        ('Request indexing for new and changed pages via GSC', 'After each content update, use URL Inspection tool in GSC to request re-indexing', 7, 'pending', 'manual', 'medium'),
+        ('Set up Google Alerts for brand mentions', 'Create alerts for gideonabochie, Gideon Abochie, and key brand terms to track mentions', 7, 'pending', 'manual', 'low'),
+        ('Publish new content on content library monthly', 'Write and publish at least 1 article per month on content page to maintain crawl activity', 7, 'pending', 'manual', 'medium'),
+        ('Monitor backlink profile monthly', 'Use Ahrefs, Moz, or free tools to track new backlinks, lost links, and disavow spam', 7, 'pending', 'manual', 'medium'),
+        ('Review search performance quarterly', 'Analyze impressions, clicks, CTR, average position by page and query in GSC; identify opportunities', 7, 'pending', 'manual', 'medium'),
+        ('Content audit and refresh every 6 months', 'Review all public pages for outdated content, update stats, refresh meta descriptions, add internal links', 7, 'pending', 'manual', 'low'),
+
+        ('Build AI content assistant for newsletter', 'Draft newsletters via API, auto-generate SEO meta descriptions', 8, 'pending', 'agent', 'low'),
+        ('Create predictive analytics dashboard', 'Revenue forecasting, subscriber growth predictions, anomaly detection', 8, 'pending', 'agent', 'low'),
+('Wire Flutterwave checkout for program purchase', 'Add payment processing so users can pay GH¢250 and get full access to Systems Thinking', 6, 'done', 'agent', 'high'),
+        ('Auto-generate full-access token on successful payment', 'After Flutterwave webhook confirms payment, upgrade enrollment status and return full content', 6, 'done', 'agent', 'high'),
+        ('Distinguish free sample vs paid full access in dashboard', 'Show sample content for free enrollments, full modules for paid enrollments', 6, 'done', 'agent', 'medium'),
+        ('Admin page to manage programs & content', 'CRUD page for programs table — edit modules, pricing, sample content', 6, 'done', 'agent', 'medium'),
+        ('Student progress tracking', 'Track which modules each student has completed', 6, 'done', 'agent', 'low'),
+('Write Systems Thinking module 1: Iceberg Model', 'Deep-dive content with examples, diagrams, and practical exercises', 6, 'done', 'agent', 'high'),
+        ('Write Systems Thinking module 2: Feedback Loops', 'Reinforcing and balancing loops with real-world case studies', 6, 'done', 'agent', 'high'),
+        ('Write Systems Thinking module 3: Leverage Points', 'Where to intervene in a system for maximum impact', 6, 'done', 'agent', 'high'),
+        ('Write Systems Thinking module 4: Mental Models', 'How beliefs and assumptions shape system behavior', 6, 'done', 'agent', 'high'),
+        ('Write Architectural Thinking module 1: Blueprint Thinking', 'Structuring ideas and projects with clarity and purpose', 6, 'pending', 'agent', 'medium'),
+        ('Write Architectural Thinking module 2: Design Principles', 'Core principles for building anything that matters', 6, 'pending', 'agent', 'medium'),
+        ('Write Architectural Thinking module 3: Strategic Frameworks', 'Mental models and frameworks for strategic planning', 6, 'pending', 'agent', 'medium'),
+        ('Write Architectural Thinking module 4: Execution & Systems', 'From blueprint to execution — making it real', 6, 'pending', 'agent', 'medium'),
+        ('Welcome sequence for newsletter subscribers', 'Build welcome email + day 3 follow-up with school invite', 4, 'done', 'agent', 'high'),
+        ('Auto follow-up for manifesto downloaders', 'Day 3 follow-up email with download link and share request', 4, 'done', 'agent', 'high'),
+        ('Donation thank-you sequences', 'Receipt email + day 3 impact update follow-up', 4, 'done', 'agent', 'high'),
+        ('Create email_queue D1 table', 'Store pending/scheduled emails for automation sequences', 4, 'done', 'agent', 'high'),
+        ('Build email queue processing endpoint', '/api/email/process — sends due queued emails via Brevo SMTP', 4, 'done', 'agent', 'high')
+      `,
+      // Mark Phase 6.1 as done (book sales)
+      `UPDATE tasks SET status = 'done' WHERE id IN (SELECT id FROM tasks WHERE title = 'Set up digital book sales with pay-per-download' AND phase = 6)`,
+      `INSERT OR IGNORE INTO books (title, slug, description, price, file_url, is_premium, sort_order) VALUES
+        ('The Bible as Kingdom OS', 'the-bible-as-kingdom-os', 'A paradigm-shifting exploration of the Bible as the operating system of the Kingdom of God.', 0, '/books/the-bible-as-kingdom-os.pdf', 0, 1),
+        ('The Divine Algorithm', 'divine-algorithm', 'An interactive report exploring divine patterns, codes, and algorithms hidden in Scripture.', 0, '/books/divine_algorithm_report.html', 0, 2),
+        ('AI-Powered Strategic National Development For Ghana', 'ai-national-development', 'A visionary blueprint for leveraging AI to accelerate Ghana national development.', 0, '/books/ai-powered-strategic-national-development-ghana.docx', 0, 3),
+        ('1 Million Coders Manifesto', '1-million-coders-manifesto', 'A bold manifesto challenging the popular narrative on tech education in Ghana.', 0, '/books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf', 0, 4),
+        ('Premium Books Bundle', 'premium-bundle', 'All 4 published works in one premium download package. Plus exclusive thank-you page.', 300, '/books/premium-bundle.html', 1, 5)
+      `,
+      // Mark Phase 5 + 6.1 tasks as done (for existing installations)
+      `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%book sales%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%hardcoded homepage%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%Architectural Thinking module%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%sponsored slot pricing%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%student progress%' AND status = 'pending'`,
+      // Mark Phase 7 infrastructure tasks as done (for existing installations)
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%strategic partnership%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%press kit%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%JSON-LD%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%referral API%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Share-to-unlock%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Partners page%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Press kit page%' AND status = 'pending'`,
+      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Content library page%' AND status = 'pending'`,
+      // Seed additional programs
+      `INSERT OR IGNORE INTO programs (title, slug, tagline, description, duration, price, price_label, status, sample_content, full_content, sort_order) VALUES
+        ('Systems Thinking in Genesis', 'systems-thinking-genesis', 'Biblical Foundations of Systems Thinking', 'Explore the book of Genesis through a systems thinking lens. See creation, the fall, the patriarchs, and the exodus as interconnected systems with feedback loops, leverage points, and emergent properties.', 'Self-paced', 0, 'Free', 'active', '<h2>Welcome to Systems Thinking in Genesis</h2><p>The Bible is the source of all true knowledge and wisdom. <em>"The fear of the Lord is the beginning of wisdom"</em> (Proverbs 9:10). In this program, we study Genesis as the foundation for systems thinking — not as a textbook illustration, but as divine revelation. Every system concept we explore exists because God built it into creation first. Let Scripture be your teacher.</p>', '<h2>Full Curriculum: Systems Thinking in Genesis</h2><p>Why does Genesis reveal systems thinking? Because God Himself is the ultimate designer, and He built order, interdependence, and purpose into creation. As Paul writes, <em>"For since the creation of the world God''s invisible qualities — His eternal power and divine nature — have been clearly seen, being understood from what has been made"</em> (Romans 1:20). The patterns we observe in Scripture are not accidental — they reflect the mind of the Creator.</p><p>This course explores Genesis as a case study in systems thinking, but with a crucial difference: <strong>Scripture is not the illustration — it is the source.</strong> Every systems concept we encounter exists because God first built it into His creation, His covenants, and His redemptive plan. Each module opens with a passage of Scripture, draws the system concept from it, and then helps you apply it.</p><hr><h2>Module 1: Creation as a System</h2><h3>Read Genesis 1:1-31</h3><p><strong>Key Idea: Interdependence and Nested Hierarchy</strong></p><p>Before you study systems thinking, study the first system: creation itself. Genesis 1 does not present a random sequence. Each day prepares the environment for what follows.</p><p><strong>Day 1</strong> — Light (Genesis 1:3-5). Light makes photosynthesis possible, which sustains all plant life. <strong>Day 2</strong> — The sky and waters (Genesis 1:6-8). The water cycle governs weather and agriculture. <strong>Day 3</strong> — Land and vegetation (Genesis 1:9-13). Plants produce oxygen and food. <strong>Day 4</strong> — Sun, moon, and stars (Genesis 1:14-19). They govern seasons and rhythms. <strong>Day 5</strong> — Sea creatures and birds (Genesis 1:20-23). They populate their domains. <strong>Day 6</strong> — Land animals and humanity (Genesis 1:24-31). They inherit a fully functioning ecosystem.</p><p>This is a <strong>nested hierarchy</strong>: each level contains and enables the next. In Proverbs, we see this principle: <em>"The earth, which is established forever"</em> (Proverbs 3:19) — God established creation with layers of wisdom.</p><h3>What Scripture Teaches About Systems</h3><ul><li><strong>Interdependence</strong> — No element exists in isolation. Each day depends on the days before it. Paul later explains: <em>"The body is a unit, though it is composed of many parts"</em> (1 Corinthians 12:12).</li><li><strong>Emergence</strong> — The whole creation is greater than the sum of its parts. Genesis 1:31 declares it <em>"very good."</em></li><li><strong>Order and Purpose</strong> — God does nothing without design. <em>"He has made everything beautiful in its time"</em> (Ecclesiastes 3:11).</li></ul><h3>Application Exercise</h3><p>Read Genesis 1 again. Identify one created thing (light, water, plants, animals). Trace how it depends on what came before it and enables what comes after. How does this change how you see your role in God''s creation?</p><hr><h2>Module 2: Patterns in the Patriarchs</h2><h3>Read Genesis 12:1-9; 15:1-6; 21:1-7; 22:1-18; 25:19-34; 27:1-45; 32:22-32</h3><p><strong>Key Idea: Reinforcing and Balancing Feedback Loops</strong></p><p>Scripture shows us that human behavior follows patterns. The lives of Abraham, Isaac, and Jacob are filled with recurring structures: promise, waiting, failure, rescue, blessing. These are not just stories — they are <strong>feedback loops</strong> that God uses to shape His covenant people.</p><p>A <strong>reinforcing feedback loop</strong> amplifies change. When God promises Abraham descendants (Genesis 12:2-3), and Abraham believes (Genesis 15:6), each act of faith strengthens the next. Hebrews 11 traces this loop through generations.</p><p>A <strong>balancing feedback loop</strong> resists change. When the patriarchs stray — Abraham lies about Sarah (Genesis 20), Jacob deceives Isaac (Genesis 27) — consequences bring them back into alignment. God uses discipline to correct course: <em>"The Lord disciplines the one He loves"</em> (Hebrews 12:6).</p><h3>What Scripture Teaches About Feedback</h3><ul><li><strong>Reinforcing Loops</strong> — Abraham''s faith led to blessing, which reinforced faith. Jesus says: <em>"Whoever has will be given more"</em> (Matthew 13:12).</li><li><strong>Balancing Loops</strong> — Consequences maintain alignment with covenant. <em>"Do not be deceived: God cannot be mocked. A man reaps what he sows"</em> (Galatians 6:7).</li><li><strong>Delayed Feedback</strong> — Abraham waited 25 years for Isaac. The Israelites waited 400 years in Egypt. Delayed feedback tests faith: <em>"The Lord is not slow in keeping His promise"</em> (2 Peter 3:9).</li><li><strong>Pattern Recognition</strong> — Scripture calls us to recognize recurring structures: <em>"These things happened to them as examples and were written down as warnings for us"</em> (1 Corinthians 10:11).</li></ul><h3>Application Exercise</h3><p>Read Abraham''s story in Genesis 12-22. Identify one reinforcing loop (something that grew stronger with each step of faith) and one balancing loop (something that corrected or redirected him). How do these same loops operate in your walk with God?</p><hr><h2>Module 3: Joseph''s Economic System</h2><h3>Read Genesis 41:1-57</h3><p><strong>Key Idea: Anticipatory Governance and Stock-and-Flow Dynamics</strong></p><p>Joseph''s management of Egypt''s seven years of abundance and seven years of famine is not just a history lesson — it is a divinely-inspired case study in <strong>anticipatory governance</strong>. God Himself reveals the pattern through Pharaoh''s dreams (Genesis 41:25-32). The system concept comes from God before Joseph implements it.</p><p>In <strong>stocks and flows</strong> language: grain is the <strong>stock</strong>. The <strong>inflow</strong> is the abundant harvest. The <strong>outflow</strong> is consumption during famine. Joseph increased the stock by storing grain during inflow (Genesis 41:48-49) and controlled outflow by rationing (Genesis 41:53-57).</p><p>Scripture repeatedly teaches this principle: <em>"The wise store up choice food and olive oil, but fools gulp theirs down"</em> (Proverbs 21:20). Joseph was wise because God gave him wisdom (Genesis 41:39).</p><h3>What Scripture Teaches About Stewardship</h3><ul><li><strong>Stocks and Flows</strong> — Accumulate during abundance for use during scarcity. Proverbs 6:6-8 points to the ant: <em>"It stores its provisions in summer and gathers its food at harvest."</em></li><li><strong>Leverage Points</strong> — Storage capacity changed Egypt''s resilience. Proverbs 27:23-27 instructs shepherds to know the condition of their flocks.</li><li><strong>God as Source</strong> — Joseph credits God: <em>"God has revealed to Pharaoh what He is about to do"</em> (Genesis 41:28). All economic wisdom begins with the fear of the Lord (Proverbs 1:7).</li><li><strong>Resilience Through Wisdom</strong> — Egypt not only survived but became a storehouse for surrounding nations. <em>"The blessing of the Lord brings wealth, without painful toil for it"</em> (Proverbs 10:22).</li></ul><h3>Application Exercise</h3><p>Read Proverbs 6:6-8 and Genesis 41. What is one <em>stock</em> God has entrusted to you (savings, knowledge, relationships, time)? What are its inflows and outflows? How can you build buffer capacity before a season of scarcity?</p><hr><h2>Module 4: The Exodus as a Feedback Loop</h2><h3>Read Exodus 1:1-14; 3:7-10; 7:1-12:51; 14:1-31; 20:1-21</h3><p><strong>Key Idea: Reinforcing Feedback Loops of Liberation</strong></p><p>The Exodus is God''s great deliverance, and it follows a <strong>reinforcing feedback loop</strong>: Cry Out → God Hears → Deliverance → Covenant → Worship. Each cycle builds on the last, and at each stage God reveals more of His character.</p><p>The ten plagues (Exodus 7-12) target specific Egyptian systems: the Nile (water, Exodus 7:14-24), livestock (agriculture, Exodus 9:1-7), crops (food, Exodus 9:13-35, 10:1-20), firstborn (social order, Exodus 11:1-12:30). Each plague is a <strong>feedback signal</strong> from the Creator that the Egyptian system is built on injustice. Pharaoh''s resistance paradoxically creates conditions for greater liberation — Scripture even says God hardened Pharaoh''s heart to display His power (Exodus 9:16, Romans 9:17).</p><p>This is a sobering truth: suppression of God''s people creates a reinforcing loop that leads to greater freedom.</p><h3>What Scripture Teaches About Liberation</h3><ul><li><strong>Reinforcing Loop</strong> — Each plague escalated because Pharaoh resisted. Resistance strengthened God''s deliverance.</li><li><strong>Leverage Points</strong> — The Passover (Exodus 12) was the ultimate leverage point — the blood on the doorposts shifted the entire system.</li><li><strong>Emergence</strong> — A group of slaves becomes a nation at Sinai (Exodus 19-20). God forms Israel into a kingdom of priests.</li><li><strong>Unintended Consequences</strong> — Trying to suppress God''s people only accelerates His plan. <em>"The more they were oppressed, the more they multiplied"</em> (Exodus 1:12).</li></ul><h3>Application Exercise</h3><p>Read Exodus 1:8-22 and 3:7-10. Pharaoh tried to solve a ''problem'' (a growing Hebrew population) by increasing oppression. But his solution made the ''problem'' worse. Identify an area in your life where your solution is making the problem worse. What would a God-centered leverage point look like instead?</p><hr><p><strong>Continue to the next module when ready.</strong> Each module builds on the previous one, and all are rooted in the truth that <em>"All Scripture is God-breathed and is useful for teaching, rebuking, correcting and training in righteousness"</em> (2 Timothy 3:16).</p>', 3),
+      ('Systems Thinking Program', 'systems-thinking', 'Biblical Wisdom for Seeing the Whole', 'By wisdom a house is built, and through understanding it is established; through knowledge its rooms are filled with rare and beautiful treasures (Proverbs 24:3-4). This program teaches you to see the interconnected systems God has woven into creation &mdash; in business, society, and your personal life &mdash; so you can design solutions that actually work. For in Him all things hold together (Colossians 1:17).', 'Self-paced', 250, 'Free Sample · Full Access GH¢ 250', 'coming_soon', '<h2>Welcome to the Systems Thinking Program</h2><p>As Solomon wrote, <em>&ldquo;It is the glory of God to conceal a matter; it is the honor of kings to search it out&rdquo;</em> (Proverbs 25:2). Systems thinking is the art of searching out the hidden structures that shape our world &mdash; structures that reflect the order of the Creator Himself.</p><p>Before we dive into the models, let us start with a simple exercise. Look around you right now. Pick one problem &mdash; in your work, your community, or your life &mdash; and ask: <em>What keeps this problem in place?</em></p><p>That is the first step. Systems thinking begins not with answers, but with better questions.</p><h3>Your First Tool: The Iceberg Model</h3><p>Most people react to events. Systems thinkers look deeper &mdash; because God created the world with depth, not just surface. As the heavens are higher than the earth, so are His ways higher than our ways (Isaiah 55:9).</p><ul><li><strong>Events</strong> &mdash; What happened? (the tip)</li><li><strong>Patterns</strong> &mdash; What has been happening over time?</li><li><strong>Structure</strong> &mdash; What forces are driving these patterns?</li><li><strong>Mental Models</strong> &mdash; What beliefs keep this structure in place?</li></ul><p>For the full program, you will get video walkthroughs, real-world case studies, worksheets, and community exercises &mdash; all grounded in the truth that all wisdom begins with the fear of the Lord (Proverbs 9:10).</p>', '', 1),
+        ('Introduction to Design Thinking from Genesis', 'intro-design-thinking', 'The Original Design Blueprint — Learning from the Creator', 'Design thinking is often called human-centered design. But the first designer was not human — it was God. Genesis reveals that God designed with intentionality, iteration, form, function, and purpose long before any design methodology existed. This program teaches the fundamentals of design thinking (empathize, define, ideate, prototype, test) by grounding each phase in Scripture. You will learn to design as God designs — with creativity, purpose, and love for the people you serve.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Introduction to Design Thinking</h2><p>This program is currently in development. We are crafting a practical introduction to design thinking rooted in Scripture — where every design principle is grounded in God''s character and His creation.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 4),
+        ('Design Thinking in Genesis \u2013 The Creation', 'design-thinking-genesis', 'The Original Design Blueprint \u2014 God as the First Designer', 'Discover how the Genesis creation account reveals the ultimate design thinking process. From the separation of light from darkness (Genesis 1:3-4) to the creation of humanity in God''s image (Genesis 1:26-28), every step follows divine design methodology. God empathized with His creation, defined purpose for each element, ideated through spoken word, prototyped through the six days, and saw that it was very good (Genesis 1:31). This program explores each design phase through Scripture, showing that human creativity is a reflection of our Creator.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Design Thinking in Genesis</h2><p>This program is currently in development. We are exploring how the Genesis creation account reveals the original design thinking process — intentionality, iteration, form and function, and stewardship as design — all rooted in God''s character as the Creator.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 5),
+        ('Introduction to Biomimicry', 'intro-biomimicry', 'Learning from the Creator Through Creation', 'Biomimicry is the practice of learning from nature''s patterns and strategies to solve human problems. But the Bible teaches that nature reveals the wisdom of God: <em>"Ask the beasts, and they will teach you"</em> (Job 12:7-10). Go to the ant, you sluggard; consider its ways and be wise (Proverbs 6:6). This program explores how God''s creation — from ants to eagles, from water cycles to honeycombs — contains design solutions that reflect the intelligence of the Creator. Every natural pattern is a lesson from God waiting to be discovered.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Introduction to Biomimicry</h2><p>This program is currently in development. We are building a journey into biomimicry rooted in Scripture — learning from nature''s genius as a reflection of the Creator''s wisdom (Job 12:7-10, Proverbs 6:6).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 6),
+        ('Introduction to Geometry', 'intro-geometry', 'The Language of the Creator', 'God created the universe with measure, number, and weight (Wisdom of Solomon 11:20). Geometry is not a human invention — it is the language God used to order creation. From the circle of the earth (Isaiah 40:22) to the measurements of the tabernacle (Exodus 25-27) and the New Jerusalem (Revelation 21:15-17), Scripture is filled with geometric truth. This program takes you on a foundational journey through geometry — from the simplest dot to complex planes and forms — showing that every shape and pattern reflects the order of the Creator.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Introduction to Geometry</h2><p>This program is currently in development. We are building a foundational journey through geometry — from the dot to planes and forms — rooted in the truth that God created all things with measure, number, and order (Isaiah 40:22, Revelation 21:15-17).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 7),
+        ('Introduction to Computing', 'intro-computing', 'The Logos and the Machine', 'In the beginning was the Word (Logos), and the Word was with God, and the Word was God (John 1:1). The Greek word Logos means not just word but reason, logic, and the rational principle that orders the universe. Computing — at its core — is the study of logic, information, and order. This program introduces the fundamentals of computing (hardware, software, binary logic, networks) while grounding every concept in the truth that all logic and information originate from God, who is the ultimate source of truth and order (Colossians 1:16-17).', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Introduction to Computing</h2><p>This program is currently in development. We are creating a clear, accessible introduction to how computers work — rooted in the truth that all logic and information originate from God, the Logos (John 1:1, Colossians 1:16-17).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 8),
+        ('Introduction to Storytelling & Narrative Design', 'intro-storytelling', 'The Art of Shaping Meaning — From Genesis to Revelation', 'God is the original storyteller. Scripture unfolds as a single grand narrative: Creation, Fall, Redemption, Restoration. Jesus Himself taught in parables (Matthew 13), using story to reveal deep truth. This program teaches narrative structure, character arcs, metaphor, and oral tradition — from the parables of Jesus to the epic arcs of Genesis and Revelation. You will learn to craft stories that inform, inspire, and transform, because storytelling is not just a skill — it is a reflection of the God who spoke the world into being and wrote history itself.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Storytelling & Narrative Design</h2><p>This program is currently in development. We are crafting a deep exploration of narrative — from the parables of Jesus to the grand arc of Scripture — so you can learn to tell stories that inform, inspire, and transform.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '', 9),
+      ('Architectural Thinking Program', 'architectural-thinking', 'Building on the Foundation of God&rsquo;s Wisdom', 'By wisdom a house is built, and through understanding it is established (Proverbs 24:3-4). This program teaches you to think like an architect &mdash; structuring ideas, projects, and systems with clarity, purpose, and biblical wisdom. From blueprint thinking to strategic frameworks and execution systems, you will learn to design solutions that stand the test of time because they are built on the foundation of God&rsquo;s truth.', 'Self-paced', 0, 'Free', 'coming_soon', '<h2>Coming Soon: Architectural Thinking Program</h2><p>This program is currently in development. We are crafting a complete curriculum on thinking like an architect &mdash; from blueprint thinking to strategic frameworks and execution systems.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', '<h2>Module 1: Blueprint Thinking</h2><p>Every great building starts with a blueprint. The same is true for your life, your projects, and your purpose. As the Apostle Paul writes, <em>&ldquo;According to the grace of God which was given to me, like a wise master builder I laid a foundation, and another is building on it. But each man must be careful how he builds on it. For no man can lay a foundation other than the one which is laid, which is Jesus Christ&rdquo;</em> (1&nbsp;Corinthians&nbsp;3:10-11).</p><p>Before you build anything &mdash; a business, a career, a family, a ministry &mdash; you must first see it clearly in your mind. This is blueprint thinking: the ability to envision the whole before you touch the parts.</p><h3>The Architectural Question</h3><p>God asked Job: <em>&ldquo;Where were you when I laid the foundation of the earth? Tell Me, if you have understanding&rdquo;</em> (Job&nbsp;38:4). Before every project, ask yourself: <em>What am I actually building?</em></p><ul><li>Define the purpose &mdash; Why does this exist?</li><li>Identify the foundation &mdash; What must be in place for this to stand?</li><li>Sketch the whole &mdash; What does the finished work look like?</li></ul><h3>Blueprint Exercise</h3><p><strong>Read Proverbs 24:3-4.</strong> Solomon tells us that by wisdom a house is built and by understanding it is established. Take one project or goal you are working on. Write a one-paragraph blueprint: What is its purpose? What is its foundation? What does success look like? Be specific. An architect would not build without a plan. Neither should you.</p><hr><h2>Module 2: Design Principles</h2><p>Architecture is not just about making things stand &mdash; it is about making things that work, that last, and that serve people well. Abraham <em>&ldquo;was looking forward to the city which has foundations, whose architect and builder is God&rdquo;</em> (Hebrews&nbsp;11:10). God Himself is the ultimate architect, and His creation reveals timeless design principles.</p><h3>Principle 1: Form Follows Function</h3><p>God created each thing with a purpose. The sun rules the day; the moon governs the night (Genesis&nbsp;1:16-18). In your projects, ask: <em>Does the form serve the function?</em></p><h3>Principle 2: Strength Through Structure</h3><p>Jesus said the wise man built his house on the rock (Matthew&nbsp;7:24-25). The structure &mdash; not just the surface &mdash; determines whether something withstands storms.</p><h3>Principle 3: Beauty is Not Optional</h3><p>Exodus&nbsp;35:30-35 describes Bezalel, whom God filled with wisdom, understanding, and knowledge to create artistic designs. Beauty is not decoration &mdash; it is part of God&rsquo;s design for excellence.</p><h3>Design Exercise</h3><p><strong>Read Luke 14:28-30.</strong> Jesus Himself said that before building a tower, you count the cost. Take a project you are working on. List three design principles you will follow and explain why each one matters for the people you serve.</p><hr><h2>Module 3: Strategic Frameworks</h2><p>Strategy is the art of connecting your blueprint to reality. It is not enough to have a vision &mdash; you must have a path to get there. <em>&ldquo;The plans of the diligent lead surely to advantage, but everyone who is hasty comes surely to poverty&rdquo;</em> (Proverbs&nbsp;21:5).</p><h3>Framework 1: The OSWALD Cycle</h3><p>Based on the biblical pattern of Observe, Seek, Wait, Act, Learn, Deliver:</p><ul><li><strong>Observe</strong> &mdash; <em>&ldquo;The prudent sees the evil and hides himself&rdquo;</em> (Proverbs&nbsp;22:3). Assess your situation honestly.</li><li><strong>Seek</strong> &mdash; <em>&ldquo;If any of you lacks wisdom, let him ask of God&rdquo;</em> (James&nbsp;1:5). Seek counsel from God and wise advisors.</li><li><strong>Wait</strong> &mdash; <em>&ldquo;Those who wait for the Lord will gain new strength&rdquo;</em> (Isaiah&nbsp;40:31). Timing is part of strategy.</li><li><strong>Act</strong> &mdash; <em>&ldquo;Faith without works is dead&rdquo;</em> (James&nbsp;2:26). Execute with courage.</li><li><strong>Learn</strong> &mdash; <em>&ldquo;Examine yourselves to see whether you are in the faith&rdquo;</em> (2&nbsp;Corinthians&nbsp;13:5). Review and reflect.</li><li><strong>Deliver</strong> &mdash; <em>&ldquo;Whatever you do, do your work heartily, as for the Lord&rdquo;</em> (Colossians&nbsp;3:23). Bring it to completion.</li></ul><h3>Framework 2: The Pillars of Sustainable Design</h3><p>Every lasting creation rests on four pillars:</p><ul><li><strong>Structural Integrity</strong> &mdash; Is the foundation sound?</li><li><strong>Operational Efficiency</strong> &mdash; Does it work without waste?</li><li><strong>Adaptive Resilience</strong> &mdash; Can it withstand change?</li><li><strong>Human Purpose</strong> &mdash; Whom does it serve?</li></ul><h3>Strategy Exercise</h3><p><strong>Read Proverbs 24:3-6.</strong> Write down a current challenge you face. Walk it through the OSWALD Cycle &mdash; one sentence per step. Then identify which of the four pillars is weakest in your current approach. Write one action you will take to strengthen it.</p><hr><h2>Module 4: Execution &amp; Systems</h2><p>A blueprint without execution is just a wish. Architecture becomes reality only when materials are assembled, workers are coordinated, and the building rises from the ground. As James writes, <em>&ldquo;Be doers of the word, and not hearers only, deceiving yourselves&rdquo;</em> (James&nbsp;1:22).</p><h3>The Execution Mindset</h3><p>Joseph did not just interpret Pharaoh&rsquo;s dream &mdash; he built a seven-year storage system that saved Egypt and the surrounding nations (Genesis&nbsp;41). He moved from blueprint to execution with precision and diligence.</p><h3>Four Keys to Execution</h3><ol><li><strong>Break It Down</strong> &mdash; Large visions become achievable through small, concrete steps. Proverbs&nbsp;14:1: <em>&ldquo;The wise woman builds her house.&rdquo;</em> One stone at a time.</li><li><strong>Build Feedback Loops</strong> &mdash; Wisdom cries out in the street (Proverbs&nbsp;1:20-21). Create systems that tell you when you are off course. Come, let us reason together, says the Lord (Isaiah&nbsp;1:18).</li><li><strong>Develop Rhythms</strong> &mdash; God created in six days and rested on the seventh (Genesis&nbsp;2:2-3). Work requires rest. Create sustainable rhythms, not burnout cycles.</li><li><strong>Review Relentlessly</strong> &mdash; <em>&ldquo;Let us examine our ways and test them, and let us return to the Lord&rdquo;</em> (Lamentations&nbsp;3:40). Regular review is not optional &mdash; it is how you stay on the foundation.</li></ol><h3>Final Project</h3><p><strong>Read James 1:22-25.</strong> Take the blueprint you wrote in Module 1. Write a one-page execution plan: Break it into phases, define milestones, set review dates (weekly and monthly), and identify who will hold you accountable.</p><p><em>&ldquo;Teach me, O Lord, the way of Your statutes, and I shall observe it to the end&rdquo;</em> (Psalm&nbsp;119:33).</p><p>You are no longer just a builder. You are an architect.</p>', 10)
+      `,
+      // Module seeds for new programs
+      `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) VALUES
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking-genesis'), 'Module 1: Creation as a System', 'genesis-creation-system', 'The six days of creation reveal interdependence, nested hierarchy, and emergence. Explore how each day prepares the environment for the next, from light to humanity, forming a fully functioning ecosystem designed with feedback loops.', 1),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking-genesis'), 'Module 2: Patterns in the Patriarchs', 'genesis-patriarchs', 'The lives of Abraham, Isaac, and Jacob reveal reinforcing and balancing feedback loops — promise, waiting, failure, rescue, blessing. Learn to recognize recurring structures beneath surface events and understand delayed feedback in biblical narrative.', 2),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking-genesis'), 'Module 3: Joseph''s Economic System', 'genesis-joseph', 'Joseph''s management of abundance and famine is a masterclass in stocks, flows, leverage points, and anticipatory governance. Understand how building buffer capacity transforms a system''s resilience using one of history''s earliest economic case studies.', 3),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking-genesis'), 'Module 4: The Exodus as a Feedback Loop', 'genesis-exodus', 'The Exodus is a reinforcing feedback loop of liberation: cry out, deliverance, covenant, worship. The plagues target systemic leverage points in Egypt''s interconnected systems. Learn about emergence, unintended consequences, and the Shifting the Burden archetype.', 4),
+        ((SELECT id FROM programs WHERE slug = 'intro-design-thinking'), 'Module 1: What is Design Thinking?', 'dt-intro', 'The five phases of design thinking and the mindset behind them.', 1),
+        ((SELECT id FROM programs WHERE slug = 'intro-design-thinking'), 'Module 2: Empathize & Define', 'dt-empathize', 'Understanding users and framing the right problem to solve.', 2),
+        ((SELECT id FROM programs WHERE slug = 'intro-design-thinking'), 'Module 3: Ideate & Prototype', 'dt-ideate', 'Generating ideas and building quick prototypes to test assumptions.', 3),
+        ((SELECT id FROM programs WHERE slug = 'intro-design-thinking'), 'Module 4: Test & Iterate', 'dt-test', 'Testing solutions, gathering feedback, and iterating toward better outcomes.', 4),
+        ((SELECT id FROM programs WHERE slug = 'design-thinking-genesis'), 'Module 1: The Ultimate Designer', 'dtg-designer', 'God as the original design thinker - intentionality in creation.', 1),
+        ((SELECT id FROM programs WHERE slug = 'design-thinking-genesis'), 'Module 2: Form and Function in Creation', 'dtg-form-function', 'How each created thing has both form and purpose.', 2),
+        ((SELECT id FROM programs WHERE slug = 'design-thinking-genesis'), 'Module 3: Iteration and Rhythms', 'dtg-iteration', 'The daily rhythm of creation as a design iteration cycle.', 3),
+        ((SELECT id FROM programs WHERE slug = 'design-thinking-genesis'), 'Module 4: Stewardship as Design', 'dtg-stewardship', 'Humanity as stewards - designed to design.', 4),
+        ((SELECT id FROM programs WHERE slug = 'intro-biomimicry'), 'Module 1: Nature as Mentor', 'bio-mentor', 'Why nature is the world''s best engineer and designer.', 1),
+        ((SELECT id FROM programs WHERE slug = 'intro-biomimicry'), 'Module 2: Patterns in Nature', 'bio-patterns', 'Recurring patterns - spirals, fractals, hexagons, and branching.', 2),
+        ((SELECT id FROM programs WHERE slug = 'intro-biomimicry'), 'Module 3: Biomimetic Design', 'bio-design', 'How biomimicry is used in architecture, materials, and technology.', 3),
+        ((SELECT id FROM programs WHERE slug = 'intro-biomimicry'), 'Module 4: Case Studies', 'bio-cases', 'Real-world examples of biomimicry solving human challenges.', 4),
+        ((SELECT id FROM programs WHERE slug = 'intro-geometry'), 'Module 1: The Dot and Points', 'geo-dot', 'The simplest element - the dot, and how points define space.', 1),
+        ((SELECT id FROM programs WHERE slug = 'intro-geometry'), 'Module 2: Dots, Lines and Angles', 'geo-lines', 'From dots to lines, rays, segments, and the angles they form.', 2),
+        ((SELECT id FROM programs WHERE slug = 'intro-geometry'), 'Module 3: Shapes and Forms', 'geo-shapes', 'Two-dimensional shapes and three-dimensional forms.', 3),
+        ((SELECT id FROM programs WHERE slug = 'intro-geometry'), 'Module 4: Planes and Space', 'geo-planes', 'Understanding planes, dimensions, and spatial relationships.', 4),
+        ((SELECT id FROM programs WHERE slug = 'intro-computing'), 'Module 1: What is a Computer?', 'comp-what', 'Definition, history, and the core idea of a computing machine.', 1),
+        ((SELECT id FROM programs WHERE slug = 'intro-computing'), 'Module 2: Hardware & Software', 'comp-hardware', 'The physical components and the programs that make them useful.', 2),
+        ((SELECT id FROM programs WHERE slug = 'intro-computing'), 'Module 3: How Computers Think', 'comp-think', 'Binary, logic gates, and the fundamentals of computation.', 3),
+        ((SELECT id FROM programs WHERE slug = 'intro-computing'), 'Module 4: The Digital World', 'comp-digital', 'Networks, the internet, and how computers communicate.', 4),
+        ((SELECT id FROM programs WHERE slug = 'intro-storytelling'), 'Module 1: Why Story Matters', 'story-why', 'The neurological, spiritual, and cultural power of narrative.', 1),
+        ((SELECT id FROM programs WHERE slug = 'intro-storytelling'), 'Module 2: Narrative Structure', 'story-structure', 'Arcs, beats, and the architecture of a compelling story.', 2),
+        ((SELECT id FROM programs WHERE slug = 'intro-storytelling'), 'Module 3: Character, Voice & Metaphor', 'story-character', 'Creating memorable characters, finding your voice, and wielding metaphor.', 3),
+        ((SELECT id FROM programs WHERE slug = 'intro-storytelling'), 'Module 4: Storytelling Across Media', 'story-media', 'Oral tradition, written word, visual storytelling, and digital narratives.', 4),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 1: The Iceberg Model', 'iceberg-model', 'See below the surface — events, patterns, structure, and mental models.', 1),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 2: Feedback Loops', 'feedback-loops', 'Reinforcing and balancing loops that drive growth, stability, and collapse.', 2),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 3: Leverage Points', 'leverage-points', 'Where to intervene in a system for maximum impact with minimum effort.', 3),
+        ((SELECT id FROM programs WHERE slug = 'systems-thinking'), 'Module 4: Mental Models', 'mental-models', 'The beliefs, values, and assumptions that shape system behavior.', 4),
+        ((SELECT id FROM programs WHERE slug = 'architectural-thinking'), 'Module 1: Blueprint Thinking', 'blueprint-thinking', 'Structuring ideas and projects with clarity and purpose before building.', 1),
+        ((SELECT id FROM programs WHERE slug = 'architectural-thinking'), 'Module 2: Design Principles', 'design-principles', 'Core principles for building anything that matters — form, function, and strength.', 2),
+        ((SELECT id FROM programs WHERE slug = 'architectural-thinking'), 'Module 3: Strategic Frameworks', 'strategic-frameworks', 'Mental models and frameworks for strategic planning and decision-making.', 3),
+        ((SELECT id FROM programs WHERE slug = 'architectural-thinking'), 'Module 4: Execution & Systems', 'execution-systems', 'From blueprint to reality — closing the gap between vision and execution.', 4)
+      `,
+      // Update existing programs with Bible-centered content
+      `UPDATE programs SET tagline = 'Biblical Foundations of Systems Thinking', sample_content = '<h2>Welcome to Systems Thinking in Genesis</h2><p>The Bible is the source of all true knowledge and wisdom. <em>"The fear of the Lord is the beginning of wisdom"</em> (Proverbs 9:10). In this program, we study Genesis as the foundation for systems thinking — not as a textbook illustration, but as divine revelation. Every system concept we explore exists because God built it into creation first. Let Scripture be your teacher.</p>', full_content = '<h2>Full Curriculum: Systems Thinking in Genesis</h2><p>Why does Genesis reveal systems thinking? Because God Himself is the ultimate designer, and He built order, interdependence, and purpose into creation. As Paul writes, <em>"For since the creation of the world God''s invisible qualities — His eternal power and divine nature — have been clearly seen, being understood from what has been made"</em> (Romans 1:20). The patterns we observe in Scripture are not accidental — they reflect the mind of the Creator.</p><p>This course explores Genesis as a case study in systems thinking, but with a crucial difference: <strong>Scripture is not the illustration — it is the source.</strong> Every systems concept we encounter exists because God first built it into His creation, His covenants, and His redemptive plan. Each module opens with a passage of Scripture, draws the system concept from it, and then helps you apply it.</p><hr><h2>Module 1: Creation as a System</h2><h3>Read Genesis 1:1-31</h3><p><strong>Key Idea: Interdependence and Nested Hierarchy</strong></p><p>Before you study systems thinking, study the first system: creation itself. Genesis 1 does not present a random sequence. Each day prepares the environment for what follows.</p><p><strong>Day 1</strong> — Light (Genesis 1:3-5). Light makes photosynthesis possible, which sustains all plant life. <strong>Day 2</strong> — The sky and waters (Genesis 1:6-8). The water cycle governs weather and agriculture. <strong>Day 3</strong> — Land and vegetation (Genesis 1:9-13). Plants produce oxygen and food. <strong>Day 4</strong> — Sun, moon, and stars (Genesis 1:14-19). They govern seasons and rhythms. <strong>Day 5</strong> — Sea creatures and birds (Genesis 1:20-23). They populate their domains. <strong>Day 6</strong> — Land animals and humanity (Genesis 1:24-31). They inherit a fully functioning ecosystem.</p><p>This is a <strong>nested hierarchy</strong>: each level contains and enables the next. In Proverbs, we see this principle: <em>"The earth, which is established forever"</em> (Proverbs 3:19) — God established creation with layers of wisdom.</p><h3>What Scripture Teaches About Systems</h3><ul><li><strong>Interdependence</strong> — No element exists in isolation. Each day depends on the days before it. Paul later explains: <em>"The body is a unit, though it is composed of many parts"</em> (1 Corinthians 12:12).</li><li><strong>Emergence</strong> — The whole creation is greater than the sum of its parts. Genesis 1:31 declares it <em>"very good."</em></li><li><strong>Order and Purpose</strong> — God does nothing without design. <em>"He has made everything beautiful in its time"</em> (Ecclesiastes 3:11).</li></ul><h3>Application Exercise</h3><p>Read Genesis 1 again. Identify one created thing (light, water, plants, animals). Trace how it depends on what came before it and enables what comes after. How does this change how you see your role in God''s creation?</p><hr><h2>Module 2: Patterns in the Patriarchs</h2><h3>Read Genesis 12:1-9; 15:1-6; 21:1-7; 22:1-18; 25:19-34; 27:1-45; 32:22-32</h3><p><strong>Key Idea: Reinforcing and Balancing Feedback Loops</strong></p><p>Scripture shows us that human behavior follows patterns. The lives of Abraham, Isaac, and Jacob are filled with recurring structures: promise, waiting, failure, rescue, blessing. These are not just stories — they are <strong>feedback loops</strong> that God uses to shape His covenant people.</p><p>A <strong>reinforcing feedback loop</strong> amplifies change. When God promises Abraham descendants (Genesis 12:2-3), and Abraham believes (Genesis 15:6), each act of faith strengthens the next. Hebrews 11 traces this loop through generations.</p><p>A <strong>balancing feedback loop</strong> resists change. When the patriarchs stray — Abraham lies about Sarah (Genesis 20), Jacob deceives Isaac (Genesis 27) — consequences bring them back into alignment. God uses discipline to correct course: <em>"The Lord disciplines the one He loves"</em> (Hebrews 12:6).</p><h3>What Scripture Teaches About Feedback</h3><ul><li><strong>Reinforcing Loops</strong> — Abraham''s faith led to blessing, which reinforced faith. Jesus says: <em>"Whoever has will be given more"</em> (Matthew 13:12).</li><li><strong>Balancing Loops</strong> — Consequences maintain alignment with covenant. <em>"Do not be deceived: God cannot be mocked. A man reaps what he sows"</em> (Galatians 6:7).</li><li><strong>Delayed Feedback</strong> — Abraham waited 25 years for Isaac. The Israelites waited 400 years in Egypt. Delayed feedback tests faith: <em>"The Lord is not slow in keeping His promise"</em> (2 Peter 3:9).</li><li><strong>Pattern Recognition</strong> — Scripture calls us to recognize recurring structures: <em>"These things happened to them as examples and were written down as warnings for us"</em> (1 Corinthians 10:11).</li></ul><h3>Application Exercise</h3><p>Read Abraham''s story in Genesis 12-22. Identify one reinforcing loop (something that grew stronger with each step of faith) and one balancing loop (something that corrected or redirected him). How do these same loops operate in your walk with God?</p><hr><h2>Module 3: Joseph''s Economic System</h2><h3>Read Genesis 41:1-57</h3><p><strong>Key Idea: Anticipatory Governance and Stock-and-Flow Dynamics</strong></p><p>Joseph''s management of Egypt''s seven years of abundance and seven years of famine is not just a history lesson — it is a divinely-inspired case study in <strong>anticipatory governance</strong>. God Himself reveals the pattern through Pharaoh''s dreams (Genesis 41:25-32). The system concept comes from God before Joseph implements it.</p><p>In <strong>stocks and flows</strong> language: grain is the <strong>stock</strong>. The <strong>inflow</strong> is the abundant harvest. The <strong>outflow</strong> is consumption during famine. Joseph increased the stock by storing grain during inflow (Genesis 41:48-49) and controlled outflow by rationing (Genesis 41:53-57).</p><p>Scripture repeatedly teaches this principle: <em>"The wise store up choice food and olive oil, but fools gulp theirs down"</em> (Proverbs 21:20). Joseph was wise because God gave him wisdom (Genesis 41:39).</p><h3>What Scripture Teaches About Stewardship</h3><ul><li><strong>Stocks and Flows</strong> — Accumulate during abundance for use during scarcity. Proverbs 6:6-8 points to the ant: <em>"It stores its provisions in summer and gathers its food at harvest."</em></li><li><strong>Leverage Points</strong> — Storage capacity changed Egypt''s resilience. Proverbs 27:23-27 instructs shepherds to know the condition of their flocks.</li><li><strong>God as Source</strong> — Joseph credits God: <em>"God has revealed to Pharaoh what He is about to do"</em> (Genesis 41:28). All economic wisdom begins with the fear of the Lord (Proverbs 1:7).</li><li><strong>Resilience Through Wisdom</strong> — Egypt not only survived but became a storehouse for surrounding nations. <em>"The blessing of the Lord brings wealth, without painful toil for it"</em> (Proverbs 10:22).</li></ul><h3>Application Exercise</h3><p>Read Proverbs 6:6-8 and Genesis 41. What is one <em>stock</em> God has entrusted to you (savings, knowledge, relationships, time)? What are its inflows and outflows? How can you build buffer capacity before a season of scarcity?</p><hr><h2>Module 4: The Exodus as a Feedback Loop</h2><h3>Read Exodus 1:1-14; 3:7-10; 7:1-12:51; 14:1-31; 20:1-21</h3><p><strong>Key Idea: Reinforcing Feedback Loops of Liberation</strong></p><p>The Exodus is God''s great deliverance, and it follows a <strong>reinforcing feedback loop</strong>: Cry Out → God Hears → Deliverance → Covenant → Worship. Each cycle builds on the last, and at each stage God reveals more of His character.</p><p>The ten plagues (Exodus 7-12) target specific Egyptian systems: the Nile (water, Exodus 7:14-24), livestock (agriculture, Exodus 9:1-7), crops (food, Exodus 9:13-35, 10:1-20), firstborn (social order, Exodus 11:1-12:30). Each plague is a <strong>feedback signal</strong> from the Creator that the Egyptian system is built on injustice. Pharaoh''s resistance paradoxically creates conditions for greater liberation — Scripture even says God hardened Pharaoh''s heart to display His power (Exodus 9:16, Romans 9:17).</p><p>This is a sobering truth: suppression of God''s people creates a reinforcing loop that leads to greater freedom.</p><h3>What Scripture Teaches About Liberation</h3><ul><li><strong>Reinforcing Loop</strong> — Each plague escalated because Pharaoh resisted. Resistance strengthened God''s deliverance.</li><li><strong>Leverage Points</strong> — The Passover (Exodus 12) was the ultimate leverage point — the blood on the doorposts shifted the entire system.</li><li><strong>Emergence</strong> — A group of slaves becomes a nation at Sinai (Exodus 19-20). God forms Israel into a kingdom of priests.</li><li><strong>Unintended Consequences</strong> — Trying to suppress God''s people only accelerates His plan. <em>"The more they were oppressed, the more they multiplied"</em> (Exodus 1:12).</li></ul><h3>Application Exercise</h3><p>Read Exodus 1:8-22 and 3:7-10. Pharaoh tried to solve a ''problem'' (a growing Hebrew population) by increasing oppression. But his solution made the ''problem'' worse. Identify an area in your life where your solution is making the problem worse. What would a God-centered leverage point look like instead?</p><hr><p><strong>Continue to the next module when ready.</strong> Each module builds on the previous one, and all are rooted in the truth that <em>"All Scripture is God-breathed and is useful for teaching, rebuking, correcting and training in righteousness"</em> (2 Timothy 3:16).</p>' WHERE slug = 'systems-thinking-genesis'`,
+      `UPDATE programs SET title = 'Introduction to Design Thinking from Genesis', tagline = 'The Original Design Blueprint — Learning from the Creator', description = 'Design thinking is often called human-centered design. But the first designer was not human — it was God. Genesis reveals that God designed with intentionality, iteration, form, function, and purpose long before any design methodology existed. This program teaches the fundamentals of design thinking (empathize, define, ideate, prototype, test) by grounding each phase in Scripture. You will learn to design as God designs — with creativity, purpose, and love for the people you serve.', sample_content = '<h2>Coming Soon: Introduction to Design Thinking</h2><p>This program is currently in development. We are crafting a practical introduction to design thinking rooted in Scripture — where every design principle is grounded in God''s character and His creation.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'intro-design-thinking'`,
+      `UPDATE programs SET tagline = 'The Original Design Blueprint \u2014 God as the First Designer', description = 'Discover how the Genesis creation account reveals the ultimate design thinking process. From the separation of light from darkness (Genesis 1:3-4) to the creation of humanity in God''s image (Genesis 1:26-28), every step follows divine design methodology. God empathized with His creation, defined purpose for each element, ideated through spoken word, prototyped through the six days, and saw that it was very good (Genesis 1:31). This program explores each design phase through Scripture, showing that human creativity is a reflection of our Creator.', sample_content = '<h2>Coming Soon: Design Thinking in Genesis</h2><p>This program is currently in development. We are exploring how the Genesis creation account reveals the original design thinking process — intentionality, iteration, form and function, and stewardship as design — all rooted in God''s character as the Creator.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'design-thinking-genesis'`,
+      `UPDATE programs SET tagline = 'Learning from the Creator Through Creation', description = 'Biomimicry is the practice of learning from nature''s patterns and strategies to solve human problems. But the Bible teaches that nature reveals the wisdom of God: <em>"Ask the beasts, and they will teach you"</em> (Job 12:7-10). Go to the ant, you sluggard; consider its ways and be wise (Proverbs 6:6). This program explores how God''s creation — from ants to eagles, from water cycles to honeycombs — contains design solutions that reflect the intelligence of the Creator. Every natural pattern is a lesson from God waiting to be discovered.', sample_content = '<h2>Coming Soon: Introduction to Biomimicry</h2><p>This program is currently in development. We are building a journey into biomimicry rooted in Scripture — learning from nature''s genius as a reflection of the Creator''s wisdom (Job 12:7-10, Proverbs 6:6).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'intro-biomimicry'`,
+      `UPDATE programs SET tagline = 'The Language of the Creator', description = 'God created the universe with measure, number, and weight (Wisdom of Solomon 11:20). Geometry is not a human invention — it is the language God used to order creation. From the circle of the earth (Isaiah 40:22) to the measurements of the tabernacle (Exodus 25-27) and the New Jerusalem (Revelation 21:15-17), Scripture is filled with geometric truth. This program takes you on a foundational journey through geometry — from the simplest dot to complex planes and forms — showing that every shape and pattern reflects the order of the Creator.', sample_content = '<h2>Coming Soon: Introduction to Geometry</h2><p>This program is currently in development. We are building a foundational journey through geometry — from the dot to planes and forms — rooted in the truth that God created all things with measure, number, and order (Isaiah 40:22, Revelation 21:15-17).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'intro-geometry'`,
+      `UPDATE programs SET tagline = 'The Logos and the Machine', description = 'In the beginning was the Word (Logos), and the Word was with God, and the Word was God (John 1:1). The Greek word Logos means not just word but reason, logic, and the rational principle that orders the universe. Computing — at its core — is the study of logic, information, and order. This program introduces the fundamentals of computing (hardware, software, binary logic, networks) while grounding every concept in the truth that all logic and information originate from God, who is the ultimate source of truth and order (Colossians 1:16-17).', sample_content = '<h2>Coming Soon: Introduction to Computing</h2><p>This program is currently in development. We are creating a clear, accessible introduction to how computers work — rooted in the truth that all logic and information originate from God, the Logos (John 1:1, Colossians 1:16-17).</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'intro-computing'`,
+      `UPDATE programs SET tagline = 'The Art of Shaping Meaning — From Genesis to Revelation', description = 'God is the original storyteller. Scripture unfolds as a single grand narrative: Creation, Fall, Redemption, Restoration. Jesus Himself taught in parables (Matthew 13), using story to reveal deep truth. This program teaches narrative structure, character arcs, metaphor, and oral tradition — from the parables of Jesus to the epic arcs of Genesis and Revelation. You will learn to craft stories that inform, inspire, and transform, because storytelling is not just a skill — it is a reflection of the God who spoke the world into being and wrote history itself.', sample_content = '<h2>Coming Soon: Storytelling & Narrative Design</h2><p>This program is currently in development. We are crafting a deep exploration of narrative — from the parables of Jesus to the grand arc of Scripture — so you can learn to tell stories that inform, inspire, and transform.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>' WHERE slug = 'intro-storytelling'`,
+      // Update existing Architectural Thinking program with full content
+      `UPDATE programs SET status = 'coming_soon', tagline = 'Building on the Foundation of God&rsquo;s Wisdom', sample_content = '<h2>Coming Soon: Architectural Thinking Program</h2><p>This program is currently in development. We are crafting a complete curriculum on thinking like an architect — from blueprint thinking to strategic frameworks and execution systems.</p><p>In the meantime, explore <a href="/school/">Systems Thinking in Genesis</a> to start your learning journey.</p>', full_content = '<h2>Module 1: Blueprint Thinking</h2><p>Every great building starts with a blueprint. The same is true for your life, your projects, and your purpose. As the Apostle Paul writes, <em>&ldquo;According to the grace of God which was given to me, like a wise master builder I laid a foundation, and another is building on it. But each man must be careful how he builds on it. For no man can lay a foundation other than the one which is laid, which is Jesus Christ&rdquo;</em> (1&nbsp;Corinthians&nbsp;3:10-11).</p><p>Before you build anything &mdash; a business, a career, a family, a ministry &mdash; you must first see it clearly in your mind. This is blueprint thinking: the ability to envision the whole before you touch the parts.</p><h3>The Architectural Question</h3><p>God asked Job: <em>&ldquo;Where were you when I laid the foundation of the earth? Tell Me, if you have understanding&rdquo;</em> (Job&nbsp;38:4). Before every project, ask yourself: <em>What am I actually building?</em></p><ul><li>Define the purpose &mdash; Why does this exist?</li><li>Identify the foundation &mdash; What must be in place for this to stand?</li><li>Sketch the whole &mdash; What does the finished work look like?</li></ul><h3>Blueprint Exercise</h3><p><strong>Read Proverbs 24:3-4.</strong> Solomon tells us that by wisdom a house is built and by understanding it is established. Take one project or goal you are working on. Write a one-paragraph blueprint: What is its purpose? What is its foundation? What does success look like? Be specific. An architect would not build without a plan. Neither should you.</p><hr><h2>Module 2: Design Principles</h2><p>Architecture is not just about making things stand &mdash; it is about making things that work, that last, and that serve people well. Abraham <em>&ldquo;was looking forward to the city which has foundations, whose architect and builder is God&rdquo;</em> (Hebrews&nbsp;11:10). God Himself is the ultimate architect, and His creation reveals timeless design principles.</p><h3>Principle 1: Form Follows Function</h3><p>God created each thing with a purpose. The sun rules the day; the moon governs the night (Genesis&nbsp;1:16-18). In your projects, ask: <em>Does the form serve the function?</em></p><h3>Principle 2: Strength Through Structure</h3><p>Jesus said the wise man built his house on the rock (Matthew&nbsp;7:24-25). The structure &mdash; not just the surface &mdash; determines whether something withstands storms.</p><h3>Principle 3: Beauty is Not Optional</h3><p>Exodus&nbsp;35:30-35 describes Bezalel, whom God filled with wisdom, understanding, and knowledge to create artistic designs. Beauty is not decoration &mdash; it is part of God&rsquo;s design for excellence.</p><h3>Design Exercise</h3><p><strong>Read Luke 14:28-30.</strong> Jesus Himself said that before building a tower, you count the cost. Take a project you are working on. List three design principles you will follow and explain why each one matters for the people you serve.</p><hr><h2>Module 3: Strategic Frameworks</h2><p>Strategy is the art of connecting your blueprint to reality. It is not enough to have a vision &mdash; you must have a path to get there. <em>&ldquo;The plans of the diligent lead surely to advantage, but everyone who is hasty comes surely to poverty&rdquo;</em> (Proverbs&nbsp;21:5).</p><h3>Framework 1: The OSWALD Cycle</h3><p>Based on the biblical pattern of Observe, Seek, Wait, Act, Learn, Deliver:</p><ul><li><strong>Observe</strong> &mdash; <em>&ldquo;The prudent sees the evil and hides himself&rdquo;</em> (Proverbs&nbsp;22:3). Assess your situation honestly.</li><li><strong>Seek</strong> &mdash; <em>&ldquo;If any of you lacks wisdom, let him ask of God&rdquo;</em> (James&nbsp;1:5). Seek counsel from God and wise advisors.</li><li><strong>Wait</strong> &mdash; <em>&ldquo;Those who wait for the Lord will gain new strength&rdquo;</em> (Isaiah&nbsp;40:31). Timing is part of strategy.</li><li><strong>Act</strong> &mdash; <em>&ldquo;Faith without works is dead&rdquo;</em> (James&nbsp;2:26). Execute with courage.</li><li><strong>Learn</strong> &mdash; <em>&ldquo;Examine yourselves to see whether you are in the faith&rdquo;</em> (2&nbsp;Corinthians&nbsp;13:5). Review and reflect.</li><li><strong>Deliver</strong> &mdash; <em>&ldquo;Whatever you do, do your work heartily, as for the Lord&rdquo;</em> (Colossians&nbsp;3:23). Bring it to completion.</li></ul><h3>Framework 2: The Pillars of Sustainable Design</h3><p>Every lasting creation rests on four pillars:</p><ul><li><strong>Structural Integrity</strong> &mdash; Is the foundation sound?</li><li><strong>Operational Efficiency</strong> &mdash; Does it work without waste?</li><li><strong>Adaptive Resilience</strong> &mdash; Can it withstand change?</li><li><strong>Human Purpose</strong> &mdash; Whom does it serve?</li></ul><h3>Strategy Exercise</h3><p><strong>Read Proverbs 24:3-6.</strong> Write down a current challenge you face. Walk it through the OSWALD Cycle &mdash; one sentence per step. Then identify which of the four pillars is weakest in your current approach. Write one action you will take to strengthen it.</p><hr><h2>Module 4: Execution &amp; Systems</h2><p>A blueprint without execution is just a wish. Architecture becomes reality only when materials are assembled, workers are coordinated, and the building rises from the ground. As James writes, <em>&ldquo;Be doers of the word, and not hearers only, deceiving yourselves&rdquo;</em> (James&nbsp;1:22).</p><h3>The Execution Mindset</h3><p>Joseph did not just interpret Pharaoh&rsquo;s dream &mdash; he built a seven-year storage system that saved Egypt and the surrounding nations (Genesis&nbsp;41). He moved from blueprint to execution with precision and diligence.</p><h3>Four Keys to Execution</h3><ol><li><strong>Break It Down</strong> &mdash; Large visions become achievable through small, concrete steps. Proverbs&nbsp;14:1: <em>&ldquo;The wise woman builds her house.&rdquo;</em> One stone at a time.</li><li><strong>Build Feedback Loops</strong> &mdash; Wisdom cries out in the street (Proverbs&nbsp;1:20-21). Create systems that tell you when you are off course. Come, let us reason together, says the Lord (Isaiah&nbsp;1:18).</li><li><strong>Develop Rhythms</strong> &mdash; God created in six days and rested on the seventh (Genesis&nbsp;2:2-3). Work requires rest. Create sustainable rhythms, not burnout cycles.</li><li><strong>Review Relentlessly</strong> &mdash; <em>&ldquo;Let us examine our ways and test them, and let us return to the Lord&rdquo;</em> (Lamentations&nbsp;3:40). Regular review is not optional &mdash; it is how you stay on the foundation.</li></ol><h3>Final Project</h3><p><strong>Read James 1:22-25.</strong> Take the blueprint you wrote in Module 1. Write a one-page execution plan: Break it into phases, define milestones, set review dates (weekly and monthly), and identify who will hold you accountable.</p><p><em>&ldquo;Teach me, O Lord, the way of Your statutes, and I shall observe it to the end&rdquo;</em> (Psalm&nbsp;119:33).</p><p>You are no longer just a builder. You are an architect.</p>' WHERE slug = 'architectural-thinking'`,
+      // Force Systems Thinking Program to coming_soon (schema.sql seeds it as active)
+      `UPDATE programs SET status = 'coming_soon' WHERE slug = 'systems-thinking' AND status = 'active'`,
+      // Force all other programs to coming_soon (INSERT status appears to be ignored by D1)
+      `UPDATE programs SET status = 'coming_soon' WHERE slug IN ('intro-design-thinking','design-thinking-genesis','intro-biomimicry','intro-geometry','intro-computing','intro-storytelling','architectural-thinking') AND status = 'active'`,
+    ];
+    const results = [];
+    for (const sql of statements) {
+      try {
+        await db.prepare(sql).run();
+        results.push({ sql: sql.slice(0, 50) + '...', ok: true });
+      } catch (e) {
+        results.push({ sql: sql.slice(0, 50) + '...', ok: false, error: e.message });
+      }
+    }
+    return new Response(JSON.stringify({ status: 'ok', tables: results.length, results }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+      status: 500, headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+
