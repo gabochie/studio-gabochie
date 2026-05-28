@@ -12,8 +12,9 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+:root{--content-max:1440px}
 body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:24px}
-.wrap{max-width:900px;margin:0 auto}
+.wrap{max-width:var(--content-max);margin:0 auto;width:100%}
 .header{display:flex;align-items:center;gap:12px;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid #1E3250}
 .header img{width:36px;height:36px;border-radius:50%}
 .header h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#F1F5F9}
