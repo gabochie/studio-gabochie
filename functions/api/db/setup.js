@@ -123,6 +123,7 @@ export async function onRequest(context) {
       `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`,
       `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`,
       `DELETE FROM gallery WHERE id NOT IN (SELECT MIN(id) FROM gallery GROUP BY title, image_url)`,
+      `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`,
       // ── Unique indexes so INSERT OR IGNORE prevents future duplicates ──
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_testimonials_unique ON testimonials(author, content)`,
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_stats_unique ON stats(label, value)`,
@@ -224,6 +225,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
       `CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source)`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_tasks_title ON tasks(title)`,
       // Sponsor auth tables
       `CREATE TABLE IF NOT EXISTS sponsors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
