@@ -7,7 +7,7 @@ var mockPlans = [
   { id: 'founding', name: 'Founding Partner', amount: 2500, currency: 'GHS', per: '/yr', popular: false, features: ['All Annual', 'Name on website'] },
 ];
 
-var mockRates = { USD: 0.083, EUR: 0.077, GBP: 0.065 };
+var mockRates = { GHS: 15, USD: 1.08, EUR: 1.0, GBP: 0.86 };
 
 test.describe('Support page', function () {
   test.beforeEach(async function ({ page }) {
@@ -24,7 +24,7 @@ test.describe('Support page', function () {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ amount: 1, base: 'GHS', date: '2026-05-27', rates: mockRates }),
+        body: JSON.stringify({ amount: 1, base: 'EUR', date: '2026-05-27', rates: mockRates }),
       });
     });
     await page.goto('/support/');
@@ -102,13 +102,13 @@ test.describe('Support page', function () {
 
   test('dollar amounts are mathematically correct', async function ({ page }) {
     await page.locator('#currencyToggle .currency-btn').nth(1).click();
-    // GH\u00a250 \u00d7 0.083 = 4.15, decimals(4.15) = 1, toFixed(1) = "4.2"
-    // GH\u00a2500 \u00d7 0.083 = 41.5, decimals(41.5) = 0, toFixed(0) = "42"
-    // GH\u00a22500 \u00d7 0.083 = 207.5, decimals(207.5) = 0, toFixed(0) = "208"
+    // GHS 50 / 15 GHS-per-EUR \u00d7 1.08 USD-per-EUR = 3.6, toFixed(1) = "3.6"
+    // GHS 500 / 15 \u00d7 1.08 = 36, toFixed(0) = "36"
+    // GHS 2500 / 15 \u00d7 1.08 = 180, toFixed(0) = "180"
     var prices = page.locator('.tier-price');
-    await expect(prices.nth(0)).toContainText('$4.2');
-    await expect(prices.nth(1)).toContainText('$42');
-    await expect(prices.nth(2)).toContainText('$208');
+    await expect(prices.nth(0)).toContainText('$3.6');
+    await expect(prices.nth(1)).toContainText('$36');
+    await expect(prices.nth(2)).toContainText('$180');
   });
 
   test('small converted line is visible below each price', async function ({ page }) {

@@ -19,11 +19,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 .page-wrap{max-width:var(--content-max);margin:0 auto;padding:0 40px;width:100%}
 
 /* Hero */
-.hero{text-align:center;padding:80px 0 48px}
+.hero{text-align:center;padding:80px 40px 48px;background:linear-gradient(135deg,#0A1628 0%,#162540 50%,#0A1628 100%);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(201,168,76,0.04) 0%,transparent 50%);pointer-events:none}
 .hero-eyebrow{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
-.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:700;color:var(--ink);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:700;color:#E8EEF7;line-height:.9;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:16px}
 .hero h1 em{font-style:italic;color:var(--gold)}
-.hero p{font-size:17px;color:var(--ink-lt);max-width:640px;margin:0 auto 32px;line-height:1.7}
+.hero p{font-size:17px;color:rgba(250,250,250,.6);max-width:640px;margin:0 auto 32px;line-height:1.7;position:relative}
 
 /* Mission stat */
 .mission-strip{background:var(--ink);padding:40px;border-radius:12px;margin:0 auto 64px;max-width:900px;text-align:center}
@@ -131,20 +132,20 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   </div>
 </nav>
 
-<div class="page-wrap">
-
 <div class="hero">
   <div class="hero-eyebrow">Fuel the Mission</div>
   <h1>Support the <em>Studio</em></h1>
-  <p>Every book, video, and teaching is free because of people like you. Choose how you want to support this work — one-time or monthly.</p>
+  <p>Your support equips the next generation of African creators, thinkers, and leaders with biblical truth and creative excellence. Every contribution goes directly into producing courses, publishing books, and reaching students who would otherwise have no access to this kind of formation.</p>
 </div>
 
+<div class="page-wrap">
+
 <div class="mission-strip">
-  <p>Your support keeps the School of Creativity, Love &amp; Wisdom accessible to everyone — no paywalls, no ads, no gatekeeping. Every contribution goes directly into creating free resources, reaching more people, and building a better future for creative education in Africa and beyond.</p>
+  <p>The School of Creativity, Love &amp; Wisdom exists to make biblically-rooted, practically excellent formation accessible to all — regardless of means. Your partnership makes this possible. Here is what your support is building:</p>
   <div class="stat-row">
-    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Free Content</span></div>
-    <div class="stat"><span class="stat-num">Free</span><span class="stat-label">Books &amp; Resources</span></div>
-    <div class="stat"><span class="stat-num">You</span><span class="stat-label">Make It Possible</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Courses</span></div>
+    <div class="stat"><span class="stat-num">7+</span><span class="stat-label">Books Published</span></div>
+    <div class="stat"><span class="stat-num">Global</span><span class="stat-label">Students Reached</span></div>
   </div>
 </div>
 
@@ -253,6 +254,7 @@ var plans = [];
 var publicKey = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
 var exchangeRates = null;
 var selectedCurrency = 'GHS';
+var fallbackRates = { GHS: 15.2, USD: 1.09, EUR: 1.0, GBP: 0.86 };
 
 function trackEvent(type, data) {
   if (navigator.sendBeacon) {
@@ -264,12 +266,17 @@ function trackEvent(type, data) {
 
 function loadPlans() {
   // Fetch live exchange rates from Frankfurter API (no key needed)
-  fetch('https://api.frankfurter.app/latest?from=GHS&to=USD,EUR,GBP').then(function(r){return r.json()}).then(function(d){
+  // Uses EUR as base because GHS is not tracked by ECB data
+  fetch('https://api.frankfurter.app/latest?from=EUR&to=GHS,USD,GBP').then(function(r){return r.json()}).then(function(d){
     if (d.rates) {
       exchangeRates = d.rates;
       if (plans.length) renderPlans();
     }
-  }).catch(function(){});
+  }).catch(function(e){
+    console.error('Frankfurter API failed, using fallback rates', e);
+    if (!exchangeRates) exchangeRates = fallbackRates;
+    if (plans.length) renderPlans();
+  });
   // Fetch subscription plans
   fetch('/api/subscription/plans').then(function(r){return r.json()}).then(function(d){
     if (d.status !== 'ok') throw new Error('Failed to load');
@@ -291,8 +298,10 @@ function loadPlans() {
 function formatPrice(amount, currency) {
   if (currency === 'GHS') return 'GH\u00a2 ' + amount;
   var rates = exchangeRates || {};
-  if (!rates[currency]) return null;
-  var converted = amount * rates[currency];
+  // Cross-rate: convert GHS → EUR → target currency
+  // rates.GHS = how many GHS per EUR, rates[target] = how many target per EUR
+  if (!rates.GHS || !rates[currency]) return null;
+  var converted = (amount / rates.GHS) * rates[currency];
   var d = converted >= 10 ? 0 : 1;
   var sym = {USD: '$', EUR: '\u20AC', GBP: '\u00A3'};
   return (sym[currency] || '') + converted.toFixed(d);
