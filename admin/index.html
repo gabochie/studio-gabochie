@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="admin.css">
 <style>
 /* ── Live stat cards ── */
@@ -106,21 +107,26 @@
 .cs-toggle-label{font-size:11px;color:#3A5278;font-weight:600;min-width:40px}
 
 /* ── Country list ── */
-.country-list{display:flex;flex-wrap:wrap;gap:6px}
-.country-item{padding:4px 10px;border-radius:4px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.1);font-size:11px;color:#94A3B8;display:flex;align-items:center;gap:6px}
-.country-item .flag{font-size:14px}
-.country-item .count{color:#3B82F6;font-weight:600;margin-left:auto}
+.chart-grid-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.chart-grid-3{grid-template-columns:1fr;gap:16px}}
 
-/* ── Stacked horizontal bar ── */
-.stacked-bar-wrap{height:36px;border-radius:6px;overflow:hidden;display:flex;margin-bottom:12px;background:#1E3250}
-.stacked-bar-wrap .bar-segment{height:100%;transition:width .6s ease;position:relative;min-width:4px}
-.stacked-bar-wrap .bar-segment:hover{opacity:.8}
-.stacked-bar-wrap .bar-segment .tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:4px 8px;font-size:10px;color:#CBD5E1;white-space:nowrap;z-index:10}
-.stacked-bar-wrap .bar-segment:hover .tooltip{display:block}
-.legend-wrap{display:flex;flex-wrap:wrap;gap:8px}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#5A7A9F}
-.legend-item .swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.legend-item .pct{color:#CBD5E1;font-weight:600}
+/* ── Donut chart ── */
+.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.donut-svg{flex-shrink:0}
+.donut-legend{flex:1;min-width:120px}
+.donut-legend-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(30,50,80,.3);font-size:11px;color:#94A3B8}
+.donut-legend-item:last-child{border:none}
+.donut-legend-item .dl-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.donut-legend-item .dl-pct{color:#F1F5F9;font-weight:700;margin-left:auto;font-size:13px}
+.donut-legend-item .dl-count{color:#3A5278;margin-right:8px}
+
+/* ── World map ── */
+.map-wrap{height:280px;border-radius:8px;overflow:hidden;border:1px solid #1E3250;position:relative}
+.map-wrap .leaflet-container{background:#0A1628;font-family:'DM Sans',sans-serif}
+.map-wrap .leaflet-control-zoom a{background:#0F1E38;color:#CBD5E1;border-color:#1E3250}
+.map-wrap .leaflet-control-zoom a:hover{background:#1E3250;color:#F1F5F9}
+.map-popup{font-size:11px;line-height:1.5}
+.map-popup strong{display:block;font-size:13px;color:#0A1628}
 </style>
 </head>
 <body>
@@ -191,31 +197,29 @@
     </div>
     <div class="chart-card">
       <div class="card-header">
-        <span class="card-title">Top Countries</span>
-        <span class="card-sub" id="countryCount">0</span>
+        <span class="card-title">Traffic Map</span>
+        <span class="card-sub" id="countryCount">Loading...</span>
       </div>
-      <div class="country-list" id="countriesContainer"><span class="loading-pulse"></span></div>
+      <div class="map-wrap" id="worldMap"><div class="loading-pulse" style="margin:130px auto"></div></div>
     </div>
   </div>
 
   <!-- Audience Insights -->
   <div class="section-title" style="margin-top:0">&#128202; Audience Insights</div>
-  <div class="chart-grid">
+  <div class="chart-grid chart-grid-3">
     <div class="chart-card">
       <div class="card-header">
         <span class="card-title">Devices</span>
         <span class="card-sub" id="audDeviceTotal">0</span>
       </div>
-      <div class="stacked-bar-wrap" id="audDeviceChart"><span class="loading-pulse"></span></div>
-      <div class="legend-wrap" id="audDeviceLegend"></div>
+      <div class="donut-wrap" id="audDeviceWrap"><span class="loading-pulse"></span></div>
     </div>
     <div class="chart-card">
       <div class="card-header">
         <span class="card-title">Traffic Sources</span>
         <span class="card-sub" id="audSourceTotal">0</span>
       </div>
-      <div class="stacked-bar-wrap" id="audSourceChart"><span class="loading-pulse"></span></div>
-      <div class="legend-wrap" id="audSourceLegend"></div>
+      <div class="donut-wrap" id="audSourceWrap"><span class="loading-pulse"></span></div>
     </div>
     <div class="chart-card">
       <div class="card-header">
@@ -439,55 +443,101 @@ function renderActivity(data){
   el.innerHTML = html;
 }
 
-function renderCountries(data){
-  var el = $('countriesContainer');
+var worldMap = null, mapMarkers = [];
+
+function renderWorldMap(data){
+  var el = $('worldMap');
   var count = $('countryCount');
   if(!el) return;
   if(!data || !data.length){
-    el.innerHTML = '<span style="color:#3A5278;font-size:12px">No country data yet</span>';
-    if(count) count.textContent='0';
+    el.innerHTML = '<div style="color:#3A5278;font-size:12px;text-align:center;padding:130px 0">No country data yet</div>';
+    if(count) count.textContent='0 countries';
     return;
   }
-  if(count) count.textContent=data.length;
-  var html = data.map(function(c){
-    return '<div class="country-item"><span class="flag">' + (c.country==='Unknown'?'&#127759;':'') + '</span>' + c.country + ' <span class="count">' + fmtNum(c.count) + '</span></div>';
-  }).join('');
-  el.innerHTML = html;
+  if(count) count.textContent=data.length + ' countries';
+  if(!worldMap){
+    worldMap = L.map(el, { zoomControl: false, attributionControl: false }).setView([20, 0], 2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 18,
+      subdomains: 'abcd'
+    }).addTo(worldMap);
+    L.control.zoom({ position: 'bottomright' }).addTo(worldMap);
+  }
+  mapMarkers.forEach(function(m) { worldMap.removeLayer(m); });
+  mapMarkers = [];
+  var maxCount = data.reduce(function(s, d) { return Math.max(s, d.count); }, 1);
+  data.forEach(function(c) {
+    if(c.country === 'Unknown') return;
+    var radius = Math.max(5, (c.count / maxCount) * 30);
+    var lat = null, lng = null;
+    var known = COUNTRY_COORDS[c.country];
+    if(known){ lat = known[0]; lng = known[1]; }
+    if(lat == null) return;
+    var marker = L.circleMarker([lat, lng], {
+      radius: radius, fillColor: '#3B82F6', color: '#60A5FA', weight: 1, fillOpacity: 0.5
+    }).addTo(worldMap);
+    marker.bindPopup('<div class="map-popup"><strong>' + c.country + '</strong>' + fmtNum(c.count) + ' visitors</div>');
+    mapMarkers.push(marker);
+  });
+  if(mapMarkers.length){
+    var group = L.featureGroup(mapMarkers);
+    worldMap.fitBounds(group.getBounds().pad(0.2));
+  }
 }
 
 var DEVICE_COLORS = { Mobile: '#3B82F6', Tablet: '#8B5CF6', Desktop: '#22C55E', Unknown: '#5A7A9F' };
 var SOURCE_COLORS = { Direct: '#22C55E', Organic: '#3B82F6', Social: '#EC4899', Referral: '#C9A84C', Email: '#F59E0B', Unknown: '#5A7A9F' };
+var COUNTRY_COORDS = {
+  'United States':[37.09,-95.71],'Canada':[56.13,-106.35],'United Kingdom':[55.38,-3.44],'Germany':[51.17,10.45],
+  'France':[46.60,1.88],'Italy':[41.87,12.57],'Spain':[40.46,-3.75],'Netherlands':[52.13,5.29],'Belgium':[50.85,4.35],
+  'Switzerland':[46.82,8.23],'Sweden':[60.13,18.64],'Norway':[60.47,8.47],'Denmark':[56.26,9.50],'Finland':[61.92,25.75],
+  'Poland':[51.92,19.15],'Portugal':[39.40,-8.22],'Greece':[39.07,21.82],'Ireland':[53.14,-7.70],'Austria':[47.52,14.55],
+  'Romania':[45.94,24.97],'Czech Republic':[49.82,15.47],'Hungary':[47.16,19.50],'Ukraine':[48.38,31.17],
+  'Russia':[61.52,105.32],'Turkey':[38.96,35.24],'India':[20.59,78.96],'China':[35.86,104.20],'Japan':[36.20,138.25],
+  'South Korea':[35.91,127.77],'Indonesia':[-0.79,113.92],'Philippines':[12.88,121.77],'Vietnam':[14.06,108.28],
+  'Thailand':[15.87,100.99],'Malaysia':[4.21,101.98],'Singapore':[1.35,103.82],'Australia':[-25.27,133.78],
+  'New Zealand':[-40.90,174.89],'Nigeria':[9.08,8.68],'South Africa':[-30.56,22.94],'Kenya':[-0.02,37.91],
+  'Ethiopia':[9.15,40.49],'Ghana':[7.95,-1.02],'Egypt':[26.82,30.80],'Morocco':[31.17,-7.13],
+  'Tanzania':[-6.37,34.89],'Uganda':[1.37,32.29],'Algeria':[28.03,1.66],'Angola':[-11.20,17.87],
+  'Brazil':[-14.24,51.93],'Argentina':[-38.42,-63.62],'Colombia':[4.57,-74.30],'Chile':[-35.68,-71.54],
+  'Peru':[-9.19,-75.02],'Mexico':[23.63,-102.55],'United Arab Emirates':[23.42,53.85],'Saudi Arabia':[23.88,45.08],
+  'Israel':[31.05,34.85],'Iran':[32.43,53.69],'Pakistan':[30.38,69.35],'Bangladesh':[23.68,90.36]
+};
 
-function renderStackedBar(containerId, data, labelKey, valueKey, colors, total) {
+function renderDonut(containerId, data, labelKey, valueKey, colors, total) {
   var el = $(containerId);
   if (!el) return;
   if (!data || !data.length) {
-    el.innerHTML = '<div style="color:#3A5278;font-size:12px;text-align:center;padding:10px 0">No data</div>';
+    el.innerHTML = '<div style="color:#3A5278;font-size:12px;text-align:center;padding:20px 0">No data</div>';
     return;
   }
   var max = total || data.reduce(function(s, d) { return s + d[valueKey]; }, 0) || 1;
-  var html = data.map(function(d) {
-    var pct = Math.round((d[valueKey] / max) * 100);
+  var R = 40, C = 2 * Math.PI * R;
+  var sorted = data.slice().sort(function(a, b) { return b[valueKey] - a[valueKey]; });
+  var cumPct = 0;
+  var segments = sorted.map(function(d) {
+    var pct = max > 0 ? (d[valueKey] / max) : 0;
+    var offset = cumPct;
+    cumPct += pct;
+    var dash = pct * C;
+    var gap = C - dash;
     var color = colors[d[labelKey]] || '#3A5278';
-    return '<div class="bar-segment" style="width:' + pct + '%;background:' + color + '"><span class="tooltip">' + d[labelKey] + ': ' + fmtNum(d[valueKey]) + ' (' + pct + '%)</span></div>';
-  }).join('');
-  el.innerHTML = html;
-}
-
-function renderLegend(containerId, data, labelKey, valueKey, colors, total) {
-  var el = $(containerId);
-  if (!el) return;
-  if (!data || !data.length) {
-    el.innerHTML = '';
-    return;
-  }
-  var max = total || data.reduce(function(s, d) { return s + d[valueKey]; }, 0) || 1;
-  var html = data.map(function(d) {
-    var pct = Math.round((d[valueKey] / max) * 100);
-    var color = colors[d[labelKey]] || '#3A5278';
-    return '<div class="legend-item"><span class="swatch" style="background:' + color + '"></span>' + d[labelKey] + ' <span class="pct">' + pct + '%</span> <span style="color:#3A5278">(' + fmtNum(d[valueKey]) + ')</span></div>';
-  }).join('');
-  el.innerHTML = html;
+    var lx = 50 + R * Math.sin(2 * Math.PI * (offset + pct / 2));
+    var ly = 50 - R * Math.cos(2 * Math.PI * (offset + pct / 2));
+    return { pct: Math.round(pct * 100), color: color, dash: dash, gap: gap, offset: -offset * C, label: d[labelKey], count: d[valueKey], cx: lx.toFixed(1), cy: ly.toFixed(1) };
+  });
+  var svg = '<svg class="donut-svg" width="140" height="140" viewBox="0 0 100 100"><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#1E3250" stroke-width="12"/>';
+  segments.forEach(function(s) {
+    svg += '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + s.color + '" stroke-width="12" stroke-dasharray="' + s.dash + ' ' + C + '" stroke-dashoffset="' + s.offset + '" transform="rotate(-90 50 50)" opacity="0.9"><title>' + s.label + ': ' + fmtNum(s.count) + ' (' + s.pct + '%)</title></circle>';
+  });
+  var center = segments.length ? segments[0] : { label: '', count: 0, pct: 0 };
+  svg += '<text x="50" y="46" text-anchor="middle" fill="#F1F5F9" font-size="18" font-weight="700">' + center.pct + '%</text><text x="50" y="60" text-anchor="middle" fill="#5A7A9F" font-size="7">' + center.label + '</text></svg>';
+  var legend = '<div class="donut-legend">';
+  segments.forEach(function(s) {
+    legend += '<div class="donut-legend-item"><span class="dl-swatch" style="background:' + s.color + '"></span>' + s.label + '<span class="dl-count">' + fmtNum(s.count) + '</span><span class="dl-pct">' + s.pct + '%</span></div>';
+  });
+  legend += '</div>';
+  el.innerHTML = svg + legend;
 }
 
 function loadAudience() {
@@ -502,10 +552,8 @@ function loadAudience() {
     var devices = d.devices || [];
     var sources = d.sources || [];
     var referrers = d.top_referrers || [];
-    renderStackedBar('audDeviceChart', devices, 'type', 'count', DEVICE_COLORS, tot.total);
-    renderLegend('audDeviceLegend', devices, 'type', 'count', DEVICE_COLORS, tot.total);
-    renderStackedBar('audSourceChart', sources, 'source', 'count', SOURCE_COLORS, tot.total);
-    renderLegend('audSourceLegend', sources, 'source', 'count', SOURCE_COLORS, tot.total);
+    renderDonut('audDeviceWrap', devices, 'type', 'count', DEVICE_COLORS, tot.total);
+    renderDonut('audSourceWrap', sources, 'source', 'count', SOURCE_COLORS, tot.total);
     $('audReferrerCount').textContent = referrers.length + ' referrers';
     var maxRef = referrers.length ? referrers[0].count : 1;
     var refHtml = referrers.map(function(r) {
@@ -516,9 +564,9 @@ function loadAudience() {
     }).join('');
     $('audReferrerList').innerHTML = referrers.length ? refHtml : '<div style="color:#3A5278;font-size:12px;padding:20px;text-align:center">No referrer data yet</div>';
   }).catch(function(err) {
-    ['audDeviceChart', 'audSourceChart', 'audReferrerList'].forEach(function(id) {
+    ['audDeviceWrap', 'audSourceWrap', 'audReferrerList'].forEach(function(id) {
       var el = $(id);
-      if (el) el.innerHTML = '<div style="color:#3A5278;font-size:12px;text-align:center;padding:20px">' + (id === 'audReferrerList' ? 'Connect D1 for referrer data' : 'Connect D1 for device/source data') + '</div>';
+      if (el) el.innerHTML = '<div style="color:#3A5278;font-size:12px;text-align:center;padding:20px">' + 'No data</div>';
     });
     $('audDeviceTotal').textContent = '\u2014';
     $('audSourceTotal').textContent = '\u2014';
@@ -581,7 +629,7 @@ function loadSummary(){
     $('statCountries').textContent = fmtNum(countries.length || 0);
     $('statCountries').className = 'num blue';
     $('statCountriesSub').textContent = countries.length + ' countries in 30 days';
-    renderCountries(countries);
+    renderWorldMap(countries);
 
     // Conversion rate
     var conv = d.conversion || {};
@@ -799,5 +847,6 @@ setInterval(loadSummary, 30000);
 setInterval(loadAudience, 60000);
 setInterval(loadCI, 60000);
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
