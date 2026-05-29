@@ -304,15 +304,15 @@ var studentName = '';
 
 // ——— Auth State ———
 function getStudent() {
-  try { return JSON.parse(sessionStorage.getItem('ga_student') || 'null'); } catch(e){return null}
+  try { return JSON.parse(localStorage.getItem('ga_student') || 'null'); } catch(e){return null}
 }
 
 function setStudent(s) {
-  sessionStorage.setItem('ga_student', JSON.stringify(s));
+  localStorage.setItem('ga_student', JSON.stringify(s));
 }
 
 function clearStudent() {
-  sessionStorage.removeItem('ga_student');
+  localStorage.removeItem('ga_student');
 }
 
 function toggleAuth(form) {

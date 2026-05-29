@@ -580,6 +580,7 @@ function handleLogin() {
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.status === 'ok' && d.enrollments && d.enrollments.length > 0) {
+        try { localStorage.setItem('ga_student', JSON.stringify(d.student)); } catch(e){}
         var enrollments = d.enrollments;
         if (enrollments.length === 1) {
           window.location.href = '/dashboard/?token=' + encodeURIComponent(enrollments[0].access_token);
