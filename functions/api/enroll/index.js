@@ -7,12 +7,18 @@ function genToken() {
   return 'ga_' + Date.now().toString(36) + '_' + r;
 }
 
+function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
+
 export async function onRequest(context) {
   var { request, env } = context;
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: cors });
+  }
   var db = env.DB;
   if (!db) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
-      status: 501, headers: { 'Content-Type': 'application/json' }
+      status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   var url = new URL(request.url);
@@ -21,7 +27,7 @@ export async function onRequest(context) {
     var token = url.searchParams.get('token') || '';
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     try {
@@ -30,10 +36,9 @@ export async function onRequest(context) {
       ).bind(token).first();
       if (!row) {
         return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
-          status: 404, headers: { 'Content-Type': 'application/json' }
+          status: 404, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
         });
       }
-      // Only return full_content if enrollment is active (paid or free program)
       var isPaidAccess = row.status === 'active';
       var response = {
         status: 'ok',
@@ -58,30 +63,40 @@ export async function onRequest(context) {
         }
       };
       return new Response(JSON.stringify(response), {
-        headers: { 'Content-Type': 'application/json' }
+        headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     } catch (err) {
       return new Response(JSON.stringify({ status: 'error', message: err.message }), {
-        status: 500, headers: { 'Content-Type': 'application/json' }
+        status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
   }
 
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: { 'Content-Type': 'application/json' }
+      status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 
   try {
     var body = await request.json();
     var programSlug = body.program_slug || '';
-    var studentName = (body.name || '').trim();
+    var studentName = sanitize(body.name);
     var studentEmail = (body.email || '').trim().toLowerCase();
-    var studentPhone = (body.phone || '').trim();
+    var studentPhone = sanitize(body.phone);
     if (!programSlug || !studentName || !studentEmail) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing required fields' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+    if (studentName.length > 100 || studentPhone.length > 50) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Input too long' }), {
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+    if (!studentEmail.includes('@') || studentEmail.length > 254) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Invalid email address' }), {
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
 
@@ -90,16 +105,15 @@ export async function onRequest(context) {
     ).bind(programSlug).first();
     if (!program) {
       return new Response(JSON.stringify({ status: 'error', message: 'Program not found' }), {
-        status: 404, headers: { 'Content-Type': 'application/json' }
+        status: 404, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     if (program.status !== 'active') {
       return new Response(JSON.stringify({ status: 'error', message: 'This program is not yet available. It is currently: ' + program.status }), {
-        status: 403, headers: { 'Content-Type': 'application/json' }
+        status: 403, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
 
-    // Paid programs get 'sample' status, free programs get 'active' (full access)
     var enrollmentStatus = program.price > 0 ? 'sample' : 'active';
 
     var existing = await db.prepare(
@@ -107,7 +121,7 @@ export async function onRequest(context) {
     ).bind(program.id, studentEmail).first();
     if (existing) {
       return new Response(JSON.stringify({ status: 'error', message: 'You are already enrolled in this program' }), {
-        status: 409, headers: { 'Content-Type': 'application/json' }
+        status: 409, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
 
@@ -135,7 +149,6 @@ export async function onRequest(context) {
         });
       } catch (_e) {}
 
-      // Queue day-3 enrollment follow-up
       try {
         dashUrl = 'https://gideonabochie.org/dashboard/?token=' + token;
         var followupHtml = enrollmentFollowup(studentName, program.title, dashUrl);
@@ -155,10 +168,10 @@ export async function onRequest(context) {
         access_level: enrollmentStatus === 'sample' ? 'sample' : 'full',
         sample_content: program.sample_content
       }
-    }), { headers: { 'Content-Type': 'application/json' } });
+    }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: err.message }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
+      status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 }

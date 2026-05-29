@@ -1,41 +1,52 @@
+function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
+
 export async function onRequest(context) {
   var { request, env } = context;
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: cors });
+  }
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ status: 'error', message: 'Method not allowed' }), {
-      status: 405, headers: { 'Content-Type': 'application/json' }
+      status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   var db = env.DB;
   if (!db) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
-      status: 501, headers: { 'Content-Type': 'application/json' }
+      status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   try {
     var body = await request.json();
-    var name = (body.name || '').trim();
+    var name = sanitize(body.name);
     var email = (body.email || '').trim().toLowerCase();
-    var phone = (body.phone || '').trim();
+    var phone = sanitize(body.phone);
     var accessCode = (body.access_code || '').trim();
     if (!name || !email || !accessCode) {
       return new Response(JSON.stringify({ status: 'error', message: 'Name, email, and access code are required' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     if (accessCode.length < 4) {
       return new Response(JSON.stringify({ status: 'error', message: 'Access code must be at least 4 characters' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
-    if (!email.includes('@')) {
+    if (!email.includes('@') || email.length > 254) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid email address' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+    if (name.length > 100 || accessCode.length > 100 || phone.length > 50) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Input too long' }), {
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     var existing = await db.prepare('SELECT id FROM students WHERE email = ?').bind(email).first();
     if (existing) {
       return new Response(JSON.stringify({ status: 'error', message: 'An account with this email already exists' }), {
-        status: 409, headers: { 'Content-Type': 'application/json' }
+        status: 409, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     await db.prepare(
@@ -51,10 +62,10 @@ export async function onRequest(context) {
       status: 'ok',
       student: { name: name, email: email },
       enrollments: enrollments.results || []
-    }), { headers: { 'Content-Type': 'application/json' } });
+    }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: err.message }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
+      status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 }

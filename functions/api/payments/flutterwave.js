@@ -137,6 +137,44 @@ export async function onRequest(context) {
       }
     }
 
+    // Handle enrollment upgrade payments (tx_ref prefix: upgrade_)
+    if (event === 'charge.completed' && tx_ref.startsWith('upgrade_')) {
+      var upgradeResult = await db.prepare(
+        `UPDATE enrollments SET status = 'active', payment_amount = ? WHERE payment_ref = ? AND status = 'sample'`
+      ).bind(verifiedAmount, tx_ref).run();
+      if (upgradeResult && upgradeResult.changes > 0 && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+        try {
+          var upgEnrollment = await db.prepare(
+            'SELECT e.access_token, e.student_name, p.title FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.payment_ref = ?'
+          ).bind(tx_ref).first();
+          if (upgEnrollment) {
+            var upgHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
+              '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
+              '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
+              '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
+              '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>' +
+              '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Full Access Activated</p></td></tr>' +
+              '<tr><td style="padding:32px">' +
+              '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + upgEnrollment.student_name + ',</p>' +
+              '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your full access to <strong style="color:#C9A84C">' + upgEnrollment.title + '</strong> is now active. Start learning at your own pace.</p>' +
+              '<a href="https://gideonabochie.org/dashboard/?token=' + upgEnrollment.access_token + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
+              '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
+              '</td></tr></table></td></tr></table></body></html>';
+            await fetch('https://api.brevo.com/v3/smtp/email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+              body: JSON.stringify({
+                sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+                to: [{ email: donor_email, name: upgEnrollment.student_name }],
+                subject: 'Full Access Activated — ' + upgEnrollment.title,
+                htmlContent: upgHtml
+              })
+            });
+          }
+        } catch (_e) {}
+      }
+    }
+
     // Handle subscription payments (tx_ref prefix: sub_)
     if (event === 'charge.completed' && tx_ref.startsWith('sub_')) {
       const tierMap = { monthly: 'Monthly Supporter', annual: 'Annual Patron', founding: 'Founding Partner' };

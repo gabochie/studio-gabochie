@@ -1,14 +1,18 @@
 export async function onRequest(context) {
   var { request, env } = context;
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: cors });
+  }
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ status: 'error', message: 'Method not allowed' }), {
-      status: 405, headers: { 'Content-Type': 'application/json' }
+      status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   var db = env.DB;
   if (!db) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
-      status: 501, headers: { 'Content-Type': 'application/json' }
+      status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   try {
@@ -17,7 +21,7 @@ export async function onRequest(context) {
     var accessCode = (body.access_code || '').trim();
     if (!email || !accessCode) {
       return new Response(JSON.stringify({ status: 'error', message: 'Email and access code are required' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     var student = await db.prepare(
@@ -25,7 +29,7 @@ export async function onRequest(context) {
     ).bind(email, accessCode).first();
     if (!student) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
-        status: 401, headers: { 'Content-Type': 'application/json' }
+        status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     var enrollments = await db.prepare(
@@ -38,10 +42,10 @@ export async function onRequest(context) {
       status: 'ok',
       student: { id: student.id, name: student.name, email: student.email },
       enrollments: enrollments.results || []
-    }), { headers: { 'Content-Type': 'application/json' } });
+    }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: err.message }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
+      status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 }

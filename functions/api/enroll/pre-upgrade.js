@@ -18,14 +18,13 @@ export async function onRequest(context) {
   try {
     var body = await request.json();
     var token = (body.token || '').trim();
-    var tx_ref = (body.tx_ref || '').trim();
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     var enrollment = await db.prepare(
-      'SELECT e.id, e.status, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
+      'SELECT e.id, e.status, p.price FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
     ).bind(token).first();
     if (!enrollment) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
@@ -33,24 +32,17 @@ export async function onRequest(context) {
       });
     }
     if (enrollment.status === 'active') {
-      return new Response(JSON.stringify({ status: 'ok', message: 'Already upgraded' }), {
+      return new Response(JSON.stringify({ status: 'ok', tx_ref: '', price: enrollment.price, message: 'Already upgraded' }), {
         headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
-    if (tx_ref) {
-      await db.prepare(
-        'UPDATE enrollments SET status = ?, payment_ref = COALESCE(NULLIF(payment_ref, ''), ?) WHERE id = ?'
-      ).bind('active', tx_ref, enrollment.id).run();
-    } else {
-      await db.prepare(
-        'UPDATE enrollments SET status = ? WHERE id = ?'
-      ).bind('active', enrollment.id).run();
-    }
-    return new Response(JSON.stringify({
-      status: 'ok',
-      message: 'Upgraded to full access',
-      full_content: enrollment.full_content || ''
-    }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    var tx_ref = 'upgrade_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+    await db.prepare(
+      'UPDATE enrollments SET payment_ref = ? WHERE id = ? AND status = ?'
+    ).bind(tx_ref, enrollment.id, 'sample').run();
+    return new Response(JSON.stringify({ status: 'ok', tx_ref: tx_ref, price: enrollment.price }), {
+      headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: err.message }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)

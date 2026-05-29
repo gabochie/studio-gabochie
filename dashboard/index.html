@@ -414,60 +414,78 @@ function confettiBurst() {
 
 function handleUpgrade() {
   var btn = document.getElementById('upgradeBtn');
+  var note = document.getElementById('upgradeNote');
   btn.disabled = true;
-  btn.textContent = 'Opening payment...';
+  btn.textContent = 'Preparing payment...';
+  note.textContent = '';
 
-  fetch('/api/enroll?token=' + encodeURIComponent(token))
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status !== 'ok' || !data.enrollment) throw new Error('Invalid enrollment');
-      var e = data.enrollment;
-      var txRef = 'upgrade_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  fetch('/api/enroll/pre-upgrade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: token })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status !== 'ok' || !data.tx_ref) {
+      if (data.message === 'Already upgraded') { loadDashboard(); return; }
+      throw new Error(data.message || 'Failed to prepare payment');
+    }
+    var txRef = data.tx_ref;
+    var price = data.price;
+    btn.textContent = 'Opening payment...';
 
-      FlutterwaveCheckout({
-        public_key: FLW_PUBLIC_KEY,
-        tx_ref: txRef,
-        amount: e.price,
-        currency: 'GHS',
-        customer: { email: e.student_email, name: e.student_name },
-        payment_options: 'card, mobilemoneyghana, ussd',
-        callback: function(payment) {
-          if (payment.status === 'completed' || payment.status === 'successful') {
-            fetch('/api/enroll/upgrade', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ token: token, tx_ref: txRef, amount: e.price })
-            }).then(function(r) { return r.json(); }).then(function(res) {
-              if (res.status === 'ok') {
-                btn.textContent = 'Upgrade Complete!';
-                loadDashboard(); // Reload with full access
-              } else {
-                btn.disabled = false;
-                btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
-                document.getElementById('upgradeNote').textContent = 'Payment received but upgrade failed. Contact info@gideonabochie.com.';
-              }
-            }).catch(function() {
+    fetch('/api/enroll?token=' + encodeURIComponent(token))
+      .then(function(r) { return r.json(); })
+      .then(function(edata) {
+        if (edata.status !== 'ok' || !edata.enrollment) throw new Error('Invalid enrollment');
+        var e = edata.enrollment;
+
+        FlutterwaveCheckout({
+          public_key: FLW_PUBLIC_KEY,
+          tx_ref: txRef,
+          amount: price,
+          currency: 'GHS',
+          customer: { email: e.student_email, name: e.student_name },
+          payment_options: 'card, mobilemoneyghana, ussd',
+          callback: function(payment) {
+            if (payment.status === 'completed' || payment.status === 'successful') {
+              note.textContent = 'Payment confirmed! Activating your access...';
+              fetch('/api/enroll/upgrade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: token })
+              }).then(function(r) { return r.json(); }).then(function(res) {
+                if (res.status === 'ok') {
+                  btn.textContent = 'Upgrade Complete!';
+                  loadDashboard();
+                } else {
+                  btn.disabled = false;
+                  btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+                  note.textContent = 'Payment received but activation delayed. Your access will be granted shortly.';
+                }
+              }).catch(function() {
+                btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+                note.textContent = 'Payment confirmed! Activation in progress. Refresh the page in a minute.';
+              });
+            } else {
               btn.disabled = false;
-              btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
-              document.getElementById('upgradeNote').textContent = 'Error processing upgrade. Contact info@gideonabochie.com.';
-            });
-          } else {
+              btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+              note.textContent = 'Payment was not completed. Try again.';
+            }
+          },
+          onclose: function() {
             btn.disabled = false;
-            btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + e.price;
-            document.getElementById('upgradeNote').textContent = 'Payment was not completed. Try again.';
+            btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
           }
-        },
-        onclose: function() {
-          btn.disabled = false;
-          btn.textContent = 'Upgrade \u2014 GH\u00a2 ' + (e ? e.price : '');
-        }
+        });
+      }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Upgrade';
+        note.textContent = 'Error loading enrollment. Please refresh.';
       });
-    })
-    .catch(function() {
-      btn.disabled = false;
-      btn.textContent = 'Upgrade';
-      document.getElementById('upgradeNote').textContent = 'Error loading enrollment. Please refresh.';
-    });
+  }).catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = 'Upgrade';
+    note.textContent = 'Error preparing payment. Please refresh.';
+  });
 }
 
 document.getElementById('upgradeBtn').addEventListener('click', handleUpgrade);
