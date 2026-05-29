@@ -438,9 +438,12 @@ function startEnrollFlow(slug) {
   document.getElementById('enrollPhone').value = '';
   document.getElementById('enrollMsg').className = 'msg';
   document.getElementById('enrollMsg').style.display = 'none';
-  document.getElementById('stepDesc').textContent = slug === 'systems-thinking'
-    ? 'You picked Systems Thinking — great for understanding how things really work. One quick question:'
-    : 'You picked Architectural Thinking — perfect for learning how to build things that last. One quick question:';
+  var descMap = {
+    'systems-thinking-genesis': 'You picked The Spirit of God in Genesis — a Bible-centered journey through creativity, wisdom, and love. One quick question:',
+    'systems-thinking': 'You picked Systems Thinking — great for understanding how things really work. One quick question:',
+    'architectural-thinking': 'You picked Architectural Thinking — perfect for learning how to build things that last. One quick question:'
+  };
+  document.getElementById('stepDesc').textContent = descMap[slug] || 'Great choice! One quick question:';
   document.getElementById('enrollFlow').scrollIntoView({behavior:'smooth'});
 }
 
@@ -453,7 +456,9 @@ function selectPurpose(el, val) {
 
 function nextStep() {
   var rec = document.getElementById('recommendBox');
-  if (selectedPurpose === 'solving' || selectedSlug === 'systems-thinking') {
+  if (selectedSlug === 'systems-thinking-genesis') {
+    rec.textContent = '\u2b50 You picked the flagship course! The Spirit of God in Genesis covers creativity, wisdom, and love through all 50 chapters.';
+  } else if (selectedPurpose === 'solving' || selectedSlug === 'systems-thinking') {
     rec.textContent = '\u2b50 Suggested: Systems Thinking — understanding systems is the fastest path to solving complex problems.';
   } else if (selectedPurpose === 'building' || selectedSlug === 'architectural-thinking') {
     rec.textContent = '\u2b50 Suggested: Architectural Thinking — learn to structure and execute projects with clarity.';
