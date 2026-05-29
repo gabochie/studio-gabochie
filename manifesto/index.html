@@ -4,8 +4,15 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="The Manifesto — GideonAbochie Studio">
+<meta property="og:description" content="A declaration of purpose for a generation of creators, lovers, and thinkers rooted in Scripture.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gideonabochie.org/manifesto/">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <title>The Case for Gideon Abochie Studio — A School of Creativity, Love & Wisdom</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
 <style>
 :root {
   --content-max: 1440px;
@@ -27,7 +34,7 @@
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:17px;line-height:1.7;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Libre Baskerville', Georgia, serif;font-size:17px;line-height:1.7;overflow-x:hidden;padding-top:64px}
 
 /* ── NOISE ── */
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.3}
@@ -167,6 +174,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .nav-links a:hover{color:#fff;background:rgba(255,255,255,0.06)}
 .nav-donate{padding:8px 18px!important;background:#C9A84C!important;color:#0A1628!important;border-radius:6px!important;font-weight:600!important;font-size:13px!important}
 .nav-donate:hover{background:#D9B85C!important;color:#0A1628!important}
+.nav-links a.active{color:#fff!important}
 
 /* ── UTILITIES ── */
 .counter{display:inline}
@@ -190,19 +198,23 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 
-<!-- STICKY NAV -->
-<nav class="sticky-nav" id="stickyNav">
+<nav>
   <div class="container">
-    <a href="../index.html" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
-    <ul class="nav-links">
-      <li><a href="#crisis">The Crisis</a></li>
-      <li><a href="#data">The Data</a></li>
-      <li><a href="#solution">The Solution</a></li>
-      <li><a href="#model">The Model</a></li>
-      <li><a href="#join" class="nav-donate">Join Us</a></li>
-    </ul>
+    <a href="/" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="/#story">Story</a>
+      <a href="/#pillars">Teaching</a>
+      <a href="/school/">School</a>
+      <a href="/#books">Books</a>
+      <a href="/#tiktok">TikTok</a>
+      <a href="/manifesto/" class="active">Manifesto</a>
+      <a href="/newsletter/">Newsletter</a>
+      <a href="/support/" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+    <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
+<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
 
 <!-- HERO -->
 <section class="hero">
@@ -385,6 +397,62 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div class="footer-sig">Gideon Abochie Studio · School of Creativity, Love & Wisdom · Est. Ghana</div>
 </section>
 
+<footer>
+  <div class="container">
+    <div>
+      <div class="brand-footer"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"><span class="brand-footer-wrapper"><span class="brand-footer-title">GideonAbochie Studio</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>
+      <p class="footer-about">A Bible-based ministry teaching a generation to create with excellence, love with devotion, and walk in the wisdom of God's Word. Rooted in Scripture, expressed through creativity, shared freely with the world.</p>
+      <div class="footer-social">
+        <a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>
+        <a href="https://web.facebook.com/GideonAbochie/" target="_blank" title="Facebook"><i class="ti ti-brand-facebook"></i></a>
+        <a href="https://www.instagram.com/gideonabochie/" target="_blank" title="Instagram"><i class="ti ti-brand-instagram"></i></a>
+        <a href="https://www.tiktok.com/@gideonabochie" target="_blank" title="TikTok"><i class="ti ti-brand-tiktok"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4>Content</h4>
+      <a href="/manifesto/">Read the Manifesto</a>
+      <a href="/school/">School Programs</a>
+      <a href="/newsletter/">The Studio Weekly</a>
+      <a href="/newsletter/advertise.html">Sponsor the Newsletter</a>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <a href="/donate/">One-Time Donation</a>
+      <a href="/support/">Recurring Support</a>
+      <a href="/books/">Buy Books</a>
+    </div>
+    <div>
+      <h4>Social</h4>
+      <a href="https://x.com/GideonAbochie" target="_blank">X / Twitter</a>
+      <a href="https://web.facebook.com/GideonAbochie/" target="_blank">Facebook</a>
+      <a href="https://www.instagram.com/gideonabochie/" target="_blank">Instagram</a>
+      <a href="https://www.tiktok.com/@gideonabochie" target="_blank">TikTok</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="/legal/privacy.html">Privacy Policy</a>
+      <a href="/legal/terms.html">Terms of Use</a>
+      <a href="/legal/donations.html">Donation Policy</a>
+      <a href="/legal/disclaimer.html">Disclaimer</a>
+    </div>
+    <div class="footer-sponsors">
+      <span class="footer-sponsors-label">Sponsors &amp; Affiliations</span>
+      <div class="footer-sponsors-logos">
+        <a href="https://www.tiktok.com/@neoghglobal" target="_blank" rel="noopener" class="footer-sponsor-item"><img src="../assets/images/neogh-logo.png" alt="NEOGH"><span>NEOGH<small>Spirit of Nation Building</small></span></a>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+        <div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 GideonAbochie Studio &mdash; School of Creativity, Love &amp; Wisdom. Rooted in Scripture, shared in love.
+    </div>
+  </div>
+</footer>
+
 <script>
 const nav=document.getElementById('stickyNav');
 window.addEventListener('scroll',()=>{nav.classList.toggle('visible',window.scrollY>100)});
@@ -405,5 +473,6 @@ const counters=document.querySelectorAll('.counter');
 const counterObs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){animateCounter(e.target,parseInt(e.target.dataset.target));counterObs.unobserve(e.target)}})},{threshold:0.5});
 counters.forEach(el=>counterObs.observe(el));
 </script>
+<script src="../assets/js/main.js"></script>
 </body>
 </html>
