@@ -107,7 +107,8 @@ h1 span{color:#C9A84C}
       <label for="loginEmail">Email address</label>
       <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
       <label for="loginCode">Access code (optional)</label>
-      <input id="loginCode" type="password" placeholder="Your access code" autocomplete="current-password" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;box-sizing:border-box">
+      <input id="loginCode" type="password" placeholder="Your access code" autocomplete="current-password" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:4px;box-sizing:border-box">
+      <div style="text-align:right;margin-bottom:12px"><a href="#" onclick="forgotCode();return false" style="color:#8A9BB5;font-size:11px;text-decoration:none">Forgot access code?</a></div>
       <button class="login-btn" id="loginBtn" onclick="handleLogin()">Log In</button>
       <div class="login-msg" id="loginMsg"></div>
     </div>
@@ -489,6 +490,32 @@ function handleUpgrade() {
 }
 
 document.getElementById('upgradeBtn').addEventListener('click', handleUpgrade);
+
+function forgotCode() {
+  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var msg = document.getElementById('loginMsg');
+  if (!email) { msg.className = 'login-msg error'; msg.textContent = 'Enter your email first, then click Forgot Access Code.'; return; }
+  msg.className = 'login-msg';
+  msg.textContent = 'Sending your access code...';
+  msg.style.color = '#8A9BB5';
+  msg.style.display = 'block';
+  fetch('/api/auth/forgot-code', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status === 'ok') {
+      msg.className = 'login-msg success';
+      msg.textContent = 'Access code sent to your email.';
+    } else {
+      msg.className = 'login-msg error';
+      msg.textContent = data.message || 'Could not send code.';
+    }
+  }).catch(function() {
+    msg.className = 'login-msg error';
+    msg.textContent = 'Network error. Try again.';
+  });
+}
 
 function handleLogin() {
   var email = document.getElementById('loginEmail').value.trim().toLowerCase();
