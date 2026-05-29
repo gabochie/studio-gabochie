@@ -39,7 +39,7 @@ export async function onRequest(context) {
     }
     if (tx_ref) {
       await db.prepare(
-        'UPDATE enrollments SET status = ?, payment_ref = COALESCE(NULLIF(payment_ref, ''), ?) WHERE id = ?'
+        `UPDATE enrollments SET status = ?, payment_ref = COALESCE(NULLIF(payment_ref, ''), ?) WHERE id = ?`
       ).bind('active', tx_ref, enrollment.id).run();
     } else {
       await db.prepare(
