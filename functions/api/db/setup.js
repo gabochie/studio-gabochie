@@ -586,6 +586,13 @@
       `UPDATE programs SET status = 'active', sort_order = 4 WHERE slug = 'revelation-study'`,
       // Set Psalms to active with correct sort_order
       `UPDATE programs SET status = 'active', sort_order = 5 WHERE slug = 'psalms-worship-word'`,
+      // Fix sort_orders for displaced programs (Revelation/Psalms now at 4 & 5)
+      `UPDATE programs SET sort_order = 6 WHERE slug = 'intro-design-thinking'`,
+      `UPDATE programs SET sort_order = 7 WHERE slug = 'design-thinking-genesis'`,
+      `UPDATE programs SET sort_order = 8 WHERE slug = 'intro-biomimicry'`,
+      `UPDATE programs SET sort_order = 9 WHERE slug = 'intro-geometry'`,
+      `UPDATE programs SET sort_order = 10 WHERE slug = 'intro-computing'`,
+      `UPDATE programs SET sort_order = 11 WHERE slug = 'intro-storytelling'`,
     ];
     const results = [];
     for (const sql of statements) {
