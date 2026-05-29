@@ -582,6 +582,10 @@
       `UPDATE programs SET status = 'coming_soon' WHERE slug = 'systems-thinking' AND status = 'active'`,
       // Force all other programs to coming_soon (INSERT status appears to be ignored by D1)
       `UPDATE programs SET status = 'coming_soon' WHERE slug IN ('intro-design-thinking','design-thinking-genesis','intro-biomimicry','intro-geometry','intro-computing','intro-storytelling','architectural-thinking') AND status = 'active'`,
+      // Set Revelation to active with correct sort_order
+      `UPDATE programs SET status = 'active', sort_order = 4 WHERE slug = 'revelation-study'`,
+      // Set Psalms to active with correct sort_order
+      `UPDATE programs SET status = 'active', sort_order = 5 WHERE slug = 'psalms-worship-word'`,
     ];
     const results = [];
     for (const sql of statements) {
