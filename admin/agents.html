@@ -336,20 +336,33 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <div class="tab-panel" id="panel-settings">
   <div class="page-header"><h2>Settings</h2><p>System configuration</p></div>
   <div class="crd">
-    <div class="crd-header" style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><h4 style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">Agent Auth</h4></div>
+    <div class="crd-header" style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><h4 style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">Authentication Tokens</h4></div>
     <div class="sc-body">
-      <p>X-Agent-Auth token authenticates agent-to-agent communication. Set <code>AGENT_AUTH_KEY</code> in Cloudflare Pages environment variables.</p>
-      <div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v" id="authStatus">Checking...</span></div>
-      <div class="m-detail-row"><span class="mdl-l">Header</span><span class="mdl-v"><code style="color:var(--gold);font-size:12px">X-Agent-Auth</code></span></div>
-      <div class="m-detail-row"><span class="mdl-l">Env Var</span><span class="mdl-v"><code style="color:var(--text-muted);font-size:12px">AGENT_AUTH_KEY</code></span></div>
+      <p>These tokens are stored in your browser and sent with every API request.</p>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Agent Auth Token</label>
+        <div style="display:flex;gap:8px">
+          <input type="password" id="sAgentToken" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text-body);font-size:13px;font-family:monospace" placeholder="Enter agent auth token">
+          <button class="btn btn-secondary" id="sAgentTokenToggle" style="padding:8px 12px" title="Show/Hide">&#128065;</button>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Admin Key</label>
+        <div style="display:flex;gap:8px">
+          <input type="password" id="sAdminKey" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text-body);font-size:13px;font-family:monospace" placeholder="Enter admin key">
+          <button class="btn btn-secondary" id="sAdminKeyToggle" style="padding:8px 12px" title="Show/Hide">&#128065;</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="sSaveTokens">Save Tokens</button>
+      <button class="btn btn-secondary" id="sClearTokens" style="margin-left:8px">Clear</button>
+      <span id="sTokenMsg" style="margin-left:10px;font-size:12px"></span>
     </div>
   </div>
   <div class="crd">
-    <div class="crd-header" style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><h4 style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">AI Provider</h4></div>
+    <div class="crd-header" style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><h4 style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">Connection Status</h4></div>
     <div class="sc-body">
-      <p>AI agents use OpenAI-compatible APIs. Set <code>OPENAI_API_KEY</code> or <code>AI_API_KEY</code> in Cloudflare Pages environment variables.</p>
-      <div class="m-detail-row"><span class="mdl-l">API Key</span><span class="mdl-v" id="aiStatus">Checking...</span></div>
-      <div class="m-detail-row"><span class="mdl-l">Default Model</span><span class="mdl-v"><code style="font-size:12px">gpt-4o-mini</code></span></div>
+      <div class="m-detail-row"><span class="mdl-l">Agent API</span><span class="mdl-v" id="authStatus">Checking...</span></div>
+      <div class="m-detail-row"><span class="mdl-l">AI Provider</span><span class="mdl-v" id="aiStatus">Checking...</span></div>
     </div>
   </div>
 </div>
@@ -615,8 +628,31 @@ function processQueue(max) {
 }
 
 function loadSettings() {
-  API.get('/status').then(function(){$('authStatus').innerHTML='<span style="color:var(--green)">&#10003; Configured</span>';}).catch(function(){$('authStatus').innerHTML='<span style="color:var(--red)">&#10007; Not configured</span>';});
+  $('sAgentToken').value = AppState.get('agentAuthToken') || '';
+  $('sAdminKey').value = AppState.get('adminKey') || '';
+  API.get('/status').then(function(){$('authStatus').innerHTML='<span style="color:var(--green)">&#10003; Connected</span>';}).catch(function(){$('authStatus').innerHTML='<span style="color:var(--red)">&#10007; Not connected</span>';});
   API.runAction('call_ai',{prompt:'ping'}).then(function(){$('aiStatus').innerHTML='<span style="color:var(--green)">&#10003; Configured</span>';}).catch(function(){$('aiStatus').innerHTML='<span style="color:var(--orange)">&#9888; Not configured</span>';});
+}
+function saveTokens() {
+  var at = $('sAgentToken').value.trim();
+  var ak = $('sAdminKey').value.trim();
+  try { localStorage.setItem('ga_at', at); } catch(e) {}
+  try { localStorage.setItem('ga_ak', ak); } catch(e) {}
+  AppState.set('agentAuthToken', at);
+  AppState.set('adminKey', ak);
+  $('sTokenMsg').textContent = 'Tokens saved!';
+  $('sTokenMsg').style.color = 'var(--green)';
+  setTimeout(function(){ $('sTokenMsg').textContent = ''; }, 3000);
+}
+function clearTokens() {
+  $('sAgentToken').value = '';
+  $('sAdminKey').value = '';
+  try { localStorage.removeItem('ga_at'); localStorage.removeItem('ga_ak'); } catch(e) {}
+  AppState.set('agentAuthToken', '');
+  AppState.set('adminKey', '');
+  $('sTokenMsg').textContent = 'Tokens cleared';
+  $('sTokenMsg').style.color = 'var(--text-muted)';
+  setTimeout(function(){ $('sTokenMsg').textContent = ''; }, 3000);
 }
 
 function switchTab(name) {
@@ -645,6 +681,10 @@ document.addEventListener('DOMContentLoaded', function() {
   $('wfConfirm').addEventListener('click', createWorkflow);
   $('processBtn').addEventListener('click', function(){ processQueue(10); });
   $('runFilter').addEventListener('change', function(){ loadRunsTab(); });
+  $('sSaveTokens').addEventListener('click', saveTokens);
+  $('sClearTokens').addEventListener('click', clearTokens);
+  $('sAgentTokenToggle').addEventListener('click', function(){ var i=$('sAgentToken'); i.type=i.type==='password'?'text':'password'; });
+  $('sAdminKeyToggle').addEventListener('click', function(){ var i=$('sAdminKey'); i.type=i.type==='password'?'text':'password'; });
 
   document.addEventListener('click', function(e){
     var t = e.target.closest('[data-action]'); if(!t) return;
