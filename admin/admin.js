@@ -116,11 +116,11 @@ function renderDashboard() {
 
 /* ── Admin API helpers ── */
 function getAdminKey() {
-  var key = sessionStorage.getItem('ga_admin_key');
-  if (key) return key;
-  key = prompt('Enter Admin API Key:');
-  if (key) sessionStorage.setItem('ga_admin_key', key);
-  return key || '';
+  try { return sessionStorage.getItem('ga_admin_key') || ''; } catch(e) { return ''; }
+}
+
+function storeAdminKey(key) {
+  try { if (key) sessionStorage.setItem('ga_admin_key', key); } catch(e) {}
 }
 
 function adminFetch(url, opts) {
@@ -128,6 +128,16 @@ function adminFetch(url, opts) {
   opts.headers = opts.headers || {};
   opts.headers['X-Admin-Key'] = getAdminKey();
   return fetch(url, opts);
+}
+
+/* Prompt for admin key once on first action that needs it */
+function ensureAdminKey() {
+  var key = getAdminKey();
+  if (!key) {
+    key = prompt('Enter Admin API Key:');
+    storeAdminKey(key);
+  }
+  return key;
 }
 
 /* ── Init ── */
