@@ -324,7 +324,7 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
       <div class="section-label" style="justify-content:center"><i class="ti ti-books"></i> Published Works</div>
       <h2 class="section-heading">Books That <span>Unlock the Kingdom</span></h2>
       <p class="section-sub" style="margin-left:auto;margin-right:auto">From Scripture and technology to national transformation â€” resources that challenge the mind, awaken creativity, and illuminate the wisdom of God for every area of life.</p>
-      <a href="/books/" class="btn btn-gold" style="margin-top:16px">&#127775; Premium Bundle â€” GH&#8373;300</a>
+      <a href="/books/" class="btn btn-gold" style="margin-top:16px">&#127775; Premium Bundle â€” <span class="price-convert" data-ghs="300">GH&#8373;300</span></a>
     </div>
     <div class="books-grid">
       <div class="book-card">
@@ -987,11 +987,11 @@ function handleQuery(text) {
     </div>
     <p style="color:#8A9BB5;font-size:13px;margin-bottom:20px">Select an amount to donate. All payments processed securely by Flutterwave.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-      <button class="donate-amount" data-amount="50" onclick="selectAmount(this,50)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GHÂ¢ 50</button>
-      <button class="donate-amount" data-amount="100" onclick="selectAmount(this,100)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GHÂ¢ 100</button>
-      <button class="donate-amount" data-amount="250" onclick="selectAmount(this,250)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GHÂ¢ 250</button>
-      <button class="donate-amount" data-amount="500" onclick="selectAmount(this,500)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GHÂ¢ 500</button>
-      <button class="donate-amount" data-amount="1000" onclick="selectAmount(this,1000)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">GHÂ¢ 1000</button>
+      <button class="donate-amount" data-amount="50" onclick="selectAmount(this,50)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s"><span class="price-convert" data-ghs="50">GHÂ¢ 50</span></button>
+      <button class="donate-amount" data-amount="100" onclick="selectAmount(this,100)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s"><span class="price-convert" data-ghs="100">GHÂ¢ 100</span></button>
+      <button class="donate-amount" data-amount="250" onclick="selectAmount(this,250)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s"><span class="price-convert" data-ghs="250">GHÂ¢ 250</span></button>
+      <button class="donate-amount" data-amount="500" onclick="selectAmount(this,500)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s"><span class="price-convert" data-ghs="500">GHÂ¢ 500</span></button>
+      <button class="donate-amount" data-amount="1000" onclick="selectAmount(this,1000)" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#E8EEF7;font-size:18px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s"><span class="price-convert" data-ghs="1000">GHÂ¢ 1000</span></button>
       <button class="donate-amount" data-amount="custom" onclick="selectAmount(this,'custom')" style="padding:16px;border:1px solid #1E3250;border-radius:10px;background:transparent;color:#5A7A9F;font-size:14px;font-weight:600;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .2s">Custom</button>
     </div>
     <div id="customAmountWrap" style="display:none;margin-bottom:16px">
@@ -1060,7 +1060,7 @@ function selectAmount(btn, amount) {
     document.getElementById('payBtn').style.cursor = 'pointer';
     document.getElementById('payBtn').style.background = '#C9A84C';
     document.getElementById('payBtn').style.color = '#0A1628';
-    document.getElementById('payBtn').textContent = 'Donate GHÂ¢ ' + amount;
+document.getElementById('payBtn').textContent = 'Donate ' + window.formatPrice(amount);
     trackEvent('donation_amount_selected', String(amount));
   }
 }
@@ -1073,7 +1073,7 @@ function updateCustomAmount() {
     document.getElementById('payBtn').style.cursor = 'pointer';
     document.getElementById('payBtn').style.background = '#C9A84C';
     document.getElementById('payBtn').style.color = '#0A1628';
-    document.getElementById('payBtn').textContent = 'Donate GHÂ¢ ' + val;
+    document.getElementById('payBtn').textContent = 'Donate ' + window.formatPrice(val);
   } else {
     document.getElementById('payBtn').disabled = true;
     document.getElementById('payBtn').style.background = 'rgba(201,168,76,.12)';
@@ -1108,7 +1108,7 @@ function startPayment() {
     onclose: function() {
       trackEvent('donation_cancelled', String(selectedAmount));
       document.getElementById('payBtn').disabled = false;
-      document.getElementById('payBtn').textContent = 'Donate GHÂ¢ ' + selectedAmount;
+      document.getElementById('payBtn').textContent = 'Donate ' + window.formatPrice(selectedAmount);
     },
     customizations: {
       title: 'GideonAbochie Studio',

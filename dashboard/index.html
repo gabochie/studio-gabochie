@@ -153,7 +153,7 @@ h1 span{color:#C9A84C}
   <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
-    <button class="btn btn-primary" id="upgradeBtn">Upgrade â€” <span id="upgradePrice">GHÂ¢ 250</span></button>
+    <button class="btn btn-primary" id="upgradeBtn">Upgrade â€” <span id="upgradePrice"><span class="price-convert" data-ghs="250">GHÂ¢ 250</span></span></button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via Flutterwave</p>
   </div>
 
@@ -284,7 +284,7 @@ function loadDashboard() {
       // Show upgrade card if sample access and price > 0
       if (e.status === 'sample' && e.price > 0) {
         document.getElementById('upgradeCard').style.display = 'block';
-        document.getElementById('upgradePrice').textContent = 'GHÂ¢ ' + e.price;
+        document.getElementById('upgradePrice').textContent = window.formatPrice(e.price);
       }
       // Load progress for active/full-access enrollments
       if (e.status === 'active') {
@@ -523,22 +523,22 @@ function handleUpgrade() {
                   loadDashboard();
                 } else {
                   btn.disabled = false;
-                  btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+                  btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
                   note.textContent = 'Payment received but activation delayed. Your access will be granted shortly.';
                 }
               }).catch(function() {
-                btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+                btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
                 note.textContent = 'Payment confirmed! Activation in progress. Refresh the page in a minute.';
               });
             } else {
               btn.disabled = false;
-              btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+              btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
               note.textContent = 'Payment was not completed. Try again.';
             }
           },
           onclose: function() {
             btn.disabled = false;
-            btn.textContent = 'Upgrade \u2014 GH\u20b5 ' + price;
+            btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
           }
         });
       }).catch(function() {

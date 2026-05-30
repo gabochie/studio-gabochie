@@ -527,7 +527,7 @@ function loadPrograms() {
     d.programs.forEach(function(p, i){
       var isComing = p.status === 'coming_soon';
       var isActive = p.status === 'active';
-      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access GH\u00a2 ' + p.price : 'Free for all';
+      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access ' + window.formatPrice(p.price) : 'Free for all';
       var card = document.createElement('div');
       card.className = isComing ? 'card card-coming' : (isActive && i === 0 ? 'card card-active' : 'card');
       var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : (isActive && i === 0 ? '<span class="badge badge-active">Active Course</span>' : '<span class="badge badge-free">Free Sample</span>');
@@ -535,7 +535,7 @@ function loadPrograms() {
         ? '<button class="btn btn-coming" disabled>Coming Soon</button>'
         : '<button class="btn btn-primary" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
       var description = isComing ? '<div class="desc coming-desc">' + p.description + '</div>' : '<div class="desc">' + p.description + '</div>';
-      card.innerHTML = badge + '<h2>' + p.title + '</h2>' + '<div class="slugline">' + p.tagline + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>GH\u00a2 ' + p.price + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div>' + btnHtml;
+      card.innerHTML = badge + '<h2>' + p.title + '</h2>' + '<div class="slugline">' + p.tagline + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>' + window.formatPrice(p.price) + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div>' + btnHtml;
       grid.appendChild(card);
     });
   }).catch(function(){

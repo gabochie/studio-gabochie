@@ -142,3 +142,10 @@ button,a,.btn,.nav-toggle,.gallery-item,.rate-item-cta,input,textarea,select{tou
 @media(prefers-color-scheme:dark){
   :root{background:#0A1628;color:#CBD5E1}
 }
+
+/* ── Currency Toggle ── */
+.currency-toggle{position:fixed;bottom:20px;right:20px;z-index:9999}
+.currency-select{-webkit-appearance:none;appearance:none;padding:6px 28px 6px 12px;border:1px solid #1E3250;border-radius:6px;background:#0F1E38;color:#CBD5E1;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235A7A9F'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.currency-select:hover{border-color:#3A5278}
+.currency-select:focus{border-color:#C9A84C}
+.currency-select option{background:#0F1E38;color:#CBD5E1}

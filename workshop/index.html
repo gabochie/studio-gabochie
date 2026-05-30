@@ -239,7 +239,7 @@ function loadWorkshops() {
       var dateObj = new Date(w.date + 'T00:00:00');
       var dateStr = dateObj.toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
       var isFull = w.capacity > 0 && w.registered >= w.capacity;
-      var priceHtml = w.price > 0 ? '<span class="ws-price">GHÂ¢ ' + w.price + '</span>' : '<span class="ws-free">Free</span>';
+      var priceHtml = w.price > 0 ? '<span class="ws-price">' + window.formatPrice(w.price) + '</span>' : '<span class="ws-free">Free</span>';
       var capHtml = w.capacity > 0 ? '<span class="ws-capacity' + (isFull ? ' ws-full' : '') + '"><i class="ti ti-users"></i> ' + w.registered + '/' + w.capacity + ' registered</span>' : '';
       var btnHtml = isFull ? '<button class="ws-btn ws-btn-full" disabled><i class="ti ti-x"></i> Full</button>' : '<button class="ws-btn" onclick="openRegister(' + w.id + ',\'' + w.title.replace(/'/g, "\\'") + '\')"><i class="ti ti-ticket"></i> Register</button>';
       return '<div class="ws-card"><div class="ws-header"><div class="ws-date"><i class="ti ti-calendar-event"></i> ' + dateStr + '</div><h3>' + w.title + '</h3><div class="ws-meta">' +
