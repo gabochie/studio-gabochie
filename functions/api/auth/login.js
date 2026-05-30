@@ -1,3 +1,5 @@
+import { hashCode, genSalt } from './_hash.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
@@ -25,9 +27,28 @@ export async function onRequest(context) {
       });
     }
     var student = await db.prepare(
-      'SELECT id, name, email FROM students WHERE email = ? AND access_code = ?'
-    ).bind(email, accessCode).first();
+      'SELECT id, name, email, access_code, salt FROM students WHERE email = ?'
+    ).bind(email).first();
     if (!student) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
+        status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+    var valid = false;
+    if (student.salt) {
+      var hashed = await hashCode(accessCode, student.salt);
+      valid = hashed === student.access_code;
+    } else {
+      valid = accessCode === student.access_code;
+      if (valid) {
+        var salt = genSalt();
+        var hashed = await hashCode(accessCode, salt);
+        await db.prepare(
+          'UPDATE students SET access_code = ?, salt = ? WHERE id = ?'
+        ).bind(hashed, salt, student.id).run();
+      }
+    }
+    if (!valid) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
         status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });

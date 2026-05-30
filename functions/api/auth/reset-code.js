@@ -1,5 +1,4 @@
 import { hashCode, genSalt } from './_hash.js';
-function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -20,11 +19,11 @@ export async function onRequest(context) {
   }
   try {
     var body = await request.json();
+    var token = (body.token || '').trim();
     var email = (body.email || '').trim().toLowerCase();
-    var currentCode = (body.current_code || '').trim();
-    var newCode = sanitize(body.new_code);
-    if (!email || !currentCode || !newCode) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Email, current code, and new code are required' }), {
+    var newCode = (body.new_code || '').trim();
+    if (!token || !email || !newCode) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Token, email, and new code are required' }), {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
@@ -33,37 +32,30 @@ export async function onRequest(context) {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
-    if (newCode.length > 100) {
-      return new Response(JSON.stringify({ status: 'error', message: 'New code too long' }), {
-        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
-      });
-    }
     var student = await db.prepare(
-      'SELECT id, access_code, salt FROM students WHERE email = ?'
+      'SELECT id, name, reset_token, reset_token_expires_at FROM students WHERE email = ?'
     ).bind(email).first();
     if (!student) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Current access code is incorrect' }), {
+      return new Response(JSON.stringify({ status: 'error', message: 'Invalid reset link' }), {
+        status: 404, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+    if (!student.reset_token || student.reset_token !== token) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Invalid reset link' }), {
         status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
-    var valid = false;
-    if (student.salt) {
-      var hashed = await hashCode(currentCode, student.salt);
-      valid = hashed === student.access_code;
-    } else {
-      valid = currentCode === student.access_code;
-    }
-    if (!valid) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Current access code is incorrect' }), {
-        status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    if (student.reset_token_expires_at && new Date(student.reset_token_expires_at) < new Date()) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Reset link has expired. Request a new one.' }), {
+        status: 410, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
-    var newSalt = genSalt();
-    var newHashed = await hashCode(newCode, newSalt);
+    var salt = genSalt();
+    var hashed = await hashCode(newCode, salt);
     await db.prepare(
-      'UPDATE students SET access_code = ?, salt = ? WHERE id = ?'
-    ).bind(newHashed, newSalt, student.id).run();
-    return new Response(JSON.stringify({ status: 'ok', message: 'Access code updated' }), {
+      'UPDATE students SET access_code = ?, salt = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE id = ?'
+    ).bind(hashed, salt, student.id).run();
+    return new Response(JSON.stringify({ status: 'ok', message: 'Access code reset successfully' }), {
       headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   } catch (err) {

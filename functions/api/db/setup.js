@@ -201,6 +201,9 @@
       `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
       `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
+      `ALTER TABLE students ADD COLUMN salt TEXT DEFAULT ''`,
+      `ALTER TABLE students ADD COLUMN reset_token TEXT DEFAULT ''`,
+      `ALTER TABLE students ADD COLUMN reset_token_expires_at TEXT DEFAULT ''`,
       `CREATE TABLE IF NOT EXISTS referrals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         referrer_code TEXT NOT NULL,

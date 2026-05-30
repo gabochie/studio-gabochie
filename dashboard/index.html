@@ -557,10 +557,10 @@ function forgotCode() {
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data.status === 'ok') {
       msg.className = 'login-msg success';
-      msg.textContent = 'Access code sent to your email.';
+      msg.textContent = 'Reset link sent to your email.';
     } else {
       msg.className = 'login-msg error';
-      msg.textContent = data.message || 'Could not send code.';
+      msg.textContent = data.message || 'Could not send reset link.';
     }
   }).catch(function() {
     msg.className = 'login-msg error';

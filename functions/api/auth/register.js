@@ -1,3 +1,4 @@
+import { hashCode, genSalt } from './_hash.js';
 function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
@@ -49,9 +50,11 @@ export async function onRequest(context) {
         status: 409, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
+    var salt = genSalt();
+    var hashed = await hashCode(accessCode, salt);
     await db.prepare(
-      'INSERT INTO students (name, email, phone, access_code) VALUES (?, ?, ?, ?)'
-    ).bind(name, email, phone, accessCode).run();
+      'INSERT INTO students (name, email, phone, access_code, salt) VALUES (?, ?, ?, ?, ?)'
+    ).bind(name, email, phone, hashed, salt).run();
 
     if (env.BREVO_API_KEY) {
       try {
