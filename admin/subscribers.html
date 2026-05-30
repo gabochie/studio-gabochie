@@ -62,6 +62,24 @@
 
   <div class="toolbar">
     <input class="search-input" id="searchInput" placeholder="Search by name or email&hellip;" oninput="filterTable()">
+    <select id="tagFilter" onchange="filterTable()" style="padding:8px 14px;border:1px solid #1E3250;border-radius:6px;background:#0F1E38;color:#CBD5E1;font-size:12px;outline:none;min-width:140px">
+      <option value="">All Tags</option>
+      <option value="newsletter">Newsletter</option>
+      <option value="school">School</option>
+      <option value="workshop">Workshop</option>
+      <option value="nationbuilding">Nation Building</option>
+      <option value="book_download">Book Download</option>
+      <option value="book_bundle">Book Bundle</option>
+      <option value="art">Art</option>
+      <option value="merch">Merch</option>
+      <option value="music">Music</option>
+      <option value="donation">Donation</option>
+      <option value="patron">Patron</option>
+      <option value="sponsor">Sponsor</option>
+      <option value="partner">Partner</option>
+      <option value="dashboard">Dashboard</option>
+      <option value="other">Other</option>
+    </select>
     <button class="btn btn-gold" onclick="exportCSV()">Export CSV</button>
     <button class="btn btn-outline" onclick="refresh()">Refresh</button>
   </div>
@@ -90,7 +108,7 @@
 var _items = [];
 
 function refresh() {
-  document.getElementById('subsBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>';
+  document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>';
   document.getElementById('kvStatus').className = 'kv-status pending';
   document.getElementById('kvStatus').textContent = 'Fetching subscriber data&hellip;';
 
@@ -105,7 +123,7 @@ function refresh() {
     document.getElementById('kvStatus').className = 'kv-status ok';
     document.getElementById('kvStatus').textContent = 'D1 connected — ' + _items.length + ' subscriber(s) found';
   }).catch(function(err) {
-    document.getElementById('subsBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px"><div class="empty-state"><h3>D1 Not Connected</h3><p>' + err.message + '.</p></div></td></tr>';
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px"><div class="empty-state"><h3>D1 Not Connected</h3><p>' + err.message + '.</p></div></td></tr>';
     document.getElementById('kvStatus').className = 'kv-status error';
     document.getElementById('kvStatus').textContent = 'D1 error: ' + err.message;
   });
@@ -113,7 +131,9 @@ function refresh() {
 
 function renderTable(items) {
   var q = (document.getElementById('searchInput').value || '').toLowerCase();
+  var tagFilter = document.getElementById('tagFilter').value;
   var filtered = items.filter(function(i) {
+    if (tagFilter && i.onboarding_tag !== tagFilter) return false;
     return !q || (i.email && i.email.toLowerCase().indexOf(q) !== -1) || (i.name && i.name.toLowerCase().indexOf(q) !== -1);
   });
   if (!filtered.length) {
@@ -149,7 +169,6 @@ function renderStats(items) {
   document.getElementById('statBookings').textContent = gh;
   document.getElementById('statLeads').textContent = uk + na + row;
 
-  // Add edition breakdown below stats
   var existing = document.getElementById('editionBreakdown');
   if(!existing) {
     var div = document.createElement('div');
@@ -162,6 +181,38 @@ function renderStats(items) {
     '<span>&#127988; UK: <strong style="color:#F1F5F9">' + uk + '</strong></span>' +
     '<span>&#127482;&#127480; NA: <strong style="color:#F1F5F9">' + na + '</strong></span>' +
     '<span>&#127758; ROW: <strong style="color:#F1F5F9">' + row + '</strong></span>';
+
+  // Tag distribution bar chart
+  var tagLabels = {newsletter:'Newsletter', school:'School', workshop:'Workshop', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', art:'Art', merch:'Merch', music:'Music', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
+  var tagCounts = {};
+  var tagOrder = ['newsletter','school','workshop','nationbuilding','book_download','book_bundle','art','merch','music','donation','patron','sponsor','partner','dashboard','other'];
+  items.forEach(function(i) {
+    var t = i.onboarding_tag || 'other';
+    if (!tagCounts[t]) tagCounts[t] = 0;
+    tagCounts[t]++;
+  });
+  var chartEl = document.getElementById('tagChart');
+  if (!chartEl) {
+    var div = document.createElement('div');
+    div.id = 'tagChart';
+    div.style.cssText = 'margin-top:16px;padding:16px;background:#0F1E38;border:1px solid #1E3250;border-radius:8px';
+    document.getElementById('editionBreakdown').after(div);
+    chartEl = div;
+  }
+  var maxCount = Math.max.apply(null, tagOrder.map(function(t) { return tagCounts[t] || 0; })) || 1;
+  var bars = '<div style="margin-bottom:8px;font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.1em">Tag Distribution</div>';
+  tagOrder.forEach(function(t) {
+    var count = tagCounts[t] || 0;
+    var pct = Math.round(count / total * 100) || 0;
+    var barW = Math.round(count / maxCount * 100) || 0;
+    bars += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:11px;color:#CBD5E1">' +
+      '<span style="width:110px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (tagLabels[t] || t) + '</span>' +
+      '<span style="flex:1;height:16px;background:#0A1628;border-radius:3px;position:relative;overflow:hidden">' +
+      '<span style="display:block;height:100%;width:' + barW + '%;background:#C9A84C;border-radius:3px;transition:width .3s"></span></span>' +
+      '<span style="width:50px;text-align:right;font-weight:600;color:#F1F5F9;font-family:monospace">' + count + '</span>' +
+      '<span style="width:36px;text-align:right;color:#5A7A9F;font-family:monospace">' + pct + '%</span></div>';
+  });
+  chartEl.innerHTML = bars;
 }
 
 function filterTable() {

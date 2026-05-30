@@ -1,3 +1,15 @@
+function sanitize(val, maxLen) {
+  if (typeof val !== 'string') return '';
+  return val.trim().replace(/<[^>]*>/g, '').slice(0, maxLen || 255);
+}
+
+const VALID_TAGS = [
+  'newsletter', 'school', 'workshop', 'nationbuilding',
+  'book_download', 'book_bundle', 'art', 'merch', 'music',
+  'donation', 'patron', 'sponsor', 'partner', 'dashboard',
+  'contact'
+];
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') {
@@ -5,32 +17,26 @@ export async function onRequest(context) {
       status: 405, headers: { 'Content-Type': 'application/json' }
     });
   }
-  const validTags = [
-    'newsletter', 'school', 'workshop', 'nationbuilding',
-    'book_download', 'book_bundle', 'art', 'merch', 'music',
-    'donation', 'patron', 'sponsor', 'partner', 'dashboard',
-    'contact'
-  ];
   try {
     const ct = request.headers.get('Content-Type') || '';
     let email = '', name = '', tag = '';
     if (ct.includes('application/json')) {
       const body = await request.json();
-      email = body.email || '';
-      name = body.name || '';
-      tag = body.tag || '';
+      email = sanitize(body.email, 320);
+      name = sanitize(body.name, 255);
+      tag = sanitize(body.tag, 50);
     } else {
       const fd = await request.formData();
-      email = fd.get('email') || '';
-      name = fd.get('name') || '';
-      tag = fd.get('tag') || '';
+      email = sanitize(fd.get('email'), 320);
+      name = sanitize(fd.get('name'), 255);
+      tag = sanitize(fd.get('tag'), 50);
     }
     if (!email || !email.includes('@')) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
       });
     }
-    if (!tag || !validTags.includes(tag)) {
+    if (!tag || !VALID_TAGS.includes(tag)) {
       tag = 'other';
     }
     if (!env.DB) {
@@ -38,16 +44,14 @@ export async function onRequest(context) {
         status: 501, headers: { 'Content-Type': 'application/json' }
       });
     }
-    // Check if subscriber exists
     const existing = await env.DB.prepare(
       'SELECT id, onboarding_tag FROM subscribers WHERE email = ?'
     ).bind(email).first();
     if (existing) {
-      // Only set tag if they don't already have one (preserve first touch)
       if (!existing.onboarding_tag) {
         await env.DB.prepare(
-          'UPDATE subscribers SET onboarding_tag = ? WHERE email = ?'
-        ).bind(tag, email).run();
+          'UPDATE subscribers SET onboarding_tag = ?, name = COALESCE(NULLIF(?, \'\'), name) WHERE email = ?'
+        ).bind(tag, name, email).run();
       }
     } else {
       await env.DB.prepare(
