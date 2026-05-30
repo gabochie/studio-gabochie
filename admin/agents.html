@@ -6,745 +6,671 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Command Center — GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
-:root{
-  --bg:#0A1628;--card:#0F1E38;--card-hover:#162540;--border:#1E3250;--border-light:#3A5278;
-  --text:#E2E8F0;--text-dim:#8BA3C4;--text-muted:#5A7A9F;
-  --gold:#C9A84C;--gold-dim:#A8882E;--green:#34C77B;--red:#EF4444;--orange:#F59E0B;--blue:#3B82F6;--purple:#8B5CF6;
-  --font-heading:'Barlow Condensed',sans-serif;--font-body:'DM Sans',system-ui,-apple-system,sans-serif;
-  --radius:10px;--radius-sm:6px;--shadow:0 2px 12px rgba(0,0,0,.2)
-}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-h1,h2,h3,h4{font-family:var(--font-heading);font-weight:700;letter-spacing:-.02em}
-h1{font-size:1.75rem;color:var(--gold)}
-h2{font-size:1.25rem;color:var(--text)}
-h3{font-size:1rem;color:var(--text)}
-.header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
-.header-left{display:flex;align-items:center;gap:12px}
-.header-badge{background:var(--gold);color:var(--bg);font-size:.688rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
-.header-right{display:flex;align-items:center;gap:16px;font-size:.813rem;color:var(--text-dim)}
-.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
-.status-dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
-.status-dot.offline{background:var(--text-muted)}
-.status-dot.error{background:var(--red);box-shadow:0 0 6px var(--red)}
-.status-dot.idle{background:var(--orange)}
-.tabs{display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{padding:12px 20px;font-size:.875rem;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
-.tab:hover{color:var(--text);border-bottom-color:var(--border-light)}
-.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-.content{padding:24px;max-width:1400px}
-.tab-content{display:none}
-.tab-content.active{display:block}
+body{background:var(--bg-primary)}
+.cmd-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;background:var(--bg-card)}
+.cmd-header-left{display:flex;align-items:center;gap:12px}
+.cmd-header-left h1{font-family:var(--font-heading);font-size:1.5rem;color:var(--gold);margin:0}
+.cmd-badge{background:var(--gold);color:var(--bg-primary);font-size:.688rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+.cmd-header-right{display:flex;align-items:center;gap:16px;font-size:.813rem;color:var(--text-dim)}
+.tab-bar{display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--border);overflow-x:auto;background:var(--bg-card)}
+.tab-btn{padding:12px 20px;font-size:.875rem;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font-body)}
+.tab-btn:hover{color:var(--text-body);border-bottom-color:var(--border-light)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.cmd-content{padding:24px;max-width:1400px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:background .15s}
-.stat-card:hover{background:var(--card-hover)}
-.stat-card .num{font-family:var(--font-heading);font-size:1.75rem;font-weight:700;color:var(--gold)}
-.stat-card .num.green{color:var(--green)}
-.stat-card .num.red{color:var(--red)}
-.stat-card .num.blue{color:var(--blue)}
-.stat-card .num.orange{color:var(--orange)}
-.stat-card .label{font-size:.75rem;color:var(--text-dim);margin-top:4px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
-.card-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.card-header h3{font-size:.938rem}
-.card-body{padding:12px 16px}
-table{width:100%;border-collapse:collapse;font-size:.813rem}
-th{text-align:left;padding:8px 12px;color:var(--text-dim);font-weight:500;border-bottom:1px solid var(--border);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
-td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--card-hover)}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.688rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-.badge.online{background:rgba(52,199,123,.15);color:var(--green)}
-.badge.offline{background:rgba(90,122,159,.15);color:var(--text-muted)}
-.badge.busy,.badge.in_progress{background:rgba(59,130,246,.15);color:var(--blue)}
-.badge.idle{background:rgba(245,158,11,.15);color:var(--orange)}
-.badge.error{background:rgba(239,68,68,.15);color:var(--red)}
-.badge.pending{background:rgba(139,92,246,.15);color:var(--purple)}
-.badge.completed{background:rgba(52,199,123,.15);color:var(--green)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:var(--radius-sm);font-size:.813rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font-body)}
-.btn-gold{background:var(--gold);color:var(--bg)}
-.btn-gold:hover{background:var(--gold-dim)}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-.btn-sm{padding:4px 10px;font-size:.75rem}
-.btn-icon{background:transparent;border:none;color:var(--text-dim);cursor:pointer;padding:4px;border-radius:4px}
-.btn-icon:hover{color:var(--gold);background:rgba(201,168,76,.1)}
-.activity-list{max-height:400px;overflow-y:auto}
-.activity-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.813rem}
-.activity-item:last-child{border-bottom:none}
-.activity-time{color:var(--text-muted);font-size:.75rem;white-space:nowrap;min-width:70px}
-.activity-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.activity-dot.completed{background:var(--green)}
-.activity-dot.error{background:var(--red)}
-.activity-dot.in_progress{background:var(--blue)}
-.activity-text{flex:1;color:var(--text)}
-.activity-text .agent-label{color:var(--gold);font-size:.688rem}
-.workflow-card{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.workflow-card:hover{background:var(--card-hover)}
-.workflow-card:last-child{border-bottom:none}
-.workflow-card .wf-name{font-weight:600;color:var(--text)}
-.workflow-card .wf-desc{font-size:.813rem;color:var(--text-dim);margin-top:2px}
-.workflow-card .wf-meta{display:flex;gap:16px;margin-top:8px;font-size:.75rem;color:var(--text-muted)}
+.wf-card{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.wf-card:hover{background:var(--bg-card-hover)}
+.wf-card:last-child{border-bottom:none}
+.wf-name{font-weight:600;color:var(--text-body)}
+.wf-desc{font-size:.813rem;color:var(--text-dim);margin-top:2px}
+.wf-meta{display:flex;gap:16px;margin-top:8px;font-size:.75rem;color:var(--text-muted)}
 .queue-item{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .queue-item:last-child{border-bottom:none}
 .queue-item .qi-info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .queue-item .qi-meta{font-size:.75rem;color:var(--text-muted)}
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:100;justify-content:center;align-items:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:600px;max-height:80vh;overflow-y:auto;padding:24px}
-.modal h2{font-size:1.25rem;margin-bottom:16px}
-.modal label{display:block;font-size:.813rem;color:var(--text-dim);margin-bottom:4px;margin-top:12px}
-.modal input,.modal select,.modal textarea{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.875rem;font-family:var(--font-body);outline:none}
-.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--gold)}
-.modal textarea{min-height:80px;resize:vertical}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-.empty{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:.875rem}
-.empty .icon{font-size:2rem;margin-bottom:8px}
-.agent-config{padding:12px 16px}
-.agent-config .config-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:.813rem}
-.agent-config .config-row:last-child{border-bottom:none}
-.agent-config .config-label{color:var(--text-dim)}
-.agent-config .config-value{color:var(--text);max-width:300px;text-align:right;word-break:break-all}
-.section-title{font-family:var(--font-heading);font-size:1.1rem;color:var(--gold);margin-bottom:12px;margin-top:24px}
-.section-title:first-child{margin-top:0}
-.refresh-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:.75rem;transition:all .15s}
-.refresh-btn:hover{color:var(--gold);border-color:var(--gold)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.pulse{animation:pulse 2s infinite}
-.run-detail{padding:8px 0;font-size:.813rem}
-.run-detail .rd-label{color:var(--text-dim);display:inline-block;min-width:100px}
-.run-detail .rd-value{color:var(--text)}
+.run-detail{padding:6px 0;font-size:.813rem;display:flex;border-bottom:1px solid var(--border)}
+.run-detail:last-child{border-bottom:none}
+.rd-label{color:var(--text-muted);min-width:100px;flex-shrink:0}
+.rd-value{color:var(--text-body);word-break:break-word}
+.shortcuts-help{position:fixed;bottom:20px;left:20px;z-index:50;font-size:.688rem;color:var(--text-dim);background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;opacity:.5;transition:opacity .2s}
+.shortcuts-help:hover{opacity:1}
+.spawn-form label,.run-form label{display:block;font-size:.813rem;color:var(--text-dim);margin-bottom:4px;margin-top:12px}
+.spawn-form input,.spawn-form select,.spawn-form textarea,.run-form input,.run-form select,.run-form textarea{width:100%;padding:8px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-body);font-size:.875rem;font-family:var(--font-body);outline:none;box-sizing:border-box}
+.spawn-form input:focus,.spawn-form select:focus,.spawn-form textarea:focus,.run-form input:focus,.run-form select:focus,.run-form textarea:focus{border-color:var(--gold)}
+.spawn-form textarea,.run-form textarea{min-height:80px;resize:vertical}
 @media(max-width:768px){
-  .header{padding:12px 16px}
-  .tabs{padding:0 16px}
-  .content{padding:16px}
+  .cmd-header{padding:12px 16px}
+  .tab-bar{padding:0 16px}
+  .cmd-content{padding:16px}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .header-right{font-size:.75rem}
+  .cmd-header-right{font-size:.75rem}
+  .shortcuts-help{display:none}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
+<div class="cmd-header">
+  <div class="cmd-header-left">
     <h1>&#9889; Command Center</h1>
-    <span class="header-badge">Agent OS</span>
+    <span class="cmd-badge">Agent OS</span>
   </div>
-  <div class="header-right">
+  <div class="cmd-header-right">
     <span><span class="status-dot online pulse" id="headerStatus"></span><span id="headerStatusText">Connecting...</span></span>
     <span id="headerTime"></span>
-    <button class="refresh-btn" onclick="loadAll()">&#8635; Refresh</button>
+    <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Refresh (R)">&#8635; Refresh</button>
   </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</div>
-  <div class="tab" data-tab="agents" onclick="switchTab('agents')">Agents</div>
-  <div class="tab" data-tab="workflows" onclick="switchTab('workflows')">Workflows</div>
-  <div class="tab" data-tab="runs" onclick="switchTab('runs')">Run History</div>
-  <div class="tab" data-tab="queue" onclick="switchTab('queue')">Queue</div>
-  <div class="tab" data-tab="settings" onclick="switchTab('settings')">Settings</div>
+<div class="tab-bar" role="tablist" id="tabBar">
+  <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true"><span class="tag tag-gold" style="margin-right:6px">1</span> Dashboard</button>
+  <button class="tab-btn" data-tab="agents" role="tab" aria-selected="false"><span class="tag tag-gold" style="margin-right:6px">2</span> Agents</button>
+  <button class="tab-btn" data-tab="workflows" role="tab" aria-selected="false"><span class="tag tag-gold" style="margin-right:6px">3</span> Workflows</button>
+  <button class="tab-btn" data-tab="runs" role="tab" aria-selected="false"><span class="tag tag-gold" style="margin-right:6px">4</span> Run History</button>
+  <button class="tab-btn" data-tab="queue" role="tab" aria-selected="false"><span class="tag tag-gold" style="margin-right:6px">5</span> Queue</button>
+  <button class="tab-btn" data-tab="settings" role="tab" aria-selected="false"><span class="tag tag-gold" style="margin-right:6px">6</span> Settings</button>
 </div>
 
-<div class="content">
+<div class="cmd-content">
 
-<div class="tab-content active" id="tab-dashboard">
-  <div class="stats-grid" id="statsGrid">
-    <div class="stat-card"><div class="num" id="statAgents">-</div><div class="label">Active Agents</div></div>
-    <div class="stat-card"><div class="num orange" id="statQueue">-</div><div class="label">Queue Depth</div></div>
-    <div class="stat-card"><div class="num red" id="statErrors">-</div><div class="label">Errors (24h)</div></div>
-    <div class="stat-card"><div class="num blue" id="statRuns">-</div><div class="label">Runs (24h)</div></div>
-    <div class="stat-card"><div class="num green" id="statRevenue">-</div><div class="label">Revenue (30d)</div></div>
-  </div>
-
+<div class="tab-panel active" id="panel-dashboard" role="tabpanel">
+  <div class="stats-grid" id="dashboardStats"></div>
   <div class="section-title">Agent Registry</div>
-  <div class="card" id="agentRegistry">
-    <div class="card-header"><h3>Agent Registry</h3><span id="agentCount"></span></div>
-    <div class="card-body" id="agentList"><div class="empty"><div class="icon">&#9881;</div>Loading agents...</div></div>
-  </div>
-
+  <div class="card" id="agentRegistry"></div>
   <div class="section-title">Recent Activity</div>
-  <div class="card">
-    <div class="card-header"><h3>Recent Agent Runs</h3><span id="runCount"></span></div>
-    <div class="card-body activity-list" id="recentActivity"><div class="empty"><div class="icon">&#8987;</div>Loading...</div></div>
-  </div>
+  <div class="card" id="recentActivity"></div>
 </div>
 
-<div class="tab-content" id="tab-agents">
-  <div class="section-title">All Agents</div>
-  <div class="card" id="agentsFullList">
-    <div class="card-header"><h3>Agent Instances</h3><button class="btn btn-gold btn-sm" onclick="showSpawnModal()">+ Spawn Agent</button></div>
-    <div class="card-body" id="agentsFullBody"><div class="empty"><div class="icon">&#9881;</div>Loading...</div></div>
+<div class="tab-panel" id="panel-agents" role="tabpanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">All Agents</div>
+    <button class="btn btn-gold btn-sm" id="spawnBtn">+ Spawn Agent</button>
   </div>
+  <div class="card" id="agentsFullList"></div>
 </div>
 
-<div class="tab-content" id="tab-workflows">
-  <div class="section-title">Workflow Library</div>
-  <div class="card" id="workflowList">
-    <div class="card-header"><h3>Automated Workflows</h3><button class="btn btn-gold btn-sm" onclick="showWorkflowModal()">+ New Workflow</button></div>
-    <div class="card-body" id="workflowBody"><div class="empty"><div class="icon">&#9881;</div>Loading...</div></div>
+<div class="tab-panel" id="panel-workflows" role="tabpanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">Workflow Library</div>
+    <button class="btn btn-gold btn-sm" id="wfNewBtn">+ New Workflow</button>
   </div>
+  <div class="card" id="workflowList"></div>
 </div>
 
-<div class="tab-content" id="tab-runs">
-  <div class="section-title">Run History</div>
-  <div class="card">
-    <div class="card-header">
-      <h3>Agent Execution Log</h3>
-      <div style="display:flex;gap:8px">
-        <select id="runFilter" onchange="loadRuns()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:4px 8px;font-size:.75rem">
-          <option value="">All status</option>
-          <option value="completed">Completed</option>
-          <option value="error">Error</option>
-          <option value="in_progress">In Progress</option>
-        </select>
-      </div>
-    </div>
-    <div class="card-body" style="overflow-x:auto" id="runsBody"><div class="empty"><div class="icon">&#8987;</div>Loading...</div></div>
+<div class="tab-panel" id="panel-runs" role="tabpanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">Run History</div>
+    <select id="runFilter" class="select" style="width:auto;font-size:.75rem;padding:4px 28px 4px 8px">
+      <option value="">All status</option>
+      <option value="completed">Completed</option>
+      <option value="error">Error</option>
+      <option value="in_progress">In Progress</option>
+    </select>
   </div>
+  <div class="card" id="runsList"></div>
 </div>
 
-<div class="tab-content" id="tab-queue">
-  <div class="section-title">Agent Queue</div>
-  <div class="card">
-    <div class="card-header"><h3>Pending Items</h3><button class="btn btn-gold btn-sm" onclick="processQueue()">Process Now</button></div>
-    <div class="card-body" id="queueBody"><div class="empty"><div class="icon">&#8987;</div>Loading...</div></div>
+<div class="tab-panel" id="panel-queue" role="tabpanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">Agent Queue</div>
+    <button class="btn btn-gold btn-sm" id="processBtn">Process Now</button>
   </div>
+  <div class="card" id="queueList"></div>
 </div>
 
-<div class="tab-content" id="tab-settings">
+<div class="tab-panel" id="panel-settings" role="tabpanel">
   <div class="section-title">Configuration</div>
   <div class="card">
-    <div class="card-header"><h3>Agent Auth</h3></div>
+    <div class="card-header"><span class="card-title">Agent Auth</span></div>
     <div class="card-body">
-      <p style="font-size:.813rem;color:var(--text-dim);margin-bottom:12px">The X-Agent-Auth token authenticates agent-to-agent and agent-to-API communication. Configure AGENT_AUTH_KEY as an environment variable in Cloudflare Pages.</p>
-      <div class="agent-config">
-        <div class="config-row"><span class="config-label">Status</span><span class="config-value" id="agentAuthStatus">Checking...</span></div>
-        <div class="config-row"><span class="config-label">X-Agent-Auth Header</span><span class="config-value"><code style="font-size:.75rem;color:var(--gold)">Requires AGENT_AUTH_KEY env var</code></span></div>
-        <div class="config-row"><span class="config-label">Admin Key</span><span class="config-value"><code style="font-size:.75rem;color:var(--text-muted)">Requires ADMIN_API_KEY env var</code></span></div>
-      </div>
+      <p style="font-size:.813rem;color:var(--text-dim);margin-bottom:12px">X-Agent-Auth token authenticates agent-to-agent communication. Configure AGENT_AUTH_KEY as a Cloudflare Pages environment variable.</p>
+      <div class="modal-detail-row"><span class="modal-detail-label">Status</span><span class="modal-detail-value" id="authStatus">Checking...</span></div>
+      <div class="modal-detail-row"><span class="modal-detail-label">Header</span><span class="modal-detail-value"><code style="font-size:.75rem;color:var(--gold)">X-Agent-Auth</code></span></div>
+      <div class="modal-detail-row"><span class="modal-detail-label">Env Var</span><span class="modal-detail-value"><code style="font-size:.75rem;color:var(--text-muted)">AGENT_AUTH_KEY</code></span></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-header"><h3>AI Provider</h3></div>
+    <div class="card-header"><span class="card-title">AI Provider</span></div>
     <div class="card-body">
       <p style="font-size:.813rem;color:var(--text-dim);margin-bottom:12px">AI agents use OpenAI-compatible APIs. Set OPENAI_API_KEY (or AI_API_KEY) in Cloudflare Pages environment variables.</p>
-      <div class="agent-config">
-        <div class="config-row"><span class="config-label">API Key</span><span class="config-value" id="aiKeyStatus">Checking...</span></div>
-        <div class="config-row"><span class="config-label">Default Model</span><span class="config-value"><code style="font-size:.75rem">gpt-4o-mini</code></span></div>
-      </div>
+      <div class="modal-detail-row"><span class="modal-detail-label">API Key</span><span class="modal-detail-value" id="aiStatus">Checking...</span></div>
+      <div class="modal-detail-row"><span class="modal-detail-label">Default Model</span><span class="modal-detail-value"><code style="font-size:.75rem">gpt-4o-mini</code></span></div>
     </div>
   </div>
 </div>
 
 </div>
 
-<div class="modal-overlay" id="spawnModal">
+<div class="shortcuts-help"><kbd>1</kbd>-<kbd>6</kbd> Tabs &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
+
+<div class="modal-overlay" id="spawnModal" role="dialog" aria-labelledby="spawnTitle">
   <div class="modal">
-    <h2>Spawn New Agent</h2>
-    <label>Agent Type</label>
-    <select id="spawnType"><option value="content">Content</option><option value="outreach">Outreach</option><option value="analytics">Analytics</option><option value="task_processor">Task Processor</option></select>
-    <label>Name</label>
-    <input type="text" id="spawnName" placeholder="e.g. Newsletter Writer #2">
-    <label>Initial Prompt (optional)</label>
-    <textarea id="spawnPrompt" placeholder="What should this agent do first?"></textarea>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('spawnModal')">Cancel</button>
-      <button class="btn btn-gold" onclick="spawnAgent()">Spawn</button>
+    <div class="modal-title" id="spawnTitle">Spawn New Agent</div>
+    <div class="modal-body spawn-form">
+      <label>Agent Type</label>
+      <select id="spawnType"><option value="content">Content</option><option value="outreach">Outreach</option><option value="analytics">Analytics</option><option value="task_processor">Task Processor</option></select>
+      <label>Name</label>
+      <input type="text" id="spawnName" placeholder="e.g. Newsletter Writer #2">
+      <label>Initial Prompt (optional)</label>
+      <textarea id="spawnPrompt" placeholder="What should this agent do first?"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-modal="spawnModal">Cancel</button>
+      <button class="btn btn-gold" id="spawnConfirm">Spawn</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="workflowModal">
+<div class="modal-overlay" id="wfModal" role="dialog" aria-labelledby="wfTitle">
   <div class="modal">
-    <h2>Create Workflow</h2>
-    <label>Name</label>
-    <input type="text" id="wfName" placeholder="e.g. Abandoned Cart Recovery">
-    <label>Description</label>
-    <textarea id="wfDesc" placeholder="What does this workflow do?"></textarea>
-    <label>Trigger Type</label>
-    <select id="wfTrigger">
-      <option value="manual">Manual</option>
-      <option value="cron">Scheduled (Cron)</option>
-      <option value="event">Event-driven</option>
-    </select>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('workflowModal')">Cancel</button>
-      <button class="btn btn-gold" onclick="createWorkflow()">Create</button>
+    <div class="modal-title" id="wfTitle">Create Workflow</div>
+    <div class="modal-body spawn-form">
+      <label>Name</label>
+      <input type="text" id="wfName" placeholder="e.g. Abandoned Cart Recovery">
+      <label>Description</label>
+      <textarea id="wfDesc" placeholder="What does this workflow do?"></textarea>
+      <label>Trigger Type</label>
+      <select id="wfTrigger"><option value="manual">Manual</option><option value="cron">Scheduled (Cron)</option><option value="event">Event-driven</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-modal="wfModal">Cancel</button>
+      <button class="btn btn-gold" id="wfConfirm">Create</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="runModal">
+<div class="modal-overlay" id="detailModal" role="dialog" aria-labelledby="detailTitle">
   <div class="modal">
-    <h2>Queue Agent Run</h2>
-    <label>Agent Type</label>
-    <select id="runAgentType">
-      <option value="content">Content</option>
-      <option value="outreach">Outreach</option>
-      <option value="analytics">Analytics</option>
-      <option value="fulfillment">Fulfillment</option>
-      <option value="task_processor">Task Processor</option>
-    </select>
-    <label>Prompt / Instructions</label>
-    <textarea id="runPrompt" placeholder="What should this agent do?"></textarea>
-    <label>Priority</label>
-    <select id="runPriority"><option value="0">Normal</option><option value="1">High</option><option value="2">Critical</option></select>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('runModal')">Cancel</button>
-      <button class="btn btn-gold" onclick="queueRun()">Queue</button>
+    <div class="modal-title" id="detailTitle">Details</div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-action="close-modal" data-modal="detailModal">Close</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="detailModal">
-  <div class="modal">
-    <h2 id="detailTitle">Details</h2>
-    <div id="detailBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('detailModal')">Close</button>
-    </div>
-  </div>
-</div>
-
+<script src="admin-state.js"></script>
+<script src="admin-api.js"></script>
+<script src="admin-ui.js"></script>
 <script>
-var AGENT_AUTH_TOKEN = localStorage.getItem('agent_auth_token') || '';
-var ADMIN_KEY = localStorage.getItem('admin_api_key') || '';
-var TAB = 'dashboard';
+(function() {
 
-function getHeaders() {
-  var h = { 'Content-Type': 'application/json' };
-  if (AGENT_AUTH_TOKEN) h['X-Agent-Auth'] = AGENT_AUTH_TOKEN;
-  if (ADMIN_KEY) h['X-Admin-Key'] = ADMIN_KEY;
-  return h;
+var TAB = getHashTab();
+var $ = function(id) { return document.getElementById(id); };
+
+function getHashTab() {
+  var h = window.location.hash.slice(1);
+  var valid = ['dashboard','agents','workflows','runs','queue','settings'];
+  return valid.indexOf(h) !== -1 ? h : 'dashboard';
 }
 
+function setHashTab(name) {
+  window.location.hash = name;
+}
+
+/* ── Render helpers ── */
+function showLoading(container) {
+  container.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto 12px"></div><div class="empty-desc">Loading...</div></div>';
+}
+
+function showError(container, msg, retryFn) {
+  var h = '<div class="error-state"><div class="error-icon">&#9888;</div><div class="error-title">' + msg + '</div>';
+  if (retryFn) h += '<button class="btn btn-outline btn-sm error-btn" onclick="(' + retryFn.toString() + ')()">Retry</button>';
+  h += '</div>';
+  container.innerHTML = h;
+}
+
+function showEmpty(container, icon, msg) {
+  container.innerHTML = '<div class="empty-state"><div class="empty-icon">' + (icon || '&#9881;') + '</div><div class="empty-desc">' + (msg || 'No data') + '</div></div>';
+}
+
+/* ── Dashboard ── */
+function renderDashboard() {
+  var statsEl = $('dashboardStats');
+  var regEl = $('agentRegistry');
+  var actEl = $('recentActivity');
+  var data = AppState.get('status');
+
+  if (!data) {
+    showLoading(statsEl);
+    loadDashboard();
+    return;
+  }
+
+  var agents = data.agents || [];
+  var activeCount = agents.filter(function(a) { return a.status === 'idle' || a.status === 'busy'; }).length;
+  var queueData = data.queue || {};
+  var runsData = data.runs || {};
+  var revenue = data.revenue_30d ? Number(data.revenue_30d) : 0;
+
+  statsEl.innerHTML =
+    '<div class="stat-card"><div class="stat-num">' + activeCount + '</div><div class="stat-label">Active Agents</div></div>' +
+    '<div class="stat-card"><div class="stat-num dim">' + (queueData.pending || 0) + (queueData.in_progress ? ' <span style="font-size:.8rem">(' + queueData.in_progress + ' running)</span>' : '') + '</div><div class="stat-label">Queue Depth</div></div>' +
+    '<div class="stat-card"><div class="stat-num" style="color:var(--red)">' + (runsData.errors_24h || 0) + '</div><div class="stat-label">Errors (24h)</div></div>' +
+    '<div class="stat-card"><div class="stat-num" style="color:var(--blue)">' + (runsData.last_24h || 0) + '</div><div class="stat-label">Runs (24h)</div></div>' +
+    '<div class="stat-card"><div class="stat-num green">GH\u00a2 ' + revenue.toLocaleString() + '</div><div class="stat-label">Revenue (30d)</div></div>';
+
+  if (!agents.length) {
+    showEmpty(regEl, '&#9881;', 'No agents deployed yet. Run the setup script first.');
+  } else {
+    regEl.innerHTML =
+      '<div class="card-header"><span class="card-title">Agent Registry</span><span style="font-size:.75rem;color:var(--text-dim)">' + agents.length + ' total</span></div>' +
+      '<div class="card-body" id="agentList">' +
+      agents.map(function(a) {
+        return '<div class="list-item card-hover" data-action="agent-detail" data-id="' + a.id + '">' +
+          '<span class="' + (a.status === 'idle' || a.status === 'busy' ? 'status-dot online' : 'status-dot offline') + '"></span>' +
+          '<span class="li-main"><span class="li-title">' + (a.name || a.agent_type_name || 'Agent') + '</span>' +
+          '<span class="li-sub">' + (a.agent_type_name || '') + ' &mdash; Runs: ' + (a.total_runs || 0) + ' | Errors: ' + (a.total_errors || 0) + '</span></span>' +
+          '<span class="li-meta">' + statusBadge(a.status) + ' Last: ' + formatTime(a.last_run_at) + '</span>' +
+          '</div>';
+      }).join('') +
+      '</div>';
+  }
+
+  var runs = data.latest_runs || [];
+  if (!runs.length) {
+    showEmpty(actEl, '&#8987;', 'No recent runs');
+  } else {
+    actEl.innerHTML =
+      '<div class="card-header"><span class="card-title">Recent Agent Runs</span><span style="font-size:.75rem;color:var(--text-dim)">' + runs.length + ' recent</span></div>' +
+      '<div class="card-body activity-feed">' +
+      runs.map(function(r) {
+        return '<div class="activity-item">' +
+          statusDot(r.status) +
+          '<span class="activity-time">' + formatTime(r.created_at) + '</span>' +
+          '<span class="activity-text"><span class="agent-label">[' + (r.agent_type_name || 'unknown') + ']</span> ' + (r.status || '') + (r.duration_ms ? ' (' + (r.duration_ms / 1000).toFixed(1) + 's)' : '') + '</span>' +
+          '<button class="btn-icon" data-action="run-detail" data-id="' + r.id + '" title="View details">&#9881;</button>' +
+          '</div>';
+      }).join('') +
+      '</div>';
+  }
+}
+
+function renderAgents() {
+  var el = $('agentsFullList');
+  var agents = AppState.get('agents');
+  if (!agents || !agents.length) {
+    showEmpty(el, '&#9881;', 'No agents deployed');
+    return;
+  }
+  el.innerHTML =
+    '<div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Runs</th><th>Errors</th><th>Last Run</th><th></th></tr></thead><tbody>' +
+    agents.map(function(a) {
+      return '<tr><td><strong>' + (a.name || '') + '</strong></td><td>' + (a.agent_type_name || '') + '</td><td>' + statusBadge(a.status) + '</td><td>' + (a.total_runs || 0) + '</td><td>' + (a.total_errors || 0) + '</td><td>' + formatTime(a.last_run_at) + '</td>' +
+        '<td><button class="btn-icon" data-action="agent-detail" data-id="' + a.id + '" title="View detail">&#9881;</button></td></tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function renderWorkflows() {
+  var el = $('workflowList');
+  var workflows = AppState.get('workflows');
+  if (!workflows || !workflows.length) {
+    showEmpty(el, '&#9881;', 'No workflows defined');
+    return;
+  }
+  el.innerHTML =
+    '<div>' +
+    workflows.map(function(w) {
+      return '<div class="wf-card" data-action="wf-detail" data-id="' + w.id + '">' +
+        '<div class="wf-name">' + statusBadge(w.status) + ' ' + (w.name || '') + '</div>' +
+        '<div class="wf-desc">' + (w.description || '') + '</div>' +
+        '<div class="wf-meta">' + (w.step_count || 0) + ' steps | Trigger: ' + (w.trigger_type || 'manual') + ' | Runs: ' + (w.total_runs || 0) + ' | Revenue: GH\u00a2 ' + Number(w.revenue_tracked || 0).toLocaleString() + '</div>' +
+        '</div>';
+    }).join('') +
+    '</div>';
+}
+
+function renderRuns() {
+  var el = $('runsList');
+  var runs = AppState.get('runs');
+  if (!runs || !runs.length) {
+    showEmpty(el, '&#8987;', 'No runs found');
+    return;
+  }
+  el.innerHTML =
+    '<div style="overflow-x:auto"><table><thead><tr><th>Time</th><th>Agent</th><th>Status</th><th>Duration</th><th>Sub</th><th>Summary</th><th></th></tr></thead><tbody>' +
+    runs.map(function(r) {
+      return '<tr><td>' + formatTime(r.created_at) + '</td><td>' + (r.agent_type_name || '') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '-') + '</td><td>' + (r.sub_agent_count || 0) + '</td>' +
+        '<td style="font-size:.75rem;color:var(--text-dim);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.response_summary ? r.response_summary.substring(0, 60) : '-') + '</td>' +
+        '<td><button class="btn-icon" data-action="run-detail" data-id="' + r.id + '" title="View detail">&#9654;</button></td></tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function renderQueue() {
+  var el = $('queueList');
+  var items = AppState.get('queue');
+  if (!items || !items.length) {
+    showEmpty(el, '&#10003;', 'Queue is empty');
+    return;
+  }
+  el.innerHTML =
+    '<div>' +
+    items.map(function(item) {
+      var agent = item.agent_type || '';
+      var meta = 'P' + (item.priority || 0) + ' | ' + formatTime(item.created_at);
+      var actions = item.status === 'pending'
+        ? '<button class="btn btn-outline btn-sm" data-action="process-item" data-id="' + item.id + '">Process</button>'
+        : '';
+      return '<div class="queue-item">' +
+        '<div class="qi-info">' + statusBadge(item.status) + ' <strong>' + agent + '</strong> <span class="qi-meta">' + meta + '</span></div>' +
+        '<div style="display:flex;gap:6px">' + actions + '</div>' +
+        '</div>';
+    }).join('') +
+    '</div>';
+}
+
+/* ── Data loading ── */
+function loadDashboard() {
+  API.getStatus().then(function(data) {
+    var s = data.agents ? data.agents.filter(function(a) { return a.status === 'idle' || a.status === 'busy'; }).length : 0;
+    $('headerStatusText').textContent = s > 0 ? 'Online (' + s + ' active)' : 'Online';
+    $('headerStatus').className = 'status-dot online' + (s > 0 ? '' : '');
+    renderDashboard();
+  }).catch(function(err) {
+    $('headerStatusText').textContent = 'Error';
+    $('headerStatus').className = 'status-dot error';
+    showError($('dashboardStats'), 'Failed to load: ' + err.message, loadDashboard);
+  });
+}
+
+function loadAgents() {
+  return API.getStatus().then(function() {
+    renderAgents();
+  }).catch(function(err) {
+    showError($('agentsFullList'), 'Failed to load agents: ' + err.message, loadAgents);
+  });
+}
+
+function loadRunsData(filter) {
+  return API.getRuns({ limit: 100, status: filter || '' }).then(function() {
+    renderRuns();
+  }).catch(function(err) {
+    showError($('runsList'), 'Failed to load runs: ' + err.message, function() { loadRunsData($('runFilter').value); });
+  });
+}
+
+function loadQueueData() {
+  return API.getQueue().then(function() {
+    renderQueue();
+  }).catch(function(err) {
+    showError($('queueList'), 'Failed to load queue: ' + err.message, loadQueueData);
+  });
+}
+
+function loadWorkflowsData() {
+  return API.getWorkflows().then(function() {
+    renderWorkflows();
+  }).catch(function(err) {
+    showError($('workflowList'), 'Failed to load workflows: ' + err.message, loadWorkflowsData);
+  });
+}
+
+/* ── Detail modals ── */
+function showAgentDetail(id) {
+  API.getRuns({ agent_id: id, limit: 10 }).then(function(runs) {
+    var agents = AppState.get('agents');
+    var agent = agents ? agents.filter(function(a) { return a.id === id; })[0] : null;
+    var name = agent ? (agent.name || 'Agent #' + id) : 'Agent #' + id;
+    var html = '<div class="modal-detail-row"><span class="modal-detail-label">Agent</span><span class="modal-detail-value">' + (agent ? (agent.name || '') : '') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Type</span><span class="modal-detail-value">' + (agent ? statusBadge(agent.agent_type_name) : '') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Status</span><span class="modal-detail-value">' + (agent ? statusBadge(agent.status) : '') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Total Runs</span><span class="modal-detail-value">' + (agent ? (agent.total_runs || 0) : '') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Total Errors</span><span class="modal-detail-value">' + (agent ? (agent.total_errors || 0) : '') + '</span></div>' +
+      '<div style="margin-top:16px;font-weight:600;font-size:.875rem;color:var(--text-dim);margin-bottom:8px">Recent Runs</div>';
+    if (!runs || !runs.length) {
+      html += '<div class="empty-state" style="padding:16px"><div class="empty-desc">No runs yet</div></div>';
+    } else {
+      runs.forEach(function(r) {
+        html += '<div class="activity-item">' + statusDot(r.status) +
+          '<span class="activity-time">' + formatTime(r.created_at) + '</span>' +
+          '<span class="activity-text">' + statusBadge(r.status) + ' ' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '') +
+          '<br><span style="color:var(--text-dim);font-size:.75rem">' + (r.response_summary ? r.response_summary.substring(0, 200) : '') + '</span></span></div>';
+      });
+    }
+    Modal.create('detailModal');
+    $('detailTitle').textContent = name;
+    $('detailBody').innerHTML = html;
+    Modal.close('detailModal');
+    setTimeout(function() { $('detailModal').classList.add('open'); }, 10);
+  }).catch(function(err) {
+    Toast.error('Failed to load agent: ' + err.message);
+  });
+}
+
+function showRunDetail(id) {
+  var runs = AppState.get('runs') || [];
+  var run = runs.filter(function(r) { return r.id === id; })[0];
+  if (!run) {
+    API.getRuns({ limit: 50 }).then(function(all) {
+      var r = all.filter(function(x) { return x.id === id; })[0];
+      if (!r) { Toast.error('Run not found'); return; }
+      renderRunModal(r);
+    });
+    return;
+  }
+  renderRunModal(run);
+}
+
+function renderRunModal(run) {
+  var html = '<div class="run-detail"><span class="rd-label">Status</span><span class="rd-value">' + statusBadge(run.status) + '</span></div>' +
+    '<div class="run-detail"><span class="rd-label">Agent</span><span class="rd-value">' + (run.agent_type_name || '') + '</span></div>' +
+    '<div class="run-detail"><span class="rd-label">Duration</span><span class="rd-value">' + (run.duration_ms ? (run.duration_ms / 1000).toFixed(1) + 's' : '-') + '</span></div>' +
+    '<div class="run-detail"><span class="rd-label">Sub-agents</span><span class="rd-value">' + (run.sub_agent_count || 0) + '</span></div>' +
+    '<div class="run-detail"><span class="rd-label">Created</span><span class="rd-value">' + formatTime(run.created_at) + '</span></div>';
+  if (run.result) html += '<div class="run-detail"><span class="rd-label">Result</span><span class="rd-value" style="font-size:.75rem">' + run.result.substring(0, 500) + '</span></div>';
+  if (run.error) html += '<div class="run-detail"><span class="rd-label" style="color:var(--red)">Error</span><span class="rd-value" style="color:var(--red);font-size:.75rem">' + run.error + '</span></div>';
+  if (run.response_summary) html += '<div class="run-detail"><span class="rd-label">Summary</span><span class="rd-value" style="font-size:.75rem">' + run.response_summary.substring(0, 300) + '</span></div>';
+  $('detailTitle').textContent = 'Run #' + run.id;
+  $('detailBody').innerHTML = html;
+  $('detailModal').classList.add('open');
+}
+
+function showWorkflowDetail(id) {
+  var workflows = AppState.get('workflows') || [];
+  var wf = workflows.filter(function(w) { return w.id === id; })[0];
+  if (!wf) { Toast.error('Workflow not found'); return; }
+  var html = '<div class="modal-detail-row"><span class="modal-detail-label">Name</span><span class="modal-detail-value">' + wf.name + '</span></div>' +
+    '<div class="modal-detail-row"><span class="modal-detail-label">Status</span><span class="modal-detail-value">' + statusBadge(wf.status) + '</span></div>' +
+    '<div class="modal-detail-row"><span class="modal-detail-label">Trigger</span><span class="modal-detail-value">' + (wf.trigger_type || 'manual') + '</span></div>' +
+    '<div class="modal-detail-row"><span class="modal-detail-label">Description</span><span class="modal-detail-value">' + (wf.description || '-') + '</span></div>';
+  if (wf.steps && wf.steps.length) {
+    html += '<div style="margin-top:16px;font-weight:600;font-size:.875rem;color:var(--text-dim);margin-bottom:8px">Steps</div>';
+    wf.steps.forEach(function(s, i) {
+      html += '<div class="activity-item"><span class="activity-dot completed"></span>' +
+        '<span class="activity-text">' + (i + 1) + '. ' + s.step_type + ' (' + s.agent_type + ')' +
+        (s.config ? ' <span style="color:var(--text-muted);font-size:.75rem">' + JSON.stringify(s.config).substring(0, 100) + '</span>' : '') + '</span></div>';
+    });
+  }
+  html += '<div style="margin-top:16px"><button class="btn btn-gold btn-sm" data-action="run-wf" data-id="' + wf.id + '">Run Workflow</button></div>';
+  $('detailTitle').textContent = 'Workflow: ' + wf.name;
+  $('detailBody').innerHTML = html;
+  $('detailModal').classList.add('open');
+}
+
+/* ── Actions ── */
+function spawnAgent() {
+  var type = $('spawnType').value;
+  var name = $('spawnName').value.trim() || type + '-' + Date.now();
+  var prompt = $('spawnPrompt').value.trim();
+  API.createQueueItem({ agent_type: type, payload: { prompt: prompt, save_as_task: true, task_title: 'Agent: ' + name }, priority: 1 })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        Toast.success('Agent queued: ' + name);
+        Modal.close('spawnModal');
+        loadDashboard();
+      } else throw new Error(data.message || 'Unknown error');
+    }).catch(function(err) { Toast.error('Failed: ' + err.message); });
+}
+
+function createWorkflow() {
+  var name = $('wfName').value.trim();
+  var desc = $('wfDesc').value.trim();
+  var trigger = $('wfTrigger').value;
+  if (!name) { Toast.warning('Name is required'); return; }
+  API.createWorkflow({ name: name, description: desc, trigger_type: trigger })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        Toast.success('Workflow created: ' + name);
+        Modal.close('wfModal');
+        loadWorkflowsData();
+      } else throw new Error(data.message || 'Unknown error');
+    }).catch(function(err) { Toast.error('Failed: ' + err.message); });
+}
+
+function runWorkflow(id) {
+  API.updateWorkflow(id, { total_runs: 1 })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        return API.createQueueItem({ agent_type: 'orchestrator', workflow_id: id, payload: { workflow_id: id, action: 'run' }, priority: 2 });
+      } else throw new Error(data.message || 'Failed to trigger');
+    }).then(function() {
+      Toast.success('Workflow queued for execution');
+      Modal.close('detailModal');
+    }).catch(function(err) { Toast.error('Failed: ' + err.message); });
+}
+
+function processQueue(maxItems) {
+  API.orchestrate(maxItems || 10)
+    .then(function(data) {
+      if (data.status === 'ok') {
+        Toast.success('Processed ' + data.processed + ' items. ' + (data.total_pending || 0) + ' remaining.');
+        loadQueueData();
+        loadDashboard();
+      } else throw new Error(data.message || 'Orchestrator failed');
+    }).catch(function(err) { Toast.error('Failed: ' + err.message); });
+}
+
+/* ── Settings ── */
+function loadSettings() {
+  API.get('/status').then(function() {
+    $('authStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>';
+  }).catch(function() {
+    $('authStatus').innerHTML = '<span style="color:var(--red)">&#10007; Not configured</span>';
+  });
+  API.runAction('call_ai', { prompt: 'ping' }).then(function() {
+    $('aiStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>';
+  }).catch(function(err) {
+    $('aiStatus').innerHTML = '<span style="color:var(--orange)">&#9888; Not configured' + (err.message ? ' (' + err.message + ')' : '') + '</span>';
+  });
+}
+
+/* ── Tab switching ── */
 function switchTab(name) {
   TAB = name;
-  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
-  document.querySelectorAll('.tab').forEach(function(el) { el.classList.remove('active'); });
-  document.getElementById('tab-' + name).classList.add('active');
-  document.querySelector('.tab[data-tab="' + name + '"]').classList.add('active');
-  if (name === 'runs') loadRuns();
-  if (name === 'queue') loadQueue();
-  if (name === 'agents') loadAgentsFull();
-  if (name === 'workflows') loadWorkflows();
-  if (name === 'settings') loadSettings();
+  setHashTab(name);
+  document.querySelectorAll('.tab-panel').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) {
+    var match = el.getAttribute('data-tab') === name;
+    el.classList.toggle('active', match);
+    el.setAttribute('aria-selected', match ? 'true' : 'false');
+  });
+  $('panel-' + name).classList.add('active');
+  if (name === 'dashboard') loadDashboard();
+  else if (name === 'agents') { showLoading($('agentsFullList')); loadAgents(); }
+  else if (name === 'workflows') { showLoading($('workflowList')); loadWorkflowsData(); }
+  else if (name === 'runs') { showLoading($('runsList')); loadRunsData($('runFilter').value); }
+  else if (name === 'queue') { showLoading($('queueList')); loadQueueData(); }
+  else if (name === 'settings') loadSettings();
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+/* ── Event delegation ── */
+document.addEventListener('click', function(e) {
+  var target = e.target.closest('[data-action]');
+  if (!target) return;
+  var action = target.getAttribute('data-action');
+  var id = target.getAttribute('data-id') || null;
+  var modal = target.getAttribute('data-modal') || null;
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-
-function showSpawnModal() {
-  document.getElementById('spawnName').value = '';
-  document.getElementById('spawnPrompt').value = '';
-  openModal('spawnModal');
-}
-
-function showWorkflowModal() {
-  document.getElementById('wfName').value = '';
-  document.getElementById('wfDesc').value = '';
-  openModal('workflowModal');
-}
-
-function showRunModal(agentType, prompt) {
-  document.getElementById('runAgentType').value = agentType || 'content';
-  document.getElementById('runPrompt').value = prompt || '';
-  document.getElementById('runPriority').value = '0';
-  openModal('runModal');
-}
-
-function showDetail(title, bodyHtml) {
-  document.getElementById('detailTitle').textContent = title;
-  document.getElementById('detailBody').innerHTML = bodyHtml;
-  openModal('detailModal');
-}
-
-function formatTime(iso) {
-  if (!iso) return '-';
-  try {
-    var d = new Date(iso.replace(' ', 'T') + 'Z');
-    var now = new Date();
-    var diff = Math.round((now - d) / 60000);
-    if (diff < 1) return 'just now';
-    if (diff < 60) return diff + 'm ago';
-    var hrs = Math.round(diff / 60);
-    if (hrs < 24) return hrs + 'h ago';
-    return d.toLocaleDateString();
-  } catch(e) { return iso; }
-}
-
-function statusBadge(s) {
-  var cls = s.toLowerCase();
-  return '<span class="badge ' + cls + '">' + s + '</span>';
-}
-
-function agentStatusDot(s) {
-  var cls = s.toLowerCase();
-  if (cls === 'online' || cls === 'active' || cls === 'idle') cls = 'online';
-  if (cls === 'busy' || cls === 'in_progress') cls = 'online';
-  return '<span class="status-dot ' + cls + '"></span>';
-}
-
-async function loadAll() {
-  document.getElementById('headerStatusText').textContent = 'Loading...';
-  try {
-    var res = await fetch('/api/agents/status', { headers: getHeaders() });
-    if (!res.ok) throw new Error('Status: ' + res.status);
-    var data = await res.json();
-    if (data.status !== 'ok') throw new Error(data.message || 'Unknown error');
-
-    var agents = data.agents || [];
-    var activeCount = agents.filter(function(a) { return a.status === 'idle' || a.status === 'busy'; }).length;
-    document.getElementById('statAgents').textContent = activeCount;
-    document.getElementById('statQueue').textContent = ((data.queue && data.queue.pending) || 0) + ((data.queue && data.queue.in_progress) ? ' (' + data.queue.in_progress + ' running)' : '');
-    document.getElementById('statErrors').textContent = (data.runs && data.runs.errors_24h) || 0;
-    document.getElementById('statRuns').textContent = (data.runs && data.runs.last_24h) || 0;
-    document.getElementById('statRevenue').textContent = 'GH\u00a2 ' + ((data.revenue_30d && Number(data.revenue_30d).toLocaleString()) || '0');
-
-    document.getElementById('headerStatusText').textContent = 'Online';
-    document.getElementById('headerStatus').className = 'status-dot online';
-
-    // Agent registry
-    var html = '';
-    agents.forEach(function(a) {
-      var toolCount = 0;
-      html += '<div class="workflow-card" onclick="showAgentDetail(' + a.id + ')">';
-      html += '<div class="wf-name">' + agentStatusDot(a.status) + ' ' + (a.name || a.agent_type_name) + ' <span class="badge ' + a.status + '">' + a.status + '</span></div>';
-      html += '<div class="wf-desc">' + (a.agent_type_name || '') + ' &mdash; Runs: ' + (a.total_runs || 0) + ' | Errors: ' + (a.total_errors || 0) + '</div>';
-      html += '<div class="wf-meta">Last run: ' + formatTime(a.last_run_at) + '</div>';
-      html += '</div>';
-    });
-    if (!agents.length) html = '<div class="empty"><div class="icon">&#9881;</div>No agents deployed yet. Run the setup script first.</div>';
-    document.getElementById('agentList').innerHTML = html;
-    document.getElementById('agentCount').textContent = agents.length + ' total';
-
-    // Recent activity
-    var runs = data.latest_runs || [];
-    var actHtml = '';
-    runs.forEach(function(r) {
-      var cls = r.status || 'pending';
-      actHtml += '<div class="activity-item">';
-      actHtml += '<span class="activity-dot ' + cls + '"></span>';
-      actHtml += '<span class="activity-time">' + formatTime(r.created_at) + '</span>';
-      actHtml += '<span class="activity-text"><span class="agent-label">[' + (r.agent_type_name || 'unknown') + ']</span> ' + (r.status || 'pending') + (r.duration_ms ? ' (' + (r.duration_ms / 1000).toFixed(1) + 's)' : '') + '</span>';
-      actHtml += '<button class="btn-icon" onclick="showRunDetail(' + r.id + ')">&#9881;</button>';
-      actHtml += '</div>';
-    });
-    if (!runs.length) actHtml = '<div class="empty"><div class="icon">&#8987;</div>No runs yet</div>';
-    document.getElementById('recentActivity').innerHTML = actHtml;
-    document.getElementById('runCount').textContent = runs.length + ' recent';
-
-  } catch (err) {
-    document.getElementById('headerStatusText').textContent = 'Error: ' + err.message;
-    document.getElementById('headerStatus').className = 'status-dot error';
+  if (action === 'close-modal' && modal) {
+    e.preventDefault();
+    $('' + modal).classList.remove('open');
+  } else if (action === 'agent-detail' && id) {
+    showAgentDetail(parseInt(id));
+  } else if (action === 'run-detail' && id) {
+    showRunDetail(parseInt(id));
+  } else if (action === 'wf-detail' && id) {
+    showWorkflowDetail(parseInt(id));
+  } else if (action === 'run-wf' && id) {
+    runWorkflow(parseInt(id));
+  } else if (action === 'process-item' && id) {
+    processQueue(1);
   }
-}
+});
 
-async function loadAgentsFull() {
-  try {
-    var res = await fetch('/api/agents/status', { headers: getHeaders() });
-    if (!res.ok) throw new Error('Status: ' + res.status);
-    var data = await res.json();
-    var agents = data.agents || [];
-    var html = '<table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Runs</th><th>Errors</th><th>Last Run</th><th></th></tr></thead><tbody>';
-    agents.forEach(function(a) {
-      html += '<tr><td><strong>' + a.name + '</strong></td><td>' + (a.agent_type_name || '') + '</td><td>' + statusBadge(a.status) + '</td><td>' + (a.total_runs || 0) + '</td><td>' + (a.total_errors || 0) + '</td><td>' + formatTime(a.last_run_at) + '</td>';
-      html += '<td><button class="btn-icon" onclick="showAgentDetail(' + a.id + ')">&#9881;</button></td></tr>';
-    });
-    if (!agents.length) html = '<div class="empty"><div class="icon">&#9881;</div>No agents</div>';
-    else html += '</tbody></table>';
-    document.getElementById('agentsFullBody').innerHTML = html;
-  } catch (err) {
-    document.getElementById('agentsFullBody').innerHTML = '<div class="empty"><div class="icon">&#9881;</div>Error: ' + err.message + '</div>';
-  }
-}
-
-async function showAgentDetail(id) {
-  try {
-    var res = await fetch('/api/agents/runs?agent_id=' + id + '&limit=10', { headers: getHeaders() });
-    var data = await res.json();
-    var runs = (data.items || []);
-    var html = '<div style="font-size:.813rem;margin-bottom:12px"><strong>Recent Runs:</strong></div>';
-    if (!runs.length) html += '<div class="empty"><div class="icon">&#8987;</div>No runs yet</div>';
-    else {
-      runs.forEach(function(r) {
-        html += '<div class="activity-item"><span class="activity-dot ' + (r.status || 'pending') + '"></span>';
-        html += '<span class="activity-time">' + formatTime(r.created_at) + '</span>';
-        html += '<span class="activity-text">' + statusBadge(r.status) + ' ' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '') + '<br>' + (r.response_summary ? r.response_summary.substring(0, 200) : '') + '</span></div>';
-      });
-    }
-    showDetail('Agent #' + id, html);
-  } catch (err) {
-    showDetail('Agent #' + id, '<div class="empty">Error loading: ' + err.message + '</div>');
-  }
-}
-
-async function showRunDetail(id) {
-  try {
-    var res = await fetch('/api/agents/runs?limit=50', { headers: getHeaders() });
-    var data = await res.json();
-    var run = (data.items || []).find(function(r) { return r.id === id; });
-    if (!run) { showDetail('Run #' + id, '<div class="empty">Run not found</div>'); return; }
-    var html = '<div class="run-detail"><span class="rd-label">Status:</span><span class="rd-value">' + statusBadge(run.status) + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Agent:</span><span class="rd-value">' + (run.agent_type_name || '') + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Duration:</span><span class="rd-value">' + (run.duration_ms ? (run.duration_ms / 1000).toFixed(1) + 's' : '-') + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Sub-agents:</span><span class="rd-value">' + (run.sub_agent_count || 0) + '</span></div>';
-    if (run.result) html += '<div class="run-detail"><span class="rd-label">Result:</span><span class="rd-value" style="font-size:.75rem;word-break:break-all">' + run.result.substring(0, 500) + '</span></div>';
-    if (run.error) html += '<div class="run-detail"><span class="rd-label" style="color:var(--red)">Error:</span><span class="rd-value" style="color:var(--red);font-size:.75rem">' + run.error + '</span></div>';
-    if (run.response_summary) html += '<div class="run-detail"><span class="rd-label">Summary:</span><span class="rd-value" style="font-size:.75rem">' + run.response_summary.substring(0, 300) + '</span></div>';
-    showDetail('Run #' + id, html);
-  } catch (err) {
-    showDetail('Run #' + id, '<div class="empty">Error: ' + err.message + '</div>');
-  }
-}
-
-async function loadRuns() {
-  var filter = document.getElementById('runFilter').value;
-  try {
-    var url = '/api/agents/runs?limit=100';
-    if (filter) url += '&status=' + filter;
-    var res = await fetch(url, { headers: getHeaders() });
-    var data = await res.json();
-    var runs = data.items || [];
-    var html = '<table><thead><tr><th>Time</th><th>Agent</th><th>Status</th><th>Duration</th><th>Sub-agents</th><th>Summary</th><th></th></tr></thead><tbody>';
-    runs.forEach(function(r) {
-      html += '<tr>';
-      html += '<td>' + formatTime(r.created_at) + '</td>';
-      html += '<td>' + (r.agent_type_name || '') + '</td>';
-      html += '<td>' + statusBadge(r.status) + '</td>';
-      html += '<td>' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '-') + '</td>';
-      html += '<td>' + (r.sub_agent_count || 0) + '</td>';
-      html += '<td style="font-size:.75rem;color:var(--text-dim);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.response_summary ? r.response_summary.substring(0, 60) : '-') + '</td>';
-      html += '<td><button class="btn-icon" onclick="showRunDetail(' + r.id + ')">&#9654;</button></td>';
-      html += '</tr>';
-    });
-    if (!runs.length) html = '<div class="empty"><div class="icon">&#8987;</div>No runs found</div>';
-    else html += '</tbody></table>';
-    document.getElementById('runsBody').innerHTML = html;
-  } catch (err) {
-    document.getElementById('runsBody').innerHTML = '<div class="empty">Error: ' + err.message + '</div>';
-  }
-}
-
-async function loadQueue() {
-  try {
-    var res = await fetch('/api/agents/queue', { headers: getHeaders() });
-    var data = await res.json();
-    var items = data.items || [];
-    var html = '';
-    items.forEach(function(item) {
-      html += '<div class="queue-item">';
-      html += '<div class="qi-info">' + statusBadge(item.status) + ' <strong>' + (item.agent_type || '') + '</strong>';
-      html += '<span class="qi-meta">P' + (item.priority || 0) + ' | ' + formatTime(item.created_at) + '</span></div>';
-      html += '<div style="display:flex;gap:6px">';
-      if (item.status === 'pending') html += '<button class="btn btn-sm btn-outline" onclick="processQueueItem(' + item.id + ')">Process</button>';
-      html += '</div></div>';
-    });
-    if (!items.length) html = '<div class="empty"><div class="icon">&#10003;</div>Queue is empty</div>';
-    document.getElementById('queueBody').innerHTML = html;
-  } catch (err) {
-    document.getElementById('queueBody').innerHTML = '<div class="empty">Error: ' + err.message + '</div>';
-  }
-}
-
-async function loadWorkflows() {
-  try {
-    var res = await fetch('/api/agents/workflows', { headers: getHeaders() });
-    var data = await res.json();
-    var workflows = data.items || [];
-    var html = '';
-    workflows.forEach(function(w) {
-      html += '<div class="workflow-card" onclick="showWorkflowDetail(' + w.id + ')">';
-      html += '<div class="wf-name">' + statusBadge(w.status) + ' ' + (w.name || '') + '</div>';
-      html += '<div class="wf-desc">' + (w.description || '') + '</div>';
-      html += '<div class="wf-meta">' + (w.step_count || 0) + ' steps | Trigger: ' + (w.trigger_type || 'manual') + ' | Runs: ' + (w.total_runs || 0) + ' | Revenue: GH\u00a2 ' + (Number(w.revenue_tracked || 0).toLocaleString()) + '</div>';
-      html += '</div>';
-    });
-    if (!workflows.length) html = '<div class="empty"><div class="icon">&#9881;</div>No workflows defined</div>';
-    document.getElementById('workflowBody').innerHTML = html;
-  } catch (err) {
-    document.getElementById('workflowBody').innerHTML = '<div class="empty">Error: ' + err.message + '</div>';
-  }
-}
-
-async function showWorkflowDetail(id) {
-  try {
-    var res = await fetch('/api/agents/workflows', { headers: getHeaders() });
-    var data = await res.json();
-    var wf = (data.items || []).find(function(w) { return w.id === id; });
-    if (!wf) { showDetail('Workflow', '<div class="empty">Not found</div>'); return; }
-    var html = '<div class="run-detail"><span class="rd-label">Name:</span><span class="rd-value">' + wf.name + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Status:</span><span class="rd-value">' + statusBadge(wf.status) + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Trigger:</span><span class="rd-value">' + wf.trigger_type + '</span></div>';
-    html += '<div class="run-detail"><span class="rd-label">Description:</span><span class="rd-value">' + (wf.description || '-') + '</span></div>';
-    if (wf.steps && wf.steps.length) {
-      html += '<div style="margin-top:12px;font-size:.813rem"><strong>Steps:</strong></div>';
-      wf.steps.forEach(function(s, i) {
-        html += '<div class="activity-item"><span class="activity-dot completed"></span>';
-        html += '<span class="activity-text">' + (i + 1) + '. ' + s.step_type + ' (' + s.agent_type + ')' + (s.config ? ' <span style="color:var(--text-muted);font-size:.75rem">' + JSON.stringify(s.config).substring(0, 100) + '</span>' : '') + '</span></div>';
-      });
-    }
-    html += '<div style="margin-top:16px"><button class="btn btn-gold btn-sm" onclick="runWorkflow(' + id + ')">Run Workflow</button></div>';
-    showDetail('Workflow: ' + wf.name, html);
-  } catch (err) {
-    showDetail('Workflow', '<div class="empty">Error: ' + err.message + '</div>');
-  }
-}
-
-async function runWorkflow(id) {
-  try {
-    var res = await fetch('/api/agents/workflows?id=' + id, { method: 'PUT', headers: getHeaders(), body: JSON.stringify({ total_runs: 1 }) });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      var payload = { workflow_id: id, action: 'run' };
-      await fetch('/api/agents/queue', { method: 'POST', headers: getHeaders(), body: JSON.stringify({ agent_type: 'orchestrator', workflow_id: id, payload: payload, priority: 2 }) });
-      alert('Workflow queued for execution');
-      closeModal('detailModal');
-    }
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function spawnAgent() {
-  var type = document.getElementById('spawnType').value;
-  var name = document.getElementById('spawnName').value || type + '-' + Date.now();
-  var prompt = document.getElementById('spawnPrompt').value;
-  try {
-    var res = await fetch('/api/agents/queue', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ agent_type: type, payload: { prompt: prompt, save_as_task: true, task_title: 'Agent: ' + name }, priority: 1 })
-    });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      alert('Agent queued: ' + name);
-      closeModal('spawnModal');
-      loadAll();
-    } else throw new Error(data.message);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function queueRun() {
-  var type = document.getElementById('runAgentType').value;
-  var prompt = document.getElementById('runPrompt').value;
-  var priority = parseInt(document.getElementById('runPriority').value);
-  if (!prompt.trim()) { alert('Please enter instructions for the agent'); return; }
-  try {
-    var res = await fetch('/api/agents/queue', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ agent_type: type, payload: { prompt: prompt, save_as_task: true }, priority: priority })
-    });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      alert('Agent queued!');
-      closeModal('runModal');
-    } else throw new Error(data.message);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function processQueue() {
-  try {
-    var res = await fetch('/api/agents/orchestrate', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ max_items: 10 })
-    });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      alert('Processed ' + data.processed + ' items. ' + data.total_pending + ' remaining.');
-      loadQueue();
-    } else throw new Error(data.message);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function processQueueItem(id) {
-  try {
-    var res = await fetch('/api/agents/orchestrate', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ max_items: 1 })
-    });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      loadQueue();
-      loadAll();
-    } else throw new Error(data.message);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function createWorkflow() {
-  var name = document.getElementById('wfName').value.trim();
-  var desc = document.getElementById('wfDesc').value.trim();
-  var trigger = document.getElementById('wfTrigger').value;
-  if (!name) { alert('Name required'); return; }
-  try {
-    var res = await fetch('/api/agents/workflows', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ name: name, description: desc, trigger_type: trigger })
-    });
-    var data = await res.json();
-    if (data.status === 'ok') {
-      alert('Workflow created!');
-      closeModal('workflowModal');
-      loadWorkflows();
-    } else throw new Error(data.message);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-}
-
-async function loadSettings() {
-  try {
-    var res = await fetch('/api/agents/status', { headers: getHeaders() });
-    if (res.ok) {
-      document.getElementById('agentAuthStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>';
-    } else {
-      document.getElementById('agentAuthStatus').innerHTML = '<span style="color:var(--red)">&#10007; Not configured</span>';
-    }
-    fetch('/api/agents/run', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ action: 'call_ai', prompt: 'ping' })
-    }).then(function(r) {
-      if (r.status === 500) {
-        document.getElementById('aiKeyStatus').innerHTML = '<span style="color:var(--orange)">&#9888; Key not configured</span>';
-      } else {
-        document.getElementById('aiKeyStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>';
-      }
-    }).catch(function() {
-      document.getElementById('aiKeyStatus').innerHTML = '<span style="color:var(--red)">&#10007; Error</span>';
-    });
-  } catch (err) {
-    document.getElementById('agentAuthStatus').innerHTML = '<span style="color:var(--red)">Error: ' + err.message + '</span>';
-  }
-}
-
-// Auto-refresh every 15s
+/* ── Event bindings ── */
 document.addEventListener('DOMContentLoaded', function() {
-  loadAll();
-  document.getElementById('headerTime').textContent = new Date().toLocaleTimeString();
+
+  $('tabBar').addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (btn) switchTab(btn.getAttribute('data-tab'));
+  });
+
+  $('refreshBtn').addEventListener('click', function() { switchTab(TAB); });
+
+  $('spawnBtn').addEventListener('click', function() {
+    $('spawnName').value = '';
+    $('spawnPrompt').value = '';
+    $('spawnModal').classList.add('open');
+  });
+  $('spawnConfirm').addEventListener('click', spawnAgent);
+
+  $('wfNewBtn').addEventListener('click', function() {
+    $('wfName').value = '';
+    $('wfDesc').value = '';
+    $('wfModal').classList.add('open');
+  });
+  $('wfConfirm').addEventListener('click', createWorkflow);
+
+  $('processBtn').addEventListener('click', function() { processQueue(10); });
+
+  $('runFilter').addEventListener('change', function() {
+    showLoading($('runsList'));
+    loadRunsData(this.value);
+  });
+
+  /* Keyboard shortcuts */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+    var tabs = ['dashboard','agents','workflows','runs','queue','settings'];
+    var num = parseInt(e.key);
+    if (num >= 1 && num <= 6) { e.preventDefault(); switchTab(tabs[num - 1]); }
+    if (e.key === 'r' || e.key === 'R') { e.preventDefault(); switchTab(TAB); }
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(function(o) { o.classList.remove('open'); });
+    }
+  });
+
+  /* Click outside modals to close */
+  document.querySelectorAll('.modal-overlay').forEach(function(o) {
+    o.addEventListener('click', function(e) {
+      if (e.target === o) o.classList.remove('open');
+    });
+  });
+
+  /* Initial load */
+  switchTab(TAB);
+  $('headerTime').textContent = new Date().toLocaleTimeString();
+
+  /* Auto-refresh with visibility detection */
   setInterval(function() {
-    document.getElementById('headerTime').textContent = new Date().toLocaleTimeString();
-    if (TAB === 'dashboard') loadAll();
-    if (TAB === 'queue') loadQueue();
-    if (TAB === 'runs') loadRuns();
+    $('headerTime').textContent = new Date().toLocaleTimeString();
+    if (document.hidden) return;
+    if (TAB === 'dashboard') { loadDashboard(); }
+    else if (TAB === 'queue') { API.getQueue().then(renderQueue); }
+    else if (TAB === 'runs') { API.getRuns({ limit: 100, status: $('runFilter').value }).then(renderRuns); }
   }, 15000);
 });
+
+})();
 </script>
 </body>
 </html>
