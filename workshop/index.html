@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta property="og:title" content="Workshops — GideonAbochie Studio">
-<meta property="og:description" content="Upcoming creative workshops — learn storytelling, design thinking, music production, and more with Gideon Abochie.">
+<meta property="og:title" content="Workshops â€” GideonAbochie Studio">
+<meta property="og:description" content="Upcoming creative workshops â€” learn storytelling, design thinking, music production, and more with Gideon Abochie.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/workshop/">
 <meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<title>Workshops — GideonAbochie Studio</title>
+<title>Workshops â€” GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
@@ -141,6 +141,7 @@ body{background:#0A1628;color:#CBD5E1;font-family:'DM Sans',system-ui,-apple-sys
       <a href="/merch/">Merchandise</a>
       <a href="/music/">Music</a>
       <a href="/workshop/">Workshops</a>
+      <a href="/nationbuilding/">Nationbuilding</a>
     </div>
     <div>
       <h4>Support</h4>
@@ -238,7 +239,7 @@ function loadWorkshops() {
       var dateObj = new Date(w.date + 'T00:00:00');
       var dateStr = dateObj.toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
       var isFull = w.capacity > 0 && w.registered >= w.capacity;
-      var priceHtml = w.price > 0 ? '<span class="ws-price">GH¢ ' + w.price + '</span>' : '<span class="ws-free">Free</span>';
+      var priceHtml = w.price > 0 ? '<span class="ws-price">GHÂ¢ ' + w.price + '</span>' : '<span class="ws-free">Free</span>';
       var capHtml = w.capacity > 0 ? '<span class="ws-capacity' + (isFull ? ' ws-full' : '') + '"><i class="ti ti-users"></i> ' + w.registered + '/' + w.capacity + ' registered</span>' : '';
       var btnHtml = isFull ? '<button class="ws-btn ws-btn-full" disabled><i class="ti ti-x"></i> Full</button>' : '<button class="ws-btn" onclick="openRegister(' + w.id + ',\'' + w.title.replace(/'/g, "\\'") + '\')"><i class="ti ti-ticket"></i> Register</button>';
       return '<div class="ws-card"><div class="ws-header"><div class="ws-date"><i class="ti ti-calendar-event"></i> ' + dateStr + '</div><h3>' + w.title + '</h3><div class="ws-meta">' +

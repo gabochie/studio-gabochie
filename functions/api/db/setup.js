@@ -162,6 +162,16 @@
       `CREATE INDEX IF NOT EXISTS idx_workshops_date ON workshops(date)`,
       `CREATE INDEX IF NOT EXISTS idx_wr_workshop ON workshop_registrations(workshop_id)`,
       `CREATE INDEX IF NOT EXISTS idx_wr_email ON workshop_registrations(email)`,
+      `CREATE TABLE IF NOT EXISTS nationbuilding_registrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT DEFAULT '',
+        region TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'registered',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_nr_email ON nationbuilding_registrations(email)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
       // â”€â”€ Cleanup duplicate rows from repeated seed runs â”€â”€
@@ -383,6 +393,7 @@
       `ALTER TABLE enrollments ADD COLUMN xp_level INTEGER DEFAULT 1`,
       `ALTER TABLE enrollments ADD COLUMN streak INTEGER DEFAULT 0`,
       `ALTER TABLE enrollments ADD COLUMN last_module_at TEXT DEFAULT ''`,
+      `ALTER TABLE enrollments ADD COLUMN token_expires_at TEXT DEFAULT ''`,
       // Achievements table (definitions)
       `CREATE TABLE IF NOT EXISTS achievements (
         key TEXT PRIMARY KEY,

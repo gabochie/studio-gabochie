@@ -1,6 +1,8 @@
+import { getToken } from './_token.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
-  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: cors });
   }
@@ -17,7 +19,7 @@ export async function onRequest(context) {
   }
   try {
     var body = await request.json();
-    var token = (body.token || '').trim();
+    var token = getToken(request, body);
     var tx_ref = (body.tx_ref || '').trim();
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {

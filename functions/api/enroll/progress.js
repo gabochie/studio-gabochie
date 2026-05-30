@@ -1,3 +1,4 @@
+import { getToken } from './_token.js';
 function calcLevel(xp) {
   return Math.floor(Math.sqrt(xp / 100)) + 1;
 }
@@ -13,7 +14,7 @@ export async function onRequest(context) {
   var url = new URL(request.url);
 
   if (request.method === 'GET') {
-    var token = url.searchParams.get('token') || '';
+    var token = getToken(request);
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
@@ -66,7 +67,7 @@ export async function onRequest(context) {
 
   try {
     var body = await request.json();
-    var postToken = body.token || '';
+    var postToken = getToken(request, body);
     var moduleSlug = body.module_slug || '';
     if (!postToken || !moduleSlug) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token or module_slug' }), {

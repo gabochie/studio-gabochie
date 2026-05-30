@@ -1,4 +1,5 @@
 import { queueEmail, enrollmentFollowup, daysFromNow } from '../email/_send.js';
+import { getToken } from './_token.js';
 
 function genToken() {
   var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -11,7 +12,7 @@ function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
   var { request, env } = context;
-  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: cors });
   }
@@ -24,7 +25,7 @@ export async function onRequest(context) {
   var url = new URL(request.url);
 
   if (request.method === 'GET') {
-    var token = url.searchParams.get('token') || '';
+    var token = getToken(request);
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
@@ -32,7 +33,7 @@ export async function onRequest(context) {
     }
     try {
       var row = await db.prepare(
-        'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
+        'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
       ).bind(token).first();
       if (!row) {
         return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
@@ -52,6 +53,7 @@ export async function onRequest(context) {
           payment_ref: row.payment_ref,
           payment_amount: row.payment_amount,
           enrolled_at: row.enrolled_at,
+          token_expires_at: row.token_expires_at || '',
           program_title: row.program_title,
           program_slug: row.program_slug,
           tagline: row.tagline,
@@ -126,10 +128,11 @@ export async function onRequest(context) {
     }
 
     token = genToken();
+    var expiresAt = new Date(Date.now() + 7776000000).toISOString();
 
     await db.prepare(
-      'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus).run();
+      'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status, token_expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus, expiresAt).run();
 
     if (env.BREVO_API_KEY) {
       try {

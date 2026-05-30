@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta property="og:title" content="Dashboard — GideonAbochie Studio">
+<meta property="og:title" content="Dashboard â€” GideonAbochie Studio">
 <meta property="og:description" content="Student and supporter dashboard for GideonAbochie Studio">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/dashboard/">
 <meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<title>Dashboard — GideonAbochie Studio</title>
+<title>Dashboard â€” GideonAbochie Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
 <script src="https://checkout.flutterwave.com/v3.js"></script>
@@ -124,7 +124,7 @@ h1 span{color:#C9A84C}
   <div class="subtitle" id="studentInfo"></div>
   <div class="card">
     <div class="program-header">
-      <h3 id="programTitle">—</h3>
+      <h3 id="programTitle">â€”</h3>
       <span class="badge" id="statusBadge">Active</span>
     </div>
     <div style="font-size:13px;color:#5A7A9F;margin-bottom:8px">
@@ -153,7 +153,7 @@ h1 span{color:#C9A84C}
   <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
-    <button class="btn btn-primary" id="upgradeBtn">Upgrade — <span id="upgradePrice">GH¢ 250</span></button>
+    <button class="btn btn-primary" id="upgradeBtn">Upgrade â€” <span id="upgradePrice">GHÂ¢ 250</span></button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via Flutterwave</p>
   </div>
 
@@ -212,7 +212,19 @@ h1 span{color:#C9A84C}
 
 <script>
 var FLW_PUBLIC_KEY = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
-var token = new URLSearchParams(window.location.search).get('token') || '';
+var token = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ga_token') || '';
+if (token) {
+  sessionStorage.setItem('ga_token', token);
+  var cleanUrl = window.location.pathname + window.location.hash;
+  if (window.location.search) window.history.replaceState(null, '', cleanUrl);
+}
+
+function api(url, options) {
+  options = options || {};
+  options.headers = options.headers || {};
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
+}
 
 function loadDashboard() {
   if (!token) {
@@ -222,7 +234,7 @@ function loadDashboard() {
     return;
   }
 
-  fetch('/api/enroll?token=' + encodeURIComponent(token))
+  api('/api/enroll')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       document.getElementById('loadingView').style.display = 'none';
@@ -272,7 +284,7 @@ function loadDashboard() {
       // Show upgrade card if sample access and price > 0
       if (e.status === 'sample' && e.price > 0) {
         document.getElementById('upgradeCard').style.display = 'block';
-        document.getElementById('upgradePrice').textContent = 'GH¢ ' + e.price;
+        document.getElementById('upgradePrice').textContent = 'GHÂ¢ ' + e.price;
       }
       // Load progress for active/full-access enrollments
       if (e.status === 'active') {
@@ -288,7 +300,7 @@ function loadDashboard() {
 
 function loadProgress() {
   var progressCard = document.getElementById('progressCard');
-  fetch('/api/enroll/progress?token=' + encodeURIComponent(token))
+  api('/api/enroll/progress')
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.status !== 'ok' || !d.modules || !d.modules.length) return;
@@ -318,10 +330,10 @@ function loadProgress() {
       var certLink = document.getElementById('certLink');
       if (d.total_modules > 0 && d.completed_modules >= d.total_modules) {
         certSection.style.display = 'block';
-        fetch('/api/certificates/generate', {
+        api('/api/certificates/generate', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ token: token })
+          body: JSON.stringify({})
         }).then(function(r){return r.json()}).then(function(cd){
           if (cd.status === 'ok') {
             certBtn.style.display = 'none';
@@ -340,7 +352,7 @@ function loadProgress() {
 }
 
 function fetchAchievements() {
-  fetch('/api/enroll/achievements?token=' + encodeURIComponent(token))
+  api('/api/enroll/achievements')
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.status !== 'ok' || !d.achievements || !d.achievements.length) return;
@@ -362,10 +374,10 @@ function handleCertificate() {
   var btn = document.getElementById('certBtn');
   btn.disabled = true;
   btn.textContent = 'Generating...';
-  fetch('/api/certificates/generate', {
+  api('/api/certificates/generate', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ token: token })
+    body: JSON.stringify({})
   }).then(function(r){return r.json()}).then(function(d){
     if (d.status === 'ok') {
       window.location.href = '/certificate/?code=' + d.certificate_code;
@@ -413,14 +425,15 @@ function handleChangeCode() {
 
 function logout() {
   localStorage.removeItem('ga_student');
+  sessionStorage.removeItem('ga_token');
   window.location.href = '/school/';
 }
 
 function toggleModule(slug) {
-  fetch('/api/enroll/progress', {
+  api('/api/enroll/progress', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ token: token, module_slug: slug })
+    body: JSON.stringify({ module_slug: slug })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
@@ -471,10 +484,10 @@ function handleUpgrade() {
   btn.textContent = 'Preparing payment...';
   note.textContent = '';
 
-  fetch('/api/enroll/pre-upgrade', {
+  api('/api/enroll/pre-upgrade', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: token })
+    body: JSON.stringify({})
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data.status !== 'ok' || !data.tx_ref) {
       if (data.message === 'Already upgraded') { loadDashboard(); return; }
@@ -484,7 +497,7 @@ function handleUpgrade() {
     var price = data.price;
     btn.textContent = 'Opening payment...';
 
-    fetch('/api/enroll?token=' + encodeURIComponent(token))
+    api('/api/enroll')
       .then(function(r) { return r.json(); })
       .then(function(edata) {
         if (edata.status !== 'ok' || !edata.enrollment) throw new Error('Invalid enrollment');
@@ -500,10 +513,10 @@ function handleUpgrade() {
           callback: function(payment) {
             if (payment.status === 'completed' || payment.status === 'successful') {
               note.textContent = 'Payment confirmed! Activating your access...';
-              fetch('/api/enroll/upgrade', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token })
+  api('/api/enroll/upgrade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
               }).then(function(r) { return r.json(); }).then(function(res) {
                 if (res.status === 'ok') {
                   btn.textContent = 'Upgrade Complete!';
@@ -680,6 +693,7 @@ loadDashboard();
       <a href="/merch/">Merchandise</a>
       <a href="/music/">Music</a>
       <a href="/workshop/">Workshops</a>
+      <a href="/nationbuilding/">Nationbuilding</a>
     </div>
     <div>
       <h4>Support</h4>

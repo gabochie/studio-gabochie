@@ -1,3 +1,5 @@
+import { getToken } from './_token.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var db = env.DB;
@@ -6,8 +8,7 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  var url = new URL(request.url);
-  var token = url.searchParams.get('token') || '';
+  var token = getToken(request);
   if (!token) {
     return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
       status: 400, headers: { 'Content-Type': 'application/json' }

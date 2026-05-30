@@ -1,3 +1,5 @@
+import { getToken } from '../enroll/_token.js';
+
 function genCode() {
   var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   var r = '';
@@ -20,7 +22,7 @@ export async function onRequest(context) {
   }
   try {
     var body = await request.json();
-    var token = (body.token || '').trim();
+    var token = getToken(request, body);
     if (!token) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing token' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
