@@ -656,6 +656,24 @@
       `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Creative Storytelling Workshop', 'creative-storytelling', 'Learn the art of storytelling through multiple media — writing, speech, and visual narrative. This hands-on workshop covers structure, voice, and audience engagement.', '2026-07-15', '10:00 AM - 4:00 PM', 'Accra, Ghana', 100, 20, 'published')`,
       `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Design Thinking: Genesis in Practice', 'design-thinking-genesis-workshop', 'A practical deep dive into the Design Thinking Genesis program. Apply biblical creativity principles to real-world problems in a collaborative group setting.', '2026-08-01', '9:00 AM - 3:00 PM', 'Online (Zoom)', 0, 50, 'published')`,
       `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Music Production for Beginners', 'music-production-basics', 'From concept to track: learn the fundamentals of music production, songwriting, and recording. No experience required — just a desire to create.', '2026-09-10', '10:00 AM - 5:00 PM', 'Accra, Ghana', 200, 15, 'published')`,
+      // Newsletter builder tables
+      `CREATE TABLE IF NOT EXISTS newsletter_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        subject TEXT NOT NULL DEFAULT '',
+        blocks TEXT NOT NULL DEFAULT '[]',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS newsletter_issues (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        issue_number INTEGER,
+        subject TEXT NOT NULL DEFAULT '',
+        theme TEXT NOT NULL DEFAULT '',
+        html TEXT NOT NULL DEFAULT '',
+        subscriber_count INTEGER DEFAULT 0,
+        sent_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
     ];
     const results = [];
     for (const sql of statements) {
