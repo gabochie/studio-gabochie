@@ -575,7 +575,7 @@ function saveTemplate() {
   var sel = document.getElementById('tplSelect');
   var tplId = sel.value || null;
 
-  fetch('/admin/api/newsletter/templates', {
+  adminFetch('/admin/api/newsletter/templates', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: name, subject: subject, blocks: blocks, template_id: tplId })
@@ -592,7 +592,7 @@ function saveTemplate() {
 
 function loadTemplate(id) {
   if (!id) return;
-  fetch('/admin/api/newsletter/templates?id=' + id).then(function(r){ return r.json(); }).then(function(d){
+  adminFetch('/admin/api/newsletter/templates?id=' + id).then(function(r){ return r.json(); }).then(function(d){
     if (!d || !d.blocks) { alert('Template not found'); return; }
     try {
       blocks = typeof d.blocks === 'string' ? JSON.parse(d.blocks) : d.blocks;
@@ -609,7 +609,7 @@ function deleteTemplate() {
   var id = sel.value;
   if (!id) { alert('Select a template first'); return; }
   if (!confirm('Delete this template?')) return;
-  fetch('/admin/api/newsletter/templates?id=' + id, { method: 'DELETE' }).then(function(r){ return r.json(); }).then(function(d){
+  adminFetch('/admin/api/newsletter/templates?id=' + id, { method: 'DELETE' }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       loadTplList();
       sel.value = '';
@@ -621,7 +621,7 @@ function deleteTemplate() {
 }
 
 function loadTplList() {
-  fetch('/admin/api/newsletter/templates').then(function(r){ return r.json(); }).then(function(d){
+  adminFetch('/admin/api/newsletter/templates').then(function(r){ return r.json(); }).then(function(d){
     if (d.status !== 'ok') return;
     var sel = document.getElementById('tplSelect');
     var current = sel.value;
@@ -802,7 +802,7 @@ function sendTest() {
   var status = document.getElementById('sendStatus');
   status.className = 'active';
   status.innerHTML = 'Sending test email...';
-  fetch('/admin/api/newsletter/send', {
+  adminFetch('/admin/api/newsletter/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ subject: subject, html: html, test_email: email })
@@ -832,7 +832,7 @@ function broadcast() {
   var status = document.getElementById('sendStatus');
   status.className = 'active';
   status.innerHTML = 'Sending to all subscribers...';
-  fetch('/admin/api/newsletter/send', {
+  adminFetch('/admin/api/newsletter/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ subject: subject, html: html })
@@ -858,7 +858,7 @@ function broadcast() {
 // ── Archived issues ──
 function showIssues() {
   var status = document.getElementById('sendStatus');
-  fetch('/admin/api/summary', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+  adminFetch('/admin/api/summary', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
     if (d.status !== 'ok') throw new Error(d.message);
     var s = d.subscribers || {};
     status.className = 'active';
@@ -876,7 +876,7 @@ function fmtNum(n) {
 
 // ── Load stats ──
 function loadStats() {
-  fetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
+  adminFetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
     if (!r.ok) throw new Error('Status '+r.status);
     return r.json();
   }).then(function(d){

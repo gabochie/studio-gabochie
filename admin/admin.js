@@ -114,6 +114,22 @@ function renderDashboard() {
   } catch(e) {}
 })();
 
+/* ── Admin API helpers ── */
+function getAdminKey() {
+  var key = sessionStorage.getItem('ga_admin_key');
+  if (key) return key;
+  key = prompt('Enter Admin API Key:');
+  if (key) sessionStorage.setItem('ga_admin_key', key);
+  return key || '';
+}
+
+function adminFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  return fetch(url, opts);
+}
+
 /* ── Init ── */
 if (document.getElementById('healthContainer')) {
   checkSiteHealth();
