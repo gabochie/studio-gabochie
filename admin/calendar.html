@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Calendar — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:4px}
+h1 span{color:#C9A84C}
+.page-desc{color:#6B7F9A;font-size:14px;margin-bottom:24px}
+
+.cal-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+.cal-controls select{padding:8px 14px;background:#0F1E38;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.cal-controls select:focus{border-color:#C9A84C}
+.cal-controls .btn{padding:8px 18px;border:none;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C}
+.btn-outline{background:transparent;color:#5A7A9F;border:1px solid #1E3250}
+.btn-outline:hover{color:#CBD5E1;border-color:#C9A84C}
+.btn-sm{padding:6px 12px!important;font-size:10px!important}
+
+.month-block{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;margin-bottom:20px;overflow:hidden}
+.month-header{background:#0A1628;padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#E8EEF7;border-bottom:1px solid #1E3250;display:flex;justify-content:space-between;align-items:center}
+.month-header .count{font-size:12px;color:#5A7A9F;font-family:'DM Sans',sans-serif;font-weight:400}
+
+.issue-row{display:grid;grid-template-columns:60px 110px 1fr 80px 70px;gap:8px;padding:10px 20px;border-bottom:1px solid rgba(30,50,80,.5);align-items:center;transition:background .15s}
+.issue-row:last-child{border-bottom:none}
+.issue-row:hover{background:rgba(255,255,255,.02)}
+.issue-row .num{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:#5A7A9F}
+.issue-row .date{font-family:'DM Sans',sans-serif;font-size:12px;color:#CBD5E1}
+.issue-row .theme{font-family:'DM Sans',sans-serif;font-size:13px;color:#E8EEF7}
+.issue-row .theme input{width:100%;padding:4px 8px;background:#0A1628;border:1px solid #1E3250;border-radius:4px;color:#E8EEF7;font-family:'DM Sans',sans-serif;font-size:12px;outline:none}
+.issue-row .theme input:focus{border-color:#C9A84C}
+.issue-row .status{text-align:center}
+.issue-row .status select{padding:3px 4px;font-size:10px;background:#0A1628;border:1px solid #1E3250;border-radius:3px;color:#CBD5E1;font-family:'DM Sans',sans-serif;outline:none}
+.issue-row .status select option{background:#0A1628}
+
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-planned .status-dot{background:#3A5278}
+.status-drafted .status-dot{background:#3B82F6}
+.status-ready .status-dot{background:#C9A84C}
+.status-published .status-dot{background:#22C55E}
+
+.issue-tags{display:flex;gap:4px;flex-wrap:wrap}
+.issue-tags .tag{font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(201,168,76,.1);color:#C9A84C;font-family:'DM Sans',sans-serif}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-item{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:14px;text-align:center}
+.stat-item .num{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;line-height:1}
+.stat-item .num.gold{color:#C9A84C}
+.stat-item .num.green{color:#22C55E}
+.stat-item .num.blue{color:#3B82F6}
+.stat-item .num.gray{color:#5A7A9F}
+.stat-item .label{font-size:10px;color:#5A7A9F;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+
+.theme-suggestions{margin-bottom:24px}
+.theme-suggestions details{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px 16px}
+.theme-suggestions summary{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:#E8EEF7;cursor:pointer}
+.theme-suggestions .pill-grid{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.theme-suggestions .pill{padding:6px 12px;font-size:11px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:20px;color:#C9A84C;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.theme-suggestions .pill:hover{background:rgba(201,168,76,.2)}
+
+@media(max-width:640px){.issue-row{grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px}.issue-row .num{grid-column:1}.issue-row .date{grid-column:2;text-align:right}.issue-row .theme{grid-column:1/-1}.issue-row .status{grid-column:1}.issue-row .tags{grid-column:2}.stats-bar{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="calendar.html" style="color:#C9A84C">Calendar</a>
+      <a href="roadmap.html">ToDo List</a>
+      <a href="strategy.html">Strategy</a>
+    </div>
+    <a href="../functions/admin/api/logout" class="logout-btn" onclick="return confirm('Sign out?')">Sign Out</a>
+  </div>
+  <div class="main-content">
+    <h1>Content <span>Calendar</span></h1>
+    <p class="page-desc">Plan all 52 issues of The Studio Weekly — one year of content, every Saturday.</p>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="cal-controls">
+      <select id="yearSelect" onchange="renderCalendar()"></select>
+      <button class="btn btn-gold btn-sm" onclick="addThemePills()">Suggest Themes</button>
+      <button class="btn btn-outline btn-sm" onclick="exportCalendar()">Export JSON</button>
+      <button class="btn btn-outline btn-sm" onclick="importCalendar()">Import JSON</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+      <button class="btn btn-outline btn-sm" onclick="if(confirm('Reset all issues to default?')){resetCalendar()}">Reset</button>
+    </div>
+
+    <div class="theme-suggestions">
+      <details>
+        <summary>Theme Ideas — click to add to an issue</summary>
+        <div class="pill-grid">
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Creativity as Worship</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">The Fear of the Lord</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">AI & The Image of God</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Parenting in the Digital Age</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">The Creative Process of God</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Education Reform in Ghana</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Faith & Work</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">The Wisdom of Proverbs</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Building a Creative Nation</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Love as the Highest Apologetic</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Technology & The Kingdom</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Music & Worship</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Youth & Purpose</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Ghana's Digital Future</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">The Heart of a Teacher</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Creativity in Adversity</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Community & The Church</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">The Parables of Creativity</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Leadership & Service</span>
+          <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Ghanaian Innovation Stories</span>
+        </div>
+      </details>
+    </div>
+
+    <div id="calendarWrap"></div>
+  </main>
+</div>
+
+<script src="admin.js"></script>
+<script>
+var STORAGE_KEY = 'ga_calendar';
+var DEFAULT_THEMES = [
+  "Launch Issue: The Genesis of Creativity",
+  "Created in His Image",
+  "The First Creative: God the Maker",
+  "Creativity as Worship",
+  "The Fear of the Lord is the Beginning",
+  "Wisdom Cries Out: Listening to God's Voice",
+  "Love Your Neighbour: Creativity in Community",
+  "The Parable of the Talents: Your Gift Matters",
+  "AI & The Image of God",
+  "The Divine Algorithm: Patterns in Scripture",
+  "Education or Transformation?",
+  "Ghana's Next Chapter: A Vision",
+  "Parenting in the Digital Age",
+  "Technology & The Kingdom",
+  "The Creative Process of God",
+  "Faith & Work: The Sacred-Secular Divide",
+  "Music & Worship: The Sound of Creativity",
+  "Building a Creative Nation",
+  "The Artist as Prophet",
+  "Youth & Purpose: A Generation Rising",
+  "Love as the Highest Apologetic",
+  "The Wisdom of Proverbs for Today",
+  "Ghana's Digital Future",
+  "Storytelling as Discipleship",
+  "The Heart of a Teacher",
+  "Rest & Creativity: The Sabbath Principle",
+  "Creativity in Adversity",
+  "Community & The Church",
+  "The Role of Beauty in Faith",
+  "Innovation from the Margins",
+  "Legacy: What Will You Leave?",
+  "Writing Your Manifesto",
+  "Entrepreneurship & Kingdom Impact",
+  "The Spirit of Excellence",
+  "Ghanaian Innovation Stories",
+  "Mentorship: Passing the Baton",
+  "Art, Culture & The Gospel",
+  "The Courage to Create",
+  "Simplicity & Focus",
+  "The Power of a Question",
+  "Gratitude & The Creative Life",
+  "Discipline & The Spirit",
+  "The Generosity of God",
+  "Raising Creators, Not Consumers",
+  "The Prophetic Voice in Art",
+  "Failure & The Creative Journey",
+  "Prayer & Imagination",
+  "The God Who Sings",
+  "Wisdom for Leaders",
+  "Celebration: The End of the Matter",
+  "Annual Review: The Studio Year One",
+  "Preview: Year Two & Beyond"
+];
+
+function getSaturdays(year) {
+  var dates = [];
+  var d = new Date(year, 0, 1);
+  while (d.getDay() !== 6) d.setDate(d.getDate() + 1);
+  while (d.getFullYear() === year) {
+    dates.push(new Date(d));
+    d.setDate(d.getDate() + 7);
+  }
+  return dates;
+}
+
+function getCalendar() {
+  var data = localStorage.getItem(STORAGE_KEY);
+  return data ? JSON.parse(data) : null;
+}
+
+function saveCalendar(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function buildDefaultCalendar(year) {
+  var saturdays = getSaturdays(year);
+  var issues = {};
+  saturdays.forEach(function(d, i) {
+    var key = formatDate(d);
+    issues[key] = {
+      theme: DEFAULT_THEMES[i] || '',
+      status: 'planned',
+      tags: []
+    };
+  });
+  var data = { year: year, issues: issues };
+  saveCalendar(data);
+  return data;
+}
+
+function formatDate(d) {
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2,'0');
+  var day = String(d.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+
+function displayDate(d) {
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function renderCalendar() {
+  var year = parseInt(document.getElementById('yearSelect').value);
+  var data = getCalendar();
+  if (!data || data.year !== year) {
+    data = buildDefaultCalendar(year);
+  }
+  var saturdays = getSaturdays(year);
+  var months = {};
+  saturdays.forEach(function(d) {
+    var m = d.getMonth();
+    if (!months[m]) months[m] = [];
+    months[m].push(new Date(d));
+  });
+
+  var wrap = document.getElementById('calendarWrap');
+  var html = '';
+  var total = saturdays.length;
+  var counts = { planned: 0, drafted: 0, ready: 0, published: 0 };
+  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  Object.keys(months).forEach(function(m) {
+    var dates = months[m];
+    html += '<div class="month-block">';
+    html += '<div class="month-header">' + monthNames[m] + ' <span class="count">' + dates.length + ' issues</span></div>';
+    dates.forEach(function(d) {
+      var key = formatDate(d);
+      var issue = data.issues[key] || { theme: '', status: 'planned', tags: [] };
+      if (counts[issue.status] !== undefined) counts[issue.status]++;
+      var statusClass = 'status-' + (issue.status || 'planned');
+      html += '<div class="issue-row">';
+      html += '<div class="num">#' + (saturdays.indexOf(d) + 1) + '</div>';
+      html += '<div class="date">' + displayDate(d) + '</div>';
+      html += '<div class="theme"><input type="text" value="' + escapeHtml(issue.theme || '') + '" onchange="updateIssue(\'' + key + '\',\'theme\',this.value)" placeholder="Theme / topic"></div>';
+      html += '<div class="status ' + statusClass + '"><select onchange="updateIssue(\'' + key + '\',\'status\',this.value)">';
+      ['planned','drafted','ready','published'].forEach(function(s) {
+        html += '<option value="' + s + '"' + (issue.status === s ? ' selected' : '') + '>' + s + '</option>';
+      });
+      html += '</select></div>';
+      html += '<div class="tags">';
+      html += '<span class="status-dot" style="background:' + dotColor(issue.status) + '"></span>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+
+  // Stats
+  var statsHtml = '';
+  var stats = [
+    { label: 'Total Issues', num: total, cls: 'gold' },
+    { label: 'Planned', num: counts.planned, cls: 'gray' },
+    { label: 'Ready to Publish', num: counts.ready, cls: 'blue' },
+    { label: 'Published', num: counts.published, cls: 'green' }
+  ];
+  stats.forEach(function(s) {
+    statsHtml += '<div class="stat-item"><div class="num ' + s.cls + '">' + s.num + '</div><div class="label">' + s.label + '</div></div>';
+  });
+  document.getElementById('statsBar').innerHTML = statsHtml;
+}
+
+function dotColor(status) {
+  return {planned:'#3A5278',drafted:'#3B82F6',ready:'#C9A84C',published:'#22C55E'}[status] || '#3A5278';
+}
+
+function escapeHtml(t) {
+  var d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+
+function updateIssue(key, field, value) {
+  var data = getCalendar();
+  if (!data) return;
+  if (!data.issues[key]) data.issues[key] = { theme: '', status: 'planned', tags: [] };
+  data.issues[key][field] = value;
+  saveCalendar(data);
+}
+
+function exportCalendar() {
+  var data = getCalendar();
+  if (!data) { alert('No calendar data.'); return; }
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'studio-weekly-calendar-' + data.year + '.json';
+  a.click();
+}
+
+function importCalendar() {
+  document.getElementById('importFile').click();
+}
+
+function handleImport(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var data = JSON.parse(ev.target.result);
+      saveCalendar(data);
+      renderCalendar();
+      alert('Calendar imported successfully!');
+    } catch(err) { alert('Invalid file.'); }
+  };
+  reader.readAsText(file);
+}
+
+function resetCalendar() {
+  var year = parseInt(document.getElementById('yearSelect').value);
+  buildDefaultCalendar(year);
+  renderCalendar();
+}
+
+function addThemePills() {
+  var data = getCalendar();
+  if (!data) return;
+  var keys = Object.keys(data.issues);
+  var idx = 0;
+  keys.forEach(function(key) {
+    if (!data.issues[key].theme && DEFAULT_THEMES[idx]) {
+      data.issues[key].theme = DEFAULT_THEMES[idx];
+      idx++;
+    }
+  });
+  saveCalendar(data);
+  renderCalendar();
+}
+
+// Init
+(function() {
+  var sel = document.getElementById('yearSelect');
+  var thisYear = new Date().getFullYear();
+  for (var y = thisYear; y <= thisYear + 1; y++) {
+    var opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    if (y === thisYear) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  var data = getCalendar();
+  if (!data) {
+    data = buildDefaultCalendar(thisYear);
+  }
+  renderCalendar();
+})();
+</script>
+</body>
+</html>
