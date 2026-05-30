@@ -139,6 +139,13 @@ function tagOnboard(email, name, tag) {
   } catch(e) {}
 }
 
+/* ── formatPrice fallback guard ── */
+if (typeof window.formatPrice !== 'function') {
+  window.formatPrice = function(amount, currency) {
+    return (currency || 'GH¢ ') + (Number(amount) || 0).toFixed(2);
+  };
+}
+
 /* ── Store Modal (replaces prompt() dialogs) ── */
 function showStoreModal(callback) {
   var overlay = document.createElement('div');

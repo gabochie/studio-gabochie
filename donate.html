@@ -176,7 +176,7 @@ if (status === 'successful' || status === 'completed' || !status) {
     document.getElementById('phoneRow').style.display = '';
     document.getElementById('rPhone').textContent = phone;
   }
-  document.getElementById('rAmount').textContent = amount ? window.formatPrice(amount, 'GHS') : '—';
+  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH¢ ' + Number(amount).toFixed(2)) : '—';
   if (email && email !== 'donor@anonymous.invalid' && email !== '—') {
     document.getElementById('emailNote').style.display = 'block';
     document.getElementById('emailNoteAddr').textContent = email;
