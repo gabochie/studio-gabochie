@@ -237,8 +237,66 @@ export async function onRequest(context) {
       ).bind(subStatus, nextBilling, String(data.subscription_id)).run();
     }
 
+    // Handle store purchases (art, merch, music)
+    if (event === 'charge.completed' && tx_ref.startsWith('store_')) {
+      var storeItemType = '';
+      var storeItemName = '';
+      try {
+        var parts = tx_ref.split('_');
+        storeItemType = parts.length > 1 ? parts[1] : '';
+      } catch (_e) {}
+      var orderRec = null;
+      try {
+        orderRec = await db.prepare('SELECT * FROM store_orders WHERE tx_ref = ?').bind(tx_ref).first();
+      } catch (_e) {}
+      if (orderRec) {
+        await db.prepare(
+          `UPDATE store_orders SET status = 'completed', customer_name = COALESCE(NULLIF(customer_name, ''), ?), customer_email = COALESCE(NULLIF(customer_email, ''), ?) WHERE tx_ref = ?`
+        ).bind(donor_name, donor_email, tx_ref).run();
+      } else {
+        await db.prepare(
+          `INSERT INTO store_orders (tx_ref, item_type, item_name, amount, currency, customer_name, customer_email, status, flw_id) VALUES (?, ?, ?, ?, ?, ?, ?, 'completed', ?)`
+        ).bind(tx_ref, storeItemType, storeItemName, verifiedAmount, verifiedCurrency, donor_name, donor_email, flw_id).run();
+      }
+      if (donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+        try {
+          var sName = orderRec ? orderRec.item_name : storeItemName;
+          var sType = orderRec ? orderRec.item_type : storeItemType;
+          var sVariant = orderRec ? orderRec.item_variant : '';
+          var displayName = sName || 'Item';
+          if (sVariant) { displayName = displayName + ' (' + sVariant + ')'; }
+          var receiptHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
+            '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
+            '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
+            '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
+            '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>' +
+            '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Thank You for Your Purchase</p></td></tr>' +
+            '<tr><td style="padding:32px">' +
+            '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + donor_name + ',</p>' +
+            '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for purchasing <strong style="color:#C9A84C">' + displayName + '</strong>. Your payment of <strong style="color:#C9A84C">' + verifiedCurrency + ' ' + verifiedAmount.toFixed(2) + '</strong> has been confirmed.</p>' +
+            '<table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">' +
+            '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Item</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">' + displayName + '</td></tr>' +
+            '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:13px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + tx_ref + '</td></tr>' +
+            '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + verifiedCurrency + ' ' + verifiedAmount.toFixed(2) + '</td></tr>' +
+            '</table>' +
+            '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0">We will contact you within 24 hours with delivery details. For digital items, your download link is included below.</p>' +
+            '</td></tr></table></td></tr></table></body></html>';
+          await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+            body: JSON.stringify({
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              to: [{ email: donor_email, name: donor_name }],
+              subject: 'Purchase Confirmed — GideonAbochie Studio',
+              htmlContent: receiptHtml
+            })
+          });
+        } catch (_e) {}
+      }
+    }
+
     // Send receipt email via Brevo for successful donations
-    if ((event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+    if (!tx_ref.startsWith('store_') && (event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
       try {
         const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const receiptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">

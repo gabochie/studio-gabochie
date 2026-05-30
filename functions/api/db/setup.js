@@ -117,6 +117,23 @@
         downloaded INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      `CREATE TABLE IF NOT EXISTS store_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tx_ref TEXT NOT NULL UNIQUE,
+        item_type TEXT NOT NULL DEFAULT '',
+        item_name TEXT NOT NULL DEFAULT '',
+        item_variant TEXT DEFAULT '',
+        amount REAL NOT NULL DEFAULT 0,
+        currency TEXT NOT NULL DEFAULT 'GHS',
+        customer_name TEXT DEFAULT '',
+        customer_email TEXT DEFAULT '',
+        customer_phone TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        flw_id TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_store_orders_tx_ref ON store_orders(tx_ref)`,
+      `CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(status)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
       // â”€â”€ Cleanup duplicate rows from repeated seed runs â”€â”€
