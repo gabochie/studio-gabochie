@@ -5,387 +5,572 @@
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Command Center — GideonAbochie Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — v2 (Professional)
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #0C0E14;
+  --bg-elevated: #111318;
+  --bg-card: #161922;
+  --bg-card-hover: #1B1E2A;
+  --bg-surface: #1E2130;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --border-active: rgba(255,255,255,0.2);
+  --gold: #C9A84C;
+  --gold-dim: #A8882E;
+  --gold-glow: rgba(201,168,76,0.15);
+  --green: #34D399;
+  --green-dim: #10B981;
+  --red: #F87171;
+  --red-dim: #EF4444;
+  --blue: #60A5FA;
+  --blue-dim: #3B82F6;
+  --orange: #FBBF24;
+  --purple: #A78BFA;
+  --text: #EDEDEF;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6366７F;
+  --text-disabled: #374151;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --sidebar-w: 220px;
+  --header-h: 56px;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+@media(max-width:900px){
+  :root { --sidebar-w: 0px; }
+}
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
-:root{--bg:#0A1628;--card:#0F1E38;--card-hover:#162540;--border:#1E3250;--border-light:#3A5278;--text:#E2E8F0;--text-dim:#8BA3C4;--text-muted:#5A7A9F;--gold:#C9A84C;--gold-dim:#A8882E;--green:#34C77B;--red:#EF4444;--orange:#F59E0B;--blue:#3B82F6;--purple:#8B5CF6;--font-heading:'Barlow Condensed',sans-serif;--font-body:'DM Sans',system-ui,-apple-system,sans-serif;--radius:10px;--radius-sm:6px;--shadow:0 2px 12px rgba(0,0,0,.2)}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:.875rem}
-h1,h2,h3,h4{font-family:var(--font-heading);font-weight:700;letter-spacing:-.02em}
-h1{font-size:1.5rem;color:var(--gold)}h2{font-size:1.25rem;color:var(--text)}h3{font-size:1rem;color:var(--text)}
-.cmd-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
-.cmd-header-left{display:flex;align-items:center;gap:12px}
-.cmd-badge{background:var(--gold);color:var(--bg);font-size:.688rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
-.cmd-header-right{display:flex;align-items:center;gap:16px;font-size:.813rem;color:var(--text-dim)}
-.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;flex-shrink:0}
-.status-dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
-.status-dot.offline{background:var(--text-muted)}
-.status-dot.error{background:var(--red);box-shadow:0 0 6px var(--red)}
-.status-dot.busy{background:var(--blue);box-shadow:0 0 6px var(--blue)}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;display:flex}
+body::-webkit-scrollbar{width:6px}
+body::-webkit-scrollbar-track{background:transparent}
+body::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
+
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-dim)}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;font-size:10px;font-family:var(--mono);color:var(--text-tertiary);background:var(--bg-card);border:1px solid var(--border);border-radius:4px;line-height:1}
+
+/* ═══ LAYOUT ═══ */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg-elevated);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .3s var(--ease)}
+.sidebar-brand{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-brand .logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#0C0E14;flex-shrink:0}
+.sidebar-brand span{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
+.sidebar-brand .beta{font-size:9px;font-weight:500;color:var(--gold);background:var(--gold-glow);padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-left:auto}
+
+.sidebar-nav{flex:1;padding:12px 8px;overflow-y:auto}
+.sidebar-label{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.8px;padding:16px 12px 8px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:13px;font-weight:450;cursor:pointer;transition:all .15s var(--ease);border:none;background:none;width:100%;text-align:left;font-family:var(--font)}
+.sidebar-item:hover{background:var(--bg-surface);color:var(--text)}
+.sidebar-item.active{background:var(--gold-glow);color:var(--gold);font-weight:500}
+.sidebar-item .si-icon{width:20px;text-align:center;font-size:15px;flex-shrink:0;opacity:.7}
+.sidebar-item.active .si-icon{opacity:1}
+.sidebar-item .si-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--bg-surface);color:var(--text-tertiary)}
+.sidebar-item.active .si-badge{background:var(--gold-glow);color:var(--gold)}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border)}
+.sidebar-footer .shortcut{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:11px;color:var(--text-tertiary);border-radius:var(--radius-sm)}
+
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column;transition:margin .3s var(--ease)}
+
+/* ═══ HEADER ═══ */
+.header{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;background:var(--bg-elevated)}
+.header .h-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.header .h-left .breadcrumb{font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.header .h-left .breadcrumb .bc-current{color:var(--text);font-weight:500}
+.header .h-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-secondary)}
+.mobile-menu{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:4px}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-menu{display:block}
+  .header{padding:0 16px}
+}
+
+/* ═══ CONTENT ═══ */
+.content{flex:1;padding:24px 32px;overflow-y:auto}
+@media(max-width:900px){.content{padding:16px;max-width:100%}}
+.tab-panel{display:none;animation:panelIn .3s var(--ease)}
+.tab-panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ COMPONENTS ═══ */
+
+/* Page header */
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.page-header p{font-size:13px;color:var(--text-tertiary);margin-top:2px}
+
+/* Metric cards */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px}
+.metric{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:18px 20px;position:relative;overflow:hidden;transition:all .2s var(--ease)}
+.metric:hover{border-color:var(--border-hover)}
+.metric .m-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.metric .m-label{font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px}
+.metric .m-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.metric .m-icon.gold{background:var(--gold-glow);color:var(--gold)}
+.metric .m-icon.green{background:rgba(52,211,153,0.12);color:var(--green)}
+.metric .m-icon.red{background:rgba(248,113,113,0.12);color:var(--red)}
+.metric .m-icon.blue{background:rgba(96,165,250,0.12);color:var(--blue)}
+.metric .m-icon.orange{background:rgba(251,191,36,0.12);color:var(--orange)}
+.metric .m-value{font-size:28px;font-weight:600;color:var(--text);line-height:1;margin-top:8px;letter-spacing:-.03em}
+.metric .m-value .m-unit{font-size:14px;font-weight:500;color:var(--text-secondary);margin-left:4px}
+.metric .m-trend{font-size:11px;font-weight:500;margin-top:4px;display:flex;align-items:center;gap:4px}
+.metric .m-trend.up{color:var(--green)}
+.metric .m-trend.down{color:var(--red)}
+.metric .m-trend.neutral{color:var(--text-tertiary)}
+.metric .m-sub{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+
+/* Sparkline bar (inline mini chart) */
+.spark{display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:8px}
+.spark .spark-bar{width:100%;border-radius:1px;background:var(--gold);opacity:.3;transition:opacity .2s;min-height:2px}
+.metric:hover .spark .spark-bar{opacity:.6}
+.spark .spark-bar.high{opacity:.7}
+.metric:hover .spark .spark-bar.high{opacity:1}
+
+/* Section */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.section-header h3{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+.section-header .sh-count{font-size:11px;color:var(--text-tertiary);background:var(--bg-surface);padding:2px 10px;border-radius:10px;font-weight:500}
+
+/* Card */
+.crd{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:border-color .2s var(--ease)}
+.crd + .crd{margin-top:12px}
+.crd-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:8px}
+.crd-header h4{font-size:13px;font-weight:500;color:var(--text-secondary)}
+.crd-body{padding:4px 0}
+
+/* Agent card */
+.agent-row{padding:12px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s var(--ease);border-bottom:1px solid var(--border);min-height:56px}
+.agent-row:last-child{border-bottom:none}
+.agent-row:hover{background:var(--bg-card-hover)}
+.agent-row .ar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;position:relative}
+.agent-row .ar-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;opacity:0;transition:opacity .2s}
+.agent-row:hover .ar-dot::after{opacity:1}
+.agent-row .ar-dot.gold{background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,0.3)}
+.agent-row .ar-dot.green{background:var(--green);box-shadow:0 0 6px rgba(52,211,153,0.3)}
+.agent-row .ar-dot.blue{background:var(--blue);box-shadow:0 0 6px rgba(96,165,250,0.3)}
+.agent-row .ar-dot.red{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,0.3)}
+.agent-row .ar-dot.dim{background:var(--text-tertiary)}
+.agent-row .ar-info{flex:1;min-width:0}
+.agent-row .ar-name{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.agent-row .ar-meta{font-size:11px;color:var(--text-tertiary);margin-top:1px;display:flex;gap:12px;flex-wrap:wrap}
+.agent-row .ar-right{text-align:right;flex-shrink:0}
+
+/* Tags/badges */
+.tg{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;line-height:1.4;white-space:nowrap}
+.tg-gold{background:var(--gold-glow);color:var(--gold)}
+.tg-green{background:rgba(52,211,153,0.12);color:var(--green)}
+.tg-red{background:rgba(248,113,113,0.12);color:var(--red)}
+.tg-blue{background:rgba(96,165,250,0.12);color:var(--blue)}
+.tg-orange{background:rgba(251,191,36,0.12);color:var(--orange)}
+.tg-purple{background:rgba(167,139,250,0.12);color:var(--purple)}
+.tg-dim{background:rgba(255,255,255,0.04);color:var(--text-tertiary)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s var(--ease);font-family:var(--font);white-space:nowrap;line-height:1.2}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn-primary{background:var(--gold);color:#0C0E14}
+.btn-primary:hover{background:var(--gold-dim);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,0.25)}
+.btn-secondary{background:var(--bg-surface);color:var(--text-secondary);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg-card-hover);color:var(--text);border-color:var(--border-hover)}
+.btn-ghost{background:transparent;color:var(--text-tertiary)}
+.btn-ghost:hover{color:var(--text);background:var(--bg-surface)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-icon{background:none;border:none;color:var(--text-tertiary);cursor:pointer;padding:4px;border-radius:4px;font-size:14px;transition:all .15s;line-height:1;font-family:var(--font)}
+.btn-icon:hover{color:var(--gold);background:var(--gold-glow)}
+
+/* Table */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:10px 18px;font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg-elevated)}
+.tbl td{padding:10px 18px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:13px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg-card-hover)}
+.tbl .tbl-cell-mono{font-family:var(--mono);font-size:12px}
+
+/* Activity timeline */
+.timeline{padding:8px 0}
+.tl-item{display:flex;align-items:flex-start;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.tl-item:last-child{border-bottom:none}
+.tl-item:hover{background:var(--bg-card-hover)}
+.tl-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.tl-dot.green{background:var(--green)}
+.tl-dot.red{background:var(--red)}
+.tl-dot.blue{background:var(--blue)}
+.tl-dot.dim{background:var(--text-tertiary)}
+.tl-body{flex:1;min-width:0}
+.tl-body .tl-head{font-size:13px;color:var(--text);font-weight:450}
+.tl-body .tl-head .tl-agent{color:var(--gold);font-weight:500}
+.tl-body .tl-meta{font-size:11px;color:var(--text-tertiary);margin-top:1px;display:flex;gap:12px;flex-wrap:wrap}
+.tl-actions{flex-shrink:0;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.tl-item:hover .tl-actions{opacity:1}
+
+/* Queue item */
+.q-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s;min-height:48px}
+.q-item:last-child{border-bottom:none}
+.q-item:hover{background:var(--bg-card-hover)}
+.q-item .qi-info{display:flex;align-items:center;gap:10px;flex:1;flex-wrap:wrap}
+.q-item .qi-meta{font-size:11px;color:var(--text-tertiary)}
+.q-item .qi-actions{flex-shrink:0;display:flex;gap:4px}
+
+/* Workflow card */
+.wf-row{padding:12px 18px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
+.wf-row:last-child{border-bottom:none}
+.wf-row:hover{background:var(--bg-card-hover)}
+.wf-row .wf-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.wf-row .wf-name{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wf-row .wf-desc{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+.wf-row .wf-meta{display:flex;gap:16px;margin-top:6px;font-size:11px;color:var(--text-tertiary);flex-wrap:wrap}
+.wf-row .wf-meta span{display:flex;align-items:center;gap:4px}
+
+/* Modal */
+.m-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);z-index:100;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(2px)}
+.m-overlay.open{display:flex}
+.m{background:var(--bg-card);border:1px solid var(--border-hover);border-radius:var(--radius-lg);width:100%;max-width:520px;max-height:85vh;overflow-y:auto;padding:24px;box-shadow:var(--shadow-lg);animation:modalIn .25s var(--ease)}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.m-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:20px;letter-spacing:-.02em}
+.m-body{font-size:13px;color:var(--text-secondary)}
+.m-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.m label{display:block;font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;margin-top:14px}
+.m label:first-of-type{margin-top:0}
+.m input,.m select,.m textarea{width:100%;padding:8px 12px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s}
+.m input:focus,.m select:focus,.m textarea:focus{border-color:var(--gold)}
+.m textarea{min-height:72px;resize:vertical}
+.m-detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.m-detail-row:last-child{border-bottom:none}
+.mdl-l{color:var(--text-tertiary);flex-shrink:0;min-width:90px}
+.mdl-v{color:var(--text-secondary);text-align:right;word-break:break-word}
+
+/* Toast */
+.tc{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:380px;pointer-events:none}
+.t{pointer-events:auto;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;color:#fff;animation:tIn .3s var(--ease);display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);cursor:pointer;backdrop-filter:blur(8px)}
+@keyframes tIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+.t-succ{background:rgba(16,185,129,0.9);border:1px solid rgba(52,211,153,0.3)}
+.t-err{background:rgba(239,68,68,0.9);border:1px solid rgba(248,113,113,0.3)}
+.t-warn{background:rgba(245,158,11,0.9);border:1px solid rgba(251,191,36,0.3)}
+.t-info{background:rgba(59,130,246,0.9);border:1px solid rgba(96,165,250,0.3)}
+.ti{font-size:16px;flex-shrink:0}.tm{flex:1}
+
+/* Empty state */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+.empty-state .ei{font-size:32px;margin-bottom:12px;opacity:.4}
+.empty-state .et{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
+.empty-state .ed{font-size:12px}
+
+/* Status dot inline (header) */
+.sd{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;flex-shrink:0}
+.sd.green{background:var(--green);box-shadow:0 0 6px rgba(52,211,153,0.4)}
+.sd.red{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,0.4)}
+.sd.dim{background:var(--text-tertiary)}
+
+/* Skeleton */
+.sk{background:linear-gradient(90deg,var(--bg-card) 25%,var(--bg-card-hover) 50%,var(--bg-card) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
+@keyframes shimmer{0%{background-position:200% 0}to{background-position:-200% 0}}
+.sk-line{height:12px;margin-bottom:8px;width:100%}
+.sk-line.w60{width:60%}.sk-line.w40{width:40%}.sk-line.w80{width:80%}
+.sk-metric{height:90px;border-radius:var(--radius-md);margin-bottom:12px}
+
+/* Pulse */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .pulse{animation:pulse 2s infinite}
-.tab-bar{display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab-btn{display:inline-flex;align-items:center;gap:6px;padding:12px 20px;font-size:.875rem;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font-body)}
-.tab-btn:hover{color:var(--text);border-bottom-color:var(--border-light)}
-.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.cmd-content{padding:24px;max-width:1400px}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-.section-title{font-family:var(--font-heading);font-size:1.1rem;color:var(--gold);margin-bottom:12px;margin-top:24px;font-weight:700;letter-spacing:-.02em}
-.section-title:first-child{margin-top:0}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:background .15s}
-.stat-card:hover{background:var(--card-hover)}
-.stat-card .s-num{font-family:var(--font-heading);font-size:1.75rem;font-weight:700;color:var(--gold);line-height:1}
-.stat-card .s-num.green{color:var(--green)}.stat-card .s-num.red{color:var(--red)}.stat-card .s-num.blue{color:var(--blue)}.stat-card .s-num.orange{color:var(--orange)}
-.stat-card .s-label{font-size:.75rem;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
-.card-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:8px}
-.card-header .c-title{font-family:var(--font-heading);font-size:.938rem;color:var(--text);font-weight:700}
-.card-body{padding:12px 16px}
-table{width:100%;border-collapse:collapse;font-size:.813rem}
-th{text-align:left;padding:8px 12px;color:var(--text-dim);font-weight:500;border-bottom:1px solid var(--border);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
-td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text)}
-tr:last-child td{border-bottom:none}tr:hover td{background:var(--card-hover)}
-.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.688rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;line-height:1.4}
-.tag-green{background:rgba(52,199,123,.15);color:var(--green)}
-.tag-red{background:rgba(239,68,68,.15);color:var(--red)}
-.tag-gold{background:rgba(201,168,76,.15);color:var(--gold)}
-.tag-blue{background:rgba(59,130,246,.15);color:var(--blue)}
-.tag-dim{background:rgba(90,122,159,.15);color:var(--text-muted)}
-.tag-orange{background:rgba(245,158,11,.15);color:var(--orange)}
-.tag-purple{background:rgba(139,92,246,.15);color:var(--purple)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border:none;border-radius:var(--radius-sm);font-size:.813rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font-body);white-space:nowrap}
-.btn-gold{background:var(--gold);color:var(--bg)}.btn-gold:hover{background:var(--gold-dim)}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-.btn-ghost{background:transparent;border:1px solid transparent;color:var(--text-dim)}.btn-ghost:hover{color:var(--gold);background:rgba(201,168,76,.08)}
-.btn-sm{padding:4px 10px;font-size:.75rem}
-.btn-icon{background:transparent;border:none;color:var(--text-dim);cursor:pointer;padding:4px;border-radius:4px;font-family:var(--font-body);font-size:.813rem;transition:all .15s;line-height:1}
-.btn-icon:hover{color:var(--gold);background:rgba(201,168,76,.1)}
 
-/* ── Agent card (dashboard registry) ── */
-.agent-card{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.agent-card:hover{background:var(--card-hover)}
-.agent-card:last-child{border-bottom:none}
-.agent-card .ac-name{font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
-.agent-card .ac-desc{font-size:.813rem;color:var(--text-dim);margin-top:2px;margin-left:14px}
-.agent-card .ac-meta{display:flex;gap:16px;margin-top:6px;margin-left:14px;font-size:.75rem;color:var(--text-muted);flex-wrap:wrap}
-
-/* ── Workflow card ── */
-.wf-card{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.wf-card:hover{background:var(--card-hover)}
-.wf-card:last-child{border-bottom:none}
-.wf-card .wf-name{font-weight:600;color:var(--text)}
-.wf-card .wf-desc{font-size:.813rem;color:var(--text-dim);margin-top:2px}
-.wf-card .wf-meta{display:flex;gap:16px;margin-top:8px;font-size:.75rem;color:var(--text-muted);flex-wrap:wrap}
-
-/* ── Queue item ── */
-.queue-item{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.queue-item:last-child{border-bottom:none}
-.queue-item .qi-info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.queue-item .qi-meta{font-size:.75rem;color:var(--text-muted)}
-
-/* ── Activity feed ── */
-.activity-feed{max-height:420px;overflow-y:auto}
-.activity-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.813rem}
-.activity-item:last-child{border-bottom:none}
-.activity-item .a-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.activity-item .a-dot.completed,.activity-item .a-dot.success{background:var(--green)}
-.activity-item .a-dot.error{background:var(--red)}
-.activity-item .a-dot.in_progress,.activity-item .a-dot.busy{background:var(--blue)}
-.activity-item .a-dot.pending{background:var(--text-muted)}
-.activity-item .a-time{color:var(--text-muted);font-size:.75rem;white-space:nowrap;min-width:70px}
-.activity-item .a-text{flex:1;color:var(--text);min-width:0}
-.activity-item .a-text .a-label{color:var(--gold);font-size:.688rem}
-
-/* ── Run detail rows ── */
-.run-detail{display:flex;padding:6px 0;border-bottom:1px solid var(--border);font-size:.813rem;gap:8px}
-.run-detail:last-child{border-bottom:none}
-.rd-label{color:var(--text-dim);min-width:90px;flex-shrink:0}
-.rd-value{color:var(--text);word-break:break-word}
-
-/* ── Modal ── */
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:100;justify-content:center;align-items:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:560px;max-height:80vh;overflow-y:auto;padding:24px;animation:modalIn .2s ease}
-@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.modal-title{font-family:var(--font-heading);font-size:1.25rem;color:var(--text);margin-bottom:16px}
-.modal label{display:block;font-size:.813rem;color:var(--text-dim);margin-bottom:4px;margin-top:12px}
-.modal label:first-child{margin-top:0}
-.modal input,.modal select,.modal textarea{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.875rem;font-family:var(--font-body);outline:none;box-sizing:border-box}
-.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--gold)}
-.modal textarea{min-height:80px;resize:vertical}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-.modal-detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:.813rem}
-.modal-detail-row:last-child{border-bottom:none}
-.mdl-label{color:var(--text-dim);min-width:90px}
-.mdl-value{color:var(--text);text-align:right;word-break:break-all}
-
-/* ── Toast ── */
-.toast-container{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:380px}
-.toast{padding:12px 16px;border-radius:6px;font-size:.813rem;color:#fff;animation:toastIn .3s ease;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer}
-@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.toast-success{background:#166534;border:1px solid rgba(52,199,123,.3)}
-.toast-error{background:#7F1D1D;border:1px solid rgba(232,99,122,.3)}
-.toast-warning{background:#713F12;border:1px solid rgba(245,158,11,.3)}
-.toast-info{background:#1E3A5F;border:1px solid rgba(59,130,246,.3)}
-.toast-icon{font-size:1rem;flex-shrink:0}.toast-msg{flex:1}
-
-/* ── Empty / Error states ── */
-.empty-state{text-align:center;padding:40px 20px;color:var(--text-dim)}
-.empty-state .empty-icon{font-size:2rem;margin-bottom:8px;opacity:.5}
-.empty-state .empty-desc{font-size:.875rem;color:var(--text-dim)}
-.error-state{text-align:center;padding:24px 20px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:var(--radius);margin-bottom:16px}
-.error-state .error-icon{font-size:1.5rem;margin-bottom:8px}
-.error-state .error-title{font-size:.875rem;color:var(--red);margin-bottom:4px}
-.error-state .error-btn{margin-top:8px}
-
-/* ── Skeleton ── */
-.skeleton{background:linear-gradient(90deg,var(--card) 25%,var(--card-hover) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
-@keyframes shimmer{0%{background-position:200% 0}to{background-position:-200% 0}}
-.skeleton-line{height:12px;margin-bottom:8px;width:100%}
-.skeleton-stat{height:80px;border-radius:var(--radius)}
-
-/* ── Shortcuts help ── */
-kbd{display:inline-block;padding:1px 5px;font-size:.688rem;font-family:var(--font-body);color:var(--text-dim);background:var(--bg);border:1px solid var(--border);border-radius:3px;line-height:1.4}
-.shortcuts-hint{position:fixed;bottom:20px;left:20px;z-index:50;font-size:.688rem;color:var(--text-dim);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;opacity:.4;transition:opacity .2s}
-.shortcuts-hint:hover{opacity:1}
-
-/* ── Spinner ── */
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite}
+/* Spinner */
+.sp{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── Toolbar row ── */
-.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.toolbar-title{font-family:var(--font-heading);font-size:1.1rem;color:var(--gold);font-weight:700;margin:0}
+/* Settings rows */
+.settings-card{padding:0}
+.settings-card .sc-body{padding:18px}
+.settings-card p{font-size:13px;color:var(--text-tertiary);margin-bottom:14px;line-height:1.6}
+.settings-card .sc-desc code{color:var(--gold);font-family:var(--mono);font-size:12px;padding:1px 4px;background:var(--bg-elevated);border-radius:3px}
 
-@media(max-width:768px){
-  .cmd-header{padding:12px 16px}.tab-bar{padding:0 16px}.cmd-content{padding:16px}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}.cmd-header-right{font-size:.75rem}
-  .shortcuts-hint{display:none}
-  .modal-overlay{padding:12px}.modal{max-width:100%;max-height:90vh;padding:16px}
+@media(max-width:600px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .content{padding:12px}
+  .header{padding:0 12px}
 }
-@media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 
-<div class="cmd-header">
-  <div class="cmd-header-left">
-    <h1>&#9889; Command Center</h1>
-    <span class="cmd-badge">Agent OS</span>
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">G</div>
+    <span>Command Center</span>
+    <span class="beta">Beta</span>
   </div>
-  <div class="cmd-header-right">
-    <span><span class="status-dot online pulse" id="headerDot"></span><span id="headerStatus">Connecting...</span></span>
-    <span id="headerTime"></span>
-    <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Refresh (R)">&#8635; Refresh</button>
+  <nav class="sidebar-nav">
+    <div class="sidebar-label">Overview</div>
+    <button class="sidebar-item active" data-tab="dashboard"><span class="si-icon">&#9632;</span> Dashboard <span class="si-badge" id="sbdActive">0</span></button>
+    <button class="sidebar-item" data-tab="agents"><span class="si-icon">&#9679;</span> Agents <span class="si-badge" id="sbdAgents">0</span></button>
+    <button class="sidebar-item" data-tab="workflows"><span class="si-icon">&#8617;</span> Workflows</button>
+    <div class="sidebar-label">Activity</div>
+    <button class="sidebar-item" data-tab="runs"><span class="si-icon">&#9776;</span> Run History</button>
+    <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
+    <div class="sidebar-label">System</div>
+    <button class="sidebar-item" data-tab="settings"><span class="si-icon">&#9881;</span> Settings</button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="shortcut"><kbd>1</kbd>-<kbd>6</kbd> Nav &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
   </div>
-</div>
+</aside>
 
-<div class="tab-bar" role="tablist">
-  <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true"><span class="tag tag-gold">1</span> Dashboard</button>
-  <button class="tab-btn" data-tab="agents" role="tab" aria-selected="false"><span class="tag tag-gold">2</span> Agents</button>
-  <button class="tab-btn" data-tab="workflows" role="tab" aria-selected="false"><span class="tag tag-gold">3</span> Workflows</button>
-  <button class="tab-btn" data-tab="runs" role="tab" aria-selected="false"><span class="tag tag-gold">4</span> Run History</button>
-  <button class="tab-btn" data-tab="queue" role="tab" aria-selected="false"><span class="tag tag-gold">5</span> Queue</button>
-  <button class="tab-btn" data-tab="settings" role="tab" aria-selected="false"><span class="tag tag-gold">6</span> Settings</button>
-</div>
+<!-- ═══ MAIN ═══ -->
+<div class="main" id="main">
 
-<div class="cmd-content">
+<header class="header">
+  <div class="h-left">
+    <button class="mobile-menu" id="menuBtn">&#9776;</button>
+    <div class="breadcrumb"><span class="bc-current" id="bcLabel">Dashboard</span></div>
+  </div>
+  <div class="h-right">
+    <span><span class="sd green pulse" id="hdrDot"></span><span id="hdrStatus">Connecting...</span></span>
+    <span id="hdrTime"></span>
+    <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Refresh (R)">&#8635;</button>
+  </div>
+</header>
+
+<div class="content">
 
 <!-- ═══ DASHBOARD ═══ -->
-<div class="tab-panel active" id="panel-dashboard" role="tabpanel">
-  <div class="stats-grid" id="statsGrid"></div>
-  <div class="section-title">Agent Registry</div>
-  <div class="card"><div class="card-body" id="agentRegistry"></div></div>
-  <div class="section-title">Recent Activity</div>
-  <div class="card"><div class="card-body" id="recentActivity"></div></div>
+<div class="tab-panel active" id="panel-dashboard">
+  <div class="page-header"><h2>Dashboard</h2><p>Real-time agent operations overview</p></div>
+  <div class="metrics" id="metrics"></div>
+  <div class="section-header"><h3>Agent Registry</h3><span class="sh-count" id="agentCount">0</span></div>
+  <div class="crd" id="agentRegistry"></div>
+  <div class="section-header" style="margin-top:20px"><h3>Recent Activity</h3></div>
+  <div class="crd" id="recentActivity"></div>
 </div>
 
 <!-- ═══ AGENTS ═══ -->
-<div class="tab-panel" id="panel-agents" role="tabpanel">
-  <div class="toolbar"><div class="toolbar-title">All Agents</div><button class="btn btn-gold btn-sm" id="spawnBtn">+ Spawn Agent</button></div>
-  <div class="card"><div class="card-body" id="agentsList"></div></div>
+<div class="tab-panel" id="panel-agents">
+  <div class="page-header"><h2>Agents</h2><p>Manage your agent fleet</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <button class="btn btn-primary btn-sm" id="spawnBtn">+ Spawn Agent</button>
+    <button class="btn btn-secondary btn-sm" id="spawnBtn2" style="display:none">+ Spawn Agent</button>
+  </div>
+  <div class="crd"><div class="tbl-wrap" id="agentsList"></div></div>
 </div>
 
 <!-- ═══ WORKFLOWS ═══ -->
-<div class="tab-panel" id="panel-workflows" role="tabpanel">
-  <div class="toolbar"><div class="toolbar-title">Workflow Library</div><button class="btn btn-gold btn-sm" id="wfNewBtn">+ New Workflow</button></div>
-  <div class="card"><div class="card-body" id="workflowList"></div></div>
+<div class="tab-panel" id="panel-workflows">
+  <div class="page-header"><h2>Workflows</h2><p>Automated revenue and operations pipelines</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-primary btn-sm" id="wfNewBtn">+ New Workflow</button></div>
+  <div class="crd" id="workflowList"></div>
 </div>
 
 <!-- ═══ RUNS ═══ -->
-<div class="tab-panel" id="panel-runs" role="tabpanel">
-  <div class="toolbar">
-    <div class="toolbar-title">Run History</div>
-    <select id="runFilter" style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:4px 28px 4px 8px;font-size:.75rem;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235A7A9F' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center">
+<div class="tab-panel" id="panel-runs">
+  <div class="page-header"><h2>Run History</h2><p>Agent execution log</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <select id="runFilter" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;font-size:12px;font-family:var(--font);-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%239CA3AF' d='M5 7L1 3h8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none">
       <option value="">All status</option>
       <option value="completed">Completed</option>
       <option value="error">Error</option>
       <option value="in_progress">In Progress</option>
     </select>
   </div>
-  <div class="card"><div class="card-body" style="overflow-x:auto" id="runsList"></div></div>
+  <div class="crd"><div class="tbl-wrap" id="runsList"></div></div>
 </div>
 
 <!-- ═══ QUEUE ═══ -->
-<div class="tab-panel" id="panel-queue" role="tabpanel">
-  <div class="toolbar"><div class="toolbar-title">Agent Queue</div><button class="btn btn-gold btn-sm" id="processBtn">Process Now</button></div>
-  <div class="card"><div class="card-body" id="queueList"></div></div>
+<div class="tab-panel" id="panel-queue">
+  <div class="page-header"><h2>Queue</h2><p>Pending agent work items</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-primary btn-sm" id="processBtn">&#9654; Process Now</button></div>
+  <div class="crd" id="queueList"></div>
 </div>
 
 <!-- ═══ SETTINGS ═══ -->
-<div class="tab-panel" id="panel-settings" role="tabpanel">
-  <div class="section-title">Configuration</div>
-  <div class="card">
-    <div class="card-header"><span class="c-title">Agent Auth</span></div>
-    <div class="card-body">
-      <p style="font-size:.813rem;color:var(--text-dim);margin-bottom:12px">X-Agent-Auth token authenticates agent-to-agent communication. Configure <code style="color:var(--gold)">AGENT_AUTH_KEY</code> as a Cloudflare Pages environment variable.</p>
-      <div class="modal-detail-row"><span class="mdl-label">Status</span><span class="mdl-value" id="authStatus">Checking...</span></div>
-      <div class="modal-detail-row"><span class="mdl-label">Header</span><span class="mdl-value"><code>X-Agent-Auth</code></span></div>
-      <div class="modal-detail-row"><span class="mdl-label">Env Var</span><span class="mdl-value"><code style="color:var(--text-muted)">AGENT_AUTH_KEY</code></span></div>
+<div class="tab-panel" id="panel-settings">
+  <div class="page-header"><h2>Settings</h2><p>System configuration</p></div>
+  <div class="crd settings-card">
+    <div class="crd-header"><h4>Agent Auth</h4></div>
+    <div class="sc-body">
+      <p>X-Agent-Auth token authenticates agent-to-agent communication. Set <code>AGENT_AUTH_KEY</code> in Cloudflare Pages environment variables.</p>
+      <div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v" id="authStatus">Checking...</span></div>
+      <div class="m-detail-row"><span class="mdl-l">Header</span><span class="mdl-v"><code style="font-family:var(--mono);font-size:12px;color:var(--gold)">X-Agent-Auth</code></span></div>
+      <div class="m-detail-row"><span class="mdl-l">Env Var</span><span class="mdl-v"><code style="font-family:var(--mono);font-size:12px;color:var(--text-tertiary)">AGENT_AUTH_KEY</code></span></div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header"><span class="c-title">AI Provider</span></div>
-    <div class="card-body">
-      <p style="font-size:.813rem;color:var(--text-dim);margin-bottom:12px">AI agents use OpenAI-compatible APIs. Set <code style="color:var(--gold)">OPENAI_API_KEY</code> or <code style="color:var(--gold)">AI_API_KEY</code> in Cloudflare Pages environment variables.</p>
-      <div class="modal-detail-row"><span class="mdl-label">API Key</span><span class="mdl-value" id="aiStatus">Checking...</span></div>
-      <div class="modal-detail-row"><span class="mdl-label">Default Model</span><span class="mdl-value"><code>gpt-4o-mini</code></span></div>
+  <div class="crd settings-card">
+    <div class="crd-header"><h4>AI Provider</h4></div>
+    <div class="sc-body">
+      <p>AI agents use OpenAI-compatible APIs. Set <code>OPENAI_API_KEY</code> or <code>AI_API_KEY</code> in Cloudflare Pages environment variables.</p>
+      <div class="m-detail-row"><span class="mdl-l">API Key</span><span class="mdl-v" id="aiStatus">Checking...</span></div>
+      <div class="m-detail-row"><span class="mdl-l">Default Model</span><span class="mdl-v"><code style="font-family:var(--mono);font-size:12px">gpt-4o-mini</code></span></div>
     </div>
   </div>
 </div>
 
-</div>
-
-<div class="shortcuts-hint"><kbd>1</kbd>-<kbd>6</kbd> Tabs &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
+</div><!-- /content -->
+</div><!-- /main -->
 
 <!-- ═══ MODALS ═══ -->
-<div class="modal-overlay" id="spawnModal" role="dialog" aria-labelledby="spawnTitle">
-  <div class="modal">
-    <div class="modal-title" id="spawnTitle">Spawn New Agent</div>
+<div class="m-overlay" id="spawnModal">
+  <div class="m">
+    <div class="m-title">Spawn New Agent</div>
     <label>Agent Type</label>
     <select id="spawnType"><option value="content">Content</option><option value="outreach">Outreach</option><option value="analytics">Analytics</option><option value="task_processor">Task Processor</option></select>
     <label>Name</label>
     <input type="text" id="spawnName" placeholder="e.g. Newsletter Writer #2">
-    <label>Initial Prompt (optional)</label>
+    <label>Initial Prompt</label>
     <textarea id="spawnPrompt" placeholder="What should this agent do first?"></textarea>
-    <div class="modal-footer">
-      <button class="btn btn-outline" data-action="close-modal" data-target="spawnModal">Cancel</button>
-      <button class="btn btn-gold" id="spawnConfirm">Spawn</button>
+    <div class="m-footer">
+      <button class="btn btn-secondary" data-action="close-modal" data-target="spawnModal">Cancel</button>
+      <button class="btn btn-primary" id="spawnConfirm">Spawn Agent</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="wfModal" role="dialog" aria-labelledby="wfTitle">
-  <div class="modal">
-    <div class="modal-title" id="wfTitle">Create Workflow</div>
+<div class="m-overlay" id="wfModal">
+  <div class="m">
+    <div class="m-title">Create Workflow</div>
     <label>Name</label>
     <input type="text" id="wfName" placeholder="e.g. Abandoned Cart Recovery">
     <label>Description</label>
     <textarea id="wfDesc" placeholder="What does this workflow do?"></textarea>
     <label>Trigger Type</label>
     <select id="wfTrigger"><option value="manual">Manual</option><option value="cron">Scheduled (Cron)</option><option value="event">Event-driven</option></select>
-    <div class="modal-footer">
-      <button class="btn btn-outline" data-action="close-modal" data-target="wfModal">Cancel</button>
-      <button class="btn btn-gold" id="wfConfirm">Create</button>
+    <div class="m-footer">
+      <button class="btn btn-secondary" data-action="close-modal" data-target="wfModal">Cancel</button>
+      <button class="btn btn-primary" id="wfConfirm">Create Workflow</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="detailModal" role="dialog" aria-labelledby="detailTitle">
-  <div class="modal">
-    <div class="modal-title" id="detailTitle">Details</div>
-    <div class="modal-body" id="detailBody"></div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" data-action="close-modal" data-target="detailModal">Close</button>
-    </div>
+<div class="m-overlay" id="detailModal">
+  <div class="m">
+    <div class="m-title" id="detailTitle">Details</div>
+    <div class="m-body" id="detailBody"></div>
+    <div class="m-footer"><button class="btn btn-secondary" data-action="close-modal" data-target="detailModal">Close</button></div>
   </div>
 </div>
+
+<div class="tc" id="tc"></div>
 
 <script src="admin-state.js"></script>
 <script src="admin-api.js"></script>
-<script src="admin-ui.js"></script>
 <script>
+/* ═══════════════════════════════════════════
+   COMMAND CENTER — App Controller
+   ═══════════════════════════════════════════ */
 (function() {
 
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
+var tabs = ['dashboard','agents','workflows','runs','queue','settings'];
+var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', runs:'Run History', queue:'Queue', settings:'Settings' };
 
 function getHashTab() {
   var h = window.location.hash.slice(1);
-  return ['dashboard','agents','workflows','runs','queue','settings'].indexOf(h) !== -1 ? h : 'dashboard';
+  return tabs.indexOf(h) !== -1 ? h : 'dashboard';
 }
-
 function setHashTab(n) { window.location.hash = n; }
 
-/* ── Helpers ── */
-function empty(el, icon, msg) {
-  el.innerHTML = '<div class="empty-state"><div class="empty-icon">' + (icon || '&#9881;') + '</div><div class="empty-desc">' + (msg || 'No data') + '</div></div>';
-}
-function error(el, msg, fn) {
-  var h = '<div class="error-state"><div class="error-icon">&#9888;</div><div class="error-title">' + msg + '</div>';
-  if (fn) h += '<button class="btn btn-outline btn-sm error-btn" onclick="(' + fn.toString() + ')()">Retry</button>';
-  h += '</div>'; el.innerHTML = h;
-}
-function skel(el) { el.innerHTML = '<div class="skeleton skeleton-stat"></div><div class="skeleton skeleton-line" style="margin-top:12px"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40" style="margin-top:12px"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line w80"></div>'; }
+/* ── Toast ── */
+var Toast = {
+  show: function(msg, type, dur) {
+    type = type || 'info'; dur = dur || 4000;
+    var icons = { succ:'\u2713', err:'\u2717', warn:'\u26A0', info:'\u2139' };
+    var t = document.createElement('div');
+    t.className = 't t-' + (type === 'success' ? 'succ' : type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'info');
+    t.innerHTML = '<span class="ti">' + (icons[type === 'success' ? 'succ' : type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'info'] || '\u2139') + '</span><span class="tm">' + msg + '</span>';
+    $('tc').appendChild(t);
+    setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300); }, dur);
+  },
+  success: function(m, d) { this.show(m, 'success', d); },
+  error: function(m, d) { this.show(m, 'error', d || 6000); },
+  warning: function(m, d) { this.show(m, 'warning', d); },
+  info: function(m, d) { this.show(m, 'info', d); }
+};
 
-/* ── Stat cards ── */
-function renderStat(el, val, label, color) {
-  return '<div class="stat-card"><div class="s-num' + (color ? ' ' + color : '') + '">' + val + '</div><div class="s-label">' + label + '</div></div>';
+/* ── Helpers ── */
+function tag(status) {
+  var map = { idle:'tg-gold', busy:'tg-blue', online:'tg-green', offline:'tg-dim', error:'tg-red', completed:'tg-green', pending:'tg-purple', in_progress:'tg-blue', active:'tg-green', inactive:'tg-dim', success:'tg-green' };
+  var cls = map[status] || 'tg-dim';
+  return '<span class="tg ' + cls + '">' + status + '</span>';
+}
+function fmtTime(iso) {
+  if (!iso) return '-';
+  try { var d = new Date(iso.replace(' ','T')+'Z'); var n=new Date(); var diff=Math.round((n-d)/60000); if(diff<1) return 'now'; if(diff<60) return diff+'m'; var h=Math.round(diff/60); if(h<24) return h+'h'; return d.toLocaleDateString(); }
+  catch(e) { return iso; }
+}
+function skelMetric() { return '<div class="sk sk-metric"></div>'; }
+function skelLine(w) { return '<div class="sk sk-line'+(w?' w'+w:'')+'"></div>'; }
+
+function showError(el, msg, retryFn) {
+  el.innerHTML = '<div style="text-align:center;padding:24px 20px"><div style="font-size:24px;margin-bottom:8px;opacity:.4">&#9888;</div><div style="font-size:13px;color:var(--red);margin-bottom:4px">'+msg+'</div>'+(retryFn?'<button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="('+retryFn.toString()+')()">Retry</button>':'')+'</div>';
+}
+function showEmpty(el, icon, msg, desc) {
+  el.innerHTML = '<div class="empty-state"><div class="ei">'+(icon||'&#9881;')+'</div><div class="et">'+(msg||'No data')+'</div>'+(desc?'<div class="ed">'+desc+'</div>':'')+'</div>';
 }
 
 /* ── Dashboard ── */
 function renderDashboard() {
-  var d = AppState.get('status');
-  if (!d) { skel($('statsGrid')); skel($('agentRegistry')); loadDashboard(); return; }
+  var data = AppState.get('status');
+  if (!data) { $('metrics').innerHTML = skelMetric()+skelMetric()+skelMetric()+skelMetric()+skelMetric(); return loadDashboard(); }
 
-  var agents = d.agents || [];
-  var active = agents.filter(function(a) { return a.status === 'idle' || a.status === 'busy'; }).length;
-  var q = d.queue || {}; var r = d.runs || {}; var rev = d.revenue_30d ? Number(d.revenue_30d) : 0;
+  var agents = data.agents || [];
+  var active = agents.filter(function(a){return a.status==='idle'||a.status==='busy'}).length;
+  var q = data.queue||{}; var r = data.runs||{}; var rev = data.revenue_30d ? Number(data.revenue_30d) : 0;
 
-  $('statsGrid').innerHTML =
-    renderStat(active, 'Active Agents') +
-    renderStat((q.pending || 0) + (q.in_progress ? ' <span style="font-size:.9rem;color:var(--text-dim)">(' + q.in_progress + ' run)</span>' : ''), 'Queue Depth', 'orange') +
-    renderStat(r.errors_24h || 0, 'Errors (24h)', 'red') +
-    renderStat(r.last_24h || 0, 'Runs (24h)', 'blue') +
-    renderStat('GH\u00a2 ' + rev.toLocaleString(), 'Revenue (30d)', 'green');
+  $('sbdActive').textContent = active;
+  $('sbdAgents').textContent = agents.length;
+  $('sbdQueue').textContent = q.pending || 0;
+
+  /* Sparkline data (mock distribution) */
+  var sp1 = [30,45,38,52,48,62,55]; var sp2 = [12,8,15,10,6,18,9];
+  var spark = function(arr,col){return '<div class="spark">'+arr.map(function(v){var mx=Math.max.apply(null,arr);return '<div class="spark-bar'+(v===mx?' high':'')+'" style="height:'+Math.max(2,(v/mx)*20)+'px;background:'+col+'"></div>'}).join('')+'</div>';};
+
+  $('metrics').innerHTML =
+    '<div class="metric"><div class="m-top"><div class="m-label">Active Agents</div><div class="m-icon gold">&#9679;</div></div><div class="m-value">'+active+'</div><div class="m-trend neutral">of '+agents.length+' registered</div>'+spark(sp1,'var(--gold)')+'</div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Queue Depth</div><div class="m-icon orange">&#9654;</div></div><div class="m-value">'+(q.pending||0)+(q.in_progress?' <span class="m-unit">('+q.in_progress+' running)</span>':'')+'</div><div class="m-sub">Pending items</div>'+spark(sp2,'var(--orange)')+'</div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Errors (24h)</div><div class="m-icon red">&#9888;</div></div><div class="m-value">'+(r.errors_24h||0)+'</div><div class="m-sub">of '+(r.last_24h||0)+' total runs</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Runs (24h)</div><div class="m-icon blue">&#9776;</div></div><div class="m-value">'+(r.last_24h||0)+'</div><div class="m-trend up">&#9650; Active</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Revenue (30d)</div><div class="m-icon green">&#36;</div></div><div class="m-value">GH\u00a2 '+rev.toLocaleString()+'</div><div class="m-sub">Completed donations</div></div>';
 
   /* Agent Registry */
   var reg = $('agentRegistry');
-  if (!agents.length) { empty(reg, '&#9881;', 'No agents deployed yet. Run the setup script first.'); }
+  if (!agents.length) { showEmpty(reg, '&#9679;', 'No agents deployed', 'Run the database setup script to initialize the agent system.'); }
   else {
-    var h = '';
-    agents.forEach(function(a) {
-      var dotCls = (a.status === 'idle' || a.status === 'busy') ? 'online' : (a.status === 'error' ? 'error' : 'offline');
-      h += '<div class="agent-card" data-action="agent-detail" data-id="' + a.id + '">';
-      h += '<div class="ac-name"><span class="status-dot ' + dotCls + '"></span>' + (a.name || a.agent_type_name || 'Agent');
-      h += ' <span class="tag tag-' + (a.status === 'idle' ? 'gold' : a.status === 'busy' ? 'blue' : a.status === 'error' ? 'red' : 'dim') + '">' + (a.status || 'unknown') + '</span></div>';
-      h += '<div class="ac-desc">' + (a.agent_type_name || '') + ' &mdash; Runs: ' + (a.total_runs || 0) + ' &middot; Errors: ' + (a.total_errors || 0) + '</div>';
-      h += '<div class="ac-meta"><span>Last run: ' + formatTime(a.last_run_at) + '</span></div>';
-      h += '</div>';
-    });
-    reg.innerHTML = h;
+    $('agentCount').textContent = agents.length;
+    reg.innerHTML = '<div class="crd-body">' + agents.map(function(a) {
+      var dc = a.status==='idle'?'gold':a.status==='busy'?'blue':a.status==='error'?'red':'dim';
+      return '<div class="agent-row" data-action="agent-detail" data-id="'+a.id+'">'+
+        '<span class="ar-dot '+dc+'"></span>'+
+        '<div class="ar-info"><div class="ar-name">'+(a.name||a.agent_type_name||'Agent')+' '+tag(a.status)+'</div>'+
+        '<div class="ar-meta"><span>'+(a.agent_type_name||'')+'</span><span>'+ (a.total_runs||0) +' runs</span><span>'+ (a.total_errors||0) +' errors</span></div></div>'+
+        '<div class="ar-right"><span style="font-size:11px;color:var(--text-tertiary)">'+fmtTime(a.last_run_at)+'</span></div>'+
+        '</div>';
+    }).join('') + '</div>';
   }
 
-  /* Recent Activity */
+  /* Activity */
   var act = $('recentActivity');
-  var runs = d.latest_runs || [];
-  if (!runs.length) { empty(act, '&#8987;', 'No runs yet'); }
+  var runs = data.latest_runs || [];
+  if (!runs.length) { showEmpty(act, '&#8987;', 'No recent activity'); }
   else {
-    var h = '<div class="activity-feed">';
-    runs.forEach(function(r) {
-      h += '<div class="activity-item">';
-      h += '<span class="a-dot ' + (r.status || 'pending') + '"></span>';
-      h += '<span class="a-time">' + formatTime(r.created_at) + '</span>';
-      h += '<span class="a-text"><span class="a-label">[' + (r.agent_type_name || 'unknown') + ']</span> ' + (r.status || '') + (r.duration_ms ? ' (' + (r.duration_ms / 1000).toFixed(1) + 's)' : '') + '</span>';
-      h += '<button class="btn-icon" data-action="run-detail" data-id="' + r.id + '" title="View details">&#9881;</button>';
-      h += '</div>';
-    });
-    h += '</div>';
-    act.innerHTML = h;
+    act.innerHTML = '<div class="timeline">' + runs.map(function(r) {
+      var dc = r.status==='completed'?'green':r.status==='error'?'red':r.status==='in_progress'?'blue':'dim';
+      return '<div class="tl-item">'+
+        '<span class="tl-dot '+dc+'"></span>'+
+        '<div class="tl-body"><div class="tl-head"><span class="tl-agent">['+(r.agent_type_name||'unknown')+']</span> '+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-tertiary);font-size:12px;font-weight:400">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div>'+
+        '<div class="tl-meta">'+fmtTime(r.created_at)+(r.sub_agent_count?' <span>&#8618; '+r.sub_agent_count+' sub-agents</span>':'')+'</div></div>'+
+        '<div class="tl-actions"><button class="btn-icon" data-action="run-detail" data-id="'+r.id+'" title="View detail">&#8594;</button></div>'+
+        '</div>';
+    }).join('') + '</div>';
   }
 }
 
@@ -393,237 +578,209 @@ function renderDashboard() {
 function renderAgents() {
   var agents = AppState.get('agents');
   var el = $('agentsList');
-  if (!agents || !agents.length) { empty(el, '&#9881;', 'No agents deployed'); return; }
-  el.innerHTML = '<div style="overflow-x:auto"><table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Runs</th><th>Errors</th><th>Last Run</th><th></th></tr></thead><tbody>' +
-    agents.map(function(a) {
-      return '<tr><td><strong>' + (a.name || '') + '</strong></td><td>' + (a.agent_type_name || '') + '</td><td><span class="tag tag-' + (a.status === 'idle' ? 'gold' : a.status === 'busy' ? 'blue' : a.status === 'error' ? 'red' : 'dim') + '">' + (a.status || '-') + '</span></td><td>' + (a.total_runs || 0) + '</td><td>' + (a.total_errors || 0) + '</td><td>' + formatTime(a.last_run_at) + '</td>' +
-        '<td><button class="btn-icon" data-action="agent-detail" data-id="' + a.id + '" title="View detail">&#9881;</button></td></tr>';
-    }).join('') + '</tbody></table></div>';
+  if (!agents||!agents.length) { showEmpty(el, '&#9679;', 'No agents deployed', 'Spawn your first agent to get started.'); return; }
+  el.innerHTML =
+    '<table class="tbl"><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Runs</th><th>Errors</th><th>Last Run</th><th></th></tr></thead><tbody>'+
+    agents.map(function(a){return '<tr><td style="font-weight:500;color:var(--text)">'+(a.name||'')+'</td><td>'+(a.agent_type_name||'')+'</td><td>'+tag(a.status)+'</td><td>'+(a.total_runs||0)+'</td><td>'+(a.total_errors||0)+'</td><td style="font-size:12px;color:var(--text-tertiary)">'+fmtTime(a.last_run_at)+'</td><td><button class="btn-icon" data-action="agent-detail" data-id="'+a.id+'" title="View">&#8594;</button></td></tr>';}).join('')+
+    '</tbody></table>';
 }
 
 /* ── Workflows ── */
 function renderWorkflows() {
   var wfs = AppState.get('workflows');
   var el = $('workflowList');
-  if (!wfs || !wfs.length) { empty(el, '&#9881;', 'No workflows defined'); return; }
-  el.innerHTML = wfs.map(function(w) {
-    return '<div class="wf-card" data-action="wf-detail" data-id="' + w.id + '">' +
-      '<div class="wf-name"><span class="tag tag-' + (w.status === 'active' ? 'green' : 'dim') + '">' + (w.status || 'inactive') + '</span> ' + (w.name || '') + '</div>' +
-      '<div class="wf-desc">' + (w.description || '') + '</div>' +
-      '<div class="wf-meta"><span>' + (w.step_count || 0) + ' steps</span><span>Trigger: ' + (w.trigger_type || 'manual') + '</span><span>Runs: ' + (w.total_runs || 0) + '</span><span>Revenue: GH\u00a2 ' + Number(w.revenue_tracked || 0).toLocaleString() + '</span></div>' +
-      '</div>';
-  }).join('');
+  if (!wfs||!wfs.length) { showEmpty(el, '&#8617;', 'No workflows defined'); return; }
+  el.innerHTML = '<div class="crd-body">'+wfs.map(function(w){return '<div class="wf-row" data-action="wf-detail" data-id="'+w.id+'"><div class="wf-top"><div class="wf-name">'+tag(w.status||'inactive')+' '+(w.name||'')+'</div></div><div class="wf-desc">'+(w.description||'')+'</div><div class="wf-meta"><span>&#9654; '+(w.step_count||0)+' steps</span><span>&#9881; '+(w.trigger_type||'manual')+'</span><span>&#8635; '+(w.total_runs||0)+' runs</span><span>&#36; GH\u00a2 '+Number(w.revenue_tracked||0).toLocaleString()+'</span></div></div>';}).join('')+'</div>';
 }
 
 /* ── Runs ── */
 function renderRuns() {
   var runs = AppState.get('runs');
   var el = $('runsList');
-  if (!runs || !runs.length) { empty(el, '&#8987;', 'No runs found'); return; }
-  el.innerHTML = '<table><thead><tr><th>Time</th><th>Agent</th><th>Status</th><th>Duration</th><th>Sub</th><th>Summary</th><th></th></tr></thead><tbody>' +
-    runs.map(function(r) {
-      return '<tr><td>' + formatTime(r.created_at) + '</td><td>' + (r.agent_type_name || '') + '</td><td><span class="tag tag-' + (r.status === 'completed' ? 'green' : r.status === 'error' ? 'red' : r.status === 'in_progress' ? 'blue' : 'dim') + '">' + (r.status || '-') + '</span></td><td>' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '-') + '</td><td>' + (r.sub_agent_count || 0) + '</td>' +
-        '<td style="font-size:.75rem;color:var(--text-dim);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.response_summary ? r.response_summary.substring(0, 60) : '-') + '</td>' +
-        '<td><button class="btn-icon" data-action="run-detail" data-id="' + r.id + '" title="View detail">&#9654;</button></td></tr>';
-    }).join('') + '</tbody></table>';
+  if (!runs||!runs.length) { showEmpty(el, '&#9776;', 'No runs found'); return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Time</th><th>Agent</th><th>Status</th><th>Duration</th><th>Sub</th><th>Summary</th><th></th></tr></thead><tbody>'+
+    runs.map(function(r){return '<tr><td style="font-size:12px;color:var(--text-tertiary)">'+fmtTime(r.created_at)+'</td><td>'+(r.agent_type_name||'')+'</td><td>'+tag(r.status)+'</td><td class="tbl-cell-mono">'+(r.duration_ms?(r.duration_ms/1000).toFixed(1)+'s':'-')+'</td><td>'+(r.sub_agent_count||0)+'</td><td style="font-size:12px;color:var(--text-tertiary);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.response_summary?r.response_summary.substring(0,50):'-')+'</td><td><button class="btn-icon" data-action="run-detail" data-id="'+r.id+'" title="View">&#8594;</button></td></tr>';}).join('')+
+    '</tbody></table>';
 }
 
 /* ── Queue ── */
 function renderQueue() {
   var items = AppState.get('queue');
   var el = $('queueList');
-  if (!items || !items.length) { empty(el, '&#10003;', 'Queue is empty'); return; }
-  el.innerHTML = items.map(function(item) {
-    var actions = item.status === 'pending'
-      ? '<button class="btn btn-outline btn-sm" data-action="process-item" data-id="' + item.id + '">Process</button>'
-      : '';
-    return '<div class="queue-item"><div class="qi-info"><span class="tag tag-' + (item.status === 'pending' ? 'purple' : item.status === 'in_progress' ? 'blue' : item.status === 'completed' ? 'green' : 'dim') + '">' + (item.status || '') + '</span> <strong>' + (item.agent_type || '') + '</strong> <span class="qi-meta">P' + (item.priority || 0) + ' | ' + formatTime(item.created_at) + '</span></div><div style="display:flex;gap:6px">' + actions + '</div></div>';
-  }).join('');
+  if (!items||!items.length) { showEmpty(el, '&#10003;', 'Queue is empty', 'All caught up! No pending work items.'); return; }
+  el.innerHTML = '<div class="crd-body">'+items.map(function(item){
+    var actions = item.status==='pending'?'<button class="btn btn-secondary btn-sm" data-action="process-item" data-id="'+item.id+'">Process</button>':'';
+    return '<div class="q-item"><div class="qi-info">'+tag(item.status)+' <strong style="font-size:13px;color:var(--text)">'+(item.agent_type||'')+'</strong> <span class="qi-meta">P'+(item.priority||0)+' &middot; '+fmtTime(item.created_at)+'</span></div><div class="qi-actions">'+actions+'</div></div>';
+  }).join('')+'</div>';
 }
+
+/* ── Loaders ── */
+function loadDashboard() {
+  API.getStatus().then(function(d){
+    var a = d.agents||[]; var s = a.filter(function(x){return x.status==='idle'||x.status==='busy'}).length;
+    $('hdrStatus').textContent = 'Online'+(s?' ('+s+' active)':'');
+    $('hdrDot').className = 'sd green'+(s?' pulse':'');
+    renderDashboard();
+  }).catch(function(e){ $('hdrStatus').textContent = 'Offline'; $('hdrDot').className = 'sd red'; showError($('metrics'),e.message,loadDashboard); });
+}
+
+function loadAgentsTab() { $('agentsList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-tertiary)">Loading agents...</div></div>'; API.getStatus().then(renderAgents).catch(function(e){showError($('agentsList'),e.message,loadAgentsTab);}); }
+function loadRunsTab() { $('runsList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-tertiary)">Loading runs...</div></div>'; API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns).catch(function(e){showError($('runsList'),e.message,loadRunsTab);}); }
+function loadQueueTab() { $('queueList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-tertiary)">Loading queue...</div></div>'; API.getQueue().then(renderQueue).catch(function(e){showError($('queueList'),e.message,loadQueueTab);}); }
+function loadWorkflowsTab() { $('workflowList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-tertiary)">Loading workflows...</div></div>'; API.getWorkflows().then(renderWorkflows).catch(function(e){showError($('workflowList'),e.message,loadWorkflowsTab);}); }
 
 /* ── Detail modals ── */
 function showAgentDetail(id) {
-  var agents = AppState.get('agents') || [];
-  var agent = agents.filter(function(a) { return a.id === id; })[0];
-  API.getRuns({ agent_id: id, limit: 10 }).then(function(runs) {
-    var name = agent ? (agent.name || 'Agent #' + id) : 'Agent #' + id;
-    var h = '<div class="modal-detail-row"><span class="mdl-label">Agent</span><span class="mdl-value">' + (agent ? agent.name : '') + '</span></div>' +
-      '<div class="modal-detail-row"><span class="mdl-label">Type</span><span class="mdl-value">' + (agent ? agent.agent_type_name : '') + '</span></div>' +
-      '<div class="modal-detail-row"><span class="mdl-label">Status</span><span class="mdl-value"><span class="tag tag-' + (agent && agent.status === 'idle' ? 'gold' : agent && agent.status === 'busy' ? 'blue' : agent && agent.status === 'error' ? 'red' : 'dim') + '">' + (agent ? agent.status : '') + '</span></span></div>' +
-      '<div class="modal-detail-row"><span class="mdl-label">Total Runs</span><span class="mdl-value">' + (agent ? agent.total_runs || 0 : '') + '</span></div>' +
-      '<div class="modal-detail-row"><span class="mdl-label">Total Errors</span><span class="mdl-value">' + (agent ? agent.total_errors || 0 : '') + '</span></div>' +
-      '<div style="margin:16px 0 8px;font-weight:600;font-size:.875rem;color:var(--text-dim)">Recent Runs</div>';
-    if (!runs || !runs.length) { h += '<div class="empty-state" style="padding:16px"><div class="empty-desc">No runs yet</div></div>'; }
-    else {
-      runs.forEach(function(r) {
-        h += '<div class="activity-item"><span class="a-dot ' + (r.status || 'pending') + '"></span>' +
-          '<span class="a-time">' + formatTime(r.created_at) + '</span>' +
-          '<span class="a-text"><span class="tag tag-' + (r.status === 'completed' ? 'green' : r.status === 'error' ? 'red' : r.status === 'in_progress' ? 'blue' : 'dim') + '">' + (r.status || '') + '</span> ' + (r.duration_ms ? (r.duration_ms / 1000).toFixed(1) + 's' : '') +
-          '<br><span style="color:var(--text-dim);font-size:.75rem">' + (r.response_summary ? r.response_summary.substring(0, 200) : '') + '</span></span></div>';
-      });
-    }
+  var agents = AppState.get('agents')||[];
+  var agent = agents.filter(function(a){return a.id===id})[0];
+  var name = agent?(agent.name||'Agent #'+id):'Agent #'+id;
+  API.getRuns({agent_id:id,limit:10}).then(function(runs){
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(agent?agent.name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v">'+(agent?agent.agent_type_name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+(agent?tag(agent.status):'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Runs</span><span class="mdl-v">'+(agent?agent.total_runs||0:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Errors</span><span class="mdl-v">'+(agent?agent.total_errors||0:'')+'</span></div>';
+    h += '<div style="margin:18px 0 10px;font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.4px">Recent Runs</div>';
+    if (!runs||!runs.length) { h += '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px">No runs yet</div>'; }
+    else { runs.forEach(function(r){ h += '<div class="tl-item" style="padding:6px 0"><span class="tl-dot '+(r.status==='completed'?'green':r.status==='error'?'red':r.status==='in_progress'?'blue':'dim')+'"></span><div class="tl-body"><div class="tl-head">'+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-tertiary);font-size:11px">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div><div class="tl-meta">'+fmtTime(r.created_at)+(r.response_summary?' &middot; '+r.response_summary.substring(0,100):'')+'</div></div></div>'; }); }
     $('detailTitle').textContent = name;
     $('detailBody').innerHTML = h;
     $('detailModal').classList.add('open');
-  }).catch(function(err) { Toast.error('Failed to load: ' + err.message); });
+  }).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 
 function showRunDetail(id) {
-  var all = AppState.get('runs') || [];
-  var run = all.filter(function(r) { return r.id === id; })[0];
-  if (!run) { API.getRuns({ limit: 100 }).then(function(runs) { var r = runs.filter(function(x) { return x.id === id; })[0]; if (r) renderRunModal(r); else Toast.error('Run not found'); }); return; }
+  var all = AppState.get('runs')||[];
+  var run = all.filter(function(r){return r.id===id})[0];
+  if (!run) { API.getRuns({limit:100}).then(function(runs){var r=runs.filter(function(x){return x.id===id})[0];if(r)renderRunModal(r);else Toast.error('Run not found');}); return; }
   renderRunModal(run);
 }
-
 function renderRunModal(run) {
-  var h = '<div class="run-detail"><span class="rd-label">Status</span><span class="rd-value"><span class="tag tag-' + (run.status === 'completed' ? 'green' : run.status === 'error' ? 'red' : run.status === 'in_progress' ? 'blue' : 'dim') + '">' + (run.status || '') + '</span></span></div>' +
-    '<div class="run-detail"><span class="rd-label">Agent</span><span class="rd-value">' + (run.agent_type_name || '') + '</span></div>' +
-    '<div class="run-detail"><span class="rd-label">Duration</span><span class="rd-value">' + (run.duration_ms ? (run.duration_ms / 1000).toFixed(1) + 's' : '-') + '</span></div>' +
-    '<div class="run-detail"><span class="rd-label">Sub-agents</span><span class="rd-value">' + (run.sub_agent_count || 0) + '</span></div>' +
-    '<div class="run-detail"><span class="rd-label">Created</span><span class="rd-value">' + formatTime(run.created_at) + '</span></div>';
-  if (run.result) h += '<div class="run-detail"><span class="rd-label">Result</span><span class="rd-value" style="font-size:.75rem">' + run.result.substring(0, 500) + '</span></div>';
-  if (run.error) h += '<div class="run-detail"><span class="rd-label" style="color:var(--red)">Error</span><span class="rd-value" style="color:var(--red);font-size:.75rem">' + run.error + '</span></div>';
-  if (run.response_summary) h += '<div class="run-detail"><span class="rd-label">Summary</span><span class="rd-value" style="font-size:.75rem">' + run.response_summary.substring(0, 300) + '</span></div>';
-  $('detailTitle').textContent = 'Run #' + run.id;
+  var h = '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(run.status)+'</span></div><div class="m-detail-row"><span class="mdl-l">Agent</span><span class="mdl-v">'+(run.agent_type_name||'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Duration</span><span class="mdl-v" style="font-family:var(--mono);font-size:12px">'+(run.duration_ms?(run.duration_ms/1000).toFixed(1)+'s':'-')+'</span></div><div class="m-detail-row"><span class="mdl-l">Sub-agents</span><span class="mdl-v">'+(run.sub_agent_count||0)+'</span></div><div class="m-detail-row"><span class="mdl-l">Created</span><span class="mdl-v">'+fmtTime(run.created_at)+'</span></div>';
+  if (run.result) h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v" style="font-size:12px;word-break:break-word">'+run.result.substring(0,500)+'</span></div>';
+  if (run.error) h += '<div class="m-detail-row"><span class="mdl-l" style="color:var(--red)">Error</span><span class="mdl-v" style="color:var(--red);font-size:12px">'+run.error+'</span></div>';
+  if (run.response_summary) h += '<div class="m-detail-row"><span class="mdl-l">Summary</span><span class="mdl-v" style="font-size:12px">'+run.response_summary.substring(0,300)+'</span></div>';
+  $('detailTitle').textContent = 'Run #'+run.id;
   $('detailBody').innerHTML = h;
   $('detailModal').classList.add('open');
 }
 
 function showWorkflowDetail(id) {
-  var wfs = AppState.get('workflows') || [];
-  var wf = wfs.filter(function(w) { return w.id === id; })[0];
+  var wfs = AppState.get('workflows')||[];
+  var wf = wfs.filter(function(w){return w.id===id})[0];
   if (!wf) { Toast.error('Workflow not found'); return; }
-  var h = '<div class="modal-detail-row"><span class="mdl-label">Name</span><span class="mdl-value">' + wf.name + '</span></div>' +
-    '<div class="modal-detail-row"><span class="mdl-label">Status</span><span class="mdl-value"><span class="tag tag-' + (wf.status === 'active' ? 'green' : 'dim') + '">' + (wf.status || 'inactive') + '</span></span></div>' +
-    '<div class="modal-detail-row"><span class="mdl-label">Trigger</span><span class="mdl-value">' + (wf.trigger_type || 'manual') + '</span></div>' +
-    '<div class="modal-detail-row"><span class="mdl-label">Description</span><span class="mdl-value">' + (wf.description || '-') + '</span></div>';
-  if (wf.steps && wf.steps.length) {
-    h += '<div style="margin:16px 0 8px;font-weight:600;font-size:.875rem;color:var(--text-dim)">Steps</div>';
-    wf.steps.forEach(function(s, i) {
-      h += '<div class="activity-item"><span class="a-dot completed"></span>' +
-        '<span class="a-text">' + (i + 1) + '. ' + s.step_type + ' (<span class="tag tag-blue" style="font-size:.65rem">' + s.agent_type + '</span>)' +
-        (s.config ? ' <span style="color:var(--text-muted);font-size:.75rem">' + JSON.stringify(s.config).substring(0, 100) + '</span>' : '') + '</span></div>';
-    });
+  var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+wf.name+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(wf.status||'inactive')+'</span></div><div class="m-detail-row"><span class="mdl-l">Trigger</span><span class="mdl-v">'+(wf.trigger_type||'manual')+'</span></div><div class="m-detail-row"><span class="mdl-l">Description</span><span class="mdl-v">'+(wf.description||'-')+'</span></div>';
+  if (wf.steps&&wf.steps.length) {
+    h += '<div style="margin:18px 0 10px;font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.4px">Steps</div>';
+    wf.steps.forEach(function(s,i){ h += '<div class="tl-item" style="padding:6px 0"><span class="tl-dot green"></span><div class="tl-body"><div class="tl-head">'+(i+1)+'. '+s.step_type+' <span class="tg tg-blue" style="font-size:10px">'+s.agent_type+'</span></div>'+(s.config?'<div class="tl-meta">'+JSON.stringify(s.config).substring(0,100)+'</div>':'')+'</div></div>'; });
   }
-  h += '<div style="margin-top:16px"><button class="btn btn-gold btn-sm" data-action="run-wf" data-id="' + wf.id + '">Run Workflow</button></div>';
-  $('detailTitle').textContent = 'Workflow: ' + wf.name;
+  h += '<div style="margin-top:16px"><button class="btn btn-primary btn-sm" data-action="run-wf" data-id="'+wf.id+'">&#9654; Run Workflow</button></div>';
+  $('detailTitle').textContent = wf.name;
   $('detailBody').innerHTML = h;
   $('detailModal').classList.add('open');
 }
 
-/* ── Loaders ── */
-function loadDashboard() {
-  API.getStatus().then(function(d) {
-    var a = d.agents || []; var s = a.filter(function(x) { return x.status === 'idle' || x.status === 'busy'; }).length;
-    $('headerStatus').textContent = 'Online' + (s ? ' (' + s + ' active)' : '');
-    $('headerDot').className = 'status-dot online' + (s ? ' pulse' : '');
-    renderDashboard();
-  }).catch(function(err) { $('headerStatus').textContent = 'Error'; $('headerDot').className = 'status-dot error'; error($('statsGrid'), err.message, loadDashboard); });
-}
-function loadAgentsTab() { skel($('agentsList')); API.getStatus().then(renderAgents).catch(function(e) { error($('agentsList'), e.message, loadAgentsTab); }); }
-function loadRunsTab() { skel($('runsList')); API.getRuns({ limit: 100, status: $('runFilter').value }).then(renderRuns).catch(function(e) { error($('runsList'), e.message, loadRunsTab); }); }
-function loadQueueTab() { skel($('queueList')); API.getQueue().then(renderQueue).catch(function(e) { error($('queueList'), e.message, loadQueueTab); }); }
-function loadWorkflowsTab() { skel($('workflowList')); API.getWorkflows().then(renderWorkflows).catch(function(e) { error($('workflowList'), e.message, loadWorkflowsTab); }); }
-
 /* ── Actions ── */
 function spawnAgent() {
   var type = $('spawnType').value;
-  var name = $('spawnName').value.trim() || type + '-' + Date.now();
+  var name = $('spawnName').value.trim()||type+'-'+Date.now();
   var prompt = $('spawnPrompt').value.trim();
-  API.createQueueItem({ agent_type: type, payload: { prompt: prompt, save_as_task: true, task_title: 'Agent: ' + name }, priority: 1 })
-    .then(function(d) { if (d.status === 'ok') { Toast.success('Agent queued: ' + name); $('spawnModal').classList.remove('open'); loadDashboard(); } else throw new Error(d.message || 'Failed'); })
-    .catch(function(e) { Toast.error('Failed: ' + e.message); });
+  API.createQueueItem({agent_type:type,payload:{prompt:prompt,save_as_task:true,task_title:'Agent: '+name},priority:1})
+    .then(function(d){if(d.status==='ok'){Toast.success('Agent queued: '+name);$('spawnModal').classList.remove('open');loadDashboard();loadAgentsTab();}else throw new Error(d.message||'Failed');})
+    .catch(function(e){Toast.error('Failed: '+e.message);});
 }
 function createWorkflow() {
-  var name = $('wfName').value.trim(); if (!name) { Toast.warning('Name is required'); return; }
-  API.createWorkflow({ name: name, description: $('wfDesc').value.trim(), trigger_type: $('wfTrigger').value })
-    .then(function(d) { if (d.status === 'ok') { Toast.success('Workflow created'); $('wfModal').classList.remove('open'); loadWorkflowsTab(); } else throw new Error(d.message); })
-    .catch(function(e) { Toast.error('Failed: ' + e.message); });
+  var name=$('wfName').value.trim();if(!name){Toast.warning('Name is required');return;}
+  API.createWorkflow({name:name,description:$('wfDesc').value.trim(),trigger_type:$('wfTrigger').value})
+    .then(function(d){if(d.status==='ok'){Toast.success('Workflow created');$('wfModal').classList.remove('open');loadWorkflowsTab();}else throw new Error(d.message);})
+    .catch(function(e){Toast.error('Failed: '+e.message);});
 }
 function runWorkflow(id) {
-  API.updateWorkflow(id, { total_runs: 1 }).then(function(d) {
-    if (d.status !== 'ok') throw new Error(d.message);
-    return API.createQueueItem({ agent_type: 'orchestrator', workflow_id: id, payload: { workflow_id: id, action: 'run' }, priority: 2 });
-  }).then(function() { Toast.success('Workflow queued'); $('detailModal').classList.remove('open'); }).catch(function(e) { Toast.error('Failed: ' + e.message); });
+  API.updateWorkflow(id,{total_runs:1}).then(function(d){if(d.status!=='ok')throw new Error(d.message);return API.createQueueItem({agent_type:'orchestrator',workflow_id:id,payload:{workflow_id:id,action:'run'},priority:2});})
+    .then(function(){Toast.success('Workflow queued');$('detailModal').classList.remove('open');}).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 function processQueue(max) {
-  API.orchestrate(max || 10).then(function(d) {
-    if (d.status === 'ok') { Toast.success('Processed ' + d.processed + ' items.' + (d.total_pending ? ' ' + d.total_pending + ' remaining.' : '')); loadQueueTab(); loadDashboard(); }
-    else throw new Error(d.message);
-  }).catch(function(e) { Toast.error('Failed: ' + e.message); });
+  API.orchestrate(max||10).then(function(d){if(d.status==='ok'){Toast.success('Processed '+d.processed+' items'+(d.total_pending?'. '+d.total_pending+' remaining.':''));loadQueueTab();loadDashboard();}else throw new Error(d.message);}).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 
 /* ── Settings ── */
 function loadSettings() {
-  API.get('/status').then(function() { $('authStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>'; }).catch(function() { $('authStatus').innerHTML = '<span style="color:var(--red)">&#10007; Not configured</span>'; });
-  API.runAction('call_ai', { prompt: 'ping' }).then(function() { $('aiStatus').innerHTML = '<span style="color:var(--green)">&#10003; Configured</span>'; }).catch(function() { $('aiStatus').innerHTML = '<span style="color:var(--orange)">&#9888; Not configured</span>'; });
+  API.get('/status').then(function(){$('authStatus').innerHTML='<span style="color:var(--green)">&#10003; Configured</span>';}).catch(function(){$('authStatus').innerHTML='<span style="color:var(--red)">&#10007; Not configured</span>';});
+  API.runAction('call_ai',{prompt:'ping'}).then(function(){$('aiStatus').innerHTML='<span style="color:var(--green)">&#10003; Configured</span>';}).catch(function(){$('aiStatus').innerHTML='<span style="color:var(--orange)">&#9888; Not configured</span>';});
 }
 
 /* ── Tab switching ── */
 function switchTab(name) {
   TAB = name; setHashTab(name);
-  document.querySelectorAll('.tab-panel').forEach(function(el) { el.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(el) { var m = el.getAttribute('data-tab') === name; el.classList.toggle('active', m); el.setAttribute('aria-selected', m ? 'true' : 'false'); });
-  $('panel-' + name).classList.add('active');
-  if (name === 'dashboard') loadDashboard();
-  else if (name === 'agents') loadAgentsTab();
-  else if (name === 'workflows') loadWorkflowsTab();
-  else if (name === 'runs') loadRunsTab();
-  else if (name === 'queue') loadQueueTab();
-  else if (name === 'settings') loadSettings();
+  document.querySelectorAll('.tab-panel').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.sidebar-item').forEach(function(el){el.classList.toggle('active',el.getAttribute('data-tab')===name);});
+  $('panel-'+name).classList.add('active');
+  $('bcLabel').textContent = tabLabels[name]||name;
+  if(window.innerWidth<=900) $('sidebar').classList.remove('open');
+  if(name==='dashboard') loadDashboard();
+  else if(name==='agents') loadAgentsTab();
+  else if(name==='workflows') loadWorkflowsTab();
+  else if(name==='runs') loadRunsTab();
+  else if(name==='queue') loadQueueTab();
+  else if(name==='settings') loadSettings();
 }
 
-/* ── Event wiring ── */
-document.addEventListener('click', function(e) {
-  var t = e.target.closest('[data-action]'); if (!t) return;
-  var a = t.getAttribute('data-action'); var id = t.getAttribute('data-id'); var target = t.getAttribute('data-target');
-  if (a === 'close-modal' && target) { $('' + target).classList.remove('open'); }
-  else if (a === 'agent-detail' && id) showAgentDetail(parseInt(id));
-  else if (a === 'run-detail' && id) showRunDetail(parseInt(id));
-  else if (a === 'wf-detail' && id) showWorkflowDetail(parseInt(id));
-  else if (a === 'run-wf' && id) runWorkflow(parseInt(id));
-  else if (a === 'process-item') processQueue(1);
-});
-
+/* ── Bootstrap ── */
 document.addEventListener('DOMContentLoaded', function() {
 
-  /* Tab clicks */
-  document.querySelector('.tab-bar').addEventListener('click', function(e) {
-    var b = e.target.closest('.tab-btn'); if (b) switchTab(b.getAttribute('data-tab'));
+  /* Sidebar nav */
+  document.querySelector('.sidebar-nav').addEventListener('click', function(e){
+    var item = e.target.closest('.sidebar-item');
+    if(item) switchTab(item.getAttribute('data-tab'));
   });
 
-  $('refreshBtn').addEventListener('click', function() { switchTab(TAB); });
+  /* Mobile menu */
+  $('menuBtn').addEventListener('click', function(){ $('sidebar').classList.toggle('open'); });
+  document.addEventListener('click', function(e){
+    if(window.innerWidth<=900 && !e.target.closest('.sidebar') && !e.target.closest('.mobile-menu')) $('sidebar').classList.remove('open');
+  });
 
-  $('spawnBtn').addEventListener('click', function() { $('spawnName').value = ''; $('spawnPrompt').value = ''; $('spawnModal').classList.add('open'); });
+  /* Refresh, buttons */
+  $('refreshBtn').addEventListener('click', function(){ switchTab(TAB); });
+  $('spawnBtn').addEventListener('click', function(){ $('spawnName').value='';$('spawnPrompt').value='';$('spawnModal').classList.add('open'); });
   $('spawnConfirm').addEventListener('click', spawnAgent);
-  $('wfNewBtn').addEventListener('click', function() { $('wfName').value = ''; $('wfDesc').value = ''; $('wfModal').classList.add('open'); });
+  $('wfNewBtn').addEventListener('click', function(){ $('wfName').value='';$('wfDesc').value='';$('wfModal').classList.add('open'); });
   $('wfConfirm').addEventListener('click', createWorkflow);
-  $('processBtn').addEventListener('click', function() { processQueue(10); });
-  $('runFilter').addEventListener('change', function() { skel($('runsList')); loadRunsTab(); });
+  $('processBtn').addEventListener('click', function(){ processQueue(10); });
+  $('runFilter').addEventListener('change', function(){ loadRunsTab(); });
 
-  /* Modal backdrop clicks */
-  document.querySelectorAll('.modal-overlay').forEach(function(o) { o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('open'); }); });
+  /* Event delegation */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-action]'); if(!t) return;
+    var a = t.getAttribute('data-action'), id = t.getAttribute('data-id'), target = t.getAttribute('data-target');
+    if(a==='close-modal'&&target){$(''+target).classList.remove('open');}
+    else if(a==='agent-detail'&&id) showAgentDetail(parseInt(id));
+    else if(a==='run-detail'&&id) showRunDetail(parseInt(id));
+    else if(a==='wf-detail'&&id) showWorkflowDetail(parseInt(id));
+    else if(a==='run-wf'&&id) runWorkflow(parseInt(id));
+    else if(a==='process-item') processQueue(1);
+  });
+
+  /* Modal backdrop */
+  document.querySelectorAll('.m-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('open'); }); });
 
   /* Keyboard shortcuts */
-  document.addEventListener('keydown', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-    var tabs = ['dashboard','agents','workflows','runs','queue','settings'];
-    var n = parseInt(e.key);
-    if (n >= 1 && n <= 6) { e.preventDefault(); switchTab(tabs[n - 1]); }
-    if (e.key === 'r' || e.key === 'R') { e.preventDefault(); switchTab(TAB); }
-    if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.open').forEach(function(o) { o.classList.remove('open'); }); }
+  document.addEventListener('keydown', function(e){
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+    var n=parseInt(e.key);
+    if(n>=1&&n<=6){e.preventDefault();switchTab(tabs[n-1]);}
+    if(e.key==='r'||e.key==='R'){e.preventDefault();switchTab(TAB);}
+    if(e.key==='Escape'){document.querySelectorAll('.m-overlay.open').forEach(function(o){o.classList.remove('open');});}
   });
 
+  /* Init */
   switchTab(TAB);
-  $('headerTime').textContent = new Date().toLocaleTimeString();
+  $('hdrTime').textContent = new Date().toLocaleTimeString();
 
-  setInterval(function() {
-    $('headerTime').textContent = new Date().toLocaleTimeString();
-    if (document.hidden) return;
-    if (TAB === 'dashboard') loadDashboard();
-    else if (TAB === 'queue') API.getQueue().then(renderQueue);
-    else if (TAB === 'runs') API.getRuns({ limit: 100, status: $('runFilter').value }).then(renderRuns);
-  }, 15000);
+  /* Auto-refresh */
+  setInterval(function(){
+    $('hdrTime').textContent = new Date().toLocaleTimeString();
+    if(document.hidden) return;
+    if(TAB==='dashboard') loadDashboard();
+    else if(TAB==='queue') API.getQueue().then(renderQueue);
+    else if(TAB==='runs') API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns);
+  },15000);
 });
 
 })();
