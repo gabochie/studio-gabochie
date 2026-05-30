@@ -138,3 +138,17 @@ function tagOnboard(email, name, tag) {
     navigator.sendBeacon('/api/onboard', JSON.stringify({ email: email, name: name || '', tag: tag }));
   } catch(e) {}
 }
+
+/* ── Cookie Notice ── */
+(function(){
+  if (localStorage.getItem('ga_cookie_notice_dismissed')) return;
+  var bar = document.createElement('div');
+  bar.id = 'cookieNotice';
+  bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0F1E38;border-top:1px solid #1E3250;padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:#8A9BB5;font-family:sans-serif';
+  bar.innerHTML = '<span>This site does not set tracking cookies. Third-party services (payment, email) may set their own. <a href="/legal/privacy.html" style="color:#C9A84C;text-decoration:underline">Learn more</a>.</span><button id="cookieDismiss" style="background:#C9A84C;color:#0A1628;border:none;border-radius:4px;padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">Got it</button>';
+  document.body.appendChild(bar);
+  document.getElementById('cookieDismiss').addEventListener('click', function(){
+    bar.remove();
+    try { localStorage.setItem('ga_cookie_notice_dismissed', '1'); } catch(e) {}
+  });
+})();
