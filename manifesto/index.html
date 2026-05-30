@@ -39,10 +39,10 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Libre Baskerville', Georgia, serif;font-size:17px;line-height:1.7;overflow-x:hidden;padding-top:64px}
 
-/* â”€â”€ NOISE â”€â”€ */
+/* ── NOISE ── */
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.3}
 
-/* â”€â”€ HERO â”€â”€ */
+/* ── HERO ── */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:80px 40px;position:relative;background:var(--bg);overflow:hidden}
 .hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.06) 1px,transparent 1px);background-size:60px 60px;animation:gridPan 30s linear infinite}
 @keyframes gridPan{0%{transform:translate(0,0)}100%{transform:translate(60px,60px)}}
@@ -63,19 +63,19 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
-/* â”€â”€ SECTION BASICS â”€â”€ */
+/* ── SECTION BASICS ── */
 .section{padding:100px 40px;max-width:1200px;margin:0 auto}
 .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .section-label::after{content:'';flex:1;height:1px;background:var(--gold);opacity:0.2;max-width:60px}
 .section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,54px);font-weight:700;line-height:1.1;color:var(--text-heading);margin-bottom:24px}
 .section-body{font-size:17px;color:var(--text-muted);max-width:680px;line-height:1.8}
 
-/* â”€â”€ DIVIDER â”€â”€ */
+/* ── DIVIDER ── */
 .divider{display:flex;align-items:center;gap:20px;max-width:1200px;margin:0 auto;padding:0 40px}
 .divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
 .divider-diamond{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);flex-shrink:0}
 
-/* â”€â”€ MANIFESTO STATEMENT â”€â”€ */
+/* ── MANIFESTO STATEMENT ── */
 .manifesto-block{background:var(--bg-card);padding:100px 40px;position:relative;overflow:hidden}
 .manifesto-block::before{content:'"';font-family:'Playfair Display',serif;font-size:400px;color:rgba(201,168,76,0.04);position:absolute;top:-80px;left:-20px;line-height:1;pointer-events:none}
 .manifesto-inner{max-width:900px;margin:0 auto;position:relative;z-index:2}
@@ -83,7 +83,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .manifesto-quote strong{color:var(--gold);font-style:normal;font-weight:700}
 .manifesto-attribution{margin-top:40px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase}
 
-/* â”€â”€ STATS GRID â”€â”€ */
+/* ── STATS GRID ── */
 .stats-section{background:var(--bg-card);padding:80px 40px}
 .stats-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px}
 .stat-card{background:var(--bg-raised);padding:48px 36px;border-top:3px solid transparent;transition:border-color 0.3s,transform 0.3s;cursor:default;position:relative;overflow:hidden}
@@ -95,7 +95,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .stat-label{font-size:13px;font-weight:600;color:var(--text-heading);margin-top:12px;text-transform:uppercase;letter-spacing:0.05em}
 .stat-desc{font-size:13px;color:var(--text-muted);margin-top:8px;line-height:1.5}
 
-/* â”€â”€ CHARTS â”€â”€ */
+/* ── CHARTS ── */
 .chart-section{padding:100px 40px;max-width:1200px;margin:0 auto}
 .chart-header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:48px}
 .chart-container{background:var(--bg-card);border:1px solid var(--border);padding:40px;margin-bottom:32px;position:relative}
@@ -109,14 +109,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bar-fill.rust-fill{background:linear-gradient(90deg,#7a1a0a,var(--rust))}
 .bar-value{font-family:'DM Mono',monospace;font-size:11px;color:var(--bg);font-weight:500;white-space:nowrap}
 
-/* â”€â”€ SKILL HALF-LIFE â”€â”€ */
+/* ── SKILL HALF-LIFE ── */
 .halflife-chart{display:flex;align-items:flex-end;gap:8px;height:200px;padding-bottom:32px;border-bottom:2px solid var(--border);position:relative;margin-top:20px}
 .halflife-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:8px}
 .halflife-bar{width:100%;background:linear-gradient(to top,var(--gold-dark),var(--gold-light));transition:height 1.2s cubic-bezier(0.16,1,0.3,1);position:relative}
 .halflife-bar-label{font-family:'DM Mono',monospace;font-size:10px;text-align:center;color:var(--text-muted);white-space:nowrap}
 .halflife-bar-val{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gold);text-align:center}
 
-/* â”€â”€ THREE PILLARS â”€â”€ */
+/* ── THREE PILLARS ── */
 .pillars-section{background:var(--bg);padding:100px 40px}
 .pillars-inner{max-width:1200px;margin:0 auto}
 .pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;margin-top:60px}
@@ -128,7 +128,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .pillar-body{font-size:15px;color:var(--text-muted);line-height:1.75}
 .pillar-tag{display:inline-block;margin-top:24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;border:1px solid rgba(201,168,76,0.3);padding:6px 12px}
 
-/* â”€â”€ COMPARISON TABLE â”€â”€ */
+/* ── COMPARISON TABLE ── */
 .comparison-section{padding:100px 40px}
 .comparison-table{width:100%;border-collapse:collapse;margin-top:48px;font-size:14px}
 .comparison-table th{text-align:left;padding:16px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;border-bottom:2px solid var(--gold)}
@@ -142,7 +142,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .tag-bad{display:inline-block;background:rgba(181,67,26,0.15);color:var(--rust);font-size:11px;padding:2px 8px;border-radius:2px;font-weight:600}
 .tag-good{display:inline-block;background:rgba(201,168,76,0.15);color:var(--gold-light);font-size:11px;padding:2px 8px;border-radius:2px;font-weight:600}
 
-/* â”€â”€ TIMELINE â”€â”€ */
+/* ── TIMELINE ── */
 .timeline-section{background:var(--bg-card);padding:100px 40px}
 .timeline-inner{max-width:800px;margin:0 auto}
 .timeline{margin-top:60px;position:relative;padding-left:40px}
@@ -154,7 +154,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .timeline-heading{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text-heading);margin-bottom:10px}
 .timeline-text{font-size:14px;color:var(--text-muted);line-height:1.7}
 
-/* â”€â”€ CTA â”€â”€ */
+/* ── CTA ── */
 .cta-section{background:var(--bg);padding:120px 40px;text-align:center;position:relative;overflow:hidden}
 .cta-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none}
 .cta-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:24px}
@@ -163,7 +163,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .cta-body{font-size:17px;color:var(--text-muted);max-width:480px;margin:0 auto 48px;font-weight:300}
 .footer-sig{margin-top:80px;padding-top:40px;border-top:1px solid rgba(201,168,76,0.15);font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase}
 
-/* â”€â”€ STICKY NAV â”€â”€ */
+/* ── STICKY NAV ── */
 .sticky-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(10,22,40,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);transform:translateY(-100%);transition:transform 0.4s;height:64px;display:flex;align-items:center;padding:0 40px}
 .sticky-nav.visible{transform:translateY(0)}
 .sticky-nav .container{display:flex;align-items:center;justify-content:space-between;width:100%}
@@ -179,11 +179,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .nav-donate:hover{background:#D9B85C!important;color:#0A1628!important}
 .nav-links a.active{color:#fff!important}
 
-/* â”€â”€ UTILITIES â”€â”€ */
+/* ── UTILITIES ── */
 .counter{display:inline}
 .chart-source{font-size:11px;color:var(--text-dim);margin-top:20px;font-family:'DM Mono',monospace}
 
-/* â”€â”€ RESPONSIVE â”€â”€ */
+/* ── RESPONSIVE ── */
 @media(max-width:768px){
   .section{padding:60px 24px}
   .bar-label{width:100px;font-size:11px}
@@ -194,7 +194,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 }
 @media(max-width:640px){.nav-links a:not(.nav-donate){display:none}}
 
-/* â”€â”€ SCROLL REVEAL â”€â”€ */
+/* ── SCROLL REVEAL ── */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s,transform 0.7s}
 .reveal.visible{opacity:1;transform:translateY(0)}
 </style>
@@ -223,9 +223,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <section class="hero">
   <div class="hero-bg-grid"></div>
   <div class="hero-ornament"></div>
-  <div class="hero-eyebrow">Gideon Abochie Studio Â· A Manifesto for the Future</div>
+  <div class="hero-eyebrow">Gideon Abochie Studio · A Manifesto for the Future</div>
   <h1 class="hero-title">The System Is<br><em>Failing Our Children.</em><br>We Built the Answer.</h1>
-  <p class="hero-subtitle">A case for a new kind of school â€” one built not for the industrial age, but for the age of intelligence, creativity, and constant reinvention.</p>
+  <p class="hero-subtitle">A case for a new kind of school — one built not for the industrial age, but for the age of intelligence, creativity, and constant reinvention.</p>
   <div class="hero-cta-row">
     <a href="#crisis" class="btn-gold">Read the Manifesto</a>
     <a href="#join" class="btn-outline">Join the Cause</a>
@@ -237,16 +237,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="manifesto-block" id="manifesto">
   <div class="manifesto-inner">
     <div class="section-label" style="color:rgba(201,168,76,0.6);">The Thesis</div>
-    <p class="manifesto-quote">The most valuable asset in the modern economy is not <strong>what you know</strong> â€” it is <strong>how fast you can learn, unlearn, and relearn</strong> as new technologies emerge. We are building the school that teaches exactly that.</p>
-    <div class="manifesto-attribution">â€” Gideon Abochie Studio Â· School of Creativity, Love & Wisdom</div>
+    <p class="manifesto-quote">The most valuable asset in the modern economy is not <strong>what you know</strong> — it is <strong>how fast you can learn, unlearn, and relearn</strong> as new technologies emerge. We are building the school that teaches exactly that.</p>
+    <div class="manifesto-attribution">— Gideon Abochie Studio · School of Creativity, Love & Wisdom</div>
   </div>
 </div>
 
 <!-- THE CRISIS -->
 <section class="section reveal" id="crisis">
-  <div class="section-label">&sect; 01 Â· The Problem</div>
+  <div class="section-label">&sect; 01 · The Problem</div>
   <h2 class="section-title">Education Is Running<br>a 150-Year-Old<br>Operating System.</h2>
-  <p class="section-body">The traditional education model was engineered for the Industrial Age â€” to produce reliable factory workers and obedient administrators. Today, we are using that same machine to prepare children for a world driven by artificial intelligence, creative leverage, and exponential change.<br><br>The gap between what schools teach and what employers â€” and life itself â€” actually demands has never been wider. And AI is not closing that gap. It is <strong>accelerating it</strong>.</p>
+  <p class="section-body">The traditional education model was engineered for the Industrial Age — to produce reliable factory workers and obedient administrators. Today, we are using that same machine to prepare children for a world driven by artificial intelligence, creative leverage, and exponential change.<br><br>The gap between what schools teach and what employers — and life itself — actually demands has never been wider. And AI is not closing that gap. It is <strong>accelerating it</strong>.</p>
 </section>
 
 <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
@@ -257,7 +257,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="stat-card reveal">
       <div class="stat-number"><span class="counter" data-target="5">0</span><span class="stat-suffix">yrs</span></div>
       <div class="stat-label">Half-Life of a Professional Skill</div>
-      <div class="stat-desc">A skill mastered today has a shelf life of approximately 5 years â€” and shrinking. What you graduate with may already be obsolete.</div>
+      <div class="stat-desc">A skill mastered today has a shelf life of approximately 5 years — and shrinking. What you graduate with may already be obsolete.</div>
     </div>
     <div class="stat-card reveal">
       <div class="stat-number"><span class="counter" data-target="85">0</span><span class="stat-suffix">%</span></div>
@@ -267,12 +267,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="stat-card reveal">
       <div class="stat-number"><span class="counter" data-target="40">0</span><span class="stat-suffix">%</span></div>
       <div class="stat-label">Entry-Level Roles at Risk</div>
-      <div class="stat-desc">AI is automating the exact jobs graduates used to use to "pay their dues" â€” data entry, junior research, basic coding, administrative work.</div>
+      <div class="stat-desc">AI is automating the exact jobs graduates used to use to "pay their dues" — data entry, junior research, basic coding, administrative work.</div>
     </div>
     <div class="stat-card reveal">
       <div class="stat-number"><span class="counter" data-target="1">0</span><span class="stat-suffix">st</span></div>
       <div class="stat-label">New Priority: Learning HOW to Learn</div>
-      <div class="stat-desc">Meta-skills â€” critical thinking, emotional intelligence, AI collaboration â€” now outrank technical knowledge as the #1 employer demand.</div>
+      <div class="stat-desc">Meta-skills — critical thinking, emotional intelligence, AI collaboration — now outrank technical knowledge as the #1 employer demand.</div>
     </div>
   </div>
 </section>
@@ -281,7 +281,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <section class="chart-section reveal">
   <div class="chart-header">
     <div>
-      <div class="section-label">&sect; 02 Â· The Data</div>
+      <div class="section-label">&sect; 02 · The Data</div>
       <h2 class="section-title">The Numbers<br>Make the Case.</h2>
     </div>
   </div>
@@ -295,7 +295,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="bar-row"><div class="bar-label">Emotional Intelligence</div><div class="bar-track"><div class="bar-fill accent-fill" data-width="79" style="width:0%"><span class="bar-value">AI Era: 79%</span></div></div></div>
       <div class="bar-row"><div class="bar-label">AI Collaboration Skills</div><div class="bar-track"><div class="bar-fill accent-fill" data-width="94" style="width:0%"><span class="bar-value">AI Era: 94%</span></div></div></div>
     </div>
-    <p class="chart-source">Source: World Economic Forum Future of Jobs Report Â· McKinsey Global Institute</p>
+    <p class="chart-source">Source: World Economic Forum Future of Jobs Report · McKinsey Global Institute</p>
   </div>
   <div class="chart-container">
     <div class="chart-title-sm">Skill Half-Life by Era (Years a learned skill remains relevant)</div>
@@ -309,7 +309,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="halflife-bar-wrap"><div class="halflife-bar-val" style="color:var(--rust)">2yr</div><div class="halflife-bar" data-height="7" style="height:0%;background:linear-gradient(to top,#7a1a0a,var(--rust))"></div><div class="halflife-bar-label" style="color:var(--rust)">AI Era<br>2024+</div></div>
       </div>
     </div>
-    <p class="chart-source">Source: IBM Institute for Business Value Â· Deloitte Human Capital Trends</p>
+    <p class="chart-source">Source: IBM Institute for Business Value · Deloitte Human Capital Trends</p>
   </div>
 </section>
 
@@ -318,28 +318,28 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <!-- THREE PILLARS -->
 <section class="pillars-section" id="solution">
   <div class="pillars-inner">
-    <div class="section-label" style="color:rgba(201,168,76,0.6);">&sect; 03 Â· The Solution</div>
-    <h2 class="section-title" style="color:var(--text-heading);">GideonAbochie Studio â€”<br>School of Creativity,<br>Love &amp; Wisdom</h2>
+    <div class="section-label" style="color:rgba(201,168,76,0.6);">&sect; 03 · The Solution</div>
+    <h2 class="section-title" style="color:var(--text-heading);">GideonAbochie Studio —<br>School of Creativity,<br>Love &amp; Wisdom</h2>
     <div class="pillars-grid">
       <div class="pillar reveal">
         <div class="pillar-number">01</div>
-        <div class="pillar-icon">âœ¦</div>
+        <div class="pillar-icon">✦</div>
         <h3 class="pillar-title">Creativity</h3>
-        <p class="pillar-body">The ability to see what doesn't exist yet, to build, design, and communicate ideas in ways that move people. AI can generate â€” it cannot <em>originate</em>. Human creativity is the last and highest leverage point in any economy.</p>
+        <p class="pillar-body">The ability to see what doesn't exist yet, to build, design, and communicate ideas in ways that move people. AI can generate — it cannot <em>originate</em>. Human creativity is the last and highest leverage point in any economy.</p>
         <span class="pillar-tag">Future-Proof Skill #1</span>
       </div>
       <div class="pillar reveal">
         <div class="pillar-number">02</div>
-        <div class="pillar-icon">â—ˆ</div>
+        <div class="pillar-icon">◈</div>
         <h3 class="pillar-title">Love</h3>
-        <p class="pillar-body">Emotional intelligence. Empathy. Purpose-driven leadership. The capacity to build authentic human relationships and communities. These are not soft skills â€” they are <em>irreplaceable</em> economic assets in a world of machines.</p>
+        <p class="pillar-body">Emotional intelligence. Empathy. Purpose-driven leadership. The capacity to build authentic human relationships and communities. These are not soft skills — they are <em>irreplaceable</em> economic assets in a world of machines.</p>
         <span class="pillar-tag">Future-Proof Skill #2</span>
       </div>
       <div class="pillar reveal">
         <div class="pillar-number">03</div>
-        <div class="pillar-icon">â—‰</div>
+        <div class="pillar-icon">◉</div>
         <h3 class="pillar-title">Wisdom</h3>
-        <p class="pillar-body">Critical thinking. Sound judgment under uncertainty. The ability to learn, unlearn, and relearn. Wisdom is the meta-skill that orchestrates all others â€” it's what separates a tool-user from a <em>master</em>.</p>
+        <p class="pillar-body">Critical thinking. Sound judgment under uncertainty. The ability to learn, unlearn, and relearn. Wisdom is the meta-skill that orchestrates all others — it's what separates a tool-user from a <em>master</em>.</p>
         <span class="pillar-tag">Future-Proof Skill #3</span>
       </div>
     </div>
@@ -348,23 +348,23 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 <!-- COMPARISON TABLE -->
 <section class="comparison-section reveal" id="model">
-  <div class="section-label">&sect; 04 Â· Side by Side</div>
+  <div class="section-label">&sect; 04 · Side by Side</div>
   <h2 class="section-title">Traditional School vs.<br>Gideon Abochie Studio</h2>
   <table class="comparison-table">
     <thead>
       <tr>
         <th>Dimension</th>
         <th>Traditional Education</th>
-        <th>GideonAbochie Studio â€”<br>School of Creativity,<br>Love &amp; Wisdom</th>
+        <th>GideonAbochie Studio —<br>School of Creativity,<br>Love &amp; Wisdom</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td><strong>Core Goal</strong></td><td><span class="tag-bad">Compliance</span> â€” Pass the test, get the grade, get the job</td><td><span class="tag-good">Capability</span> â€” Learn to think, build, lead and adapt</td></tr>
+      <tr><td><strong>Core Goal</strong></td><td><span class="tag-bad">Compliance</span> — Pass the test, get the grade, get the job</td><td><span class="tag-good">Capability</span> — Learn to think, build, lead and adapt</td></tr>
       <tr><td><strong>Curriculum Design</strong></td><td>Static syllabi, updated every decade, set by committees</td><td>Living curriculum, updated continuously, built around real world problems</td></tr>
       <tr><td><strong>Success Metric</strong></td><td><span class="tag-bad">Grades & Certificates</span></td><td><span class="tag-good">Portfolios, Projects & Impact</span></td></tr>
       <tr><td><strong>AI Relationship</strong></td><td>AI is banned or feared. Students hide its use.</td><td>AI is a co-pilot. Students learn to master, prompt, and direct it.</td></tr>
       <tr><td><strong>Learner Identity</strong></td><td><span class="tag-bad">Passive recipient</span> of information from authority</td><td><span class="tag-good">Active builder</span> who creates value for real audiences</td></tr>
-      <tr><td><strong>Skill Shelf-Life</strong></td><td>Facts and methods that may be obsolete in 2â€“5 years</td><td>Meta-skills and adaptive capacity that compound over a lifetime</td></tr>
+      <tr><td><strong>Skill Shelf-Life</strong></td><td>Facts and methods that may be obsolete in 2–5 years</td><td>Meta-skills and adaptive capacity that compound over a lifetime</td></tr>
       <tr><td><strong>Emotional Growth</strong></td><td>Rarely addressed. Assumed to happen elsewhere.</td><td>Central. Empathy, purpose and self-awareness are core subjects.</td></tr>
       <tr><td><strong>Output</strong></td><td>Graduate with a qualification, looking for a job</td><td>Graduate with a body of work, creating opportunities</td></tr>
     </tbody>
@@ -376,28 +376,28 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <!-- TIMELINE -->
 <section class="timeline-section">
   <div class="timeline-inner">
-    <div class="section-label">&sect; 05 Â· The Shift</div>
+    <div class="section-label">&sect; 05 · The Shift</div>
     <h2 class="section-title">A Timeline of<br>the Crisis</h2>
     <div class="timeline">
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1870 â€“ 1970</div><h3 class="timeline-heading">The Industrial Bargain</h3><p class="timeline-text">Education is standardised to produce factory workers and bureaucrats. Rote learning, obedience, and credentials are the currency. It works â€” for 100 years.</p></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1990 â€“ 2010</div><h3 class="timeline-heading">The Digital Disruption Begins</h3><p class="timeline-text">The internet arrives. Knowledge becomes freely accessible. The value of memorization starts to erode. Schools largely ignore it. The gap begins to widen.</p></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2015 â€“ 2022</div><h3 class="timeline-heading">The Automation Wave</h3><p class="timeline-text">Entire categories of jobs disappear. Robots handle manufacturing. Software eats services. Entry-level roles start to vanish. Degrees lose their guarantees.</p></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2023 â€“ Present</div><h3 class="timeline-heading">The AI Acceleration</h3><p class="timeline-text">Generative AI arrives at consumer scale. The skill half-life collapses to under 5 years. Junior knowledge-work roles are automated overnight. The time bomb detonates.</p></div>
-      <div class="timeline-item"><div class="timeline-dot" style="background:var(--gold);box-shadow:0 0 12px rgba(201,168,76,0.5)"></div><div class="timeline-year">Now</div><h3 class="timeline-heading" style="color:var(--gold);">Gideon Abochie Studio Opens Its Doors</h3><p class="timeline-text">The answer to a century of misalignment. A school designed from the ground up for the world as it is â€” not as it was. The future is taught here.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1870 – 1970</div><h3 class="timeline-heading">The Industrial Bargain</h3><p class="timeline-text">Education is standardised to produce factory workers and bureaucrats. Rote learning, obedience, and credentials are the currency. It works — for 100 years.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1990 – 2010</div><h3 class="timeline-heading">The Digital Disruption Begins</h3><p class="timeline-text">The internet arrives. Knowledge becomes freely accessible. The value of memorization starts to erode. Schools largely ignore it. The gap begins to widen.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2015 – 2022</div><h3 class="timeline-heading">The Automation Wave</h3><p class="timeline-text">Entire categories of jobs disappear. Robots handle manufacturing. Software eats services. Entry-level roles start to vanish. Degrees lose their guarantees.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2023 – Present</div><h3 class="timeline-heading">The AI Acceleration</h3><p class="timeline-text">Generative AI arrives at consumer scale. The skill half-life collapses to under 5 years. Junior knowledge-work roles are automated overnight. The time bomb detonates.</p></div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--gold);box-shadow:0 0 12px rgba(201,168,76,0.5)"></div><div class="timeline-year">Now</div><h3 class="timeline-heading" style="color:var(--gold);">Gideon Abochie Studio Opens Its Doors</h3><p class="timeline-text">The answer to a century of misalignment. A school designed from the ground up for the world as it is — not as it was. The future is taught here.</p></div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta-section" id="join">
-  <div class="cta-eyebrow">&sect; 06 Â· The Invitation</div>
+  <div class="cta-eyebrow">&sect; 06 · The Invitation</div>
   <h2 class="cta-title">Don't Bet Your Child's Future on a <em>Broken System.</em></h2>
   <p class="cta-body">Every year that passes in the traditional model is a year of compounding disadvantage. The window to equip the next generation is now.</p>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
     <a href="../index.html#give" class="btn-gold">Support the Mission</a>
     <a href="../index.html" class="btn-outline">Back to Home</a>
   </div>
-  <div class="footer-sig">Gideon Abochie Studio Â· School of Creativity, Love & Wisdom Â· Est. Ghana</div>
+  <div class="footer-sig">Gideon Abochie Studio · School of Creativity, Love & Wisdom · Est. Ghana</div>
 </section>
 
 <footer>

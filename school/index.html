@@ -16,7 +16,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"EducationalOrganization","name":"GideonAbochie Studio â€” School","url":"https://gideonabochie.org/school/","description":"Self-paced programs in Systems Thinking and Architectural Thinking. Start free, learn at your own pace.","provider":{"@type":"Organization","name":"GideonAbochie Studio"},"teaches":["Systems Thinking","Architectural Thinking","Biblical Leadership","Creative Excellence"]}
+{"@context":"https://schema.org","@type":"EducationalOrganization","name":"GideonAbochie Studio — School","url":"https://gideonabochie.org/school/","description":"Self-paced programs in Systems Thinking and Architectural Thinking. Start free, learn at your own pace.","provider":{"@type":"Organization","name":"GideonAbochie Studio"},"teaches":["Systems Thinking","Architectural Thinking","Biblical Leadership","Creative Excellence"]}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -213,7 +213,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="step">
       <div class="step-num">01</div>
       <h3>Choose Your Path</h3>
-      <p>Systems Thinking or Architectural Thinking â€” or both. Each program starts with a free sample so you can try before you commit.</p>
+      <p>Systems Thinking or Architectural Thinking — or both. Each program starts with a free sample so you can try before you commit.</p>
     </div>
     <div class="step">
       <div class="step-num">02</div>
@@ -223,7 +223,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="step">
       <div class="step-num">03</div>
       <h3>Go Deeper When Ready</h3>
-      <p>Unlock the full curriculum with video walkthroughs, worksheets, and community exercises. No deadlines, no pressure â€” just growth.</p>
+      <p>Unlock the full curriculum with video walkthroughs, worksheets, and community exercises. No deadlines, no pressure — just growth.</p>
     </div>
   </div>
 </div>
@@ -253,7 +253,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       </div>
       <div class="enroll-option" onclick="selectPurpose(this,'both')">
         <div class="radio"></div>
-        <div><div class="opt-label">Both â€” I want the full picture</div><div class="opt-desc">Systems thinking to analyze + architectural thinking to build</div></div>
+        <div><div class="opt-label">Both — I want the full picture</div><div class="opt-desc">Systems thinking to analyze + architectural thinking to build</div></div>
       </div>
       <div class="enroll-nav">
         <button class="btn btn-primary" onclick="nextStep()" id="nextPurposeBtn" disabled>Next</button>
@@ -302,7 +302,7 @@ var selectedSlug = '';
 var studentEmail = '';
 var studentName = '';
 
-// â€”â€”â€” Auth State â€”â€”â€”
+// ——— Auth State ———
 function getStudent() {
   try { return JSON.parse(localStorage.getItem('ga_student') || 'null'); } catch(e){return null}
 }
@@ -411,7 +411,7 @@ function showLoggedIn(name) {
   if (selectedSlug) { startEnrollFlow(selectedSlug); }
 }
 
-// â€”â€”â€” Enrollment â€”â€”â€”
+// ——— Enrollment ———
 function scrollToAuth() {
   document.getElementById('authBanner').scrollIntoView({behavior:'smooth'});
   document.getElementById('regEmail').focus();
@@ -439,9 +439,9 @@ function startEnrollFlow(slug) {
   document.getElementById('enrollMsg').className = 'msg';
   document.getElementById('enrollMsg').style.display = 'none';
   var descMap = {
-    'systems-thinking-genesis': 'You picked The Spirit of God in Genesis â€” a Bible-centered journey through creativity, wisdom, and love. One quick question:',
-    'systems-thinking': 'You picked Systems Thinking â€” great for understanding how things really work. One quick question:',
-    'architectural-thinking': 'You picked Architectural Thinking â€” perfect for learning how to build things that last. One quick question:'
+    'systems-thinking-genesis': 'You picked The Spirit of God in Genesis — a Bible-centered journey through creativity, wisdom, and love. One quick question:',
+    'systems-thinking': 'You picked Systems Thinking — great for understanding how things really work. One quick question:',
+    'architectural-thinking': 'You picked Architectural Thinking — perfect for learning how to build things that last. One quick question:'
   };
   document.getElementById('stepDesc').textContent = descMap[slug] || 'Great choice! One quick question:';
   document.getElementById('enrollFlow').scrollIntoView({behavior:'smooth'});
@@ -459,9 +459,9 @@ function nextStep() {
   if (selectedSlug === 'systems-thinking-genesis') {
     rec.textContent = '\u2b50 You picked the flagship course! The Spirit of God in Genesis covers creativity, wisdom, and love through all 50 chapters.';
   } else if (selectedPurpose === 'solving' || selectedSlug === 'systems-thinking') {
-    rec.textContent = '\u2b50 Suggested: Systems Thinking â€” understanding systems is the fastest path to solving complex problems.';
+    rec.textContent = '\u2b50 Suggested: Systems Thinking — understanding systems is the fastest path to solving complex problems.';
   } else if (selectedPurpose === 'building' || selectedSlug === 'architectural-thinking') {
-    rec.textContent = '\u2b50 Suggested: Architectural Thinking â€” learn to structure and execute projects with clarity.';
+    rec.textContent = '\u2b50 Suggested: Architectural Thinking — learn to structure and execute projects with clarity.';
   } else {
     rec.textContent = '\u2b50 Suggested: Start with Systems Thinking to understand problems, then Architectural Thinking to build solutions. You can enroll in both.';
   }
@@ -508,7 +508,7 @@ function submitEnroll() {
   });
 }
 
-// â€”â€”â€” Programs â€”â€”â€”
+// ——— Programs ———
 function loadPrograms() {
   var grid = document.getElementById('programGrid');
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">Loading programs...</div>';
@@ -543,7 +543,7 @@ function loadPrograms() {
   });
 }
 
-// â€”â€”â€” Init â€”â€”â€”
+// ——— Init ———
 (function(){
   var s = getStudent();
   if (s && s.email) {

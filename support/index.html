@@ -144,7 +144,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 <div class="page-wrap">
 
 <div class="mission-strip">
-  <p>The School of Creativity, Love &amp; Wisdom exists to make biblically-rooted, practically excellent formation accessible to all â€” regardless of means. Your partnership makes this possible. Here is what your support is building:</p>
+  <p>The School of Creativity, Love &amp; Wisdom exists to make biblically-rooted, practically excellent formation accessible to all — regardless of means. Your partnership makes this possible. Here is what your support is building:</p>
   <div class="stat-row">
     <div class="stat"><span class="stat-num">6</span><span class="stat-label">Courses</span></div>
     <div class="stat"><span class="stat-num">7+</span><span class="stat-label">Books Published</span></div>
@@ -185,7 +185,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Is my payment secure?</div>
-    <div class="faq-a">Absolutely. Flutterwave is PCI-DSS Level 1 compliant â€” the same security standard banks use. Your card and payment details are encrypted end-to-end.</div>
+    <div class="faq-a">Absolutely. Flutterwave is PCI-DSS Level 1 compliant — the same security standard banks use. Your card and payment details are encrypted end-to-end.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can international supporters subscribe?</div>
@@ -288,7 +288,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   <div class="form-modal">
     <button class="close-btn" onclick="closeForm()">&times;</button>
     <h3 id="formTitle">Start Supporting</h3>
-    <div class="selected-plan" id="formPlan">Monthly Supporter &middot; GHÂ¢50/mo</div>
+    <div class="selected-plan" id="formPlan">Monthly Supporter &middot; GH¢50/mo</div>
     <label for="formName">Your name</label>
     <input id="formName" type="text" placeholder="e.g. Kwame Asante" autocomplete="name">
     <label for="formEmail">Email address</label>
@@ -350,7 +350,7 @@ function loadPlans() {
 function formatPrice(amount, currency) {
   if (currency === 'GHS') return 'GH\u00a2 ' + amount;
   var rates = exchangeRates || {};
-  // Cross-rate: convert GHS â†’ EUR â†’ target currency
+  // Cross-rate: convert GHS → EUR → target currency
   // rates.GHS = how many GHS per EUR, rates[target] = how many target per EUR
   if (!rates.GHS || !rates[currency]) return null;
   var converted = (amount / rates.GHS) * rates[currency];
