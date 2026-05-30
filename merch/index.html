@@ -224,7 +224,7 @@ function buyStoreItem(itemType, itemName, itemVariant, amount, btn) {
     fetch('/api/store/create', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({item_type: itemType, item_name: itemName, item_variant: itemVariant || '', amount: amount, customer_name: name, customer_email: email, currency: 'GHS'})
+      body: JSON.stringify({item_type: itemType, item_name: itemName, item_variant: itemVariant || '', amount: amount, customer_name: name, customer_email: email, user_id: c.user_id || 0, currency: 'GHS'})
     }).then(function(r){return r.json()}).then(function(d){
       if (d.status !== 'ok') { alert('Error creating order. Please try again.'); return; }
       FlutterwaveCheckout({

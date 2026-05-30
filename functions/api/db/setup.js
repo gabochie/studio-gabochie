@@ -419,6 +419,38 @@
         FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
         UNIQUE(student_email, enrollment_id, achievement_key)
       )`,
+      // Auth tables (users, sessions, OTP)
+      `CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT DEFAULT '',
+        email_verified INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        last_login_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        token TEXT NOT NULL UNIQUE,
+        expires_at TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token)`,
+      `CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id)`,
+      `CREATE TABLE IF NOT EXISTS otp_codes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        identifier TEXT NOT NULL,
+        code TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        used INTEGER NOT NULL DEFAULT 0,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_otp_identifier ON otp_codes(identifier)`,
+      // Add user_id to store_orders
+      `ALTER TABLE store_orders ADD COLUMN user_id INTEGER DEFAULT 0`,
       // CI/CD pipeline reports
       `CREATE TABLE IF NOT EXISTS ci_reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

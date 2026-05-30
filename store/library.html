@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Library — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--content-max:1440px}
+body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:104px 24px 24px}
+.wrap{max-width:720px;margin:0 auto;width:100%}
+.page-header{text-align:center;margin-bottom:32px}
+.page-header h1{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.page-header h1 span{color:#C9A84C}
+.page-header p{color:#5A7A9F;font-size:14px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.card .icon-box{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.card .icon-box.art{background:rgba(201,168,76,.15);color:#C9A84C}
+.card .icon-box.music{background:rgba(52,199,123,.15);color:#34C77B}
+.card .icon-box.merch{background:rgba(96,165,250,.15);color:#60A5FA}
+.card .info{flex:1;min-width:0}
+.card .info h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:#F1F5F9;margin-bottom:2px}
+.card .info .meta{color:#5A7A9F;font-size:12px}
+.card .info .meta span{margin-right:12px}
+.card .action{flex-shrink:0}
+.card .btn-download{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:#C9A84C;color:#0A1628;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:all .2s}
+.card .btn-download:hover{background:#D9B85C;transform:translateY(-1px)}
+.card .btn-download:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state .icon{font-size:48px;color:#5A7A9F;margin-bottom:16px}
+.empty-state h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#F1F5F9;margin-bottom:8px}
+.empty-state p{color:#5A7A9F;font-size:14px;margin-bottom:24px}
+.empty-state .btn-primary{display:inline-block;padding:12px 28px;background:#C9A84C;color:#0A1628;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+.loading-state{text-align:center;padding:60px 20px;color:#5A7A9F}
+.loading-state .spinner{display:inline-block;width:32px;height:32px;border:3px solid #1E3250;border-top-color:#C9A84C;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <a href="../index.html" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="../store/">Store</a>
+      <a href="../index.html#give" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="page-header">
+    <h1>My <span>Library</span></h1>
+    <p>Your purchased items — all in one place.</p>
+  </div>
+  <div id="libraryContent">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your library...</p>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var token = null;
+  try { token = localStorage.getItem('ga_session_token'); } catch(e) {}
+  if (!token) {
+    document.getElementById('libraryContent').innerHTML =
+      '<div class="empty-state"><div class="icon"><i class="ti ti-user-off"></i></div>' +
+      '<h2>Sign in required</h2>' +
+      '<p>Please sign in to view your library.</p></div>';
+    return;
+  }
+  fetch('/api/auth/session?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(sd) {
+      if (sd.status !== 'ok' || !sd.user) {
+        throw new Error('Not authenticated');
+      }
+      return fetch('/api/store/download?user_id=' + sd.user.id);
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok' || !d.orders || !d.orders.length) {
+        document.getElementById('libraryContent').innerHTML =
+          '<div class="empty-state"><div class="icon"><i class="ti ti-shopping-cart-off"></i></div>' +
+          '<h2>Your library is empty</h2>' +
+          '<p>Items you purchase will appear here. You can download digital items anytime.</p>' +
+          '<a href="../store/" class="btn-primary">Visit the Store</a></div>';
+        return;
+      }
+      var html = '';
+      d.orders.forEach(function(o) {
+        var isDigital = (o.item_type === 'art' || o.item_type === 'music');
+        var iconClass = o.item_type === 'art' ? 'art' : (o.item_type === 'music' ? 'music' : 'merch');
+        var iconMap = { art: 'ti-palette', music: 'ti-music', merch: 'ti-shirt' };
+        var typeLabel = o.item_type.charAt(0).toUpperCase() + o.item_type.slice(1);
+        var dateStr = (o.created_at || '').slice(0, 10);
+        html +=
+          '<div class="card">' +
+          '<div class="icon-box ' + iconClass + '"><i class="ti ' + (iconMap[o.item_type] || 'ti-package') + '"></i></div>' +
+          '<div class="info">' +
+          '<h3>' + o.item_name + '</h3>' +
+          '<div class="meta"><span>' + typeLabel + '</span>' + (o.item_variant ? '<span>' + o.item_variant + '</span>' : '') + '<span>' + o.currency + ' ' + Number(o.amount).toFixed(2) + '</span><span>' + dateStr + '</span></div>' +
+          '</div>' +
+          '<div class="action">' +
+          (isDigital ? '<a href="/store/download?tx_ref=' + o.tx_ref + '" class="btn-download"><i class="ti ti-download"></i> Download</a>' : '<span style="color:#5A7A9F;font-size:11px">Physical item</span>') +
+          '</div>' +
+          '</div>';
+      });
+      document.getElementById('libraryContent').innerHTML = html;
+    })
+    .catch(function() {
+      document.getElementById('libraryContent').innerHTML =
+        '<div class="empty-state"><div class="icon"><i class="ti ti-alert-circle"></i></div>' +
+        '<h2>Something went wrong</h2>' +
+        '<p>Please try again or contact support.</p></div>';
+    });
+})();
+</script>
+</body>
+</html>

@@ -146,12 +146,245 @@ if (typeof window.formatPrice !== 'function') {
   };
 }
 
-/* ── Store Modal (replaces prompt() dialogs) ── */
+/* ── Auth Helpers ── */
+var GA_SESSION_KEY = 'ga_session_token';
+
+function getSessionToken() {
+  try { return localStorage.getItem(GA_SESSION_KEY); } catch(e) { return null; }
+}
+
+function setSessionToken(token) {
+  try { localStorage.setItem(GA_SESSION_KEY, token); } catch(e) {}
+}
+
+function clearSession() {
+  try { localStorage.removeItem(GA_SESSION_KEY); } catch(e) {}
+}
+
+function checkSession(callback) {
+  var token = getSessionToken();
+  if (!token) { callback(null); return; }
+  fetch('/api/auth/session?token=' + encodeURIComponent(token))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status === 'ok' && d.user) { callback(d.user); }
+      else { clearSession(); callback(null); }
+    })
+    .catch(function() { callback(null); });
+}
+
+/* ── Store Modal (auth-aware) ── */
 function showStoreModal(callback) {
-  var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99998;background:rgba(10,22,40,.85);display:flex;align-items:center;justify-content:center;padding:20px;font-family:"DM Sans",sans-serif';
-  var modal = document.createElement('div');
-  modal.style.cssText = 'background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px;width:100%;max-width:400px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5)';
+  checkSession(function(user) {
+    if (user) {
+      showCheckoutStep(user, callback);
+    } else {
+      showAuthChoice(callback);
+    }
+  });
+}
+
+function showAuthChoice(callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
+  modal.innerHTML =
+    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Complete Your Purchase</h3>' +
+    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">Create an account for faster checkout, or continue as guest.</p>' +
+    '<button id="gaAuthSignup" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-bottom:10px">Sign Up / Log In</button>' +
+    '<button id="gaAuthGuest" style="width:100%;padding:10px;background:transparent;color:#94A3B8;border:1px solid #1E3250;border-radius:6px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer">Continue as Guest</button>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+  document.getElementById('gaAuthSignup').addEventListener('click', function() { overlay.remove(); showEmailStep(callback); });
+  document.getElementById('gaAuthGuest').addEventListener('click', function() { overlay.remove(); showGuestForm(callback); });
+}
+
+function showEmailStep(callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
+  modal.innerHTML =
+    '<button id="storeModalBack" style="position:absolute;top:12px;left:16px;background:none;border:none;color:#5A7A9F;font-size:16px;cursor:pointer;padding:4px">&larr;</button>' +
+    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Sign Up / Log In</h3>' +
+    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">Enter your email to receive a verification code.</p>' +
+    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
+    '<input id="gaEmailInput" type="email" placeholder="your@email.com" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
+    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+    '<button id="gaSendOtp" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Send Code</button>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('gaEmailInput').focus();
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  document.getElementById('storeModalBack').addEventListener('click', function() { overlay.remove(); showAuthChoice(callback); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+  document.getElementById('gaSendOtp').addEventListener('click', function() {
+    var email = document.getElementById('gaEmailInput').value.trim();
+    var errEl = document.getElementById('storeModalError');
+    if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
+    errEl.style.display = 'none';
+    document.getElementById('gaSendOtp').textContent = 'Sending...';
+    document.getElementById('gaSendOtp').disabled = true;
+    fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.status === 'ok') {
+        overlay.remove();
+        showOtpStep(email, d.is_new, callback);
+      } else {
+        errEl.textContent = d.message || 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+        document.getElementById('gaSendOtp').textContent = 'Send Code';
+        document.getElementById('gaSendOtp').disabled = false;
+      }
+    }).catch(function() {
+      errEl.textContent = 'Network error. Please try again.';
+      errEl.style.display = 'block';
+      document.getElementById('gaSendOtp').textContent = 'Send Code';
+      document.getElementById('gaSendOtp').disabled = false;
+    });
+  });
+  document.getElementById('gaEmailInput').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('gaSendOtp').click(); });
+}
+
+function showOtpStep(email, isNew, callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
+  modal.innerHTML =
+    '<button id="storeModalBack" style="position:absolute;top:12px;left:16px;background:none;border:none;color:#5A7A9F;font-size:16px;cursor:pointer;padding:4px">&larr;</button>' +
+    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Check Your Email</h3>' +
+    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">We sent a 6-digit code to <strong style="color:#E8EEF7">' + email + '</strong>.</p>' +
+    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Verification Code</label>' +
+    '<input id="gaOtpInput" type="text" placeholder="000000" maxlength="6" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:24px;font-family:monospace;outline:none;margin-bottom:16px;box-sizing:border-box;text-align:center;letter-spacing:6px">' +
+    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+    '<button id="gaVerifyOtp" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Verify Code</button>' +
+    '<p style="color:#5A7A9F;font-size:11px;margin:12px 0 0;text-align:center">Code expires in 10 minutes. <a href="#" id="gaResendOtp" style="color:#C9A84C;text-decoration:underline">Resend code</a></p>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('gaOtpInput').focus();
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  document.getElementById('storeModalBack').addEventListener('click', function() { overlay.remove(); showEmailStep(callback); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+  function doVerify() {
+    var code = document.getElementById('gaOtpInput').value.trim();
+    var errEl = document.getElementById('storeModalError');
+    if (!code || code.length < 6) { errEl.textContent = 'Please enter the full 6-digit code.'; errEl.style.display = 'block'; return; }
+    errEl.style.display = 'none';
+    document.getElementById('gaVerifyOtp').textContent = 'Verifying...';
+    document.getElementById('gaVerifyOtp').disabled = true;
+    fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, code: code })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.status === 'ok' && d.session_token) {
+        setSessionToken(d.session_token);
+        overlay.remove();
+        if (d.user.is_new) {
+          showNewUserName(d.user, callback);
+        } else {
+          showCheckoutStep(d.user, callback);
+        }
+      } else {
+        errEl.textContent = d.message || 'Invalid code. Please try again.';
+        errEl.style.display = 'block';
+        document.getElementById('gaVerifyOtp').textContent = 'Verify Code';
+        document.getElementById('gaVerifyOtp').disabled = false;
+      }
+    }).catch(function() {
+      errEl.textContent = 'Network error. Please try again.';
+      errEl.style.display = 'block';
+      document.getElementById('gaVerifyOtp').textContent = 'Verify Code';
+      document.getElementById('gaVerifyOtp').disabled = false;
+    });
+  }
+  document.getElementById('gaVerifyOtp').addEventListener('click', doVerify);
+  document.getElementById('gaOtpInput').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') doVerify(); });
+  document.getElementById('gaResendOtp').addEventListener('click', function(ev) {
+    ev.preventDefault();
+    var errEl = document.getElementById('storeModalError');
+    errEl.style.display = 'none';
+    fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.status === 'ok') {
+        errEl.textContent = 'New code sent!';
+        errEl.style.color = '#34C77B';
+        errEl.style.display = 'block';
+        setTimeout(function() { errEl.style.display = 'none'; errEl.style.color = '#E8637A'; }, 3000);
+      }
+    }).catch(function() {});
+  });
+}
+
+function showNewUserName(user, callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
+  modal.innerHTML =
+    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Welcome!</h3>' +
+    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">Tell us your name to complete your account.</p>' +
+    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
+    '<input id="gaNameInput" type="text" placeholder="Your full name" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:20px;box-sizing:border-box">' +
+    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+    '<button id="gaNameSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('gaNameInput').focus();
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+  document.getElementById('gaNameSubmit').addEventListener('click', function() {
+    var name = document.getElementById('gaNameInput').value.trim() || user.name || user.email.split('@')[0];
+    user.name = name;
+    showCheckoutStep(user, callback);
+  });
+  document.getElementById('gaNameInput').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('gaNameSubmit').click(); });
+}
+
+function showCheckoutStep(user, callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
+  modal.innerHTML =
+    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Complete Your Purchase</h3>' +
+    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 16px">You are signed in as <strong style="color:#E8EEF7">' + (user.name || user.email) + '</strong>.</p>' +
+    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
+    '<input id="storeModalName" type="text" placeholder="Your full name" value="' + (user.name || '') + '" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
+    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
+    '<input id="storeModalEmail" type="email" value="' + user.email + '" readonly style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#5A7A9F;font-size:14px;font-family:inherit;outline:none;margin-bottom:20px;box-sizing:border-box;opacity:0.7">' +
+    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+    '<button id="storeModalSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('storeModalName').focus();
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+  document.getElementById('storeModalSubmit').addEventListener('click', function() {
+    var n = document.getElementById('storeModalName').value.trim() || user.name;
+    var e = document.getElementById('storeModalEmail').value.trim();
+    var errEl = document.getElementById('storeModalError');
+    if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
+    errEl.style.display = 'none';
+    callback({ name: n, email: e, user_id: user.id, session_token: getSessionToken() });
+    closeFn();
+  });
+  document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalSubmit').click(); });
+}
+
+function showGuestForm(callback) {
+  var overlay = buildOverlay();
+  var modal = buildModal();
   modal.innerHTML =
     '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
     '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Complete Your Purchase</h3>' +
@@ -165,9 +398,9 @@ function showStoreModal(callback) {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
   document.getElementById('storeModalName').focus();
-  function close() { overlay.remove(); }
-  document.getElementById('storeModalClose').addEventListener('click', close);
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+  var closeFn = function() { overlay.remove(); };
+  document.getElementById('storeModalClose').addEventListener('click', closeFn);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
   document.getElementById('storeModalSubmit').addEventListener('click', function() {
     var n = document.getElementById('storeModalName').value.trim();
     var e = document.getElementById('storeModalEmail').value.trim();
@@ -175,11 +408,23 @@ function showStoreModal(callback) {
     if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
     if (!e || !e.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; document.getElementById('storeModalEmail').focus(); return; }
     errEl.style.display = 'none';
-    callback({ name: n, email: e });
-    close();
+    callback({ name: n, email: e, is_guest: true });
+    closeFn();
   });
   document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalEmail').focus(); });
   document.getElementById('storeModalEmail').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalSubmit').click(); });
+}
+
+function buildOverlay() {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:99998;background:rgba(10,22,40,.85);display:flex;align-items:center;justify-content:center;padding:20px;font-family:"DM Sans",sans-serif';
+  return el;
+}
+
+function buildModal() {
+  var el = document.createElement('div');
+  el.style.cssText = 'background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px;width:100%;max-width:400px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5)';
+  return el;
 }
 
 /* ── Cookie Notice ── */

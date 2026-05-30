@@ -8,7 +8,33 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const tx_ref = url.searchParams.get('tx_ref') || '';
   const email = url.searchParams.get('email') || '';
+  const userId = url.searchParams.get('user_id') || '';
   try {
+    if (userId) {
+      var userOrders = await env.DB.prepare(
+        "SELECT * FROM store_orders WHERE user_id = ? AND status = 'completed' ORDER BY created_at DESC"
+      ).bind(parseInt(userId)).all();
+      if (!userOrders.results || !userOrders.results.length) {
+        return new Response(JSON.stringify({ status: 'error', message: 'No purchases found for this user' }), {
+          status: 404, headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      return new Response(JSON.stringify({
+        status: 'ok',
+        orders: userOrders.results.map(function(o) {
+          return {
+            tx_ref: o.tx_ref,
+            item_type: o.item_type,
+            item_name: o.item_name,
+            item_variant: o.item_variant,
+            amount: o.amount,
+            currency: o.currency,
+            customer_name: o.customer_name,
+            created_at: o.created_at
+          };
+        })
+      }), { headers: { 'Content-Type': 'application/json' } });
+    }
     if (tx_ref) {
       var order = await env.DB.prepare(
         "SELECT * FROM store_orders WHERE tx_ref = ? AND status = 'completed'"

@@ -16,15 +16,16 @@ export async function onRequest(context) {
   }
   try {
     const body = await request.json();
-    const { item_type, item_name, item_variant, amount, customer_name, customer_email } = body;
+    const { item_type, item_name, item_variant, amount, customer_name, customer_email, user_id } = body;
     if (!item_type || !item_name || !amount || !customer_email) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
     const tx_ref = 'store_' + item_type + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     const currency = body.currency || 'GHS';
+    const uid = parseInt(user_id) || 0;
     await db.prepare(
-      `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
-    ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email).run();
+      `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, user_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
+    ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email, uid).run();
     return new Response(JSON.stringify({ status: 'ok', tx_ref, amount, currency }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
