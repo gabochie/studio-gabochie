@@ -11,8 +11,9 @@
     "test:e2e": "playwright test",
     "lint": "eslint .",
     "lint:html": "htmlhint \"**/*.html\" --ignore \"node_modules/**,books/**\"",
+    "check:mojibake": "node scripts/check-mojibake.cjs",
     "audit": "npm audit --audit-level=high",
-    "check": "npm run lint && npm run lint:html && npm run test",
+    "check": "npm run lint && npm run lint:html && npm run check:mojibake && npm run test",
     "prepare": "node scripts/install-hooks.js"
   },
   "devDependencies": {
