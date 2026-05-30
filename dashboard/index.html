@@ -90,6 +90,7 @@ h1 span{color:#C9A84C}
       <a href="/manifesto/">Manifesto</a>
       <a href="/newsletter/">Newsletter</a>
       <a href="/support/" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+      <a href="#" onclick="logout()" style="color:#E8637A;font-size:13px;margin-left:4px">Logout</a>
     </div>
     <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
@@ -202,6 +203,9 @@ h1 span{color:#C9A84C}
       <input id="changeNewCode" type="password" placeholder="New access code (4+ characters)" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:10px 14px;color:#E8EEF7;font-size:13px;font-family:inherit;margin-bottom:8px;box-sizing:border-box">
       <button class="login-btn" id="changeCodeBtn" onclick="handleChangeCode()" style="margin-bottom:4px">Update Access Code</button>
       <div id="changeCodeMsg" style="font-size:12px;margin-top:4px"></div>
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)">
+      <a href="#" onclick="logout()" style="color:#E8637A;font-size:13px;text-decoration:none">Sign out &rarr;</a>
     </div>
   </div>
 </div>
@@ -405,6 +409,11 @@ function handleChangeCode() {
     btn.textContent = 'Update Access Code';
     msg.style.color = '#E8637A'; msg.textContent = 'Network error.';
   });
+}
+
+function logout() {
+  localStorage.removeItem('ga_student');
+  window.location.href = '/school/';
 }
 
 function toggleModule(slug) {
