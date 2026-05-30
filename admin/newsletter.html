@@ -145,6 +145,7 @@ h1 span{color:#C9A84C}
           <option value="">— Select —</option>
         </select>
         <div class="btn-row" style="margin-top:4px">
+          <button class="btn btn-green btn-sm" onclick="loadDefault()">Default</button>
           <button class="btn btn-blue btn-sm" onclick="loadFromCalendar()">Calendar Theme</button>
           <button class="btn btn-red btn-sm" onclick="deleteTemplate()">Delete</button>
         </div>
@@ -155,7 +156,8 @@ h1 span{color:#C9A84C}
       <div class="empty-state">
         <div style="font-size:32px;margin-bottom:12px">&#9998;</div>
         <strong>No blocks yet</strong><br>
-        Click a block type from the left sidebar to start building your newsletter.
+        Click a block type from the left sidebar to start,<br>
+        or press <strong>Default</strong> to load a pre-built template.
       </div>
     </div>
 
@@ -201,6 +203,21 @@ h1 span{color:#C9A84C}
 <script>
 // ── State ──
 var blocks = [];
+
+var DEFAULT_BLOCKS = [
+  { id:'d1', type:'header', title:'The Studio Weekly', subtitle:'Insights on creativity, faith, and building a creative nation — from GideonAbochie Studio' },
+  { id:'d2', type:'text', content:'<p>Hello {{NAME}},</p><p>Welcome to another edition of <strong>The Studio Weekly</strong> — your curated dose of wisdom on creativity, faith, and the intersection of both. This week, we explore what it means to create in community and why the lone genius is a myth.</p><p>Let\'s dive in.</p>' },
+  { id:'d3', type:'divider' },
+  { id:'d4', type:'article', articleTitle:'Creativity as Worship: Why Your Work Matters', description:'What if your art, your code, your teaching, or your business is not just a job — but an act of worship? This piece explores how the creative act reflects the nature of the Creator.', url:'https://gideonabochie.org/content/' },
+  { id:'d5', type:'text', content:'<p><strong>Quote of the Week:</strong> "The heavens declare the glory of God; the skies proclaim the work of his hands." — Psalm 19:1</p>' },
+  { id:'d6', type:'cta', text:'Read the Full Article', url:'https://gideonabochie.org/content/' },
+  { id:'d7', type:'divider' },
+  { id:'d8', type:'text', content:'<h3 style="font-size:16px;color:#0A1628;margin:0 0 8px">Upcoming</h3><p>Our next workshop, <strong>Creative Storytelling</strong>, is on July 15 in Accra. Limited spots available.</p>' },
+  { id:'d9', type:'cta', text:'Register Now', url:'https://gideonabochie.org/workshop/' },
+  { id:'d10', type:'divider' },
+  { id:'d11', type:'social' },
+  { id:'d12', type:'footer' }
+];
 
 // ── Block factory ──
 function createBlock(type) {
@@ -401,6 +418,14 @@ function copyHTML() {
     document.execCommand('copy'); ta.remove();
     alert('HTML copied!');
   });
+}
+
+// ── Load default template ──
+function loadDefault() {
+  blocks = DEFAULT_BLOCKS.map(function(b) { return JSON.parse(JSON.stringify(b)); });
+  document.getElementById('subjectInput').value = 'The Studio Weekly — Issue #';
+  renderEditor();
+  renderPreview();
 }
 
 // ── Clear all blocks ──
@@ -617,6 +642,7 @@ function loadStats() {
 }
 
 // ── Init ──
+loadDefault();
 loadTplList();
 loadStats();
 setInterval(loadStats, 30000);
