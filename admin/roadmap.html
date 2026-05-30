@@ -278,6 +278,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
       <option value="6">Phase 6</option>
       <option value="7">Phase 7</option>
       <option value="8">Phase 8</option>
+      <option value="9">Phase 9</option>
     </select>
     <select id="newTaskPriority">
       <option value="high">High</option>
@@ -935,6 +936,158 @@ var DATA = {
         "Dashboard surfaces AI predictions with confidence scores",
         "Autonomous email outreach achieves > 30% open rate"
       ]
+    },
+    {
+      "phase": 9,
+      "name": "Audit Fixes & Site Polish",
+      "status": "in_progress",
+      "description": "Fix every critical and high-impact issue found in the full site audit. Store fulfillment, broken links, poor UX, placeholder content, and security gaps.",
+      "platform": "Cloudflare Pages + Workers + D1",
+      "steps": [
+        {
+          "id": "9.1",
+          "task": "Store fulfillment — receipt download link",
+          "status": "pending",
+          "launch": [{"label":"Store create API","url":"../functions/api/store/create.js","local":true}],
+          "items": [
+            "Add download link to receipt email for art, merch, music purchases in store/create.js",
+            "Verify receipt email body renders the download URL",
+            "Test end-to-end with Flutterwave sandbox"
+          ]
+        },
+        {
+          "id": "9.2",
+          "task": "Fix nationbuilding resource links",
+          "status": "pending",
+          "launch": [{"label":"Nationbuilding page","url":"../nationbuilding/index.html","local":true}],
+          "items": [
+            "Find correct Google Drive URLs for each of the 3 resources",
+            "Update links so each resource card points to its own file",
+            "Verify all 3 links resolve correctly"
+          ]
+        },
+        {
+          "id": "9.3",
+          "task": "Make Systems Thinking program enrollable",
+          "status": "pending",
+          "launch": [{"label":"Programs API","url":"../functions/admin/api/programs.js","local":true},{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "Change Systems Thinking status from 'coming_soon' to 'active' in D1 programs table",
+            "Ensure enrollment flow works for the program",
+            "Verify sample + full content renders in student dashboard"
+          ]
+        },
+        {
+          "id": "9.4",
+          "task": "Replace prompt() dialogs with proper modals",
+          "status": "pending",
+          "launch": [{"label":"Art page","url":"../art/index.html","local":true},{"label":"Merch page","url":"../merch/index.html","local":true},{"label":"Music page","url":"../music/index.html","local":true}],
+          "items": [
+            "Create shared modal component in main.js for email/name capture",
+            "Replace prompt() calls on art/index.html with modal",
+            "Replace prompt() calls on merch/index.html with modal",
+            "Replace prompt() calls on music/index.html with modal",
+            "Add validation on name field (non-empty)"
+          ]
+        },
+        {
+          "id": "9.5",
+          "task": "Add newsletter public archive",
+          "status": "pending",
+          "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Create /newsletter/archive.html page showing past issues",
+            "Update showIssues() to display sent issues (not just archived templates)",
+            "Add archive link from newsletter/index.html"
+          ]
+        },
+        {
+          "id": "9.6",
+          "task": "Fix music streaming placeholder links",
+          "status": "pending",
+          "launch": [{"label":"Music page","url":"../music/index.html","local":true}],
+          "items": [
+            "Replace # placeholder URLs with real streaming links for each album",
+            "Verify links open correct platform pages"
+          ]
+        },
+        {
+          "id": "9.7",
+          "task": "Fix art placeholder inventory",
+          "status": "pending",
+          "launch": [{"label":"Art page","url":"../art/index.html","local":true}],
+          "items": [
+            "Replace 'Title of Artwork', 'Medium — 2026', generic descriptions with real inventory",
+            "Add proper artwork data including images, titles, mediums, year"
+          ]
+        },
+        {
+          "id": "9.8",
+          "task": "Add merch size selection logic",
+          "status": "pending",
+          "launch": [{"label":"Merch page","url":"../merch/index.html","local":true}],
+          "items": [
+            "Add JavaScript to track selected size (S/M/L/XL) when chip is clicked",
+            "Pass selected size to Flutterwave checkout metadata",
+            "Highlight active size chip with visual feedback"
+          ]
+        },
+        {
+          "id": "9.9",
+          "task": "Fix 404.html duplicate og:url",
+          "status": "pending",
+          "launch": [{"label":"404 page","url":"../404.html","local":true}],
+          "items": [
+            "Remove duplicate og:url meta tag from 404.html",
+            "Verify single og:url remains"
+          ]
+        },
+        {
+          "id": "9.10",
+          "task": "Add Flutterwave CDN preconnect hints",
+          "status": "pending",
+          "launch": [{"label":"Donate page","url":"../donate/index.html","local":true},{"label":"Support page","url":"../support/index.html","local":true}],
+          "items": [
+            "Add preconnect link for Flutterwave CDN (https://checkout.flutterwave.com) to donate/index.html",
+            "Add preconnect link for Flutterwave CDN to support/index.html",
+            "Add preconnect link for Flutterwave CDN to all store pages (art, merch, music, books)"
+          ]
+        },
+        {
+          "id": "9.11",
+          "task": "Add Content-Security-Policy header",
+          "status": "pending",
+          "launch": [{"label":"_headers","url":"../_headers","local":true}],
+          "items": [
+            "Add Content-Security-Policy header with reasonable defaults to _headers",
+            "Test that all pages load correctly with CSP enabled"
+          ]
+        },
+        {
+          "id": "9.12",
+          "task": "Guard formatPrice calls with fallback",
+          "status": "pending",
+          "launch": [{"label":"main.js","url":"../assets/js/main.js","local":true}],
+          "items": [
+            "Add guard clause to all formatPrice calls so they show a default if main.js hasn't loaded",
+            "Fix fragile dependency on main.js load order in donation scripts"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "All 3 nationbuilding resource links point to different documents",
+        "Systems Thinking program is enrollable by any visitor",
+        "Art, merch, music store buttons open a modal (not prompt()) for email/name",
+        "Receipt email includes a real download link for purchased items",
+        "Music streaming links resolve to real platform pages",
+        "Art inventory shows real artwork data",
+        "Merch size chips are functional and pass size to checkout",
+        "404.html has no duplicate meta tags",
+        "Flutterwave CDN has preconnect on all pages that use it",
+        "CSP header present on all pages, no console CSP errors",
+        "formatPrice never shows undefined on any page",
+        "All 53 existing tests still pass"
+      ]
     }
   ],
   "notes": [
@@ -953,6 +1106,7 @@ var DATA = {
     "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
     "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
     "Site-wide 1440px max-width applied via --content-max token.",
+    "Phase 9 — Audit Fixes & Site Polish: Fix every issue from the full site audit. Store fulfillment (download links in receipt), nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
     "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
   ]
 };

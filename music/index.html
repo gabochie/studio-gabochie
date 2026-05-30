@@ -156,10 +156,10 @@ body{background:#0A1628;color:#CBD5E1;font-family:'DM Sans',system-ui,-apple-sys
 <div class="platform-links">
   <h2>Also on <span>Streaming</span></h2>
   <div>
-    <a href="#" class="btn"><i class="ti ti-brand-spotify"></i> Spotify</a>
-    <a href="#" class="btn"><i class="ti ti-brand-apple"></i> Apple Music</a>
-    <a href="#" class="btn"><i class="ti ti-brand-youtube"></i> YouTube</a>
-    <a href="#" class="btn"><i class="ti ti-brand-bandcamp"></i> Bandcamp</a>
+    <a href="javascript:void(0)" class="btn" title="Coming soon"><i class="ti ti-brand-spotify"></i> Spotify</a>
+    <a href="javascript:void(0)" class="btn" title="Coming soon"><i class="ti ti-brand-apple"></i> Apple Music</a>
+    <a href="javascript:void(0)" class="btn" title="Coming soon"><i class="ti ti-brand-youtube"></i> YouTube</a>
+    <a href="javascript:void(0)" class="btn" title="Coming soon"><i class="ti ti-brand-bandcamp"></i> Bandcamp</a>
   </div>
 </div>
 
@@ -228,34 +228,33 @@ body{background:#0A1628;color:#CBD5E1;font-family:'DM Sans',system-ui,-apple-sys
 <script src="../assets/js/main.js"></script>
 <script>
 function buyStoreItem(itemType, itemName, itemVariant, amount) {
-  var name = prompt('Name:');
-  if (!name) return;
-  var email = prompt('Email:');
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  tagOnboard(email, name, 'music');
-  fetch('/api/store/create', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({item_type: itemType, item_name: itemName, item_variant: itemVariant || '', amount: amount, customer_name: name, customer_email: email, currency: 'GHS'})
-  }).then(function(r){return r.json()}).then(function(d){
-    if (d.status !== 'ok') { alert('Error creating order. Please try again.'); return; }
-    FlutterwaveCheckout({
-      public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-      tx_ref: d.tx_ref,
-      amount: d.amount,
-      currency: d.currency || 'GHS',
-      payment_options: 'card, mobilemoneyghana, ussd',
-      meta: {item_type: itemType, item_name: itemName},
-      customer: {email: email, name: name},
-      customizations: {title: itemName, description: (itemVariant ? itemVariant + ' — ' : '') + 'GideonAbochie Studio', logo: window.location.origin + '/assets/images/logo.png'},
-      callback: function(response) {
-        if (response.status === 'completed' || response.status === 'successful') {
-          alert('Thank you, ' + name + '! Your purchase of ' + itemName + ' has been confirmed. Check your email for the receipt.');
-        }
-      },
-      onclose: function() {}
-    });
-  }).catch(function(){ alert('An error occurred. Please try again.'); });
+  showStoreModal(function(c) {
+    var name = c.name, email = c.email;
+    tagOnboard(email, name, 'music');
+    fetch('/api/store/create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({item_type: itemType, item_name: itemName, item_variant: itemVariant || '', amount: amount, customer_name: name, customer_email: email, currency: 'GHS'})
+    }).then(function(r){return r.json()}).then(function(d){
+      if (d.status !== 'ok') { alert('Error creating order. Please try again.'); return; }
+      FlutterwaveCheckout({
+        public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+        tx_ref: d.tx_ref,
+        amount: d.amount,
+        currency: d.currency || 'GHS',
+        payment_options: 'card, mobilemoneyghana, ussd',
+        meta: {item_type: itemType, item_name: itemName},
+        customer: {email: email, name: name},
+        customizations: {title: itemName, description: (itemVariant ? itemVariant + ' — ' : '') + 'GideonAbochie Studio', logo: window.location.origin + '/assets/images/logo.png'},
+        callback: function(response) {
+          if (response.status === 'completed' || response.status === 'successful') {
+            alert('Thank you, ' + name + '! Your purchase of ' + itemName + ' has been confirmed. Check your email for the receipt.');
+          }
+        },
+        onclose: function() {}
+      });
+    }).catch(function(){ alert('An error occurred. Please try again.'); });
+  });
 }
 </script>
 </body>

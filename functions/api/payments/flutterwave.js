@@ -265,6 +265,17 @@ export async function onRequest(context) {
           var sVariant = orderRec ? orderRec.item_variant : '';
           var displayName = sName || 'Item';
           if (sVariant) { displayName = displayName + ' (' + sVariant + ')'; }
+          var isDigital = (sType === 'art' || sType === 'music');
+          var isPhysical = (sType === 'merch');
+          var deliverySection = '';
+          if (isDigital) {
+            deliverySection = '<a href="https://gideonabochie.org/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
+              '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">Your download link is unique to this purchase. Do not share it.</p>';
+          } else if (isPhysical) {
+            deliverySection = '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0">We will process your order and contact you within 24 hours with shipping details. Thank you for your patience.</p>';
+          } else {
+            deliverySection = '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0">We will contact you within 24 hours with delivery details.</p>';
+          }
           var receiptHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
             '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
             '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
@@ -279,7 +290,7 @@ export async function onRequest(context) {
             '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:13px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + tx_ref + '</td></tr>' +
             '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + verifiedCurrency + ' ' + verifiedAmount.toFixed(2) + '</td></tr>' +
             '</table>' +
-            '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0">We will contact you within 24 hours with delivery details. For digital items, your download link is included below.</p>' +
+            deliverySection +
             '</td></tr></table></td></tr></table></body></html>';
           await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',

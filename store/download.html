@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Purchase — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--content-max:1440px}
+body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:104px 24px 24px}
+.wrap{max-width:640px;margin:0 auto;width:100%;text-align:center}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:40px;margin-top:24px}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.card h2 span{color:#C9A84C}
+.card .icon{font-size:48px;color:#34C77B;margin-bottom:16px}
+.card .detail{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;padding:16px;margin:16px 0;text-align:left}
+.card .detail-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid rgba(30,50,80,.4)}
+.card .detail-row:last-child{border-bottom:none}
+.card .detail-row .label{color:#5A7A9F}
+.card .detail-row .value{color:#E8EEF7;font-weight:600}
+.card .btn-download{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin:16px 0;transition:all .2s}
+.card .btn-download:hover{background:#D9B85C;transform:translateY(-1px)}
+.card .note{color:#5A7A9F;font-size:12px;line-height:1.6;margin-top:12px}
+.error{color:#E8637A}
+.loading{color:#5A7A9F}
+</style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <a href="../index.html" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#give" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="card" id="downloadCard">
+    <div class="icon" id="statusIcon"><i class="ti ti-loader"></i></div>
+    <h2 id="statusTitle">Looking up your purchase...</h2>
+    <p class="loading" id="statusMsg">Please wait while we verify your transaction.</p>
+    <div id="detailSection" style="display:none"></div>
+    <a id="downloadBtn" style="display:none" class="btn-download"><i class="ti ti-download"></i> Download</a>
+    <p class="note" id="noteText"></p>
+  </div>
+</div>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var tx_ref = params.get('tx_ref');
+  if (!tx_ref) {
+    document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';
+    document.getElementById('statusTitle').textContent = 'No Transaction Found';
+    document.getElementById('statusMsg').textContent = 'Please use the link from your purchase receipt email.';
+    document.getElementById('statusMsg').className = 'error';
+    return;
+  }
+  fetch('/api/store/download?tx_ref=' + encodeURIComponent(tx_ref))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status !== 'ok' || !d.order) {
+        document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';
+        document.getElementById('statusTitle').textContent = 'Purchase Not Found';
+        document.getElementById('statusMsg').textContent = 'We could not find a completed purchase for this transaction. If you believe this is an error, please contact support.';
+        document.getElementById('statusMsg').className = 'error';
+        return;
+      }
+      var o = d.order;
+      document.getElementById('statusIcon').innerHTML = '<i class="ti ti-circle-check"></i>';
+      document.getElementById('statusTitle').innerHTML = 'Thank you, <span>' + (o.customer_name || 'Valued Customer') + '</span>!';
+      document.getElementById('statusMsg').textContent = 'Your purchase of ' + o.item_name + ' has been confirmed.';
+      document.getElementById('statusMsg').className = '';
+      var detailsHtml =
+        '<div class="detail">' +
+        '<div class="detail-row"><span class="label">Item</span><span class="value">' + o.item_name + '</span></div>' +
+        (o.item_variant ? '<div class="detail-row"><span class="label">Variant</span><span class="value">' + o.item_variant + '</span></div>' : '') +
+        '<div class="detail-row"><span class="label">Type</span><span class="value">' + o.item_type.charAt(0).toUpperCase() + o.item_type.slice(1) + '</span></div>' +
+        '<div class="detail-row"><span class="label">Amount</span><span class="value" style="color:#C9A84C">' + o.currency + ' ' + Number(o.amount).toFixed(2) + '</span></div>' +
+        '<div class="detail-row"><span class="label">Transaction</span><span class="value" style="font-family:monospace;font-size:12px">' + o.tx_ref + '</span></div>' +
+        '</div>';
+      document.getElementById('detailSection').innerHTML = detailsHtml;
+      document.getElementById('detailSection').style.display = 'block';
+      if (o.item_type === 'art' || o.item_type === 'music') {
+        document.getElementById('downloadBtn').style.display = 'inline-flex';
+        document.getElementById('downloadBtn').href = '/store/download?tx_ref=' + o.tx_ref + '&dl=1';
+        document.getElementById('noteText').textContent = 'Your download is unique to this purchase. Do not share this link.';
+      } else if (o.item_type === 'merch') {
+        document.getElementById('noteText').textContent = 'Your order is being processed. We will contact you within 24 hours with shipping details.';
+      }
+    })
+    .catch(function(){
+      document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';
+      document.getElementById('statusTitle').textContent = 'Something Went Wrong';
+      document.getElementById('statusMsg').textContent = 'An error occurred while looking up your purchase. Please try again or contact support.';
+      document.getElementById('statusMsg').className = 'error';
+    });
+})();
+</script>
+</body>
+</html>
