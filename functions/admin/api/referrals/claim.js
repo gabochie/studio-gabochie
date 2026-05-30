@@ -1,5 +1,9 @@
+import { requireAdmin } from '../../_auth.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), {
       status: 405, headers: { 'Content-Type': 'application/json' }
@@ -27,7 +31,7 @@ export async function onRequest(context) {
       message: 'Reward approved for ' + code + ' at tier ' + tier
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }

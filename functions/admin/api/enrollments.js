@@ -1,3 +1,5 @@
+import { requireAdmin } from '../_auth.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var db = env.DB;
@@ -6,6 +8,8 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   try {
     var rows = await db.prepare(
       'SELECT e.id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id ORDER BY e.enrolled_at DESC'
@@ -15,7 +19,7 @@ export async function onRequest(context) {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }

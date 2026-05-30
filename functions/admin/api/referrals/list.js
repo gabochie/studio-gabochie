@@ -1,3 +1,5 @@
+import { requireAdmin } from '../../_auth.js';
+
 const REWARD_TIERS = [
   { min: 3,  tier: 'footer',      label: 'Footer Banner (1 issue)' },
   { min: 10, tier: 'leaderboard', label: 'Leaderboard Banner (1 issue)' },
@@ -6,6 +8,8 @@ const REWARD_TIERS = [
 
 export async function onRequest(context) {
   const { request, env } = context;
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   if (!env.DB) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
       status: 501, headers: { 'Content-Type': 'application/json' }
@@ -67,7 +71,7 @@ export async function onRequest(context) {
       referrers: results
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }

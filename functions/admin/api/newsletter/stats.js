@@ -1,5 +1,9 @@
+import { requireAdmin } from '../../_auth.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   try {
     if (!env.BREVO_API_KEY) {
       return new Response(JSON.stringify({
@@ -47,7 +51,7 @@ export async function onRequest(context) {
       click_rate: clickRate
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }

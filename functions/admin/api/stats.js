@@ -1,3 +1,5 @@
+import { requireAdmin } from '../_auth.js';
+
 function json(r, status) {
   return new Response(JSON.stringify(r), {
     status: status || 200, headers: { 'Content-Type': 'application/json' }
@@ -7,8 +9,8 @@ function json(r, status) {
 export async function onRequest(context) {
   const { request, env } = context;
   if (!env.DB) return json({ error: 'D1 not bound' }, 501);
-  const referer = request.headers.get('Referer') || '';
-  if (!referer.includes('/admin/')) return json({ error: 'Unauthorized' }, 403);
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
 
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
@@ -51,6 +53,6 @@ export async function onRequest(context) {
 
     return json({ error: 'Method not allowed' }, 405);
   } catch (err) {
-    return json({ status: 'error', message: err.message }, 500);
+    return json({ status: 'error', message: 'Internal error' }, 500);
   }
 }

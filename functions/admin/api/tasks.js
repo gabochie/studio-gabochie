@@ -1,3 +1,5 @@
+import { requireAdmin } from '../_auth.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (!env.DB) {
@@ -5,14 +7,8 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  const referer = request.headers.get('Referer') || '';
-  const authHeader = request.headers.get('X-Agent-Auth') || '';
-  const authorized = referer.includes('/admin/') || authHeader === 'agent';
-  if (!authorized) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
-      status: 403, headers: { 'Content-Type': 'application/json' }
-    });
-  }
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   try {
     if (request.method === 'GET') {
       const url = new URL(request.url);
@@ -95,7 +91,7 @@ export async function onRequest(context) {
       status: 405, headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }

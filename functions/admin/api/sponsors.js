@@ -1,3 +1,5 @@
+import { requireAdmin } from '../_auth.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (!env.DB) {
@@ -5,12 +7,8 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  const referer = request.headers.get('Referer') || '';
-  if (!referer.includes('/admin/')) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
-      status: 403, headers: { 'Content-Type': 'application/json' }
-    });
-  }
+  const authErr = requireAdmin(request, env);
+  if (authErr) return authErr;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
 
@@ -82,7 +80,7 @@ export async function onRequest(context) {
       status: 405, headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }
