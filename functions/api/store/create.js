@@ -1,3 +1,5 @@
+import { checkRateLimit } from '../_rate-limit.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') {
@@ -6,6 +8,11 @@ export async function onRequest(context) {
   const db = env.DB;
   if (!db) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
+  }
+  const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const allowed = await checkRateLimit(db, ip, 'store_create', 10, 60);
+  if (!allowed) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many requests' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
   }
   try {
     const body = await request.json();

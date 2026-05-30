@@ -1,3 +1,4 @@
+import { checkRateLimit } from '../_rate-limit.js';
 import { queueEmail, enrollmentFollowup, daysFromNow } from '../email/_send.js';
 import { getToken } from './_token.js';
 
@@ -22,7 +23,6 @@ export async function onRequest(context) {
       status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
-  var url = new URL(request.url);
 
   if (request.method === 'GET') {
     var token = getToken(request);
@@ -77,6 +77,14 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    });
+  }
+
+  var ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  var allowed = await checkRateLimit(db, ip, 'enroll', 10, 60);
+  if (!allowed) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many requests' }), {
+      status: 429, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 
