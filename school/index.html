@@ -339,7 +339,7 @@ function register() {
   if (code.length < 4) {
     msg.className = 'auth-msg error'; msg.textContent = 'Access code must be at least 4 characters.'; return;
   }
-
+  tagOnboard(email, name, 'school');
   btn.disabled = true; btn.textContent = 'Creating account...';
   msg.className = 'auth-msg'; msg.style.display = 'none';
 
@@ -372,7 +372,7 @@ function login() {
   if (!email || !code) {
     msg.className = 'auth-msg error'; msg.textContent = 'Email and access code are required.'; return;
   }
-
+  tagOnboard(email, '', 'school');
   btn.disabled = true; btn.textContent = 'Logging in...';
   msg.className = 'auth-msg'; msg.style.display = 'none';
 
@@ -484,7 +484,7 @@ function submitEnroll() {
   if (!name || !email) {
     msg.className = 'msg msg-error'; msg.style.display = 'block'; msg.textContent = 'Name and email are required.'; return;
   }
-
+  tagOnboard(email, name, 'school');
   btn.disabled = true; btn.textContent = 'Enrolling...'; msg.style.display = 'none';
 
   fetch('/api/enroll', {

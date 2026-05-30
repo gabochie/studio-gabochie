@@ -267,7 +267,7 @@ function startPayment() {
 
   if (!name) { alert('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-
+  tagOnboard(email, name, 'donation');
   var amount = selectedAmount;
   if (custSelected) {
     var c = parseFloat(document.getElementById('customAmount').value);
@@ -316,7 +316,7 @@ function startMonthlySubscription() {
 
   if (!name) { alert('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-
+  tagOnboard(email, name, 'patron');
   btn.disabled = true;
   btn.textContent = 'Opening...';
   if (navigator.sendBeacon) {

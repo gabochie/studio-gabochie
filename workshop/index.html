@@ -207,6 +207,7 @@ function submitRegistration() {
   var wsid = document.getElementById('registerForm').dataset.wsid;
   if (!name) { alert('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  tagOnboard(email, name, 'workshop');
   btn.disabled = true;
   btn.textContent = 'Registering...';
   fetch('/api/workshops/register', {

@@ -131,3 +131,10 @@ function toggleNav(el) {
     }).catch(function(){});
   }
 })();
+
+function tagOnboard(email, name, tag) {
+  if (!email || !tag) return;
+  try {
+    navigator.sendBeacon('/api/onboard', JSON.stringify({ email: email, name: name || '', tag: tag }));
+  } catch(e) {}
+}

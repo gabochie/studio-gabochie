@@ -170,6 +170,7 @@ document.getElementById('contentSubForm').addEventListener('submit', async funct
   const btn = this.querySelector('button');
   const msg = document.getElementById('contentSubMsg');
   const email = document.getElementById('contentSubEmail').value;
+  tagOnboard(email, '', 'newsletter');
   btn.disabled = true;
   btn.textContent = 'Subscribing...';
   msg.className = 'msg';

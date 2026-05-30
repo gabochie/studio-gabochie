@@ -75,11 +75,12 @@
           <th>Edition</th>
           <th>Ref Code</th>
           <th>Source</th>
+          <th>Onboarding Tag</th>
           <th>Date</th>
         </tr>
       </thead>
       <tbody id="subsBody">
-        <tr><td colspan="6" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>
+        <tr><td colspan="7" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>
       </tbody>
     </table>
   </div>
@@ -116,19 +117,22 @@ function renderTable(items) {
     return !q || (i.email && i.email.toLowerCase().indexOf(q) !== -1) || (i.name && i.name.toLowerCase().indexOf(q) !== -1);
   });
   if (!filtered.length) {
-    document.getElementById('subsBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:#3A5278">No subscribers found.</td></tr>';
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#3A5278">No subscribers found.</td></tr>';
     return;
   }
   var html = '';
   var flags = {GH:'&#127987;', UK:'&#127988;', NA:'&#127482;&#127480;', ROW:'&#127758;'};
+  var tagLabels = {newsletter:'Newsletter', school:'School', workshop:'Workshop', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', art:'Art', merch:'Merch', music:'Music', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
   filtered.forEach(function(item) {
     var source = item.source || 'web';
     var srcClass = source === 'newsletter' ? 'subscribe' : '';
     var edition = item.edition || '';
     var flag = flags[edition] || '';
     var ref = item.ref_code || '';
+    var tag = item.onboarding_tag || '';
+    var tagLabel = tagLabels[tag] || tag;
     var date = item.subscribed_at ? new Date(item.subscribed_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '-';
-    html += '<tr><td>' + (item.email || '-') + '</td><td>' + (item.name || '-') + '</td><td>' + flag + ' ' + edition + '</td><td style="font-family:monospace;color:#C9A84C;font-size:11px">' + (ref || '—') + '</td><td><span class="source-tag ' + srcClass + '">' + source + '</span></td><td style="font-size:11px;color:#5A7A9F">' + date + '</td></tr>';
+    html += '<tr><td>' + (item.email || '-') + '</td><td>' + (item.name || '-') + '</td><td>' + flag + ' ' + edition + '</td><td style="font-family:monospace;color:#C9A84C;font-size:11px">' + (ref || '—') + '</td><td><span class="source-tag ' + srcClass + '">' + source + '</span></td><td><span class="source-tag" style="background:rgba(201,168,76,0.12);color:#C9A84C">' + tagLabel + '</span></td><td style="font-size:11px;color:#5A7A9F">' + date + '</td></tr>';
   });
   document.getElementById('subsBody').innerHTML = html;
 }
@@ -166,9 +170,9 @@ function filterTable() {
 
 function exportCSV() {
   if (!_items.length) return alert('No data to export.');
-  var rows = [['Email','Name','Edition','Ref Code','Source','Date']];
+  var rows = [['Email','Name','Edition','Ref Code','Source','Onboarding Tag','Date']];
   _items.forEach(function(i) {
-    rows.push([i.email || '', i.name || '', i.edition || '', i.ref_code || '', i.source || '', i.subscribed_at || '']);
+    rows.push([i.email || '', i.name || '', i.edition || '', i.ref_code || '', i.source || '', i.onboarding_tag || '', i.subscribed_at || '']);
   });
   var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('
 ');

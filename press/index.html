@@ -279,6 +279,7 @@ document.getElementById('mediaForm').addEventListener('submit', async function(e
     mediaType: document.getElementById('mediaType').value,
     message: document.getElementById('mediaMessage').value
   };
+  tagOnboard(data.email, data.name, 'partner');
   btn.disabled = true;
   btn.textContent = 'Sending...';
   msg.className = 'msg';

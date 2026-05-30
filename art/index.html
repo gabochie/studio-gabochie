@@ -204,6 +204,7 @@ function buyStoreItem(itemType, itemName, itemVariant, amount) {
   if (!name) return;
   var email = prompt('Email:');
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  tagOnboard(email, name, 'art');
   fetch('/api/store/create', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},

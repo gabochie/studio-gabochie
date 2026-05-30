@@ -778,6 +778,7 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
     form.style.display = 'none';
     document.getElementById('leadSuccess').classList.add('show');
     var email = document.getElementById('leadEmail').value;
+    tagOnboard(email, form.querySelector('input[name=name]') ? form.querySelector('input[name=name]').value : '', 'book_download');
     var refCode = null;
     try { refCode = sessionStorage.getItem('ref_code'); } catch(e) {}
     if (refCode && email) {
@@ -798,6 +799,11 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
       window.location.href = _leadUrl;
     }
   });
+});
+document.querySelector('.manifesto-lead .lead-form')?.addEventListener('submit', function(e) {
+  var email = this.querySelector('input[name="email"]').value;
+  var name = this.querySelector('input[name="name"]').value;
+  tagOnboard(email, name, 'book_download');
 });
 </script>
 
@@ -1086,6 +1092,7 @@ function startPayment() {
   if (!selectedAmount || selectedAmount < 10) return;
   var name = document.getElementById('donorName').value.trim() || 'Anonymous';
   var email = document.getElementById('donorEmail').value.trim() || 'donor@anonymous.invalid';
+  tagOnboard(email, name, 'donation');
   var phone = document.getElementById('donorPhone').value.trim() || '';
   var tx_ref = 'donation_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   trackEvent('donation_payment_started', String(selectedAmount));

@@ -237,6 +237,7 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
   }).then(function() {
     form.style.display = 'none';
     var email = document.getElementById('leadEmail').value;
+    tagOnboard(email, form.querySelector('input[name="name"]') ? form.querySelector('input[name="name"]').value : '', 'book_download');
     var msg = document.createElement('p');
     msg.style.cssText = 'color:#22C55E;font-size:14px;margin:12px 0';
     msg.textContent = 'Redirecting to your download\u2026';
@@ -256,6 +257,7 @@ function payWithAmount() {
   var amount = parseFloat(document.getElementById('payAmount').value);
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
   if (!name) { alert('Please enter your name.'); return; }
+  tagOnboard(email, name, 'book_download');
   if (!amount || amount < 0) { alert('Enter an amount or leave as 0 for free.'); return; }
   if (amount <= 0) { document.getElementById('leadSubmitBtn').click(); return; }
 
@@ -305,7 +307,7 @@ function buyBundle() {
   var name = document.getElementById('bundleName').value.trim();
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
   if (!name) { alert('Please enter your name.'); return; }
-
+  tagOnboard(email, name, 'book_bundle');
   var btn = document.getElementById('buyBtn');
   btn.disabled = true;
   btn.textContent = 'Processing...';

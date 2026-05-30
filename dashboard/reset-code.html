@@ -71,6 +71,7 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
     if (!token) {
       msg.className = 'msg error'; msg.textContent = 'Invalid reset link. Please request a new one.'; return;
     }
+    tagOnboard(emailVal, '', 'dashboard');
     btn.disabled = true;
     btn.textContent = 'Resetting...';
     msg.className = 'msg';

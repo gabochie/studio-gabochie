@@ -433,6 +433,7 @@ function startSubscription() {
     document.getElementById('formName').style.borderColor = '#E8637A';
     return;
   }
+  tagOnboard(email, name, 'patron');
   var btn = document.getElementById('formSubmit');
   btn.disabled = true;
   btn.textContent = 'Opening...';
@@ -550,6 +551,7 @@ document.getElementById('sponsorForm').addEventListener('submit', function(e) {
     })
   }).then(function(r){ return r.json(); }).then(function(data) {
     if (data.status === 'ok' && data.access_code) {
+      tagOnboard(document.getElementById('spEmail').value.trim(), document.getElementById('spName').value.trim(), 'sponsor');
       document.getElementById('spCodeDisplay').textContent = data.access_code;
       document.getElementById('spResult').style.display = 'block';
       btn.textContent = 'Done!';

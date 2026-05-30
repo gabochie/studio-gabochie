@@ -313,6 +313,7 @@ function submitRegistration() {
   var region = document.getElementById('regRegion').value;
   if (!name) { alert('Please enter your name.'); return; }
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  tagOnboard(email, name, 'nationbuilding');
   btn.disabled = true;
   btn.textContent = 'Registering...';
   fetch('/api/nationbuilding/register', {

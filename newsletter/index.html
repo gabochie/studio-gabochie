@@ -778,6 +778,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
       e.preventDefault();
       var btn = this.querySelector('button');
       var email = this.querySelector('input[name="email"]').value;
+      tagOnboard(email, '', 'newsletter');
       var ref = getCookie('sw_ref') || '';
       btn.disabled = true;
       btn.textContent = 'Sending\u2026';

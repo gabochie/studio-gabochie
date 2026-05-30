@@ -253,6 +253,7 @@ document.getElementById('partnerForm').addEventListener('submit', async function
     interest: document.getElementById('interest').value,
     message: document.getElementById('message').value
   };
+  tagOnboard(data.email, data.name, 'partner');
   btn.disabled = true;
   btn.textContent = 'Sending...';
   msg.className = 'msg';

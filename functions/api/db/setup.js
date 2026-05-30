@@ -209,6 +209,7 @@
       `ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT ''`,
       `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
       `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN onboarding_tag TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
       `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
       `ALTER TABLE students ADD COLUMN salt TEXT DEFAULT ''`,

@@ -55,6 +55,7 @@ function notifyMe(){
   var btn = document.getElementById('notifyBtn');
   var email = document.getElementById('notifyEmail').value.trim();
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  tagOnboard(email, '', 'newsletter');
   btn.disabled = true; btn.textContent = 'Subscribing\u2026';
     var fd = new FormData(); fd.append('email', email); fd.append('source', 'coming-soon');
     fetch('/api/subscribe', {method:'POST', body:fd}).then(function(r){

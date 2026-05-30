@@ -401,6 +401,8 @@ function handleSponsorLogin(e) {
   e.preventDefault();
   var btn = document.getElementById('loginBtn');
   var err = document.getElementById('loginError');
+  var loginEmail = document.getElementById('loginEmail').value;
+  tagOnboard(loginEmail, '', 'sponsor');
   btn.disabled = true;
   btn.textContent = 'Verifying\u2026';
   err.style.display = 'none';
@@ -517,7 +519,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     btn.textContent = 'Pay &amp; Submit';
     return;
   }
-
+  tagOnboard(email, name, 'sponsor');
   if (price > 0 && typeof FlutterwaveCheckout !== 'undefined') {
     // Paid slot: open Flutterwave checkout
     FlutterwaveCheckout({
