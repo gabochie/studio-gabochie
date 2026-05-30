@@ -27,11 +27,24 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .card{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px 28px;margin-bottom:24px}
 .card h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#F1F5F9;margin-bottom:6px}
 .card p{color:#6B7F9A;font-size:14px;line-height:1.7;margin-bottom:24px}
+.freq-toggle{display:flex;gap:8px;margin-bottom:20px;background:#0A1628;border-radius:10px;padding:4px}
+.freq-btn{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:#5A7A9F;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.03em}
+.freq-btn.active{background:#C9A84C;color:#0A1628}
+.freq-btn:hover:not(.active){color:#CBD5E1}
 .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
 .amount-btn{padding:14px 8px;border:2px solid #1E3250;border-radius:10px;background:transparent;color:#CBD5E1;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
 .amount-btn:hover{border-color:#3A5278;background:rgba(201,168,76,.06)}
 .amount-btn.selected{border-color:#C9A84C;background:rgba(201,168,76,.1);color:#C9A84C}
 .amount-btn.custom{font-size:13px;font-weight:400;color:#5A7A9F;font-family:'DM Sans',sans-serif}
+.patron-card{background:linear-gradient(135deg,#0F1E38,#1A2A45);border:2px solid #C9A84C;border-radius:14px;padding:24px;margin-bottom:24px;text-align:center}
+.patron-icon{font-size:32px;margin-bottom:8px}
+.patron-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#F1F5F9;text-transform:uppercase;letter-spacing:.05em}
+.patron-price{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#C9A84C;margin:8px 0}
+.patron-price small{font-size:16px;font-weight:400;color:#6B7F9A}
+.patron-desc{font-size:13px;color:#6B7F9A;line-height:1.6;margin-bottom:16px}
+.patron-features{list-style:none;padding:0;margin:0 auto 4px;max-width:280px;text-align:left;display:inline-block}
+.patron-features li{font-size:12px;color:#8A9BB5;padding:5px 0;display:flex;align-items:center;gap:8px}
+.patron-features li::before{content:'\2713';color:#C9A84C;font-weight:700}
 .input-group{margin-bottom:16px}
 .input-group label{display:block;font-size:12px;color:#5A7A9F;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .input-group input{width:100%;padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif}
@@ -81,6 +94,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <h2>Make a Donation</h2>
     <p>Your gift supports books, videos, and teachings that empower creative minds across Africa and beyond.</p>
 
+    <div class="freq-toggle" id="freqToggle">
+      <button class="freq-btn active" data-freq="once" onclick="setFrequency('once')">One-Time</button>
+      <button class="freq-btn" data-freq="monthly" onclick="setFrequency('monthly')">Monthly Patron</button>
+    </div>
+
     <div class="amount-grid" id="amountGrid">
       <button class="amount-btn" data-amount="50" onclick="selectAmount(50)"><span class="price-convert" data-ghs="50">GH&#8373;50</span></button>
       <button class="amount-btn selected" data-amount="100" onclick="selectAmount(100)"><span class="price-convert" data-ghs="100">GH&#8373;100</span></button>
@@ -93,6 +111,20 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="input-group" id="customAmountGroup" style="display:none">
       <label>Custom Amount (GHS)</label>
       <input type="number" id="customAmount" placeholder="Enter amount" min="5" oninput="if(this.value)custSelected=true;clearCustomSelection()">
+    </div>
+
+    <div class="patron-card" id="patronCard" style="display:none">
+      <div class="patron-icon">&#10024;</div>
+      <div class="patron-name">Monthly Patron</div>
+      <div class="patron-price"><span class="price-convert" data-ghs="50">GH&#8373;50</span> <small>/mo</small></div>
+      <div class="patron-desc">Early access to content, supporter badge, and monthly teaching video from Gideon. Cancel anytime.</div>
+      <ul class="patron-features">
+        <li>Early access to all new content</li>
+        <li>Supporter badge on your profile</li>
+        <li>Monthly teaching video</li>
+        <li>Ad-free newsletter experience</li>
+        <li>Direct email access to Gideon</li>
+      </ul>
     </div>
 
     <div class="input-group">
@@ -120,6 +152,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <a class="alt-btn bmac" href="https://buymeacoffee.com/gideonabochie" target="_blank">&#9749; Buy Me a Coffee</a>
       <a class="alt-btn paypal" href="https://paypal.me/gideonabochie" target="_blank">&#8364; PayPal</a>
     </div>
+    <p style="margin-top:16px;font-size:12px;color:#5A7A9F">Looking for higher tiers? <a href="/support/" style="color:#C9A84C;text-decoration:none">Annual Patron (GH&#8373;500/yr)</a> or <a href="/support/" style="color:#C9A84C;text-decoration:none">Founding Partner (GH&#8373;2,500/yr)</a> &rarr;</a></p>
   </div>
 
 </div>
@@ -188,6 +221,19 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <script>
 var selectedAmount = 100;
 var custSelected = false;
+var isMonthly = false;
+
+function setFrequency(freq) {
+  isMonthly = freq === 'monthly';
+  document.querySelectorAll('.freq-btn').forEach(function(b) {
+    b.classList.remove('active');
+    if (b.dataset.freq === freq) b.classList.add('active');
+  });
+  document.getElementById('amountGrid').style.display = isMonthly ? 'none' : '';
+  document.getElementById('customAmountGroup').style.display = 'none';
+  document.getElementById('patronCard').style.display = isMonthly ? 'block' : 'none';
+  document.getElementById('payBtn').textContent = isMonthly ? 'Become a Monthly Patron' : 'Donate Now';
+}
 
 function selectAmount(amt) {
   selectedAmount = amt;
@@ -213,6 +259,7 @@ function clearCustomSelection() {
 }
 
 function startPayment() {
+  if (isMonthly) { startMonthlySubscription(); return; }
   var btn = document.getElementById('payBtn');
   var name = document.getElementById('donorName').value.trim();
   var email = document.getElementById('donorEmail').value.trim();
@@ -258,6 +305,71 @@ function startPayment() {
       btn.disabled = false;
       btn.textContent = 'Donate Now';
     }
+  });
+}
+
+function startMonthlySubscription() {
+  var btn = document.getElementById('payBtn');
+  var name = document.getElementById('donorName').value.trim();
+  var email = document.getElementById('donorEmail').value.trim();
+  var phone = document.getElementById('donorPhone').value.trim();
+
+  if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Opening...';
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_started', event_data: 'monthly', page: location.pathname, email: email}));
+  }
+
+  var tier = { id: 'monthly', name: 'Monthly Supporter', amount: 50, currency: 'GHS', per: '/mo', plan_id: '' };
+
+  fetch('/api/subscription/create', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      tier: tier.id,
+      name: name,
+      email: email,
+      phone: phone,
+      amount: tier.amount,
+      currency: tier.currency || 'GHS',
+      plan_id: ''
+    })
+  }).then(function(r){return r.json()}).then(function(data){
+    if (data.status !== 'ok') throw new Error(data.error || 'Failed to create');
+    FlutterwaveCheckout({
+      public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+      tx_ref: data.tx_ref,
+      amount: data.amount,
+      currency: data.currency || 'GHS',
+      payment_plan: undefined,
+      payment_options: 'card, mobilemoneyghana, ussd',
+      customer: { email: email, name: name, phone: phone },
+      customizations: {
+        title: 'GideonAbochie Studio',
+        description: 'Monthly Supporter — 50 GHS/mo',
+        logo: window.location.origin + '/assets/images/logo.png'
+      },
+      callback: function(response) {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_success', event_data: data.tx_ref}));
+        }
+        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&tier=monthly';
+      },
+      onclose: function() {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_cancelled', event_data: 'monthly'}));
+        }
+        btn.disabled = false;
+        btn.textContent = 'Become a Monthly Patron';
+      }
+    });
+  }).catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+    alert('Something went wrong. Please try again or email info@gideonabochie.com');
   });
 }
 </script>

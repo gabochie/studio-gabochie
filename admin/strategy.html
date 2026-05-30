@@ -80,7 +80,25 @@
   <!-- ============ BETTER MODELS ============ -->
   <h2>Better Business Model Options</h2>
 
-  <h3>Option A: Freemium Content Stack <span class="tag tag-green">Recommended</span></h3>
+  <h3>Option B: Paid Digital Products</h3>
+  <ul>
+    <li>Sell books individually for GH¢50-150 each ($3-9) via Flutterwave</li>
+    <li>Bundle all 4 books for GH¢300 ($17)</li>
+    <li>Add paid video teachings/courses at GH¢200-500 ($12-30)</li>
+    <li>Keeps the "ministry" feel while actually charging for content</li>
+  </ul>
+
+  <h3>Recommended: Hybrid Model <span class="tag tag-green">Best Fit</span></h3>
+  <p>Combines four revenue streams so supporters self-select based on how they view the work:</p>
+  <ul>
+    <li><strong>Donations</strong> (one-time) — for those who see it as ministry</li>
+    <li><strong>Digital products / books for sale</strong> — for those who see it as content</li>
+    <li><strong>Sponsorships</strong> — for businesses reaching the audience</li>
+    <li><strong>Recurring Patron tiers</strong> — for ongoing community support</li>
+  </ul>
+  <p>This avoids the ministry-vs-commerce conflict because people self-select based on how they view the work.</p>
+
+  <h4>Pricing Tiers (Patron Subscriptions)</h4>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Tier</th><th>Price</th><th>What They Get</th></tr></thead>
@@ -92,24 +110,7 @@
       </tbody>
     </table>
   </div>
-  <p>Combines the donation impulse with recurring subscription. Gives away enough to grow reach, gates premium content for revenue.</p>
-
-  <h3>Option B: Paid Digital Products</h3>
-  <ul>
-    <li>Sell books individually for GH¢50-150 each ($3-9) via Flutterwave</li>
-    <li>Bundle all 4 books for GH¢300 ($17)</li>
-    <li>Add paid video teachings/courses at GH¢200-500 ($12-30)</li>
-    <li>Keeps the "ministry" feel while actually charging for content</li>
-  </ul>
-
-  <h3>Option C: Hybrid <span class="tag tag-blue">Best Fit</span></h3>
-  <ul>
-    <li><strong>Donations</strong> (tax-deductible giving culture) — for those who see it as ministry</li>
-    <li><strong>Digital products/books for sale</strong> — for those who see it as content</li>
-    <li><strong>Sponsorships</strong> — for businesses reaching the audience</li>
-    <li><strong>Monthly "Patron" tier</strong> — for recurring community support</li>
-  </ul>
-  <p>This avoids the ministry-vs-commerce conflict because people self-select based on how they view the work.</p>
+  <p>The Monthly Patron tier is now live on the <a href="/support/" style="color:#C9A84C">support page</a> and the <a href="/donate/" style="color:#C9A84C">donate page</a>. Books have been switched to "Pay What You Want" (GH¢0–100).</p>
 
   <!-- ============ MEASUREMENT ============ -->
   <h2>How to Measure Effectiveness</h2>
@@ -190,7 +191,7 @@
   <p>Each step auto-verifies against the live site. Click the checkbox to mark done, or use the action button to execute.</p>
   <div id="strategyTodos"></div>
   <p style="margin-top:16px;"><button onclick="resetStrategyTodos()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Reset All Progress</button> <button onclick="reverifyStrategy()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Re-run Checks</button></p>
-  <p>The existing code already supports most of this — Flutterwave webhook, D1 logging, admin dashboard. The missing pieces are product/pricing strategy (code changes are minimal) and <strong>traffic</strong>.</p>
+  <p><strong>Implemented:</strong> Monthly Patron tier (GH¢50/mo) on donate + support pages &middot; One-Time/Monthly toggle on donate page &middot; Books switched to Pay What You Want (GH¢0–100). <strong>Remaining:</strong> Enable Cloudflare Web Analytics, grow traffic, pursue sponsorships after 1K+ subs.</p>
   <div class="footer" style="margin-top:60px;padding:20px 0 40px;border-top:1px solid #1E3250;font-size:12px;color:#475569">Last updated: May 2026</div>
 </div>
 
@@ -229,18 +230,20 @@ var STRATEGY = [
    execute:function(){window.open('https://dash.cloudflare.com','_blank')},
    executeLabel:'Open Dashboard'},
   {id:'revenue', title:'Pick one revenue stream to prove first',
-   desc:'Donations are already live. Focus on making them work before adding complexity.',
-   verify:false,
+   desc:'Monthly Patron tier is live on donate page and support page. Books switched to Pay What You Want.',
+   verify:function(){return checkPageContains('../donate/index.html','Monthly Patron')},
+   execute:false,
    executeLabel:'Mark Done'},
   {id:'patron', title:'Add a recurring "Monthly Patron" option',
-   desc:'Flutterwave supports recurring payments. GH¢50/mo is a low-friction ask for supporters.',
-   verify:function(){return checkPageContains('../index.html','monthly') || checkPageContains('../index.html','patron') || checkPageContains('../index.html','recurring')},
-   execute:function(){openModal();},
-   executeLabel:'Add to Donate Page'},
+   desc:'LIVE — added to donate page with One-Time/Monthly toggle. Also available on /support/ with all 3 tiers.',
+   verify:function(){return checkPageContains('../donate/index.html','Monthly Patron')},
+   execute:false,
+   executeLabel:'Done'},
   {id:'books', title:'Stop calling everything "free"',
-   desc:'Books can be "pay what you want" (GH¢0-100) instead of "get free copy". Many will pay.',
-   verify:function(){return checkPageContains('../index.html','pay what you want')},
-   executeLabel:'Edit Book Buttons'},
+   desc:'DONE — books page now says "Pay What You Want (GH¢0–100)" with optional Flutterwave payment.',
+   verify:function(){return checkPageContains('../books/index.html','Pay What You Want')},
+   execute:false,
+   executeLabel:'Done'},
   {id:'sponsors', title:'Only pursue sponsorships once you have 1,000+ confirmed subscribers',
    desc:'You cannot sell an audience you have not built yet. Focus on subscriber growth first.',
    verify:function(){return checkSubCount()},
