@@ -52,3 +52,5 @@
 
 # Referral tracking
 /ref /content/ 200
+
+/workshop /workshop/ 200
