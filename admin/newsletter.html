@@ -92,6 +92,17 @@ h1 span{color:#C9A84C}
 .issues-list .issue-item{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-bottom:1px solid rgba(30,50,80,.3);font-size:11px;color:#64748B}
 .issues-list .issue-item .num{color:#C9A84C;font-weight:600;font-family:'Barlow Condensed',sans-serif;font-size:13px}
 .issues-list .issue-item .date{color:#3A5278}
+
+.cal-issue-row{display:flex;gap:10px;padding:10px 14px;border:1px solid #1E3250;border-radius:6px;margin-bottom:6px;cursor:pointer;transition:all .15s;align-items:center}
+.cal-issue-row:hover{border-color:#C9A84C;background:rgba(201,168,76,.04)}
+.cal-issue-row .num{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#C9A84C;width:40px;flex-shrink:0}
+.cal-issue-row .info{flex:1;min-width:0}
+.cal-issue-row .theme{font-size:13px;color:#E8EEF7}
+.cal-issue-row .date{font-size:10px;color:#3A5278;margin-top:2px}
+.cal-issue-row .status-badge{font-size:9px;padding:2px 8px;border-radius:4px;text-transform:uppercase;font-weight:600;flex-shrink:0}
+.cal-issue-row .status-badge.planned{background:rgba(58,82,120,.2);color:#5A7A9F}
+.cal-issue-row .status-badge.drafted{background:rgba(59,130,246,.15);color:#3B82F6}
+.cal-issue-row .status-badge.ready{background:rgba(201,168,76,.15);color:#C9A84C}
 </style>
 </head>
 <body>
@@ -146,7 +157,7 @@ h1 span{color:#C9A84C}
         </select>
         <div class="btn-row" style="margin-top:4px">
           <button class="btn btn-green btn-sm" onclick="loadDefault()">Default</button>
-          <button class="btn btn-blue btn-sm" onclick="loadFromCalendar()">Calendar Theme</button>
+          <button class="btn btn-blue btn-sm" onclick="openCalModal()">Calendar Theme</button>
           <button class="btn btn-red btn-sm" onclick="deleteTemplate()">Delete</button>
         </div>
       </div>
@@ -199,10 +210,22 @@ h1 span{color:#C9A84C}
 
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../newsletter/index.html">Public Archive</a></div>
 
+<div id="calModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center" onclick="if(event.target===this)closeCalModal()">
+  <div style="background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto">
+    <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#F1F5F9;margin:0 0 4px">&#128197; Select Calendar Issue</h3>
+    <p style="color:#6B7F9A;font-size:12px;margin:0 0 16px">Choose an issue to generate a full draft. Its status will change to <strong>drafted</strong>.</p>
+    <div id="calIssueList"></div>
+    <div style="margin-top:12px;text-align:right">
+      <button class="btn btn-outline btn-sm" onclick="closeCalModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script src="admin.js"></script>
 <script>
 // ── State ──
 var blocks = [];
+var loadedCalendarDate = null; // tracks which calendar issue was loaded (for auto-publish)
 
 var DEFAULT_BLOCKS = [
   { id:'d1', type:'header', title:'The Studio Weekly', subtitle:'Insights on creativity, faith, and building a creative nation — from GideonAbochie Studio' },
@@ -511,28 +534,141 @@ function loadTplList() {
 }
 
 // ── Calendar integration ──
-function loadFromCalendar() {
+var CAL_STORAGE_KEY = 'ga_calendar';
+
+function getScriptureForTheme(theme) {
+  var t = (theme || '').toLowerCase();
+  if (t.includes('genesis') || t.includes('create') || t.includes('creator') || t.includes('making')) return { ref: 'Genesis 1:1', text: '"In the beginning, God created the heavens and the earth."' };
+  if (t.includes('image') || t.includes('imago')) return { ref: 'Genesis 1:27', text: '"So God created man in His own image, in the image of God He created him; male and female He created them."' };
+  if (t.includes('worship') || t.includes('praise') || t.includes('hallelujah') || t.includes('sing')) return { ref: 'Psalm 150:6', text: '"Let everything that has breath praise the Lord! Hallelujah!"' };
+  if (t.includes('wisdom') || t.includes('proverb')) return { ref: 'Proverbs 1:7', text: '"The fear of the Lord is the beginning of knowledge; fools despise wisdom and instruction."' };
+  if (t.includes('love') || t.includes('neighbour') || t.includes('community')) return { ref: '1 Corinthians 13:13', text: '"But now faith, hope, love, abide these three; but the greatest of these is love."' };
+  if (t.includes('fear') || t.includes('lord')) return { ref: 'Proverbs 9:10', text: '"The fear of the Lord is the beginning of wisdom, and the knowledge of the Holy One is understanding."' };
+  if (t.includes('talent') || t.includes('gift')) return { ref: 'Matthew 25:14-30', text: '"For it is just like a man about to go on a journey, who called his own slaves and entrusted his possessions to them."' };
+  if (t.includes('ai') || t.includes('algorithm') || t.includes('digital') || t.includes('technology')) return { ref: 'Colossians 1:16-17', text: '"For by Him all things were created, both in the heavens and on earth, visible and invisible... all things have been created through Him and for Him."' };
+  if (t.includes('education') || t.includes('teach') || t.includes('teacher') || t.includes('transform')) return { ref: 'Proverbs 22:6', text: '"Train up a child in the way he should go, even when he is old he will not depart from it."' };
+  if (t.includes('ghana') || t.includes('nation') || t.includes('future')) return { ref: 'Jeremiah 29:11', text: '"For I know the plans that I have for you, declares the Lord, plans for welfare and not for calamity, to give you a future and a hope."' };
+  if (t.includes('parent') || t.includes('child') || t.includes('family')) return { ref: 'Deuteronomy 6:6-7', text: '"These words, which I am commanding you today, shall be on your heart. You shall teach them diligently to your children."' };
+  if (t.includes('faith') || t.includes('work') || t.includes('sacred') || t.includes('secular')) return { ref: 'Colossians 3:23', text: '"Whatever you do, do your work heartily, as for the Lord rather than for men."' };
+  if (t.includes('music') || t.includes('sound') || t.includes('art') || t.includes('artist') || t.includes('beauty') || t.includes('culture')) return { ref: 'Psalm 96:1', text: '"Sing to the Lord a new song; sing to the Lord, all the earth."' };
+  if (t.includes('story') || t.includes('narrative') || t.includes('parable')) return { ref: 'Matthew 13:34', text: '"All these things Jesus spoke to the crowds in parables, and He did not speak to them without a parable."' };
+  if (t.includes('rest') || t.includes('sabbath')) return { ref: 'Exodus 20:8-10', text: '"Remember the sabbath day, to keep it holy. Six days you shall labor and do all your work, but the seventh day is a sabbath of the Lord your God."' };
+  if (t.includes('adversity') || t.includes('failure') || t.includes('courage') || t.includes('journey')) return { ref: '2 Corinthians 12:9', text: '"My grace is sufficient for you, for power is perfected in weakness."' };
+  if (t.includes('innovation') || t.includes('entrepreneur') || t.includes('kingdom')) return { ref: 'Matthew 13:31-32', text: '"The kingdom of heaven is like a mustard seed, which a man took and sowed in his field; and this is smaller than all other seeds, but when it is full grown, it is larger than the garden plants."' };
+  if (t.includes('excellence') || t.includes('discipline') || t.includes('spirit')) return { ref: 'Philippians 4:8', text: '"Finally, brothers and sisters, whatever is true, whatever is honorable, whatever is right, whatever is pure, whatever is lovely, whatever is commendable, if there is any excellence and if anything worthy of praise, think about these things."' };
+  if (t.includes('mentor') || t.includes('legacy') || t.includes('leadership') || t.includes('pass')) return { ref: '2 Timothy 2:2', text: '"The things which you have heard from me in the presence of many witnesses, entrust these to faithful people who will be able to teach others also."' };
+  if (t.includes('gratitude') || t.includes('generosity') || t.includes('give')) return { ref: 'Psalm 107:1', text: '"Give thanks to the Lord, for He is good, for His lovingkindness is everlasting."' };
+  if (t.includes('prayer') || t.includes('imagination')) return { ref: 'Ephesians 3:20', text: '"Now to Him who is able to do far more abundantly beyond all that we ask or think, according to the power that works within us."' };
+  if (t.includes('simplicity') || t.includes('focus')) return { ref: 'Psalm 46:10', text: '"Be still, and know that I am God; I will be exalted among the nations, I will be exalted on the earth."' };
+  if (t.includes('question')) return { ref: 'Luke 10:26', text: '"And He said to him, \'What is written in the Law? How does it read to you?\'"' };
+  if (t.includes('consumer') || t.includes('creator')) return { ref: 'Psalm 8:3-4', text: '"When I consider Your heavens, the work of Your fingers, the moon and the stars, which You have ordained, what is man that You take thought of him?"' };
+  if (t.includes('prophet') || t.includes('voice')) return { ref: 'Amos 3:7', text: '"Surely the Lord God does nothing unless He reveals His secret to His servants the prophets."' };
+  if (t.includes('review') || t.includes('annual') || t.includes('year')) return { ref: 'Lamentations 3:22-23', text: '"The Lord\'s lovingkindnesses indeed never cease, for His compassions never fail. They are new every morning; great is Your faithfulness."' };
+  // Default
+  return { ref: 'Psalm 19:1', text: '"The heavens declare the glory of God, and the sky above proclaims His handiwork."' };
+}
+
+function generateDraftForTheme(theme, issueNum, dateStr) {
+  var scripture = getScriptureForTheme(theme);
+  var blocks = [];
+
+  // Header
+  blocks.push({ id:'c1', type:'header', title:'The Studio Weekly', subtitle:'Issue #' + issueNum + ' \u2014 ' + theme + ' \u2014 ' + dateStr });
+
+  // Opening text
+  blocks.push({ id:'c2', type:'text', content:'<p>Dear {{NAME}},</p><p>This week we explore <strong>' + escHtml(theme) + '</strong>. What does this theme mean for how we live, create, and love? How does it shape our understanding of God, ourselves, and our calling?</p><p>Let\u2019s reflect on these questions together.</p>' });
+
+  // Scripture text
+  blocks.push({ id:'c3', type:'text', content:'<table width="100%" cellpadding="16" cellspacing="0" style="background:#F8FAFC;border-radius:8px;border-left:3px solid #C9A84C"><tr><td style="padding:16px"><p style="font-family:Georgia,serif;font-size:15px;line-height:1.6;color:#334155;margin:0 0 6px;font-style:italic">' + scripture.text + '</p><p style="font-family:Georgia,serif;font-size:12px;color:#6B7F9A;margin:0">\u2014 ' + scripture.ref + '</p></td></tr></table>' });
+
+  // Reflection
+  var reflection = '<p><strong>Reflection:</strong> ' + theme + ' invites us to see the world differently. When we look through the lens of Scripture, what seemed ordinary becomes sacred. Every creative act, every moment of learning, every relationship\u2014all of it is caught up in God\u2019s grand story of redemption and restoration.</p><p>Take time this week to prayerfully consider how ' + theme.toLowerCase() + ' applies to your specific season of life. What is God saying to you through His Word and through the circumstances around you?</p>';
+  blocks.push({ id:'c4', type:'text', content:reflection });
+
+  // CTA
+  blocks.push({ id:'c5', type:'cta', text:'Explore More on the Blog', url:'https://gideonabochie.org/content/' });
+
+  // Divider
+  blocks.push({ id:'c6', type:'divider' });
+
+  // Quote of the week
+  blocks.push({ id:'c7', type:'text', content:'<p style="color:#6B7F9A;font-size:13px;font-style:italic;text-align:center">"The Spirit of God has made me, and the breath of the Almighty gives me life." \u2014 Job 33:4</p>' });
+
+  // Social
+  blocks.push({ id:'c8', type:'social' });
+
+  // Footer
+  blocks.push({ id:'c9', type:'footer' });
+
+  return blocks;
+}
+
+function updateCalendarIssues(datesToUpdate, newStatus) {
   try {
-    var calData = JSON.parse(localStorage.getItem('ga_calendar'));
+    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
+    if (!calData || !calData.issues) return;
+    (Array.isArray(datesToUpdate) ? datesToUpdate : [datesToUpdate]).forEach(function(key) {
+      if (calData.issues[key]) {
+        calData.issues[key].status = newStatus;
+      }
+    });
+    localStorage.setItem(CAL_STORAGE_KEY, JSON.stringify(calData));
+  } catch(_e) {}
+}
+
+function openCalModal() {
+  try {
+    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
     if (!calData || !calData.issues) { alert('No calendar data found. Go to Calendar first to set up your content plan.'); return; }
-    // Find next unpublished issue
     var keys = Object.keys(calData.issues);
-    var found = null;
+    var unpublished = [];
     for (var i = 0; i < keys.length; i++) {
-      var issue = calData.issues[keys[i]];
-      if (issue.status !== 'published') { found = { date: keys[i], theme: issue.theme, issueNum: i + 1 }; break; }
+      if (calData.issues[keys[i]].status !== 'published') {
+        unpublished.push({ key: keys[i], issue: calData.issues[keys[i]], num: i + 1 });
+      }
     }
-    if (!found) { alert('All calendar issues are published! Add a new year.'); return; }
-    document.getElementById('subjectInput').value = 'The Studio Weekly — Issue #' + found.issueNum + ': ' + found.theme;
-    // Add a header block with the theme
-    var hdrBlock = createBlock('header');
-    hdrBlock.title = 'The Studio Weekly';
-    hdrBlock.subtitle = 'Issue #' + found.issueNum + ' — ' + found.theme + ' — ' + found.date;
-    blocks.push(hdrBlock);
+    if (!unpublished.length) { alert('All calendar issues are published! Add a new year in the Calendar page.'); return; }
+
+    var listEl = document.getElementById('calIssueList');
+    var html = '';
+    unpublished.forEach(function(item) {
+      var statusClass = item.issue.status || 'planned';
+      html += '<div class="cal-issue-row" onclick="loadIssueFromCalendar(\'' + item.key + '\')">' +
+        '<div class="num">#' + item.num + '</div>' +
+        '<div class="info"><div class="theme">' + esc(item.issue.theme || 'Untitled') + '</div><div class="date">' + item.key + '</div></div>' +
+        '<span class="status-badge ' + statusClass + '">' + (item.issue.status || 'planned') + '</span>' +
+        '</div>';
+    });
+    listEl.innerHTML = html;
+    document.getElementById('calModal').style.display = 'flex';
+  } catch(e) { alert('Error reading calendar: ' + e.message); }
+}
+
+function closeCalModal() {
+  document.getElementById('calModal').style.display = 'none';
+}
+
+function loadIssueFromCalendar(dateKey) {
+  closeCalModal();
+  try {
+    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
+    if (!calData || !calData.issues || !calData.issues[dateKey]) { alert('Issue not found in calendar.'); return; }
+    var issue = calData.issues[dateKey];
+    var keys = Object.keys(calData.issues);
+    var issueNum = keys.indexOf(dateKey) + 1;
+
+    // Generate full draft from theme
+    blocks = generateDraftForTheme(issue.theme, issueNum, dateKey);
+    document.getElementById('subjectInput').value = 'The Studio Weekly \u2014 Issue #' + issueNum + ': ' + issue.theme;
+
+    // Track which calendar issue is loaded
+    loadedCalendarDate = dateKey;
+    // Mark calendar as drafted
+    updateCalendarIssues(dateKey, 'drafted');
+
     renderEditor();
     renderPreview();
-    alert('Loaded theme "' + found.theme + '" from calendar (Issue #' + found.issueNum + ', ' + found.date + ')');
-  } catch(e) { alert('Error reading calendar: ' + e.message); }
+  } catch(e) { alert('Error loading issue: ' + e.message); }
 }
 
 // ── Send test ──
@@ -584,18 +720,11 @@ function broadcast() {
     if (d.status === 'ok') {
       status.className = 'active ok';
       status.innerHTML = '&#10003; Sent to ' + d.sent + ' subscribers' + (d.failed ? ' (' + d.failed + ' failed)' : '') + '. Issue #' + d.issue_number + ' archived.';
-      // Mark the calendar issue as published if loaded
-      try {
-        var calData = JSON.parse(localStorage.getItem('ga_calendar'));
-        if (calData && calData.issues) {
-          var keys = Object.keys(calData.issues);
-          for (var i = 0; i < keys.length; i++) {
-            var issue = calData.issues[keys[i]];
-            if (issue.status !== 'published') { issue.status = 'published'; break; }
-          }
-          localStorage.setItem('ga_calendar', JSON.stringify(calData));
-        }
-      } catch(_e) {}
+      // Mark the calendar issue as published
+      if (loadedCalendarDate) {
+        updateCalendarIssues(loadedCalendarDate, 'published');
+        loadedCalendarDate = null;
+      }
     } else {
       status.className = 'active err';
       status.innerHTML = '&#10007; ' + (d.message || 'Failed');
