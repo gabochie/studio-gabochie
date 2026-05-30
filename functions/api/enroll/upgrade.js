@@ -52,7 +52,7 @@ export async function onRequest(context) {
       full_content: enrollment.full_content || ''
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }

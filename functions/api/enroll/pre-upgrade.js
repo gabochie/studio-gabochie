@@ -44,7 +44,7 @@ export async function onRequest(context) {
       headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }

@@ -13,7 +13,7 @@ export async function onRequest(context) {
       const raw = await request.text();
       let body;
       try { body = JSON.parse(raw); } catch (e) {
-        return new Response(JSON.stringify({ status:'error', message:e.message }), { status:400, headers:{'Content-Type':'application/json'} });
+        return new Response(JSON.stringify({ status:'error', message:'Invalid JSON body' }), { status:400, headers:{'Content-Type':'application/json'} });
       }
       event_type = body.event_type || '';
       event_data = typeof body.event_data === 'object' ? JSON.stringify(body.event_data) : String(body.event_data || '');
@@ -34,6 +34,6 @@ export async function onRequest(context) {
     ).bind(event_type, event_data, page, email).run();
     return new Response(JSON.stringify({ status: 'ok' }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

@@ -67,7 +67,7 @@ export async function onRequest(context) {
 
     return new Response(assetResponse.body, { status: 200, headers });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Download failed: ' + err.message }), {
+    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }
