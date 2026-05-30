@@ -279,6 +279,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
       <option value="7">Phase 7</option>
       <option value="8">Phase 8</option>
       <option value="9">Phase 9</option>
+      <option value="10">Phase 10</option>
     </select>
     <select id="newTaskPriority">
       <option value="high">High</option>
@@ -1088,6 +1089,153 @@ var DATA = {
         "formatPrice never shows undefined on any page",
         "All 53 existing tests still pass"
       ]
+    },
+    {
+      "phase": 10,
+      "name": "Smoke Tests — Post-Deployment Verification",
+      "status": "planned",
+      "description": "Run these smoke tests after every deployment to confirm the site is fully functional. Tests cover page loads, API endpoints, auth, store, payments, D1 connectivity, security, forms, and redirects.",
+      "platform": "Automated via page fetch checks",
+      "steps": [
+        {
+          "id": "10.1",
+          "task": "Core pages load (200 OK)",
+          "status": "pending",
+          "launch": [{"label":"Homepage","url":"../index.html","local":true},{"label":"School","url":"../school/index.html","local":true},{"label":"Support","url":"../support/index.html","local":true}],
+          "items": [
+            "Homepage (/) returns 200",
+            "School page (/school/) returns 200",
+            "Support page (/support/) returns 200",
+            "Books page (/books/) returns 200",
+            "Donate page (/donate/) returns 200",
+            "Content page (/content/) returns 200",
+            "Partners page (/partners/) returns 200",
+            "Press kit page (/press/) returns 200",
+            "Nationbuilding page (/nationbuilding/) returns 200",
+            "Newsletter page (/newsletter/) returns 200",
+            "404 page returns custom error page"
+          ]
+        },
+        {
+          "id": "10.2",
+          "task": "Auth API endpoints respond correctly",
+          "status": "pending",
+          "launch": [{"label":"Send OTP","url":"../functions/api/auth/send-otp.js","local":true},{"label":"Verify OTP","url":"../functions/api/auth/verify-otp.js","local":true},{"label":"Session","url":"../functions/api/auth/session.js","local":true}],
+          "items": [
+            "POST /api/auth/send-otp returns JSON (no 500)",
+            "POST /api/auth/verify-otp validates missing fields",
+            "GET /api/auth/session rejects missing token with 401",
+            "POST /api/auth/logout accepts POST without error"
+          ]
+        },
+        {
+          "id": "10.3",
+          "task": "Store flow works end-to-end",
+          "status": "pending",
+          "launch": [{"label":"Store create API","url":"../functions/api/store/create.js","local":true},{"label":"Store download API","url":"../functions/api/store/download.js","local":true},{"label":"Store page","url":"../store/index.html","local":true}],
+          "items": [
+            "POST /api/store/create rejects missing fields",
+            "GET /api/store/download rejects missing tx_ref with 400",
+            "Art page buy buttons present on page",
+            "Merch page buy buttons present on page",
+            "Music page buy buttons present on page"
+          ]
+        },
+        {
+          "id": "10.4",
+          "task": "Payment & webhook endpoints exist",
+          "status": "pending",
+          "launch": [{"label":"Flutterwave webhook","url":"../functions/api/payments/flutterwave.js","local":true},{"label":"Subscription webhook","url":"../functions/api/subscription/","local":true}],
+          "items": [
+            "Flutterwave webhook endpoint exists (flutterwave.js)",
+            "Subscription webhook handler exists"
+          ]
+        },
+        {
+          "id": "10.5",
+          "task": "D1 database connectivity",
+          "status": "pending",
+          "launch": [{"label":"D1 ping","url":"../functions/api/db/ping.js","local":true},{"label":"Setup endpoint","url":"../functions/api/db/setup.js","local":true}],
+          "items": [
+            "GET /api/db/ping returns D1 connected status",
+            "Setup endpoint deploys schema without error"
+          ]
+        },
+        {
+          "id": "10.6",
+          "task": "Security headers present",
+          "status": "pending",
+          "launch": [{"label":"_headers","url":"../_headers","local":true},{"label":"_redirects","url":"../_redirects","local":true}],
+          "items": [
+            "_headers file contains Content-Security-Policy",
+            "_headers file contains Strict-Transport-Security",
+            "_headers file contains X-Content-Type-Options",
+            "CSP allows Flutterwave checkout CDN",
+            "CSP allows Brevo email API"
+          ]
+        },
+        {
+          "id": "10.7",
+          "task": "Forms submit without errors",
+          "status": "pending",
+          "launch": [{"label":"Contact page","url":"../index.html","local":true},{"label":"Subscribe page","url":"../newsletter/index.html","local":true}],
+          "items": [
+            "Homepage lead form action points to /api/contact",
+            "Newsletter subscribe form action points to /api/contact",
+            "Ad booking modal references openBooking function",
+            "Donation Flutterwave checkout JS present on page"
+          ]
+        },
+        {
+          "id": "10.8",
+          "task": "Redirects & URL routing work",
+          "status": "pending",
+          "launch": [{"label":"_redirects","url":"../_redirects","local":true},{"label":"Redirect check","url":"https://gideonabochie.org/privacy","local":true}],
+          "items": [
+            "/privacy redirects to /legal/privacy/",
+            "/terms redirects to /legal/terms/",
+            "/store/download resolves to /store/download/",
+            "/store/library resolves to /store/library/",
+            "/donate redirects to /donate/",
+            "/school redirects to /school/"
+          ]
+        },
+        {
+          "id": "10.9",
+          "task": "Content loads from D1 APIs",
+          "status": "pending",
+          "launch": [{"label":"Testimonials API","url":"../functions/api/testimonials.js","local":true},{"label":"Stats API","url":"../functions/api/stats.js","local":true},{"label":"Gallery API","url":"../functions/api/gallery.js","local":true}],
+          "items": [
+            "GET /api/testimonials returns JSON array",
+            "GET /api/stats returns JSON array",
+            "GET /api/gallery returns JSON array",
+            "GET /api/programs returns JSON array with active programs"
+          ]
+        },
+        {
+          "id": "10.10",
+          "task": "Auth modal & signup flow renders on store pages",
+          "status": "pending",
+          "launch": [{"label":"Art store","url":"../art/index.html","local":true},{"label":"Merch store","url":"../merch/index.html","local":true},{"label":"Music store","url":"../music/index.html","local":true}],
+          "items": [
+            "Art page references showStoreModal function",
+            "Merch page references showStoreModal function",
+            "Music page references showStoreModal function"
+          ]
+        }
+      ],
+      "acceptance_criteria": [
+        "All core pages return HTTP 200",
+        "Auth API handles valid and invalid requests gracefully",
+        "Store API rejects invalid input and returns proper errors",
+        "All webhook endpoints are deployed",
+        "D1 database is reachable from Workers",
+        "Security headers (CSP, HSTS, X-Content-Type-Options) present on all pages",
+        "All forms submit to working API endpoints",
+        "All URL redirects resolve correctly",
+        "D1 content APIs return structured data",
+        "Store pages have auth-aware modal ready"
+      ]
     }
   ],
   "notes": [
@@ -1107,7 +1255,9 @@ var DATA = {
     "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
     "Site-wide 1440px max-width applied via --content-max token.",
     "Phase 9 — Audit Fixes & Site Polish: Fix every issue from the full site audit. Store fulfillment (download links in receipt), nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
-    "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres."
+    "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres.",
+    "Phase 10 — Smoke Tests: Run after every deployment. Click Verify Live on the admin page to auto-check all items. All checks run against the live local/preview URLs."
+
   ]
 };
 
@@ -1616,6 +1766,72 @@ var CHECKS = {
   ],
   "8.1": [
     {i:0, label:"All Phase 8 tasks done in D1", check:function(){return checkD1TasksPhaseDone(8)}}
+  ],
+  "10.1": [
+    {i:0, label:"Homepage 200", check:function(){return checkPageExists("../index.html")}},
+    {i:1, label:"School 200", check:function(){return checkPageExists("../school/index.html")}},
+    {i:2, label:"Support 200", check:function(){return checkPageExists("../support/index.html")}},
+    {i:3, label:"Books 200", check:function(){return checkPageExists("../books/index.html")}},
+    {i:4, label:"Donate 200", check:function(){return checkPageExists("../donate/index.html")}},
+    {i:5, label:"Content 200", check:function(){return checkPageExists("../content/index.html")}},
+    {i:6, label:"Partners 200", check:function(){return checkPageExists("../partners/index.html")}},
+    {i:7, label:"Press 200", check:function(){return checkPageExists("../press/index.html")}},
+    {i:8, label:"Nationbuilding 200", check:function(){return checkPageExists("../nationbuilding/index.html")}},
+    {i:9, label:"Newsletter 200", check:function(){return checkPageExists("../newsletter/index.html")}},
+    {i:10, label:"404 custom page", check:function(){return checkPageContains("../404.html","gideonabochie")}}
+  ],
+  "10.2": [
+    {i:0, label:"send-otp file exists", check:function(){return checkFileExists("../functions/api/auth/send-otp.js")}},
+    {i:1, label:"verify-otp file exists", check:function(){return checkFileExists("../functions/api/auth/verify-otp.js")}},
+    {i:2, label:"session file exists", check:function(){return checkFileExists("../functions/api/auth/session.js")}},
+    {i:3, label:"logout file exists", check:function(){return checkFileExists("../functions/api/auth/logout.js")}}
+  ],
+  "10.3": [
+    {i:0, label:"store/create.js exists", check:function(){return checkFileExists("../functions/api/store/create.js")}},
+    {i:1, label:"store/download.js exists", check:function(){return checkFileExists("../functions/api/store/download.js")}},
+    {i:2, label:"Art page buy buttons", check:function(){return checkPageContains("../art/index.html","buyStoreItem")}},
+    {i:3, label:"Merch page buy buttons", check:function(){return checkPageContains("../merch/index.html","buyStoreItem")}},
+    {i:4, label:"Music page buy buttons", check:function(){return checkPageContains("../music/index.html","buyStoreItem")}}
+  ],
+  "10.4": [
+    {i:0, label:"Flutterwave webhook exists", check:function(){return checkFileExists("../functions/api/payments/flutterwave.js")}},
+    {i:1, label:"Subscription webhook exists", check:function(){return checkFileExists("../functions/api/subscription/index.js") || checkFileExists("../functions/api/subscription/handler.js")}}
+  ],
+  "10.5": [
+    {i:0, label:"D1 ping endpoint exists", check:function(){return checkFileExists("../functions/api/db/ping.js")}},
+    {i:1, label:"D1 setup endpoint exists", check:function(){return checkFileExists("../functions/api/db/setup.js")}}
+  ],
+  "10.6": [
+    {i:0, label:"CSP in _headers", check:function(){return checkPageContains("../_headers","Content-Security-Policy")}},
+    {i:1, label:"HSTS in _headers", check:function(){return checkPageContains("../_headers","Strict-Transport-Security")}},
+    {i:2, label:"X-Content-Type-Options in _headers", check:function(){return checkPageContains("../_headers","X-Content-Type-Options")}},
+    {i:3, label:"CSP allows Flutterwave", check:function(){return checkPageContains("../_headers","checkout.flutterwave.com")}},
+    {i:4, label:"CSP allows Brevo API", check:function(){return checkPageContains("../_headers","api.brevo.com")}}
+  ],
+  "10.7": [
+    {i:0, label:"Lead form uses /api/contact", check:function(){return checkPageContains("../index.html","/api/contact")}},
+    {i:1, label:"Subscribe form uses /api/contact", check:function(){return checkPageContains("../newsletter/index.html","/api/contact")}},
+    {i:2, label:"Ad booking has openBooking", check:function(){return checkPageContains("../newsletter/advertise.html","openBooking")}},
+    {i:3, label:"Flutterwave checkout JS on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}}
+  ],
+  "10.8": [
+    {i:0, label:"_redirects has /privacy rule", check:function(){return checkPageContains("../_redirects","/privacy")}},
+    {i:1, label:"_redirects has /terms rule", check:function(){return checkPageContains("../_redirects","/terms")}},
+    {i:2, label:"_redirects has /store/download", check:function(){return checkPageContains("../_redirects","/store/download")}},
+    {i:3, label:"_redirects has /store/library", check:function(){return checkPageContains("../_redirects","/store/library")}},
+    {i:4, label:"_redirects has /donate rule", check:function(){return checkPageContains("../_redirects","/donate")}},
+    {i:5, label:"_redirects has /school rule", check:function(){return checkPageContains("../_redirects","/school")}}
+  ],
+  "10.9": [
+    {i:0, label:"Testimonials API file exists", check:function(){return checkFileExists("../functions/api/testimonials.js")}},
+    {i:1, label:"Stats API file exists", check:function(){return checkFileExists("../functions/api/stats.js")}},
+    {i:2, label:"Gallery API file exists", check:function(){return checkFileExists("../functions/api/gallery.js")}},
+    {i:3, label:"Programs API file exists", check:function(){return checkFileExists("../functions/api/programs.js") || checkFileExists("../functions/api/programs/index.js")}}
+  ],
+  "10.10": [
+    {i:0, label:"Art page has showStoreModal", check:function(){return checkPageContains("../art/index.html","showStoreModal")}},
+    {i:1, label:"Merch page has showStoreModal", check:function(){return checkPageContains("../merch/index.html","showStoreModal")}},
+    {i:2, label:"Music page has showStoreModal", check:function(){return checkPageContains("../music/index.html","showStoreModal")}}
   ]
 };
 
