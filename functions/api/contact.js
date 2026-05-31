@@ -1,5 +1,15 @@
 import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
 
+const notifyHtml = (name, email, msg, source) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
+  <h2 style="color:#0A1628">New Contact Submission</h2>
+  <table style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;border-collapse:collapse;width:100%">
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:80px">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${name}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${email}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Source:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${source}</td></tr>
+    ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${msg}</td></tr>` : ''}
+  </table>
+  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://gideonabochie.org/admin/agents.html">Go to Command Center</a></p></body></html>`;
+
 export async function onRequest(context) {
   const { request, env } = context;
 
@@ -41,6 +51,7 @@ export async function onRequest(context) {
     const formData = await request.formData();
     const name = formData.get('name') || '';
     const email = formData.get('email') || '';
+    const msg = formData.get('message') || '';
     const book = formData.get('book') || formData.get('_subject') || '';
     const spam = formData.get('_gotcha');
     if (spam) {
@@ -48,12 +59,18 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-    // Store in D1
     const db = env.DB;
+    const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
     if (db && email) {
       await db.prepare(
         `INSERT OR IGNORE INTO subscribers (name, email, source, book) VALUES (?, ?, ?, ?)`
       ).bind(name, email, book || 'contact', book || '').run();
+      // Store in contact_submissions for admin review
+      await db.prepare(
+        `INSERT INTO contact_submissions (name, email, subject, message, source) VALUES (?, ?, ?, ?, ?)`
+      ).bind(name, email, book || 'Contact Form', msg, 'contact').run();
+      // Queue admin notification
+      await queueEmail(env, notify, 'Gideon', 'New Contact: ' + name, notifyHtml(name, email, msg, 'contact'), 'admin_notification');
       // Queue manifesto follow-up (day 3) if a book download
       if (book) {
         try {
@@ -63,16 +80,6 @@ export async function onRequest(context) {
         } catch (_) {}
       }
     }
-
-    // Forward to Formspree as email fallback
-    const fp = new FormData();
-    fp.append('name', name);
-    fp.append('email', email);
-    fp.append('_subject', book || 'New contact form submission');
-    fp.append('_next', formData.get('_next') || 'https://gideonabochie.org');
-    await fetch('https://formspree.io/f/xgoplkoe', {
-      method: 'POST', body: fp, headers: { 'Accept': 'application/json' }
-    }).catch(function(){});
 
     return new Response(JSON.stringify({ status: 'ok' }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

@@ -269,6 +269,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <div class="sidebar-label">Activity</div>
     <button class="sidebar-item" data-tab="runs"><span class="si-icon">&#9776;</span> Run History</button>
     <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
+    <button class="sidebar-item" data-tab="submissions"><span class="si-icon">&#9993;</span> Submissions <span class="si-badge" id="sbdSubmissions">0</span></button>
     <div class="sidebar-label">System</div>
     <button class="sidebar-item" data-tab="settings"><span class="si-icon">&#9881;</span> Settings</button>
     <div class="sidebar-label">Info</div>
@@ -276,7 +277,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <button class="sidebar-item" data-tab="architecture"><span class="si-icon">&#9638;</span> Architecture</button>
   </nav>
   <div class="sidebar-footer">
-    <div class="shortcut"><kbd>1</kbd>-<kbd>8</kbd> Nav &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
+    <div class="shortcut"><kbd>1</kbd>-<kbd>9</kbd> Nav &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
   </div>
 </aside>
 
@@ -361,6 +362,20 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="crd" id="queueList"></div>
 </div>
 
+<div class="tab-panel" id="panel-submissions">
+  <div class="page-header"><h2>Submissions</h2><p>Contact form and booking inquiries</p></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <select id="subStatusFilter" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;font-size:12px;font-family:var(--font-body);-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%235A7A9F' d='M5 7L1 3h8z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none">
+      <option value="">All status</option>
+      <option value="new">New</option>
+      <option value="read">Read</option>
+      <option value="replied">Replied</option>
+    </select>
+    <button class="btn btn-secondary btn-sm" onclick="loadSubmissionsTab()">&#8635; Refresh</button>
+  </div>
+  <div class="crd"><div class="tbl-wrap" id="submissionsList"></div></div>
+</div>
+
 <div class="tab-panel" id="panel-settings">
   <div class="page-header"><h2>Settings</h2><p>System configuration</p></div>
   <div class="crd">
@@ -435,7 +450,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="sc-body" style="font-size:13px;line-height:1.7;color:var(--text-muted)">
     <ol style="padding-left:18px">
       <li style="margin-bottom:6px"><strong>Admin Key:</strong> On first API call you'll be prompted for an admin key. This is stored in your browser (<code style="background:var(--bg-primary);padding:1px 5px;border-radius:3px;font-size:12px">localStorage</code>) and sent as <code style="background:var(--bg-primary);padding:1px 5px;border-radius:3px;font-size:12px">X-Admin-Key</code> on every request. Set or clear it in <strong>Settings tab</strong>.</li>
-      <li style="margin-bottom:6px"><strong>Keyboard:</strong> Press <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">1</kbd>-<kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">8</kbd> to switch tabs, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">R</kbd> to refresh current tab, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">ESC</kbd> to close modals.</li>
+      <li style="margin-bottom:6px"><strong>Keyboard:</strong> Press <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">1</kbd>-<kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">9</kbd> to switch tabs, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">R</kbd> to refresh current tab, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">ESC</kbd> to close modals.</li>
       <li style="margin-bottom:6px"><strong>Mobile:</strong> The sidebar collapses automatically below 900px. Use the hamburger icon (&#9776;) in the top-left to open it. Tap outside the sidebar to close it.</li>
     </ol>
   </div></div>
@@ -448,11 +463,12 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">3</kbd> Workflows</td><td style="padding:8px 0 8px 16px">Automated pipelines. Create workflows with a name, description, and trigger type (Manual, Scheduled/Cron, Event-driven). Click a workflow to see its steps, add/delete steps, edit metadata, run manually, or delete the workflow. Steps are ordered sequentially.</td></tr>
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">4</kbd> Runs</td><td style="padding:8px 0 8px 16px">Execution history of all agents and workflows. Filter by status (all/completed/error/running/pending). Click any run row to see details including timestamps, duration, and error messages. Error rate shown on dashboard.</td></tr>
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">5</kbd> Queue</td><td style="padding:8px 0 8px 16px">Pending work items waiting for agent processing. Shows priority, type, status, and age. Click a row for full detail (payload, result, error). <strong>Process 10</strong> and <strong>Process 1</strong> buttons drain the queue in batches. Auto-drain runs on cron in production.</td></tr>
-      <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">6</kbd> Settings</td><td style="padding:8px 0 8px 16px">Auth tokens (agent auth token, admin key) stored locally in your browser. System preferences persisted server-side in D1. Audit log of sensitive operations with timestamp and user/action details.</td></tr>
-      <tr><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">7</kbd> Help</td><td style="padding:8px 0 0 16px">This page — reference documentation for the Command Center.</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">6</kbd> Submissions</td><td style="padding:8px 0 8px 16px">Contact form and booking inquiry submissions from the public site. Filter by status (new/read/replied), click to view full message, auto-marks as read. Track response status.</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">7</kbd> Settings</td><td style="padding:8px 0 8px 16px">Auth tokens (agent auth token, admin key) stored locally in your browser. System preferences persisted server-side in D1. Audit log of sensitive operations with timestamp and user/action details.</td></tr>
+      <tr><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">8</kbd> Help</td><td style="padding:8px 0 0 16px">This page — reference documentation for the Command Center.</td></tr>
       <tr style="border-bottom:1px solid var(--border)">
         <td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top">
-          <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">8</kbd> Architecture
+          <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">9</kbd> Architecture
         </td>
         <td style="padding:8px 0 8px 16px">
           Live system diagram showing agent lifecycle, queue flow, and real-time status from D1.
@@ -566,8 +582,8 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <script>
 (function() {
 
-var tabs = ['dashboard','agents','workflows','campaign','runs','queue','settings','help','architecture'];
-var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
+var tabs = ['dashboard','agents','workflows','campaign','runs','queue','submissions','settings','help','architecture'];
+var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', submissions:'Submissions', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
 
@@ -947,6 +963,61 @@ function processQueue(max) {
   API.orchestrate(max||10).then(function(d){if(d.status==='ok'){Toast.success('Processed '+d.processed+' items'+(d.total_pending?'. '+d.total_pending+' remaining.':''));loadQueueTab();loadDashboard();}else throw new Error(d.message);}).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 
+/* ── Submissions ── */
+function loadSubmissionsTab() {
+  var status = $('subStatusFilter').value;
+  $('submissionsList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading submissions...</div></div>';
+  API.getSubmissions({ status: status, limit: 100 }).then(function(data){
+    renderSubmissions(data);
+  }).catch(function(e){ showError($('submissionsList'), e.message, loadSubmissionsTab); });
+}
+function renderSubmissions(data) {
+  var items = data.items || [];
+  $('sbdSubmissions').textContent = items.filter(function(s){ return s.status === 'new'; }).length;
+  var el = $('submissionsList');
+  if (!items.length) { showEmpty(el, '&#9993;', 'No submissions yet', 'Submissions from contact forms and booking inquiries will appear here.'); return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Time</th><th>Name</th><th>Email</th><th>Subject</th><th>Source</th><th>Status</th><th></th></tr></thead><tbody>' +
+    items.map(function(s){
+      return '<tr style="' + (s.status === 'new' ? 'font-weight:600' : '') + '">'+
+        '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(s.created_at)+'</td>'+
+        '<td style="color:var(--text-primary)">'+(s.name||'-')+'</td>'+
+        '<td style="font-size:12px">'+(s.email||'-')+'</td>'+
+        '<td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.subject||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+(s.source||'-')+'</span></td>'+
+        '<td>'+tag(s.status||'new')+'</td>'+
+        '<td><button class="btn-icon" onclick="showSubmissionDetail('+s.id+')" title="View">&#8594;</button></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+function showSubmissionDetail(id) {
+  API.getSubmissions({ id: id, limit: 1 }).then(function(data){
+    var item = data.items && data.items[0];
+    if (!item) { Toast.error('Submission not found'); return; }
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(item.name||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v"><a href="mailto:'+item.email+'">'+(item.email||'-')+'</a></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Subject</span><span class="mdl-v">'+(item.subject||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+(item.source||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(item.status||'new')+'</span></div>'+
+      (item.message ? '<div class="m-detail-row" style="flex-direction:column;padding:8px 0"><span class="mdl-l" style="margin-bottom:4px">Message</span><span class="mdl-v" style="text-align:left;font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--bg-primary);padding:10px;border-radius:6px">'+item.message+'</span></div>' : '');
+    h += '<div style="margin-top:16px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Mark as</label>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+      '<button class="btn btn-sm '+(item.status==='new'?'btn-primary':'btn-secondary')+'" onclick="updateSubmissionStatus('+id+',\'new\')">New</button>'+
+      '<button class="btn btn-sm '+(item.status==='read'?'btn-primary':'btn-secondary')+'" onclick="updateSubmissionStatus('+id+',\'read\')">Read</button>'+
+      '<button class="btn btn-sm '+(item.status==='replied'?'btn-primary':'btn-secondary')+'" onclick="updateSubmissionStatus('+id+',\'replied\')">Replied</button>'+
+      '</div></div>';
+    $('detailTitle').textContent = 'Submission: '+(item.subject||'#'+id);
+    $('detailBody').innerHTML = h;
+    $('detailModal').classList.add('open');
+    // Auto-mark as read
+    if (item.status === 'new') API.updateSubmission(id, { status: 'read' }).catch(function(){});
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+function updateSubmissionStatus(id, status) {
+  API.updateSubmission(id, { status: status }).then(function(d){
+    if (d.status === 'ok') { Toast.success('Marked as ' + status); loadSubmissionsTab(); $('detailModal').classList.remove('open'); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
 function loadSettings() {
   $('sAgentToken').value = AppState.get('agentAuthToken') || '';
   $('sAdminKey').value = AppState.get('adminKey') || '';
@@ -1151,6 +1222,7 @@ function switchTab(name) {
   else if(name==='campaign') loadCampaignTab();
   else if(name==='runs') loadRunsTab();
   else if(name==='queue') loadQueueTab();
+  else if(name==='submissions') loadSubmissionsTab();
   else if(name==='settings') loadSettings();
 }
 
@@ -1170,6 +1242,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $('campaignSearchBtn').addEventListener('click', function(){ campaignPage = 1; loadCampaignTab(); });
   $('campaignSearch').addEventListener('keydown', function(e){ if (e.key === 'Enter') { campaignPage = 1; loadCampaignTab(); } });
   $('campaignRefreshBtn').addEventListener('click', function(){ loadCampaignTab(); });
+  $('subStatusFilter').addEventListener('change', function(){ loadSubmissionsTab(); });
   $('sSaveTokens').addEventListener('click', saveTokens);
   $('sClearTokens').addEventListener('click', clearTokens);
   $('seedAgentsBtn').addEventListener('click', seedDefaultAgents);
@@ -1205,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(TAB==='dashboard') loadDashboard();
     else if(TAB==='campaign') loadCampaignTab();
     else if(TAB==='queue') API.getQueue().then(renderQueue);
+    else if(TAB==='submissions') loadSubmissionsTab();
     else if(TAB==='runs') API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns);
   },15000);
 });

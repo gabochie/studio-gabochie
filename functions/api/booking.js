@@ -1,3 +1,17 @@
+import { queueEmail } from './email/_send.js';
+
+const notifyHtml = (name, email, phone, company, slot, msg) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
+  <h2 style="color:#0A1628">New Ad Booking Inquiry</h2>
+  <table style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;border-collapse:collapse;width:100%">
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:100px">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${name}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${email}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Phone:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${phone}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Company:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${company}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Slot:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${slot}</td></tr>
+    ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${msg}</td></tr>` : ''}
+  </table>
+  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://gideonabochie.org/admin/agents.html">Go to Command Center</a></p></body></html>`;
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') {
@@ -19,25 +33,21 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-    // Store in D1
     const tx_ref = formData.get('tx_ref') || '';
     const amount = parseFloat(formData.get('amount')) || 0;
     const db = env.DB;
+    const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
     if (db && email) {
       await db.prepare(
         `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(name, email, company, slot, message, tx_ref ? 'paid' : 'pending', tx_ref, amount).run();
+      // Store in contact_submissions for admin review
+      await db.prepare(
+        `INSERT INTO contact_submissions (name, email, subject, message, source) VALUES (?, ?, ?, ?, ?)`
+      ).bind(name, email, 'Ad Booking: ' + slot, message, 'booking').run();
+      // Queue admin notification
+      await queueEmail(env, notify, 'Gideon', 'Booking Inquiry: ' + name + ' - ' + slot, notifyHtml(name, email, phone, company, slot, message), 'admin_notification');
     }
-
-    // Forward to Formspree as email fallback
-    const fp = new FormData();
-    fp.append('name', name);
-    fp.append('email', email);
-    fp.append('_subject', 'Ad booking inquiry: ' + slot);
-    fp.append('_next', 'https://gideonabochie.org/newsletter/advertise.html');
-    await fetch('https://formspree.io/f/xgoplkoe', {
-      method: 'POST', body: fp, headers: { 'Accept': 'application/json' }
-    }).catch(function(){});
 
     return new Response(JSON.stringify({ status: 'ok' }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

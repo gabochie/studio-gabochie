@@ -193,6 +193,19 @@ var API = (function() {
     return adminRequest('PUT', '/cold-outreach', Object.assign({ id: id }, data));
   }
 
+  function getSubmissions(params) {
+    var q = '';
+    if (params) {
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.limit) q += '&limit=' + params.limit;
+    }
+    return adminRequest('GET', '/submissions?' + q.substring(1));
+  }
+
+  function updateSubmission(id, data) {
+    return adminRequest('PUT', '/submissions?id=' + encodeURIComponent(id), data);
+  }
+
   function orchestrate(maxItems) {
     return post('/orchestrate', { max_items: maxItems || 10 });
   }
@@ -228,6 +241,8 @@ var API = (function() {
     deleteAgent: deleteAgent,
     getColdOutreach: getColdOutreach,
     updateColdOutreach: updateColdOutreach,
+    getSubmissions: getSubmissions,
+    updateSubmission: updateSubmission,
     orchestrate: orchestrate,
     runAction: runAction,
     get: get, post: post, put: put, request: request
