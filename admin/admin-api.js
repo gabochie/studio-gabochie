@@ -181,7 +181,7 @@ var API = (function() {
   }
 
   function runAction(action, payload) {
-    return post('/run', { action: action, payload: payload || {} });
+    return post('/run', Object.assign({ action: action }, payload || {}));
   }
 
   return {
