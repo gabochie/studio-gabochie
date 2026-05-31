@@ -270,6 +270,8 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
     <div class="sidebar-label">System</div>
     <button class="sidebar-item" data-tab="settings"><span class="si-icon">&#9881;</span> Settings</button>
+    <div class="sidebar-label">Info</div>
+    <a href="agents-architecture.html" class="sidebar-item" style="text-decoration:none"><span class="si-icon">&#9638;</span> Architecture</a>
   </nav>
   <div class="sidebar-footer">
     <div class="shortcut"><kbd>1</kbd>-<kbd>6</kbd> Nav &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
@@ -671,7 +673,7 @@ function switchTab(name) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelector('.sidebar-nav').addEventListener('click', function(e){ var item = e.target.closest('.sidebar-item'); if(item) switchTab(item.getAttribute('data-tab')); });
+  document.querySelector('.sidebar-nav').addEventListener('click', function(e){ var item = e.target.closest('.sidebar-item'); if(item && item.getAttribute('data-tab')) switchTab(item.getAttribute('data-tab')); });
   $('menuBtn').addEventListener('click', function(){ $('sidebar').classList.toggle('open'); });
   document.addEventListener('click', function(e){ if(window.innerWidth<=900&&!e.target.closest('.sidebar')&&!e.target.closest('.mobile-menu')) $('sidebar').classList.remove('open'); });
   $('refreshBtn').addEventListener('click', function(){ switchTab(TAB); });

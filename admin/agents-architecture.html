@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Architecture — Command Center · GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:32px 24px;line-height:1.5}
+
+:root{
+  --bg:#0A1628;
+  --bg-card:#0F1E38;
+  --bg-card-hover:#162540;
+  --border:#1E3250;
+  --border-light:#3A5278;
+  --gold:#C9A84C;
+  --gold-hover:#D9B85C;
+  --text:#F1F5F9;
+  --text-body:#CBD5E1;
+  --text-muted:#5A7A9F;
+  --text-dim:#3A5278;
+  --green:#34C77B;
+  --red:#E8637A;
+  --blue:#3B82F6;
+  --orange:#F59E0B;
+  --purple:#8B5CF6;
+  --radius:10px;
+  --radius-sm:6px;
+}
+
+.wrap{max-width:1200px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:36px}
+.header .bc{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);padding:4px 12px;border-radius:20px;text-transform:uppercase}
+.header h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:-.02em;margin-top:8px}
+.header h1 span{color:var(--gold)}
+.header p{color:var(--text-muted);font-size:14px;margin-top:4px}
+.header a{color:var(--gold);text-decoration:none}
+.header a:hover{color:var(--gold-hover)}
+
+.diagram{position:relative;padding:20px 0}
+
+/* Connection lines */
+.layer{position:relative;padding:12px 0;display:flex;justify-content:center}
+.layer::after{content:'';position:absolute;left:50%;bottom:-8px;width:2px;height:16px;background:var(--border-light);transform:translateX(-50%)}
+.layer:last-child::after{display:none}
+
+.arrow-down{text-align:center;color:var(--text-dim);font-size:18px;padding:4px 0;line-height:1}
+
+/* Cards */
+.card-grid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 20px;
+  min-width:160px;
+  max-width:220px;
+  flex:1;
+  transition:border-color .2s;
+  position:relative
+}
+.card:hover{border-color:var(--border-light)}
+
+.card .badge{
+  display:inline-block;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:2px 8px;
+  border-radius:4px;
+  margin-bottom:8px
+}
+.card .badge.gold{background:rgba(201,168,76,0.12);color:var(--gold)}
+.card .badge.blue{background:rgba(59,130,246,0.12);color:var(--blue)}
+.card .badge.green{background:rgba(52,199,123,0.12);color:var(--green)}
+.card .badge.red{background:rgba(232,99,122,0.12);color:var(--red)}
+.card .badge.purple{background:rgba(139,92,246,0.12);color:var(--purple)}
+.card .badge.orange{background:rgba(245,158,11,0.12);color:var(--orange)}
+
+.card .name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card .desc{font-size:11px;color:var(--text-muted);line-height:1.5;margin-bottom:6px}
+.card .meta{font-size:10px;color:var(--text-dim);display:flex;gap:8px;flex-wrap:wrap}
+.card .meta span{display:inline-flex;align-items:center;gap:3px}
+
+/* Tools list in card */
+.card .tools{margin-top:6px;padding-top:6px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:3px}
+.card .tools .tl{font-size:9px;color:var(--text-dim);background:rgba(90,122,159,0.08);padding:1px 5px;border-radius:3px}
+
+/* Sub-agent indicator */
+.card .sub-count{font-size:10px;color:var(--blue);margin-top:4px}
+
+/* Supervisor card - special */
+.supervisor{
+  background:linear-gradient(135deg,var(--bg-card) 0%,rgba(201,168,76,0.06) 100%);
+  border-color:rgba(201,168,76,0.25);
+  max-width:320px;
+  text-align:center;
+  padding:20px 28px
+}
+.supervisor:hover{border-color:rgba(201,168,76,0.4)}
+.supervisor .name{font-size:16px}
+.supervisor .desc{margin-bottom:4px}
+
+/* Orchestrator card */
+.orchestrator{
+  border-color:rgba(59,130,246,0.25);
+  max-width:320px;
+  text-align:center;
+  padding:20px 28px
+}
+.orchestrator:hover{border-color:rgba(59,130,246,0.4)}
+
+/* Infrastructure cards */
+.infra-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.infra-card{
+  background:rgba(15,30,56,0.5);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px 16px;
+  min-width:120px;
+  text-align:center;
+  transition:border-color .2s
+}
+.infra-card:hover{border-color:var(--border-light)}
+.infra-card .ic-icon{font-size:20px;margin-bottom:4px}
+.infra-card .ic-name{font-size:11px;font-weight:600;color:var(--text-muted)}
+.infra-card .ic-desc{font-size:9px;color:var(--text-dim);margin-top:2px}
+
+/* Section labels */
+.section-label{
+  text-align:center;
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  color:var(--text-dim);
+  padding:6px 0 4px
+}
+
+/* Flow arrows */
+.flow-row{display:flex;justify-content:center;gap:12px;padding:2px 0}
+.flow-row .arrow{color:var(--text-dim);font-size:13px}
+.flow-row .label{font-size:9px;color:var(--text-dim);background:rgba(90,122,159,0.08);padding:1px 6px;border-radius:3px}
+
+/* Legend */
+.legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0 0;padding:16px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* Notes section */
+.notes{margin-top:24px;padding:20px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.1);border-radius:var(--radius)}
+.notes h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:-.01em;margin-bottom:10px}
+.notes ul{list-style:none;padding:0}
+.notes li{font-size:12px;color:var(--text-body);padding:4px 0;padding-left:16px;position:relative;line-height:1.5}
+.notes li::before{content:'→';position:absolute;left:0;color:var(--gold)}
+
+@media(max-width:700px){
+  body{padding:16px 12px}
+  .header h1{font-size:24px}
+  .card{min-width:130px;padding:12px 14px}
+}
+
+@media print{
+  body{background:#fff;color:#333;padding:20px}
+  .card,.supervisor,.orchestrator,.infra-card,.notes{background:#f5f5f5;border-color:#ddd}
+  .card .badge,.section-label,.flow-row .label,.arrow-down,.legend{opacity:.7}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<div class="header">
+  <div class="bc"><a href="agents.html">&#8592; Command Center</a> / Architecture</div>
+  <h1>Agent <span>Architecture</span></h1>
+  <p>How the AI agent system orchestrates website operations — from human supervision to infrastructure</p>
+</div>
+
+<div class="diagram">
+
+  <!-- ROW: Human Supervisor -->
+  <div class="layer">
+    <div class="card supervisor">
+      <div class="badge gold">Human</div>
+      <div class="name">&#128100; Human Supervisor</div>
+      <div class="desc">Reviews AI output, approves content, monitors dashboards, adjusts strategy via Command Center UI</div>
+      <div class="tools">
+        <span class="tl">Reviews tasks</span>
+        <span class="tl">Approves content</span>
+        <span class="tl">Monitors runs</span>
+        <span class="tl">Sets policy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&#9660;</div>
+
+  <!-- ROW: Orchestrator -->
+  <div class="layer">
+    <div class="card orchestrator">
+      <div class="badge blue">Controller</div>
+      <div class="name">&#9881; Orchestrator</div>
+      <div class="desc">Central brain — manages sub-agents, delegates tasks, monitors execution, triggers workflows</div>
+      <div class="meta">
+        <span>&#9679; Max sub: 10</span>
+        <span>&#9201; 120s</span>
+      </div>
+      <div class="tools">
+        <span class="tl">dispatch_to_agent</span>
+        <span class="tl">spawn_sub_agent</span>
+        <span class="tl">monitor_run</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&#9660;</div>
+
+  <!-- ROW: Task Processor (dispatcher) -->
+  <div class="layer">
+    <div class="card" style="max-width:320px;text-align:center;border-color:rgba(139,92,246,0.2)">
+      <div class="badge purple">Dispatcher</div>
+      <div class="name">&#9889; Task Processor</div>
+      <div class="desc">Reads the agent queue, dispatches work to the right agent type, escalates on failure</div>
+      <div class="meta">
+        <span>&#9679; Max sub: 3</span>
+        <span>&#9201; 30s</span>
+      </div>
+      <div class="tools">
+        <span class="tl">query_d1</span>
+        <span class="tl">update_task</span>
+        <span class="tl">dispatch_to_agent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&#9660;</div>
+
+  <!-- ROW: Worker Agents -->
+  <div class="section-label">Worker Agents</div>
+  <div class="flow-row"><span class="label">Task Processor dispatches to:</span></div>
+
+  <div class="layer">
+    <div class="card-grid">
+
+      <!-- Content -->
+      <div class="card">
+        <div class="badge gold">Content</div>
+        <div class="name">&#9997; Content Agent</div>
+        <div class="desc">Drafts newsletters, blog posts, SEO meta descriptions, social media copy</div>
+        <div class="meta">
+          <span>&#9679; Max sub: 3</span>
+          <span>&#9201; 60s</span>
+        </div>
+        <div class="tools">
+          <span class="tl">call_ai</span>
+          <span class="tl">save_to_tasks</span>
+          <span class="tl">queue_email</span>
+        </div>
+        <div class="sub-count">&#8618; Can spawn sub-agents for research</div>
+      </div>
+
+      <!-- Outreach -->
+      <div class="card">
+        <div class="badge green">Outreach</div>
+        <div class="name">&#9993; Outreach Agent</div>
+        <div class="desc">Segments audience, sends dormant follow-ups, reactivates subscribers, content recommendations</div>
+        <div class="meta">
+          <span>&#9679; Max sub: 3</span>
+          <span>&#9201; 60s</span>
+        </div>
+        <div class="tools">
+          <span class="tl">call_ai</span>
+          <span class="tl">query_subscribers</span>
+          <span class="tl">queue_email</span>
+        </div>
+        <div class="sub-count">&#8618; Can spawn sub-agents for segments</div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="card">
+        <div class="badge blue">Analytics</div>
+        <div class="name">&#128200; Analytics Agent</div>
+        <div class="desc">Generates weekly reports, revenue forecasts, anomaly detection, subscriber predictions</div>
+        <div class="meta">
+          <span>&#9679; Max sub: 2</span>
+          <span>&#9201; 120s</span>
+        </div>
+        <div class="tools">
+          <span class="tl">call_ai</span>
+          <span class="tl">query_d1</span>
+          <span class="tl">save_report</span>
+        </div>
+        <div class="sub-count">&#8618; Spawns sub-agents for data queries</div>
+      </div>
+
+      <!-- Fulfillment -->
+      <div class="card">
+        <div class="badge orange">Fulfillment</div>
+        <div class="name">&#9881; Fulfillment Agent</div>
+        <div class="desc">Monitors payments, triggers email sequences, processes store orders, sends receipts</div>
+        <div class="meta">
+          <span>&#9679; Max sub: 5</span>
+          <span>&#9201; 30s</span>
+        </div>
+        <div class="tools">
+          <span class="tl">query_d1</span>
+          <span class="tl">queue_email</span>
+          <span class="tl">update_order</span>
+        </div>
+        <div class="sub-count">&#8618; Can spawn sub-agents per order</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow-down">&#9660;</div>
+
+  <!-- ROW: Sub-Agents -->
+  <div class="section-label">Sub-Agents (spawned on demand)</div>
+  <div class="layer">
+    <div class="card" style="max-width:480px;text-align:center;border-color:rgba(139,92,246,0.15);border-style:dashed">
+      <div class="badge purple">Sub-Agent</div>
+      <div class="name">&#9671; Sub-Agent Pool</div>
+      <div class="desc">Lightweight, single-purpose agent runs spawned by parent agents via <code>spawn_sub_agent</code> action. Tracked via <code>parent_run_id</code> and <code>sub_agent_count</code> on the parent run. Each sub-agent is a new queue item processed by the orchestrator.</div>
+      <div class="meta" style="justify-content:center">
+        <span>&#9679; Created per-task</span>
+        <span>&#8618; Linked to parent run</span>
+        <span>&#9632; Any agent type can spawn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">&#9660;</div>
+
+  <!-- ROW: Infrastructure -->
+  <div class="section-label">Infrastructure Layer</div>
+  <div class="layer" style="padding-bottom:0">
+    <div class="infra-grid">
+
+      <div class="infra-card">
+        <div class="ic-icon">&#128451;</div>
+        <div class="ic-name">D1 Database</div>
+        <div class="ic-desc">All agent state, runs, queue, workflows, prompts, tools persisted here</div>
+      </div>
+
+      <div class="infra-card">
+        <div class="ic-icon">&#129302;</div>
+        <div class="ic-name">OpenAI API</div>
+        <div class="ic-desc">GPT-4o-mini for content generation, analysis, outreach messaging</div>
+      </div>
+
+      <div class="infra-card">
+        <div class="ic-icon">&#9993;</div>
+        <div class="ic-name">Brevo Email</div>
+        <div class="ic-desc">Transactional &amp; bulk email delivery via email queue</div>
+      </div>
+
+      <div class="infra-card">
+        <div class="ic-icon">&#128188;</div>
+        <div class="ic-name">Cloudflare Workers</div>
+        <div class="ic-desc">Serverless functions + Cron triggers for automated processing</div>
+      </div>
+
+      <div class="infra-card">
+        <div class="ic-icon">&#128230;</div>
+        <div class="ic-name">Agent Queue</div>
+        <div class="ic-desc">Prioritized work queue (agent_queue table) processed by orchestrate endpoint</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span> Human / Content</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span> Orchestrator / Analytics</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Outreach</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Fulfillment</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Task Processor / Sub-Agents</div>
+</div>
+
+<!-- Notes -->
+<div class="notes">
+  <h3>How It Works</h3>
+  <ul>
+    <li><strong>Human supervision:</strong> All AI output is reviewed through the Command Center dashboard before publishing. The human sets policy, approves content, and monitors agent health.</li>
+    <li><strong>Orchestration:</strong> The Orchestrator runs on a cron schedule (every 15 min) and manually via "Process Now". It pulls from the agent queue and dispatches work.</li>
+    <li><strong>Dispatching:</strong> The Task Processor reads the queue and routes work to the appropriate agent type. Each agent type has specific tools and prompt templates.</li>
+    <li><strong>Sub-Agents:</strong> Any agent can spawn sub-agents for parallel subtasks. Sub-agents are tracked via <code>parent_run_id</code> and <code>sub_agent_count</code> on the parent run record.</li>
+    <li><strong>Workflows:</strong> 5 pre-built automated workflows run on cron: abandoned checkout recovery, dormant subscriber reactivation, post-purchase upsell, weekly analytics report, daily fulfillment check.</li>
+    <li><strong>Data flow:</strong> Agents read/write D1 via <code>query_d1</code> tool, generate content via OpenAI <code>call_ai</code>, send emails via <code>queue_email</code>, and create tasks via <code>save_to_tasks</code> for human review.</li>
+  </ul>
+</div>
+
+<!-- Actions -->
+<div class="legend" style="margin-top:16px;border-color:rgba(201,168,76,0.15)">
+  <a href="agents.html" style="color:var(--gold);text-decoration:none;font-size:12px;font-weight:600">&#8592; Back to Command Center</a>
+  <a href="roadmap.html" style="color:var(--text-muted);text-decoration:none;font-size:12px">View ToDo List</a>
+  <a href="index.html" style="color:var(--text-muted);text-decoration:none;font-size:12px">Admin Dashboard</a>
+</div>
+
+</div>
+
+</body>
+</html>
