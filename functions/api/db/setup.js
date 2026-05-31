@@ -606,6 +606,7 @@
         last_run_at TEXT DEFAULT '',
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_workflows_name ON workflows(name)`,
       `CREATE TABLE IF NOT EXISTS workflow_steps (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         workflow_id INTEGER NOT NULL,
