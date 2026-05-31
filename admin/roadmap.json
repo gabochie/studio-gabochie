@@ -155,10 +155,50 @@
         {"id": 8.3, "task": "Predictive analytics", "items": ["Revenue forecasting", "Subscriber predictions", "Anomaly detection"]},
         {"id": 8.4, "task": "Autonomous outreach", "items": ["Audience segmentation", "Dormant follow-up", "Content recommendations"]}
       ]
+    },
+    {
+      "phase": 9,
+      "name": "Audit Fixes & Site Polish",
+      "status": "in_progress",
+      "description": "Fix every critical and high-impact issue found in the full site audit. Store fulfillment, broken links, poor UX, placeholder content, and security gaps.",
+      "platform": "Cloudflare Pages + Workers + D1",
+      "steps": [
+        {"id": 9.1, "task": "Store fulfillment — receipt download link", "status": "pending", "items": ["Add download link to receipt email", "Verify receipt email renders download URL", "Test end-to-end with Flutterwave sandbox"]},
+        {"id": 9.2, "task": "Fix nationbuilding resource links", "status": "pending", "items": ["Find correct Google Drive URLs for each resource", "Update links so each card points to its own file", "Verify all 3 links resolve correctly"]},
+        {"id": 9.3, "task": "Make Systems Thinking program enrollable", "status": "pending", "items": ["Change status from coming_soon to active in D1", "Ensure enrollment flow works", "Verify sample + full content renders"]},
+        {"id": 9.4, "task": "Replace prompt() dialogs with proper modals", "status": "pending", "items": ["Create shared modal component in main.js", "Replace prompt() on art/index.html", "Replace prompt() on merch/index.html", "Replace prompt() on music/index.html"]},
+        {"id": 9.5, "task": "Add newsletter public archive", "status": "pending", "items": ["Create /newsletter/archive.html", "Update showIssues() to display sent issues", "Add archive link from newsletter/index.html"]},
+        {"id": 9.6, "task": "Fix music streaming placeholder links", "status": "pending", "items": ["Replace # placeholder URLs with real streaming links", "Verify links open correct platform pages"]},
+        {"id": 9.7, "task": "Fix art placeholder inventory", "status": "pending", "items": ["Replace Title of Artwork / Medium 2026 with real data", "Add proper artwork images, titles, mediums, year"]},
+        {"id": 9.8, "task": "Add merch size selection logic", "status": "pending", "items": ["Add JS to track selected size (S/M/L/XL)", "Pass selected size to Flutterwave checkout metadata", "Highlight active size chip"]},
+        {"id": 9.9, "task": "Fix 404.html duplicate og:url", "status": "pending", "items": ["Remove duplicate og:url meta tag from 404.html", "Verify single og:url remains"]},
+        {"id": 9.10, "task": "Add Flutterwave CDN preconnect hints", "status": "pending", "items": ["Add preconnect for check-out.flutterwave.com to donate, support, store pages"]},
+        {"id": 9.11, "task": "Add Content-Security-Policy header", "status": "pending", "items": ["Add CSP header with reasonable defaults to _headers", "Test all pages load correctly with CSP enabled"]},
+        {"id": 9.12, "task": "Guard formatPrice calls with fallback", "status": "pending", "items": ["Add guard clause to formatPrice calls", "Fix fragile dependency on main.js load order"]}
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "Smoke Tests — Post-Deployment Verification",
+      "status": "planned",
+      "description": "Run these smoke tests after every deployment to confirm the site is fully functional. Covers page loads, API endpoints, auth, store, payments, D1 connectivity, security, forms, and redirects.",
+      "platform": "Automated via page fetch checks",
+      "steps": [
+        {"id": 10.1, "task": "Core pages load (200 OK)", "status": "pending", "items": ["Homepage returns 200", "School returns 200", "Support returns 200", "Books returns 200", "Donate returns 200", "Content returns 200", "Partners returns 200", "Press kit returns 200", "Newsletter returns 200", "404 returns custom error page"]},
+        {"id": 10.2, "task": "Auth API endpoints respond correctly", "status": "pending", "items": ["POST /api/auth/send-otp returns JSON", "POST /api/auth/verify-otp validates missing fields", "GET /api/auth/session rejects missing token with 401", "POST /api/auth/logout accepts POST"]},
+        {"id": 10.3, "task": "Store flow works end-to-end", "status": "pending", "items": ["POST /api/store/create rejects missing fields", "GET /api/store/download rejects missing tx_ref", "Art page buy buttons present", "Merch page buy buttons present", "Music page buy buttons present"]},
+        {"id": 10.4, "task": "Payment & webhook endpoints exist", "status": "pending", "items": ["Flutterwave webhook endpoint exists", "Subscription webhook handler exists"]},
+        {"id": 10.5, "task": "D1 database connectivity", "status": "pending", "items": ["GET /api/db/ping returns D1 connected status", "Setup endpoint deploys schema without error"]},
+        {"id": 10.6, "task": "Security headers present", "status": "pending", "items": ["CSP in _headers", "HSTS in _headers", "X-Content-Type-Options in _headers", "CSP allows Flutterwave CDN", "CSP allows Brevo email API"]},
+        {"id": 10.7, "task": "Forms submit without errors", "status": "pending", "items": ["Homepage form action points to /api/contact", "Subscribe form action points to /api/contact", "Booking modal references openBooking function", "Donation Flutterwave checkout JS present"]},
+        {"id": 10.8, "task": "Redirects & URL routing work", "status": "pending", "items": ["/privacy redirects to /legal/privacy/", "/terms redirects to /legal/terms/", "/store/download resolves correctly", "/store/library resolves correctly", "/donate redirects to /donate/", "/school redirects to /school/"]},
+        {"id": 10.9, "task": "Content loads from D1 APIs", "status": "pending", "items": ["GET /api/testimonials returns JSON", "GET /api/stats returns JSON", "GET /api/gallery returns JSON", "GET /api/programs returns JSON"]},
+        {"id": 10.10, "task": "Auth modal & signup flow on store pages", "status": "pending", "items": ["Art page references showStoreModal", "Merch page references showStoreModal", "Music page references showStoreModal"]}
+      ]
     }
   ],
-  "current_focus": "Phase 7 in progress — Strategic Offensive. Pre-launch SEO checklist: submit to Google/Bing/Yandex, validate structured data, fix technical SEO issues, audit meta tags. Parallel: outreach execution, media pitching, content publishing, and backlink building.",
-  "last_updated": "2026-05-28",
+  "current_focus": "Phase 9 in progress — Audit Fixes & Site Polish. 12 items pending: store fulfillment, nationbuilding links, Systems Thinking enrollment, prompt()→modal, newsletter archive, music/art/merch content, CSP header, security fixes. Phase 10 smoke tests queued.",
+  "last_updated": "2026-05-31",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
@@ -170,6 +210,9 @@
     "Phase 8 started early (8.1 done) because the agent needs to track its own work.",
     "Phase 5 — Fix The Cash Register must be completed before Phase 6 (Profit Engine).",
     "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres.",
-    "Phase 7 — Strategic Offensive: Infrastructure built (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock). Pre-launch SEO checklist added: submit to Google/Bing/Yandex, structured data validation, technical audit, meta tag audit, page speed audit. Post-launch monitoring checklist: weekly GSC checks, monthly content publishing, monthly backlink tracking, quarterly performance reviews, bi-annual content refresh."
+    "Phase 7 — Strategic Offensive: Infrastructure built (partners page, press kit, content library, sitemap.xml, JSON-LD, referral API, share-to-unlock). Pre-launch SEO checklist added: submit to Google/Bing/Yandex, structured data validation, technical audit, meta tag audit, page speed audit. Post-launch monitoring checklist: weekly GSC checks, monthly content publishing, monthly backlink tracking, quarterly performance reviews, bi-annual content refresh.",
+    "Phase 9 — Audit Fixes & Site Polish: 12 items to fix from the full site audit. Store fulfillment, nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
+    "Phase 10 — Smoke Tests: Run after every deployment. Click Verify Live on the admin page to auto-check all items against live URLs.",
+    "Admin /admin/submissions.html page is a static placeholder — needs live data integration from D1 contact_submissions table."
   ]
 }
