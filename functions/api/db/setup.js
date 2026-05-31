@@ -618,6 +618,7 @@
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (workflow_id) REFERENCES workflows(id)
       )`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_workflow_steps_unique ON workflow_steps(workflow_id, step_order)`,
       `INSERT OR IGNORE INTO workflows (name, description, trigger_type, trigger_config) VALUES
         ('Abandoned Checkout Recovery', 'Detect abandoned donations/orders, send reminder sequence, escalate', 'cron', '{"schedule":"0 * * * *","max_age_hours":24}'),
         ('Dormant Subscriber Reactivation', 'Find subscribers inactive >30 days, send re-engagement sequence', 'cron', '{"schedule":"0 6 * * 1","inactive_days":30}'),
