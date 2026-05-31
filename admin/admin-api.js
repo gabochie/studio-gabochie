@@ -100,6 +100,15 @@ var API = (function() {
     return put('/workflows?id=' + encodeURIComponent(id), data);
   }
 
+  function getActivity() {
+    return get('/activity').then(function(data) {
+      if (data.status === 'ok') {
+        AppState.set('activity', data.activity || []);
+      }
+      return data.activity || [];
+    });
+  }
+
   function orchestrate(maxItems) {
     return post('/orchestrate', { max_items: maxItems || 10 });
   }
@@ -116,6 +125,7 @@ var API = (function() {
     createQueueItem: createQueueItem,
     createWorkflow: createWorkflow,
     updateWorkflow: updateWorkflow,
+    getActivity: getActivity,
     orchestrate: orchestrate,
     runAction: runAction,
     get: get, post: post, put: put

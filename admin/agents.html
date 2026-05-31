@@ -477,12 +477,14 @@ function renderDashboard() {
   $('sbdAgents').textContent = agents.length;
   $('sbdQueue').textContent = q.pending || 0;
 
-  var sp1 = [30,45,38,52,48,62,55]; var sp2 = [12,8,15,10,6,18,9];
-  var spark = function(arr){var mx=Math.max.apply(null,arr);return '<div class="spark">'+arr.map(function(v){return '<div class="spark-bar'+(v===mx?' high':'')+'" style="height:'+Math.max(2,(v/mx)*20)+'px"></div>'}).join('')+'</div>';};
+  var activity = AppState.get('activity') || [];
+  var spRuns = activity.length ? activity.map(function(d){return d.agent_runs}) : null;
+  var spQueue = activity.length ? activity.map(function(d){return d.queue_items}) : null;
+  var spark = function(arr){if(!arr||!arr.length)return '';var mx=Math.max.apply(null,arr);return '<div class="spark">'+arr.map(function(v){return '<div class="spark-bar'+(v===mx?' high':'')+'" style="height:'+Math.max(2,(v/mx)*20)+'px"></div>'}).join('')+'</div>';};
 
   $('metrics').innerHTML =
-    '<div class="metric"><div class="m-top"><div class="m-label">Active Agents</div><div class="m-icon gold">&#9679;</div></div><div class="m-value">'+active+'</div><div class="m-trend">of '+agents.length+' registered</div>'+spark(sp1)+'</div>'+
-    '<div class="metric"><div class="m-top"><div class="m-label">Queue Depth</div><div class="m-icon orange">&#9654;</div></div><div class="m-value dim">'+(q.pending||0)+(q.in_progress?' <span class="m-unit">('+q.in_progress+' running)</span>':'')+'</div><div class="m-sub">Pending items</div>'+spark(sp2)+'</div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Active Agents</div><div class="m-icon gold">&#9679;</div></div><div class="m-value">'+active+'</div><div class="m-trend">of '+agents.length+' registered</div>'+spark(spRuns)+'</div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Queue Depth</div><div class="m-icon orange">&#9654;</div></div><div class="m-value dim">'+(q.pending||0)+(q.in_progress?' <span class="m-unit">('+q.in_progress+' running)</span>':'')+'</div><div class="m-sub">Pending items</div>'+spark(spQueue)+'</div>'+
     '<div class="metric"><div class="m-top"><div class="m-label">Errors (24h)</div><div class="m-icon red">&#9888;</div></div><div class="m-value red">'+(r.errors_24h||0)+'</div><div class="m-sub">of '+(r.last_24h||0)+' total runs</div></div>'+
     '<div class="metric"><div class="m-top"><div class="m-label">Runs (24h)</div><div class="m-icon blue">&#9776;</div></div><div class="m-value blue">'+(r.last_24h||0)+'</div><div class="m-trend">Last 24 hours</div></div>'+
     '<div class="metric"><div class="m-top"><div class="m-label">Revenue (30d)</div><div class="m-icon green">&#36;</div></div><div class="m-value green">GH\u00a2 '+rev.toLocaleString()+'</div><div class="m-sub">Completed donations</div></div>';
@@ -555,8 +557,11 @@ function renderQueue() {
 }
 
 function loadDashboard() {
-  API.getStatus().then(function(d){
-    var a = d.agents||[]; var s = a.filter(function(x){return x.status==='idle'||x.status==='busy'}).length;
+  Promise.all([
+    API.getStatus(),
+    API.getActivity().catch(function(){ return []; })
+  ]).then(function(results){
+    var d = results[0]; var a = d.agents||[]; var s = a.filter(function(x){return x.status==='idle'||x.status==='busy'}).length;
     $('hdrStatus').textContent = 'Online'+(s?' ('+s+' active)':'');
     $('hdrDot').className = 'sd green'+(s?' pulse':'');
     renderDashboard();

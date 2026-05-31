@@ -204,7 +204,7 @@
       "platform": "Cloudflare Workers + D1",
       "steps": [
         {"id": 11.1, "task": "Agent task management UI", "status": "done", "items": ["D1 tasks table + CRUD API ✓", "Admin task list with status/priority/phases ✓", "Manual task creation ✓", "AI-created tasks ✓", "Status toggle ✓"]},
-        {"id": 11.2, "task": "Live D1 dashboard metrics", "status": "pending", "items": ["Wire active agents to D1", "Wire queue depth to D1", "Wire error/run counts to D1", "Wire revenue to D1", "Replace placeholder charts"]},
+        {"id": 11.2, "task": "Live D1 dashboard metrics", "status": "done", "items": ["Wire active agents to D1 ✓", "Wire queue depth to D1 ✓", "Wire error/run counts to D1 ✓", "Wire revenue to D1 ✓", "Replace placeholder charts with /activity endpoint ✓"]},
         {"id": 11.3, "task": "Agent spawn & lifecycle management", "status": "pending", "items": ["Agent type registry in D1", "Spawn API with type+config", "Health check endpoint", "Agent status reporting", "Agent detail view with runs", "Kill/restart from admin"]},
         {"id": 11.4, "task": "Workflow engine", "status": "pending", "items": ["Workflow CRUD", "Execution API + run tracking", "Cron trigger support", "Event-driven triggers", "Workflow run history"]},
         {"id": 11.5, "task": "Queue processor", "status": "pending", "items": ["D1 queue table with priority", "Batch processing", "Single-item processing", "Queue item detail view", "Cron-based queue drain"]},
@@ -217,7 +217,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 9 in progress — Audit Fixes & Site Polish. Phase 11 (Command Center) in progress with 11.1 complete. Phase 10 smoke tests queued.",
+  "current_focus": "Phase 11 (Command Center) — 11.1 and 11.2 done. Phase 9 (Audit Fixes) in progress. Phase 10 smoke tests queued.",
   "last_updated": "2026-05-31",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

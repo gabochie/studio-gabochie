@@ -5,6 +5,7 @@ var AppState = (function() {
     agentAuthToken: '',
     adminKey: '',
     status: null,
+    activity: [],
     runs: [],
     agents: [],
     queue: [],
