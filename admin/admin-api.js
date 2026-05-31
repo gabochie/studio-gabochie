@@ -1,6 +1,7 @@
 var API = (function() {
 
   var BASE = '/api/agents';
+  var ADMIN_BASE = '/api/admin';
 
   function getToken() {
     return AppState.get('agentAuthToken');
@@ -38,6 +39,14 @@ var API = (function() {
 
   function request(method, path, body) {
     var url = BASE + path;
+    var opts = { method: method, headers: headers() };
+    if (body && method !== 'GET') opts.body = JSON.stringify(body);
+    AppState.setError('api', null);
+    return fetch(url, opts).then(function(res) { return handleResponse(res, url); });
+  }
+
+  function adminRequest(method, path, body) {
+    var url = ADMIN_BASE + path;
     var opts = { method: method, headers: headers() };
     if (body && method !== 'GET') opts.body = JSON.stringify(body);
     AppState.setError('api', null);
@@ -130,20 +139,20 @@ var API = (function() {
   }
 
   function getPreferences() {
-    return request('GET', '/admin/preferences');
+    return adminRequest('GET', '/preferences');
   }
 
   function setPreference(key, value) {
-    return request('PUT', '/admin/preferences', {key: key, value: value});
+    return adminRequest('PUT', '/preferences', {key: key, value: value});
   }
 
   function getAuditLog(limit) {
-    return request('GET', '/admin/audit?limit=' + (limit||50));
+    return adminRequest('GET', '/audit?limit=' + (limit||50));
   }
 
   function logAudit(action, entity_type, entity_id, details) {
     var ak = AppState.get('adminKey') || '';
-    return request('POST', '/admin/audit', {action: action, entity_type: entity_type, entity_id: entity_id, admin_key: ak, details: details});
+    return adminRequest('POST', '/audit', {action: action, entity_type: entity_type, entity_id: entity_id, admin_key: ak, details: details});
   }
 
   function getAgentTypes() {
