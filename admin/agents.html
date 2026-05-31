@@ -358,6 +358,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
       </div>
       <button class="btn btn-primary" id="sSaveTokens">Save Tokens</button>
       <button class="btn btn-secondary" id="sClearTokens" style="margin-left:8px">Clear</button>
+      <button class="btn btn-ghost btn-sm" id="seedAgentsBtn" style="margin-left:8px" title="Spawn one agent of each type">&#9733; Seed Default Agents</button>
       <span id="sTokenMsg" style="margin-left:10px;font-size:12px"></span>
       <div style="margin-bottom:14px">
         <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">AI API Key <span style="color:var(--text-dim);font-weight:400;text-transform:none">(optional — fallback if not set in Cloudflare)</span></label>
@@ -875,6 +876,25 @@ function spawnAgent() {
     else throw new Error(d.message||'Failed');
   }).catch(function(e){Toast.error('Failed: '+e.message);});
 }
+function seedDefaultAgents() {
+  if (!confirm('This will spawn one agent of each type (content, outreach, analytics, task_processor). Continue?')) return;
+  var types = [
+    { name: 'Content Agent', type: 'content', prompt: 'Draft, edit, and publish content across the site.' },
+    { name: 'Outreach Agent', type: 'outreach', prompt: 'Segment audience, send follow-ups, and manage outreach campaigns.' },
+    { name: 'Analytics Agent', type: 'analytics', prompt: 'Monitor traffic, revenue, and generate performance reports.' },
+    { name: 'Task Processor', type: 'task_processor', prompt: 'Read the queue, execute tasks, and escalate when needed.' }
+  ];
+  $('seedAgentsBtn').disabled = true;
+  $('seedAgentsBtn').textContent = 'Seeding...';
+  var promises = types.map(function(t){ return API.spawnAgent(t.name, t.type, {initial_prompt:t.prompt}); });
+  Promise.all(promises).then(function(results){
+    var ok = results.filter(function(r){return r.status==='ok';}).length;
+    var fail = results.filter(function(r){return r.status!=='ok';}).length;
+    Toast.success('Seeded ' + ok + ' agent' + (ok!==1?'s':'') + (fail ? ', ' + fail + ' failed' : ''));
+    loadDashboard(); loadAgentsTab();
+  }).catch(function(e){ Toast.error('Seed failed: ' + e.message); })
+  .finally(function(){ $('seedAgentsBtn').disabled = false; $('seedAgentsBtn').textContent = '\u2605 Seed Default Agents'; });
+}
 function createWorkflow() {
   var name=$('wfName').value.trim();if(!name){Toast.warning('Name is required');return;}
   API.createWorkflow({name:name,description:$('wfDesc').value.trim(),trigger_type:$('wfTrigger').value}).then(function(d){if(d.status==='ok'){Toast.success('Workflow created');$('wfModal').classList.remove('open');loadWorkflowsTab();}else throw new Error(d.message);}).catch(function(e){Toast.error('Failed: '+e.message);});
@@ -992,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $('runFilter').addEventListener('change', function(){ loadRunsTab(); });
   $('sSaveTokens').addEventListener('click', saveTokens);
   $('sClearTokens').addEventListener('click', clearTokens);
+  $('seedAgentsBtn').addEventListener('click', seedDefaultAgents);
   $('sAgentTokenToggle').addEventListener('click', function(){ var i=$('sAgentToken'); i.type=i.type==='password'?'text':'password'; });
   $('sAdminKeyToggle').addEventListener('click', function(){ var i=$('sAdminKey'); i.type=i.type==='password'?'text':'password'; });
   $('sAiKeyToggle').addEventListener('click', function(){ var i=$('sAiKey'); i.type=i.type==='password'?'text':'password'; });
