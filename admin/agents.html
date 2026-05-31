@@ -417,10 +417,10 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <script>
 (function() {
 
-var TAB = getHashTab();
-var $ = function(id) { return document.getElementById(id); };
 var tabs = ['dashboard','agents','workflows','runs','queue','settings'];
 var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', runs:'Run History', queue:'Queue', settings:'Settings' };
+var TAB = getHashTab();
+var $ = function(id) { return document.getElementById(id); };
 
 function getHashTab() {
   var h = window.location.hash.slice(1);
