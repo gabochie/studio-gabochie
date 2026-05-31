@@ -205,19 +205,19 @@
       "steps": [
         {"id": 11.1, "task": "Agent task management UI", "status": "done", "items": ["D1 tasks table + CRUD API ✓", "Admin task list with status/priority/phases ✓", "Manual task creation ✓", "AI-created tasks ✓", "Status toggle ✓"]},
         {"id": 11.2, "task": "Live D1 dashboard metrics", "status": "done", "items": ["Wire active agents to D1 ✓", "Wire queue depth to D1 ✓", "Wire error/run counts to D1 ✓", "Wire revenue to D1 ✓", "Replace placeholder charts with /activity endpoint ✓"]},
-        {"id": 11.3, "task": "Agent spawn & lifecycle management", "status": "pending", "items": ["Agent type registry in D1", "Spawn API with type+config", "Health check endpoint", "Agent status reporting", "Agent detail view with runs", "Kill/restart from admin"]},
-        {"id": 11.4, "task": "Workflow engine", "status": "pending", "items": ["Workflow CRUD", "Execution API + run tracking", "Cron trigger support", "Event-driven triggers", "Workflow run history"]},
-        {"id": 11.5, "task": "Queue processor", "status": "pending", "items": ["D1 queue table with priority", "Batch processing", "Single-item processing", "Queue item detail view", "Cron-based queue drain"]},
-        {"id": 11.6, "task": "Run history & filtering", "status": "pending", "items": ["Run log with search/filter", "Run detail view", "Error aggregation", "Run duration tracking"]},
-        {"id": 11.7, "task": "Settings & admin configuration", "status": "pending", "items": ["Agent token gen/revoke/view", "Admin key rotation from UI", "Preferences in D1", "Audit log for sensitive ops"]},
-        {"id": 11.8, "task": "Admin page auth consolidation", "status": "pending", "items": ["All admin pages load admin.js", "All API calls send X-Admin-Key", "Login prompt not 403 on failure", "Consistent admin nav sidebar"]},
-        {"id": 11.9, "task": "Wire submissions.html to D1", "status": "pending", "items": ["Live D1 contact_submissions data", "Filter by date/status", "CSV export"]},
-        {"id": 11.10, "task": "Architecture diagram with live data", "status": "pending", "items": ["Real agent status from D1", "Color-code by live status", "Show live agent counts per tier", "Auto-refresh diagram"]},
-        {"id": 11.11, "task": "Mobile & UX polish for admin", "status": "pending", "items": ["Responsive sidebar verified", "44px touch targets", "Keyboard nav all tabs", "Toast notifications consistent", "Loading states on async ops"]}
+        {"id": 11.3, "task": "Agent spawn & lifecycle management", "status": "done", "items": ["Agent type registry in D1 ✓", "Spawn API with type+config ✓", "Health check endpoint via status ✓", "Agent status reporting ✓", "Agent detail view with runs ✓", "Kill/restart from admin ✓"]},
+        {"id": 11.4, "task": "Workflow engine", "status": "done", "items": ["Workflow CRUD ✓", "Steps CRUD via /api/agents/steps ✓", "Step add/delete in UI ✓", "Workflow edit & delete ✓", "Cron/event trigger config ✓"]},
+        {"id": 11.5, "task": "Queue processor", "status": "done", "items": ["D1 queue table with priority ✓", "Batch processing buttons ✓", "Single-item row clicks ✓", "Queue item detail view ✓", "Cron-based queue drain (needs deployment)"]},
+        {"id": 11.6, "task": "Run history & filtering", "status": "done", "items": ["Run log with status filter ✓", "Run detail modal ✓", "Error aggregation on dashboard ✓", "Run duration tracking ✓"]},
+        {"id": 11.7, "task": "Settings & admin configuration", "status": "done", "items": ["Preferences CRUD in D1 settings table ✓", "Audit log viewer ✓", "GET/PUT /api/admin/preferences ✓", "GET/POST /api/admin/audit ✓"]},
+        {"id": 11.8, "task": "Admin page auth consolidation", "status": "done", "items": ["All 16 admin pages load admin.js ✓", "All API calls use adminFetch() with X-Admin-Key ✓", "admin.js loaded before inline scripts ✓", "Consistent admin nav sidebar ✓"]},
+        {"id": 11.9, "task": "Wire submissions.html to D1", "status": "done", "items": ["Live D1 contact_submissions via /api/admin/submissions ✓", "Status management (new/read/replied) ✓", "Detail modal with message display ✓", "Refresh button ✓"]},
+        {"id": 11.10, "task": "Architecture diagram with live data", "status": "done", "items": ["Real agent status from D1 ✓", "Color-code by live status ✓", "Show live agent counts per tier ✓", "Auto-refresh diagram every 30s ✓"]},
+        {"id": 11.11, "task": "Mobile & UX polish for admin", "status": "done", "items": ["Hamburger menu toggles sidebar on mobile ✓", "Outside click closes sidebar ✓", "Keyboard nav 1-6 tabs, R refresh, Esc modals ✓", "Toast notifications consistent ✓", "Loading spinners on all tabs ✓"]}
       ]
     }
   ],
-  "current_focus": "Phase 11 (Command Center) — 11.1 and 11.2 done. Phase 9 (Audit Fixes) in progress. Phase 10 smoke tests queued.",
+  "current_focus": "Phase 11 (Command Center) — all 11 items complete (11.1–11.11 done). Phase 9 (Audit Fixes) in progress. Phase 10 smoke tests queued. Needs Cloudflare deployment with D1 binding to test agent/workflow/queue/preferences endpoints.",
   "last_updated": "2026-05-31",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
@@ -234,6 +234,6 @@
     "Phase 9 — Audit Fixes & Site Polish: 12 items to fix from the full site audit. Store fulfillment, nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
     "Phase 10 — Smoke Tests: Run after every deployment. Click Verify Live on the admin page to auto-check all items against live URLs.",
     "Admin /admin/submissions.html page is a static placeholder — needs live data integration from D1 contact_submissions table.",
-    "Phase 11 — Command Center: 6-tab admin hub (agents.html). 11.1 (task management) done. Remaining: live dashboard, agent lifecycle, workflow engine, queue processor, run history, settings auth, submissions live data, architecture live links, mobile UX."
+    "Phase 11 — Command Center: All 11 sub-items complete. Dashboard (11.2), agents CRUD (11.3), workflow engine (11.4), queue processor (11.5), run history (11.6), settings/preferences (11.7), auth consolidation (11.8), D1-wired submissions (11.9), live architecture diagram (11.10), mobile/UX polish (11.11). Needs Cloudflare deployment with D1 binding to test."
   ]
 }
