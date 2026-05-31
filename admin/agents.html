@@ -359,7 +359,14 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
       <button class="btn btn-primary" id="sSaveTokens">Save Tokens</button>
       <button class="btn btn-secondary" id="sClearTokens" style="margin-left:8px">Clear</button>
       <span id="sTokenMsg" style="margin-left:10px;font-size:12px"></span>
-      <div style="margin-top:12px;display:flex;gap:16px;font-size:12px">
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">AI API Key <span style="color:var(--text-dim);font-weight:400;text-transform:none">(optional — fallback if not set in Cloudflare)</span></label>
+        <div style="display:flex;gap:8px">
+          <input type="password" id="sAiKey" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text-body);font-size:13px;font-family:monospace" placeholder="sk-... or leave empty to use Cloudflare env var">
+          <button class="btn btn-secondary" id="sAiKeyToggle" style="padding:8px 12px" title="Show/Hide">&#128065;</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;font-size:12px">
         <span>API: <span id="authStatus" style="color:var(--text-dim)">not checked</span></span>
         <span>AI: <span id="aiStatus" style="color:var(--text-dim)">not checked</span></span>
       </div>
@@ -882,6 +889,7 @@ function processQueue(max) {
 function loadSettings() {
   $('sAgentToken').value = AppState.get('agentAuthToken') || '';
   $('sAdminKey').value = AppState.get('adminKey') || '';
+  $('sAiKey').value = AppState.get('aiKey') || '';
   API.get('/status').then(function(){$('authStatus').innerHTML='<span style="color:var(--green)">&#10003; Connected</span>';}).catch(function(){$('authStatus').innerHTML='<span style="color:var(--red)">&#10007; Not connected</span>';});
   API.runAction('call_ai',{prompt:'ping'}).then(function(){$('aiStatus').innerHTML='<span style="color:var(--green)">&#10003; Configured</span>';}).catch(function(){$('aiStatus').innerHTML='<span style="color:var(--orange)">&#9888; Not configured</span>';});
   API.getPreferences().then(function(data){
@@ -931,10 +939,13 @@ function loadAuditLog() {
 function saveTokens() {
   var at = $('sAgentToken').value.trim();
   var ak = $('sAdminKey').value.trim();
+  var ai = $('sAiKey').value.trim();
   try { localStorage.setItem('ga_at', at); } catch(e) {}
   try { localStorage.setItem('ga_ak', ak); } catch(e) {}
+  try { localStorage.setItem('ga_ai', ai); } catch(e) {}
   AppState.set('agentAuthToken', at);
   AppState.set('adminKey', ak);
+  AppState.set('aiKey', ai);
   $('sTokenMsg').textContent = 'Tokens saved!';
   $('sTokenMsg').style.color = 'var(--green)';
   setTimeout(function(){ $('sTokenMsg').textContent = ''; }, 3000);
@@ -942,9 +953,11 @@ function saveTokens() {
 function clearTokens() {
   $('sAgentToken').value = '';
   $('sAdminKey').value = '';
-  try { localStorage.removeItem('ga_at'); localStorage.removeItem('ga_ak'); } catch(e) {}
+  $('sAiKey').value = '';
+  try { localStorage.removeItem('ga_at'); localStorage.removeItem('ga_ak'); localStorage.removeItem('ga_ai'); } catch(e) {}
   AppState.set('agentAuthToken', '');
   AppState.set('adminKey', '');
+  AppState.set('aiKey', '');
   $('sTokenMsg').textContent = 'Tokens cleared';
   $('sTokenMsg').style.color = 'var(--text-muted)';
   setTimeout(function(){ $('sTokenMsg').textContent = ''; }, 3000);
@@ -981,6 +994,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $('sClearTokens').addEventListener('click', clearTokens);
   $('sAgentTokenToggle').addEventListener('click', function(){ var i=$('sAgentToken'); i.type=i.type==='password'?'text':'password'; });
   $('sAdminKeyToggle').addEventListener('click', function(){ var i=$('sAdminKey'); i.type=i.type==='password'?'text':'password'; });
+  $('sAiKeyToggle').addEventListener('click', function(){ var i=$('sAiKey'); i.type=i.type==='password'?'text':'password'; });
 
   document.addEventListener('click', function(e){
     var t = e.target.closest('[data-action]'); if(!t) return;

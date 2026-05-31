@@ -2,7 +2,7 @@ import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
 
 async function callAI(env, prompt, options) {
-  var apiKey = env.OPENAI_API_KEY || env.AI_API_KEY || '';
+  var apiKey = options && options.api_key || env.OPENAI_API_KEY || env.AI_API_KEY || '';
   if (!apiKey) return { error: 'No AI API key configured' };
   var model = (options && options.model) || 'gpt-4o-mini';
   var temperature = (options && options.temperature) || 0.7;
@@ -50,7 +50,7 @@ export async function onRequest(context) {
 
   try {
     var body = await request.json();
-    var { action, agent_type, prompt, options, sql, params, queue_item_id } = body;
+    var { action, agent_type, prompt, options, sql, params, queue_item_id, ai_key } = body;
 
     if (action === 'call_ai') {
       var promptTemplate = null;
@@ -59,12 +59,13 @@ export async function onRequest(context) {
           "SELECT * FROM agent_prompts WHERE agent_type = ? AND prompt_key = ?"
         ).bind(agent_type || '', options.prompt_key).first();
       }
-      var result = await callAI(env, prompt, {
+      var callOpts = Object.assign({
         model: (options && options.model) || (promptTemplate && promptTemplate.model),
         temperature: (options && options.temperature) || (promptTemplate && promptTemplate.temperature),
         max_tokens: (options && options.max_tokens) || (promptTemplate && promptTemplate.max_tokens),
         systemPrompt: (options && options.systemPrompt) || (promptTemplate && promptTemplate.system_prompt)
-      });
+      }, ai_key ? { api_key: ai_key } : {});
+      var result = await callAI(env, prompt, callOpts);
       if (result.error) return new Response(JSON.stringify({ status: 'error', message: result.error }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       if (queue_item_id) {
         await env.DB.prepare("UPDATE agent_queue SET status = 'completed', result = ?, completed_at = datetime('now') WHERE id = ?").bind(JSON.stringify({ content: result.content, usage: result.usage }), queue_item_id).run();

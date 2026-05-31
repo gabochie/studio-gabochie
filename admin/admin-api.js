@@ -181,7 +181,10 @@ var API = (function() {
   }
 
   function runAction(action, payload) {
-    return post('/run', Object.assign({ action: action }, payload || {}));
+    var aiKey = AppState.get('aiKey') || '';
+    var opts = Object.assign({ action: action }, payload || {});
+    if (aiKey) opts.ai_key = aiKey;
+    return post('/run', opts);
   }
 
   return {

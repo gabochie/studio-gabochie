@@ -4,6 +4,7 @@ var AppState = (function() {
     tab: 'dashboard',
     agentAuthToken: '',
     adminKey: '',
+    aiKey: '',
     status: null,
     activity: [],
     agentTypes: [],
@@ -74,7 +75,9 @@ var AppState = (function() {
   try {
     var at = localStorage.getItem('ga_at');
     var ak = localStorage.getItem('ga_ak');
+    var ai = localStorage.getItem('ga_ai');
     if (at) AppState.set('agentAuthToken', at);
     if (ak) AppState.set('adminKey', ak);
+    if (ai) AppState.set('aiKey', ai);
   } catch(e) {}
 })();
