@@ -24,9 +24,10 @@ export async function onRequest(context) {
       var body = await request.json();
       var { name, description, trigger_type, trigger_config, steps } = body;
       if (!name || !name.trim()) return new Response(JSON.stringify({ status: 'error', message: 'Name required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      var tc = JSON.stringify(trigger_config || {});
       var result = await env.DB.prepare(
         "INSERT INTO workflows (name, description, trigger_type, trigger_config) VALUES (?, ?, ?, ?)"
-      ).bind(name.trim(), description || '', trigger_type || 'manual', JSON.stringify(trigger_config || {})).run();
+      ).bind(name.trim(), description || '', trigger_type || 'manual', tc).run();
       var workflowId = result.meta.last_row_id;
       if (steps && Array.isArray(steps)) {
         for (var i = 0; i < steps.length; i++) {
@@ -58,6 +59,15 @@ export async function onRequest(context) {
       await env.DB.prepare("UPDATE workflows SET " + fields.join(", ") + " WHERE id = ?").bind(...params).run();
       var workflow = await env.DB.prepare("SELECT * FROM workflows WHERE id = ?").bind(id).first();
       return new Response(JSON.stringify({ status: 'ok', workflow }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
+
+    if (request.method === 'DELETE') {
+      var url = new URL(request.url);
+      var id = url.searchParams.get('id');
+      if (!id) return new Response(JSON.stringify({ status: 'error', message: 'Workflow ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      await env.DB.prepare("DELETE FROM workflow_steps WHERE workflow_id = ?").bind(id).run();
+      await env.DB.prepare("DELETE FROM workflows WHERE id = ?").bind(id).run();
+      return new Response(JSON.stringify({ status: 'ok', message: 'Workflow deleted' }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

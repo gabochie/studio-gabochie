@@ -6,6 +6,7 @@ var AppState = (function() {
     adminKey: '',
     status: null,
     activity: [],
+    agentTypes: [],
     runs: [],
     agents: [],
     queue: [],

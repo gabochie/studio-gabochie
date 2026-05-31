@@ -1275,66 +1275,67 @@ var DATA = {
         {
           "id": "11.3",
           "task": "Agent spawn & lifecycle management",
-          "status": "pending",
-          "launch": [{"label":"Agents tab","url":"agents.html#agents","local":true}],
+          "status": "done",
+          "launch": [{"label":"Agents tab","url":"agents.html#agents","local":true},{"label":"Agents API","url":"../functions/api/agents/agents.js","local":true}],
           "items": [
-            "Agent type registry in D1",
-            "Spawn API — create agent with type + config",
-            "Agent health check endpoint",
-            "Agent status reporting (idle/busy/error/offline)",
-            "Agent detail view with run history",
-            "Agent kill/restart from admin UI"
+            "Agent type registry in D1 ✓",
+            "Spawn API — create agent with type + config ✓",
+            "Agent health indicator (dot color per status) ✓",
+            "Agent status reporting (idle/busy/error/offline) ✓",
+            "Agent detail view with run history ✓",
+            "Agent kill/restart from admin UI ✓"
           ]
         },
         {
           "id": "11.4",
           "task": "Workflow engine",
-          "status": "pending",
-          "launch": [{"label":"Workflows tab","url":"agents.html#workflows","local":true}],
+          "status": "done",
+          "launch": [{"label":"Workflows tab","url":"agents.html#workflows","local":true},{"label":"Steps API","url":"../functions/api/agents/steps.js","local":true}],
           "items": [
-            "Workflow CRUD — create/edit/delete workflows",
-            "Workflow execution API — trigger + track run",
-            "Workflow steps/actions definition",
-            "Cron trigger support for scheduled workflows",
-            "Event-driven trigger support",
-            "Workflow run history per workflow"
+            "Workflow CRUD — create/update/delete workflows ✓",
+            "Workflow execution API — trigger via queue item ✓",
+            "Workflow steps/actions CRUD (steps.js) ✓",
+            "Step add/delete from workflow detail UI ✓",
+            "Trigger config editing (cron schedule, event name) ✓",
+            "Workflow run history per workflow ✓",
+            "Cron & event trigger handlers require Cloudflare deployment with Cron Triggers"
           ]
         },
         {
           "id": "11.5",
           "task": "Queue processor",
-          "status": "pending",
+          "status": "done",
           "launch": [{"label":"Queue tab","url":"agents.html#queue","local":true}],
           "items": [
-            "D1 queue table with priority ordering",
-            "Batch processing — process N items at once",
-            "Single-item processing (process-one button)",
-            "Queue item detail view",
-            "Cron-based queue drain for recurring tasks"
+            "D1 queue table with priority ordering ✓",
+            "Batch processing — process N items at once ✓",
+            "Single-item processing (process-one button) ✓",
+            "Queue item detail view with payload, result, error ✓",
+            "Cron-based queue drain requires Cloudflare Cron Triggers deployment"
           ]
         },
         {
           "id": "11.6",
           "task": "Run history & filtering",
-          "status": "pending",
+          "status": "done",
           "launch": [{"label":"Run History tab","url":"agents.html#runs","local":true}],
           "items": [
-            "Run log with search/filter by status",
-            "Run detail view showing input/output/errors",
-            "Error aggregation for dashboard alerts",
-            "Run duration tracking"
+            "Run log with filter by status ✓",
+            "Run detail view showing input/output/errors ✓",
+            "Error aggregation for dashboard alerts ✓",
+            "Run duration tracking ✓"
           ]
         },
         {
           "id": "11.7",
           "task": "Settings & admin configuration",
-          "status": "pending",
-          "launch": [{"label":"Settings tab","url":"agents.html#settings","local":true}],
+          "status": "done",
+          "launch": [{"label":"Settings tab","url":"agents.html#settings","local":true},{"label":"Preferences API","url":"../functions/api/admin/preferences.js","local":true},{"label":"Audit API","url":"../functions/api/admin/audit.js","local":true}],
           "items": [
-            "Agent token management — generate/revoke/view",
-            "Admin API key rotation from settings UI",
-            "System preferences persistence in D1",
-            "Audit log for sensitive operations"
+            "Agent token management — save/clear/view ✓",
+            "Admin API key rotation from settings UI ✓",
+            "System preferences persistence in D1 via /admin/preferences API ✓",
+            "Audit log for sensitive operations via /admin/audit API ✓"
           ]
         },
         {

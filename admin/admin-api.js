@@ -100,6 +100,26 @@ var API = (function() {
     return put('/workflows?id=' + encodeURIComponent(id), data);
   }
 
+  function deleteWorkflow(id) {
+    return request('DELETE', '/workflows?id=' + encodeURIComponent(id));
+  }
+
+  function getSteps(workflowId) {
+    return get('/steps?workflow_id=' + encodeURIComponent(workflowId));
+  }
+
+  function createStep(workflowId, data) {
+    return post('/steps?workflow_id=' + encodeURIComponent(workflowId), data);
+  }
+
+  function updateStep(id, data) {
+    return put('/steps?id=' + encodeURIComponent(id), data);
+  }
+
+  function deleteStep(id) {
+    return request('DELETE', '/steps?id=' + encodeURIComponent(id));
+  }
+
   function getActivity() {
     return get('/activity').then(function(data) {
       if (data.status === 'ok') {
@@ -107,6 +127,44 @@ var API = (function() {
       }
       return data.activity || [];
     });
+  }
+
+  function getPreferences() {
+    return request('GET', '/admin/preferences');
+  }
+
+  function setPreference(key, value) {
+    return request('PUT', '/admin/preferences', {key: key, value: value});
+  }
+
+  function getAuditLog(limit) {
+    return request('GET', '/admin/audit?limit=' + (limit||50));
+  }
+
+  function logAudit(action, entity_type, entity_id, details) {
+    var ak = AppState.get('adminKey') || '';
+    return request('POST', '/admin/audit', {action: action, entity_type: entity_type, entity_id: entity_id, admin_key: ak, details: details});
+  }
+
+  function getAgentTypes() {
+    return get('/agents').then(function(data) {
+      if (data.status === 'ok') {
+        AppState.set('agentTypes', data.types || []);
+      }
+      return data.types || [];
+    });
+  }
+
+  function spawnAgent(name, typeName, config) {
+    return post('/agents', { agent_type_name: typeName, name: name, config: config || {} });
+  }
+
+  function updateAgent(id, data) {
+    return put('/agents?id=' + encodeURIComponent(id), data);
+  }
+
+  function deleteAgent(id) {
+    return request('DELETE', '/agents?id=' + encodeURIComponent(id));
   }
 
   function orchestrate(maxItems) {
@@ -125,9 +183,22 @@ var API = (function() {
     createQueueItem: createQueueItem,
     createWorkflow: createWorkflow,
     updateWorkflow: updateWorkflow,
+    deleteWorkflow: deleteWorkflow,
+    getSteps: getSteps,
+    createStep: createStep,
+    updateStep: updateStep,
+    deleteStep: deleteStep,
     getActivity: getActivity,
+    getPreferences: getPreferences,
+    setPreference: setPreference,
+    getAuditLog: getAuditLog,
+    logAudit: logAudit,
+    getAgentTypes: getAgentTypes,
+    spawnAgent: spawnAgent,
+    updateAgent: updateAgent,
+    deleteAgent: deleteAgent,
     orchestrate: orchestrate,
     runAction: runAction,
-    get: get, post: post, put: put
+    get: get, post: post, put: put, request: request
   };
 })();
