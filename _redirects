@@ -1,5 +1,4 @@
-# Redirect root to home page
-/ /index.html 200
+# Root is served automatically by Cloudflare Pages
 
 # Donate
 /donate /donate/ 200
