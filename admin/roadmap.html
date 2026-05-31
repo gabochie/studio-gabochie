@@ -316,6 +316,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 
 </div>
 
+<script src="admin.js"></script>
 <script>
 // ══════════════════════════════════════════════
 // DATA — Each step has launch URLs tied to it
@@ -1974,7 +1975,11 @@ function runVerification() {
 // AGENT TASKS
 // ══════════════════════════════════════════════
 function loadAgentTasks() {
-  fetch('/admin/api/tasks', {cache:'no-store'}).then(function(r){
+  var key = typeof ensureAdminKey === 'function' ? ensureAdminKey() : '';
+  var headers = {};
+  if (key) headers['X-Admin-Key'] = key;
+  fetch('/admin/api/tasks', {cache:'no-store', headers:headers}).then(function(r){
+    if (r.status === 403) throw new Error('Authentication required — invalid Admin API Key');
     if(!r.ok)throw new Error('API error');
     return r.json();
   }).then(function(d){
