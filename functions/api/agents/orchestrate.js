@@ -73,6 +73,41 @@ async function processQueueItem(db, env, item) {
           ).bind((payload.task_title || 'AI Generated Content'), aiResult.content.substring(0, 500)).run();
         }
       }
+    } else if (item.agent_type === 'outreach' && payload.action === 'send_newsletter') {
+      var contacts = (await db.prepare(
+        "SELECT * FROM cold_outreach WHERE status = 'pending' ORDER BY id LIMIT ?"
+      ).bind(payload.batch_size || 10).all()).results || [];
+      var sentCount = 0;
+      var newsletterPrompt = await db.prepare(
+        "SELECT * FROM agent_prompts WHERE agent_type = 'outreach' AND prompt_key = 'cold_newsletter'"
+      ).first();
+      for (var c of contacts) {
+        var userMsg = (newsletterPrompt && newsletterPrompt.user_template) || '';
+        userMsg = userMsg.replace('{{name}}', c.name || 'there');
+        userMsg = userMsg.replace('{{category}}', c.category || 'business');
+        userMsg = userMsg.replace('{{region}}', c.region || 'GH');
+        var sysMsg = (newsletterPrompt && newsletterPrompt.system_prompt) || 'You are a cold email outreach specialist.';
+        var aiRes = await callAI(env, sysMsg, userMsg, {
+          model: (newsletterPrompt && newsletterPrompt.model) || 'gpt-4o-mini',
+          temperature: (newsletterPrompt && newsletterPrompt.temperature) || 0.7,
+          max_tokens: (newsletterPrompt && newsletterPrompt.max_tokens) || 500
+        });
+        if (aiRes && aiRes.content && !aiRes.error) {
+          var toEmail = c.email || '';
+          var toName = c.name || '';
+          if (toEmail) {
+            await db.prepare(
+              "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type) VALUES (?, ?, ?, ?, 'agent')"
+            ).bind(toEmail, toName, 'Discover GideonAbochie Studio', aiRes.content, 'agent').run();
+          }
+          await db.prepare(
+            "UPDATE cold_outreach SET status = 'contacted', contacted_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
+          ).bind(c.id).run();
+          sentCount++;
+        }
+      }
+      result = 'Sent newsletter to ' + sentCount + ' of ' + contacts.length + ' contacts';
+      subAgentCount = sentCount;
     } else if (item.agent_type === 'outreach' && payload.action === 'send_reminder') {
       var subData = null;
       if (payload.query) {

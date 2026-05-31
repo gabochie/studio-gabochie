@@ -925,7 +925,23 @@ function createWorkflow() {
   API.createWorkflow({name:name,description:$('wfDesc').value.trim(),trigger_type:$('wfTrigger').value}).then(function(d){if(d.status==='ok'){Toast.success('Workflow created');$('wfModal').classList.remove('open');loadWorkflowsTab();}else throw new Error(d.message);}).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 function runWorkflow(id) {
-  API.updateWorkflow(id,{total_runs:1}).then(function(d){if(d.status!=='ok')throw new Error(d.message);return API.createQueueItem({agent_type:'orchestrator',workflow_id:id,payload:{workflow_id:id,action:'run'},priority:2});}).then(function(){Toast.success('Workflow queued');$('detailModal').classList.remove('open');}).catch(function(e){Toast.error('Failed: '+e.message);});
+  var btn = document.querySelector('#detailModal .btn-primary');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="sp" style="width:12px;height:12px;border-width:1.5px;margin-right:4px"></span> Running...'; }
+  API.updateWorkflow(id,{total_runs:1}).then(function(d){
+    if(d.status!=='ok') throw new Error(d.message);
+    return API.createQueueItem({agent_type:'orchestrator',workflow_id:id,payload:{workflow_id:id,action:'run'},priority:2});
+  }).then(function(){
+    Toast.info('Workflow queued. Processing now...');
+    return API.orchestrate(5);
+  }).then(function(d){
+    Toast.success('Run complete. Processed ' + d.processed + ' items' + (d.total_pending ? ', ' + d.total_pending + ' remaining' : ''));
+    $('detailModal').classList.remove('open');
+    loadWorkflowsTab(); loadDashboard();
+    if (d.total_pending) switchTab('queue');
+  }).catch(function(e){
+    if (btn) { btn.disabled = false; btn.innerHTML = '\u25B6 Run'; }
+    Toast.error('Failed: '+e.message);
+  });
 }
 function processQueue(max) {
   API.orchestrate(max||10).then(function(d){if(d.status==='ok'){Toast.success('Processed '+d.processed+' items'+(d.total_pending?'. '+d.total_pending+' remaining.':''));loadQueueTab();loadDashboard();}else throw new Error(d.message);}).catch(function(e){Toast.error('Failed: '+e.message);});
