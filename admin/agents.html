@@ -359,6 +359,10 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
       <button class="btn btn-primary" id="sSaveTokens">Save Tokens</button>
       <button class="btn btn-secondary" id="sClearTokens" style="margin-left:8px">Clear</button>
       <span id="sTokenMsg" style="margin-left:10px;font-size:12px"></span>
+      <div style="margin-top:12px;display:flex;gap:16px;font-size:12px">
+        <span>API: <span id="authStatus" style="color:var(--text-dim)">not checked</span></span>
+        <span>AI: <span id="aiStatus" style="color:var(--text-dim)">not checked</span></span>
+      </div>
     </div>
   </div>
   <div class="crd">
@@ -378,6 +382,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="sc-body" id="auditBody">
     <p>Audit log of sensitive operations.</p>
     <div id="auditLog"></div>
+  </div>
   </div>
 </div>
 
