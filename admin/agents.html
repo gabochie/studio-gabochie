@@ -265,6 +265,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <button class="sidebar-item active" data-tab="dashboard"><span class="si-icon">&#9632;</span> Dashboard <span class="si-badge" id="sbdActive">0</span></button>
     <button class="sidebar-item" data-tab="agents"><span class="si-icon">&#9679;</span> Agents <span class="si-badge" id="sbdAgents">0</span></button>
     <button class="sidebar-item" data-tab="workflows"><span class="si-icon">&#8617;</span> Workflows</button>
+    <button class="sidebar-item" data-tab="campaign"><span class="si-icon">&#9993;</span> Campaign <span class="si-badge" id="sbdCampaign">0</span></button>
     <div class="sidebar-label">Activity</div>
     <button class="sidebar-item" data-tab="runs"><span class="si-icon">&#9776;</span> Run History</button>
     <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
@@ -315,6 +316,30 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="page-header"><h2>Workflows</h2><p>Automated revenue and operations pipelines</p></div>
   <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-primary btn-sm" id="wfNewBtn">+ New Workflow</button></div>
   <div class="crd" id="workflowList"></div>
+</div>
+
+<div class="tab-panel" id="panel-campaign">
+  <div class="page-header"><h2>Newsletter Campaign</h2><p>Cold outreach contact management</p></div>
+  <div class="metrics" id="campaignMetrics"></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    <select id="campaignStatusFilter" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;font-size:12px;font-family:var(--font-body);-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%235A7A9F' d='M5 7L1 3h8z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none">
+      <option value="">All status</option>
+      <option value="pending">Pending</option>
+      <option value="contacted">Contacted</option>
+      <option value="responded">Responded</option>
+      <option value="converted">Converted</option>
+      <option value="bounced">Bounced</option>
+    </select>
+    <select id="campaignCategoryFilter" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;font-size:12px;font-family:var(--font-body);-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%235A7A9F' d='M5 7L1 3h8z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none">
+      <option value="">All categories</option>
+    </select>
+    <input type="search" id="campaignSearch" placeholder="Search name, email, phone..." style="flex:1;min-width:180px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text-body);font-size:12px;font-family:var(--font-body);outline:none">
+    <button class="btn btn-primary btn-sm" id="campaignSearchBtn">&#128269; Search</button>
+    <button class="btn btn-secondary btn-sm" id="campaignRefreshBtn">&#8635; Refresh</button>
+  </div>
+  <div class="section-header"><h3>Contacts</h3><span class="sh-count" id="campaignCount">0</span></div>
+  <div class="crd"><div class="tbl-wrap" id="campaignList"></div></div>
+  <div style="display:flex;gap:8px;justify-content:center;margin-top:14px" id="campaignPagination"></div>
 </div>
 
 <div class="tab-panel" id="panel-runs">
@@ -541,8 +566,8 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <script>
 (function() {
 
-var tabs = ['dashboard','agents','workflows','runs','queue','settings','help','architecture'];
-var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', runs:'Run History', queue:'Queue', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
+var tabs = ['dashboard','agents','workflows','campaign','runs','queue','settings','help','architecture'];
+var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
 
@@ -983,6 +1008,119 @@ function clearTokens() {
   setTimeout(function(){ $('sTokenMsg').textContent = ''; }, 3000);
 }
 
+/* ── Campaign ── */
+var campaignPage = 1;
+function loadCampaignTab() {
+  var status = $('campaignStatusFilter').value;
+  var category = $('campaignCategoryFilter').value;
+  var search = $('campaignSearch').value.trim();
+  $('campaignList').innerHTML = '<div style="padding:32px;text-align:center"><div class="sp" style="margin:0 auto 8px"></div><div style="font-size:12px;color:var(--text-dim)">Loading contacts...</div></div>';
+  API.getColdOutreach({ status: status, category: category, search: search, page: campaignPage, limit: 50 }).then(function(data){
+    if (data.status !== 'ok') throw new Error(data.message || 'Failed');
+    renderCampaign(data);
+  }).catch(function(e){ showError($('campaignList'), e.message, loadCampaignTab); });
+}
+function renderCampaign(data) {
+  var items = data.items || [];
+  var stats = data.stats || [];
+  var categories = data.categories || [];
+  var total = data.total || 0;
+  $('campaignCount').textContent = total;
+  var catSelect = $('campaignCategoryFilter');
+  var currentCat = catSelect.value;
+  catSelect.innerHTML = '<option value="">All categories</option>' + categories.map(function(c){ return '<option value="'+c.category+'">'+c.category+' ('+c.c+')</option>'; }).join('');
+  catSelect.value = currentCat;
+
+  var statMap = {}; stats.forEach(function(s){ statMap[s.status] = s.c; });
+  var pending = statMap['pending'] || 0;
+  var contacted = statMap['contacted'] || 0;
+  var responded = statMap['responded'] || 0;
+  var converted = statMap['converted'] || 0;
+  var bounced = statMap['bounced'] || 0;
+  $('sbdCampaign').textContent = pending;
+  $('campaignMetrics').innerHTML =
+    '<div class="metric"><div class="m-top"><div class="m-label">Pending</div><div class="m-icon orange">&#9654;</div></div><div class="m-value dim">'+pending+'</div><div class="m-sub">Awaiting contact</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Contacted</div><div class="m-icon blue">&#9993;</div></div><div class="m-value blue">'+contacted+'</div><div class="m-sub">Outreach sent</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Responded</div><div class="m-icon gold">&#9998;</div></div><div class="m-value gold">'+responded+'</div><div class="m-sub">Replied to outreach</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Converted</div><div class="m-icon green">&#10003;</div></div><div class="m-value green">'+converted+'</div><div class="m-sub">Became subscriber/customer</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Bounced</div><div class="m-icon red">&#9888;</div></div><div class="m-value red">'+bounced+'</div><div class="m-sub">Invalid email/phone</div></div>';
+
+  var el = $('campaignList');
+  if (!items.length) { showEmpty(el, '&#9993;', 'No contacts found', 'Try adjusting your filters or import cold outreach data first.'); return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Category</th><th>Status</th><th>Campaign</th><th>Imported</th><th></th></tr></thead><tbody>' +
+    items.map(function(c){
+      return '<tr><td style="font-weight:500;color:var(--text-primary)">'+(c.name||'-')+'</td>'+
+        '<td style="font-size:12px">'+(c.email||'-')+'</td>'+
+        '<td style="font-size:12px">'+(c.phone||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+(c.category||'other')+'</span></td>'+
+        '<td>'+tag(c.status||'pending')+'</td>'+
+        '<td style="font-size:12px;color:var(--text-dim)">'+(c.campaign||'-')+'</td>'+
+        '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(c.imported_at)+'</td>'+
+        '<td><button class="btn-icon" onclick="showCampaignDetail('+c.id+')" title="View">&#8594;</button></td></tr>';
+    }).join('') + '</tbody></table>';
+
+  var pages = data.pages || 1;
+  var pag = $('campaignPagination');
+  if (pages <= 1) { pag.innerHTML = ''; return; }
+  var phtml = '';
+  for (var i = 1; i <= pages; i++) {
+    if (i === campaignPage) { phtml += '<button class="btn btn-primary btn-sm" disabled>'+i+'</button>'; }
+    else { phtml += '<button class="btn btn-secondary btn-sm" onclick="campaignPage='+i+';loadCampaignTab()">'+i+'</button>'; }
+  }
+  pag.innerHTML = phtml;
+}
+function showCampaignDetail(id) {
+  API.getColdOutreach({ id: id, limit: 1 }).then(function(data){
+    var item = data.items && data.items[0];
+    if (!item) { Toast.error('Contact not found'); return; }
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(item.name||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+(item.email||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Phone</span><span class="mdl-v">'+(item.phone||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Website</span><span class="mdl-v">'+(item.website?'<a href="'+item.website+'" target="_blank">'+item.website+'</a>':'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Address</span><span class="mdl-v">'+(item.address||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Category</span><span class="mdl-v"><span class="tg tg-dim">'+(item.category||'other')+'</span></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(item.status||'pending')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Campaign</span><span class="mdl-v">'+(item.campaign||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+(item.source||'-')+'</span></div>'+
+      (item.contacted_at ? '<div class="m-detail-row"><span class="mdl-l">Contacted</span><span class="mdl-v">'+item.contacted_at+'</span></div>' : '')+
+      (item.notes ? '<div class="m-detail-row"><span class="mdl-l">Notes</span><span class="mdl-v">'+item.notes+'</span></div>' : '');
+    h += '<div style="margin-top:16px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Update Status</label>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+      '<button class="btn btn-sm '+(item.status==='pending'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'pending\')">Pending</button>'+
+      '<button class="btn btn-sm '+(item.status==='contacted'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'contacted\')">Contacted</button>'+
+      '<button class="btn btn-sm '+(item.status==='responded'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'responded\')">Responded</button>'+
+      '<button class="btn btn-sm '+(item.status==='converted'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'converted\')">Converted</button>'+
+      '<button class="btn btn-sm '+(item.status==='bounced'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'bounced\')">Bounced</button>'+
+      '</div></div>';
+    h += '<div style="margin-top:12px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Campaign</label>'+
+      '<div style="display:flex;gap:6px">'+
+      '<input type="text" id="campaignEditCampaign" value="'+(item.campaign||'')+'" placeholder="Campaign name" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px">'+
+      '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'campaign\')">Save</button></div></div>';
+    h += '<div style="margin-top:12px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Notes</label>'+
+      '<div style="display:flex;gap:6px">'+
+      '<textarea id="campaignEditNotes" placeholder="Internal notes..." style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px;min-height:60px">'+(item.notes||'')+'</textarea>'+
+      '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'notes\')">Save</button></div></div>';
+    $('detailTitle').textContent = item.name || 'Contact #'+id;
+    $('detailBody').innerHTML = h;
+    $('detailModal').classList.add('open');
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+function updateCampaignStatus(id, status) {
+  API.updateColdOutreach(id, { status: status }).then(function(d){
+    if (d.status === 'ok') { Toast.success('Status updated to ' + status); loadCampaignTab(); $('detailModal').classList.remove('open'); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+function saveCampaignField(id, field) {
+  var val = field === 'campaign' ? $('campaignEditCampaign').value.trim() : $('campaignEditNotes').value.trim();
+  var data = {};
+  data[field] = val;
+  API.updateColdOutreach(id, data).then(function(d){
+    if (d.status === 'ok') { Toast.success(field.charAt(0).toUpperCase() + field.slice(1) + ' saved'); showCampaignDetail(id); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
 function switchTab(name) {
   TAB = name; setHashTab(name);
   document.querySelectorAll('.tab-panel').forEach(function(el){el.classList.remove('active');});
@@ -994,6 +1132,7 @@ function switchTab(name) {
   if(name==='dashboard') loadDashboard();
   else if(name==='agents') loadAgentsTab();
   else if(name==='workflows') loadWorkflowsTab();
+  else if(name==='campaign') loadCampaignTab();
   else if(name==='runs') loadRunsTab();
   else if(name==='queue') loadQueueTab();
   else if(name==='settings') loadSettings();
@@ -1010,6 +1149,11 @@ document.addEventListener('DOMContentLoaded', function() {
   $('wfConfirm').addEventListener('click', createWorkflow);
   $('processBtn').addEventListener('click', function(){ processQueue(10); });
   $('runFilter').addEventListener('change', function(){ loadRunsTab(); });
+  $('campaignStatusFilter').addEventListener('change', function(){ campaignPage = 1; loadCampaignTab(); });
+  $('campaignCategoryFilter').addEventListener('change', function(){ campaignPage = 1; loadCampaignTab(); });
+  $('campaignSearchBtn').addEventListener('click', function(){ campaignPage = 1; loadCampaignTab(); });
+  $('campaignSearch').addEventListener('keydown', function(e){ if (e.key === 'Enter') { campaignPage = 1; loadCampaignTab(); } });
+  $('campaignRefreshBtn').addEventListener('click', function(){ loadCampaignTab(); });
   $('sSaveTokens').addEventListener('click', saveTokens);
   $('sClearTokens').addEventListener('click', clearTokens);
   $('seedAgentsBtn').addEventListener('click', seedDefaultAgents);
@@ -1032,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('keydown', function(e){
     if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
     var n=parseInt(e.key);
-    if(n>=1&&n<=8){e.preventDefault();switchTab(tabs[n-1]);}
+    if(n>=1&&n<=9){e.preventDefault();switchTab(tabs[n-1]);}
     if(e.key==='r'||e.key==='R'){e.preventDefault();switchTab(TAB);}
     if(e.key==='Escape'){document.querySelectorAll('.m-overlay.open').forEach(function(o){o.classList.remove('open');});}
   });
@@ -1043,6 +1187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('hdrTime').textContent = new Date().toLocaleTimeString();
     if(document.hidden) return;
     if(TAB==='dashboard') loadDashboard();
+    else if(TAB==='campaign') loadCampaignTab();
     else if(TAB==='queue') API.getQueue().then(renderQueue);
     else if(TAB==='runs') API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns);
   },15000);

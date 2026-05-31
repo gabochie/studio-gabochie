@@ -89,6 +89,20 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', message: 'Email queued' }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
+    if (action === 'query_cold_outreach') {
+      var { status, category, campaign, limit, offset } = body;
+      var conds = []; var bindings = [];
+      if (status) { conds.push('status = ?'); bindings.push(status); }
+      if (category) { conds.push('category = ?'); bindings.push(category); }
+      if (campaign) { conds.push('campaign = ?'); bindings.push(campaign); }
+      var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
+      var lim = Math.min(limit || 50, 500);
+      var off = offset || 0;
+      var result = await queryD1(env.DB, "SELECT * FROM cold_outreach" + where + " ORDER BY id LIMIT ? OFFSET ?", bindings.concat([lim, off]));
+      if (result.error) return new Response(JSON.stringify({ status: 'error', message: result.error }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      return new Response(JSON.stringify({ status: 'ok', rows: result.rows }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
+
     if (action === 'create_task') {
       var { title, description, phase, priority } = body;
       if (!title || !title.trim()) return new Response(JSON.stringify({ status: 'error', message: 'Title required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

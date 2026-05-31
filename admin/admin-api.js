@@ -176,6 +176,23 @@ var API = (function() {
     return request('DELETE', '/agents?id=' + encodeURIComponent(id));
   }
 
+  function getColdOutreach(params) {
+    var q = '';
+    if (params) {
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.category) q += '&category=' + encodeURIComponent(params.category);
+      if (params.campaign) q += '&campaign=' + encodeURIComponent(params.campaign);
+      if (params.search) q += '&search=' + encodeURIComponent(params.search);
+      if (params.page) q += '&page=' + params.page;
+      if (params.limit) q += '&limit=' + params.limit;
+    }
+    return adminRequest('GET', '/cold-outreach?' + q.substring(1));
+  }
+
+  function updateColdOutreach(id, data) {
+    return adminRequest('PUT', '/cold-outreach', Object.assign({ id: id }, data));
+  }
+
   function orchestrate(maxItems) {
     return post('/orchestrate', { max_items: maxItems || 10 });
   }
@@ -209,6 +226,8 @@ var API = (function() {
     spawnAgent: spawnAgent,
     updateAgent: updateAgent,
     deleteAgent: deleteAgent,
+    getColdOutreach: getColdOutreach,
+    updateColdOutreach: updateColdOutreach,
     orchestrate: orchestrate,
     runAction: runAction,
     get: get, post: post, put: put, request: request

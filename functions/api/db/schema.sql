@@ -155,6 +155,30 @@ ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0;
 ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT '';
 ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT '';
 
+CREATE TABLE IF NOT EXISTS cold_outreach (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL DEFAULT '',
+  phone TEXT DEFAULT '',
+  email TEXT DEFAULT '',
+  website TEXT DEFAULT '',
+  address TEXT DEFAULT '',
+  category TEXT DEFAULT '',
+  source TEXT DEFAULT '',
+  region TEXT DEFAULT '',
+  country TEXT DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'pending',
+  campaign TEXT DEFAULT '',
+  contacted_at TEXT DEFAULT '',
+  response TEXT DEFAULT '',
+  notes TEXT DEFAULT '',
+  imported_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_cold_outreach_email ON cold_outreach(email);
+CREATE INDEX IF NOT EXISTS idx_cold_outreach_phone ON cold_outreach(phone);
+CREATE INDEX IF NOT EXISTS idx_cold_outreach_status ON cold_outreach(status);
+CREATE INDEX IF NOT EXISTS idx_cold_outreach_category ON cold_outreach(category);
+
 CREATE TABLE IF NOT EXISTS tasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
