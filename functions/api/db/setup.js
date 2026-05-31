@@ -636,6 +636,17 @@
         ((SELECT id FROM workflows WHERE name='Daily Fulfillment Check'), 1, 'query', '{"query":"SELECT * FROM store_orders WHERE status=''pending''"}', 'fulfillment'),
         ((SELECT id FROM workflows WHERE name='Daily Fulfillment Check'), 2, 'process', '{"auto_complete":true}', 'fulfillment')
       `,
+      // Newsletter Campaign workflow
+      `INSERT OR IGNORE INTO workflows (name, description, trigger_type, trigger_config) VALUES ('Newsletter Campaign', 'Pick pending cold outreach contacts, draft & send newsletter, track responses', 'manual', '{}')`,
+      `INSERT OR IGNORE INTO workflow_steps (workflow_id, step_order, step_type, config, agent_type) VALUES
+        ((SELECT id FROM workflows WHERE name='Newsletter Campaign'), 1, 'detect', '{"query":"SELECT * FROM cold_outreach WHERE status=''pending'' ORDER BY id LIMIT 50"}', 'outreach'),
+        ((SELECT id FROM workflows WHERE name='Newsletter Campaign'), 2, 'dispatch', '{"action":"send_newsletter","batch_size":10}', 'outreach'),
+        ((SELECT id FROM workflows WHERE name='Newsletter Campaign'), 3, 'monitor', '{"wait_hours":72,"update_status":"responded"}', 'orchestrator')
+      `,
+      // Outreach prompt for cold newsletter
+      `INSERT OR IGNORE INTO agent_prompts (agent_type, prompt_key, system_prompt, user_template) VALUES
+        ('outreach', 'cold_newsletter', 'You are a cold email outreach specialist for GideonAbochie Studio, a Bible-based ministry teaching creativity, love, and wisdom. Your goal is to warmly introduce the ministry to cold contacts and invite them to subscribe or engage. Tone: warm, professional, non-pushy. Do not sound spammy or salesy.', 'Write a cold outreach email for {{name}} (category: {{category}} from {{region}}). The recipient is a cold contact who has not interacted with us before. Introduce GideonAbochie Studio as a Bible-based ministry that teaches creativity, wisdom, and love through Scripture. Mention one relevant offering: The Spirit of God in Genesis program, free books (The Bible as Kingdom OS, The Divine Algorithm), or the weekly newsletter. Keep it under 200 words. End with a gentle invitation to visit gideonabochie.org.')
+      `,
       // CI/CD pipeline reports
       `CREATE TABLE IF NOT EXISTS ci_reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
