@@ -1,0 +1,11 @@
+{
+  "name": "gideonabochie-org",
+  "pages_build_output_dir": ".",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gideonabochie-db",
+      "database_id": "gideonabochie-db"
+    }
+  ]
+}

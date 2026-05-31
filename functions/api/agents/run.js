@@ -1,4 +1,5 @@
 import { requireAgentAuth } from './_auth.js';
+import { ensureAgentTables } from './_init.js';
 
 async function callAI(env, prompt, options) {
   var apiKey = env.OPENAI_API_KEY || env.AI_API_KEY || '';
@@ -45,6 +46,7 @@ export async function onRequest(context) {
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   var authErr = requireAgentAuth(request, env);
   if (authErr) return authErr;
+  await ensureAgentTables(env.DB);
 
   try {
     var body = await request.json();

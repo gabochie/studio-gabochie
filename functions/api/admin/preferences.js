@@ -1,8 +1,14 @@
+import { requireAdminAuth } from './_admin-auth.js';
+import { ensureAdminTables } from '../agents/_init.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+  var authErr = requireAdminAuth(request, env);
+  if (authErr) return authErr;
+  await ensureAdminTables(env.DB);
 
   try {
     if (request.method === 'GET') {

@@ -1,4 +1,5 @@
 import { requireAgentAuth } from './_auth.js';
+import { ensureAgentTables } from './_init.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -7,6 +8,7 @@ export async function onRequest(context) {
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   var authErr = requireAgentAuth(request, env);
   if (authErr) return authErr;
+  await ensureAgentTables(env.DB);
 
   try {
     if (request.method === 'GET') {

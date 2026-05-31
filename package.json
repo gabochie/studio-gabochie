@@ -14,6 +14,7 @@
     "check:mojibake": "node scripts/check-mojibake.cjs",
     "audit": "npm audit --audit-level=high",
     "check": "npm run lint && npm run lint:html && npm run check:mojibake && npm run test",
+    "deploy": "npx wrangler pages deploy . --project-name gideonabochie-org",
     "prepare": "node scripts/install-hooks.js"
   },
   "devDependencies": {

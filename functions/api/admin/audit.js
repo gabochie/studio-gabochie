@@ -1,16 +1,16 @@
+import { requireAdminAuth } from './_admin-auth.js';
+import { ensureAdminTables } from '../agents/_init.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+  var authErr = requireAdminAuth(request, env);
+  if (authErr) return authErr;
+  await ensureAdminTables(env.DB);
 
   try {
-    await env.DB.prepare(
-      "CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, action TEXT NOT NULL, entity_type TEXT NOT NULL DEFAULT '', entity_id TEXT DEFAULT '', admin_key TEXT DEFAULT '', ip TEXT DEFAULT '', details TEXT DEFAULT '{}', created_at TEXT NOT NULL DEFAULT (datetime('now')))"
-    ).run();
-    await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action)").run();
-    await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at)").run();
-
     if (request.method === 'GET') {
       var limit = parseInt(new URL(request.url).searchParams.get('limit') || '50');
       var results = (await env.DB.prepare("SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ?").bind(limit).all()).results || [];
