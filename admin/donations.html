@@ -65,11 +65,12 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
+<script src="admin.js"></script>
 <script>
 async function loadDonations() {
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
-    var res = await fetch('/admin/api/donations', {headers:{'Referer':'/admin/donations.html'}});
+    var res = await adminFetch('/admin/api/donations', {headers:{'Referer':'/admin/donations.html'}});
     if (!res.ok) throw new Error('Failed to load');
     var data = await res.json();
     var items = data.items || [];

@@ -410,5 +410,93 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 
 </div>
 
+<script src="admin.js"></script>
+<script>
+(function(){
+  var agentTypeMap = {
+    'orchestrator': 'orchestrator',
+    'content': 'content',
+    'outreach': 'outreach',
+    'analytics': 'analytics',
+    'fulfillment': 'fulfillment',
+    'task_processor': 'task-processor'
+  };
+
+  function loadArchData() {
+    adminFetch('/api/agents/status').then(function(r){return r.json()}).then(function(data){
+      if (data.status !== 'ok') return;
+      var agents = data.agents || [];
+      // Overall summary
+      var active = agents.filter(function(a){return a.status==='idle'||a.status==='busy'}).length;
+      var header = document.querySelector('.header p');
+      if (header) {
+        var existing = header.querySelector('.arch-summary');
+        if (!existing) {
+          existing = document.createElement('span');
+          existing.className = 'arch-summary';
+          existing.style.cssText = 'display:block;margin-top:6px;font-size:12px;color:var(--green)';
+          header.appendChild(existing);
+        }
+        existing.innerHTML = '&#9679; ' + active + ' agent(s) active &middot; ' + agents.length + ' total registered';
+      }
+
+      // Agent type instances
+      var typeCounts = {};
+      agents.forEach(function(a){
+        var t = a.agent_type_name ? a.agent_type_name.toLowerCase() : '';
+        if (!typeCounts[t]) typeCounts[t] = {total:0, idle:0, busy:0, error:0, offline:0};
+        typeCounts[t].total++;
+        if (typeCounts[t][a.status] !== undefined) typeCounts[t][a.status]++;
+        else typeCounts[t].idle++;
+      });
+
+      // Update agent cards with live status
+      document.querySelectorAll('.card').forEach(function(card){
+        var badgeEl = card.querySelector('.badge');
+        if (!badgeEl) return;
+        var badgeText = badgeEl.textContent.trim().toLowerCase();
+        var key = agentTypeMap[badgeText];
+        if (!key && badgeText === 'controller') key = 'orchestrator';
+        if (!key && badgeText === 'dispatcher') key = 'task_processor';
+        if (!key) return;
+
+        var counts = typeCounts[key];
+        if (!counts) {
+          card.style.opacity = '0.5';
+          return;
+        }
+        card.style.opacity = '1';
+
+        // Add status indicator
+        var meta = card.querySelector('.meta');
+        if (meta) {
+          var existing = meta.querySelector('.arch-status');
+          if (existing) existing.remove();
+          var statusEl = document.createElement('span');
+          statusEl.className = 'arch-status';
+          var colors = [];
+          if (counts.idle > 0) colors.push('<span style="color:var(--green)">' + counts.idle + ' idle</span>');
+          if (counts.busy > 0) colors.push('<span style="color:var(--blue)">' + counts.busy + ' busy</span>');
+          if (counts.error > 0) colors.push('<span style="color:var(--red)">' + counts.error + ' error</span>');
+          statusEl.innerHTML = colors.length ? '&#9679; ' + colors.join(' ') : '&#9679; <span style="color:var(--text-dim)">0 instances</span>';
+          statusEl.style.cssText = 'font-size:10px;margin-top:2px;width:100%';
+          meta.appendChild(statusEl);
+        }
+
+        // Update border color based on health
+        if (counts.error > 0 && counts.idle + counts.busy === 0) {
+          card.style.borderColor = 'var(--red)';
+        } else if (counts.idle + counts.busy > 0) {
+          var colorMap = {orchestrator:'rgba(59,130,246,0.4)', content:'rgba(201,168,76,0.4)', outreach:'rgba(52,199,123,0.4)', analytics:'rgba(59,130,246,0.4)', fulfillment:'rgba(245,158,11,0.4)', task_processor:'rgba(139,92,246,0.4)'};
+          card.style.borderColor = colorMap[key] || 'rgba(52,199,123,0.3)';
+        }
+      });
+    }).catch(function(){});
+  }
+
+  loadArchData();
+  setInterval(loadArchData, 30000);
+})();
+</script>
 </body>
 </html>

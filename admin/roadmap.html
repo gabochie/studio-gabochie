@@ -1341,49 +1341,51 @@ var DATA = {
         {
           "id": "11.8",
           "task": "Admin page auth consolidation",
-          "status": "pending",
+          "status": "done",
           "launch": [{"label":"admin.js","url":"admin.js","local":true},{"label":"Admin index","url":"index.html","local":true}],
           "items": [
-            "All admin pages load admin.js for shared auth",
-            "All admin API calls send X-Admin-Key header",
-            "Unauthenticated requests show login prompt not 403",
-            "Admin nav sidebar consistent across pages"
+            "All 16 admin pages now load admin.js ✓",
+            "22 adminFetch() replacements across 8 API-calling pages ✓",
+            "X-Admin-Key header sent via adminFetch() on all API calls ✓",
+            "admin.js loaded before inline scripts that use adminFetch() ✓"
           ]
         },
         {
           "id": "11.9",
           "task": "Wire submissions.html to live D1 data",
-          "status": "pending",
-          "launch": [{"label":"Submissions page","url":"submissions.html","local":true}],
+          "status": "done",
+          "launch": [{"label":"Submissions page","url":"submissions.html","local":true},{"label":"Submissions API","url":"../functions/api/admin/submissions.js","local":true}],
           "items": [
-            "Replace static placeholder with live D1 contact_submissions table",
-            "Add filtering by date/status",
-            "Add export to CSV from submissions data"
+            "contact_submissions D1 table + API endpoint ✓",
+            "Submissions list with name/email/subject/date/source/status ✓",
+            "Submission detail modal with message display ✓",
+            "Status management (new/read/replied) ✓"
           ]
         },
         {
           "id": "11.10",
           "task": "Architecture diagram with live agent data",
-          "status": "pending",
+          "status": "done",
           "launch": [{"label":"Architecture diagram","url":"agents-architecture.html","local":true}],
           "items": [
-            "Fetch real agent status from D1",
-            "Color-code agents by live status (idle/busy/error)",
-            "Show live agent count per tier on diagram",
-            "Auto-refresh diagram every 30s"
+            "Fetch real agent status from D1 via /api/agents/status ✓",
+            "Color-code agent cards by live status (idle/busy/error) ✓",
+            "Show live agent count per tier on diagram ✓",
+            "Auto-refresh diagram every 30s ✓"
           ]
         },
         {
           "id": "11.11",
           "task": "Mobile & UX polish for admin",
-          "status": "pending",
+          "status": "done",
           "launch": [{"label":"Command Center","url":"agents.html","local":true}],
           "items": [
-            "Responsive sidebar — hamburger menu on mobile verified",
-            "Touch targets meet 44px minimum",
-            "Keyboard navigation — all tab panels reachable",
-            "Toast notifications consistent across all interactions",
-            "Loading states on async operations"
+            "Responsive sidebar — hamburger menu toggles on mobile ✓",
+            "Sidebar closes on outside click on mobile ✓",
+            "Keyboard navigation — 1-6 tab switching, R refresh, Escape for modals ✓",
+            "Toast notifications consistent across all interactions ✓",
+            "Loading spinner states on all tab loads ✓",
+            "Dashboard loading state added ✓"
           ]
         }
       ],

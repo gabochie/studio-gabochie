@@ -93,6 +93,7 @@
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
 
+<script src="admin.js"></script>
 <script>
 var currentTab = 'testimonials';
 
@@ -116,7 +117,7 @@ function api(path, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
   opts.headers['Referer'] = '/admin/content.html';
-  return fetch(path, opts).then(function(r){return r.json()});
+  return adminFetch(path, opts).then(function(r){return r.json()});
 }
 
 // ── TESTIMONIALS ──

@@ -544,7 +544,7 @@ function renderDonut(containerId, data, labelKey, valueKey, colors, total) {
 }
 
 function loadAudience() {
-  fetch('/admin/api/audience?days=30', { cache: 'no-store' }).then(function(r) {
+  adminFetch('/admin/api/audience?days=30', { cache: 'no-store' }).then(function(r) {
     if (!r.ok) throw new Error('API returned ' + r.status);
     return r.json();
   }).then(function(d) {
@@ -581,7 +581,7 @@ function loadSummary(){
   var t = $('lastUpdated');
   if(t)t.textContent='Fetching live data…';
 
-  fetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
+  adminFetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('API returned '+r.status);
     return r.json();
   }).then(function(d){
@@ -735,7 +735,7 @@ function fallbackLocalStats(){
 
 // Track this page view
 (function trackVisit(){
-  fetch('/api/track', {
+  adminFetch('/api/track', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({page:'/admin/', referrer:document.referrer||''}),
@@ -745,7 +745,7 @@ function fallbackLocalStats(){
 
 // ── Coming Soon Toggle ──
 function loadComingSoonStatus(){
-  fetch('/admin/api/coming-soon', {cache:'no-store'}).then(function(r){
+  adminFetch('/admin/api/coming-soon', {cache:'no-store'}).then(function(r){
     if(!r.ok) throw new Error('Failed');
     return r.json();
   }).then(function(d){
@@ -783,7 +783,7 @@ function toggleComingSoon(){
   var toggle = $('csToggle');
   toggle.disabled = true;
   var active = toggle.classList.contains('off');
-  fetch('/admin/api/coming-soon', {
+  adminFetch('/admin/api/coming-soon', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({active:active}),
@@ -802,7 +802,7 @@ function toggleComingSoon(){
 
 // ── CI/CD Status ──
 function loadCI() {
-  fetch('/api/admin/ci/status', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(d){
+  adminFetch('/api/admin/ci/status', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status !== 'ok' || !d.report) {
       $('ciTimestamp').textContent = 'No reports yet';
       $('ciContent').innerHTML = '<span style="color:#5A7F9A;font-size:13px">No CI reports received. Reports appear after the first GitHub Actions run.</span>';

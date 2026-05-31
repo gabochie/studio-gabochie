@@ -52,6 +52,7 @@ td.email{font-family:'Courier Prime',monospace;font-size:12px;color:#94A3B8}
   </tr></thead><tbody id="queueBody"></tbody></table>
 </div>
 
+<script src="admin.js"></script>
 <script>
 async function loadQueue() {
   try {
@@ -96,7 +97,7 @@ async function processQueue() {
   var btn = document.getElementById('processBtn');
   btn.disabled = true; btn.textContent = 'Processing...';
   try {
-    var r = await fetch('/api/email/process');
+    var r = await adminFetch('/api/email/process');
     var d = await r.json();
     btn.textContent = 'Sent ' + (d.sent||0) + ' — Refresh';
     btn.disabled = false;

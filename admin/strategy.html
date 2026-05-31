@@ -298,12 +298,9 @@ function openModal() {
   html += '<h2 style="color:#F1F5F9;font-size:20px;margin-bottom:16px">Add Monthly Patron Option</h2>';
   html += '<p style="color:#6B7F9A;font-size:13px;margin-bottom:20px">Add the following donation tier to <strong>index.html</strong> in the donation amount picker:</p>';
   html += '<pre style="background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:16px;font-size:12px;color:#CBD5E1;overflow-x:auto;margin-bottom:16px;line-height:1.5">' +
-    '&lt;button class="donate-amount" data-amount="50" data-recurring="true"&gt;
-' +
-    '  GH¢ 50/mo
-' +
-    '&lt;/button&gt;
-' +
+    '&lt;button class="donate-amount" data-amount="50" data-recurring="true"&gt;\n' +
+    '  GH¢ 50/mo\n' +
+    '&lt;/button&gt;\n' +
     '&lt;small style="color:#C9A84C;font-size:10px"&gt;Monthly Patron&lt;/small&gt;';
   html += '</pre>';
   html += '<p style="color:#6B7F9A;font-size:12px;margin-bottom:20px">Also update Flutterwave checkout call to pass <code>payment_plan</code> parameter for recurring.</p>';
@@ -370,6 +367,7 @@ function renderStrategy() {
 renderStrategy();
 if (!state || Object.keys(state).length < 2) { setTimeout(reverifyStrategy, 300); }
 </script>
+<script src="admin.js"></script>
 </body>
 </html>
 

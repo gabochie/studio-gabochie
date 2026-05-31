@@ -104,6 +104,7 @@
   </div>
 </div>
 
+<script src="admin.js"></script>
 <script>
 var _items = [];
 
@@ -112,7 +113,7 @@ function refresh() {
   document.getElementById('kvStatus').className = 'kv-status pending';
   document.getElementById('kvStatus').textContent = 'Fetching subscriber data&hellip;';
 
-  fetch('/admin/api/subscribers', {cache:'no-store'}).then(function(r) {
+  adminFetch('/admin/api/subscribers', {cache:'no-store'}).then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(data) {

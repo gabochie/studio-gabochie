@@ -68,13 +68,14 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../newsletter/advertise.html">View Sponsorships</a></div>
+<script src="admin.js"></script>
 <script>
 var allBookings = [];
 
 async function loadBookings() {
   document.getElementById('bookingsBody').innerHTML = '<tr><td colspan="6" class="table-empty">Loading...</td></tr>';
   try {
-    var res = await fetch('/admin/api/bookings', {headers:{'Referer':'/admin/bookings.html'}});
+    var res = await adminFetch('/admin/api/bookings', {headers:{'Referer':'/admin/bookings.html'}});
     if (!res.ok) throw new Error('Failed');
     var data = await res.json();
     allBookings = data.items || [];
@@ -129,7 +130,7 @@ function filterBookings() {
 
 async function toggleStatus(id, newStatus) {
   try {
-    await fetch('/admin/api/bookings?id=' + id, {
+    await adminFetch('/admin/api/bookings?id=' + id, {
       method: 'PATCH',
       headers: {'Content-Type':'application/json','Referer':'/admin/bookings.html'},
       body: JSON.stringify({status: newStatus})

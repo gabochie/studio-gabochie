@@ -103,11 +103,12 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../school/index.html">View School Page</a></div>
+<script src="admin.js"></script>
 <script>
 async function loadPrograms() {
   document.getElementById('programsBody').innerHTML = '<tr><td colspan="5" class="table-empty">Loading...</td></tr>';
   try {
-    var res = await fetch('/admin/api/programs', {headers:{'Referer':'/admin/programs.html'}});
+    var res = await adminFetch('/admin/api/programs', {headers:{'Referer':'/admin/programs.html'}});
     if (!res.ok) throw new Error('Failed');
     var data = await res.json();
     var items = data.items || [];
