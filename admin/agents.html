@@ -270,6 +270,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <button class="sidebar-item" data-tab="runs"><span class="si-icon">&#9776;</span> Run History</button>
     <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
     <button class="sidebar-item" data-tab="submissions"><span class="si-icon">&#9993;</span> Submissions <span class="si-badge" id="sbdSubmissions">0</span></button>
+    <button class="sidebar-item" data-tab="invoices"><span class="si-icon">&#36;</span> Invoices <span class="si-badge" id="sbdInvoices">0</span></button>
     <div class="sidebar-label">System</div>
     <button class="sidebar-item" data-tab="settings"><span class="si-icon">&#9881;</span> Settings</button>
     <div class="sidebar-label">Info</div>
@@ -374,6 +375,26 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <button class="btn btn-secondary btn-sm" onclick="loadSubmissionsTab()">&#8635; Refresh</button>
   </div>
   <div class="crd"><div class="tbl-wrap" id="submissionsList"></div></div>
+</div>
+
+<div class="tab-panel" id="panel-invoices">
+  <div class="page-header"><h2>Invoices</h2><p>Automated payment receipts and invoices</p></div>
+  <div class="metrics" id="invoiceMetrics"></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    <select id="invTypeFilter" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;font-size:12px;font-family:var(--font-body);-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%235A7A9F' d='M5 7L1 3h8z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;outline:none">
+      <option value="">All types</option>
+      <option value="donation">Donation</option>
+      <option value="books">Book</option>
+      <option value="store">Store</option>
+      <option value="subscription">Subscription</option>
+      <option value="booking">Booking</option>
+      <option value="enrollment">Enrollment</option>
+    </select>
+    <input type="search" id="invSearch" placeholder="Search name, email, invoice #..." style="flex:1;min-width:180px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text-body);font-size:12px;font-family:var(--font-body);outline:none">
+    <button class="btn btn-primary btn-sm" id="invSearchBtn">&#128269; Search</button>
+    <button class="btn btn-secondary btn-sm" onclick="loadInvoicesTab()">&#8635; Refresh</button>
+  </div>
+  <div class="crd"><div class="tbl-wrap" id="invoicesList"></div></div>
 </div>
 
 <div class="tab-panel" id="panel-settings">
@@ -582,8 +603,8 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <script>
 (function() {
 
-var tabs = ['dashboard','agents','workflows','campaign','runs','queue','submissions','settings','help','architecture'];
-var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', submissions:'Submissions', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
+var tabs = ['dashboard','agents','workflows','campaign','runs','queue','submissions','invoices','settings','help','architecture'];
+var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', submissions:'Submissions', invoices:'Invoices', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
 
@@ -1018,6 +1039,62 @@ function updateSubmissionStatus(id, status) {
   }).catch(function(e){ Toast.error('Failed: '+e.message); });
 }
 
+/* ── Invoices ── */
+function loadInvoicesTab() {
+  var type = $('invTypeFilter').value;
+  var search = $('invSearch').value.trim();
+  $('invoicesList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading invoices...</div></div>';
+  API.getInvoices({ type: type, search: search, limit: 100 }).then(function(data){
+    renderInvoices(data);
+  }).catch(function(e){ showError($('invoicesList'), e.message, loadInvoicesTab); });
+}
+function renderInvoices(data) {
+  var items = data.items || [];
+  var types = data.types || [];
+  $('sbdInvoices').textContent = items.length;
+  var typeCounts = {}; types.forEach(function(t){ typeCounts[t.invoice_type] = t.c; });
+  $('invoiceMetrics').innerHTML =
+    '<div class="metric"><div class="m-top"><div class="m-label">Total</div><div class="m-icon gold">&#36;</div></div><div class="m-value">'+(data.total||0)+'</div><div class="m-sub">All invoices</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Donations</div><div class="m-icon green">&#10084;</div></div><div class="m-value green">'+(typeCounts['donation']||0)+'</div><div class="m-sub">Receipts issued</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Sales</div><div class="m-icon blue">&#128722;</div></div><div class="m-value blue">'+((typeCounts['books']||0)+(typeCounts['store']||0))+'</div><div class="m-sub">Books + Store</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Subscriptions</div><div class="m-icon orange">&#8631;</div></div><div class="m-value orange">'+(typeCounts['subscription']||0)+'</div><div class="m-sub">Recurring billing</div></div>';
+  var el = $('invoicesList');
+  if (!items.length) { showEmpty(el, '&#36;', 'No invoices yet', 'Invoices are auto-generated when payments are processed.'); return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Invoice</th><th>Customer</th><th>Type</th><th>Amount</th><th>Date</th><th></th></tr></thead><tbody>' +
+    items.map(function(inv){
+      return '<tr><td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--gold)">'+inv.invoice_number+'</td>'+
+        '<td style="font-size:12px;color:var(--text-primary)">'+(inv.customer_name||inv.customer_email||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+(inv.invoice_type||'')+'</span></td>'+
+        '<td style="font-family:var(--font-heading)">'+inv.currency+' '+Number(inv.total).toLocaleString()+'</td>'+
+        '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(inv.created_at)+'</td>'+
+        '<td><button class="btn-icon" onclick="showInvoiceDetail('+inv.id+')" title="View">&#8594;</button>'+
+        ' <a href="/api/invoices/'+inv.invoice_number+'?token='+inv.invoice_number+'" target="_blank" class="btn-icon" title="Open invoice">&#128196;</a></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+function showInvoiceDetail(id) {
+  API.getInvoices({ id: id, limit: 1 }).then(function(data){
+    var inv = data.items && data.items[0];
+    if (!inv) { Toast.error('Invoice not found'); return; }
+    var items = JSON.parse(inv.items || '[]');
+    var itemsHtml = items.map(function(it){
+      return '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><span>'+(it.description||'')+'</span><span style="color:var(--gold);font-weight:600">'+inv.currency+' '+Number(it.total||0).toLocaleString()+'</span></div>';
+    }).join('');
+    var h = '<div class="m-detail-row"><span class="mdl-l">Invoice</span><span class="mdl-v" style="font-family:monospace;color:var(--gold);font-weight:700">'+inv.invoice_number+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v"><span class="tg tg-dim">'+inv.invoice_type+'</span></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v"><span class="tg tg-green">'+inv.status+'</span></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Customer</span><span class="mdl-v">'+(inv.customer_name||inv.customer_email||'-')+'</span></div>'+
+      (inv.customer_email ? '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+inv.customer_email+'</span></div>' : '')+
+      '<div class="m-detail-row"><span class="mdl-l">Reference</span><span class="mdl-v" style="font-size:11px;font-family:monospace">'+(inv.reference_tx_ref||'-')+'</span></div>'+
+      '<div style="margin:12px 0 6px;font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px">Items</div>'+
+      itemsHtml+
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;border-top:2px solid var(--gold);margin-top:6px"><span>Total</span><span style="color:var(--gold)">'+inv.currency+' '+Number(inv.total).toLocaleString()+'</span></div>'+
+      '<div style="margin-top:14px"><a href="/api/invoices/'+inv.invoice_number+'?token='+inv.invoice_number+'" target="_blank" class="btn btn-primary btn-sm">&#128196; View Invoice</a></div>';
+    $('detailTitle').textContent = inv.invoice_number;
+    $('detailBody').innerHTML = h;
+    $('detailModal').classList.add('open');
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
 function loadSettings() {
   $('sAgentToken').value = AppState.get('agentAuthToken') || '';
   $('sAdminKey').value = AppState.get('adminKey') || '';
@@ -1223,6 +1300,7 @@ function switchTab(name) {
   else if(name==='runs') loadRunsTab();
   else if(name==='queue') loadQueueTab();
   else if(name==='submissions') loadSubmissionsTab();
+  else if(name==='invoices') loadInvoicesTab();
   else if(name==='settings') loadSettings();
 }
 
@@ -1243,6 +1321,9 @@ document.addEventListener('DOMContentLoaded', function() {
   $('campaignSearch').addEventListener('keydown', function(e){ if (e.key === 'Enter') { campaignPage = 1; loadCampaignTab(); } });
   $('campaignRefreshBtn').addEventListener('click', function(){ loadCampaignTab(); });
   $('subStatusFilter').addEventListener('change', function(){ loadSubmissionsTab(); });
+  $('invTypeFilter').addEventListener('change', function(){ loadInvoicesTab(); });
+  $('invSearchBtn').addEventListener('click', function(){ loadInvoicesTab(); });
+  $('invSearch').addEventListener('keydown', function(e){ if (e.key === 'Enter') loadInvoicesTab(); });
   $('sSaveTokens').addEventListener('click', saveTokens);
   $('sClearTokens').addEventListener('click', clearTokens);
   $('seedAgentsBtn').addEventListener('click', seedDefaultAgents);
@@ -1279,6 +1360,7 @@ document.addEventListener('DOMContentLoaded', function() {
     else if(TAB==='campaign') loadCampaignTab();
     else if(TAB==='queue') API.getQueue().then(renderQueue);
     else if(TAB==='submissions') loadSubmissionsTab();
+    else if(TAB==='invoices') loadInvoicesTab();
     else if(TAB==='runs') API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns);
   },15000);
 });

@@ -37,6 +37,11 @@ export async function ensureAdminTables(db) {
     `CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action)`,
     `CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at)`,
     `CREATE TABLE IF NOT EXISTS contact_submissions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', subject TEXT DEFAULT '', message TEXT DEFAULT '', source TEXT DEFAULT '', status TEXT NOT NULL DEFAULT 'new', created_at TEXT NOT NULL DEFAULT (datetime('now')))`,
+    `CREATE TABLE IF NOT EXISTS invoices (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_number TEXT NOT NULL UNIQUE, customer_name TEXT NOT NULL DEFAULT '', customer_email TEXT NOT NULL DEFAULT '', customer_phone TEXT DEFAULT '', customer_company TEXT DEFAULT '', invoice_type TEXT NOT NULL DEFAULT 'donation', reference_type TEXT NOT NULL DEFAULT '', reference_id INTEGER DEFAULT 0, reference_tx_ref TEXT DEFAULT '', items TEXT DEFAULT '[]', subtotal REAL NOT NULL DEFAULT 0, tax REAL NOT NULL DEFAULT 0, total REAL NOT NULL DEFAULT 0, currency TEXT NOT NULL DEFAULT 'GHS', status TEXT NOT NULL DEFAULT 'paid', notes TEXT DEFAULT '', created_at TEXT NOT NULL DEFAULT (datetime('now')), paid_at TEXT DEFAULT '', sent_at TEXT DEFAULT '')`,
+    `CREATE INDEX IF NOT EXISTS idx_invoices_email ON invoices(customer_email)`,
+    `CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)`,
+    `CREATE INDEX IF NOT EXISTS idx_invoices_type ON invoices(invoice_type)`,
+    `CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number)`,
   ];
   for (var s of stmts) {
     try { await db.prepare(s).run(); } catch (e) {}

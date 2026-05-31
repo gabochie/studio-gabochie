@@ -648,6 +648,33 @@
         ((SELECT id FROM workflows WHERE name='Newsletter Campaign'), 2, 'dispatch', '{"action":"send_newsletter","batch_size":10}', 'outreach'),
         ((SELECT id FROM workflows WHERE name='Newsletter Campaign'), 3, 'monitor', '{"wait_hours":72,"update_status":"responded"}', 'orchestrator')
       `,
+      // ── Invoices Table ──
+      `CREATE TABLE IF NOT EXISTS invoices (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        invoice_number TEXT NOT NULL UNIQUE,
+        customer_name TEXT NOT NULL DEFAULT '',
+        customer_email TEXT NOT NULL DEFAULT '',
+        customer_phone TEXT DEFAULT '',
+        customer_company TEXT DEFAULT '',
+        invoice_type TEXT NOT NULL DEFAULT 'donation',
+        reference_type TEXT NOT NULL DEFAULT '',
+        reference_id INTEGER DEFAULT 0,
+        reference_tx_ref TEXT DEFAULT '',
+        items TEXT DEFAULT '[]',
+        subtotal REAL NOT NULL DEFAULT 0,
+        tax REAL NOT NULL DEFAULT 0,
+        total REAL NOT NULL DEFAULT 0,
+        currency TEXT NOT NULL DEFAULT 'GHS',
+        status TEXT NOT NULL DEFAULT 'paid',
+        notes TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        paid_at TEXT DEFAULT '',
+        sent_at TEXT DEFAULT ''
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_invoices_email ON invoices(customer_email)`,
+      `CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_invoices_type ON invoices(invoice_type)`,
+      `CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number)`,
       // Outreach prompt for cold newsletter
       `INSERT OR IGNORE INTO agent_prompts (agent_type, prompt_key, system_prompt, user_template) VALUES
         ('outreach', 'cold_newsletter', 'You are a cold email outreach specialist for GideonAbochie Studio, a Bible-based ministry teaching creativity, love, and wisdom. Your goal is to warmly introduce the ministry to cold contacts and invite them to subscribe or engage. Tone: warm, professional, non-pushy. Do not sound spammy or salesy.', 'Write a cold outreach email for {{name}} (category: {{category}} from {{region}}). The recipient is a cold contact who has not interacted with us before. Introduce GideonAbochie Studio as a Bible-based ministry that teaches creativity, wisdom, and love through Scripture. Mention one relevant offering: The Spirit of God in Genesis program, free books (The Bible as Kingdom OS, The Divine Algorithm), or the weekly newsletter. Keep it under 200 words. End with a gentle invitation to visit gideonabochie.org.')

@@ -193,6 +193,22 @@ var API = (function() {
     return adminRequest('PUT', '/cold-outreach', Object.assign({ id: id }, data));
   }
 
+  function getInvoices(params) {
+    var q = '';
+    if (params) {
+      if (params.type) q += '&type=' + encodeURIComponent(params.type);
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.search) q += '&search=' + encodeURIComponent(params.search);
+      if (params.limit) q += '&limit=' + params.limit;
+      if (params.offset) q += '&offset=' + params.offset;
+    }
+    return adminRequest('GET', '/invoices?' + q.substring(1));
+  }
+
+  function updateInvoice(id, data) {
+    return adminRequest('PUT', '/invoices?id=' + encodeURIComponent(id), data);
+  }
+
   function getSubmissions(params) {
     var q = '';
     if (params) {
@@ -241,6 +257,8 @@ var API = (function() {
     deleteAgent: deleteAgent,
     getColdOutreach: getColdOutreach,
     updateColdOutreach: updateColdOutreach,
+    getInvoices: getInvoices,
+    updateInvoice: updateInvoice,
     getSubmissions: getSubmissions,
     updateSubmission: updateSubmission,
     orchestrate: orchestrate,

@@ -1,4 +1,5 @@
 import { queueEmail, donationImpactFollowup, daysFromNow, bookUpsell } from '../email/_send.js';
+import { generateInvoice } from '../invoices/generate.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -89,6 +90,7 @@ export async function onRequest(context) {
       await db.prepare(
         `UPDATE bookings SET status = ? WHERE payment_tx_ref = ?`
       ).bind('confirmed', tx_ref).run();
+      try { await generateInvoice(env, 'booking', 'bookings', { name: donor_name, email: donor_email, company: '', phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Ad Booking', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
 
     // Mark book purchase as completed
@@ -135,6 +137,7 @@ export async function onRequest(context) {
           await queueEmail(env, bEmail, bName, 'Go Deeper with the Premium Bundle — GideonAbochie Studio', bookUpsell(bName), 'book_upsell', daysFromNow(3));
         } catch (_e) {}
       }
+      try { await generateInvoice(env, 'books', 'book_purchases', { name: bName, email: bEmail, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Book Purchase', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
 
     // Handle enrollment upgrade payments (tx_ref prefix: upgrade_)
@@ -226,6 +229,7 @@ export async function onRequest(context) {
           });
         } catch (_e) {}
       }
+      try { await generateInvoice(env, 'subscription', 'subscriptions', { name: donor_name, email: donor_email, phone: donor_phone, amount: subAmount, currency: subCurrency, tx_ref: tx_ref, items: [{ description: tierName + ' Subscription', quantity: 1, unit_price: subAmount, total: subAmount }] }); } catch (_) {}
     }
 
     // Handle recurring subscription payment notifications
@@ -304,12 +308,18 @@ export async function onRequest(context) {
           });
         } catch (_e) {}
       }
+      try { await generateInvoice(env, 'store', 'store_orders', { name: donor_name, email: donor_email, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: displayName || 'Store Purchase', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
 
     // Send receipt email via Brevo for successful donations
     if (!tx_ref.startsWith('store_') && (event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+      var invNum = '';
+      if (!tx_ref.startsWith('booking_') && !tx_ref.startsWith('books_') && !tx_ref.startsWith('sub_') && !tx_ref.startsWith('upgrade_')) {
+        try { invNum = await generateInvoice(env, 'donation', 'donations', { name: donor_name, email: donor_email, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Donation', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
+      }
       try {
         const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const invLink = invNum ? '<p style="margin:12px 0 0"><a href="https://gideonabochie.org/api/invoices/' + invNum + '?token=' + invNum + '" style="color:#C9A84C;text-decoration:underline;font-size:13px">View Invoice &rsaquo;</a></p>' : '';
         const receiptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
         <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
         <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -328,6 +338,7 @@ export async function onRequest(context) {
         <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Status</td><td style="color:#22C55E;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">Confirmed</td></tr>
         </table>
         <p style="color:#64748B;font-size:12px;line-height:1.6;margin:0 0 6px">This receipt was issued automatically. Keep it for your records.</p>
+        ${invLink}
         <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a></p>
         </td></tr></table></td></tr></table></body></html>`;
 
@@ -345,6 +356,11 @@ export async function onRequest(context) {
           await queueEmail(env, donor_email, donor_name, 'Your Impact in Action', donationImpactFollowup(donor_name), 'donation_impact', daysFromNow(3));
         } catch (_e2) {}
       } catch (_e) {}
+    }
+
+    // Generate invoice for enrollment upgrades
+    if (event === 'charge.completed' && tx_ref.startsWith('upgrade_')) {
+      try { await generateInvoice(env, 'enrollment', 'enrollments', { name: donor_name, email: donor_email, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Program Enrollment Upgrade', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
 
     return new Response(JSON.stringify({ status: 'ok', event, canonicalStatus }), {
