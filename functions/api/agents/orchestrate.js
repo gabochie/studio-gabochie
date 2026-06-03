@@ -1,34 +1,7 @@
 import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
 import { queueEmail } from '../email/_send.js';
-
-async function callAI(env, systemPrompt, userPrompt, options) {
-  var apiKey = env.OPENAI_API_KEY || env.AI_API_KEY || '';
-  if (!apiKey) return { error: 'No AI API key configured' };
-  var model = (options && options.model) || 'gpt-4o-mini';
-  var temperature = (options && options.temperature) || 0.7;
-  var maxTokens = (options && options.max_tokens) || 1024;
-  try {
-    var res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({
-        model: model,
-        messages: [
-          { role: 'system', content: systemPrompt || 'You are a helpful AI assistant for GideonAbochie Studio.' },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: temperature,
-        max_tokens: maxTokens
-      })
-    });
-    var data = await res.json();
-    if (data.error) return { error: data.error.message };
-    return { content: data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content, usage: data.usage };
-  } catch (err) {
-    return { error: err.message };
-  }
-}
+import { callAI } from './_ai.js';
 
 function wrapEmailBody(name, content) {
   var htmlContent = content

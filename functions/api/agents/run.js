@@ -1,33 +1,6 @@
 import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
-
-async function callAI(env, prompt, options) {
-  var apiKey = options && options.api_key || env.OPENAI_API_KEY || env.AI_API_KEY || '';
-  if (!apiKey) return { error: 'No AI API key configured' };
-  var model = (options && options.model) || 'gpt-4o-mini';
-  var temperature = (options && options.temperature) || 0.7;
-  var maxTokens = (options && options.max_tokens) || 1024;
-  try {
-    var res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({
-        model: model,
-        messages: [
-          { role: 'system', content: (options && options.systemPrompt) || 'You are a helpful AI assistant for GideonAbochie Studio.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: temperature,
-        max_tokens: maxTokens
-      })
-    });
-    var data = await res.json();
-    if (data.error) return { error: data.error.message };
-    return { content: data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content, usage: data.usage };
-  } catch (err) {
-    return { error: err.message };
-  }
-}
+import { callAI } from './_ai.js';
 
 async function queryD1(db, sql, params) {
   try {
@@ -65,7 +38,7 @@ export async function onRequest(context) {
         max_tokens: (options && options.max_tokens) || (promptTemplate && promptTemplate.max_tokens),
         systemPrompt: (options && options.systemPrompt) || (promptTemplate && promptTemplate.system_prompt)
       }, ai_key ? { api_key: ai_key } : {});
-      var result = await callAI(env, prompt, callOpts);
+      var result = await callAI(env, callOpts.systemPrompt, prompt, callOpts);
       if (result.error) return new Response(JSON.stringify({ status: 'error', message: result.error }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       if (queue_item_id) {
         await env.DB.prepare("UPDATE agent_queue SET status = 'completed', result = ?, completed_at = datetime('now') WHERE id = ?").bind(JSON.stringify({ content: result.content, usage: result.usage }), queue_item_id).run();
