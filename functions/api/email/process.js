@@ -8,17 +8,26 @@ export async function onRequest(context) {
   try {
     const url = new URL(request.url);
 
-    // List mode — return the full queue
+    // List mode — return the full queue (for MailChannels Worker)
     if (url.searchParams.get('list')) {
       const { results } = await env.DB.prepare(
-        'SELECT * FROM email_queue ORDER BY scheduled_at DESC LIMIT 100'
+        "SELECT * FROM email_queue WHERE sent_at IS NULL AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
       ).all();
       return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // Process mode — send due emails
+    // Mark-sent mode — called by the MailChannels cron Worker
+    var markId = url.searchParams.get('mark_sent');
+    if (markId) {
+      await env.DB.prepare("UPDATE email_queue SET sent_at = datetime('now') WHERE id = ? AND sent_at IS NULL").bind(parseInt(markId)).run();
+      return new Response(JSON.stringify({ status: 'ok', marked: parseInt(markId) }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Process mode — send remaining due emails via Brevo
     const { results } = await env.DB.prepare(
       "SELECT * FROM email_queue WHERE sent_at IS NULL AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
     ).all();

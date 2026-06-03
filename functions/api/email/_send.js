@@ -1,10 +1,4 @@
-import { sendMailChannels } from './_send-mailchannels.js';
-
 export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent) {
-  try {
-    var mcRes = await sendMailChannels(env, toEmail, toName, subject, htmlContent);
-    if (mcRes.ok) return;
-  } catch (_) {}
   if (!env.BREVO_API_KEY) return;
   try {
     await fetch('https://api.brevo.com/v3/smtp/email', {
