@@ -151,6 +151,10 @@ async function processQueueItem(db, env, item) {
           } catch (_qe) {}
         }
       }
+    } else if (item.agent_type === 'outreach' && payload.query) {
+      var queryResult = (await db.prepare(payload.query).all()).results || [];
+      result = 'Query returned ' + queryResult.length + ' pending contacts';
+      subAgentCount = queryResult.length;
     } else if (item.agent_type === 'analytics') {
       var tables = payload.tables || ['donations', 'subscriptions', 'subscribers', 'store_orders'];
       var metrics = {};
@@ -191,6 +195,24 @@ async function processQueueItem(db, env, item) {
         subAgentCount++;
       }
       result = 'Dispatched ' + subAgentCount + ' pending items';
+    } else if (item.agent_type === 'orchestrator') {
+      var wfId = payload.workflow_id;
+      if (wfId) {
+        var steps = (await db.prepare(
+          "SELECT * FROM workflow_steps WHERE workflow_id = ? ORDER BY step_order"
+        ).bind(wfId).all()).results || [];
+        for (var s of steps) {
+          if (s.agent_type === 'orchestrator') continue;
+          var stepConfig = typeof s.config === 'string' ? JSON.parse(s.config) : (s.config || {});
+          await db.prepare(
+            "INSERT INTO agent_queue (agent_type, workflow_id, priority, payload) VALUES (?, ?, ?, ?)"
+          ).bind(s.agent_type, wfId, 2, JSON.stringify(stepConfig)).run();
+          subAgentCount++;
+        }
+        result = 'Dispatched ' + subAgentCount + ' of ' + steps.length + ' steps for workflow #' + wfId;
+      } else {
+        result = 'No workflow_id in orchestrator payload';
+      }
     } else {
       result = 'No handler for agent type: ' + item.agent_type;
     }
