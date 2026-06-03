@@ -1,0 +1,8 @@
+{
+  "name": "email-cron",
+  "main": "process-email-queue.js",
+  "compatibility_date": "2026-06-03",
+  "triggers": {
+    "crons": ["0 8 * * *", "*/15 * * * *"]
+  }
+}
