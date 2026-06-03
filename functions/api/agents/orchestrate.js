@@ -1,5 +1,6 @@
 import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
+import { queueEmail } from '../email/_send.js';
 
 async function callAI(env, systemPrompt, userPrompt, options) {
   var apiKey = env.OPENAI_API_KEY || env.AI_API_KEY || '';
@@ -27,6 +28,25 @@ async function callAI(env, systemPrompt, userPrompt, options) {
   } catch (err) {
     return { error: err.message };
   }
+}
+
+function wrapEmailBody(name, content) {
+  var htmlContent = content
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\n\n/g, '<p style="font-family:Georgia,serif;font-size:16px;color:#475569;line-height:1.8;margin:0 0 16px">')
+    .replace(/\n/g, '<br>');
+  return '<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">' +
+    '<table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">' +
+    '<tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">' +
+    '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">GideonAbochie Studio</span>' +
+    '</td></tr>' +
+    '<tr><td style="padding:32px 0 24px">' +
+    '<p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">' + (name ? 'Hi ' + name.replace(/</g,'&lt;') + ',' : 'Hello,') + '</p>' +
+    '<div style="font-family:Georgia,serif;font-size:16px;color:#475569;line-height:1.8">' + htmlContent + '</div>' +
+    '</td></tr>' +
+    '<tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">' +
+    '<p style="font-family:\'Courier Prime\',monospace;font-size:10px;color:#94A3B8;margin:0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
+    '</td></tr></table></body></html>';
 }
 
 async function processQueueItem(db, env, item) {
@@ -78,35 +98,43 @@ async function processQueueItem(db, env, item) {
         "SELECT * FROM cold_outreach WHERE status = 'pending' ORDER BY id LIMIT ?"
       ).bind(payload.batch_size || 10).all()).results || [];
       var sentCount = 0;
+      var failCount = 0;
       var newsletterPrompt = await db.prepare(
         "SELECT * FROM agent_prompts WHERE agent_type = 'outreach' AND prompt_key = 'cold_newsletter'"
       ).first();
-      for (var c of contacts) {
-        var userMsg = (newsletterPrompt && newsletterPrompt.user_template) || '';
-        userMsg = userMsg.replace('{{name}}', c.name || 'there');
-        userMsg = userMsg.replace('{{category}}', c.category || 'business');
-        userMsg = userMsg.replace('{{region}}', c.region || 'GH');
-        var sysMsg = (newsletterPrompt && newsletterPrompt.system_prompt) || 'You are a cold email outreach specialist.';
-        var aiRes = await callAI(env, sysMsg, userMsg, {
-          model: (newsletterPrompt && newsletterPrompt.model) || 'gpt-4o-mini',
-          temperature: (newsletterPrompt && newsletterPrompt.temperature) || 0.7,
-          max_tokens: (newsletterPrompt && newsletterPrompt.max_tokens) || 500
-        });
-        if (aiRes && aiRes.content && !aiRes.error) {
-          var toEmail = c.email || '';
-          var toName = c.name || '';
-          if (toEmail) {
+      if (!newsletterPrompt) {
+        error = 'cold_newsletter prompt not found — run setup.js first';
+        result = 'Aborted — missing cold_newsletter prompt in agent_prompts table';
+      } else {
+        for (var c of contacts) {
+          var userMsg = newsletterPrompt.user_template || '';
+          userMsg = userMsg.replace('{{name}}', c.name || 'there');
+          userMsg = userMsg.replace('{{category}}', c.category || 'business');
+          userMsg = userMsg.replace('{{region}}', c.region || 'Ghana');
+          var sysMsg = newsletterPrompt.system_prompt || 'You are a cold email outreach specialist.';
+          var aiRes = await callAI(env, sysMsg, userMsg, {
+            model: newsletterPrompt.model || 'gpt-4o-mini',
+            temperature: newsletterPrompt.temperature || 0.7,
+            max_tokens: newsletterPrompt.max_tokens || 500
+          });
+          if (aiRes && aiRes.content && !aiRes.error) {
+            var toEmail = c.email || '';
+            var toName = c.name || '';
+            if (toEmail) {
+              try {
+                await queueEmail(env, toEmail, toName, 'Discover GideonAbochie Studio', wrapEmailBody(toName, aiRes.content), 'agent');
+              } catch (_qe) { failCount++; continue; }
+            }
             await db.prepare(
-              "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type) VALUES (?, ?, ?, ?, 'agent')"
-            ).bind(toEmail, toName, 'Discover GideonAbochie Studio', aiRes.content, 'agent').run();
+              "UPDATE cold_outreach SET status = 'contacted', contacted_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
+            ).bind(c.id).run();
+            sentCount++;
+          } else {
+            failCount++;
           }
-          await db.prepare(
-            "UPDATE cold_outreach SET status = 'contacted', contacted_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
-          ).bind(c.id).run();
-          sentCount++;
         }
       }
-      result = 'Sent newsletter to ' + sentCount + ' of ' + contacts.length + ' contacts';
+      result = 'Sent ' + sentCount + ', failed ' + failCount + ' of ' + contacts.length + ' contacts';
       subAgentCount = sentCount;
     } else if (item.agent_type === 'outreach' && payload.action === 'send_reminder') {
       var subData = null;
@@ -118,9 +146,9 @@ async function processQueueItem(db, env, item) {
       result = (aiResult && aiResult.content) || 'Outreach completed';
       if (subData && subData.length > 0) {
         for (var s of subData.slice(0, 10)) {
-          await db.prepare(
-            "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type) VALUES (?, ?, ?, ?, 'agent')"
-          ).bind(s.email || '', s.name || '', 'Re-engagement from GideonAbochie Studio', (aiResult && aiResult.content) || '', 'agent').run();
+          try {
+            await queueEmail(env, s.email || '', s.name || '', 'Re-engagement from GideonAbochie Studio', wrapEmailBody(s.name, (aiResult && aiResult.content) || ''), 'agent');
+          } catch (_qe) {}
         }
       }
     } else if (item.agent_type === 'analytics') {
@@ -146,9 +174,9 @@ async function processQueueItem(db, env, item) {
       ).all()).results || [];
       for (var order of pendingOrders) {
         await db.prepare("UPDATE store_orders SET status = 'completed' WHERE id = ?").bind(order.id).run();
-        await db.prepare(
-          "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type) VALUES (?, ?, ?, ?, 'agent')"
-        ).bind(order.customer_email || '', order.customer_name || '', 'Your order from GideonAbochie Studio is complete', '<p>Thank you for your purchase!</p>', 'agent').run();
+        try {
+          await queueEmail(env, order.customer_email || '', order.customer_name || '', 'Your order from GideonAbochie Studio is complete', wrapEmailBody(order.customer_name, 'Thank you for your purchase! Your order is now complete.'), 'agent');
+        } catch (_qe) {}
       }
       result = 'Processed ' + pendingOrders.length + ' pending orders';
     } else if (item.agent_type === 'task_processor') {
