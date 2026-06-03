@@ -199,9 +199,20 @@ var API = (function() {
       if (params.type) q += '&type=' + encodeURIComponent(params.type);
       if (params.status) q += '&status=' + encodeURIComponent(params.status);
       if (params.search) q += '&search=' + encodeURIComponent(params.search);
+      if (params.page) q += '&page=' + params.page;
       if (params.limit) q += '&limit=' + params.limit;
-      if (params.offset) q += '&offset=' + params.offset;
     }
+    return adminRequest('GET', '/invoices?' + q.substring(1));
+  }
+
+  function getEmailQueue(params) {
+    var q = '';
+    if (params) {
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.limit) q += '&limit=' + params.limit;
+    }
+    return adminRequest('GET', '/email-queue?' + q.substring(1));
+  }
     return adminRequest('GET', '/invoices?' + q.substring(1));
   }
 
@@ -259,6 +270,7 @@ var API = (function() {
     updateColdOutreach: updateColdOutreach,
     getInvoices: getInvoices,
     updateInvoice: updateInvoice,
+    getEmailQueue: getEmailQueue,
     getSubmissions: getSubmissions,
     updateSubmission: updateSubmission,
     orchestrate: orchestrate,

@@ -753,12 +753,36 @@ function renderRuns() {
 
 function renderQueue() {
   var items = AppState.get('queue');
+  var emailItems = AppState.get('emailQueue') || [];
   var el = $('queueList');
-  if (!items||!items.length) { showEmpty(el, '&#10003;', 'Queue is empty', 'All caught up! No pending work items.'); return; }
-  el.innerHTML = '<div style="display:flex;gap:6px;margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="processQueue(10)">&#9654; Process 10</button><button class="btn btn-secondary btn-sm" onclick="processQueue(1)">&#9654; Process 1</button></div><div class="crd-body">'+items.map(function(item){
-    var actions = item.status==='pending'?'<button class="btn btn-secondary btn-sm" onclick="processQueue(1)" title="Process one">&#9654;</button>':'';
-    return '<div class="q-item" style="cursor:pointer" onclick="showQueueDetail('+item.id+')"><div class="qi-info">'+tag(item.status)+' <strong style="font-size:13px;color:var(--text-primary)">'+(item.agent_type||'')+'</strong> <span class="qi-meta">P'+(item.priority||0)+' &middot; '+fmtTime(item.created_at)+'</span></div><div class="qi-actions">'+actions+'</div></div>';
-  }).join('')+'</div>';
+  var html = '';
+
+  // Agent queue section
+  html += '<div class="crd"><div class="crd-header" style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px"><h4 style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">Agent Queue</h4><span class="tg tg-blue">'+(items?items.length:0)+'</span></div>';
+  if (!items||!items.length) {
+    html += '<div class="sc-body" style="padding:14px;text-align:center;color:var(--text-dim);font-size:12px">&#10003; All caught up</div></div>';
+  } else {
+    html += '<div style="display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border)"><button class="btn btn-primary btn-sm" onclick="processQueue(10)">&#9654; Process 10</button><button class="btn btn-secondary btn-sm" onclick="processQueue(1)">&#9654; Process 1</button></div><div class="crd-body">'+
+      items.map(function(item){
+        var actions = item.status==='pending'?'<button class="btn btn-secondary btn-sm" onclick="processQueue(1)" title="Process one">&#9654;</button>':'';
+        return '<div class="q-item" style="cursor:pointer" onclick="showQueueDetail('+item.id+')"><div class="qi-info">'+tag(item.status)+' <strong style="font-size:13px;color:var(--text-primary)">'+(item.agent_type||'')+'</strong> <span class="qi-meta">P'+(item.priority||0)+' &middot; '+fmtTime(item.created_at)+'</span></div><div class="qi-actions">'+actions+'</div></div>';
+      }).join('')+'</div></div>';
+  }
+
+  // Email queue section
+  var stats = AppState.get('emailQueueStats') || { sent: 0, pending: 0 };
+  html += '<div class="crd" style="margin-top:8px"><div class="crd-header" style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><h4 style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px">Email Queue</h4><span class="tg tg-gold">'+(emailItems.length)+'</span></div><div style="display:flex;gap:10px;font-size:11px"><span>&#10003; Sent: <strong style="color:var(--green)">'+(stats.sent||0)+'</strong></span><span>&#9654; Pending: <strong>'+(stats.pending||0)+'</strong></span></div></div>';
+  if (!emailItems.length) {
+    html += '<div class="sc-body" style="padding:14px;text-align:center;color:var(--text-dim);font-size:12px">&#10003; No queued emails</div></div>';
+  } else {
+    html += '<div class="crd-body">'+
+      emailItems.map(function(e){
+        var sent = e.sent_at ? tag('sent') : tag('pending');
+        return '<div class="q-item"><div class="qi-info">'+sent+' <strong style="font-size:13px;color:var(--text-primary)">'+e.to_email+'</strong> <span class="qi-meta">'+(e.subject||'').substring(0,50)+' &middot; '+fmtTime(e.created_at)+'</span></div></div>';
+      }).join('')+'</div></div>';
+  }
+
+  el.innerHTML = html;
 }
 
 function showQueueDetail(id) {
@@ -821,7 +845,17 @@ function loadAgentsTab() {
   }).catch(function(e){showError($('agentsList'),e.message,loadAgentsTab);});
 }
 function loadRunsTab() { $('runsList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading runs...</div></div>'; API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns).catch(function(e){showError($('runsList'),e.message,loadRunsTab);}); }
-function loadQueueTab() { $('queueList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading queue...</div></div>'; API.getQueue().then(renderQueue).catch(function(e){showError($('queueList'),e.message,loadQueueTab);}); }
+function loadQueueTab() {
+  $('queueList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading queue...</div></div>';
+  Promise.all([
+    API.getQueue().catch(function(){ return []; }),
+    API.getEmailQueue({ limit: 20 }).catch(function(){ return { items: [], stats: { sent: 0, pending: 0 } }; })
+  ]).then(function(results){
+    AppState.set('emailQueue', results[1].items || []);
+    AppState.set('emailQueueStats', results[1].stats || { sent: 0, pending: 0 });
+    renderQueue();
+  }).catch(function(e){ showError($('queueList'), e.message, loadQueueTab); });
+}
 function loadWorkflowsTab() { $('workflowList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading workflows...</div></div>'; API.getWorkflows().then(renderWorkflows).catch(function(e){showError($('workflowList'),e.message,loadWorkflowsTab);}); }
 
 function showAgentDetail(id) {
