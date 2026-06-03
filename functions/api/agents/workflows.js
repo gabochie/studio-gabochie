@@ -56,6 +56,8 @@ export async function onRequest(context) {
       if (body.trigger_type !== undefined) { fields.push("trigger_type = ?"); params.push(body.trigger_type); }
       if (body.trigger_config !== undefined) { fields.push("trigger_config = ?"); params.push(JSON.stringify(body.trigger_config)); }
       if (body.revenue_tracked !== undefined) { fields.push("revenue_tracked = ?"); params.push(body.revenue_tracked); }
+      if (body.total_runs !== undefined) { fields.push("total_runs = ?"); params.push(body.total_runs); }
+      if (body.last_run_at !== undefined) { fields.push("last_run_at = ?"); params.push(body.last_run_at); }
       if (fields.length === 0) return new Response(JSON.stringify({ status: 'error', message: 'No fields to update' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       params.push(id);
       await env.DB.prepare("UPDATE workflows SET " + fields.join(", ") + " WHERE id = ?").bind(...params).run();
