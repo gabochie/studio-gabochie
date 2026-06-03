@@ -1173,7 +1173,7 @@ function clearTokens() {
 }
 
 /* ── Campaign ── */
-var campaignPage = 1;
+campaignPage = 1;
 function loadCampaignTab() {
   var status = $('campaignStatusFilter').value;
   var category = $('campaignCategoryFilter').value;
@@ -1364,6 +1364,28 @@ document.addEventListener('DOMContentLoaded', function() {
     else if(TAB==='runs') API.getRuns({limit:100,status:$('runFilter').value}).then(renderRuns);
   },15000);
 });
+
+/* expose functions to global scope for onclick= handlers in dynamic HTML */
+window.runWorkflow = runWorkflow;
+window.processQueue = processQueue;
+window.showCampaignDetail = showCampaignDetail;
+window.updateCampaignStatus = updateCampaignStatus;
+window.saveCampaignField = saveCampaignField;
+window.showQueueDetail = showQueueDetail;
+window.addStepTo = addStepTo;
+window.deleteStep = deleteStep;
+window.deleteWorkflow = deleteWorkflow;
+window.editWorkflow = editWorkflow;
+window.savePreference = savePreference;
+window.showInvoiceDetail = showInvoiceDetail;
+window.showSubmissionDetail = showSubmissionDetail;
+window.updateSubmissionStatus = updateSubmissionStatus;
+window.setPreference = setPreference;
+window.agentAction = agentAction;
+window.loadInvoicesTab = loadInvoicesTab;
+window.loadSubmissionsTab = loadSubmissionsTab;
+window.loadCampaignTab = loadCampaignTab;
+window.campaignPage = 1;
 
 })();
 </script>
