@@ -95,8 +95,12 @@ To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 ## Step 6: GitHub Actions (CI/CD)
 
 1. Go to repo → **Settings** → **Secrets and variables** → **Actions**
-2. Add the same `CI_WEBHOOK_SECRET` used in Cloudflare env vars
-3. The CI pipeline runs automatically on every push/PR to `main`
+2. Add the following secrets:
+   - `CI_WEBHOOK_SECRET` — same value used in Cloudflare env vars
+   - `CLOUDFLARE_API_TOKEN` — Cloudflare API token with **Cloudflare Pages** edit permissions
+3. The pipeline runs automatically on every push/PR to `main`:
+   - **Test phase**: lint JS, lint HTML, unit tests, coverage, E2E, audit, secrets scan, asset checks
+   - **Deploy phase**: only on push to `main`, after all tests pass, deploys to Cloudflare Pages via `wrangler pages deploy`
 4. Results post to your admin dashboard at `/admin/`
 
 ---
