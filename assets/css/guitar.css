@@ -1,0 +1,173 @@
+/* Gideon Guitar Method — Complete Design System */
+
+/* ===== Fretboard ===== */
+.fretboard{display:flex;flex-direction:column;gap:0;padding:12px;background:var(--surface2);border-radius:var(--radius-lg);border:1px solid rgba(255,255,255,.06);overflow-x:auto;max-width:100%}
+.fret-string{display:flex;align-items:center;height:32px;position:relative}
+.fret-string::after{content:'';position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.12);z-index:0}
+.fret-string-label{width:24px;font-size:10px;font-weight:700;color:var(--gold);z-index:1;text-align:center;flex-shrink:0}
+.fret-note{width:32px;height:28px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--text3);z-index:1;cursor:pointer;transition:all .2s;border-radius:4px;margin:0 1px;position:relative}
+.fret-note:hover{background:rgba(200,155,60,.1);color:var(--gold)}
+.fret-note.root{background:var(--gold);color:var(--black);font-weight:800;border-radius:50%;width:24px;height:24px;font-size:11px}
+.fret-note.filled{background:rgba(200,155,60,.15);color:var(--gold);font-weight:700;border-radius:50%;width:24px;height:24px;font-size:10px}
+.fret-note.target{background:var(--red);color:white;border-radius:50%;width:24px;height:24px;font-size:10px;animation:pulse 1s infinite}
+.fret-note.correct{background:var(--green-light);color:white;border-radius:50%;width:24px;height:24px;font-size:10px;animation:pop .3s ease}
+.fret-note.wrong{background:var(--red);color:white;border-radius:50%;width:24px;height:24px;font-size:10px;animation:shake .3s ease}
+.fret-nut{position:absolute;left:24px;top:0;bottom:0;width:4px;background:var(--gold);border-radius:2px;z-index:2}
+.fret-marker{position:absolute;left:50%;transform:translateX(-50%);width:8px;height:8px;background:var(--grey2);border-radius:50%;z-index:1}
+
+/* ===== Chord Diagram ===== */
+.chord-diagram{display:inline-flex;flex-direction:column;align-items:center;padding:12px;background:var(--surface2);border-radius:var(--radius);border:1px solid rgba(255,255,255,.06);min-width:120px}
+.chord-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-bottom:8px}
+.chord-box{display:grid;grid-template-rows:16px repeat(5,14px);gap:2px}
+.chord-fret-row{display:grid;grid-template-columns:18px repeat(6,10px);gap:1px;align-items:center}
+.chord-fret-label{font-size:7px;color:var(--text3);text-align:center}
+.chord-dot{width:8px;height:8px;border-radius:50%;margin:auto}
+.chord-dot.filled{background:var(--gold)}
+.chord-dot.open{background:transparent;border:2px solid var(--text3)}
+.chord-dot.muted{background:transparent}
+.chord-x{color:var(--red-light);font-size:8px;font-weight:700;text-align:center}
+
+/* ===== Tuner ===== */
+.tuner-wrap{display:flex;flex-direction:column;align-items:center;padding:30px 20px}
+.tuner-note{font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--gold);transition:all .3s;min-height:90px;line-height:1}
+.tuner-note.active{transform:scale(1.1);color:var(--green-light)}
+.tuner-cents{font-size:14px;color:var(--text3);margin-top:4px}
+.tuner-meter{width:200px;height:4px;background:var(--grey2);border-radius:2px;margin:20px auto;position:relative;overflow:hidden}
+.tuner-meter-fill{height:100%;width:50%;background:var(--gold);border-radius:2px;transition:all .1s ease;position:absolute;left:25%}
+.tuner-meter-fill.sharp{background:var(--red-light);left:60%}
+.tuner-meter-fill.flat{background:var(--text3);left:10%}
+.tuner-status{font-size:12px;color:var(--text2);margin-top:12px}
+.tuner-string-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.tuner-string-btn{padding:6px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.08);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:11px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.tuner-string-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(200,155,60,.1)}
+.tuner-waveform{width:100%;height:60px;margin-top:12px;opacity:.5}
+
+/* ===== Metronome ===== */
+.metronome-wrap{display:flex;flex-direction:column;align-items:center;padding:20px}
+.metro-bpm{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--gold)}
+.metro-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.metro-controls{display:flex;align-items:center;gap:16px;margin-top:16px}
+.metro-btn{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.metro-btn:hover{border-color:var(--gold);color:var(--gold)}
+.metro-btn.play{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.metro-visual{display:flex;gap:8px;margin-top:20px}
+.metro-beat{width:12px;height:12px;border-radius:50%;background:var(--grey2);transition:all .1s}
+.metro-beat.active{background:var(--gold);transform:scale(1.3)}
+.metro-beat.accent{background:var(--red-light)}
+.metro-beat.accent.active{background:var(--red);transform:scale(1.3)}
+
+/* ===== One-Minute Drill ===== */
+.oneminute-wrap{display:flex;flex-direction:column;align-items:center;padding:20px}
+.om-timer{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--gold);min-height:70px}
+.om-score{font-family:'Syne',sans-serif;font-size:32px;font-weight:700;color:var(--text);margin-top:8px}
+.om-pair{font-size:18px;font-weight:600;color:var(--text2);margin-bottom:16px}
+.om-actions{display:flex;gap:12px;margin-top:20px}
+.om-history{width:100%;margin-top:16px;max-height:200px;overflow-y:auto}
+.om-history-item{display:flex;justify-content:space-between;padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.om-history-item .date{color:var(--text3)}
+.om-history-item .sc{color:var(--gold);font-weight:700}
+
+/* ===== Practice Timer ===== */
+.practice-timer{display:flex;flex-direction:column;align-items:center;padding:20px}
+.pt-blocks{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:400px;margin-top:12px}
+.pt-block{padding:12px;border-radius:var(--radius);background:var(--surface2);border:1px solid rgba(255,255,255,.06);text-align:center;cursor:pointer;transition:all .2s}
+.pt-block.active{border-color:var(--gold);background:rgba(200,155,60,.05)}
+.pt-block.done{border-color:var(--green-light);opacity:.6}
+.pt-block-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.pt-block-time{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-top:4px}
+.pt-countdown{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;color:var(--gold);margin:20px 0}
+
+/* ===== Song Card ===== */
+.song-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.song-card{background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:all .2s}
+.song-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.song-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.song-artist{font-size:11px;color:var(--text3);margin-bottom:6px}
+.song-chords{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.song-chord-tag{padding:2px 6px;border-radius:4px;background:rgba(200,155,60,.1);color:var(--gold);font-size:9px;font-weight:600}
+.song-difficulty{font-size:10px;color:var(--text3)}
+.song-locked{background:var(--surface3);position:relative}
+.song-locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;opacity:.5}
+
+/* ===== Lesson Viewer ===== */
+.lesson-content{line-height:1.8;font-size:14px;color:var(--text2)}
+.lesson-content h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin:20px 0 8px}
+.lesson-content h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin:16px 0 6px}
+.lesson-content p{margin-bottom:12px}
+.lesson-content ul,.lesson-content ol{padding-left:20px;margin-bottom:12px}
+.lesson-content li{margin-bottom:6px}
+.lesson-content strong{color:var(--text)}
+.lesson-content table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.lesson-content th{background:rgba(200,155,60,.1);color:var(--gold);padding:8px 10px;text-align:left;font-weight:600}
+.lesson-content td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.lesson-content pre{background:var(--black);padding:12px;border-radius:var(--radius);font-size:12px;overflow-x:auto;margin:12px 0;font-family:'Courier New',monospace;color:var(--gold);line-height:1.5}
+.lesson-content iframe{width:100%;aspect-ratio:16/9;border-radius:var(--radius);margin:16px 0}
+.lesson-content blockquote{border-left:3px solid var(--gold);padding:8px 16px;margin:12px 0;background:rgba(200,155,60,.04);border-radius:0 var(--radius) var(--radius) 0;font-style:italic;color:var(--text2)}
+
+/* ===== Curriculum ===== */
+.curriculum-tier{margin-bottom:24px}
+.tier-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tier-badge{font-size:24px}
+.tier-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.tier-sub{font-size:11px;color:var(--text3)}
+.module-card{background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.module-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.module-card.locked{opacity:.5;cursor:not-allowed}
+.module-card.locked:hover{border-color:rgba(255,255,255,.06);transform:none}
+.module-num{width:28px;height:28px;border-radius:50%;background:rgba(200,155,60,.1);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0}
+.module-info{flex:1;min-width:0}
+.module-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:2px}
+.module-desc{font-size:10px;color:var(--text3);line-height:1.4}
+.module-lessons{font-size:9px;color:var(--gold);margin-top:4px}
+.module-lock{font-size:14px;width:24px;text-align:center}
+
+/* ===== Module Progress Bar ===== */
+.mod-progress{height:4px;background:var(--grey2);border-radius:2px;overflow:hidden;margin-top:6px}
+.mod-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .5s ease}
+
+/* ===== Practice Session List ===== */
+.session-list{display:flex;flex-direction:column;gap:6px}
+.session-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius);font-size:12px}
+.session-date{color:var(--text3);min-width:80px}
+.session-drill{flex:1;color:var(--text2)}
+.session-dur{font-weight:600;color:var(--text)}
+.session-xp{color:var(--gold);font-weight:600;min-width:40px;text-align:right}
+
+/* ===== Achievements/Badge Wall ===== */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.badge-item{display:flex;flex-direction:column;align-items:center;padding:10px;background:var(--surface2);border-radius:var(--radius);border:1px solid rgba(255,255,255,.06);transition:all .2s}
+.badge-item.earned{border-color:rgba(200,155,60,.2);background:rgba(200,155,60,.04)}
+.badge-icon{font-size:28px;margin-bottom:4px}
+.badge-name{font-size:9px;text-align:center;color:var(--text2);line-height:1.3}
+.badge-tier{font-size:7px;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.badge-tier.bronze{color:#CD7F32}
+.badge-tier.silver{color:#C0C0C0}
+.badge-tier.gold{color:var(--gold)}
+
+/* ===== Enroll/Paywall ===== */
+.paywall-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:none;align-items:center;justify-content:center}
+.paywall-overlay.open{display:flex}
+.paywall-card{background:var(--surface);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:32px;max-width:380px;width:90%;text-align:center}
+.paywall-price{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--gold);margin:12px 0}
+.paywall-label{font-size:12px;color:var(--text3);margin-bottom:20px}
+.paywall-features{text-align:left;margin:16px 0;font-size:13px}
+.paywall-features li{padding:6px 0;display:flex;align-items:center;gap:8px;color:var(--text2)}
+.paywall-features .check{color:var(--green-light)}
+
+/* ===== Animations ===== */
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ===== Responsive ===== */
+@media(max-width:480px){
+  .fret-note{width:26px;height:24px;font-size:8px}
+  .fret-note.root,.fret-note.filled,.fret-note.target,.fret-note.correct,.fret-note.wrong{width:20px;height:20px;font-size:9px}
+  .tuner-note{font-size:48px;min-height:60px}
+  .om-timer{font-size:40px}
+  .pt-countdown{font-size:48px}
+  .song-grid{grid-template-columns:1fr}
+  .badge-grid{grid-template-columns:repeat(3,1fr)}
+  .metro-bpm{font-size:36px}
+  .pt-blocks{grid-template-columns:1fr}
+}
