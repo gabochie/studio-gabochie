@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Songs — Gideon Guitar Method</title>
-<link rel="stylesheet" href="/assets/css/design.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 </head>
 <body>
 <div class="screen active">
@@ -152,8 +152,7 @@ document.getElementById('songs-signin').onclick = async function() {
 
   // Check paywall status
   try {
-    const res = await fetch('/api/guitar/songs?type=enroll-status', { headers: Guitar.headers() });
-    const data = await res.json();
+    const data = await Guitar.getEnrollStatus();
     if (!data.unlocked && !data.freeTrialAvailable) {
       document.getElementById('songs-unlock-required').style.display = 'block';
     }
@@ -175,12 +174,15 @@ document.getElementById('buy-btn').onclick = function() { document.getElementByI
 document.getElementById('pay-cancel-btn').onclick = function() { document.getElementById('paywall-overlay').style.display = 'none'; };
 document.getElementById('pay-now-btn').onclick = async function() {
   try {
-    const res = await fetch('/api/guitar/songs', { method:'POST', headers:{...Guitar.headers(),'Content-Type':'application/json'}, body: JSON.stringify({ type:'enroll', amount:99, currency:'GHS' }) });
-    const data = await res.json();
+    const data = await Guitar.enroll();
     if (data.flw_ref) {
       window.location.href = data.redirect_url || `https://checkout.flutterwave.com/v3/hosted/pay/${data.flw_ref}`;
     } else if (data.authorization_url) {
       window.location.href = data.authorization_url;
+    } else if (data.alreadyUnlocked) {
+      Guitar.showToast('Already unlocked!','success');
+      document.getElementById('paywall-overlay').style.display = 'none';
+      document.getElementById('songs-unlock-required').style.display = 'none';
     } else {
       Guitar.showToast('Enrollment successful!','success');
       document.getElementById('paywall-overlay').style.display = 'none';

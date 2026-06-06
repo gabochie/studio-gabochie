@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Learn — Gideon Guitar Method</title>
-<link rel="stylesheet" href="/assets/css/design.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 </head>
 <body>
 <div class="screen active">
@@ -104,8 +104,7 @@ const MODULES = [
     let progress = {};
     if (user) {
       try {
-        const res = await fetch(`/api/guitar/modules/${id}`, { headers: Guitar.headers() });
-        const data = await res.json();
+        const data = await Guitar.getModule(id);
         if (data.progress) progress = data.progress;
       } catch(e) {}
     }
@@ -143,7 +142,7 @@ const MODULES = [
     container.innerHTML += `<div class="lesson-content">${body}</div>`;
 
     if (user) {
-      const prog = await (await fetch(`/api/guitar/modules/${modId}`, { headers: Guitar.headers() })).json();
+      const prog = await Guitar.getModule(modId);
       const done = prog.progress?.[lesson.id]?.completed;
       container.innerHTML += `<div style="display:flex;gap:8px;margin-top:20px">
         <button class="btn-primary w-full" id="complete-btn" data-done="${done ? '1' : '0'}">
@@ -154,11 +153,10 @@ const MODULES = [
         const isDone = this.dataset.done === '1';
         try {
           if (isDone) {
-            await fetch('/api/guitar/progress', { method:'POST', headers:{...Guitar.headers(),'Content-Type':'application/json'}, body: JSON.stringify({lesson_id: lesson.id, action:'uncomplete'}) });
+            await Guitar.fetch('/progress', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({lesson_id: lesson.id, action:'uncomplete'}) });
             this.dataset.done = '0'; this.innerHTML = 'Mark Complete +10 XP';
           } else {
-            const r = await fetch('/api/guitar/progress', { method:'POST', headers:{...Guitar.headers(),'Content-Type':'application/json'}, body: JSON.stringify({lesson_id: lesson.id, action:'complete'}) });
-            const d = await r.json();
+            const d = await Guitar.completeLesson(lesson.id);
             this.dataset.done = '1'; this.innerHTML = '✓ Completed';
             if (d.xpEarned) Guitar.showXP(d.xpEarned);
           }

@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Practice — Gideon Guitar Method</title>
-<link rel="stylesheet" href="/assets/css/design.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 </head>
 <body>
 <div class="screen active">
@@ -128,7 +128,7 @@ function showSection(id) {
       document.getElementById('om-pb').textContent = pb.improvement ? `Personal Best! Was ${pb.improvement}` : (pb.isNewPB ? 'Personal Best!' : '');
       renderOmHistory();
       if (user) {
-        fetch('/api/guitar/practice', { method:'POST', headers:{...Guitar.headers(),'Content-Type':'application/json'}, body: JSON.stringify({ from, to, changes, count:changes }) }).catch(()=>{});
+        Guitar.saveOneMinute(`${from}→${to}`, changes).catch(()=>{});
       }
     }
   });
@@ -213,7 +213,7 @@ function showSection(id) {
           document.getElementById('block-countdown').textContent = 'Done! 🎉';
           Guitar.showToast('Practice complete! +25 XP','success');
           if (user) {
-            fetch('/api/guitar/practice', { method:'POST', headers:{...Guitar.headers(),'Content-Type':'application/json'}, body: JSON.stringify({ type:'session', duration:1200 }) }).catch(()=>{});
+            Guitar.logPractice({ duration_min:20, drill_type:'session', xp_earned:25 }).catch(()=>{});
           }
           setTimeout(showLanding, 2000);
           return;

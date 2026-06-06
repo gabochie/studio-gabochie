@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dashboard — Gideon Guitar Method</title>
-<link rel="stylesheet" href="/assets/css/design.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 </head>
 <body>
 <div class="screen active">
@@ -74,97 +74,90 @@ async function renderDashboard(user) {
   document.getElementById('dashboard-auth').style.display = 'none';
 
   try {
-    const statsRes = await fetch('/api/guitar/modules', { headers: Guitar.headers() });
-    const modules = await statsRes.json();
-    const progRes = await fetch('/api/guitar/progress', { headers: Guitar.headers() });
-    const progress = await progRes.json();
+    const progData = await Guitar.getProgress();
+    const stats = progData.stats || {};
+    const allBadges = progData.allBadges || [];
+    const badges = progData.badges || [];
+    const earnedKeys = badges.map(b => b.key || b.achievement_key);
 
-    document.getElementById('stat-level').textContent = progress.level || 1;
-    document.getElementById('stat-xp').textContent = (progress.totalXp || 0) + ' XP';
-    document.getElementById('stat-streak').textContent = (progress.streak || 0) + ' days';
-    document.getElementById('stat-lessons').textContent = (progress.completedLessons || 0) + '/' + (progress.totalLessons || 64);
+    document.getElementById('stat-level').textContent = stats.level || 1;
+    document.getElementById('stat-xp').textContent = (stats.total_xp || 0) + ' XP';
+    document.getElementById('stat-streak').textContent = (stats.streak || 0) + ' days';
+    const completedLessons = (progData.progress || []).filter(p => p.completed).length;
+    document.getElementById('stat-lessons').textContent = completedLessons + '/64';
 
-    // XP header
-    const nextLvlXp = 50 * (progress.level || 1);
-    document.getElementById('xp-header').textContent = `${progress.totalXp || 0}/${nextLvlXp} XP`;
+    const nextLvlXp = 50 * (stats.level || 1);
+    document.getElementById('xp-header').textContent = `${stats.total_xp || 0}/${nextLvlXp} XP`;
 
     // Achievements
-    const achRes = await fetch('/api/guitar/songs?type=achievements', { headers: Guitar.headers() }).catch(() => null);
-    if (achRes && achRes.ok) {
-      const achievements = await achRes.json();
-      const grid = document.getElementById('achievements-grid');
-      grid.innerHTML = '';
-      if (achievements.length) {
-        achievements.forEach(a => {
-          const unlocked = a.unlocked_at || progress.achievements?.includes(a.id);
-          grid.innerHTML += `<div class="badge-item ${unlocked ? 'badge-unlocked' : 'badge-locked'}">
-            <div class="badge-icon">${unlocked ? a.icon || '🏆' : '🔒'}</div>
-            <div class="badge-name">${a.title || a.name}</div>
-          </div>`;
-        });
-      } else {
-        grid.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">Complete lessons to unlock achievements</div>';
-      }
+    const achData = await Guitar.getAchievements().catch(() => null);
+    const achievements = achData?.achievements || allBadges;
+    const grid = document.getElementById('achievements-grid');
+    grid.innerHTML = '';
+    if (achievements.length) {
+      achievements.forEach(a => {
+        const unlocked = a.earned || earnedKeys.includes(a.key);
+        grid.innerHTML += `<div class="badge-item ${unlocked ? 'badge-unlocked' : 'badge-locked'}">
+          <div class="badge-icon">${unlocked ? a.icon || '🏆' : '🔒'}</div>
+          <div class="badge-name">${a.title || a.name}</div>
+        </div>`;
+      });
+    } else {
+      grid.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">Complete lessons to unlock achievements</div>';
     }
 
     // Leaderboard
-    const lbRes = await fetch('/api/guitar/songs?type=leaderboard', { headers: Guitar.headers() }).catch(() => null);
-    if (lbRes && lbRes.ok) {
-      const lb = await lbRes.json();
-      const lbEl = document.getElementById('leaderboard');
-      if (lb.length) {
-        lbEl.innerHTML = lb.map((r,i) => `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--text3)'}">#${i+1}</span>
-          <span style="flex:1;font-size:13px">${r.email || 'User'}</span>
-          <span style="font-size:11px;color:var(--gold)">${r.streak || r.xp || r.score} ${r.streak ? 'days' : 'XP'}</span>
-        </div>`).join('');
-      } else {
-        lbEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No leaderboard data yet. Start practicing!</div>';
-      }
+    const lbData = await Guitar.getLeaderboard('weekly').catch(() => null);
+    const lb = lbData?.leaderboard || [];
+    const lbEl = document.getElementById('leaderboard');
+    if (lb.length) {
+      lbEl.innerHTML = lb.map((r,i) => `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px">
+        <span style="font-family:'Syne',sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--text3)'}">#${i+1}</span>
+        <span style="flex:1;font-size:13px">${r.nickname || r.email || 'User'}</span>
+        <span style="font-size:11px;color:var(--gold)">${r.xp || r.streak || 0} XP</span>
+      </div>`).join('');
+    } else {
+      lbEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No leaderboard data yet. Start practicing!</div>';
     }
 
     // Practice history
-    const histRes = await fetch('/api/guitar/practice', { headers: Guitar.headers() }).catch(() => null);
-    if (histRes && histRes.ok) {
-      const history = await histRes.json();
-      const phEl = document.getElementById('practice-chart');
-      if (history.sessions?.length) {
-        const week = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        let html = '<div style="display:flex;gap:4px;justify-content:center;margin-top:8px">';
-        for (let d = 6; d >= 0; d--) {
-          const date = new Date(); date.setDate(date.getDate() - d);
-          const dateStr = date.toISOString().split('T')[0];
-          const daySessions = history.sessions.filter(s => s.date === dateStr || s.created_at?.startsWith(dateStr));
-          const count = daySessions.length;
-          const maxH = 60;
-          const h = Math.min(count * 20, maxH);
-          html += `<div style="text-align:center">
-            <div style="height:${maxH}px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px">
-              <div style="width:24px;border-radius:4px 4px 0 0;background:var(--gold);height:${h}px;opacity:${count > 0 ? .6 + count * .1 : .1}"></div>
-            </div>
-            <div style="font-size:8px;color:var(--text3)">${week[date.getDay()]}</div>
-          </div>`;
-        }
-        html += '</div>';
-        phEl.innerHTML = html;
-      } else {
-        phEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No sessions yet. Start your first practice!</div>';
+    const sessData = await Guitar.getSessions(7).catch(() => null);
+    const sessions = sessData?.sessions || [];
+    const phEl = document.getElementById('practice-chart');
+    if (sessions.length) {
+      const week = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      let html = '<div style="display:flex;gap:4px;justify-content:center;margin-top:8px">';
+      for (let d = 6; d >= 0; d--) {
+        const date = new Date(); date.setDate(date.getDate() - d);
+        const dateStr = date.toISOString().split('T')[0];
+        const daySessions = sessions.filter(s => s.date === dateStr || s.created_at?.startsWith(dateStr));
+        const count = daySessions.length;
+        const maxH = 60;
+        const h = Math.min(count * 20, maxH);
+        html += `<div style="text-align:center">
+          <div style="height:${maxH}px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px">
+            <div style="width:24px;border-radius:4px 4px 0 0;background:var(--gold);height:${h}px;opacity:${count > 0 ? .6 + count * .1 : .1}"></div>
+          </div>
+          <div style="font-size:8px;color:var(--text3)">${week[date.getDay()]}</div>
+        </div>`;
       }
+      html += '</div>';
+      phEl.innerHTML = html;
+    } else {
+      phEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No sessions yet. Start your first practice!</div>';
     }
 
     // One-minute records
     const omEl = document.getElementById('om-records');
-    const omRes = await fetch('/api/guitar/practice?type=one-minute', { headers: Guitar.headers() }).catch(() => null);
-    if (omRes && omRes.ok) {
-      const omData = await omRes.json();
-      if (omData.length) {
-        omEl.innerHTML = omData.slice(-5).reverse().map(r => `<div style="display:flex;justify-content:space-between;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px;font-size:11px">
-          <span>${r.from} → ${r.to}</span>
-          <span style="color:var(--gold);font-weight:600">${r.changes} changes</span>
-        </div>`).join('');
-      } else {
-        omEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No one-minute records yet.</div>';
-      }
+    const omData = await Guitar.getRecords().catch(() => null);
+    const records = omData?.records || [];
+    if (records.length) {
+      omEl.innerHTML = records.slice(-5).reverse().map(r => `<div style="display:flex;justify-content:space-between;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px;font-size:11px">
+        <span>${r.chord_pair}</span>
+        <span style="color:var(--gold);font-weight:600">${r.best_score || r.score} changes</span>
+      </div>`).join('');
+    } else {
+      omEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No one-minute records yet.</div>';
     }
 
   } catch(e) {
