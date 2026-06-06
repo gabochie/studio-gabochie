@@ -1,160 +1,162 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Practice — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="guitar-app">
 <div class="screen active">
-  <div class="hdr"><div class="logo">🎸 Practice</div><div id="timer-display" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold)">00:00</div></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
-
-    <div id="practice-landing">
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Practice</div><div id="p-timer-hdr" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gld)">20:00</div></div>
+  <div class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
+    <!-- Landing -->
+    <div id="p-landing">
       <div class="section-title">⏱️ Deliberate Practice Session</div>
-      <div class="section-sub">20-minute structured practice — the most effective way to improve</div>
-      <div class="method-steps">
-        <div class="method-step"><div class="method-step-icon">🔥</div><div class="method-step-title">Warmup (3 min)</div><div class="method-step-desc">Finger independence, silent chord changes</div></div>
-        <div class="method-step"><div class="method-step-icon">🎯</div><div class="method-step-title">Drill (5 min)</div><div class="method-step-desc">Isolate your weakest skill</div></div>
-        <div class="method-step"><div class="method-step-icon">🎵</div><div class="method-step-title">Song (7 min)</div><div class="method-step-desc">Play through a real song</div></div>
-        <div class="method-step"><div class="method-step-icon">🎶</div><div class="method-step-title">Free Play (5 min)</div><div class="method-step-desc">Have fun and jam</div></div>
+      <div class="section-sub">20-minute structured practice — the most evidence-based way to improve</div>
+      <div class="method-grid stagger">
+        <div class="method-card"><div class="method-icon">🔥</div><div class="method-title">Warmup (3 min)</div><div class="method-desc">Finger independence, silent changes</div></div>
+        <div class="method-card"><div class="method-icon">🎯</div><div class="method-title">Drill (5 min)</div><div class="method-desc">Isolate your weakest skill</div></div>
+        <div class="method-card"><div class="method-icon">🎵</div><div class="method-title">Song (7 min)</div><div class="method-desc">Play through a real song</div></div>
+        <div class="method-card"><div class="method-icon">🎶</div><div class="method-title">Free Play (5 min)</div><div class="method-desc">Have fun and jam</div></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
-        <button class="btn-primary w-full" id="start-practice-btn">Start Session <i class="ti ti-player-play"></i></button>
-        <button class="btn-secondary w-full" onclick="location.href='#one-minute'">One-Minute Change Drill <i class="ti ti-zap"></i></button>
-        <button class="btn-secondary w-full" onclick="location.href='#metronome'">Metronome <i class="ti ti-timer"></i></button>
+      <div class="flex flex-col gap-sm mt-md">
+        <button class="btn btn-primary btn-block" id="start-practice-btn">Start Session <i class="ti ti-player-play"></i></button>
+        <button class="btn btn-secondary btn-block" onclick="showSection('one-minute')">One-Minute Drill <i class="ti ti-zap"></i></button>
+        <button class="btn btn-secondary btn-block" onclick="showSection('metronome')">Metronome <i class="ti ti-timer"></i></button>
       </div>
-      <div id="session-history" style="margin-top:20px"></div>
+      <div id="p-history" class="mt-md"></div>
     </div>
 
-    <div id="practice-active" style="display:none">
-      <div id="block-timer" style="text-align:center;padding:20px 0">
-        <div style="font-size:48px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold)" id="block-countdown">20:00</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px" id="block-name">Warmup</div>
+    <!-- Active Timer -->
+    <div id="p-active" style="display:none">
+      <div class="pt-timer">
+        <div class="pt-countdown" id="block-countdown">20:00</div>
+        <div class="pt-block-label" id="block-name">Warmup</div>
       </div>
-      <div id="block-description" style="background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:14px;margin-bottom:12px;font-size:13px;line-height:1.6"></div>
-      <div class="progress-bar" style="margin-bottom:16px"><div class="progress-fill" id="practice-progress" style="width:0%"></div></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-primary w-full" id="pause-btn">Pause <i class="ti ti-pause"></i></button>
-        <button class="btn-secondary" id="skip-btn" style="flex:0">Skip <i class="ti ti-skip-forward"></i></button>
+      <div class="glass p-md mb-md" id="block-description" style="font-size:13px;line-height:1.6"></div>
+      <div class="progress-bar mb-md"><div class="progress-fill" id="practice-progress" style="width:0%"></div></div>
+      <div class="pt-blocks" id="pt-blocks"></div>
+      <div class="flex gap-sm mt-md">
+        <button class="btn btn-primary btn-block" id="pause-btn">Pause <i class="ti ti-pause"></i></button>
+        <button class="btn btn-secondary" id="skip-btn" style="flex:0">Skip <i class="ti ti-skip-forward"></i></button>
       </div>
     </div>
 
-    <div id="one-minute-section" style="display:none;margin-top:16px">
+    <!-- One-Minute -->
+    <div id="om-section" style="display:none">
       <button class="back-btn" onclick="showLanding()"><i class="ti ti-arrow-left"></i>Back</button>
       <div class="section-title">⚡ One-Minute Changes</div>
-      <div class="section-sub">The #1 drill to speed up your chord transitions</div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <select id="om-chord-from" class="form-input" style="flex:1"><option value="">From</option></select>
-        <select id="om-chord-to" class="form-input" style="flex:1"><option value="">To</option></select>
+      <div class="section-sub">The #1 drill to speed up chord transitions</div>
+      <div class="flex gap-sm mb-md">
+        <select id="om-from" class="form-input" style="flex:1"><option value="">From</option></select>
+        <select id="om-to" class="form-input" style="flex:1"><option value="">To</option></select>
       </div>
-      <div id="om-count" style="text-align:center;font-size:14px;color:var(--text2);margin-bottom:8px">0 changes</div>
-      <div id="om-progress-bar" style="height:4px;background:var(--grey2);border-radius:2px;margin-bottom:12px"><div id="om-fill" style="height:100%;background:var(--gold);border-radius:2px;width:0%;transition:width .1s linear"></div></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-primary w-full" id="om-start-btn">Start <i class="ti ti-player-play"></i></button>
-        <button class="btn-primary" id="om-change-btn" disabled style="flex:0;background:var(--green-light)!important">Change <i class="ti ti-switch"></i></button>
+      <div class="om-wrap">
+        <div class="om-ring">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle class="om-ring-bg" cx="90" cy="90" r="78"/>
+            <circle class="om-ring-progress" id="om-ring-prog" cx="90" cy="90" r="78" stroke-dasharray="490" stroke-dashoffset="0"/>
+          </svg>
+          <div class="om-timer" id="om-timer">60</div>
+        </div>
+        <div class="om-score" id="om-score">0 changes</div>
       </div>
-      <div id="om-result" style="display:none;margin-top:12px;text-align:center;padding:14px;background:var(--surface2);border-radius:var(--radius-lg)">
+      <div class="flex gap-sm" style="justify-content:center">
+        <button class="btn btn-primary" id="om-start-btn">Start <i class="ti ti-player-play"></i></button>
+        <button class="btn btn-primary" id="om-change-btn" disabled style="background:var(--green-light)!important">Change <i class="ti ti-switch"></i></button>
+      </div>
+      <div id="om-result" class="glass p-md text-center mt-md" style="display:none">
         <div class="section-title" style="justify-content:center">🏆 Result</div>
-        <div style="font-size:24px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold)" id="om-final-count">0</div>
-        <div style="font-size:11px;color:var(--text3)">changes in 60 seconds</div>
-        <div style="font-size:12px;color:var(--green-light);margin-top:4px" id="om-pb"></div>
+        <div style="font-size:32px;font-weight:800;font-family:'Syne',sans-serif;color:var(--gld)" id="om-final">0</div>
+        <div style="font-size:12px;color:var(--text3)">changes in 60 seconds</div>
+        <div style="font-size:13px;color:var(--green-light);margin-top:4px" id="om-pb"></div>
       </div>
-      <div id="om-history" style="margin-top:16px"></div>
+      <div id="om-history" class="mt-md"></div>
     </div>
 
-    <div id="metronome-section" style="display:none;margin-top:16px">
+    <!-- Metronome -->
+    <div id="metro-section" style="display:none">
       <button class="back-btn" onclick="showLanding()"><i class="ti ti-arrow-left"></i>Back</button>
       <div class="section-title">⏱️ Metronome</div>
       <div class="section-sub">Develop perfect timing</div>
-      <div style="text-align:center;padding:20px 0">
-        <div id="metronome-bpm" style="font-size:48px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold)">80</div>
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">BPM</div>
-        <input type="range" id="bpm-slider" min="20" max="300" value="80" style="width:100%;margin-top:12px">
-        <div style="display:flex;gap:8px;justify-content:center;margin:12px 0">
-          <div id="beat-indicator" style="display:flex;gap:4px;align-items:center;min-height:20px"></div>
-        </div>
-        <button class="btn-primary" id="metronome-toggle">Start <i class="ti ti-player-play"></i></button>
+      <div class="metronome-wrap">
+        <div class="metro-bpm" id="metro-bpm">80</div>
+        <div class="metro-label">BPM</div>
+        <input type="range" id="bpm-slider" min="20" max="300" value="80" style="width:100%;max-width:300px;margin-top:16px;accent-color:var(--gld)">
+        <div class="metro-visual" id="metro-visual" style="min-height:20px"></div>
+        <button class="btn btn-primary" id="metro-toggle">Start <i class="ti ti-player-play"></i></button>
       </div>
     </div>
-
   </div>
-
-  <div class="bottom-nav" style="border-top:1px solid rgba(255,255,255,.06);padding:6px 0 10px">
+  <nav class="bottom-nav">
     <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
     <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
     <a class="nav-item active" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
     <a class="nav-item" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
     <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
     <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-  </div>
+  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script src="/assets/js/guitar/metronome.js"></script>
-<script src="/assets/js/guitar/practice.js"></script>
 <script src="/assets/js/guitar/one-minute.js"></script>
 <script>
 const CHORDS = ['Em','Am','G','C','D','A','E','Dm','B7','F','Bm'];
-let omDrill, metronome, practiceSession;
+let omDrill, metronome;
 
-function showLanding() {
-  ['practice-active','one-minute-section','metronome-section'].forEach(id => document.getElementById(id).style.display='none');
-  document.getElementById('practice-landing').style.display='block';
-}
-
-function showSection(id) {
-  document.getElementById('practice-landing').style.display='none';
-  ['practice-active','one-minute-section','metronome-section'].forEach(s => document.getElementById(s).style.display = s === id ? 'block' : 'none');
-}
+function showLanding() { ['p-active','om-section','metro-section'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('p-landing').style.display='block'; }
+function showSection(id) { document.getElementById('p-landing').style.display='none'; ['p-active','om-section','metro-section'].forEach(s => document.getElementById(s).style.display = s === id ? 'block' : 'none'); }
 
 (async function() {
   const user = await Guitar.init();
-  const chordsSelects = [document.getElementById('om-chord-from'), document.getElementById('om-chord-to')];
-  chordsSelects.forEach(sel => { CHORDS.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); });
+  const CIRC = 2 * Math.PI * 78; // 490.09
 
-  // One-minute drill
+  // Chord select populate
+  const selects = [document.getElementById('om-from'), document.getElementById('om-to')];
+  selects.forEach(s => { CHORDS.forEach(c => { s.innerHTML += `<option value="${c}">${c}</option>`; }); });
+
+  // One-Minute Drill
   omDrill = new OneMinuteDrill({
     onTick: function(remaining, changes) {
-      document.getElementById('om-count').textContent = changes + ' changes';
-      document.getElementById('om-fill').style.width = ((60 - remaining) / 60 * 100) + '%';
+      document.getElementById('om-score').textContent = changes + ' changes';
+      document.getElementById('om-timer').textContent = remaining;
+      const offset = CIRC * (remaining / 60);
+      document.getElementById('om-ring-prog').style.strokeDashoffset = offset;
     },
     onComplete: function(changes) {
-      document.getElementById('om-start-btn').textContent = 'Start';
+      document.getElementById('om-timer').textContent = '0';
+      document.getElementById('om-ring-prog').style.strokeDashoffset = CIRC;
+      document.getElementById('om-start-btn').innerHTML = 'Start <i class="ti ti-player-play"></i>';
       document.getElementById('om-change-btn').disabled = true;
       document.getElementById('om-result').style.display = 'block';
-      document.getElementById('om-final-count').textContent = changes;
-      const from = document.getElementById('om-chord-from').value;
-      const to = document.getElementById('om-chord-to').value;
-      const history = new OneMinuteHistory();
-      const pb = history.addRecord({ from, to, changes });
-      document.getElementById('om-pb').textContent = pb.improvement ? `Personal Best! Was ${pb.improvement}` : (pb.isNewPB ? 'Personal Best!' : '');
+      document.getElementById('om-final').textContent = changes;
+      const from = document.getElementById('om-from').value, to = document.getElementById('om-to').value;
+      const h = new OneMinuteHistory();
+      const pb = h.addRecord({from, to, changes});
+      document.getElementById('om-pb').textContent = pb.improvement ? `Personal Best! Was ${pb.improvement}` : (pb.isNewPB ? '🔥 Personal Best!' : '');
       renderOmHistory();
-      if (user) {
-        Guitar.saveOneMinute(`${from}→${to}`, changes).catch(()=>{});
-      }
+      if (user) Guitar.saveOneMinute(`${from}→${to}`, changes).catch(()=>{});
     }
   });
 
   document.getElementById('om-start-btn').onclick = function() {
-    const from = document.getElementById('om-chord-from').value;
-    const to = document.getElementById('om-chord-to').value;
+    const from = document.getElementById('om-from').value, to = document.getElementById('om-to').value;
     if (!from || !to) { Guitar.showToast('Select two chords','error'); return; }
-    if (omDrill.running) { omDrill.stop(); this.textContent = 'Start'; document.getElementById('om-change-btn').disabled = true; return; }
+    if (omDrill.running) { omDrill.stop(); this.innerHTML='Start <i class="ti ti-player-play"></i>'; document.getElementById('om-change-btn').disabled=true; return; }
     omDrill.start();
-    this.textContent = 'Stop';
+    this.innerHTML = 'Stop <i class="ti ti-player-play"></i>';
     document.getElementById('om-change-btn').disabled = false;
     document.getElementById('om-result').style.display = 'none';
   };
-
   document.getElementById('om-change-btn').onclick = function() { omDrill.countChange(); };
 
   function renderOmHistory() {
-    const hist = new OneMinuteHistory();
-    const records = hist.getAll();
+    const h = new OneMinuteHistory();
+    const r = h.getAll();
     const el = document.getElementById('om-history');
-    if (!records.length) { el.innerHTML = ''; return; }
+    if (!r.length) { el.innerHTML = ''; return; }
     el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600">Recent Records</div>';
-    records.slice(-10).reverse().forEach(r => {
-      el.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)">
-        <span>${r.from} → ${r.to}</span><span style="color:var(--gold);font-weight:600">${r.changes}</span></div>`;
+    r.slice(-10).reverse().forEach(x => {
+      el.innerHTML += `<div class="flex justify-between" style="font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span>${x.from} → ${x.to}</span><span style="color:var(--gld);font-weight:600">${x.changes}</span></div>`;
     });
   }
   renderOmHistory();
@@ -162,64 +164,67 @@ function showSection(id) {
   // Metronome
   metronome = new GuitarMetronome();
   document.getElementById('bpm-slider').oninput = function() {
-    document.getElementById('metronome-bpm').textContent = this.value;
+    document.getElementById('metro-bpm').textContent = this.value;
     if (metronome.running) metronome.setBpm(parseInt(this.value));
   };
-  document.getElementById('metronome-toggle').onclick = function() {
-    if (metronome.running) { metronome.stop(); this.innerHTML = 'Start <i class="ti ti-player-play"></i>'; return; }
+  document.getElementById('metro-toggle').onclick = function() {
+    if (metronome.running) { metronome.stop(); this.innerHTML='Start <i class="ti ti-player-play"></i>'; return; }
     const bpm = parseInt(document.getElementById('bpm-slider').value);
     metronome.start(bpm, function(beat, total) {
-      const indicator = document.getElementById('beat-indicator');
-      indicator.innerHTML = '';
+      const v = document.getElementById('metro-visual');
+      v.innerHTML = '';
       for (let i = 1; i <= total; i++) {
-        const dot = document.createElement('div');
-        dot.style.cssText = `width:12px;height:12px;border-radius:50%;${i===1?'background:var(--gold)':'background:var(--grey2)'};opacity:${i===beat?1:.3};transition:all .1s`;
-        indicator.appendChild(dot);
+        const d = document.createElement('div');
+        d.className = `metro-beat${i===1?' accent':''}${i===beat?' active':''}`;
+        v.appendChild(d);
       }
     });
     this.innerHTML = 'Stop <i class="ti ti-player-play"></i>';
   };
 
-  // Practice session
+  // Practice Session
   document.getElementById('start-practice-btn').onclick = function() {
-    showSection('practice-active');
+    showSection('p-active');
     const blocks = [
-      { name:'Warmup', duration:180, desc:'Finger independence — 1-2-3-4 on each string, slowly. Focus on light pressure and clean notes. Then silent chord changes: Em → Am → G → C → D, 5x each.' },
-      { name:'Drill', duration:300, desc:'Isolate your weakest skill. If chord changes are slow: one-minute changes drill. If strumming: metronome at 70 BPM. If a specific chord: place, lift, repeat 20x.' },
-      { name:'Song Practice', duration:420, desc:'Play "Wish Me Well" by Sarkodie (Em-Am). Focus on playing through cleanly, even if slowly. Loop the progression: Em → Am → Em → Am. Try singing along.' },
-      { name:'Free Play', duration:300, desc:'Jam on anything you want! Try making up your own chord progression using Em-Am-G-C-D. Experiment with different strumming patterns. Have fun.' }
+      {name:'Warmup', dur:180, desc:'Finger independence — 1-2-3-4 on each string. Light pressure, clean notes. Silent chord changes: Em→Am→G→C→D, 5x each.'},
+      {name:'Drill', dur:300, desc:'Isolate your weakest skill. Chord changes slow? One-minute drill. Strumming off? Metronome at 70 BPM. Specific chord trouble? Place, lift, repeat 20x.'},
+      {name:'Song Practice', dur:420, desc:'Play "Wish Me Well" (Em-Am). Focus on playing through cleanly. Loop the progression. Try singing along slowly.'},
+      {name:'Free Play', dur:300, desc:'Jam on anything! Make up your own progression with Em-Am-G-C-D. Experiment with strumming patterns. Have fun.'}
     ];
     let currentBlock = 0;
+
     function renderBlock() {
       const b = blocks[currentBlock];
       document.getElementById('block-name').textContent = b.name;
       document.getElementById('block-description').textContent = b.desc;
       document.getElementById('practice-progress').style.width = ((currentBlock / blocks.length) * 100) + '%';
+      // Render block indicators
+      const c = document.getElementById('pt-blocks');
+      c.innerHTML = blocks.map((bl,i) => `<div class="pt-block${i===currentBlock?' active':''}${i<currentBlock?' done':''}"><div class="pt-block-label">${bl.name}</div><div class="pt-block-time">${Math.floor(bl.dur/60)}:${String(bl.dur%60).padStart(2,'0')}</div></div>`).join('');
     }
     renderBlock();
 
-    let timeLeft = blocks[0].duration;
+    let timeLeft = blocks[0].dur;
     let running = true;
     const timerInterval = setInterval(function() {
       if (!running) return;
       timeLeft--;
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      document.getElementById('block-countdown').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+      const m = Math.floor(timeLeft/60), s = timeLeft%60;
+      document.getElementById('block-countdown').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      document.getElementById('p-timer-hdr').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
       if (timeLeft <= 0) {
         currentBlock++;
         if (currentBlock >= blocks.length) {
           clearInterval(timerInterval);
-          document.getElementById('block-countdown').textContent = 'Done! 🎉';
+          document.getElementById('block-countdown').textContent = '🎉';
           Guitar.showToast('Practice complete! +25 XP','success');
-          if (user) {
-            Guitar.logPractice({ duration_min:20, drill_type:'session', xp_earned:25 }).catch(()=>{});
-          }
+          if (user) Guitar.logPractice({duration_min:20,drill_type:'session',xp_earned:25}).catch(()=>{});
           setTimeout(showLanding, 2000);
           return;
         }
-        timeLeft = blocks[currentBlock].duration;
+        timeLeft = blocks[currentBlock].dur;
         renderBlock();
+        Guitar.showToast(`Starting: ${blocks[currentBlock].name}`,'info');
       }
     }, 1000);
 
@@ -229,11 +234,9 @@ function showSection(id) {
     };
     document.getElementById('skip-btn').onclick = function() {
       currentBlock++;
-      if (currentBlock >= blocks.length) {
-        clearInterval(timerInterval); showLanding(); return;
-      }
-      timeLeft = blocks[currentBlock].duration;
-      renderBlock();
+      if (currentBlock >= blocks.length) { clearInterval(timerInterval); showLanding(); return; }
+      timeLeft = blocks[currentBlock].dur; renderBlock();
+      Guitar.showToast(`Starting: ${blocks[currentBlock].name}`,'info');
     };
   };
 })();

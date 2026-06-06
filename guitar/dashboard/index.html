@@ -1,195 +1,170 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dashboard — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="guitar-app">
 <div class="screen active">
-  <div class="hdr"><div class="logo">🎸 Progress</div><div id="xp-header" style="font-size:11px;color:var(--gold)"></div></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
-
-    <div id="dashboard-auth" style="text-align:center;padding:40px 0">
-      <div style="font-size:48px;margin-bottom:12px">📊</div>
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Progress</div><div id="xp-header" style="font-size:12px;color:var(--gld);font-weight:600"></div></div>
+  <div class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
+    <!-- Auth -->
+    <div id="dash-auth" class="text-center" style="padding:60px 0">
+      <div style="font-size:56px;margin-bottom:12px">📊</div>
       <div class="section-title" style="justify-content:center">Your Progress Dashboard</div>
       <div class="section-sub">Sign in to track your learning journey</div>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:300px;margin:16px auto">
         <input class="form-input" id="dash-email" type="email" placeholder="your@email.com">
-        <button class="btn-primary" id="dash-signin">Sign In <i class="ti ti-arrow-right"></i></button>
+        <button class="btn btn-primary" id="dash-signin">Sign In <i class="ti ti-arrow-right"></i></button>
         <p id="dash-err" style="color:var(--red-light);font-size:12px;display:none"></p>
       </div>
     </div>
 
-    <div id="dashboard-content" style="display:none">
-      <div class="dashboard-grid">
+    <!-- Content -->
+    <div id="dash-content" style="display:none">
+      <div class="dashboard-grid stagger">
         <div class="stat-card"><div class="stat-value" id="stat-level">-</div><div class="stat-label">Level</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-xp">-</div><div class="stat-label">XP</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-streak">-</div><div class="stat-label">Day Streak</div></div>
         <div class="stat-card"><div class="stat-value" id="stat-lessons">-</div><div class="stat-label">Lessons</div></div>
       </div>
 
-      <div style="margin-top:20px">
+      <div class="mt-lg">
         <div class="section-title">🏆 Achievements</div>
-        <div id="achievements-grid" class="badge-grid"></div>
+        <div id="achievements-grid" class="badge-grid" style="margin-top:8px"></div>
       </div>
 
-      <div style="margin-top:20px">
+      <div class="mt-lg">
         <div class="section-title">🔥 Leaderboard</div>
         <div class="section-sub">Top streak holders this week</div>
-        <div id="leaderboard" style="margin-top:8px">
-          <div style="padding:12px;text-align:center;color:var(--text3);font-size:13px">Loading...</div>
-        </div>
+        <div id="leaderboard" class="glass p-md mt-sm"><div class="text-center" style="padding:12px;color:var(--text3);font-size:13px">Loading...</div></div>
       </div>
 
-      <div style="margin-top:20px">
+      <div class="mt-lg">
         <div class="section-title">📈 Practice History</div>
-        <div id="practice-chart" style="margin-top:8px">
-          <div style="padding:12px;text-align:center;color:var(--text3);font-size:13px">Loading...</div>
-        </div>
+        <div id="practice-chart" class="glass p-md mt-sm"><div class="text-center" style="padding:12px;color:var(--text3);font-size:13px">Loading...</div></div>
       </div>
 
-      <div style="margin-top:20px">
+      <div class="mt-lg">
         <div class="section-title">⚡ One-Minute Records</div>
-        <div id="om-records" style="margin-top:8px">
-          <div style="padding:12px;text-align:center;color:var(--text3);font-size:13px">Loading...</div>
-        </div>
+        <div id="om-records" class="mt-sm"></div>
       </div>
     </div>
-
   </div>
-
-  <div class="bottom-nav" style="border-top:1px solid rgba(255,255,255,.06);padding:6px 0 10px">
+  <nav class="bottom-nav">
     <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
     <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
     <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
     <a class="nav-item active" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
     <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
     <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-  </div>
+  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script>
 async function renderDashboard(user) {
-  const section = document.getElementById('dashboard-content');
+  const section = document.getElementById('dash-content');
   section.style.display = 'block';
-  document.getElementById('dashboard-auth').style.display = 'none';
+  document.getElementById('dash-auth').style.display = 'none';
 
   try {
-    const progData = await Guitar.getProgress();
-    const stats = progData.stats || {};
-    const allBadges = progData.allBadges || [];
-    const badges = progData.badges || [];
-    const earnedKeys = badges.map(b => b.key || b.achievement_key);
+    const data = await Guitar.getProgress();
+    const stats = data.stats || {};
+    const earnedKeys = (data.badges||[]).map(b => b.key || b.achievement_key);
 
-    document.getElementById('stat-level').textContent = stats.level || 1;
+    const lvl = stats.level || 1;
+    document.getElementById('stat-level').textContent = lvl;
     document.getElementById('stat-xp').textContent = (stats.total_xp || 0) + ' XP';
     document.getElementById('stat-streak').textContent = (stats.streak || 0) + ' days';
-    const completedLessons = (progData.progress || []).filter(p => p.completed).length;
+    const completedLessons = (data.progress||[]).filter(p => p.completed).length;
     document.getElementById('stat-lessons').textContent = completedLessons + '/64';
+    document.getElementById('xp-header').textContent = `${stats.total_xp||0}/${50*lvl} XP`;
 
-    const nextLvlXp = 50 * (stats.level || 1);
-    document.getElementById('xp-header').textContent = `${stats.total_xp || 0}/${nextLvlXp} XP`;
+    // Animate stats
+    document.querySelectorAll('.stat-value').forEach(el => {
+      const num = parseInt(el.textContent);
+      if (!isNaN(num)) { el.textContent = '0'; Guitar.countUp(el, num, 600); }
+    });
 
     // Achievements
-    const achData = await Guitar.getAchievements().catch(() => null);
-    const achievements = achData?.achievements || allBadges;
-    const grid = document.getElementById('achievements-grid');
-    grid.innerHTML = '';
-    if (achievements.length) {
-      achievements.forEach(a => {
-        const unlocked = a.earned || earnedKeys.includes(a.key);
-        grid.innerHTML += `<div class="badge-item ${unlocked ? 'badge-unlocked' : 'badge-locked'}">
-          <div class="badge-icon">${unlocked ? a.icon || '🏆' : '🔒'}</div>
-          <div class="badge-name">${a.title || a.name}</div>
-        </div>`;
-      });
-    } else {
-      grid.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">Complete lessons to unlock achievements</div>';
-    }
+    try {
+      const achData = await Guitar.getAchievements();
+      const achievements = achData.achievements || [];
+      const grid = document.getElementById('achievements-grid');
+      grid.innerHTML = achievements.length ? achievements.map(a => `<div class="badge-item ${a.earned||earnedKeys.includes(a.key)?'badge-unlocked':''}"><div class="badge-icon">${(a.earned||earnedKeys.includes(a.key))?(a.icon||'🏆'):'🔒'}</div><div class="badge-name">${a.title||a.name}</div></div>`).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">Complete lessons to unlock achievements</div>';
+    } catch(e) {}
 
     // Leaderboard
-    const lbData = await Guitar.getLeaderboard('weekly').catch(() => null);
-    const lb = lbData?.leaderboard || [];
-    const lbEl = document.getElementById('leaderboard');
-    if (lb.length) {
-      lbEl.innerHTML = lb.map((r,i) => `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px">
-        <span style="font-family:'Syne',sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--text3)'}">#${i+1}</span>
-        <span style="flex:1;font-size:13px">${r.nickname || r.email || 'User'}</span>
-        <span style="font-size:11px;color:var(--gold)">${r.xp || r.streak || 0} XP</span>
-      </div>`).join('');
-    } else {
-      lbEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No leaderboard data yet. Start practicing!</div>';
-    }
-
-    // Practice history
-    const sessData = await Guitar.getSessions(7).catch(() => null);
-    const sessions = sessData?.sessions || [];
-    const phEl = document.getElementById('practice-chart');
-    if (sessions.length) {
-      const week = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      let html = '<div style="display:flex;gap:4px;justify-content:center;margin-top:8px">';
-      for (let d = 6; d >= 0; d--) {
-        const date = new Date(); date.setDate(date.getDate() - d);
-        const dateStr = date.toISOString().split('T')[0];
-        const daySessions = sessions.filter(s => s.date === dateStr || s.created_at?.startsWith(dateStr));
-        const count = daySessions.length;
-        const maxH = 60;
-        const h = Math.min(count * 20, maxH);
-        html += `<div style="text-align:center">
-          <div style="height:${maxH}px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px">
-            <div style="width:24px;border-radius:4px 4px 0 0;background:var(--gold);height:${h}px;opacity:${count > 0 ? .6 + count * .1 : .1}"></div>
-          </div>
-          <div style="font-size:8px;color:var(--text3)">${week[date.getDay()]}</div>
-        </div>`;
+    try {
+      const lbData = await Guitar.getLeaderboard('weekly');
+      const lb = lbData.leaderboard || [];
+      const lbEl = document.getElementById('leaderboard');
+      if (lb.length) {
+        lbEl.innerHTML = lb.map((r,i) => `<div class="flex items-center" style="gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px">
+          <span style="font-family:'Syne',sans-serif;font-weight:700;color:${i<3?'var(--gld)':'var(--text3)'}">#${i+1}</span>
+          <span class="flex-1">${r.nickname||r.email||'User'}</span>
+          <span style="color:var(--gld);font-weight:600">${r.xp||0} XP</span>
+        </div>`).join('');
+      } else {
+        lbEl.innerHTML = '<div class="text-center" style="color:var(--text3);font-size:13px;padding:12px">No leaderboard data yet</div>';
       }
-      html += '</div>';
-      phEl.innerHTML = html;
-    } else {
-      phEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No sessions yet. Start your first practice!</div>';
-    }
+    } catch(e) {}
+
+    // Practice chart
+    try {
+      const sessData = await Guitar.getSessions(7);
+      const sessions = sessData.sessions || [];
+      const phEl = document.getElementById('practice-chart');
+      if (sessions.length) {
+        const week = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        let html = '<div class="flex" style="gap:6px;justify-content:center;padding:8px 0">';
+        for (let d = 6; d >= 0; d--) {
+          const date = new Date(); date.setDate(date.getDate()-d);
+          const ds = date.toISOString().split('T')[0];
+          const day = sessions.filter(s => s.date === ds);
+          const count = day.length;
+          const maxH = 64, h = Math.min(count * 22, maxH);
+          html += `<div class="text-center"><div style="height:${maxH}px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px"><div style="width:28px;border-radius:6px 6px 0 0;background:var(--gld);height:${h}px;opacity:${count>.5?.6+count*.1:.1};transition:height .5s var(--ease-out)"></div></div><div style="font-size:9px;color:var(--text3)">${week[date.getDay()]}</div></div>`;
+        }
+        html += '</div>';
+        phEl.innerHTML = html;
+      } else {
+        phEl.innerHTML = '<div class="text-center" style="color:var(--text3);font-size:13px;padding:12px">No sessions yet</div>';
+      }
+    } catch(e) {}
 
     // One-minute records
-    const omEl = document.getElementById('om-records');
-    const omData = await Guitar.getRecords().catch(() => null);
-    const records = omData?.records || [];
-    if (records.length) {
-      omEl.innerHTML = records.slice(-5).reverse().map(r => `<div style="display:flex;justify-content:space-between;padding:6px 12px;background:var(--surface2);border-radius:var(--radius-md);margin-bottom:4px;font-size:11px">
-        <span>${r.chord_pair}</span>
-        <span style="color:var(--gold);font-weight:600">${r.best_score || r.score} changes</span>
-      </div>`).join('');
-    } else {
-      omEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No one-minute records yet.</div>';
-    }
-
+    try {
+      const omData = await Guitar.getRecords();
+      const records = omData.records || [];
+      const omEl = document.getElementById('om-records');
+      if (records.length) {
+        omEl.innerHTML = records.slice(-5).reverse().map(r =>
+          `<div class="flex justify-between" style="padding:8px 14px;background:rgba(255,255,255,.04);border-radius:var(--radius-md);margin-bottom:6px;font-size:12px"><span>${r.chord_pair}</span><span style="color:var(--gld);font-weight:600">${r.best_score||r.score} changes</span></div>`
+        ).join('');
+      } else {
+        omEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">No one-minute records yet</div>';
+      }
+    } catch(e) {}
   } catch(e) {
-    // Show demo data if offline
     document.getElementById('stat-level').textContent = '1';
     document.getElementById('stat-xp').textContent = '--';
-    document.getElementById('stat-streak').textContent = '--';
-    document.getElementById('stat-lessons').textContent = '--';
-    document.getElementById('xp-header').textContent = '';
   }
 }
 
 document.getElementById('dash-signin').onclick = async function() {
   const email = document.getElementById('dash-email').value.trim();
-  if (!email) { document.getElementById('dash-err').textContent = 'Enter your email'; document.getElementById('dash-err').style.display = 'block'; return; }
+  if (!email) { document.getElementById('dash-err').textContent = 'Enter your email'; document.getElementById('dash-err').style.display='block'; return; }
   document.getElementById('dash-err').style.display = 'none';
   localStorage.setItem('guitar_email', email);
-  const user = { email };
-  await renderDashboard(user);
+  await renderDashboard({email});
 };
 
 (async function() {
   const user = await Guitar.init();
-  if (user) {
-    await renderDashboard(user);
-  }
-  // Check for saved email
-  const savedEmail = localStorage.getItem('guitar_email');
-  if (savedEmail) {
-    document.getElementById('dash-email').value = savedEmail;
-    document.getElementById('dash-signin').click();
-  }
+  if (user) await renderDashboard(user);
+  const saved = localStorage.getItem('guitar_email');
+  if (saved) { document.getElementById('dash-email').value = saved; document.getElementById('dash-signin').click(); }
 })();
 </script>
 </body></html>

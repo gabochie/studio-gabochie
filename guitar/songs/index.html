@@ -1,211 +1,180 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Songs — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="guitar-app">
 <div class="screen active">
-  <div class="hdr"><div class="logo">🎸 Ghanaian Songs</div></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
-
-    <div id="songs-auth" style="text-align:center;padding:40px 0">
-      <div style="font-size:48px;margin-bottom:12px">🇬🇭</div>
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Ghanaian Songs</div></div>
+  <div class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
+    <!-- Auth -->
+    <div id="songs-auth" class="text-center" style="padding:60px 0">
+      <div style="font-size:56px;margin-bottom:12px">🇬🇭</div>
       <div class="section-title" style="justify-content:center">Ghanaian Song Library</div>
       <div class="section-sub">Learn guitar with real highlife, gospel & hiplife songs</div>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:300px;margin:16px auto">
         <input class="form-input" id="songs-email" type="email" placeholder="your@email.com">
-        <button class="btn-primary" id="songs-signin">Sign In <i class="ti ti-arrow-right"></i></button>
+        <button class="btn btn-primary" id="songs-signin">Sign In <i class="ti ti-arrow-right"></i></button>
         <p id="songs-err" style="color:var(--red-light);font-size:12px;display:none"></p>
       </div>
     </div>
 
+    <!-- Content -->
     <div id="songs-content" style="display:none">
-      <div id="songs-unlock-required" style="display:none">
-        <div class="paywall-overlay" style="position:relative;border-radius:var(--radius-lg);margin-bottom:16px">
-          <div class="paywall-content" style="padding:24px">
-            <div class="paywall-icon">🔓</div>
-            <div class="paywall-title">Unlock Full Song Library</div>
-            <div class="paywall-desc">Complete Modules 1-3 to unlock all 15+ Ghanaian songs. Or purchase full access now.</div>
-            <button class="btn-primary w-full" id="buy-btn">Pay GH₵ 99 — Full Access <i class="ti ti-lock-off"></i></button>
-          </div>
-        </div>
+      <div id="songs-unlock" class="glass gold-border p-lg text-center mb-md" style="display:none">
+        <div style="font-size:40px;margin-bottom:8px">🔓</div>
+        <div class="section-title" style="justify-content:center">Unlock Full Song Library</div>
+        <div class="section-sub">Complete Modules 1-3 for free or purchase full access</div>
+        <button class="btn btn-primary btn-block mt-sm" id="buy-btn">Pay GH₵ 99 — Full Access <i class="ti ti-lock-off"></i></button>
       </div>
 
-      <div class="pillar-highlight" style="margin-bottom:16px">
-        <div class="song-filter" data-filter="all" style="flex-shrink:0;padding:6px 16px;background:var(--gold);color:var(--black);border-radius:20px;font-size:11px;font-weight:600;cursor:pointer">All</div>
-        <div class="song-filter" data-filter="bronze" style="flex-shrink:0;padding:6px 16px;background:var(--surface2);border-radius:20px;font-size:11px;font-weight:500;cursor:pointer">🥉 Easy</div>
-        <div class="song-filter" data-filter="silver" style="flex-shrink:0;padding:6px 16px;background:var(--surface2);border-radius:20px;font-size:11px;font-weight:500;cursor:pointer">🥈 Medium</div>
-        <div class="song-filter" data-filter="gold" style="flex-shrink:0;padding:6px 16px;background:var(--surface2);border-radius:20px;font-size:11px;font-weight:500;cursor:pointer">🥇 Hard</div>
+      <div class="h-scroll" style="margin-bottom:16px">
+        <div class="filter-pill active" onclick="filterSongs('all',this)">All</div>
+        <div class="filter-pill" onclick="filterSongs('bronze',this)">🥉 Easy</div>
+        <div class="filter-pill" onclick="filterSongs('silver',this)">🥈 Medium</div>
+        <div class="filter-pill" onclick="filterSongs('gold',this)">🥇 Hard</div>
       </div>
-
-      <div id="songs-list"></div>
+      <div id="songs-list" class="song-grid"></div>
     </div>
-
-    <div id="paywall-overlay" class="paywall-overlay" style="display:none;position:fixed;inset:0;z-index:200;border-radius:0;flex-direction:column;justify-content:flex-end">
-      <div class="paywall-content" style="padding:32px 24px;background:var(--surface);border-radius:24px 24px 0 0;max-width:400px;width:100%;margin:auto;box-shadow:0 -8px 40px rgba(0,0,0,.5)">
-        <div class="paywall-icon" style="font-size:48px;margin-bottom:8px">🎸</div>
-        <div class="paywall-title">Gideon Guitar Method</div>
-        <div class="paywall-desc" style="margin-bottom:16px">Unlock all 16 modules, 64 lessons, 15+ Ghanaian songs, and the full practice engine for a one-time payment of GH₵ 99.</div>
-        <ul style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.8;padding-left:0;list-style:none">
-          <li>✅ <strong>16 modules</strong> — Foundation to Performance</li>
-          <li>✅ <strong>64 video lessons</strong> with YouTube tutorials</li>
-          <li>✅ <strong>15+ Ghanaian songs</strong> with chord charts</li>
-          <li>✅ <strong>Practice engine</strong> with pitch detection & metronome</li>
-          <li>✅ <strong>Progress tracking</strong> — streaks, XP, leaderboards</li>
-          <li>✅ <strong>Lifetime access</strong> — one payment, forever</li>
-        </ul>
-        <button class="btn-primary w-full" id="pay-now-btn">Pay GH₵ 99 Now <i class="ti ti-arrow-right"></i></button>
-        <button class="btn-secondary w-full" id="pay-cancel-btn" style="margin-top:8px">Maybe Later</button>
-        <p id="pay-error" style="color:var(--red-light);font-size:11px;text-align:center;margin-top:8px;display:none"></p>
-      </div>
-    </div>
-
   </div>
-
-  <div class="bottom-nav" style="border-top:1px solid rgba(255,255,255,.06);padding:6px 0 10px">
+  <nav class="bottom-nav">
     <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
     <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
     <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
     <a class="nav-item" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
     <a class="nav-item active" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
     <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-  </div>
+  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script>
 const SONGS = [
-  { id:1, title:'Wish Me Well', artist:'Sarkodie', difficulty:'bronze', chords:['Em','Am'], video:'https://www.youtube.com/embed/HnXo2LsYbMg', progression:'Em → Am (repeat)', strum:'Down, down-down-up' },
-  { id:2, title:'Ewe', artist:'King Promise', difficulty:'bronze', chords:['G','C','Em','D'], video:'https://www.youtube.com/embed/XIbBajQ1Y7U', progression:'G → C → Em → D', strum:'Down, down, up-chuck' },
-  { id:3, title:'Adom', artist:'Joe Mettle', difficulty:'bronze', chords:['Em','C','G','D'], video:'https://www.youtube.com/embed/6zOj6lE2J6M', progression:'Em → C → G → D', strum:'Down-down-up' },
-  { id:4, title:'Grace', artist:'Joe Mettle', difficulty:'silver', chords:['G','D','Em','C'], video:'https://www.youtube.com/embed/mqGl78w1G-E', progression:'G → D → Em → C', strum:'Down-up-down-up' },
-  { id:5, title:'Sore', artist:'King Promise ft. Mugeez', difficulty:'silver', chords:['Dm','Am','G','F'], video:'https://www.youtube.com/embed/VgIp-I4RMPg', progression:'Dm → Am → G → F', strum:'Down-up, down-up' },
-  { id:6, title:'Ayayi', artist:'Sarkodie', difficulty:'silver', chords:['G','Em','C','D'], video:'https://www.youtube.com/embed/CspIQsbtQdg', progression:'G → Em → C → D', strum:'Down, down-up' },
-  { id:7, title:'Mon Bébé', artist:'Bisa Kdei', difficulty:'silver', chords:['Am','F','G','C'], video:'https://www.youtube.com/embed/-YjAe8FGSFA', progression:'Am → F → G → C', strum:'Chuck style' },
-  { id:8, title:'Things Fall Apart', artist:'Kofi Kinaata', difficulty:'silver', chords:['G','D','Em','C'], video:'https://www.youtube.com/embed/GA5bXQSS4h4', progression:'G → D → Em → C', strum:'Down-up-down' },
-  { id:9, title:'Abonsam', artist:'Kofi Kinaata', difficulty:'silver', chords:['Am','G','F'], video:'https://www.youtube.com/embed/lZQc7K8eKPI', progression:'Am → G → F (repeat)', strum:'Down, down-up' },
-  { id:10, title:'Yesu Mo', artist:'Joe Mettle', difficulty:'silver', chords:['G','C','D','Em'], video:'https://www.youtube.com/embed/sKYBGLy3GGI', progression:'G → C → D → Em', strum:'Down-down-up' },
-  { id:11, title:'Amen', artist:'Joe Mettle', difficulty:'gold', chords:['C','F','G','Am'], video:'https://www.youtube.com/embed/kXzVLnxpk3A', progression:'C → F → G → Am', strum:'Slow down-up' },
-  { id:12, title:'Anaade', artist:'Akwaboah', difficulty:'gold', chords:['F','G','Em','Am'], video:'https://www.youtube.com/embed/2Sq2WXFhAT4', progression:'F → G → Em → Am', strum:'Fingerpicking pattern' },
-  { id:13, title:'Victory', artist:'Joe Mettle', difficulty:'gold', chords:['C','G','Am','F'], video:'https://www.youtube.com/embed/mZhm2Xrx7yI', progression:'C → G → Am → F', strum:'Down-up, down-up' },
-  { id:14, title:'Yesu Mogya', artist:'Joe Mettle', difficulty:'gold', chords:['C','G','Am','F','Bb'], video:'https://www.youtube.com/embed/S7NQIGJYOKE', progression:'C → G → Am → F → Bb', strum:'Slow down-up' },
-  { id:15, title:'Agona', artist:'Ebo Taylor', difficulty:'gold', chords:['Am','D7','G','C','F','E7'], video:'https://www.youtube.com/embed/vsl5GqQxsSE', progression:'Am → D7 → G → C → F → E7', strum:'Highlife chop' }
+  {id:1,title:'Wish Me Well',artist:'Sarkodie',difficulty:'bronze',chords:['Em','Am'],video:'https://www.youtube.com/embed/HnXo2LsYbMg',progression:'Em → Am (repeat)',strum:'Down, down-down-up'},
+  {id:2,title:'Ewe',artist:'King Promise',difficulty:'bronze',chords:['G','C','Em','D'],video:'https://www.youtube.com/embed/XIbBajQ1Y7U',progression:'G → C → Em → D',strum:'Down, down, up-chuck'},
+  {id:3,title:'Adom',artist:'Joe Mettle',difficulty:'bronze',chords:['Em','C','G','D'],video:'https://www.youtube.com/embed/6zOj6lE2J6M',progression:'Em → C → G → D',strum:'Down-down-up'},
+  {id:4,title:'Grace',artist:'Joe Mettle',difficulty:'silver',chords:['G','D','Em','C'],video:'https://www.youtube.com/embed/mqGl78w1G-E',progression:'G → D → Em → C',strum:'Down-up-down-up'},
+  {id:5,title:'Sore',artist:'King Promise',difficulty:'silver',chords:['Dm','Am','G','F'],video:'https://www.youtube.com/embed/VgIp-I4RMPg',progression:'Dm → Am → G → F',strum:'Down-up, down-up'},
+  {id:6,title:'Ayayi',artist:'Sarkodie',difficulty:'silver',chords:['G','Em','C','D'],video:'https://www.youtube.com/embed/CspIQsbtQdg',progression:'G → Em → C → D',strum:'Down, down-up'},
+  {id:7,title:'Mon Bébé',artist:'Bisa Kdei',difficulty:'silver',chords:['Am','F','G','C'],video:'https://www.youtube.com/embed/-YjAe8FGSFA',progression:'Am → F → G → C',strum:'Chuck style'},
+  {id:8,title:'Things Fall Apart',artist:'Kofi Kinaata',difficulty:'silver',chords:['G','D','Em','C'],video:'https://www.youtube.com/embed/GA5bXQSS4h4',progression:'G → D → Em → C',strum:'Down-up-down'},
+  {id:9,title:'Yesu Mo',artist:'Joe Mettle',difficulty:'silver',chords:['G','C','D','Em'],video:'https://www.youtube.com/embed/sKYBGLy3GGI',progression:'G → C → D → Em',strum:'Down-down-up'},
+  {id:10,title:'Amen',artist:'Joe Mettle',difficulty:'gold',chords:['C','F','G','Am'],video:'https://www.youtube.com/embed/kXzVLnxpk3A',progression:'C → F → G → Am',strum:'Slow down-up'},
+  {id:11,title:'Anaade',artist:'Akwaboah',difficulty:'gold',chords:['F','G','Em','Am'],video:'https://www.youtube.com/embed/2Sq2WXFhAT4',progression:'F → G → Em → Am',strum:'Fingerpicking'},
+  {id:12,title:'Victory',artist:'Joe Mettle',difficulty:'gold',chords:['C','G','Am','F'],video:'https://www.youtube.com/embed/mZhm2Xrx7yI',progression:'C → G → Am → F',strum:'Down-up, down-up'},
+  {id:13,title:'Agona',artist:'Ebo Taylor',difficulty:'gold',chords:['Am','D7','G','C','F','E7'],video:'https://www.youtube.com/embed/vsl5GqQxsSE',progression:'Am → D7 → G → C → F → E7',strum:'Highlife chop'}
 ];
-
-let currentFilter = 'all';
+let currentFilter = 'all', currentUserEmail = null;
 
 function renderSongs(filter) {
   const list = document.getElementById('songs-list');
   const filtered = filter === 'all' ? SONGS : SONGS.filter(s => s.difficulty === filter);
-  if (!filtered.length) {
-    list.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:20px;text-align:center">No songs at this level yet.</div>';
-    return;
-  }
-  const difficultyLabels = { bronze:'🥉 Easy', silver:'🥈 Medium', gold:'🥇 Hard' };
-  list.innerHTML = filtered.map(song => `<div class="song-card" style="background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s" onclick="showSongDetail(${song.id})">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px">${song.title}</div>
-        <div style="font-size:11px;color:var(--text2)">${song.artist}</div>
-        <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap">
-          ${song.chords.map(c => `<span style="padding:2px 8px;background:rgba(200,155,60,.15);color:var(--gold);border-radius:10px;font-size:9px;font-family:monospace">${c}</span>`).join('')}
-        </div>
-      </div>
-      <div style="text-align:right">
-        <span style="font-size:10px;color:var(--text3)">${difficultyLabels[song.difficulty] || song.difficulty}</span>
-        <div style="margin-top:4px"><i class="ti ti-player-play" style="color:var(--gold);font-size:16px"></i></div>
-      </div>
+  if (!filtered.length) { list.innerHTML = '<div class="text-center" style="grid-column:1/-1;padding:40px;color:var(--text3);font-size:13px">No songs at this level</div>'; return; }
+  const labels = {bronze:'🥉 Easy',silver:'🥈 Medium',gold:'🥇 Hard'};
+  list.innerHTML = filtered.map((s,i) => `<div class="song-card card-hover" onclick="showSongDetail(${s.id})" style="animation:fadeUp .4s var(--ease-out) both;animation-delay:${i*60}ms">
+    <div class="song-title">${s.title}</div>
+    <div class="song-artist">${s.artist}</div>
+    <div style="margin:6px 0">${s.chords.map(c => `<span class="song-chord-tag">${c}</span>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+      <span style="font-size:10px;color:var(--text3)">${labels[s.difficulty]||s.difficulty}</span>
+      <i class="ti ti-player-play" style="color:var(--gld);font-size:16px"></i>
     </div>
   </div>`).join('');
 }
 
-function showSongDetail(id) {
+window.filterSongs = function(filter, el) {
+  document.querySelectorAll('.filter-pill').forEach(f => f.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = filter;
+  renderSongs(filter);
+};
+
+window.showSongDetail = function(id) {
   const song = SONGS.find(s => s.id === id);
   if (!song) return;
   const list = document.getElementById('songs-list');
-  const difficultyLabels = { bronze:'🥉 Easy', silver:'🥈 Medium', gold:'🥇 Hard' };
-  list.innerHTML = `<button class="back-btn" onclick="renderSongs(currentFilter)"><i class="ti ti-arrow-left"></i>All Songs</button>
-    <div class="song-card" style="background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:14px">
-      <div style="font-size:16px;font-weight:700">${song.title}</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${song.artist} · ${difficultyLabels[song.difficulty]}</div>
-      ${song.video ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg);margin-bottom:12px"><iframe src="${song.video}" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allowfullscreen></iframe></div>` : ''}
-      <div style="margin-bottom:8px">
-        <div style="font-size:11px;color:var(--text3);font-weight:600;margin-bottom:4px">Chords</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">${song.chords.map(c => `<span style="padding:4px 12px;background:rgba(200,155,60,.15);color:var(--gold);border-radius:14px;font-size:11px;font-family:monospace">${c}</span>`).join('')}</div>
-      </div>
-      <div style="font-size:12px;margin-bottom:4px"><strong>Progression:</strong> ${song.progression}</div>
-      <div style="font-size:12px;margin-bottom:12px"><strong>Strum:</strong> ${song.strum}</div>
-      <p style="font-size:12px;color:var(--text2);line-height:1.6">Play through the chord progression slowly. Focus on clean transitions. Use the One-Minute Change drill to speed up the trickiest switch.</p>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <a href="/guitar/practice/#one-minute" class="btn-primary" style="flex:1;text-align:center;text-decoration:none">Practice This Song <i class="ti ti-arrow-right"></i></a>
-      </div>
-    </div>`;
-}
+  const labels = {bronze:'🥉 Easy',silver:'🥈 Medium',gold:'🥇 Hard'};
+  list.innerHTML = `<div style="grid-column:1/-1"><button class="back-btn" onclick="renderSongs(currentFilter)"><i class="ti ti-arrow-left"></i>All Songs</button>
+    <div class="glass p-lg">
+      <div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif">${song.title}</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px">${song.artist} · ${labels[song.difficulty]}</div>
+      ${song.video ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-md);margin-bottom:12px"><iframe src="${song.video}" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allowfullscreen></iframe></div>` : ''}
+      <div style="margin-bottom:12px"><div style="font-size:12px;color:var(--text3);font-weight:600;margin-bottom:6px">Chords</div><div class="flex gap-xs flex-wrap">${song.chords.map(c => `<span class="song-chord-tag" style="padding:6px 14px;font-size:12px">${c}</span>`).join('')}</div></div>
+      <div style="font-size:13px;margin-bottom:4px"><strong>Progression:</strong> ${song.progression}</div>
+      <div style="font-size:13px;margin-bottom:16px"><strong>Strum:</strong> ${song.strum}</div>
+      <a href="/guitar/practice/" class="btn btn-primary btn-block">Practice This Song <i class="ti ti-arrow-right"></i></a>
+    </div></div>`;
+};
 
 document.getElementById('songs-signin').onclick = async function() {
   const email = document.getElementById('songs-email').value.trim();
-  if (!email) { document.getElementById('songs-err').textContent = 'Enter your email'; document.getElementById('songs-err').style.display = 'block'; return; }
-  document.getElementById('songs-err').style.display = 'none';
+  if (!email) { document.getElementById('songs-err').textContent='Enter your email'; document.getElementById('songs-err').style.display='block'; return; }
+  document.getElementById('songs-err').style.display='none';
   localStorage.setItem('guitar_email', email);
-  document.getElementById('songs-auth').style.display = 'none';
-  document.getElementById('songs-content').style.display = 'block';
+  currentUserEmail = email;
+  document.getElementById('songs-auth').style.display='none';
+  document.getElementById('songs-content').style.display='block';
   renderSongs('all');
-
-  // Check paywall status
   try {
     const data = await Guitar.getEnrollStatus();
-    if (!data.unlocked && !data.freeTrialAvailable) {
-      document.getElementById('songs-unlock-required').style.display = 'block';
-    }
+    if (!data.unlocked && !data.freeTrialAvailable) document.getElementById('songs-unlock').style.display='block';
   } catch(e) {}
 };
 
-// Filter clicks
-document.querySelectorAll('.song-filter').forEach(el => {
-  el.onclick = function() {
-    document.querySelectorAll('.song-filter').forEach(f => { f.style.background = 'var(--surface2)'; f.style.color = ''; });
-    this.style.background = 'var(--gold)'; this.style.color = 'var(--black)';
-    currentFilter = this.dataset.filter;
-    renderSongs(currentFilter);
-  };
-});
-
-// Paywall
-document.getElementById('buy-btn').onclick = function() { document.getElementById('paywall-overlay').style.display = 'flex'; };
-document.getElementById('pay-cancel-btn').onclick = function() { document.getElementById('paywall-overlay').style.display = 'none'; };
-document.getElementById('pay-now-btn').onclick = async function() {
-  try {
-    const data = await Guitar.enroll();
-    if (data.flw_ref) {
-      window.location.href = data.redirect_url || `https://checkout.flutterwave.com/v3/hosted/pay/${data.flw_ref}`;
-    } else if (data.authorization_url) {
-      window.location.href = data.authorization_url;
-    } else if (data.alreadyUnlocked) {
-      Guitar.showToast('Already unlocked!','success');
-      document.getElementById('paywall-overlay').style.display = 'none';
-      document.getElementById('songs-unlock-required').style.display = 'none';
-    } else {
-      Guitar.showToast('Enrollment successful!','success');
-      document.getElementById('paywall-overlay').style.display = 'none';
-      document.getElementById('songs-unlock-required').style.display = 'none';
-    }
-  } catch(e) {
-    document.getElementById('pay-error').textContent = 'Payment failed. Please try again.';
-    document.getElementById('pay-error').style.display = 'block';
-  }
+document.getElementById('buy-btn').onclick = function() {
+  Guitar.showSheet(`
+    <div style="text-align:center;padding-top:8px">
+      <div style="font-size:48px;margin-bottom:8px">🎸</div>
+      <div class="section-title" style="justify-content:center">Gideon Guitar Method</div>
+      <div class="paywall-price">GH₵ 99</div>
+      <div class="paywall-desc">One-time payment — lifetime access to all 16 modules, 64 lessons, 15+ Ghanaian songs, and the full practice engine.</div>
+      <ul class="paywall-features">
+        <li><span class="check">✅</span> 16 modules — Foundation to Performance</li>
+        <li><span class="check">✅</span> 64 video lessons with YouTube tutorials</li>
+        <li><span class="check">✅</span> 15+ Ghanaian songs with chord charts</li>
+        <li><span class="check">✅</span> Practice engine with pitch detection</li>
+        <li><span class="check">✅</span> Progress tracking — streaks, XP, leaderboards</li>
+        <li><span class="check">✅</span> Lifetime access — one payment, forever</li>
+      </ul>
+      <button class="btn btn-primary btn-block" id="pay-now-btn">Pay GH₵ 99 Now <i class="ti ti-arrow-right"></i></button>
+      <button class="btn btn-ghost btn-block mt-sm" onclick="Guitar.hideSheet()">Maybe Later</button>
+      <p id="pay-error" style="color:var(--red-light);font-size:12px;text-align:center;margin-top:8px;display:none"></p>
+    </div>
+  `);
+  setTimeout(() => {
+    document.getElementById('pay-now-btn').onclick = async function() {
+      try {
+        const data = await Guitar.enroll();
+        if (data.alreadyUnlocked) {
+          Guitar.hideSheet();
+          Guitar.showToast('Already unlocked!','success');
+          document.getElementById('songs-unlock').style.display='none';
+        } else if (data.tx_ref) {
+          Guitar.hideSheet();
+          Guitar.showToast('Redirecting to payment...','info');
+        } else {
+          Guitar.hideSheet();
+          Guitar.showToast('Enrollment successful!','success');
+          document.getElementById('songs-unlock').style.display='none';
+        }
+      } catch(e) {
+        document.getElementById('pay-error').textContent = 'Payment failed. Please try again.';
+        document.getElementById('pay-error').style.display='block';
+      }
+    };
+  }, 100);
 };
 
 (async function() {
   const user = await Guitar.init();
   if (user) {
-    document.getElementById('songs-auth').style.display = 'none';
-    document.getElementById('songs-content').style.display = 'block';
+    currentUserEmail = user.email;
+    document.getElementById('songs-auth').style.display='none';
+    document.getElementById('songs-content').style.display='block';
     renderSongs('all');
   }
-  const savedEmail = localStorage.getItem('guitar_email');
-  if (savedEmail) {
-    document.getElementById('songs-email').value = savedEmail;
-    document.getElementById('songs-signin').click();
-  }
+  const saved = localStorage.getItem('guitar_email');
+  if (saved) { document.getElementById('songs-email').value = saved; document.getElementById('songs-signin').click(); }
 })();
 </script>
 </body></html>
