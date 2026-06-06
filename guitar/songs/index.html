@@ -2,6 +2,7 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Songs — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
 </head>
 <body class="guitar-app">
 <div class="screen active">
@@ -151,7 +152,21 @@ document.getElementById('buy-btn').onclick = function() {
           document.getElementById('songs-unlock').style.display='none';
         } else if (data.tx_ref) {
           Guitar.hideSheet();
-          Guitar.showToast('Redirecting to payment...','info');
+          FlutterwaveCheckout({
+            public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+            tx_ref: data.tx_ref,
+            amount: 99,
+            currency: 'GHS',
+            customer: { email: currentUserEmail, name: currentUserEmail.split('@')[0] },
+            payment_options: 'card, mobilemoneyghana, ussd',
+            callback: function(payment) {
+              if (payment.status === 'completed' || payment.status === 'successful') {
+                Guitar.showToast('Payment confirmed! All modules unlocked.','success');
+                document.getElementById('songs-unlock').style.display='none';
+              }
+            },
+            onclose: function() {}
+          });
         } else {
           Guitar.hideSheet();
           Guitar.showToast('Enrollment successful!','success');

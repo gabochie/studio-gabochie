@@ -48,7 +48,7 @@ export async function onRequest(context) {
 
     if (action === 'query_d1') {
       if (!sql) return new Response(JSON.stringify({ status: 'error', message: 'SQL query required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var result = await queryD1(env.DB, sql, params);
+      result = await queryD1(env.DB, sql, params);
       if (result.error) return new Response(JSON.stringify({ status: 'error', message: result.error }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       return new Response(JSON.stringify({ status: 'ok', rows: result.rows }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
@@ -71,7 +71,7 @@ export async function onRequest(context) {
       var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
       var lim = Math.min(limit || 50, 500);
       var off = offset || 0;
-      var result = await queryD1(env.DB, "SELECT * FROM cold_outreach" + where + " ORDER BY id LIMIT ? OFFSET ?", bindings.concat([lim, off]));
+      result = await queryD1(env.DB, "SELECT * FROM cold_outreach" + where + " ORDER BY id LIMIT ? OFFSET ?", bindings.concat([lim, off]));
       if (result.error) return new Response(JSON.stringify({ status: 'error', message: result.error }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       return new Response(JSON.stringify({ status: 'ok', rows: result.rows }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }

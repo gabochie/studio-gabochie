@@ -30,11 +30,12 @@ export async function onRequest(context) {
 
     if (request.method === 'POST') {
       var body = await request.json();
-      var { agent_instance_id, workflow_id, queue_item_id, status, result, error, duration_ms, prompt_used, response_summary, sub_agent_count } = body;
+      var { agent_instance_id, workflow_id, queue_item_id, result, error, duration_ms, prompt_used, response_summary, sub_agent_count } = body;
+      var st = body.status;
       if (!agent_instance_id) return new Response(JSON.stringify({ status: 'error', message: 'agent_instance_id required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       var runId = (await env.DB.prepare(
         "INSERT INTO agent_runs (agent_instance_id, workflow_id, queue_item_id, status, result, error, duration_ms, prompt_used, response_summary, sub_agent_count, started_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), CASE WHEN ? IN ('completed','error') THEN datetime('now') ELSE '' END)"
-      ).bind(agent_instance_id, workflow_id || 0, queue_item_id || 0, status || 'completed', result || '', error || '', duration_ms || 0, prompt_used || '', response_summary || '', sub_agent_count || 0, status || 'completed').run()).meta.last_row_id;
+      ).bind(agent_instance_id, workflow_id || 0, queue_item_id || 0, st || 'completed', result || '', error || '', duration_ms || 0, prompt_used || '', response_summary || '', sub_agent_count || 0, st || 'completed').run()).meta.last_row_id;
       var run = await env.DB.prepare("SELECT * FROM agent_runs WHERE id = ?").bind(runId).first();
       return new Response(JSON.stringify({ status: 'ok', run }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }

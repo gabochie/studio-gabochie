@@ -33,7 +33,7 @@ var AppState = (function() {
 
   function merge(obj) {
     for (var k in obj) {
-      if (obj.hasOwnProperty(k)) {
+      if (Object.prototype.hasOwnProperty.call(obj, k)) {
         var old = state[k];
         state[k] = obj[k];
         if (old !== obj[k]) { emit(k, obj[k], old); emit('*', k, obj[k], old); }

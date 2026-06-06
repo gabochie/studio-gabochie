@@ -3,13 +3,13 @@ function el(tag, attrs) {
   var elem = document.createElement(tag);
   if (attrs) {
     for (var k in attrs) {
-      if (attrs.hasOwnProperty(k)) {
+      if (Object.prototype.hasOwnProperty.call(attrs, k)) {
         var v = attrs[k];
         if (k === 'className') { elem.className = v; }
         else if (k === 'textContent') { elem.textContent = v; }
         else if (k === 'htmlContent') { elem.innerHTML = v; }
         else if (k === 'style' && typeof v === 'object') {
-          for (var sk in v) { if (v.hasOwnProperty(sk)) elem.style[sk] = v[sk]; }
+          for (var sk in v) { if (Object.prototype.hasOwnProperty.call(v, sk)) elem.style[sk] = v[sk]; }
         } else if (k.indexOf('on') === 0 && typeof v === 'function') {
           elem.addEventListener(k.slice(2).toLowerCase(), v);
         } else { elem.setAttribute(k, v); }
@@ -118,7 +118,7 @@ var Tabs = (function() {
       current = name;
       tabElements.forEach(function(t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); });
       for (var k in panels) {
-        if (panels.hasOwnProperty(k)) {
+        if (Object.prototype.hasOwnProperty.call(panels, k)) {
           panels[k].classList.toggle('active', k === name);
         }
       }

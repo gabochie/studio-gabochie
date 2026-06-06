@@ -37,7 +37,7 @@ export async function onRequest(context) {
     if (request.method === 'PUT') {
       var stepId = url.searchParams.get('id');
       if (!stepId) return new Response(JSON.stringify({ status: 'error', message: 'Step ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var body = await request.json();
+      body = await request.json();
       var fields = [];
       var params = [];
       if (body.step_type !== undefined) { fields.push("step_type = ?"); params.push(body.step_type); }
@@ -48,12 +48,12 @@ export async function onRequest(context) {
       if (!fields.length) return new Response(JSON.stringify({ status: 'error', message: 'No fields to update' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       params.push(stepId);
       await env.DB.prepare("UPDATE workflow_steps SET " + fields.join(", ") + " WHERE id = ?").bind(...params).run();
-      var step = await env.DB.prepare("SELECT * FROM workflow_steps WHERE id = ?").bind(stepId).first();
+      step = await env.DB.prepare("SELECT * FROM workflow_steps WHERE id = ?").bind(stepId).first();
       return new Response(JSON.stringify({ status: 'ok', step }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
     if (request.method === 'DELETE') {
-      var stepId = url.searchParams.get('id');
+      stepId = url.searchParams.get('id');
       if (!stepId) return new Response(JSON.stringify({ status: 'error', message: 'Step ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       await env.DB.prepare("DELETE FROM workflow_steps WHERE id = ?").bind(stepId).run();
       return new Response(JSON.stringify({ status: 'ok', message: 'Step deleted' }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

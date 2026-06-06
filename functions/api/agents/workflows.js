@@ -16,8 +16,8 @@ export async function onRequest(context) {
         "SELECT w.*, COUNT(ws.id) as step_count FROM workflows w LEFT JOIN workflow_steps ws ON w.id = ws.workflow_id GROUP BY w.id ORDER BY w.created_at DESC"
       ).all()).results || [];
       for (var w of workflows) {
-        var steps = (await env.DB.prepare("SELECT * FROM workflow_steps WHERE workflow_id = ? ORDER BY step_order").bind(w.id).all()).results || [];
-        w.steps = steps;
+        var wfSteps = (await env.DB.prepare("SELECT * FROM workflow_steps WHERE workflow_id = ? ORDER BY step_order").bind(w.id).all()).results || [];
+        w.steps = wfSteps;
       }
       return new Response(JSON.stringify({ status: 'ok', items: workflows }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
@@ -47,7 +47,7 @@ export async function onRequest(context) {
       var url = new URL(request.url);
       var id = url.searchParams.get('id');
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'Workflow ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var body = await request.json();
+      body = await request.json();
       var fields = [];
       var params = [];
       if (body.name !== undefined) { fields.push("name = ?"); params.push(body.name); }
@@ -61,13 +61,13 @@ export async function onRequest(context) {
       if (fields.length === 0) return new Response(JSON.stringify({ status: 'error', message: 'No fields to update' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       params.push(id);
       await env.DB.prepare("UPDATE workflows SET " + fields.join(", ") + " WHERE id = ?").bind(...params).run();
-      var workflow = await env.DB.prepare("SELECT * FROM workflows WHERE id = ?").bind(id).first();
+      workflow = await env.DB.prepare("SELECT * FROM workflows WHERE id = ?").bind(id).first();
       return new Response(JSON.stringify({ status: 'ok', workflow }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
     if (request.method === 'DELETE') {
-      var url = new URL(request.url);
-      var id = url.searchParams.get('id');
+      url = new URL(request.url);
+      id = url.searchParams.get('id');
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'Workflow ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       await env.DB.prepare("DELETE FROM workflow_steps WHERE workflow_id = ?").bind(id).run();
       await env.DB.prepare("DELETE FROM workflows WHERE id = ?").bind(id).run();

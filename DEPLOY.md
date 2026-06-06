@@ -114,6 +114,49 @@ To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 
 ---
 
+---
+
+## Guitar Course: One-Time Setup
+
+The guitar course runs on the same Cloudflare Pages project and D1 database. After the initial deploy:
+
+### Initialize Guitar Tables
+
+1. Visit `https://<project>.pages.dev/api/guitar/setup` — this creates 12 `guitar_*` tables and seeds:
+   - 16 modules across 3 tiers (Bronze 1-5, Silver 6-11, Gold 12-16)
+   - 64 lessons with full HTML content
+   - 15 Ghanaian songs (highlife, gospel, hiplife)
+   - 20 achievements/badges
+2. Verify with `https://<project>.pages.dev/api/guitar/modules` — should return all 16 modules
+
+### Flutterwave Paywall
+
+The guitar course uses **Flutterwave** for a one-time GH₵ 99 course unlock (Modules 6+).
+No additional env vars are needed — the existing `FLW_SECRET_KEY` and `FLW_SECRET_HASH` are reused.
+
+Webhook endpoint: `POST /api/guitar/enroll/webhook` (auto-configured alongside main webhook).
+
+### Enrollment Flow
+
+| Step | Endpoint | Description |
+|---|---|---|
+| Check status | `GET /api/guitar/enroll/status` | `{tier: "free"/"registered"/"premium"}` |
+| Register (free) | `POST /api/guitar/enroll` with `{plan: "free"}` | Creates user stats, enables Modules 1-5 |
+| Purchase | `POST /api/guitar/enroll` with `{plan: "premium"}` | Returns Flutterwave checkout URL, redirect user |
+| Webhook | `POST /api/guitar/enroll/webhook` | Flutterwave calls this on payment success, unlocks Modules 6-16 |
+
+### D1 Tables (guitar_*)
+
+All prefixed with `guitar_` to avoid clashes with existing tables:
+- `guitar_modules`, `guitar_lessons`, `guitar_songs`
+- `guitar_user_stats`, `guitar_lesson_progress`
+- `guitar_practice_sessions`, `guitar_one_minute_records`
+- `guitar_achievements`, `guitar_user_achievements`
+- `guitar_leaderboard_history`
+- `guitar_enrollments`, `guitar_enrollment_log`
+
+---
+
 ## Step 8: Post-Deploy Verification Checklist
 
 - [ ] Visit `/api/db/setup` — returns `"Tables ready"`
@@ -126,3 +169,13 @@ To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 - [ ] Visit `/admin/` — dashboard shows CI/CD card (after first CI run)
 - [ ] Verify `/books/*.pdf` direct access returns 403 rewrite
 - [ ] Check `/api/payments/flutterwave` webhook responds (test in Flutterwave)
+- [ ] Visit `/api/guitar/setup` — returns `"Guitar tables ready"`
+- [ ] Visit `/api/guitar/modules` — returns 16 modules with lessons
+- [ ] Visit `/guitar/` — landing page renders with animated hero and curriculum
+- [ ] Visit `/guitar/learn/` — module grid loads, lesson content plays YouTube
+- [ ] Visit `/guitar/practice/` — timer, metronome, one-minute drill all render
+- [ ] Visit `/guitar/tuner/` — canvas needle and cents meter render, mic prompt appears
+- [ ] Visit `/guitar/dashboard/` — stat counters render (may show zeros for new user)
+- [ ] Visit `/guitar/songs/` — song cards load with filter pills
+- [ ] Test enrollment: `POST /api/guitar/enroll {"plan":"free"}` returns 200
+- [ ] Verify desktop layout ≥1024px: sidebar replaces bottom nav

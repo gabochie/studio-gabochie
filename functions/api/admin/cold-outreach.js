@@ -11,18 +11,18 @@ export async function onRequest(context) {
   try {
     if (request.method === 'GET') {
       var url = new URL(request.url);
-      var status = url.searchParams.get('status') || '';
+      var st = url.searchParams.get('status') || '';
       var category = url.searchParams.get('category') || '';
-      var campaign = url.searchParams.get('campaign') || '';
+      var cp = url.searchParams.get('campaign') || '';
       var search = url.searchParams.get('search') || '';
       var page = parseInt(url.searchParams.get('page')) || 1;
       var limit = Math.min(parseInt(url.searchParams.get('limit')) || 50, 500);
       var offset = (page - 1) * limit;
 
       var conds = []; var params = [];
-      if (status) { conds.push('co.status = ?'); params.push(status); }
+      if (st) { conds.push('co.status = ?'); params.push(st); }
       if (category) { conds.push('co.category = ?'); params.push(category); }
-      if (campaign) { conds.push('co.campaign = ?'); params.push(campaign); }
+      if (cp) { conds.push('co.campaign = ?'); params.push(cp); }
       if (search) { conds.push("(co.name LIKE ? OR co.email LIKE ? OR co.phone LIKE ?)"); var s = '%' + search + '%'; params.push(s, s, s); }
       var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
 
@@ -49,7 +49,7 @@ export async function onRequest(context) {
       var { id, status, campaign, notes, response } = body;
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'id required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
-      var fields = []; var params = [];
+      var fields = []; params = [];
       if (status !== undefined) { fields.push('status = ?'); params.push(status);
         if (status === 'contacted') fields.push("contacted_at = datetime('now')");
       }

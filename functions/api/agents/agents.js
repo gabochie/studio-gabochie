@@ -41,10 +41,10 @@ export async function onRequest(context) {
     }
 
     if (request.method === 'PUT') {
-      var url = new URL(request.url);
-      var id = url.searchParams.get('id');
-      if (!id) return new Response(JSON.stringify({ status: 'error', message: 'Agent instance ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var body = await request.json();
+      var url2 = new URL(request.url);
+      var id2 = url2.searchParams.get('id');
+      if (!id2) return new Response(JSON.stringify({ status: 'error', message: 'Agent instance ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      body = await request.json();
       var fields = []; var params = [];
       if (body.status !== undefined) { fields.push("status = ?"); params.push(body.status); }
       if (body.name !== undefined) { fields.push("name = ?"); params.push(body.name); }

@@ -61,7 +61,7 @@ function liveDb(initial) {
         }
       }
       if (sql.trim().toUpperCase().indexOf('SELECT COUNT') === 0) {
-        var rows = tables[table] || [];
+        rows = tables[table] || [];
         return { count: rows.length };
       }
       if (sql.trim().toUpperCase().indexOf('SELECT COALESCE(SUM') === 0) {

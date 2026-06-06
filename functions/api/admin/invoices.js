@@ -37,11 +37,11 @@ export async function onRequest(context) {
     }
 
     if (request.method === 'PUT') {
-      var url = new URL(request.url);
+      url = new URL(request.url);
       var id = url.searchParams.get('id');
       var body = await request.json();
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var fields = []; var params = [];
+      var fields = []; params = [];
       if (body.status) { fields.push('status = ?'); params.push(body.status); }
       if (body.notes !== undefined) { fields.push('notes = ?'); params.push(body.notes); }
       if (!fields.length) return new Response(JSON.stringify({ status: 'error', message: 'No fields to update' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

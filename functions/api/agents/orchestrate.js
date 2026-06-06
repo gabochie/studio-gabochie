@@ -174,9 +174,9 @@ async function processQueueItem(db, env, item) {
         var steps = (await db.prepare(
           "SELECT * FROM workflow_steps WHERE workflow_id = ? ORDER BY step_order"
         ).bind(wfId).all()).results || [];
-        for (var s of steps) {
-          if (s.agent_type === 'orchestrator') continue;
-          var stepConfig = typeof s.config === 'string' ? JSON.parse(s.config) : (s.config || {});
+        for (var si of steps) {
+          if (si.agent_type === 'orchestrator') continue;
+          var stepConfig = typeof si.config === 'string' ? JSON.parse(si.config) : (si.config || {});
           await db.prepare(
             "INSERT INTO agent_queue (agent_type, workflow_id, priority, payload) VALUES (?, ?, ?, ?)"
           ).bind(s.agent_type, wfId, 2, JSON.stringify(stepConfig)).run();

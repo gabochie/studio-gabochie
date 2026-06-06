@@ -42,7 +42,7 @@ export async function onRequest(context) {
       valid = accessCode === student.access_code;
       if (valid) {
         var salt = genSalt();
-        var hashed = await hashCode(accessCode, salt);
+        hashed = await hashCode(accessCode, salt);
         await db.prepare(
           'UPDATE students SET access_code = ?, salt = ? WHERE id = ?'
         ).bind(hashed, salt, student.id).run();

@@ -17,7 +17,7 @@ var API = (function() {
     var ak = getAdminKey();
     if (at) h['X-Agent-Auth'] = at;
     if (ak) h['X-Admin-Key'] = ak;
-    if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) h[k] = extra[k]; } }
+    if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k]; } }
     return h;
   }
 
@@ -212,8 +212,6 @@ var API = (function() {
       if (params.limit) q += '&limit=' + params.limit;
     }
     return adminRequest('GET', '/email-queue?' + q.substring(1));
-  }
-    return adminRequest('GET', '/invoices?' + q.substring(1));
   }
 
   function updateInvoice(id, data) {

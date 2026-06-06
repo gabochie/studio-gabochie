@@ -15,12 +15,28 @@ export default [
   },
   // Frontend JS (browser context)
   {
-    files: ['assets/js/**/*.js', 'admin/**/*.js'],
+    files: ['assets/js/**/*.js'],
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'script',
       globals: {
         ...globals.browser,
+      },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-empty': 'warn',
+    },
+  },
+  // Admin JS (browser globals)
+  {
+    files: ['admin/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'script',
+      globals: {
+        ...globals.browser,
+        AppState: 'readonly',
       },
     },
     rules: {
@@ -71,7 +87,7 @@ export default [
   },
   // Config + script files (node)
   {
-    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js'],
+    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js', 'scripts/**/*.cjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

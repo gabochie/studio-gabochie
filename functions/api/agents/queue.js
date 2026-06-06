@@ -38,11 +38,11 @@ export async function onRequest(context) {
     }
 
     if (request.method === 'PUT') {
-      var url = new URL(request.url);
+      url = new URL(request.url);
       var id = url.searchParams.get('id');
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'Queue item ID required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-      var body = await request.json();
-      var fields = []; var params = [];
+      body = await request.json();
+      var fields = []; params = [];
       if (body.status !== undefined) { fields.push("status = ?"); params.push(body.status); }
       if (body.result !== undefined) { fields.push("result = ?"); params.push(JSON.stringify(body.result)); }
       if (body.error !== undefined) { fields.push("error = ?"); params.push(body.error); }
@@ -51,7 +51,7 @@ export async function onRequest(context) {
       if (!fields.length) return new Response(JSON.stringify({ status: 'error', message: 'No fields to update' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       params.push(id);
       await env.DB.prepare("UPDATE agent_queue SET " + fields.join(", ") + " WHERE id = ?").bind(...params).run();
-      var item = await env.DB.prepare("SELECT * FROM agent_queue WHERE id = ?").bind(id).first();
+      item = await env.DB.prepare("SELECT * FROM agent_queue WHERE id = ?").bind(id).first();
       return new Response(JSON.stringify({ status: 'ok', item }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
