@@ -8,21 +8,43 @@ export async function onRequest(context) {
   if (url.pathname === '/api/guitar/practice' && req.method === 'POST') {
     const {duration_min, drill_type, drill_config, score, xp_earned, notes} = await req.json();
     const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    // Fetch current stats BEFORE updating
+    const prevStats = await db.prepare('SELECT * FROM guitar_user_stats WHERE user_id = ?').bind(user.id).first();
+    const prevStreak = prevStats?.streak || 0;
+    const prevLastDate = prevStats?.last_practice_date || null;
+
+    // Calculate new streak
+    let newStreak = prevStreak;
+    if (prevLastDate === today) {
+      // Already practiced today — same day, streak unchanged
+    } else if (prevLastDate === yesterday) {
+      // Consecutive day — increment
+      newStreak = prevStreak + 1;
+    } else {
+      // First practice or gap — restart at 1
+      newStreak = 1;
+    }
+
+    // Insert practice session
     await db.prepare(
       `INSERT INTO guitar_practice_sessions (user_id, date, duration_min, drill_type, drill_config, score, xp_earned, notes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(user.id, today, duration_min||0, drill_type||'', JSON.stringify(drill_config||{}), score||0, xp_earned||0, notes||'').run();
 
+    // Upsert user stats
     await db.prepare(
-      `INSERT INTO guitar_user_stats (user_id, total_xp, total_practice_min, total_sessions, last_practice_date, updated_at)
-       VALUES (?, ?, ?, 1, ?, datetime('now'))
+      `INSERT INTO guitar_user_stats (user_id, total_xp, total_practice_min, total_sessions, last_practice_date, streak, updated_at)
+       VALUES (?, ?, ?, 1, ?, ?, datetime('now'))
        ON CONFLICT(user_id) DO UPDATE SET
          total_xp = total_xp + ?,
          total_practice_min = total_practice_min + ?,
          total_sessions = total_sessions + 1,
          last_practice_date = ?,
+         streak = ?,
          updated_at = datetime('now')`
-    ).bind(user.id, xp_earned||0, duration_min||0, today, xp_earned||0, duration_min||0, today).run();
+    ).bind(user.id, xp_earned||0, duration_min||0, today, newStreak, xp_earned||0, duration_min||0, today, newStreak).run();
 
     const stats = await db.prepare('SELECT * FROM guitar_user_stats WHERE user_id = ?').bind(user.id).first();
     const newLevel = Math.floor(Math.sqrt(stats.total_xp / 50)) + 1;
@@ -30,39 +52,7 @@ export async function onRequest(context) {
       await db.prepare('UPDATE guitar_user_stats SET level = ? WHERE user_id = ?').bind(newLevel, user.id).run();
     }
 
-    if (stats.last_practice_date === today && stats.streak === 0) {
-      await db.prepare('UPDATE guitar_user_stats SET streak = 1 WHERE user_id = ?').bind(user.id).run();
-    }
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    if (stats.last_practice_date === yesterday || !stats.last_practice_date) {
-      const newStreak = (stats.streak || 0) + 1;
-      await db.prepare('UPDATE guitar_user_stats SET streak = ? WHERE user_id = ?').bind(newStreak, user.id).run();
-    }
-
     return json({ok:true, xpEarned, stats});
-  }
-
-  if (url.pathname === '/api/guitar/practice/records' && req.method === 'POST') {
-    const {chord_pair, score} = await req.json();
-    await db.prepare(
-      'INSERT INTO guitar_one_minute_records (user_id, chord_pair, score) VALUES (?, ?, ?)'
-    ).bind(user.id, chord_pair, score).run();
-    return json({ok:true});
-  }
-
-  if (url.pathname === '/api/guitar/practice/records' && req.method === 'GET') {
-    const {results} = await db.prepare(
-      'SELECT chord_pair, MAX(score) as best_score FROM guitar_one_minute_records WHERE user_id = ? GROUP BY chord_pair ORDER BY chord_pair'
-    ).bind(user.id).all();
-    return json({records: results});
-  }
-
-  if (url.pathname === '/api/guitar/practice/sessions' && req.method === 'GET') {
-    const days = parseInt(url.searchParams.get('days') || '7');
-    const {results} = await db.prepare(
-      'SELECT date, SUM(duration_min) as total_min, COUNT(*) as sessions, SUM(xp_earned) as total_xp FROM guitar_practice_sessions WHERE user_id = ? AND date >= datetime("now", ? || " days") GROUP BY date ORDER BY date DESC'
-    ).bind(user.id, `-${days}`).all();
-    return json({sessions: results});
   }
 
   return json({error:'Not found'}, 404);
