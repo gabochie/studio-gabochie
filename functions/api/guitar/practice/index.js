@@ -52,7 +52,7 @@ export async function onRequest(context) {
       await db.prepare('UPDATE guitar_user_stats SET level = ? WHERE user_id = ?').bind(newLevel, user.id).run();
     }
 
-    return json({ok:true, xpEarned, stats});
+    return json({ok:true, xp_earned, stats});
   }
 
   return json({error:'Not found'}, 404);
