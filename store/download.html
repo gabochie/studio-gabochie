@@ -85,13 +85,9 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         '</div>';
       document.getElementById('detailSection').innerHTML = detailsHtml;
       document.getElementById('detailSection').style.display = 'block';
-      if (o.item_type === 'art' || o.item_type === 'music') {
-        document.getElementById('downloadBtn').style.display = 'inline-flex';
-        document.getElementById('downloadBtn').href = '/store/download?tx_ref=' + o.tx_ref + '&dl=1';
-        document.getElementById('noteText').textContent = 'Your download is unique to this purchase. Do not share this link.';
-      } else if (o.item_type === 'merch') {
-        document.getElementById('noteText').textContent = 'Your order is being processed. We will contact you within 24 hours with shipping details.';
-      }
+      document.getElementById('downloadBtn').style.display = 'inline-flex';
+      document.getElementById('downloadBtn').href = '/store/download?tx_ref=' + o.tx_ref + '&dl=1';
+      document.getElementById('noteText').textContent = 'Your download is unique to this purchase. Do not share this link.';
     })
     .catch(function(){
       document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';

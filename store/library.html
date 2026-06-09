@@ -18,10 +18,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .page-header h1 span{color:#C9A84C}
 .page-header p{color:#5A7A9F;font-size:14px}
 .card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
-.card .icon-box{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.card .icon-box.art{background:rgba(201,168,76,.15);color:#C9A84C}
-.card .icon-box.music{background:rgba(52,199,123,.15);color:#34C77B}
-.card .icon-box.merch{background:rgba(96,165,250,.15);color:#60A5FA}
+.card .icon-box{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:rgba(201,168,76,.15);color:#C9A84C}
 .card .info{flex:1;min-width:0}
 .card .info h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:#F1F5F9;margin-bottom:2px}
 .card .info .meta{color:#5A7A9F;font-size:12px}
@@ -93,20 +90,18 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       }
       var html = '';
       d.orders.forEach(function(o) {
-        var isDigital = (o.item_type === 'art' || o.item_type === 'music');
-        var iconClass = o.item_type === 'art' ? 'art' : (o.item_type === 'music' ? 'music' : 'merch');
         var iconMap = { art: 'ti-palette', music: 'ti-music', merch: 'ti-shirt' };
         var typeLabel = o.item_type.charAt(0).toUpperCase() + o.item_type.slice(1);
         var dateStr = (o.created_at || '').slice(0, 10);
         html +=
           '<div class="card">' +
-          '<div class="icon-box ' + iconClass + '"><i class="ti ' + (iconMap[o.item_type] || 'ti-package') + '"></i></div>' +
+          '<div class="icon-box"><i class="ti ' + (iconMap[o.item_type] || 'ti-package') + '"></i></div>' +
           '<div class="info">' +
           '<h3>' + o.item_name + '</h3>' +
           '<div class="meta"><span>' + typeLabel + '</span>' + (o.item_variant ? '<span>' + o.item_variant + '</span>' : '') + '<span>' + o.currency + ' ' + Number(o.amount).toFixed(2) + '</span><span>' + dateStr + '</span></div>' +
           '</div>' +
           '<div class="action">' +
-          (isDigital ? '<a href="/store/download?tx_ref=' + o.tx_ref + '" class="btn-download"><i class="ti ti-download"></i> Download</a>' : '<span style="color:#5A7A9F;font-size:11px">Physical item</span>') +
+          '<a href="/store/download?tx_ref=' + o.tx_ref + '" class="btn-download"><i class="ti ti-download"></i> Download</a>' +
           '</div>' +
           '</div>';
       });

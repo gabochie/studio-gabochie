@@ -67,13 +67,9 @@
       <option value="">All Tags</option>
       <option value="newsletter">Newsletter</option>
       <option value="school">School</option>
-      <option value="workshop">Workshop</option>
       <option value="nationbuilding">Nation Building</option>
       <option value="book_download">Book Download</option>
       <option value="book_bundle">Book Bundle</option>
-      <option value="art">Art</option>
-      <option value="merch">Merch</option>
-      <option value="music">Music</option>
       <option value="donation">Donation</option>
       <option value="patron">Patron</option>
       <option value="sponsor">Sponsor</option>
@@ -144,7 +140,7 @@ function renderTable(items) {
   }
   var html = '';
   var flags = {GH:'&#127987;', UK:'&#127988;', NA:'&#127482;&#127480;', ROW:'&#127758;'};
-  var tagLabels = {newsletter:'Newsletter', school:'School', workshop:'Workshop', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', art:'Art', merch:'Merch', music:'Music', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
+  var tagLabels = {newsletter:'Newsletter', school:'School', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
   filtered.forEach(function(item) {
     var source = item.source || 'web';
     var srcClass = source === 'newsletter' ? 'subscribe' : '';
@@ -185,9 +181,9 @@ function renderStats(items) {
     '<span>&#127758; ROW: <strong style="color:#F1F5F9">' + row + '</strong></span>';
 
   // Tag distribution bar chart
-  var tagLabels = {newsletter:'Newsletter', school:'School', workshop:'Workshop', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', art:'Art', merch:'Merch', music:'Music', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
+  var tagLabels = {newsletter:'Newsletter', school:'School', nationbuilding:'Nation Building', book_download:'Book Download', book_bundle:'Book Bundle', donation:'Donation', patron:'Patron', sponsor:'Sponsor', partner:'Partner', dashboard:'Dashboard', contact:'Contact', other:'Other'};
   var tagCounts = {};
-  var tagOrder = ['newsletter','school','workshop','nationbuilding','book_download','book_bundle','art','merch','music','donation','patron','sponsor','partner','dashboard','other'];
+  var tagOrder = ['newsletter','school','nationbuilding','book_download','book_bundle','donation','patron','sponsor','partner','dashboard','other'];
   items.forEach(function(i) {
     var t = i.onboarding_tag || 'other';
     if (!tagCounts[t]) tagCounts[t] = 0;

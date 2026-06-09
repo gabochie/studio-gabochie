@@ -74,7 +74,7 @@ describe('POST /api/onboard', function () {
     ctx.request = postJson('http://localhost/api/onboard', {
       email: 'json@example.com',
       name: 'JSON User',
-      tag: 'workshop',
+      tag: 'donation',
     });
     var res = await onRequest(ctx);
     expect(res.status).toBe(200);
@@ -153,14 +153,14 @@ describe('POST /api/onboard', function () {
     ctx.env.DB = undefined;
     ctx.request = postForm('http://localhost/api/onboard', {
       email: 'test@test.com',
-      tag: 'art',
+      tag: 'school',
     });
     var res = await onRequest(ctx);
     expect(res.status).toBe(501);
   });
 
   it('handles all valid tags without error', async function () {
-    var tags = ['newsletter','school','workshop','nationbuilding','book_download','book_bundle','art','merch','music','donation','patron','sponsor','partner','dashboard','contact'];
+    var tags = ['newsletter','school','nationbuilding','book_download','book_bundle','donation','patron','sponsor','partner','dashboard','contact'];
     for (var i = 0; i < tags.length; i++) {
       ctx.request = postForm('http://localhost/api/onboard', {
         email: 'tag-' + tags[i] + '@example.com',

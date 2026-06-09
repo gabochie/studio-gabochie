@@ -134,34 +134,6 @@
       )`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_tx_ref ON store_orders(tx_ref)`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(status)`,
-      `CREATE TABLE IF NOT EXISTS workshops (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        slug TEXT NOT NULL UNIQUE,
-        description TEXT NOT NULL DEFAULT '',
-        date TEXT NOT NULL DEFAULT '',
-        time TEXT DEFAULT '',
-        location TEXT DEFAULT '',
-        price REAL DEFAULT 0,
-        capacity INTEGER DEFAULT 0,
-        image_url TEXT DEFAULT '',
-        status TEXT NOT NULL DEFAULT 'draft',
-        created_at TEXT NOT NULL DEFAULT (datetime('now'))
-      )`,
-      `CREATE TABLE IF NOT EXISTS workshop_registrations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        workshop_id INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT DEFAULT '',
-        status TEXT NOT NULL DEFAULT 'registered',
-        created_at TEXT NOT NULL DEFAULT (datetime('now')),
-        FOREIGN KEY (workshop_id) REFERENCES workshops(id)
-      )`,
-      `CREATE INDEX IF NOT EXISTS idx_workshops_status ON workshops(status)`,
-      `CREATE INDEX IF NOT EXISTS idx_workshops_date ON workshops(date)`,
-      `CREATE INDEX IF NOT EXISTS idx_wr_workshop ON workshop_registrations(workshop_id)`,
-      `CREATE INDEX IF NOT EXISTS idx_wr_email ON workshop_registrations(email)`,
       `CREATE TABLE IF NOT EXISTS nationbuilding_registrations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -911,10 +883,6 @@
       `UPDATE programs SET sort_order = 9 WHERE slug = 'intro-geometry'`,
       `UPDATE programs SET sort_order = 10 WHERE slug = 'intro-computing'`,
       `UPDATE programs SET sort_order = 11 WHERE slug = 'intro-storytelling'`,
-      // Sample workshops
-      `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Creative Storytelling Workshop', 'creative-storytelling', 'Learn the art of storytelling through multiple media — writing, speech, and visual narrative. This hands-on workshop covers structure, voice, and audience engagement.', '2026-07-15', '10:00 AM - 4:00 PM', 'Accra, Ghana', 100, 20, 'published')`,
-      `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Design Thinking: Genesis in Practice', 'design-thinking-genesis-workshop', 'A practical deep dive into the Design Thinking Genesis program. Apply biblical creativity principles to real-world problems in a collaborative group setting.', '2026-08-01', '9:00 AM - 3:00 PM', 'Online (Zoom)', 0, 50, 'published')`,
-      `INSERT OR IGNORE INTO workshops (title, slug, description, date, time, location, price, capacity, status) VALUES ('Music Production for Beginners', 'music-production-basics', 'From concept to track: learn the fundamentals of music production, songwriting, and recording. No experience required — just a desire to create.', '2026-09-10', '10:00 AM - 5:00 PM', 'Accra, Ghana', 200, 15, 'published')`,
       // Newsletter builder tables
       `CREATE TABLE IF NOT EXISTS newsletter_templates (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -4,8 +4,8 @@ function sanitize(val, maxLen) {
 }
 
 const VALID_TAGS = [
-  'newsletter', 'school', 'workshop', 'nationbuilding',
-  'book_download', 'book_bundle', 'art', 'merch', 'music',
+  'newsletter', 'school', 'nationbuilding',
+  'book_download', 'book_bundle',
   'donation', 'patron', 'sponsor', 'partner', 'dashboard',
   'contact'
 ];
