@@ -154,6 +154,11 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
   .main { width: 100%; }
   .days-grid { grid-template-columns: repeat(5, 1fr); }
 }
+.hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 300; width: 36px; height: 36px; background: var(--d-bg3); border: 1px solid var(--d-border); border-radius: 8px; cursor: pointer; align-items: center; justify-content: center; font-size: 18px; color: var(--d-text); transition: all .15s; }
+.hamburger:hover { background: var(--d-bg4); border-color: var(--d-border2); }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; }
+@media(max-width:560px){ .hamburger { display: flex; } .sidebar.open ~ .sidebar-overlay, .sidebar-overlay.open { display: block; } }
+
 .toast-s { position: fixed; top: 20px; right: 20px; background: var(--d-surface); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r); padding: 14px 18px; max-width: 300px; z-index: 999; animation: slideIn .4s cubic-bezier(0.34,1.56,0.64,1); display: flex; gap: 10px; align-items: flex-start; }
 .toast-s.hide { animation: slideOut .3s ease-in forwards; }
 @keyframes slideOut { to { transform: translateX(120px); opacity: 0; } }
@@ -200,6 +205,9 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
       <div class="weeks-grid" id="weeks-grid"></div>
     </div>
   </aside>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
 
   <!-- ══ MAIN ══ -->
   <main class="main" id="main">
@@ -580,6 +588,19 @@ async function renderDashboard(user) {
     document.getElementById('h-lessons').textContent = '--';
   }
 }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+// Close sidebar on nav link click (mobile)
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('.nav-item');
+  if (link && window.innerWidth <= 560) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+  }
+});
 
 // ═══════════════════════════════════════════
 // Init
