@@ -49,6 +49,9 @@ const Guitar = {
   getEnrollStatus()       { return this.fetch('/enroll/status'); },
   enroll()                { return this.fetch('/enroll', { method:'POST' }); },
   register(d)             { return this.fetch('/register', { method:'POST', body: JSON.stringify(d) }); },
+  trackEvent(type, metadata = {}) {
+    try { fetch('/api/guitar/events', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({event_type:type, metadata}) }).catch(()=>{}); } catch(e) {}
+  },
   completeLesson(id)      { return this.fetch('/progress', { method:'POST', body: JSON.stringify({lesson_id:id, action:'complete'}) }); },
   logPractice(d)          { return this.fetch('/practice', { method:'POST', body: JSON.stringify(d) }); },
   saveOneMinute(pair,s)   { return this.fetch('/practice/records', { method:'POST', body: JSON.stringify({chord_pair:pair, score:s}) }); },
@@ -217,6 +220,7 @@ const Guitar = {
         localStorage.setItem('ga_student', JSON.stringify(res.user));
         this.hideSheet();
         this.showToast('Welcome to Gideon Guitar Method!', 'success');
+        this.trackEvent('registration_complete', { name: data.user?.name, email: data.user?.email });
         if (opts.onSuccess) { opts.onSuccess(res); }
         else { setTimeout(() => { window.location.href = redirect; }, 500); }
       } catch (err) {

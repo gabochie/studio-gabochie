@@ -170,6 +170,7 @@ window.handleSongsSignIn = async function(user) {
 };
 
 document.getElementById('buy-btn').onclick = function() {
+  Guitar.trackEvent('buy_click', { page: 'songs' });
   Guitar.showSheet(`
     <div style="text-align:center;padding-top:8px">
       <div style="font-size:48px;margin-bottom:8px">🎸</div>

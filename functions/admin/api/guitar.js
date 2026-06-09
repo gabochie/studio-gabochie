@@ -42,6 +42,17 @@ export async function onRequest(context) {
       topStudents = top.results || [];
     } catch(_) {}
 
+    // Conversion events
+    var eventsByType = [], eventsToday = 0, eventsRecent = [];
+    try {
+      var ebt = await db.prepare("SELECT event_type, COUNT(*) AS cnt FROM guitar_conversion_events GROUP BY event_type ORDER BY cnt DESC").all();
+      eventsByType = ebt.results || [];
+      var et = await db.prepare("SELECT COUNT(*) AS cnt FROM guitar_conversion_events WHERE date(created_at) = date('now')").first();
+      eventsToday = et ? et.cnt : 0;
+      var er = await db.prepare('SELECT id, event_type, page_url, source, user_id, created_at FROM guitar_conversion_events ORDER BY created_at DESC LIMIT 30').all();
+      eventsRecent = er.results || [];
+    } catch(_) {}
+
     // Streak stats
     var streak7 = 0, streak14 = 0, streak30 = 0;
     try {
@@ -58,7 +69,8 @@ export async function onRequest(context) {
       waitlist: { total: waitlistCount, today: waitlistToday, recent: waitlistRecent },
       payments: { total: totalPayments, sum: paymentSum, pending: pendingPayments, recent: paymentsRecent },
       students: { total: totalStudents, total_sessions: totalSessions, total_practice_min: totalPracticeMin,
-        top: topStudents, streak7, streak14, streak30 }
+        top: topStudents, streak7, streak14, streak30 },
+      events: { byType: eventsByType, today: eventsToday, recent: eventsRecent }
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {

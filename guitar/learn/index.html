@@ -61,6 +61,7 @@ const MODULES = [
       c.innerHTML += `<div style="text-align:center;margin-top:24px;padding:20px;background:rgba(255,255,255,.04);border-radius:var(--radius-lg)"><div style="font-size:14px;margin-bottom:8px">🔓 Modules 1-3 are free</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">Sign in to unlock Modules 4-5. Purchase full access for all 16 modules.</div><button class="btn btn-primary btn-sm" onclick="Guitar.showRegisterModal({redirect:'/guitar/learn/'})">Sign In <i class="ti ti-arrow-right"></i></button></div>`;
     } else if (!enrollStatus?.unlocked) {
       c.innerHTML += `<div style="text-align:center;margin-top:24px;padding:20px;background:rgba(255,255,255,.04);border-radius:var(--radius-lg)"><div style="font-size:14px;margin-bottom:8px">🔓 Premium Locked</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">Modules 6-16 are premium. Pay once, unlock forever.</div><a href="/guitar/songs/" class="btn btn-primary btn-sm">Pay GH₵ 99 <i class="ti ti-arrow-right"></i></a></div>`;
+      Guitar.trackEvent('paywall_view', { page: 'learn_modules' });
     }
     document.querySelectorAll('.card-hover').forEach((el,i) => { el.style.animation = `fadeUp .4s var(--ease-out) both`; el.style.animationDelay = `${i*60}ms`; });
   }
@@ -75,6 +76,7 @@ const MODULES = [
         <div style="font-size:16px;font-weight:600;margin-bottom:8px">Module Locked</div>
         <div style="font-size:13px;color:var(--text3);margin-bottom:20px">${user?'Purchase full access to unlock this module.':'Sign in to unlock Modules 4-5, or purchase full access for all 16.'}</div>
         ${user?'<a href="/guitar/songs/" class="btn btn-primary">Pay GH₵ 99</a>':'<button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:\'/guitar/learn/\'})">Sign In</button>'}</div>`;
+      Guitar.trackEvent('paywall_view', { page: 'learn_module_locked', module: id });
       return;
     }
     let progress = {};

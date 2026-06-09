@@ -98,6 +98,17 @@ export async function onRequest(context) {
       brevo_id TEXT DEFAULT '',
       FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
+    s.push(`CREATE TABLE IF NOT EXISTS guitar_conversion_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER DEFAULT NULL,
+      event_type TEXT NOT NULL,
+      page_url TEXT DEFAULT '',
+      source TEXT DEFAULT '',
+      metadata TEXT DEFAULT '{}',
+      ip_address TEXT DEFAULT '',
+      user_agent TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
     for (const sql of s) { try { await db.prepare(sql).run(); } catch(e) { console.error('Schema:', e.message); } }
 
     const seeds = [];

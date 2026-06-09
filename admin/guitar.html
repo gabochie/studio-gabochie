@@ -90,6 +90,15 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
     </table>
   </div>
 
+  <div class="section-title">&#128200; Conversion Events <span id="events-today" style="color:#5A7A9F;font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;font-family:DM Sans,sans-serif">— today</span></div>
+  <div class="guitar-stats" id="eventsStats"></div>
+  <div class="table-wrap" style="margin-bottom:24px">
+    <table>
+      <thead><tr><th>Event Type</th><th>Page</th><th>Source</th><th>User ID</th><th>Time</th></tr></thead>
+      <tbody id="eventsBody"></tbody>
+    </table>
+  </div>
+
   <div class="section-title">&#127942; Top Students</div>
   <div class="table-wrap">
     <table>
@@ -167,6 +176,28 @@ async function loadGuitarData() {
       });
     }
     document.getElementById('studentsBody').innerHTML = stuHtml;
+
+    // Conversion events
+    var ev = data.events || {};
+    document.getElementById('events-today').textContent = (ev.today || 0) + ' today';
+    var evStats = document.getElementById('eventsStats');
+    var eTypes = ev.byType || [];
+    evStats.innerHTML = eTypes.map(function(t) {
+      var icons = { registration_complete:'📝', buy_click:'💳', start_free:'🎸', paywall_view:'🔒', lesson_complete:'✅' };
+      return '<div class="guitar-stat"><span class="num">' + t.cnt + '</span><span class="label">' + (icons[t.event_type]||'') + ' ' + t.event_type.replace(/_/g,' ') + '</span></div>';
+    }).join('') || '<div class="guitar-stat"><span class="num">0</span><span class="label">No events yet</span></div>';
+
+    var evItems = ev.recent || [];
+    var evHtml = '';
+    if (evItems.length === 0) {
+      evHtml = '<tr><td colspan="5" class="table-empty">No events recorded yet.</td></tr>';
+    } else {
+      evItems.forEach(function(e) {
+        var time = e.created_at ? new Date(e.created_at + 'Z').toLocaleString() : '—';
+        evHtml += '<tr><td><span class="tag tag-purple">' + (e.event_type||'') + '</span></td><td style="color:#5A7A9F;font-size:11px">' + (e.page_url ? e.page_url.replace(/https?:\/\/[^\/]+/,'') : '—') + '</td><td style="color:#5A7A9F">' + (e.source||'—') + '</td><td style="color:#5A7A9F">' + (e.user_id||'—') + '</td><td style="color:#5A7A9F;font-size:11px">' + time + '</td></tr>';
+      });
+    }
+    document.getElementById('eventsBody').innerHTML = evHtml;
 
     document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
   } catch(e) {
