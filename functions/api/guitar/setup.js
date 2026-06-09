@@ -80,7 +80,7 @@ export async function onRequest(context) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL, email TEXT NOT NULL,
       status TEXT DEFAULT 'pending', flw_tx_ref TEXT DEFAULT '',
-      amount REAL DEFAULT 99, currency TEXT DEFAULT 'GHS',
+      amount REAL DEFAULT 250, currency TEXT DEFAULT 'GHS',
       plan TEXT DEFAULT 'full', created_at TEXT DEFAULT (datetime('now'))
     )`);
     s.push(`CREATE TABLE IF NOT EXISTS guitar_tuner_history (

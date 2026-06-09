@@ -13,7 +13,7 @@ export async function onRequest(context) {
   }
   try {
     var programs = await db.prepare(
-      'SELECT id, title, slug, tagline, description, duration, price, price_label, status, sort_order FROM programs ORDER BY sort_order ASC'
+      'SELECT id, title, slug, tagline, description, duration, price, price_label, status, sample_content, sort_order FROM programs ORDER BY sort_order ASC'
     ).all();
     return new Response(JSON.stringify({
       status: 'ok',

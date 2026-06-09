@@ -203,7 +203,7 @@ document.getElementById('buy-btn').onclick = function() {
           const handler = PaystackPop.setup({
             key: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
             email: currentUserEmail,
-            amount: 9900,
+            amount: data.amount ? data.amount * 100 : 25000,
             currency: 'GHS',
             ref: data.tx_ref,
             callback: function(response) {
