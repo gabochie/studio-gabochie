@@ -1,4 +1,4 @@
-import { hashCode, genSalt } from './_hash.js';
+import { hashCode, genSalt, genToken } from './_hash.js';
 function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
@@ -56,6 +56,15 @@ export async function onRequest(context) {
       'INSERT INTO students (name, email, phone, access_code, salt) VALUES (?, ?, ?, ?, ?)'
     ).bind(name, email, phone, hashed, salt).run();
 
+    // Also create a users record (for guitar API / shared auth) and a session token
+    var user = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+    if (!user) {
+      var r = await db.prepare('INSERT INTO users (name, email, phone) VALUES (?, ?, ?)').bind(name, email, phone).run();
+      user = { id: r.meta.last_row_id };
+    }
+    var token = genToken();
+    await db.prepare("INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, datetime('now', '+30 days'))").bind(user.id, token).run();
+
     if (env.BREVO_API_KEY) {
       try {
         await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -79,7 +88,8 @@ export async function onRequest(context) {
     ).bind(email).all();
     return new Response(JSON.stringify({
       status: 'ok',
-      student: { name: name, email: email },
+      student: { id: user.id, name: name, email: email },
+      token: token,
       enrollments: enrollments.results || []
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {

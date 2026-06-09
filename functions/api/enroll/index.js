@@ -142,6 +142,17 @@ export async function onRequest(context) {
       'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status, token_expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
     ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus, expiresAt).run();
 
+    // Guitar-specific setup: create user_stats and waitlist entry
+    if (programSlug === 'guitar-method') {
+      try {
+        var guitarUser = await db.prepare('SELECT id FROM users WHERE email = ?').bind(studentEmail).first();
+        if (guitarUser) {
+          await db.prepare('INSERT OR IGNORE INTO guitar_user_stats (user_id) VALUES (?)').bind(guitarUser.id).run();
+          await db.prepare("INSERT OR IGNORE INTO guitar_waitlist (user_id, name, email, phone, skill_level) VALUES (?, ?, ?, ?, 'beginner')").bind(guitarUser.id, studentName, studentEmail, studentPhone).run();
+        }
+      } catch (_) {}
+    }
+
     if (env.BREVO_API_KEY) {
       try {
         var dashUrl = 'https://gideonabochie.org/dashboard/?token=' + token;

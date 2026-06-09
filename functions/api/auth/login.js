@@ -1,4 +1,4 @@
-import { hashCode, genSalt } from './_hash.js';
+import { hashCode, genSalt, genToken } from './_hash.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -53,6 +53,16 @@ export async function onRequest(context) {
         status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
+
+    // Also create/find a users record (for guitar API / shared auth) and generate session token
+    var user = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+    if (!user) {
+      var r = await db.prepare('INSERT INTO users (name, email) VALUES (?, ?)').bind(student.name, email).run();
+      user = { id: r.meta.last_row_id };
+    }
+    var token = genToken();
+    await db.prepare("INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, datetime('now', '+30 days'))").bind(user.id, token).run();
+
     var enrollments = await db.prepare(
       `SELECT e.access_token, e.status, p.title AS program_title, p.slug AS program_slug
        FROM enrollments e JOIN programs p ON e.program_id = p.id
@@ -61,7 +71,8 @@ export async function onRequest(context) {
     ).bind(email).all();
     return new Response(JSON.stringify({
       status: 'ok',
-      student: { id: student.id, name: student.name, email: student.email },
+      student: { id: user.id, name: student.name, email: student.email },
+      token: token,
       enrollments: enrollments.results || []
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {

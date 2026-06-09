@@ -213,7 +213,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="step">
       <div class="step-num">01</div>
       <h3>Choose Your Path</h3>
-      <p>Systems Thinking or Architectural Thinking — or both. Each program starts with a free sample so you can try before you commit.</p>
+      <p>Systems Thinking, Guitar Method, Architectural Thinking — or all three. Each program starts with a free sample so you can try before you commit.</p>
     </div>
     <div class="step">
       <div class="step-num">02</div>
@@ -527,13 +527,19 @@ function loadPrograms() {
     d.programs.forEach(function(p, i){
       var isComing = p.status === 'coming_soon';
       var isActive = p.status === 'active';
+      var isGuitar = p.slug === 'guitar-method';
       var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access ' + window.formatPrice(p.price) : 'Free for all';
       var card = document.createElement('div');
       card.className = isComing ? 'card card-coming' : (isActive && i === 0 ? 'card card-active' : 'card');
       var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : (isActive && i === 0 ? '<span class="badge badge-active">Active Course</span>' : '<span class="badge badge-free">Free Sample</span>');
-      var btnHtml = isComing
-        ? '<button class="btn btn-coming" disabled>Coming Soon</button>'
-        : '<button class="btn btn-primary" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
+      var btnHtml;
+      if (isComing) {
+        btnHtml = '<button class="btn btn-coming" disabled>Coming Soon</button>';
+      } else if (isGuitar) {
+        btnHtml = '<a href="/school/guitar/" class="btn btn-primary">Start Free Trial &rarr;</a>';
+      } else {
+        btnHtml = '<button class="btn btn-primary" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
+      }
       var description = isComing ? '<div class="desc coming-desc">' + p.description + '</div>' : '<div class="desc">' + p.description + '</div>';
       card.innerHTML = badge + '<h2>' + p.title + '</h2>' + '<div class="slugline">' + p.tagline + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>' + window.formatPrice(p.price) + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div>' + btnHtml;
       grid.appendChild(card);

@@ -34,7 +34,7 @@ const Guitar = {
   logout() {
     localStorage.removeItem('ga_token'); localStorage.removeItem('ga_student');
     this.user = null; this.token = null;
-    window.location.href = '/guitar/';
+    window.location.href = '/school/guitar/';
   },
 
   /* ----- API Methods ----- */
@@ -169,7 +169,7 @@ const Guitar = {
 
   /* ----- Register Modal (one-click) ----- */
   showRegisterModal(opts = {}) {
-    const redirect = opts.redirect || '/guitar/waitlist/?registered=1';
+    const redirect = opts.redirect || '/school/guitar/waitlist/?registered=1';
     const existing = document.querySelector('.sheet-overlay');
     if (existing) existing.remove();
     const html = `<div class="sheet" style="border-radius:24px 24px 0 0;max-width:400px;margin:auto auto 0">
@@ -178,7 +178,7 @@ const Guitar = {
         <div style="text-align:center;margin-bottom:16px">
           <div style="font-size:40px;margin-bottom:4px">🎸</div>
           <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)">Start Free Trial</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-3 free • Full course GH₵ 99</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-3 free • Full course GH¢ 250</div>
         </div>
         <form id="register-form">
           <input class="form-input" name="name" placeholder="Your name" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
