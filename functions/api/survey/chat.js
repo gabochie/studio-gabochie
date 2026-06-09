@@ -1,43 +1,56 @@
 import { callAI } from '../agents/_ai.js';
 
 var PROGRAM_MAP = {
-  'music':          { slug: 'guitar-method', title: 'Gideon Guitar Method' },
-  'guitar':         { slug: 'guitar-method', title: 'Gideon Guitar Method' },
-  'business':       { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'civic education': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'governance':      { slug: 'systems-thinking', title: 'Systems Thinking Program' },
   'entrepreneurship': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'finance':        { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'faith':          { slug: 'systems-thinking-genesis', title: 'The Spirit of God in Genesis' },
-  'spirituality':   { slug: 'systems-thinking-genesis', title: 'The Spirit of God in Genesis' },
-  'tech':           { slug: 'intro-computing', title: 'Introduction to Computing' },
-  'digital':        { slug: 'intro-computing', title: 'Introduction to Computing' },
-  'content':        { slug: 'intro-storytelling', title: 'Introduction to Storytelling & Narrative Design' },
-  'creative':       { slug: 'guitar-method', title: 'Gideon Guitar Method' },
-  'arts':           { slug: 'guitar-method', title: 'Gideon Guitar Method' }
+  'jobs':            { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'arts':            { slug: 'guitar-method', title: 'Gideon Guitar Method' },
+  'culture':         { slug: 'guitar-method', title: 'Gideon Guitar Method' },
+  'identity':        { slug: 'guitar-method', title: 'Gideon Guitar Method' },
+  'tech':            { slug: 'intro-computing', title: 'Introduction to Computing' },
+  'digital':         { slug: 'intro-computing', title: 'Introduction to Computing' },
+  'faith':           { slug: 'systems-thinking-genesis', title: 'The Spirit of God in Genesis' },
+  'community leadership': { slug: 'systems-thinking-genesis', title: 'The Spirit of God in Genesis' },
+  'finance':         { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'wealth':          { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'critical thinking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'strategic thinking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'leadership':      { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'public speaking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'computing':       { slug: 'intro-computing', title: 'Introduction to Computing' },
+  'creative':        { slug: 'guitar-method', title: 'Gideon Guitar Method' },
+  'music':           { slug: 'guitar-method', title: 'Gideon Guitar Method' },
+  'biblical wisdom': { slug: 'systems-thinking-genesis', title: 'The Spirit of God in Genesis' },
+  'business':        { slug: 'systems-thinking', title: 'Systems Thinking Program' }
 };
 
 var SYSTEM_PROMPT = [
-  'You are a friendly learning advisor for GideonAbochie Studio, a Bible-based school in Ghana.',
-  'Your task: given a student\'s interests, recommend ONE program from this list that best fits them.',
+  'You are a youth development advisor for GideonAbochie Studio, a Ghanaian school aligned with the National Youth Policy (2022-2032).',
+  'Your mission: help young Ghanaians (ages 15-35) find the right program that matches their interests and national development goals.',
   '',
-  'Available programs:',
-  '- Gideon Guitar Method (guitar-method): Play guitar, Ghanaian songs. Best for music lovers, creative arts.',
-  '- Systems Thinking Program (systems-thinking): Biblical wisdom for seeing the whole. Best for business, strategy, personal growth.',
-  '- The Spirit of God in Genesis (systems-thinking-genesis): Bible study through creativity, wisdom & love. Best for faith, Bible study.',
-  '- The Spirit of God in Revelation (revelation-study): Study of Revelation. Best for Bible study, prophecy.',
-  '- The Spirit of God in the Psalms (psalms-worship-word): Study of Psalms. Best for worship, prayer.',
-  '- Introduction to Computing (intro-computing): Coming soon. How computers work. Best for tech beginners.',
-  '- Introduction to Storytelling (intro-storytelling): Coming soon. Narrative design. Best for content creators.',
-  '- Introduction to Design Thinking (intro-design-thinking): Coming soon. Design methodology from Genesis.',
-  '- Architectural Thinking (architectural-thinking): Coming soon. Structuring ideas with biblical wisdom.',
+  'The National Youth Policy vision: "An empowered youth contributing positively to national development."',
+  'The policy focuses on: skills development, job creation, civic participation, leadership, and national identity.',
   '',
-  'If the student\'s interest matches a "coming soon" program, still recommend it but note it\'s in development and suggest an active alternative.',
+  'Available programs at GideonAbochie Studio:',
+  '- Gideon Guitar Method (guitar-method): Play guitar, learn Ghanaian songs. Best for creative arts, music, cultural identity.',
+  '- Systems Thinking Program (systems-thinking): Biblical wisdom for seeing the whole picture. Best for business, strategy, governance, leadership, civic education.',
+  '- The Spirit of God in Genesis (systems-thinking-genesis): Deep Bible study through creativity, wisdom & love. Best for faith, community leadership, biblical wisdom.',
+  '- The Spirit of God in Revelation (revelation-study): Study of Revelation. Best for Bible study, prophecy, hope.',
+  '- The Spirit of God in the Psalms (psalms-worship-word): Study of Psalms. Best for worship, prayer, artistic expression.',
+  '- Introduction to Computing (intro-computing): Coming soon. How computers work. Best for tech skills, digital literacy.',
+  '- Introduction to Storytelling (intro-storytelling): Coming soon. Narrative design. Best for content creators, media.',
+  '- Introduction to Design Thinking (intro-design-thinking): Coming soon. Design methodology. Best for innovation, problem-solving.',
+  '- Architectural Thinking (architectural-thinking): Coming soon. Structuring ideas with wisdom. Best for strategic planning.',
+  '',
+  'If the student\'s interest matches a "coming soon" program, recommend it but note it is in development and suggest an active alternative.',
+  'Always connect your recommendation to national development and the student\'s potential to contribute to Ghana\'s future.',
   '',
   'Respond in JSON format only (no markdown):',
   '{',
-  '  "program_slug": "guitar-method",',
-  '  "program_title": "Gideon Guitar Method",',
-  '  "recommendation": "A short, friendly 2-3 sentence explanation of why this program fits them.",',
-  '  "why_fits": "1-2 sentences about how their specific interests connect to this program"',
+  '  "program_slug": "systems-thinking",',
+  '  "program_title": "Systems Thinking Program",',
+  '  "recommendation": "2-3 sentences explaining why this program fits the student. Connect it to their personal growth AND Ghana\'s development. Be warm and encouraging."',
   '}'
 ].join('\n');
 
@@ -91,11 +104,12 @@ export async function onRequest(context) {
       var userPrompt = [
         'Student profile:',
         '- Name: ' + name,
-        '- Topic interest: ' + topic,
-        '- Learning style: ' + learningStyle,
+        '- National development interest: ' + topic,
+        '- Desired skill: ' + learningStyle,
         '- Time commitment: ' + timeCommitment,
         '',
-        'Recommend the best program for this student and explain why.'
+        'Recommend ONE program from GideonAbochie Studio that best fits this young Ghanaian.',
+        'Explain why it helps both their personal growth and Ghana\'s national development.'
       ].join('\n');
 
       aiResult = await callAI(env, SYSTEM_PROMPT, userPrompt, {
@@ -119,15 +133,15 @@ export async function onRequest(context) {
 
     if (!recommendation) {
       var reasons = {
-        'guitar-method': 'Perfect for creative souls who want to express themselves through music — you will learn Ghanaian songs from day one.',
-        'systems-thinking': 'Ideal for those who want to understand how the world works and make smarter decisions in business and life.',
-        'systems-thinking-genesis': 'A deep dive into Scripture that will transform how you see God, creativity, and your purpose.',
-        'revelation-study': 'For those ready to understand the big picture of God\'s plan and find hope in His promises.',
-        'psalms-worship-word': 'For those who want to deepen their prayer life and learn to worship through every season.',
-        'intro-computing': 'A beginner-friendly journey into how computers work — starting with the Logos who ordered all things.',
-        'intro-storytelling': 'Learn to craft stories that move hearts and change minds, following the example of the greatest storyteller.'
+        'guitar-method': 'Ghana\'s creative arts and cultural identity are central to our national story. This program lets you express yourself through music while learning Ghanaian songs — building the creative economy one artist at a time.',
+        'systems-thinking': 'Ghana needs young people who can see the big picture — in business, governance, and community development. This program teaches you to think strategically and solve problems that matter.',
+        'systems-thinking-genesis': 'Faith and values are the foundation of every great nation. This program deepens your biblical understanding so you can lead with wisdom and serve your community with love.',
+        'revelation-study': 'In uncertain times, young people need hope and a clear vision for the future. This program builds unshakeable faith and a long-term perspective essential for nationbuilding.',
+        'psalms-worship-word': 'Worship and the arts have always been central to Ghanaian identity. This program deepens your spiritual life and equips you to lead others in worship and community building.',
+        'intro-computing': 'Digital skills are the language of the 21st century economy. This program gives you a strong foundation in how technology works — opening doors in Ghana\'s growing tech sector.',
+        'intro-storytelling': 'Ghana\'s stories need to be told by Ghanaians. This program teaches you to craft narratives that preserve our heritage, inspire change, and shape the national conversation.'
       };
-      recommendation = reasons[program.slug] || 'Based on your interests, this program will help you grow and discover your potential.';
+      recommendation = reasons[program.slug] || 'Based on your interests, this program will help you grow and contribute to Ghana\'s development.';
     }
 
     var responseData = {

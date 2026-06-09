@@ -3,318 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>What Do You Want to Learn? — GideonAbochie Studio</title>
-<meta name="description" content="Tell us what you want to learn and get a personalized course recommendation. Free programs available now.">
-<meta property="og:title" content="What Do You Want to Learn?">
-<meta property="og:description" content="Take 30 seconds to tell us what you want to learn. Get a personalized course recommendation from GideonAbochie Studio.">
+<title>Ghana's Youth Policy — What Do YOU Need? | GideonAbochie Studio</title>
+<meta name="description" content="Ghana's National Youth Policy (2022-2032) has big plans. Tell us what YOU actually need to thrive — and get matched with the right program, for free.">
+<meta property="og:title" content="Ghana's National Youth Policy Has Plans for You. What Do YOU Need?">
+<meta property="og:description" content="The government is investing in youth skills, jobs, and leadership. Take 30 seconds to tell us what matters to you — and get matched with a free program.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/survey/">
 <meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
-.top-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0F1E38;border-bottom:1px solid rgba(201,168,76,0.15)}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+
+/* ── Top Bar ── */
+.top-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#0F1E38;border-bottom:1px solid rgba(201,168,76,0.12)}
 .top-bar .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.top-bar .logo-circle{width:32px;height:32px;border-radius:8px;background:#C9A84C;display:flex;align-items:center;justify-content:center;color:#0A1628;font-weight:800;font-size:16px}
-.top-bar .logo-text{font-size:13px;font-weight:600;color:#E8EEF7;letter-spacing:-0.01em}
+.top-bar .logo-circle{width:30px;height:30px;border-radius:7px;background:#C9A84C;display:flex;align-items:center;justify-content:center;color:#0A1628;font-weight:800;font-size:15px;font-family:'Inter',sans-serif}
+.top-bar .logo-text{font-size:12px;font-weight:600;color:#E8EEF7}
 .top-bar .logo-text span{color:#C9A84C}
-.top-bar .badge{font-size:10px;color:#5A7A9F;background:rgba(90,122,159,0.15);padding:4px 10px;border-radius:12px;font-weight:500}
 
-.chat-area{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
-.chat-area::-webkit-scrollbar{width:4px}
-.chat-area::-webkit-scrollbar-track{background:transparent}
-.chat-area::-webkit-scrollbar-thumb{background:#1E3250;border-radius:4px}
+/* ── Ghana Flag ── */
+.flag-bar{display:flex;height:4px}
+.flag-bar span{flex:1}
+.flag-bar .r{background:#CE1126}
+.flag-bar .y{background:#FCD116}
+.flag-bar .g{background:#006B3F}
+.flag-bar .b{background:#000}
 
-.msg{max-width:88%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;animation:fadeUp .3s ease-out;word-wrap:break-word}
-.msg.bot{align-self:flex-start;background:#0F1E38;border:1px solid #1E3250;color:#CBD5E1;border-bottom-left-radius:4px}
-.msg.user{align-self:flex-end;background:#C9A84C;color:#0A1628;border-bottom-right-radius:4px;font-weight:500}
-.msg.typing{align-self:flex-start;background:#0F1E38;border:1px solid #1E3250;border-bottom-left-radius:4px;padding:16px 20px;display:flex;gap:4px;align-items:center}
-.msg.typing .dot{width:7px;height:7px;border-radius:50%;background:#5A7A9F;animation:bounce 1.2s infinite}
-.msg.typing .dot:nth-child(2){animation-delay:.2s}
-.msg.typing .dot:nth-child(3){animation-delay:.4s}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* ── Hero ── */
+.hero{text-align:center;padding:48px 20px 32px;max-width:680px;margin:0 auto}
+.hero .flag{display:inline-flex;gap:3px;margin-bottom:14px}
+.hero .flag span{width:18px;height:12px;border-radius:2px}
+.hero .flag .r{background:#CE1126}
+.hero .flag .y{background:#FCD116}
+.hero .flag .g{background:#006B3F}
+.hero .flag .b{background:#000}
+.hero .badge{display:inline-block;font-size:10px;font-weight:600;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:12px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em}
+.hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px;font-family:'Inter',sans-serif}
+.hero h1 span{color:#C9A84C}
+.hero .sub{font-size:15px;color:#8A9BB5;line-height:1.7;max-width:560px;margin:0 auto}
+.hero .sub strong{color:#CBD5E1}
+.hero .nugget{margin-top:18px;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#5A7A9F;background:#0F1E38;border:1px solid #1E3250;padding:8px 16px;border-radius:20px}
 
-.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;margin-bottom:4px;animation:fadeUp .3s ease-out}
-.option-btn{padding:10px 18px;border-radius:20px;border:1.5px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);color:#C9A84C;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
-.option-btn:hover,.option-btn:active{background:rgba(201,168,76,0.2);border-color:#C9A84C;transform:scale(1.02)}
-.option-btn.selected{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+/* ── Survey Form ── */
+.survey-wrap{flex:1;max-width:520px;margin:0 auto;padding:0 20px 60px;width:100%}
 
-.input-area{flex-shrink:0;padding:8px 16px 16px;background:#0A1628;border-top:1px solid rgba(255,255,255,0.05)}
-.input-wrap{display:flex;gap:8px;background:#0F1E38;border:1px solid #1E3250;border-radius:24px;padding:4px;transition:border-color .2s}
-.input-wrap:focus-within{border-color:#C9A84C}
-.input-wrap input{flex:1;background:transparent;border:none;outline:none;color:#E8EEF7;font-size:14px;padding:8px 12px;font-family:inherit}
-.input-wrap input::placeholder{color:#5A7A9F}
-.input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:#C9A84C;color:#0A1628;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-.input-wrap button:active{transform:scale(.9)}
-.input-wrap button:disabled{opacity:.4;cursor:not-allowed}
-.input-wrap button svg{width:18px;height:18px}
+/* ── Progress Bar ── */
+.progress-wrap{margin-bottom:32px}
+.progress-bar{height:4px;background:#1E3250;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#C9A84C;border-radius:4px;transition:width .5s ease;width:0%}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:#5A7A9F;margin-top:6px;font-weight:500}
+.progress-label .step-num{color:#C9A84C}
 
-.result-card{margin-top:4px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:20px;animation:fadeUp .4s ease-out}
-.result-card .program-name{font-size:18px;font-weight:700;color:#C9A84C;margin-bottom:6px;font-family:'DM Sans',sans-serif}
-.result-card .program-desc{font-size:13px;color:#8A9BB5;line-height:1.6;margin-bottom:16px}
-.result-card .cta-row{display:flex;gap:8px;flex-wrap:wrap}
-.result-card .btn-primary{flex:1;min-width:140px;padding:12px 20px;border-radius:12px;border:none;background:#C9A84C;color:#0A1628;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit;text-decoration:none;text-align:center}
+/* ── Question Card ── */
+.q-card{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:28px 24px;animation:fadeIn .4s ease-out}
+.q-card .q-number{font-size:11px;font-weight:600;color:#C9A84C;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.q-card .q-text{font-size:17px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:20px;font-family:'Inter',sans-serif}
+
+/* ── Options ── */
+.option-grid{display:flex;flex-direction:column;gap:8px}
+.option-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:1.5px solid #1E3250;background:#0A1628;color:#CBD5E1;font-size:14px;cursor:pointer;transition:all .2s;font-family:inherit;text-align:left;line-height:1.3;width:100%}
+.option-btn .radio{width:18px;height:18px;border-radius:50%;border:2px solid #1E3250;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.option-btn .radio-inner{width:10px;height:10px;border-radius:50%;background:#C9A84C;opacity:0;transition:opacity .2s;transform:scale(0)}
+.option-btn:hover{border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.04)}
+.option-btn.selected{border-color:#C9A84C;background:rgba(201,168,76,0.08)}
+.option-btn.selected .radio{border-color:#C9A84C}
+.option-btn.selected .radio-inner{opacity:1;transform:scale(1)}
+
+/* ── Input fields ── */
+.input-field{width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid #1E3250;background:#0A1628;color:#E8EEF7;font-size:15px;outline:none;transition:border-color .2s;font-family:inherit}
+.input-field:focus{border-color:#C9A84C}
+.input-field::placeholder{color:#5A7A9F}
+.input-field.error{border-color:#E8637A}
+
+/* ── Navigation Buttons ── */
+.nav-row{display:flex;gap:10px;margin-top:20px}
+.nav-row .btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
+.nav-row .btn-primary{background:#C9A84C;color:#0A1628}
+.nav-row .btn-primary:active{transform:scale(.97)}
+.nav-row .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.nav-row .btn-ghost{background:transparent;color:#5A7A9F;border:1px solid #1E3250}
+.nav-row .btn-ghost:active{background:#0F1E38}
+
+/* ── Result ── */
+.result-card{background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(201,168,76,0.01));border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:28px 24px;animation:fadeIn .5s ease-out;text-align:center}
+.result-card .check{width:48px;height:48px;border-radius:50%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}
+.result-card h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;font-family:'Inter',sans-serif}
+.result-card .program-name{color:#C9A84C;font-size:18px;font-weight:700;margin-bottom:10px}
+.result-card .desc{font-size:14px;color:#8A9BB5;line-height:1.7;margin-bottom:20px}
+.result-card .actions{display:flex;flex-direction:column;gap:10px}
+.result-card .btn-primary{display:block;padding:14px 24px;border-radius:12px;background:#C9A84C;color:#0A1628;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s;text-align:center}
 .result-card .btn-primary:active{transform:scale(.97)}
-.result-card .btn-secondary{padding:12px 20px;border-radius:12px;border:1.5px solid #1E3250;background:transparent;color:#8A9BB5;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit;text-decoration:none;text-align:center}
+.result-card .btn-secondary{display:block;padding:12px 24px;border-radius:12px;border:1.5px solid #1E3250;background:transparent;color:#5A7A9F;font-size:13px;text-decoration:none;transition:all .2s;text-align:center}
 .result-card .btn-secondary:active{background:#0F1E38}
+.result-card .whatsapp-note{margin-top:14px;font-size:12px;color:#5A7A9F;line-height:1.5}
 
-.quick-reply{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.quick-reply button{padding:10px 18px;border-radius:20px;border:1.5px solid #1E3250;background:#0F1E38;color:#CBD5E1;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit}
-.quick-reply button:active{background:#1E3250;border-color:#C9A84C}
-
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease-out}
 .hidden{display:none!important}
+
+/* ── Loading ── */
+.spinner{width:20px;height:20px;border:2px solid transparent;border-top-color:#C9A84C;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:480px){
+  .hero{padding:32px 16px 24px}
+  .hero h1{font-size:26px}
+  .q-card{padding:22px 18px}
+  .q-card .q-text{font-size:15px}
+  .option-btn{font-size:13px;padding:12px 14px}
+}
 </style>
 </head>
 <body>
+
+<div class="flag-bar"><span class="r"></span><span class="y"></span><span class="g"></span><span class="b"></span></div>
 
 <div class="top-bar">
   <a href="https://gideonabochie.org" class="logo">
     <div class="logo-circle">G</div>
     <div class="logo-text">GideonAbochie <span>Studio</span></div>
   </a>
-  <div class="badge">Learning Survey</div>
 </div>
 
-<div class="chat-area" id="chatArea"></div>
+<div class="hero">
+  <div class="flag"><span class="r"></span><span class="y"></span><span class="g"></span><span class="b"></span></div>
+  <div class="badge">National Youth Policy 2022–2032</div>
+  <h1>Ghana's youth policy has plans for you.<br>What do <span>YOU</span> actually need?</h1>
+  <p class="sub">The government is investing in youth skills, jobs, and leadership. But no policy works without <strong>your voice</strong>. Tell us what matters to you — and we'll match you with the right program, for free.</p>
+  <div class="nugget">&#9201; Takes 30 seconds &middot; Free programs available &middot; WhatsApp follow-up</div>
+</div>
 
-<div class="input-area" id="inputArea">
-  <div class="quick-reply" id="quickReply"></div>
-  <div class="input-wrap">
-    <input type="text" id="chatInput" placeholder="Type your answer..." autocomplete="off">
-    <button id="sendBtn" aria-label="Send">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
+<div class="survey-wrap" id="surveyApp">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label"><span class="step-num" id="stepNum">Step 1 of 5</span><span id="stepLabel">Name</span></div>
   </div>
+
+  <div id="questionArea"></div>
 </div>
 
 <script>
-/* ── State ── */
-var state = {
-  step: 0,
-  name: '',
-  phone: '',
-  topic: '',
-  learningStyle: '',
-  timeCommitment: '',
-  sourceUrl: new URLSearchParams(window.location.search).get('source') || ''
-};
-
-var STEPS = [
-  { q: "Hey there! \uD83C\uDF89 Welcome to GideonAbochie Studio.\n\nI'm your learning guide. Let me help you find the perfect program for you.\n\nFirst, what's your name?", field: 'name', input: true },
-  { q: "Great to meet you, {name}! \uD83D\uDC4B\n\nWhat's your **WhatsApp number** so we can keep in touch and send you free learning resources?", field: 'phone', input: true, phone: true },
-  { q: "Awesome! Now, what are you **most excited to learn**?", field: 'topic', options: ['Music / Guitar', 'Business & Entrepreneurship', 'Personal Finance', 'Faith & Spirituality', 'Tech & Digital Skills', 'Content Creation', 'Creative Arts', 'Other'] },
-  { q: "How do you **prefer to learn**?", field: 'learningStyle', options: ['Video lessons', 'Audio / podcasts', 'Written guides', 'Live classes', '1-on-1 mentoring'] },
-  { q: "How much time can you **commit per week**?", field: 'timeCommitment', options: ['Less than 1 hour', '1\u20132 hours', '3\u20135 hours', '5+ hours'] }
+/* ── Questions ── */
+var QUESTIONS = [
+  {
+    id: 'name',
+    text: 'First, what\'s your name?',
+    type: 'text',
+    placeholder: 'Enter your name...',
+    nextLabel: 'Next'
+  },
+  {
+    id: 'phone',
+    text: 'What\'s your WhatsApp number?',
+    subtitle: 'So we can send you free learning resources and program updates.',
+    type: 'tel',
+    placeholder: 'e.g. 0244123456',
+    nextLabel: 'Next'
+  },
+  {
+    id: 'area',
+    text: 'Which area of national development excites you most?',
+    type: 'options',
+    options: [
+      'Civic Education & Governance',
+      'Entrepreneurship & Jobs',
+      'Arts, Culture & Identity',
+      'Tech & Digital Skills',
+      'Faith & Community Leadership',
+      'Personal Finance & Wealth'
+    ]
+  },
+  {
+    id: 'skill',
+    text: 'What one skill would transform your future right now?',
+    type: 'options',
+    options: [
+      'Critical & Strategic Thinking',
+      'Leadership & Public Speaking',
+      'Digital & Computing Skills',
+      'Creative Arts & Music',
+      'Biblical Wisdom & Faith',
+      'Starting a Business'
+    ]
+  },
+  {
+    id: 'time',
+    text: 'How much time can you commit per week to learn?',
+    type: 'options',
+    options: [
+      'Less than 1 hour',
+      '1\u20132 hours',
+      '3\u20135 hours',
+      '5+ hours'
+    ]
+  }
 ];
 
-/* ── DOM refs ── */
-var chatArea = document.getElementById('chatArea');
-var inputArea = document.getElementById('inputArea');
-var chatInput = document.getElementById('chatInput');
-var sendBtn = document.getElementById('sendBtn');
-var quickReply = document.getElementById('quickReply');
+var ANSWERS = {};
+var currentStep = 0;
+var totalSteps = QUESTIONS.length;
 
-/* ── Helpers ── */
-function scrollBottom() { setTimeout(function(){ chatArea.scrollTop = chatArea.scrollHeight; }, 50); }
+var questionArea = document.getElementById('questionArea');
+var progressFill = document.getElementById('progressFill');
+var stepNum = document.getElementById('stepNum');
+var stepLabel = document.getElementById('stepLabel');
 
-function addMsg(text, cls) {
-  var div = document.createElement('div');
-  div.className = 'msg ' + cls;
-  div.textContent = text;
-  chatArea.appendChild(div);
-  scrollBottom();
-  return div;
+function renderStep() {
+  var q = QUESTIONS[currentStep];
+  var pct = ((currentStep) / totalSteps) * 100;
+  progressFill.style.width = pct + '%';
+  stepNum.textContent = 'Step ' + (currentStep + 1) + ' of ' + totalSteps;
+
+  var labels = ['Name', 'WhatsApp', 'Interest Area', 'Skill', 'Time'];
+  stepLabel.textContent = labels[currentStep] || '';
+
+  if (currentStep >= totalSteps) {
+    submitSurvey();
+    return;
+  }
+
+  var html = '<div class="q-card fade-in">';
+  html += '<div class="q-number">Question ' + (currentStep + 1) + '</div>';
+  html += '<div class="q-text">' + q.text + '</div>';
+  if (q.subtitle) html += '<p style="font-size:13px;color:#5A7A9F;margin-bottom:16px;line-height:1.5">' + q.subtitle + '</p>';
+
+  if (q.type === 'options') {
+    html += '<div class="option-grid">';
+    q.options.forEach(function(opt) {
+      var selected = ANSWERS[q.id] === opt ? ' selected' : '';
+      html += '<button class="option-btn' + selected + '" data-value="' + opt.replace(/"/g,'&quot;') + '" onclick="selectOption(\'' + q.id + '\',\'' + opt.replace(/'/g,"\\'") + '\')">' +
+        '<span class="radio"><span class="radio-inner"></span></span>' +
+        '<span>' + opt + '</span>' +
+        '</button>';
+    });
+    html += '</div>';
+    html += '<div class="nav-row"><button class="btn btn-ghost" id="backBtn" onclick="goBack()">&#8592; Back</button></div>';
+  } else {
+    var val = ANSWERS[q.id] || '';
+    var isPhone = q.type === 'tel';
+    html += '<input type="' + (isPhone ? 'tel' : 'text') + '" class="input-field" id="textInput" placeholder="' + q.placeholder + '" value="' + val.replace(/"/g,'&quot;') + '" autocomplete="' + (isPhone ? 'tel' : 'name') + '" inputmode="' + (isPhone ? 'numeric' : 'text') + '">';
+    html += '<div class="nav-row">' +
+      (currentStep > 0 ? '<button class="btn btn-ghost" onclick="goBack()">&#8592; Back</button>' : '') +
+      '<button class="btn btn-primary" id="nextBtn" onclick="nextText()">' + q.nextLabel + ' &#8594;</button>' +
+      '</div>';
+  }
+
+  questionArea.innerHTML = html;
+
+  if (q.type !== 'options') {
+    var input = document.getElementById('textInput');
+    if (input) {
+      input.focus();
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); nextText(); }
+      });
+    }
+  }
 }
 
-function addBotMsg(text) {
-  return addMsg(text, 'bot');
-}
-
-function addUserMsg(text) {
-  return addMsg(text, 'user');
-}
-
-function showTyping() {
-  var div = document.createElement('div');
-  div.className = 'msg typing';
-  div.id = 'typingIndicator';
-  for (var i = 0; i < 3; i++) { var dot = document.createElement('span'); dot.className = 'dot'; div.appendChild(dot); }
-  chatArea.appendChild(div);
-  scrollBottom();
-}
-
-function hideTyping() {
-  var el = document.getElementById('typingIndicator');
-  if (el) el.remove();
-}
-
-function showOptions(opts) {
-  var container = document.getElementById('quickReply');
-  container.innerHTML = '';
-  chatInput.parentElement.classList.add('hidden');
-  opts.forEach(function(opt) {
-    var btn = document.createElement('button');
-    btn.textContent = opt;
-    btn.addEventListener('click', function() { selectOption(opt); });
-    container.appendChild(btn);
+function selectOption(id, value) {
+  ANSWERS[id] = value;
+  var btns = document.querySelectorAll('.option-btn');
+  btns.forEach(function(b) {
+    b.classList.toggle('selected', b.getAttribute('data-value') === value);
   });
-  container.classList.remove('hidden');
-  scrollBottom();
+  setTimeout(function() { currentStep++; renderStep(); }, 250);
 }
 
-function hideOptions() {
-  var container = document.getElementById('quickReply');
-  container.innerHTML = '';
-  container.classList.add('hidden');
-  chatInput.parentElement.classList.remove('hidden');
-}
+function nextText() {
+  var q = QUESTIONS[currentStep];
+  var input = document.getElementById('textInput');
+  var val = input ? input.value.trim() : '';
 
-function showInput(placeholder, isPhone) {
-  chatInput.placeholder = placeholder || 'Type your answer...';
-  chatInput.type = isPhone ? 'tel' : 'text';
-  chatInput.value = '';
-  chatInput.focus();
-  hideOptions();
-}
+  if (!val) {
+    if (input) { input.classList.add('error'); input.focus(); }
+    return;
+  }
 
-function selectOption(val) {
-  hideOptions();
-  addUserMsg(val);
-  var step = STEPS[state.step];
-  if (step) state[step.field] = val;
-  state.step++;
-  setTimeout(function(){ nextStep(); }, 400);
-}
-
-function submitText() {
-  var val = chatInput.value.trim();
-  if (!val) return;
-  var step = STEPS[state.step];
-  if (step && step.phone) {
+  if (q.type === 'tel') {
     var cleaned = val.replace(/[\s\-\(\)]/g, '');
     if (cleaned.length < 8) {
-      addBotMsg("Please enter a valid phone number so we can reach you on WhatsApp \uD83D\uDCAC");
+      if (input) { input.classList.add('error'); input.focus(); }
       return;
     }
     val = cleaned;
   }
-  addUserMsg(val);
-  if (step) state[step.field] = val;
-  chatInput.value = '';
-  state.step++;
-  setTimeout(function(){ nextStep(); }, 400);
+
+  ANSWERS[q.id] = val;
+  currentStep++;
+  renderStep();
 }
 
-/* ── Next step ── */
-function nextStep() {
-  if (state.step >= STEPS.length) {
-    generateRecommendation();
-    return;
-  }
-  var step = STEPS[state.step];
-  var q = step.q.replace('{name}', state.name);
-  addBotMsg(q);
-
-  if (step.options) {
-    setTimeout(function(){ showOptions(step.options); }, 300);
-  } else {
-    setTimeout(function(){ showInput(step.phone ? 'Enter your WhatsApp number...' : (step.field === 'name' ? 'Enter your name...' : 'Type your answer...'), step.phone); }, 300);
-  }
+function goBack() {
+  if (currentStep > 0) { currentStep--; renderStep(); }
 }
 
-/* ── Recommendation ── */
-function generateRecommendation() {
-  showTyping();
-  hideInput();
+/* ── Submit ── */
+function submitSurvey() {
+  progressFill.style.width = '100%';
+  stepNum.textContent = 'Finding your match...';
+  stepLabel.textContent = '';
 
-  var payload = {
-    name: state.name,
-    phone: state.phone,
-    topic: state.topic,
-    learning_style: state.learningStyle,
-    time_commitment: state.timeCommitment,
-    source: 'web',
-    source_url: state.sourceUrl
-  };
+  questionArea.innerHTML =
+    '<div class="q-card fade-in" style="text-align:center;padding:40px 24px">' +
+    '<div class="spinner"></div>' +
+    '<p style="color:#8A9BB5;font-size:14px;margin-top:12px">Analysing your answers and finding the best program for you...</p>' +
+    '</div>';
 
   fetch('/api/survey/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).then(function(r){ return r.json() }).then(function(d){
-    hideTyping();
+    body: JSON.stringify({
+      name: ANSWERS.name,
+      phone: ANSWERS.phone,
+      topic: ANSWERS.area,
+      learning_style: ANSWERS.skill,
+      time_commitment: ANSWERS.time,
+      source: 'web',
+      source_url: window.location.search
+    })
+  }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.status === 'ok') {
-      showRecommendation(d);
+      showResult(d);
     } else {
-      addBotMsg("Thanks for sharing, " + state.name + "! \uD83D\uDC4A We'll get back to you on WhatsApp with personalized learning recommendations soon.");
-      showDone();
+      showFallback();
     }
-  }).catch(function(){
-    hideTyping();
-    addBotMsg("Thanks for sharing, " + state.name + "! \uD83D\uDC4A We'll get back to you on WhatsApp with personalized learning recommendations soon.");
-    showDone();
+  }).catch(function() {
+    showFallback();
   });
 }
 
-function showRecommendation(d) {
-  var rec = d.recommendation || '';
-  var program = d.recommended_program || '';
-  var enrollUrl = program ? '/school/?program=' + encodeURIComponent(program) : '/school/';
+function showResult(d) {
+  var slug = d.program_slug || '';
+  var enrollUrl = slug ? '/school/?program=' + encodeURIComponent(slug) : '/school/';
 
-  var card = document.createElement('div');
-  card.className = 'result-card';
-  card.innerHTML =
-    '<div class="program-name">' + d.program_title + '</div>' +
-    '<div class="program-desc">' + (rec || 'Based on what you shared, this program is perfect for you.') + '</div>' +
-    '<div class="cta-row">' +
-      '<a href="' + enrollUrl + '" class="btn-primary" target="_blank">Yes, Enroll Me! \uD83D\uDE80</a>' +
-      '<button class="btn-secondary" onclick="this.closest(\'.result-card\').querySelector(\'.btn-primary\').click()">Not Now</button>' +
-    '</div>';
+  var html = '<div class="q-card fade-in" style="padding:0;background:none;border:none">';
+  html += '<div class="result-card">';
+  html += '<div class="check">&#10003;</div>';
+  html += '<h2>Your Perfect Match</h2>';
+  html += '<div class="program-name">' + (d.program_title || 'Recommended Program') + '</div>';
+  html += '<div class="desc">' + (d.recommendation || 'Based on your answers, this program is designed for you.') + '</div>';
+  html += '<div class="actions">';
+  html += '<a href="' + enrollUrl + '" class="btn-primary">Yes, Enroll Me Free &#8594;</a>';
+  html += '<a href="/nationbuilding/" class="btn-secondary">Learn more about Nationbuilding &#8594;</a>';
+  html += '</div>';
+  html += '<div class="whatsapp-note">&#128172; We\'ll send you free learning resources on WhatsApp this week. Watch your phone!</div>';
+  html += '</div></div>';
 
-  var container = document.createElement('div');
-  container.className = 'msg bot';
-  container.style.maxWidth = '100%';
-  container.style.padding = '0';
-  container.style.background = 'none';
-  container.style.border = 'none';
-  container.appendChild(card);
-  chatArea.appendChild(container);
-  scrollBottom();
-
-  addBotMsg("Does that sound like something you'd love to dive into? Click above to get started! \uD83D\uDE80");
-  showDone();
+  progressFill.style.width = '100%';
+  stepNum.textContent = 'Done!';
+  stepLabel.textContent = '';
+  questionArea.innerHTML = html;
 }
 
-function showDone() {
-  var div = document.createElement('div');
-  div.style.cssText = 'text-align:center;padding:24px 0 12px;color:#5A7A9F;font-size:12px';
-  div.textContent = 'You can close this page. We\'ll follow up on WhatsApp! \uD83D\uDCAC';
-  chatArea.appendChild(div);
-  scrollBottom();
-}
+function showFallback() {
+  var html = '<div class="q-card fade-in" style="padding:0;background:none;border:none">';
+  html += '<div class="result-card">';
+  html += '<div class="check">&#10003;</div>';
+  html += '<h2>Thanks, ' + ANSWERS.name + '!</h2>';
+  html += '<div class="desc">We\'ve received your responses. We\'ll match you with the right program and follow up on WhatsApp this week with free resources.</div>';
+  html += '<div class="actions">';
+  html += '<a href="/nationbuilding/" class="btn-primary">Explore Nationbuilding &#8594;</a>';
+  html += '<a href="/school/" class="btn-secondary">Browse All Programs &#8594;</a>';
+  html += '</div>';
+  html += '<div class="whatsapp-note">&#128172; Watch your WhatsApp — we\'ll send you personalized recommendations soon!</div>';
+  html += '</div></div>';
 
-function hideInput() {
-  inputArea.classList.add('hidden');
+  questionArea.innerHTML = html;
+  progressFill.style.width = '100%';
+  stepNum.textContent = 'Done!';
+  stepLabel.textContent = '';
 }
-
-function showInputAgain() {
-  inputArea.classList.remove('hidden');
-}
-
-/* ── Event listeners ── */
-sendBtn.addEventListener('click', submitText);
-chatInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') { e.preventDefault(); submitText(); }
-});
 
 /* ── Init ── */
-setTimeout(function(){ nextStep(); }, 600);
+renderStep();
 </script>
 </body>
 </html>
