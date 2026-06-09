@@ -11,17 +11,9 @@
 <link rel="stylesheet" href="admin.css">
 <style>
 :root {
-  --sidebar-w: 220px;
-  --header-h: 56px;
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
-@media(max-width:900px){
-  :root { --sidebar-w: 0px; }
-}
 
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{font-size:15px;scroll-behavior:smooth}
-body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-body);min-height:100vh;line-height:1.5;display:flex}
 body::-webkit-scrollbar{width:6px}
 body::-webkit-scrollbar-track{background:transparent}
 body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -30,54 +22,24 @@ a{color:var(--gold);text-decoration:none}
 a:hover{color:var(--gold-hover)}
 kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;font-size:10px;font-family:var(--font-body);color:var(--text-dim);background:var(--bg-card);border:1px solid var(--border);border-radius:4px;line-height:1}
 
-/* ═══ SIDEBAR ═══ */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .3s var(--ease)}
-.sidebar-brand{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.sidebar-brand .logo{width:28px;height:28px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--bg-primary);flex-shrink:0;font-family:var(--font-heading)}
-.sidebar-brand span{font-size:15px;font-weight:600;color:var(--text-primary);white-space:nowrap;font-family:var(--font-heading)}
-.sidebar-brand .beta{font-size:9px;font-weight:600;color:var(--gold);background:rgba(201,168,76,0.12);padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-left:auto;font-family:var(--font-body)}
-
-.sidebar-nav{flex:1;padding:12px 8px;overflow-y:auto}
-.sidebar-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;padding:16px 12px 8px;font-family:var(--font-body)}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);color:var(--text-muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s var(--ease);border:none;background:none;width:100%;text-align:left;font-family:var(--font-body)}
-.sidebar-item:hover{background:rgba(255,255,255,0.04);color:var(--text-body)}
-.sidebar-item.active{background:rgba(201,168,76,0.1);color:var(--gold)}
-.sidebar-item .si-icon{width:20px;text-align:center;font-size:14px;flex-shrink:0;opacity:.5}
-.sidebar-item.active .si-icon{opacity:1}
-.sidebar-item .si-badge{margin-left:auto;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--bg-primary);color:var(--text-muted)}
-.sidebar-item.active .si-badge{background:rgba(201,168,76,0.12);color:var(--gold)}
-.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border)}
-.sidebar-footer .shortcut{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:11px;color:var(--text-dim);border-radius:var(--radius-sm)}
-
-/* ═══ MAIN ═══ */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column;transition:margin .3s var(--ease)}
-
-/* ═══ HEADER ═══ */
-.header{height:var(--header-h);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;background:var(--bg-card)}
-.header .h-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.header .h-left .breadcrumb{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
-.header .h-left .breadcrumb .bc-current{color:var(--text-primary);font-weight:600;font-family:var(--font-heading)}
-.header .h-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-muted)}
-.mobile-menu{display:none;background:none;border:none;color:var(--text-body);font-size:20px;cursor:pointer;padding:4px;font-family:var(--font-body)}
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .mobile-menu{display:block}
-  .header{padding:0 16px}
-}
+/* ═══ TAB BAR ═══ */
+.tab-bar{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab-btn{background:none;border:none;color:var(--text-muted);padding:10px 16px;font-size:var(--text-sm);font-weight:500;cursor:pointer;font-family:var(--font-body);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{color:var(--text-body)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-btn .si-badge{margin-left:6px;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--bg-primary);color:var(--text-muted)}
+.tab-btn.active .si-badge{background:rgba(201,168,76,0.12);color:var(--gold)}
 
 /* ═══ CONTENT ═══ */
-.content{flex:1;padding:24px 32px;overflow-y:auto}
-@media(max-width:900px){.content{padding:16px}}
+.content{padding:0;overflow-y:auto}
 .tab-panel{display:none;animation:panelIn .3s var(--ease)}
 .tab-panel.active{display:block}
 @keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* ═══ PAGE HEADER ═══ */
-.page-header{margin-bottom:24px}
-.page-header h2{font-family:var(--font-heading);font-size:22px;font-weight:700;color:var(--text-primary);text-transform:uppercase;letter-spacing:-.02em}
-.page-header p{font-size:13px;color:var(--text-muted);margin-top:2px}
+/* ═══ TAB PAGE HEADER ═══ */
+.page-header{margin-bottom:16px}
+.page-header h2{font-family:var(--font-heading);font-size:var(--text-xl);font-weight:var(--weight-bold);color:var(--text-primary)}
+.page-header p{font-size:var(--text-sm);color:var(--text-muted);margin-top:2px}
 
 /* ═══ METRIC CARDS ═══ */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px}
@@ -140,16 +102,10 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 .tg-dim{background:rgba(90,122,159,0.1);color:var(--text-muted)}
 
 /* ═══ BUTTONS ═══ */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 14px;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s var(--ease);font-family:var(--font-body);white-space:nowrap;line-height:1.2}
-.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .btn-primary{background:var(--gold);color:var(--bg-primary)}
-.btn-primary:hover{background:var(--gold-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,0.25)}
+.btn-primary:hover{background:var(--gold-hover)}
 .btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
 .btn-secondary:hover{background:var(--bg-card-hover);color:var(--text-body);border-color:var(--border-light)}
-.btn-ghost{background:transparent;color:var(--text-dim)}
-.btn-ghost:hover{color:var(--text-body);background:rgba(255,255,255,0.04)}
-.btn-sm{padding:4px 10px;font-size:11px}
-.btn-icon{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:4px;border-radius:4px;font-size:14px;transition:all .15s;line-height:1;font-family:var(--font-body)}
 .btn-icon:hover{color:var(--gold);background:rgba(201,168,76,0.1)}
 
 /* ═══ TABLE ═══ */
@@ -248,61 +204,44 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 
 @media(max-width:600px){
   .metrics{grid-template-columns:1fr 1fr}
-  .content{padding:12px}
-  .header{padding:0 12px}
+  .tab-bar{gap:2px}
+  .tab-btn{padding:8px 10px;font-size:var(--text-xs)}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ SIDEBAR ═══ -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="logo">G</div>
-    <span>Command Center</span>
-    <span class="beta">Beta</span>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="sidebar-label">Overview</div>
-    <button class="sidebar-item active" data-tab="dashboard"><span class="si-icon">&#9632;</span> Dashboard <span class="si-badge" id="sbdActive">0</span></button>
-    <button class="sidebar-item" data-tab="agents"><span class="si-icon">&#9679;</span> Agents <span class="si-badge" id="sbdAgents">0</span></button>
-    <button class="sidebar-item" data-tab="workflows"><span class="si-icon">&#8617;</span> Workflows</button>
-    <button class="sidebar-item" data-tab="campaign"><span class="si-icon">&#9993;</span> Campaign <span class="si-badge" id="sbdCampaign">0</span></button>
-    <div class="sidebar-label">Activity</div>
-    <button class="sidebar-item" data-tab="runs"><span class="si-icon">&#9776;</span> Run History</button>
-    <button class="sidebar-item" data-tab="queue"><span class="si-icon">&#9654;</span> Queue <span class="si-badge" id="sbdQueue">0</span></button>
-    <button class="sidebar-item" data-tab="submissions"><span class="si-icon">&#9993;</span> Submissions <span class="si-badge" id="sbdSubmissions">0</span></button>
-    <button class="sidebar-item" data-tab="invoices"><span class="si-icon">&#36;</span> Invoices <span class="si-badge" id="sbdInvoices">0</span></button>
-    <div class="sidebar-label">System</div>
-    <button class="sidebar-item" data-tab="settings"><span class="si-icon">&#9881;</span> Settings</button>
-    <div class="sidebar-label">Info</div>
-    <button class="sidebar-item" data-tab="help"><span class="si-icon">?</span> Help</button>
-    <button class="sidebar-item" data-tab="architecture"><span class="si-icon">&#9638;</span> Architecture</button>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="shortcut"><kbd>1</kbd>-<kbd>9</kbd> Nav &middot; <kbd>R</kbd> Refresh &middot; <kbd>ESC</kbd> Close</div>
-  </div>
-</aside>
+<div class="wrap">
 
-<!-- ═══ MAIN ═══ -->
-<div class="main">
-
-<header class="header">
-  <div class="h-left">
-    <button class="mobile-menu" id="menuBtn">&#9776;</button>
-    <div class="breadcrumb"><span class="bc-current" id="bcLabel">Dashboard</span></div>
-  </div>
-  <div class="h-right">
+<h1 class="page-title">Command <span>Center</span></h1>
+<div class="page-desc" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+  <span>Real-time agent operations overview</span>
+  <span style="display:flex;align-items:center;gap:12px;font-size:var(--text-xs)">
     <span><span class="sd green pulse" id="hdrDot"></span><span id="hdrStatus">Connecting...</span></span>
     <span id="hdrTime"></span>
     <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Refresh (R)">&#8635;</button>
-  </div>
-</header>
+  </span>
+</div>
+
+<!-- ═══ TAB NAV ═══ -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="dashboard">Dashboard <span class="si-badge" id="sbdActive">0</span></button>
+  <button class="tab-btn" data-tab="agents">Agents <span class="si-badge" id="sbdAgents">0</span></button>
+  <button class="tab-btn" data-tab="workflows">Workflows</button>
+  <button class="tab-btn" data-tab="campaign">Campaign <span class="si-badge" id="sbdCampaign">0</span></button>
+  <button class="tab-btn" data-tab="runs">Run History</button>
+  <button class="tab-btn" data-tab="queue">Queue <span class="si-badge" id="sbdQueue">0</span></button>
+  <button class="tab-btn" data-tab="submissions">Submissions <span class="si-badge" id="sbdSubmissions">0</span></button>
+  <button class="tab-btn" data-tab="invoices">Invoices <span class="si-badge" id="sbdInvoices">0</span></button>
+  <button class="tab-btn" data-tab="settings">Settings</button>
+  <button class="tab-btn" data-tab="help">Help</button>
+  <button class="tab-btn" data-tab="architecture">Architecture</button>
+</div>
 
 <div class="content">
 
 <div class="tab-panel active" id="panel-dashboard">
-  <div class="page-header"><h2>Dashboard</h2><p>Real-time agent operations overview</p></div>
+  <div class="page-header"><p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:12px">Real-time agent operations overview</p>
   <div class="metrics" id="metrics"></div>
   <div class="section-header"><h3>Agent Registry</h3><span class="sh-count" id="agentCount">0</span></div>
   <div class="crd" id="agentRegistry"></div>

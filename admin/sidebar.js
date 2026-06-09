@@ -38,7 +38,8 @@
         { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },
         { href: 'agents.html',      icon: '\u26A1',        label: 'Command Center' },
         { href: 'strategy.html',    icon: '\uD83C\uDFAF', label: 'Strategy' },
-        { href: 'roadmap.html',     icon: '\u2705',        label: 'ToDo List' }
+        { href: 'roadmap.html',     icon: '\u2705',        label: 'ToDo List' },
+        { href: '/api/db/setup',   icon: '\uD83D\uDDC2', label: 'DB Setup' }
       ]
     }
   ];

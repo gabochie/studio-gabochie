@@ -20,20 +20,20 @@
 
   <!-- Stats -->
   <div class="stats" id="statsContainer">
-    <div class="stat-card"><span class="num gold stat-loading" id="statDonations">—</span><span class="label">Donations (successful)</span><span class="sub" id="statDonationsSub">Loading...</span></div>
-    <div class="stat-card"><span class="num green" id="statSubs">—</span><span class="label">Subscribers</span><span class="sub" id="statSubsSub">Loading...</span></div>
-    <div class="stat-card"><span class="num blue" id="statEnrollments">—</span><span class="label">Enrollments</span><span class="sub" id="statEnrollmentsSub">Loading...</span></div>
-    <div class="stat-card"><span class="num blue" id="statViews">—</span><span class="label">Page Views</span><span class="sub" id="statViewsSub">This month</span></div>
-    <div class="stat-card"><span class="num gold" id="statRevenue">—</span><span class="label">Donations (GHS)</span><span class="sub" id="statRevenueSub">Loading...</span></div>
-    <div class="stat-card"><span class="num gold" id="statBookingRevenue">—</span><span class="label">Booking Revenue (GHS)</span><span class="sub" id="statBookingRevenueSub">Paid bookings</span></div>
+    <div class="stat-card"><span class="stat-num gold stat-loading" id="statDonations">—</span><span class="stat-label">Donations (successful)</span><span class="stat-sub" id="statDonationsSub">Loading...</span></div>
+    <div class="stat-card"><span class="stat-num green" id="statSubs">—</span><span class="stat-label">Subscribers</span><span class="stat-sub" id="statSubsSub">Loading...</span></div>
+    <div class="stat-card"><span class="stat-num blue" id="statEnrollments">—</span><span class="stat-label">Enrollments</span><span class="stat-sub" id="statEnrollmentsSub">Loading...</span></div>
+    <div class="stat-card"><span class="stat-num blue" id="statViews">—</span><span class="stat-label">Page Views</span><span class="stat-sub" id="statViewsSub">This month</span></div>
+    <div class="stat-card"><span class="stat-num gold" id="statRevenue">—</span><span class="stat-label">Donations (GHS)</span><span class="stat-sub" id="statRevenueSub">Loading...</span></div>
+    <div class="stat-card"><span class="stat-num gold" id="statBookingRevenue">—</span><span class="stat-label">Booking Revenue (GHS)</span><span class="stat-sub" id="statBookingRevenueSub">Paid bookings</span></div>
     <div class="stat-card" id="statBookings">
       <div style="display:flex;gap:12px;align-items:baseline">
-        <span class="num gold" id="statBookingsPending">—</span>
-        <span class="num green" style="font-size:clamp(18px,2vw,26px)" id="statBookingsActive">—</span>
-        <span class="num blue" style="font-size:clamp(18px,2vw,26px)" id="statBookingsDone">—</span>
+        <span class="stat-num gold" id="statBookingsPending">—</span>
+        <span class="stat-num green" style="font-size:clamp(18px,2vw,26px)" id="statBookingsActive">—</span>
+        <span class="stat-num blue" style="font-size:clamp(18px,2vw,26px)" id="statBookingsDone">—</span>
       </div>
-      <span class="label">Bookings <span style="color:#EAB308;font-size:10px">pending</span> <span style="color:#22C55E;font-size:10px">active</span> <span style="color:#3B82F6;font-size:10px">done</span></span>
-      <span class="sub" id="statBookingsSub">Click to manage</span>
+      <span class="stat-label">Bookings <span style="color:#EAB308;font-size:10px">pending</span> <span style="color:#22C55E;font-size:10px">active</span> <span style="color:#3B82F6;font-size:10px">done</span></span>
+      <span class="stat-sub" id="statBookingsSub">Click to manage</span>
     </div>
   </div>
 
@@ -51,9 +51,9 @@
   <!-- Audience (from D1) -->
   <div class="section-title">&#127760; Audience</div>
   <div class="stats" id="audienceStats">
-    <div class="stat-card"><span class="num blue" id="statUniques">-</span><span class="label">Unique Visitors</span><span class="sub" id="statUniquesSub">This month</span></div>
-    <div class="stat-card"><span class="num blue" id="statCountries">-</span><span class="label">Countries</span><span class="sub" id="statCountriesSub">Last 30 days</span></div>
-    <div class="stat-card"><span class="num green" id="statConversion">-</span><span class="label">Sub Conversion</span><span class="sub" id="statConversionSub">Visits → Sub (30d)</span></div>
+    <div class="stat-card"><span class="stat-num blue" id="statUniques">-</span><span class="stat-label">Unique Visitors</span><span class="stat-sub" id="statUniquesSub">This month</span></div>
+    <div class="stat-card"><span class="stat-num blue" id="statCountries">-</span><span class="stat-label">Countries</span><span class="stat-sub" id="statCountriesSub">Last 30 days</span></div>
+    <div class="stat-card"><span class="stat-num green" id="statConversion">-</span><span class="stat-label">Sub Conversion</span><span class="stat-sub" id="statConversionSub">Visits → Sub (30d)</span></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card">
@@ -188,44 +188,14 @@
     </div>
   </div>
 
-  <!-- Admin Tools -->
-  <div class="section-title">&#9874; Admin Tools</div>
-  <div class="tools">
-    <a href="roadmap.html" class="tool-card">
-      <div class="tool-icon">&#9776;</div>
-      <div class="tool-name">Strategic ToDo List</div>
-      <div class="tool-desc">Interactive phased plan with auto-verification, activity log, and agent-created tasks.</div>
-    </a>
-    <a href="subscribers.html" class="tool-card">
-      <div class="tool-icon">&#9654;</div>
-      <div class="tool-name">Subscriber List</div>
-      <div class="tool-desc">View and export all email captures from forms and newsletter signups.</div>
-    </a>
-    <a href="enrollments.html" class="tool-card">
-      <div class="tool-icon">&#9776;</div>
-      <div class="tool-name">Enrollments</div>
-      <div class="tool-desc">View and manage school program registrations.</div>
-    </a>
-    <a href="donations.html" class="tool-card">
-      <div class="tool-icon">&#9829;</div>
-      <div class="tool-name">Donation Log</div>
-      <div class="tool-desc">Track incoming donations with totals and charts.</div>
-    </a>
-    <a href="bookings.html" class="tool-card">
-      <div class="tool-icon">&#9993;</div>
-      <div class="tool-name">Sponsor Requests</div>
-      <div class="tool-desc">Manage sponsorship placement requests.</div>
-    </a>
-    <a href="content.html" class="tool-card">
-      <div class="tool-icon">&#9998;</div>
-      <div class="tool-name">Content Manager</div>
-      <div class="tool-desc">Manage testimonials, stats, gallery.</div>
-    </a>
-    <a href="/api/db/setup" target="_blank" class="tool-card" style="border-color:rgba(234,179,8,.2)">
-      <div class="tool-icon" style="color:#EAB308">&#9881;</div>
-      <div class="tool-name">Run DB Setup</div>
-      <div class="tool-desc">Apply pending database migrations (settings table, indexes).</div>
-    </a>
+  <!-- System Utilities -->
+  <div class="section-title">&#9881; System</div>
+  <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="stat-card" style="cursor:pointer;transition:all .2s" onclick="window.open('/api/db/setup','_blank')">
+      <span class="stat-num gold" style="font-size:var(--text-lg)">&#9881;</span>
+      <span class="stat-label">Run DB Setup</span>
+      <span class="stat-sub">Apply pending database migrations</span>
+    </div>
   </div>
 </div>
 
