@@ -37,11 +37,13 @@ export default [
       globals: {
         ...globals.browser,
         AppState: 'readonly',
+        AdminState: 'readonly',
       },
     },
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-empty': 'warn',
+      'no-redeclare': 'off',
     },
   },
   // Cloudflare Functions (workers env)
