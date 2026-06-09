@@ -10,14 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
 <style>
-h1{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:4px}
-h1 span{color:#C9A84C}
-
 .cal-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
 .cal-controls select{padding:8px 14px;background:#0F1E38;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-family:'Inter',sans-serif;font-size:13px;outline:none}
 .cal-controls select:focus{border-color:#C9A84C}
-.cal-controls .btn{padding:8px 18px;border:none;border-radius:6px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s}
-
 .month-block{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;margin-bottom:20px;overflow:hidden}
 .month-header{background:#0A1628;padding:14px 20px;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#E8EEF7;border-bottom:1px solid #1E3250;display:flex;justify-content:space-between;align-items:center}
 .month-header .count{font-size:12px;color:#5A7A9F;font-family:'Inter',sans-serif;font-weight:400}
@@ -43,15 +38,6 @@ h1 span{color:#C9A84C}
 .issue-tags{display:flex;gap:4px;flex-wrap:wrap}
 .issue-tags .tag{font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(201,168,76,.1);color:#C9A84C;font-family:'Inter',sans-serif}
 
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
-.stat-item{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:14px;text-align:center}
-.stat-item .num{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;line-height:1}
-.stat-item .num.gold{color:#C9A84C}
-.stat-item .num.green{color:#22C55E}
-.stat-item .num.blue{color:#3B82F6}
-.stat-item .num.gray{color:#5A7A9F}
-.stat-item .label{font-size:10px;color:#5A7A9F;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
-
 .theme-suggestions{margin-bottom:24px}
 .theme-suggestions details{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px 16px}
 .theme-suggestions summary{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#E8EEF7;cursor:pointer}
@@ -59,16 +45,16 @@ h1 span{color:#C9A84C}
 .theme-suggestions .pill{padding:6px 12px;font-size:11px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:20px;color:#C9A84C;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
 .theme-suggestions .pill:hover{background:rgba(201,168,76,.2)}
 
-@media(max-width:640px){.issue-row{grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px}.issue-row .num{grid-column:1}.issue-row .date{grid-column:2;text-align:right}.issue-row .theme{grid-column:1/-1}.issue-row .status{grid-column:1}.issue-row .tags{grid-column:2}.stats-bar{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.issue-row{grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px}.issue-row .num{grid-column:1}.issue-row .date{grid-column:2;text-align:right}.issue-row .theme{grid-column:1/-1}.issue-row .status{grid-column:1}.issue-row .tags{grid-column:2}.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 
-  <div class="main-content">
-    <h1>Content <span>Calendar</span></h1>
+  <div class="wrap">
+    <h1 class="page-title">Content <span>Calendar</span></h1>
     <p class="page-desc">Plan all 52 issues of The Studio Weekly — one year of content, every Saturday.</p>
 
-    <div class="stats-bar" id="statsBar"></div>
+    <div class="stats" id="statsBar"></div>
 
     <div class="cal-controls">
       <select id="yearSelect" onchange="renderCalendar()"></select>
@@ -270,12 +256,12 @@ function renderCalendar() {
   var statsHtml = '';
   var stats = [
     { label: 'Total Issues', num: total, cls: 'gold' },
-    { label: 'Planned', num: counts.planned, cls: 'gray' },
+    { label: 'Planned', num: counts.planned, cls: 'dim' },
     { label: 'Ready to Publish', num: counts.ready, cls: 'blue' },
     { label: 'Published', num: counts.published, cls: 'green' }
   ];
   stats.forEach(function(s) {
-    statsHtml += '<div class="stat-item"><div class="num ' + s.cls + '">' + s.num + '</div><div class="label">' + s.label + '</div></div>';
+    statsHtml += '<div class="stat-card"><span class="stat-num ' + s.cls + '">' + s.num + '</span><span class="stat-label">' + s.label + '</span></div>';
   });
   document.getElementById('statsBar').innerHTML = statsHtml;
 }
