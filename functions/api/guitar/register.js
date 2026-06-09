@@ -31,7 +31,7 @@ export async function onRequest(context) {
 
     // Create session token
     const token = genToken();
-    await db.prepare('INSERT INTO sessions (user_id, token) VALUES (?, ?)').bind(user.id, token).run();
+    await db.prepare("INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, datetime('now', '+30 days'))").bind(user.id, token).run();
 
     // Add to waitlist (ignore if already there)
     try {
@@ -87,6 +87,7 @@ export async function onRequest(context) {
       user: { id: user.id, name: safeName, email: safeEmail }
     }), { headers: { ...cors, 'Content-Type': 'application/json' } });
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } });
+    console.error('register error:', err);
+    return new Response(JSON.stringify({ error: err.message || 'Internal error' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } });
   }
 }
