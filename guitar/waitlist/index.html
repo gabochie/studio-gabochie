@@ -2,7 +2,7 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Gideon Guitar Method — Presale</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
-<script src="https://checkout.flutterwave.com/v3.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
 .presell-wrap{max-width:680px;margin:0 auto;padding:24px 20px 80px}
 .presell-section{margin-bottom:40px}
@@ -178,7 +178,7 @@
         <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Do I need any prior experience? <span>+</span></div><div class="faq-a">No. The course starts from absolute zero — parts of the guitar, holding it, first notes. You'll be playing chords by Module 3.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What guitar do I need? <span>+</span></div><div class="faq-a">Any acoustic or electric guitar with 6 strings. A standard steel-string acoustic is ideal for this course.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How is this different from YouTube? <span>+</span></div><div class="faq-a">YouTube is random. This is systematic — structured curriculum, deliberate practice, progress tracking, pitch detection. It's the difference between wandering and a GPS.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What payment methods do you accept? <span>+</span></div><div class="faq-a">Mobile Money (Momo), card, and USSD — processed securely by Flutterwave. GH₵ 99 one-time, lifetime access.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What payment methods do you accept? <span>+</span></div><div class="faq-a">Mobile Money (Momo), card, and USSD — processed securely by Paystack. GH₵ 99 one-time, lifetime access.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I really learn in 20 days? <span>+</span></div><div class="faq-a">You'll play your first song in Module 6 (day ~6). Full fluency takes consistent practice — the course is designed for 15-20 min per day.</div></div>
         <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What if I'm not satisfied? <span>+</span></div><div class="faq-a">Try Modules 1-3 for free. If it's not for you, you've lost nothing. If you purchase and need help, email us anytime.</div></div>
       </div>
@@ -258,20 +258,32 @@ function toggleFAQ(el) {
             Guitar.showToast('Already unlocked!','success');
           } else if (data.tx_ref) {
             Guitar.hideSheet();
-            FlutterwaveCheckout({
-              public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-              tx_ref: data.tx_ref,
-              amount: 99,
+            const handler = PaystackPop.setup({
+              key: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
+              email: user.email,
+              amount: 9900,
               currency: 'GHS',
-              customer: { email: user.email, name: user.name || user.email.split('@')[0] },
-              payment_options: 'card, mobilemoneyghana, ussd',
-              callback: function(payment) {
-                if (payment.status === 'completed' || payment.status === 'successful') {
-                  Guitar.showToast('Payment confirmed! All modules unlocked.','success');
-                }
+              ref: data.tx_ref,
+              callback: function(response) {
+                fetch('/api/guitar/paystack/verify', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ reference: response.reference })
+                }).then(r => r.json()).then(res => {
+                  if (res.status === 'ok') {
+                    Guitar.showToast('Payment confirmed! All modules unlocked.','success');
+                    location.href = '/guitar/learn/';
+                  } else {
+                    Guitar.showToast('Verification failed. Contact support.','error');
+                  }
+                }).catch(() => {
+                  Guitar.showToast('Payment received! Verifying...','info');
+                  setTimeout(() => location.href = '/guitar/learn/', 2000);
+                });
               },
-              onclose: function() {}
+              onClose: function() {}
             });
+            handler.openIframe();
           } else {
             Guitar.hideSheet();
             Guitar.showToast('Enrollment successful!','success');
