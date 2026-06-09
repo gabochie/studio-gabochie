@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>What Do You Want to Learn? — GideonAbochie Studio</title>
+<meta name="description" content="Tell us what you want to learn and get a personalized course recommendation. Free programs available now.">
+<meta property="og:title" content="What Do You Want to Learn?">
+<meta property="og:description" content="Take 30 seconds to tell us what you want to learn. Get a personalized course recommendation from GideonAbochie Studio.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gideonabochie.org/survey/">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0A1628;color:#CBD5E1;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.top-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0F1E38;border-bottom:1px solid rgba(201,168,76,0.15)}
+.top-bar .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.top-bar .logo-circle{width:32px;height:32px;border-radius:8px;background:#C9A84C;display:flex;align-items:center;justify-content:center;color:#0A1628;font-weight:800;font-size:16px}
+.top-bar .logo-text{font-size:13px;font-weight:600;color:#E8EEF7;letter-spacing:-0.01em}
+.top-bar .logo-text span{color:#C9A84C}
+.top-bar .badge{font-size:10px;color:#5A7A9F;background:rgba(90,122,159,0.15);padding:4px 10px;border-radius:12px;font-weight:500}
+
+.chat-area{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-track{background:transparent}
+.chat-area::-webkit-scrollbar-thumb{background:#1E3250;border-radius:4px}
+
+.msg{max-width:88%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.6;animation:fadeUp .3s ease-out;word-wrap:break-word}
+.msg.bot{align-self:flex-start;background:#0F1E38;border:1px solid #1E3250;color:#CBD5E1;border-bottom-left-radius:4px}
+.msg.user{align-self:flex-end;background:#C9A84C;color:#0A1628;border-bottom-right-radius:4px;font-weight:500}
+.msg.typing{align-self:flex-start;background:#0F1E38;border:1px solid #1E3250;border-bottom-left-radius:4px;padding:16px 20px;display:flex;gap:4px;align-items:center}
+.msg.typing .dot{width:7px;height:7px;border-radius:50%;background:#5A7A9F;animation:bounce 1.2s infinite}
+.msg.typing .dot:nth-child(2){animation-delay:.2s}
+.msg.typing .dot:nth-child(3){animation-delay:.4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;margin-bottom:4px;animation:fadeUp .3s ease-out}
+.option-btn{padding:10px 18px;border-radius:20px;border:1.5px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);color:#C9A84C;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
+.option-btn:hover,.option-btn:active{background:rgba(201,168,76,0.2);border-color:#C9A84C;transform:scale(1.02)}
+.option-btn.selected{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+
+.input-area{flex-shrink:0;padding:8px 16px 16px;background:#0A1628;border-top:1px solid rgba(255,255,255,0.05)}
+.input-wrap{display:flex;gap:8px;background:#0F1E38;border:1px solid #1E3250;border-radius:24px;padding:4px;transition:border-color .2s}
+.input-wrap:focus-within{border-color:#C9A84C}
+.input-wrap input{flex:1;background:transparent;border:none;outline:none;color:#E8EEF7;font-size:14px;padding:8px 12px;font-family:inherit}
+.input-wrap input::placeholder{color:#5A7A9F}
+.input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:#C9A84C;color:#0A1628;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.input-wrap button:active{transform:scale(.9)}
+.input-wrap button:disabled{opacity:.4;cursor:not-allowed}
+.input-wrap button svg{width:18px;height:18px}
+
+.result-card{margin-top:4px;background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:20px;animation:fadeUp .4s ease-out}
+.result-card .program-name{font-size:18px;font-weight:700;color:#C9A84C;margin-bottom:6px;font-family:'DM Sans',sans-serif}
+.result-card .program-desc{font-size:13px;color:#8A9BB5;line-height:1.6;margin-bottom:16px}
+.result-card .cta-row{display:flex;gap:8px;flex-wrap:wrap}
+.result-card .btn-primary{flex:1;min-width:140px;padding:12px 20px;border-radius:12px;border:none;background:#C9A84C;color:#0A1628;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit;text-decoration:none;text-align:center}
+.result-card .btn-primary:active{transform:scale(.97)}
+.result-card .btn-secondary{padding:12px 20px;border-radius:12px;border:1.5px solid #1E3250;background:transparent;color:#8A9BB5;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit;text-decoration:none;text-align:center}
+.result-card .btn-secondary:active{background:#0F1E38}
+
+.quick-reply{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.quick-reply button{padding:10px 18px;border-radius:20px;border:1.5px solid #1E3250;background:#0F1E38;color:#CBD5E1;font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit}
+.quick-reply button:active{background:#1E3250;border-color:#C9A84C}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="https://gideonabochie.org" class="logo">
+    <div class="logo-circle">G</div>
+    <div class="logo-text">GideonAbochie <span>Studio</span></div>
+  </a>
+  <div class="badge">Learning Survey</div>
+</div>
+
+<div class="chat-area" id="chatArea"></div>
+
+<div class="input-area" id="inputArea">
+  <div class="quick-reply" id="quickReply"></div>
+  <div class="input-wrap">
+    <input type="text" id="chatInput" placeholder="Type your answer..." autocomplete="off">
+    <button id="sendBtn" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ── State ── */
+var state = {
+  step: 0,
+  name: '',
+  phone: '',
+  topic: '',
+  learningStyle: '',
+  timeCommitment: '',
+  sourceUrl: new URLSearchParams(window.location.search).get('source') || ''
+};
+
+var STEPS = [
+  { q: "Hey there! \uD83C\uDF89 Welcome to GideonAbochie Studio.\n\nI'm your learning guide. Let me help you find the perfect program for you.\n\nFirst, what's your name?", field: 'name', input: true },
+  { q: "Great to meet you, {name}! \uD83D\uDC4B\n\nWhat's your **WhatsApp number** so we can keep in touch and send you free learning resources?", field: 'phone', input: true, phone: true },
+  { q: "Awesome! Now, what are you **most excited to learn**?", field: 'topic', options: ['Music / Guitar', 'Business & Entrepreneurship', 'Personal Finance', 'Faith & Spirituality', 'Tech & Digital Skills', 'Content Creation', 'Creative Arts', 'Other'] },
+  { q: "How do you **prefer to learn**?", field: 'learningStyle', options: ['Video lessons', 'Audio / podcasts', 'Written guides', 'Live classes', '1-on-1 mentoring'] },
+  { q: "How much time can you **commit per week**?", field: 'timeCommitment', options: ['Less than 1 hour', '1\u20132 hours', '3\u20135 hours', '5+ hours'] }
+];
+
+/* ── DOM refs ── */
+var chatArea = document.getElementById('chatArea');
+var inputArea = document.getElementById('inputArea');
+var chatInput = document.getElementById('chatInput');
+var sendBtn = document.getElementById('sendBtn');
+var quickReply = document.getElementById('quickReply');
+
+/* ── Helpers ── */
+function scrollBottom() { setTimeout(function(){ chatArea.scrollTop = chatArea.scrollHeight; }, 50); }
+
+function addMsg(text, cls) {
+  var div = document.createElement('div');
+  div.className = 'msg ' + cls;
+  div.textContent = text;
+  chatArea.appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+function addBotMsg(text) {
+  return addMsg(text, 'bot');
+}
+
+function addUserMsg(text) {
+  return addMsg(text, 'user');
+}
+
+function showTyping() {
+  var div = document.createElement('div');
+  div.className = 'msg typing';
+  div.id = 'typingIndicator';
+  for (var i = 0; i < 3; i++) { var dot = document.createElement('span'); dot.className = 'dot'; div.appendChild(dot); }
+  chatArea.appendChild(div);
+  scrollBottom();
+}
+
+function hideTyping() {
+  var el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function showOptions(opts) {
+  var container = document.getElementById('quickReply');
+  container.innerHTML = '';
+  chatInput.parentElement.classList.add('hidden');
+  opts.forEach(function(opt) {
+    var btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.addEventListener('click', function() { selectOption(opt); });
+    container.appendChild(btn);
+  });
+  container.classList.remove('hidden');
+  scrollBottom();
+}
+
+function hideOptions() {
+  var container = document.getElementById('quickReply');
+  container.innerHTML = '';
+  container.classList.add('hidden');
+  chatInput.parentElement.classList.remove('hidden');
+}
+
+function showInput(placeholder, isPhone) {
+  chatInput.placeholder = placeholder || 'Type your answer...';
+  chatInput.type = isPhone ? 'tel' : 'text';
+  chatInput.value = '';
+  chatInput.focus();
+  hideOptions();
+}
+
+function selectOption(val) {
+  hideOptions();
+  addUserMsg(val);
+  var step = STEPS[state.step];
+  if (step) state[step.field] = val;
+  state.step++;
+  setTimeout(function(){ nextStep(); }, 400);
+}
+
+function submitText() {
+  var val = chatInput.value.trim();
+  if (!val) return;
+  var step = STEPS[state.step];
+  if (step && step.phone) {
+    var cleaned = val.replace(/[\s\-\(\)]/g, '');
+    if (cleaned.length < 8) {
+      addBotMsg("Please enter a valid phone number so we can reach you on WhatsApp \uD83D\uDCAC");
+      return;
+    }
+    val = cleaned;
+  }
+  addUserMsg(val);
+  if (step) state[step.field] = val;
+  chatInput.value = '';
+  state.step++;
+  setTimeout(function(){ nextStep(); }, 400);
+}
+
+/* ── Next step ── */
+function nextStep() {
+  if (state.step >= STEPS.length) {
+    generateRecommendation();
+    return;
+  }
+  var step = STEPS[state.step];
+  var q = step.q.replace('{name}', state.name);
+  addBotMsg(q);
+
+  if (step.options) {
+    setTimeout(function(){ showOptions(step.options); }, 300);
+  } else {
+    setTimeout(function(){ showInput(step.phone ? 'Enter your WhatsApp number...' : (step.field === 'name' ? 'Enter your name...' : 'Type your answer...'), step.phone); }, 300);
+  }
+}
+
+/* ── Recommendation ── */
+function generateRecommendation() {
+  showTyping();
+  hideInput();
+
+  var payload = {
+    name: state.name,
+    phone: state.phone,
+    topic: state.topic,
+    learning_style: state.learningStyle,
+    time_commitment: state.timeCommitment,
+    source: 'web',
+    source_url: state.sourceUrl
+  };
+
+  fetch('/api/survey/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json() }).then(function(d){
+    hideTyping();
+    if (d.status === 'ok') {
+      showRecommendation(d);
+    } else {
+      addBotMsg("Thanks for sharing, " + state.name + "! \uD83D\uDC4A We'll get back to you on WhatsApp with personalized learning recommendations soon.");
+      showDone();
+    }
+  }).catch(function(){
+    hideTyping();
+    addBotMsg("Thanks for sharing, " + state.name + "! \uD83D\uDC4A We'll get back to you on WhatsApp with personalized learning recommendations soon.");
+    showDone();
+  });
+}
+
+function showRecommendation(d) {
+  var rec = d.recommendation || '';
+  var program = d.recommended_program || '';
+  var enrollUrl = program ? '/school/?program=' + encodeURIComponent(program) : '/school/';
+
+  var card = document.createElement('div');
+  card.className = 'result-card';
+  card.innerHTML =
+    '<div class="program-name">' + d.program_title + '</div>' +
+    '<div class="program-desc">' + (rec || 'Based on what you shared, this program is perfect for you.') + '</div>' +
+    '<div class="cta-row">' +
+      '<a href="' + enrollUrl + '" class="btn-primary" target="_blank">Yes, Enroll Me! \uD83D\uDE80</a>' +
+      '<button class="btn-secondary" onclick="this.closest(\'.result-card\').querySelector(\'.btn-primary\').click()">Not Now</button>' +
+    '</div>';
+
+  var container = document.createElement('div');
+  container.className = 'msg bot';
+  container.style.maxWidth = '100%';
+  container.style.padding = '0';
+  container.style.background = 'none';
+  container.style.border = 'none';
+  container.appendChild(card);
+  chatArea.appendChild(container);
+  scrollBottom();
+
+  addBotMsg("Does that sound like something you'd love to dive into? Click above to get started! \uD83D\uDE80");
+  showDone();
+}
+
+function showDone() {
+  var div = document.createElement('div');
+  div.style.cssText = 'text-align:center;padding:24px 0 12px;color:#5A7A9F;font-size:12px';
+  div.textContent = 'You can close this page. We\'ll follow up on WhatsApp! \uD83D\uDCAC';
+  chatArea.appendChild(div);
+  scrollBottom();
+}
+
+function hideInput() {
+  inputArea.classList.add('hidden');
+}
+
+function showInputAgain() {
+  inputArea.classList.remove('hidden');
+}
+
+/* ── Event listeners ── */
+sendBtn.addEventListener('click', submitText);
+chatInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); submitText(); }
+});
+
+/* ── Init ── */
+setTimeout(function(){ nextStep(); }, 600);
+</script>
+</body>
+</html>

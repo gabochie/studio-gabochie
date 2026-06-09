@@ -904,6 +904,23 @@
         subscriber_count INTEGER DEFAULT 0,
         sent_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      // Survey responses table
+      `CREATE TABLE IF NOT EXISTS survey_responses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        topic TEXT DEFAULT '',
+        learning_style TEXT DEFAULT '',
+        time_commitment TEXT DEFAULT '',
+        source TEXT DEFAULT 'web',
+        source_url TEXT DEFAULT '',
+        recommendation TEXT DEFAULT '',
+        recommended_program TEXT DEFAULT '',
+        opted_in INTEGER DEFAULT 1,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic)`,
     ];
     const results = [];
     for (const sql of statements) {

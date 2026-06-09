@@ -193,3 +193,20 @@ CREATE TABLE IF NOT EXISTS tasks (
 );
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
 CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source);
+
+CREATE TABLE IF NOT EXISTS survey_responses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  topic TEXT DEFAULT '',
+  learning_style TEXT DEFAULT '',
+  time_commitment TEXT DEFAULT '',
+  source TEXT DEFAULT 'web',
+  source_url TEXT DEFAULT '',
+  recommendation TEXT DEFAULT '',
+  recommended_program TEXT DEFAULT '',
+  opted_in INTEGER DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at);
+CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic);
