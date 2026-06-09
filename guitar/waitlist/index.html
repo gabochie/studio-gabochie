@@ -265,7 +265,7 @@ function toggleFAQ(el) {
               currency: 'GHS',
               ref: data.tx_ref,
               callback: function(response) {
-                fetch('/api/guitar/paystack/verify', {
+                fetch('/api/guitar/payverify', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ reference: response.reference })
@@ -274,7 +274,7 @@ function toggleFAQ(el) {
                     Guitar.showToast('Payment confirmed! All modules unlocked.','success');
                     location.href = '/guitar/learn/';
                   } else {
-                    Guitar.showToast('Verification failed. Contact support.','error');
+                    Guitar.showToast('Verification: ' + (res.error || res.details || 'failed') + '. Contact support.','error');
                   }
                 }).catch(() => {
                   Guitar.showToast('Payment received! Verifying...','info');
