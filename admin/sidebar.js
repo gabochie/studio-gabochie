@@ -28,13 +28,19 @@
       ]
     },
     {
+      label: 'Nation Building',
+      items: [
+        { href: 'surveys.html',     icon: '\uD83D\uDCCA', label: 'Survey' },
+        { href: 'programs.html', icon: '\uD83C\uDFDB', label: 'Programs' }
+      ]
+    },
+    {
       label: 'System',
       items: [
         { href: 'index.html',       icon: '\uD83D\uDCCA', label: 'Dashboard' },
         { href: 'subscribers.html', icon: '\uD83D\uDC65', label: 'Subscribers' },
         { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
         { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
-        { href: 'surveys.html',     icon: '\uD83D\uDCCA', label: 'Survey' },
         { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },
         { href: 'agents.html',      icon: '\u26A1',        label: 'Command Center' },
         { href: 'strategy.html',    icon: '\uD83C\uDFAF', label: 'Strategy' },

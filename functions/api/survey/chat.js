@@ -1,10 +1,23 @@
 import { callAI } from '../agents/_ai.js';
 
 var PROGRAM_MAP = {
-  'civic education': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'governance':      { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'entrepreneurship': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'jobs':            { slug: 'systems-thinking', title: 'Systems Thinking Program' },
+  'civic education': { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'governance':      { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'citizenship':     { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'civic tech':      { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'national development': { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'constitution':    { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'data sovereignty': { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'participatory':   { slug: 'civic-intelligence', title: 'Civic Intelligence Certificate' },
+  'artificial intelligence': { slug: 'ai-fundamentals', title: 'AI Fundamentals for Ghanaians' },
+  'machine learning': { slug: 'ai-fundamentals', title: 'AI Fundamentals for Ghanaians' },
+  'values':          { slug: 'essential-values', title: 'Essential Values for National Development' },
+  'ethics':          { slug: 'essential-values', title: 'Essential Values for National Development' },
+  'entrepreneurship': { slug: 'digital-entrepreneurship', title: 'Digital Entrepreneurship &amp; the Creative Economy' },
+  'jobs':            { slug: 'digital-entrepreneurship', title: 'Digital Entrepreneurship &amp; the Creative Economy' },
+  'creative economy': { slug: 'digital-entrepreneurship', title: 'Digital Entrepreneurship &amp; the Creative Economy' },
+  'leadership':      { slug: 'youth-leadership', title: 'Youth Leadership &amp; Community Organizing' },
+  'community organizing': { slug: 'youth-leadership', title: 'Youth Leadership &amp; Community Organizing' },
   'arts':            { slug: 'guitar-method', title: 'Gideon Guitar Method' },
   'culture':         { slug: 'guitar-method', title: 'Gideon Guitar Method' },
   'identity':        { slug: 'guitar-method', title: 'Gideon Guitar Method' },
@@ -16,7 +29,6 @@ var PROGRAM_MAP = {
   'wealth':          { slug: 'systems-thinking', title: 'Systems Thinking Program' },
   'critical thinking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
   'strategic thinking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
-  'leadership':      { slug: 'systems-thinking', title: 'Systems Thinking Program' },
   'public speaking': { slug: 'systems-thinking', title: 'Systems Thinking Program' },
   'computing':       { slug: 'intro-computing', title: 'Introduction to Computing' },
   'creative':        { slug: 'guitar-method', title: 'Gideon Guitar Method' },
@@ -42,6 +54,11 @@ var SYSTEM_PROMPT = [
   '- Introduction to Storytelling (intro-storytelling): Coming soon. Narrative design. Best for content creators, media.',
   '- Introduction to Design Thinking (intro-design-thinking): Coming soon. Design methodology. Best for innovation, problem-solving.',
   '- Architectural Thinking (architectural-thinking): Coming soon. Structuring ideas with wisdom. Best for strategic planning.',
+  '- Civic Intelligence Certificate (civic-intelligence): Learn how Ghana\'s democracy works, build civic tech, and lead community action projects. Best for civic education, governance, citizenship, national development.',
+  '- AI Fundamentals for Ghanaians (ai-fundamentals): Understand AI, apply it to Ghanaian sectors, and build ethically. Best for technology, AI, digital skills, machine learning.',
+  '- Essential Values for National Development (essential-values): Character formation for engaged citizenship and nation building. Best for values, ethics, personal development, discipline.',
+  '- Digital Entrepreneurship & the Creative Economy (digital-entrepreneurship): Build digital products and creative businesses for Ghanaian and global markets. Best for entrepreneurship, business, creative arts, jobs.',
+  '- Youth Leadership & Community Organizing (youth-leadership): Lead community change through civic clubs, projects, and advocacy. Best for leadership, community organizing, advocacy, youth development.',
   '',
   'If the student\'s interest matches a "coming soon" program, recommend it but note it is in development and suggest an active alternative.',
   'Always connect your recommendation to national development and the student\'s potential to contribute to Ghana\'s future.',
@@ -139,7 +156,12 @@ export async function onRequest(context) {
         'revelation-study': 'In uncertain times, young people need hope and a clear vision for the future. This program builds unshakeable faith and a long-term perspective essential for nationbuilding.',
         'psalms-worship-word': 'Worship and the arts have always been central to Ghanaian identity. This program deepens your spiritual life and equips you to lead others in worship and community building.',
         'intro-computing': 'Digital skills are the language of the 21st century economy. This program gives you a strong foundation in how technology works — opening doors in Ghana\'s growing tech sector.',
-        'intro-storytelling': 'Ghana\'s stories need to be told by Ghanaians. This program teaches you to craft narratives that preserve our heritage, inspire change, and shape the national conversation.'
+        'intro-storytelling': 'Ghana\'s stories need to be told by Ghanaians. This program teaches you to craft narratives that preserve our heritage, inspire change, and shape the national conversation.',
+        'civic-intelligence': 'Ghana\'s future depends on citizens who understand their rights, use technology for accountability, and take action in their communities. This program gives you practical tools — from reading the Constitution to building civic tech — to become an engaged citizen who contributes to national development.',
+        'ai-fundamentals': 'Ghana\'s AI Strategy envisions an AI-powered society by 2035. This program gives you the foundational knowledge to understand, apply, and shape AI for Ghana\'s unique needs — in agriculture, health, education, and governance.',
+        'essential-values': 'Character is the foundation of every great nation. This program, based on the Essential Values for Ghanaian Youth Handbook, teaches the values that build strong citizens — integrity, honesty, discipline, and a heart for the common good.',
+        'digital-entrepreneurship': 'Ghana\'s digital and creative economy is booming. This program teaches you practical skills to build a business, create digital products, and thrive in the 21st century economy — on your own terms.',
+        'youth-leadership': 'Ghana has the youngest population in the world — and the greatest potential. This program equips you with the skills to organize your community, lead change, and make a real difference in your district and beyond.'
       };
       recommendation = reasons[program.slug] || 'Based on your interests, this program will help you grow and contribute to Ghana\'s development.';
     }

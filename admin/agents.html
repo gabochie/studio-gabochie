@@ -421,7 +421,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="sc-body" style="font-size:13px;line-height:1.7;color:var(--text-muted)">
     <table style="width:100%;border-collapse:collapse">
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top;width:100px"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">1</kbd> Dashboard</td><td style="padding:8px 0 8px 16px">Real-time metrics: active agents, queue depth, run counts, error rate, revenue. Activity sparklines show 7-day trends. Agent registry table lists all registered agents with status dots.</td></tr>
-      <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">2</kbd> Agents</td><td style="padding:8px 0 8px 16px">Manage your agent fleet. <strong>Spawn</strong> new agents by type (content, outreach, analytics, task_processor). Each agent has a health dot: <span style="color:var(--green)">green</span>=idle, <span style="color:var(--gold)">gold</span>=busy, <span style="color:var(--red)">red</span>=error, <span style="color:var(--text-dim)">dim</span>=offline. <strong>Kill</strong> (deactivates) or <strong>Restart</strong> agents from the list.</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">2</kbd> Agents</td><td style="padding:8px 0 8px 16px">Manage your agent fleet. <strong>Spawn</strong> new agents by type (content, outreach, analytics, survey, task_processor). Each agent has a health dot: <span style="color:var(--green)">green</span>=idle, <span style="color:var(--gold)">gold</span>=busy, <span style="color:var(--red)">red</span>=error, <span style="color:var(--text-dim)">dim</span>=offline. <strong>Kill</strong> (deactivates) or <strong>Restart</strong> agents from the list.</td></tr>
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">3</kbd> Workflows</td><td style="padding:8px 0 8px 16px">Automated pipelines. Create workflows with a name, description, and trigger type (Manual, Scheduled/Cron, Event-driven). Click a workflow to see its steps, add/delete steps, edit metadata, run manually, or delete the workflow. Steps are ordered sequentially.</td></tr>
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">4</kbd> Runs</td><td style="padding:8px 0 8px 16px">Execution history of all agents and workflows. Filter by status (all/completed/error/running/pending). Click any run row to see details including timestamps, duration, and error messages. Error rate shown on dashboard.</td></tr>
       <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0;font-weight:600;color:var(--text-body);vertical-align:top"><kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">5</kbd> Queue</td><td style="padding:8px 0 8px 16px">Pending work items waiting for agent processing. Shows priority, type, status, and age. Click a row for full detail (payload, result, error). <strong>Process 10</strong> and <strong>Process 1</strong> buttons drain the queue in batches. Auto-drain runs on cron in production.</td></tr>
@@ -505,7 +505,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="m">
     <div class="m-title">Spawn New Agent</div>
     <label>Agent Type</label>
-    <select id="spawnType"><option value="content">Content</option><option value="outreach">Outreach</option><option value="analytics">Analytics</option><option value="task_processor">Task Processor</option></select>
+    <select id="spawnType"><option value="content">Content</option><option value="outreach">Outreach</option><option value="analytics">Analytics</option><option value="survey">Survey</option><option value="task_processor">Task Processor</option></select>
     <label>Name</label>
     <input type="text" id="spawnName" placeholder="e.g. Newsletter Writer #2">
     <label>Initial Prompt</label>
@@ -923,11 +923,12 @@ function spawnAgent() {
   }).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 function seedDefaultAgents() {
-  if (!confirm('This will spawn one agent of each type (content, outreach, analytics, task_processor). Continue?')) return;
+  if (!confirm('This will spawn one agent of each type (content, outreach, analytics, survey, task_processor). Continue?')) return;
   var types = [
     { name: 'Content Agent', type: 'content', prompt: 'Draft, edit, and publish content across the site.' },
     { name: 'Outreach Agent', type: 'outreach', prompt: 'Segment audience, send follow-ups, and manage outreach campaigns.' },
     { name: 'Analytics Agent', type: 'analytics', prompt: 'Monitor traffic, revenue, and generate performance reports.' },
+    { name: 'Survey Agent', type: 'survey', prompt: 'Process reader survey responses, analyze trends, and recommend content topics.' },
     { name: 'Task Processor', type: 'task_processor', prompt: 'Read the queue, execute tasks, and escalate when needed.' }
   ];
   $('seedAgentsBtn').disabled = true;
