@@ -38,6 +38,13 @@ export default [
         ...globals.browser,
         AppState: 'readonly',
         AdminState: 'readonly',
+        Modal: 'readonly',
+        Toast: 'readonly',
+        adminFetch: 'readonly',
+        escapeHtml: 'readonly',
+        adminLogout: 'readonly',
+        getAdminKey: 'readonly',
+        ensureAdminKey: 'readonly',
       },
     },
     rules: {
