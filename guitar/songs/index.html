@@ -36,6 +36,24 @@
       <div id="songs-list" class="song-grid"></div>
     </div>
   </div>
+  <!-- Mini Player -->
+  <div class="mini-player hidden" id="mini-player">
+    <div class="player-info">
+      <div class="player-song" id="player-song-name">—</div>
+      <div class="player-chord-row" id="player-chord-row"></div>
+    </div>
+    <div class="player-controls">
+      <button class="ctrl-btn" onclick="mpPrev()">⏮</button>
+      <button class="ctrl-btn play" id="mp-play-btn" onclick="mpToggle()">▶</button>
+      <button class="ctrl-btn" onclick="mpNext()">⏭</button>
+    </div>
+    <div class="player-tempo">
+      <span>BPM</span>
+      <input type="range" min="40" max="160" value="70" step="1" oninput="mpTempo(this.value)" id="mp-tempo">
+      <span id="mp-tempo-val">70</span>
+    </div>
+    <button class="ctrl-btn" onclick="mpClose()" style="font-size:18px;width:auto;padding:0 8px">✕</button>
+  </div>
   <nav class="bottom-nav">
     <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
     <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
@@ -64,6 +82,38 @@ const SONGS = [
   {id:13,title:'Agona',artist:'Ebo Taylor',difficulty:'gold',chords:['Am','D7','G','C','F','E7'],video:'https://www.youtube.com/embed/vsl5GqQxsSE',progression:'Am → D7 → G → C → F → E7',strum:'Highlife chop'}
 ];
 let currentFilter = 'all', currentUserEmail = null;
+// ── Mini Player State ──
+let mpSong = null, mpIdx = 0, mpPlaying = false, mpInterval = null, mpTempoVal = 70;
+window.playSong = function(id) {
+  const song = SONGS.find(s => s.id === id); if (!song) return;
+  mpSong = song; mpIdx = 0; mpTempoVal = 70;
+  document.getElementById('mini-player').classList.remove('hidden');
+  document.getElementById('player-song-name').textContent = song.title + ' — ' + song.artist;
+  document.getElementById('mp-tempo').value = 70;
+  document.getElementById('mp-tempo-val').textContent = '70';
+  renderMPChords();
+  if (!mpPlaying) mpToggle();
+};
+function renderMPChords() {
+  if (!mpSong) return;
+  const row = document.getElementById('player-chord-row');
+  row.innerHTML = mpSong.chords.map((c, i) => `<div class="player-chord${i === mpIdx ? ' current' : ''}">${c}</div>`).join('');
+}
+window.mpToggle = function() {
+  mpPlaying = !mpPlaying;
+  document.getElementById('mp-play-btn').textContent = mpPlaying ? '⏸' : '▶';
+  if (mpPlaying) {
+    const beatsPerChord = 4, beatMs = 60000 / mpTempoVal; let beatCount = 0;
+    mpInterval = setInterval(() => {
+      beatCount++;
+      if (beatCount >= beatsPerChord) { beatCount = 0; mpIdx = (mpIdx + 1) % mpSong.chords.length; renderMPChords(); }
+    }, beatMs);
+  } else { clearInterval(mpInterval); }
+};
+window.mpPrev = function() { if (!mpSong) return; mpIdx = Math.max(0, mpIdx - 1); renderMPChords(); };
+window.mpNext = function() { if (!mpSong) return; mpIdx = (mpIdx + 1) % mpSong.chords.length; renderMPChords(); };
+window.mpClose = function() { mpPlaying = false; clearInterval(mpInterval); document.getElementById('mini-player').classList.add('hidden'); };
+window.mpTempo = function(v) { mpTempoVal = parseInt(v); document.getElementById('mp-tempo-val').textContent = v; if (mpPlaying) { clearInterval(mpInterval); mpPlaying = false; mpToggle(); } };
 
 function renderSongs(filter) {
   const list = document.getElementById('songs-list');
@@ -101,7 +151,10 @@ window.showSongDetail = function(id) {
       <div style="margin-bottom:12px"><div style="font-size:12px;color:var(--text3);font-weight:600;margin-bottom:6px">Chords</div><div class="flex gap-xs flex-wrap">${song.chords.map(c => `<span class="song-chord-tag" style="padding:6px 14px;font-size:12px">${c}</span>`).join('')}</div></div>
       <div style="font-size:13px;margin-bottom:4px"><strong>Progression:</strong> ${song.progression}</div>
       <div style="font-size:13px;margin-bottom:16px"><strong>Strum:</strong> ${song.strum}</div>
-      <a href="/guitar/practice/" class="btn btn-primary btn-block">Practice This Song <i class="ti ti-arrow-right"></i></a>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-primary" style="flex:1" onclick="playSong(${song.id}); event.stopPropagation();">▶ Play <i class="ti ti-music"></i></button>
+        <a href="/guitar/practice/" class="btn btn-secondary" style="flex:1;text-align:center;text-decoration:none">Practice <i class="ti ti-arrow-right"></i></a>
+      </div>
     </div></div>`;
 };
 

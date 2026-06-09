@@ -21,6 +21,9 @@
         <button class="btn btn-primary btn-block" id="start-practice-btn">Start Session <i class="ti ti-player-play"></i></button>
         <button class="btn btn-secondary btn-block" onclick="showSection('one-minute')">One-Minute Drill <i class="ti ti-zap"></i></button>
         <button class="btn btn-secondary btn-block" onclick="showSection('metronome')">Metronome <i class="ti ti-timer"></i></button>
+        <button class="btn btn-secondary btn-block" onclick="showSection('fretboard')">Fretboard <i class="ti ti-grid-dots"></i></button>
+        <button class="btn btn-secondary btn-block" onclick="showSection('chord-trainer')">Chord Trainer <i class="ti ti-cards"></i></button>
+        <button class="btn btn-secondary btn-block" onclick="showSection('strum-pattern')">Strum Pattern <i class="ti ti-wave-sine"></i></button>
       </div>
       <div id="p-history" class="mt-md"></div>
     </div>
@@ -85,6 +88,72 @@
         <button class="btn btn-primary" id="metro-toggle">Start <i class="ti ti-player-play"></i></button>
       </div>
     </div>
+
+    <!-- Fretboard -->
+    <div id="fb-section" style="display:none">
+      <button class="back-btn" onclick="showLanding()"><i class="ti ti-arrow-left"></i>Back</button>
+      <div class="section-title">🎸 Interactive Fretboard</div>
+      <div class="section-sub">Click any fret to place a finger — visualize chord shapes</div>
+      <div class="guitar-neck" style="background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:16px;overflow-x:auto;margin-bottom:12px">
+        <div class="fretboard-dom"><div class="fretboard-strings" id="dom-fretboard"></div><div class="fret-nums" id="dom-fret-nums"></div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="fb-chord-btns"></div>
+      <button class="btn btn-ghost" onclick="clearDomFretboard()">Clear <i class="ti ti-trash"></i></button>
+    </div>
+
+    <!-- Chord Trainer -->
+    <div id="ct-section" style="display:none">
+      <button class="back-btn" onclick="showLanding()"><i class="ti ti-arrow-left"></i>Back</button>
+      <div class="section-title">✋ Chord Trainer</div>
+      <div class="section-sub">Flash cards for muscle memory — practice until perfect</div>
+      <div class="trainer-prompt">
+        <div class="trainer-instruction">Form this chord:</div>
+        <div class="trainer-chord" id="ct-chord">Em</div>
+        <div class="trainer-chord-hint" id="ct-hint"></div>
+        <div class="trainer-score">
+          <div class="trainer-score-item"><div class="trainer-score-num" style="color:var(--green-light)" id="ct-correct">0</div><div class="trainer-score-lbl">Correct</div></div>
+          <div class="trainer-score-item"><div class="trainer-score-num" style="color:var(--text2)" id="ct-streak">0</div><div class="trainer-score-lbl">Streak</div></div>
+        </div>
+        <div class="feedback-pop" id="ct-feedback">✅ Perfect!</div>
+      </div>
+      <div class="flex gap-sm" style="justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+        <button class="btn btn-primary" onclick="ctCorrect()">✅ Got It!</button>
+        <button class="btn btn-ghost" onclick="ctSkip()">⏭ Skip</button>
+        <button class="btn btn-ghost" onclick="ctHint()">💡 Hint</button>
+      </div>
+      <div class="section-title" style="font-size:14px;margin-top:16px">✋ All Chords — Click to Drill</div>
+      <div class="chord-grid" id="ct-chord-grid" style="margin-top:8px"></div>
+    </div>
+
+    <!-- Strum Pattern -->
+    <div id="sa-section" style="display:none">
+      <button class="back-btn" onclick="showLanding()"><i class="ti ti-arrow-left"></i>Back</button>
+      <div class="section-title">🥁 Strumming Pattern Animator</div>
+      <div class="section-sub">Visual strum pattern with adjustable BPM</div>
+      <div class="strum-animator" id="strum-animator" style="margin-bottom:12px">
+        <span class="strum-char" data-dir="D">↓</span>
+        <span class="strum-char" data-dir="D">↓</span>
+        <span class="strum-char" data-dir="D">↓</span>
+        <span class="strum-char" data-dir="D">↓</span>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;text-align:center">↓ = down · ↑ = up · — = mute</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:12px">
+        <select id="sa-pattern" class="form-input" style="flex:1;min-width:140px">
+          <option value="0">Down strums</option>
+          <option value="1">Down-Up</option>
+          <option value="2">Rock Pattern</option>
+          <option value="3">Folk Pattern</option>
+        </select>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)">
+          <span>BPM</span>
+          <input type="range" id="sa-bpm" min="40" max="160" value="80" style="width:80px;accent-color:var(--gld)">
+          <span id="sa-bpm-val" style="font-weight:600;color:var(--gld);min-width:32px">80</span>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <button class="btn btn-primary" id="sa-toggle">Start <i class="ti ti-player-play"></i></button>
+      </div>
+    </div>
   </div>
   <nav class="bottom-nav">
     <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
@@ -103,8 +172,8 @@
 const CHORDS = ['Em','Am','G','C','D','A','E','Dm','B7','F','Bm'];
 let omDrill, metronome;
 
-function showLanding() { ['p-active','om-section','metro-section'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('p-landing').style.display='block'; }
-function showSection(id) { document.getElementById('p-landing').style.display='none'; ['p-active','om-section','metro-section'].forEach(s => document.getElementById(s).style.display = s === id ? 'block' : 'none'); }
+function showLanding() { ['p-active','om-section','metro-section','fb-section','ct-section','sa-section'].forEach(id => document.getElementById(id).style.display='none'); document.getElementById('p-landing').style.display='block'; }
+function showSection(id) { document.getElementById('p-landing').style.display='none'; ['p-active','om-section','metro-section','fb-section','ct-section','sa-section'].forEach(s => document.getElementById(s).style.display = s === id ? 'block' : 'none'); }
 
 (async function() {
   const user = await Guitar.init();
@@ -181,6 +250,162 @@ function showSection(id) { document.getElementById('p-landing').style.display='n
     });
     this.innerHTML = 'Stop <i class="ti ti-player-play"></i>';
   };
+
+  // ── Chord Data (shared fretboard + trainer) ──
+  const CHORD_DATA = {
+    Em: { fingers:[{s:1,f:0},{s:2,f:0},{s:3,f:0},{s:4,f:2,label:'M'},{s:5,f:2,label:'R'},{s:6,f:0}], hint:'Ring: A fret 2 · Middle: D fret 2', diff:'easy', mini:[1,1,1,1,1,1] },
+    Am: { fingers:[{s:1,f:0},{s:2,f:1,label:'I'},{s:3,f:2,label:'M'},{s:4,f:2,label:'R'},{s:5,f:0},{s:6,f:'x'}], hint:'Index: B fret 1 · Middle: G fret 2 · Ring: D fret 2', diff:'easy', mini:[1,0,1,1,1,0] },
+    G:  { fingers:[{s:1,f:3,label:'R'},{s:2,f:0},{s:3,f:0},{s:4,f:0},{s:5,f:2,label:'I'},{s:6,f:3,label:'M'}], hint:'Middle: Low E fret 3 · Index: A fret 2 · Ring: High E fret 3', diff:'medium', mini:[1,1,1,1,1,1] },
+    C:  { fingers:[{s:1,f:0},{s:2,f:1,label:'I'},{s:3,f:0},{s:4,f:2,label:'M'},{s:5,f:3,label:'R'},{s:6,f:'x'}], hint:'Ring: A fret 3 · Middle: D fret 2 · Index: B fret 1', diff:'medium', mini:[1,1,0,1,1,0] },
+    D:  { fingers:[{s:1,f:2,label:'R'},{s:2,f:3,label:'P'},{s:3,f:2,label:'I'},{s:4,f:0},{s:5,f:'x'},{s:6,f:'x'}], hint:'Ring: high E fret 2 · Pinky: B fret 3 · Index: G fret 2', diff:'medium', mini:[1,1,1,0,0,0] },
+    A:  { fingers:[{s:1,f:0},{s:2,f:2,label:'M'},{s:3,f:2,label:'R'},{s:4,f:2,label:'I'},{s:5,f:0},{s:6,f:'x'}], hint:'Index: D fret 2 · Middle: G fret 2 · Ring: B fret 2', diff:'easy', mini:[1,1,1,1,1,0] },
+    E:  { fingers:[{s:1,f:0},{s:2,f:0},{s:3,f:1,label:'I'},{s:4,f:2,label:'M'},{s:5,f:2,label:'R'},{s:6,f:0}], hint:'Index: G fret 1 · Middle: D fret 2 · Ring: A fret 2', diff:'easy', mini:[1,1,1,1,1,1] },
+    Dm: { fingers:[{s:1,f:1,label:'I'},{s:2,f:3,label:'P'},{s:3,f:2,label:'M'},{s:4,f:0},{s:5,f:'x'},{s:6,f:'x'}], hint:'Index: high E fret 1 · Middle: G fret 2 · Pinky: B fret 3', diff:'medium', mini:[1,1,1,0,0,0] },
+    B7: { fingers:[{s:1,f:2,label:'R'},{s:2,f:0},{s:3,f:2,label:'I'},{s:4,f:1,label:'M'},{s:5,f:2,label:'P'},{s:6,f:'x'}], hint:'Middle: D fret 1 · Index: G fret 2 · Ring: high E fret 2 · Pinky: A fret 2', diff:'medium', mini:[1,0,0,1,1,0] },
+    F:  { fingers:[{s:1,f:1,label:'B'},{s:2,f:1,label:'B'},{s:3,f:2,label:'M'},{s:4,f:3,label:'R'},{s:5,f:3,label:'P'},{s:6,f:1,label:'B'}], hint:'Full barre at fret 1 — press all strings with index', diff:'hard', mini:[1,1,1,1,1,1] },
+    Bm: { fingers:[{s:1,f:2,label:'R'},{s:2,f:3,label:'P'},{s:3,f:4,label:'A'},{s:4,f:4,label:'A'},{s:5,f:2,label:'I'},{s:6,f:'x'}], hint:'Barre fret 2 with index, ring B fret 4, pinky G fret 4', diff:'hard', mini:[1,1,1,1,1,0] }
+  };
+  const CT_CHORDS = Object.keys(CHORD_DATA);
+  let ctState = { idx: 0, correct: 0, streak: 0 };
+
+  // ── DOM Fretboard ──
+  const FB_STRINGS = ['e','B','G','D','A','E'];
+  const FB_FRETS = 7;
+  function buildDomFretboard() {
+    const fb = document.getElementById('dom-fretboard');
+    if (!fb) return;
+    fb.innerHTML = '';
+    FB_STRINGS.forEach((str, si) => {
+      const row = document.createElement('div'); row.className = 'string-row';
+      row.innerHTML = `<div class="string-name">${str}</div>`;
+      const line = document.createElement('div'); line.className = 'string-line';
+      for (let f = 0; f <= FB_FRETS; f++) {
+        const cell = document.createElement('div'); cell.className = 'fret-cell';
+        cell.dataset.string = si; cell.dataset.fret = f;
+        if ([3,5,7].includes(f) && si === 2) { const inlay = document.createElement('div'); inlay.className = 'fret-inlay'; cell.appendChild(inlay); }
+        cell.innerHTML += `<div class="fret-dot-ghost"></div>`;
+        cell.addEventListener('click', () => toggleDomFret(si, f, cell));
+        line.appendChild(cell);
+      }
+      row.appendChild(line); fb.appendChild(row);
+    });
+    const fn = document.getElementById('dom-fret-nums');
+    fn.innerHTML = '';
+    for (let f = 0; f <= FB_FRETS; f++) { const c = document.createElement('div'); c.className = 'fret-num-cell'; c.textContent = f === 0 ? 'O' : f; fn.appendChild(c); }
+  }
+  function toggleDomFret(si, f, cell) {
+    const existing = cell.querySelector('.fret-dot-active');
+    if (existing) { existing.remove(); return; }
+    document.querySelectorAll(`#dom-fretboard [data-string="${si}"] .fret-dot-active`).forEach(d => d.remove());
+    const dot = document.createElement('div'); dot.className = 'fret-dot-active' + (f === 0 ? ' open' : '');
+    dot.textContent = f === 0 ? '○' : f; cell.appendChild(dot);
+  }
+  window.clearDomFretboard = function() { document.querySelectorAll('#dom-fretboard .fret-dot-active').forEach(d => d.remove()); };
+  function loadDomChord(name) {
+    clearDomFretboard();
+    const chord = CHORD_DATA[name]; if (!chord) return;
+    chord.fingers.forEach(finger => {
+      if (finger.f === 'x') return;
+      document.querySelectorAll(`#dom-fretboard [data-string="${finger.s-1}"]`).forEach(cell => {
+        if (parseInt(cell.dataset.fret) === finger.f) {
+          const dot = document.createElement('div'); dot.className = 'fret-dot-active' + (finger.f === 0 ? ' open' : '');
+          dot.textContent = finger.label || (finger.f === 0 ? '○' : finger.f); cell.appendChild(dot);
+        }
+      });
+    });
+  }
+
+  // ── Chord Trainer ──
+  function updateCT() {
+    const name = CT_CHORDS[ctState.idx];
+    document.getElementById('ct-chord').textContent = name;
+    document.getElementById('ct-hint').textContent = CHORD_DATA[name]?.hint || '';
+    document.getElementById('ct-correct').textContent = ctState.correct;
+    document.getElementById('ct-streak').textContent = ctState.streak;
+  }
+  window.ctCorrect = function() { ctState.correct++; ctState.streak++; showCTFeedback('✅ Clean!'); ctState.idx = (ctState.idx + 1) % CT_CHORDS.length; updateCT(); };
+  window.ctSkip = function() { ctState.streak = 0; ctState.idx = (ctState.idx + 1) % CT_CHORDS.length; updateCT(); };
+  window.ctHint = function() { Guitar.showToast(CHORD_DATA[CT_CHORDS[ctState.idx]]?.hint || 'No hint','info'); };
+  function showCTFeedback(msg) {
+    const el = document.getElementById('ct-feedback');
+    el.textContent = msg; el.className = 'feedback-pop show';
+    setTimeout(() => { el.className = 'feedback-pop'; }, 800);
+  }
+  function drillChord(name) {
+    const idx = CT_CHORDS.indexOf(name);
+    if (idx >= 0) ctState.idx = idx; updateCT();
+    Guitar.showToast('Drilling: ' + name, 'info');
+  }
+  function buildCTChordGrids() {
+    const container = document.getElementById('ct-chord-grid'); if (!container) return;
+    container.innerHTML = '';
+    Object.entries(CHORD_DATA).forEach(([name, data]) => {
+      const el = document.createElement('div'); el.className = 'chord-diagram';
+      const diffClass = data.diff === 'easy' ? 'diff-easy' : data.diff === 'medium' ? 'diff-medium' : 'diff-hard';
+      const dots = data.mini.map(v => `<div class="chord-dot-mini ${v === 1 ? 'on' : ''}"></div>`).join('');
+      el.innerHTML = `<div class="chord-name">${name}</div><div class="chord-mini-grid">${dots}</div><div class="chord-diff ${diffClass}">${data.diff}</div>`;
+      el.addEventListener('click', () => { drillChord(name); });
+      container.appendChild(el);
+    });
+  }
+
+  // ── Fretboard Chord Buttons ──
+  function buildFBChordBtns() {
+    const c = document.getElementById('fb-chord-btns'); if (!c) return;
+    Object.keys(CHORD_DATA).forEach(name => {
+      const btn = document.createElement('button'); btn.className = 'btn btn-ghost';
+      btn.textContent = name; btn.style.fontSize = '12px'; btn.style.fontWeight = '700';
+      btn.addEventListener('click', () => loadDomChord(name));
+      c.appendChild(btn);
+    });
+  }
+
+  // ── Strum Pattern Animator ──
+  const PATTERNS = [
+    { name:'Down strums', chars:['↓','↓','↓','↓'], dirs:['D','D','D','D'] },
+    { name:'Down-Up', chars:['↓','↑','↓','↑'], dirs:['D','U','D','U'] },
+    { name:'Rock Pattern', chars:['↓','↓','↑','↓','↑'], dirs:['D','D','U','D','U'] },
+    { name:'Folk Pattern', chars:['↓','—','↑','↓','—','↑'], dirs:['D','M','U','D','M','U'] },
+  ];
+  let saRunning = false, saInterval = null, saStep = 0, saBpm = 80;
+
+  function updateStrumDisplay() {
+    const p = PATTERNS[parseInt(document.getElementById('sa-pattern').value)];
+    const animator = document.getElementById('strum-animator');
+    if (!animator) return;
+    animator.innerHTML = p.chars.map((c, i) => `<span class="strum-char" data-dir="${p.dirs[i]}">${c}</span>`).join('');
+    saStep = 0;
+  }
+  function startStrumAnimator() {
+    if (saInterval) clearInterval(saInterval);
+    const interval = 60000 / saBpm / 2;
+    saInterval = setInterval(() => {
+      const chars = document.querySelectorAll('#strum-animator .strum-char');
+      chars.forEach(c => c.classList.remove('active'));
+      if (chars[saStep]) chars[saStep].classList.add('active');
+      saStep = (saStep + 1) % chars.length;
+    }, interval);
+  }
+  function stopStrumAnimator() { if (saInterval) { clearInterval(saInterval); saInterval = null; } document.querySelectorAll('#strum-animator .strum-char').forEach(c => c.classList.remove('active')); }
+
+  document.getElementById('sa-pattern').onchange = function() { updateStrumDisplay(); if (saRunning) startStrumAnimator(); };
+  document.getElementById('sa-bpm').oninput = function() {
+    saBpm = parseInt(this.value);
+    document.getElementById('sa-bpm-val').textContent = saBpm;
+    if (saRunning) startStrumAnimator();
+  };
+  document.getElementById('sa-toggle').onclick = function() {
+    saRunning = !saRunning;
+    this.innerHTML = saRunning ? 'Stop <i class="ti ti-player-play"></i>' : 'Start <i class="ti ti-player-play"></i>';
+    if (saRunning) startStrumAnimator(); else stopStrumAnimator();
+  };
+
+  // ── Init new features ──
+  buildDomFretboard();
+  buildFBChordBtns();
+  updateCT();
+  buildCTChordGrids();
+  updateStrumDisplay();
 
   // Practice Session
   document.getElementById('start-practice-btn').onclick = function() {
