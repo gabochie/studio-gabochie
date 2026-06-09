@@ -369,9 +369,12 @@ kbd{display:inline-block;padding:1px 5px;font-size:var(--text-2xs);font-family:v
 }
 
 /* Main content offset for sidebar */
-body.has-sidebar .wrap{margin-left:220px;transition:margin-left .25s ease}
-body.has-sidebar.sidebar-collapsed .wrap{margin-left:52px}
-@media(max-width:768px){body.has-sidebar .wrap{margin-left:0!important}}
+body.has-sidebar .wrap,
+body.has-sidebar .container{margin-left:220px;transition:margin-left .25s ease}
+body.has-sidebar.sidebar-collapsed .wrap,
+body.has-sidebar.sidebar-collapsed .container{margin-left:52px}
+@media(max-width:768px){body.has-sidebar .wrap,
+body.has-sidebar .container{margin-left:0!important}}
 
 /* ── Live Dashboard stats ── */
 .stat-card .num .delta{font-size:12px;margin-left:6px;font-family:'DM Sans',sans-serif}
