@@ -4,11 +4,11 @@ var API = (function() {
   var ADMIN_BASE = '/api/admin';
 
   function getToken() {
-    return AppState.get('agentAuthToken');
+    return AdminState.get('agentAuthToken');
   }
 
   function getAdminKey() {
-    return AppState.get('adminKey');
+    return AdminState.get('adminKey');
   }
 
   function headers(extra) {
@@ -23,7 +23,7 @@ var API = (function() {
 
   function handleResponse(res, url) {
     if (res.status === 403) {
-      AppState.setError('api', 'Authentication failed. Set your Agent Auth token in Settings.');
+      AdminState.setError('api', 'Authentication failed. Set your Agent Auth token in Settings.');
     }
     if (!res.ok) {
       return res.json().then(function(d) {
@@ -41,7 +41,7 @@ var API = (function() {
     var url = BASE + path;
     var opts = { method: method, headers: headers() };
     if (body && method !== 'GET') opts.body = JSON.stringify(body);
-    AppState.setError('api', null);
+    AdminState.setError('api', null);
     return fetch(url, opts).then(function(res) { return handleResponse(res, url); });
   }
 
@@ -49,7 +49,7 @@ var API = (function() {
     var url = ADMIN_BASE + path;
     var opts = { method: method, headers: headers() };
     if (body && method !== 'GET') opts.body = JSON.stringify(body);
-    AppState.setError('api', null);
+    AdminState.setError('api', null);
     return fetch(url, opts).then(function(res) { return handleResponse(res, url); });
   }
 
@@ -60,7 +60,7 @@ var API = (function() {
   function getStatus() {
     return get('/status').then(function(data) {
       if (data.status === 'ok') {
-        AppState.merge({
+        AdminState.merge({
           status: data,
           agents: data.agents || [],
           runs: data.latest_runs || []
@@ -76,7 +76,7 @@ var API = (function() {
     if (params && params.agent_id) q += '&agent_id=' + params.agent_id;
     return get('/runs' + q).then(function(data) {
       var items = data.items || [];
-      AppState.set('runs', items);
+      AdminState.set('runs', items);
       return items;
     });
   }
@@ -84,7 +84,7 @@ var API = (function() {
   function getQueue() {
     return get('/queue').then(function(data) {
       var items = data.items || [];
-      AppState.set('queue', items);
+      AdminState.set('queue', items);
       return items;
     });
   }
@@ -92,7 +92,7 @@ var API = (function() {
   function getWorkflows() {
     return get('/workflows').then(function(data) {
       var items = data.items || [];
-      AppState.set('workflows', items);
+      AdminState.set('workflows', items);
       return items;
     });
   }
@@ -132,7 +132,7 @@ var API = (function() {
   function getActivity() {
     return get('/activity').then(function(data) {
       if (data.status === 'ok') {
-        AppState.set('activity', data.activity || []);
+        AdminState.set('activity', data.activity || []);
       }
       return data.activity || [];
     });
@@ -151,14 +151,14 @@ var API = (function() {
   }
 
   function logAudit(action, entity_type, entity_id, details) {
-    var ak = AppState.get('adminKey') || '';
+    var ak = AdminState.get('adminKey') || '';
     return adminRequest('POST', '/audit', {action: action, entity_type: entity_type, entity_id: entity_id, admin_key: ak, details: details});
   }
 
   function getAgentTypes() {
     return get('/agents').then(function(data) {
       if (data.status === 'ok') {
-        AppState.set('agentTypes', data.types || []);
+        AdminState.set('agentTypes', data.types || []);
       }
       return data.types || [];
     });
@@ -236,7 +236,7 @@ var API = (function() {
   }
 
   function runAction(action, payload) {
-    var aiKey = AppState.get('aiKey') || '';
+    var aiKey = AdminState.get('aiKey') || '';
     var opts = Object.assign({ action: action }, payload || {});
     if (aiKey) opts.ai_key = aiKey;
     return post('/run', opts);
