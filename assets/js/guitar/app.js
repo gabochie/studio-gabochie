@@ -48,6 +48,7 @@ const Guitar = {
   getLeaderboard(period)  { return this.fetch(`/leaderboard?period=${period||'weekly'}`); },
   getEnrollStatus()       { return this.fetch('/enroll/status'); },
   enroll()                { return this.fetch('/enroll', { method:'POST' }); },
+  register(d)             { return this.fetch('/register', { method:'POST', body: JSON.stringify(d) }); },
   completeLesson(id)      { return this.fetch('/progress', { method:'POST', body: JSON.stringify({lesson_id:id, action:'complete'}) }); },
   logPractice(d)          { return this.fetch('/practice', { method:'POST', body: JSON.stringify(d) }); },
   saveOneMinute(pair,s)   { return this.fetch('/practice/records', { method:'POST', body: JSON.stringify({chord_pair:pair, score:s}) }); },
@@ -161,5 +162,71 @@ const Guitar = {
     s.textContent = css;
     document.head.appendChild(s);
     return s;
+  },
+
+  /* ----- Register Modal (one-click) ----- */
+  showRegisterModal(opts = {}) {
+    const redirect = opts.redirect || '/guitar/learn/';
+    const existing = document.querySelector('.sheet-overlay');
+    if (existing) existing.remove();
+    const html = `<div class="sheet" style="border-radius:24px 24px 0 0;max-width:400px;margin:auto auto 0">
+      <div class="sheet-handle"></div>
+      <div style="padding:20px 24px 32px">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:40px;margin-bottom:4px">🎸</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)">Start Free Trial</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-3 free • Full course GH₵ 99</div>
+        </div>
+        <form id="register-form">
+          <input class="form-input" name="name" placeholder="Your name" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <input class="form-input" name="phone" type="tel" placeholder="Phone (optional)" style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <select name="skill_level" style="margin-bottom:12px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text2);appearance:none">
+            <option value="beginner">Beginner — never played</option>
+            <option value="beginner">Starter — know a few chords</option>
+            <option value="intermediate">Intermediate — can play songs</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-block" id="reg-submit" style="padding:14px;font-size:15px">Start Free <i class="ti ti-arrow-right"></i></button>
+          <p id="reg-err" style="color:var(--red-light);font-size:12px;display:none;text-align:center;margin-top:8px"></p>
+          <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:12px">No credit card needed. Sign up in 5 seconds.</p>
+        </form>
+      </div>
+    </div>`;
+    const o = document.createElement('div');
+    o.className = 'sheet-overlay';
+    o.innerHTML = html;
+    document.body.appendChild(o);
+    requestAnimationFrame(() => o.classList.add('open'));
+    o.addEventListener('click', e => { if (e.target === o) this.hideSheet(); });
+
+    const form = o.querySelector('#register-form');
+    const submit = o.querySelector('#reg-submit');
+    const errEl = o.querySelector('#reg-err');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'Creating account...';
+      errEl.style.display = 'none';
+      const fd = new FormData(form);
+      const data = Object.fromEntries(fd.entries());
+      try {
+        const res = await this.register(data);
+        this.token = res.token;
+        this.user = res.user;
+        localStorage.setItem('ga_token', res.token);
+        localStorage.setItem('ga_student', JSON.stringify(res.user));
+        this.hideSheet();
+        this.showToast('Welcome to Gideon Guitar Method!', 'success');
+        if (opts.onSuccess) { opts.onSuccess(res); }
+        else { setTimeout(() => { window.location.href = redirect; }, 500); }
+      } catch (err) {
+        errEl.textContent = err.message || 'Registration failed. Try again.';
+        errEl.style.display = 'block';
+        submit.disabled = false;
+        submit.textContent = 'Start Free';
+      }
+    });
+    setTimeout(() => { const inp = o.querySelector('input'); if (inp) inp.focus(); }, 300);
+    return o;
   }
 };

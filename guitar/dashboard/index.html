@@ -13,9 +13,7 @@
       <div class="section-title" style="justify-content:center">Your Progress Dashboard</div>
       <div class="section-sub">Sign in to track your learning journey</div>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:300px;margin:16px auto">
-        <input class="form-input" id="dash-email" type="email" placeholder="your@email.com">
-        <button class="btn btn-primary" id="dash-signin">Sign In <i class="ti ti-arrow-right"></i></button>
-        <p id="dash-err" style="color:var(--red-light);font-size:12px;display:none"></p>
+        <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/dashboard/'})">Sign In <i class="ti ti-arrow-right"></i></button>
       </div>
     </div>
 
@@ -152,19 +150,9 @@ async function renderDashboard(user) {
   }
 }
 
-document.getElementById('dash-signin').onclick = async function() {
-  const email = document.getElementById('dash-email').value.trim();
-  if (!email) { document.getElementById('dash-err').textContent = 'Enter your email'; document.getElementById('dash-err').style.display='block'; return; }
-  document.getElementById('dash-err').style.display = 'none';
-  localStorage.setItem('guitar_email', email);
-  await renderDashboard({email});
-};
-
 (async function() {
   const user = await Guitar.init();
   if (user) await renderDashboard(user);
-  const saved = localStorage.getItem('guitar_email');
-  if (saved) { document.getElementById('dash-email').value = saved; document.getElementById('dash-signin').click(); }
 })();
 </script>
 </body></html>

@@ -95,7 +95,7 @@
     <div class="cta-section fade-up">
       <h2>🎸 Start Your Journey</h2>
       <p>Free trial — no credit card. First 3 modules are completely free. Unlock all 16 modules + full song library for GH₵ 99.</p>
-      <a href="/guitar/learn/" class="btn btn-primary btn-lg">Start Free <i class="ti ti-arrow-right"></i></a>
+      <button class="btn btn-primary btn-lg" id="cta-register">Start Free <i class="ti ti-arrow-right"></i></button>
     </div>
 
     <div style="height:20px"></div>
@@ -153,5 +153,6 @@
 })();
 
 Guitar.init();
+document.getElementById('cta-register')?.addEventListener('click', () => Guitar.showRegisterModal());
 </script>
 </body></html>

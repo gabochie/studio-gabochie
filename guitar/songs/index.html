@@ -14,9 +14,7 @@
       <div class="section-title" style="justify-content:center">Ghanaian Song Library</div>
       <div class="section-sub">Learn guitar with real highlife, gospel & hiplife songs</div>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:300px;margin:16px auto">
-        <input class="form-input" id="songs-email" type="email" placeholder="your@email.com">
-        <button class="btn btn-primary" id="songs-signin">Sign In <i class="ti ti-arrow-right"></i></button>
-        <p id="songs-err" style="color:var(--red-light);font-size:12px;display:none"></p>
+        <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/songs/'})">Sign In <i class="ti ti-arrow-right"></i></button>
       </div>
     </div>
 
@@ -107,12 +105,8 @@ window.showSongDetail = function(id) {
     </div></div>`;
 };
 
-document.getElementById('songs-signin').onclick = async function() {
-  const email = document.getElementById('songs-email').value.trim();
-  if (!email) { document.getElementById('songs-err').textContent='Enter your email'; document.getElementById('songs-err').style.display='block'; return; }
-  document.getElementById('songs-err').style.display='none';
-  localStorage.setItem('guitar_email', email);
-  currentUserEmail = email;
+window.handleSongsSignIn = async function(user) {
+  currentUserEmail = user.email;
   document.getElementById('songs-auth').style.display='none';
   document.getElementById('songs-content').style.display='block';
   renderSongs('all');
@@ -182,14 +176,7 @@ document.getElementById('buy-btn').onclick = function() {
 
 (async function() {
   const user = await Guitar.init();
-  if (user) {
-    currentUserEmail = user.email;
-    document.getElementById('songs-auth').style.display='none';
-    document.getElementById('songs-content').style.display='block';
-    renderSongs('all');
-  }
-  const saved = localStorage.getItem('guitar_email');
-  if (saved) { document.getElementById('songs-email').value = saved; document.getElementById('songs-signin').click(); }
+  if (user) handleSongsSignIn(user);
 })();
 </script>
 </body></html>

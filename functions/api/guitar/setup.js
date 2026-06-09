@@ -89,6 +89,15 @@ export async function onRequest(context) {
       cents_off REAL DEFAULT 0, string_num INTEGER DEFAULT 0,
       created_at TEXT DEFAULT (datetime('now'))
     )`);
+    s.push(`CREATE TABLE IF NOT EXISTS guitar_waitlist (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL, name TEXT NOT NULL,
+      email TEXT NOT NULL, phone TEXT DEFAULT '',
+      skill_level TEXT DEFAULT 'beginner',
+      registered_at TEXT DEFAULT (datetime('now')),
+      brevo_id TEXT DEFAULT '',
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )`);
     for (const sql of s) { try { await db.prepare(sql).run(); } catch(e) { console.error('Schema:', e.message); } }
 
     const seeds = [];
@@ -265,7 +274,7 @@ E|-------------------------|</pre><p>Play this over a G chord. This is a classic
 
     for (const sql of seeds) { try { await db.prepare(sql).run(); } catch(e) { console.error('Seed:', e.message, e.stack); } }
 
-    return new Response(JSON.stringify({ok:true, message:'Guitar tables ready', tables:['guitar_modules','guitar_lessons','guitar_exercises','guitar_songs','guitar_achievements','guitar_progress','guitar_practice_sessions','guitar_one_minute_records','guitar_user_stats','guitar_user_achievements','guitar_payments','guitar_tuner_history']}), {headers:{'Content-Type':'application/json'}});
+    return new Response(JSON.stringify({ok:true, message:'Guitar tables ready', tables:['guitar_modules','guitar_lessons','guitar_exercises','guitar_songs','guitar_achievements','guitar_progress','guitar_practice_sessions','guitar_one_minute_records','guitar_user_stats','guitar_user_achievements','guitar_payments','guitar_tuner_history','guitar_waitlist']}), {headers:{'Content-Type':'application/json'}});
   } catch(e) {
     return new Response(JSON.stringify({error:e.message}), {status:500, headers:{'Content-Type':'application/json'}});
   }
