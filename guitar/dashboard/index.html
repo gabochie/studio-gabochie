@@ -1,126 +1,323 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Dashboard — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --d-bg: #0a0a0f;
+  --d-bg2: #111118;
+  --d-bg3: #1a1a24;
+  --d-bg4: #22222f;
+  --d-surface: #1e1e2a;
+  --d-border: rgba(255,255,255,0.08);
+  --d-border2: rgba(255,255,255,0.15);
+  --d-accent: #e8c547;
+  --d-accent2: #f5d76a;
+  --d-accent-dim: rgba(232,197,71,0.12);
+  --d-accent-glow: rgba(232,197,71,0.25);
+  --d-green: #4ade80;
+  --d-green-dim: rgba(74,222,128,0.12);
+  --d-blue: #60a5fa;
+  --d-blue-dim: rgba(96,165,250,0.12);
+  --d-red: #f87171;
+  --d-red-dim: rgba(248,113,113,0.12);
+  --d-purple: #a78bfa;
+  --d-purple-dim: rgba(167,139,250,0.12);
+  --d-text: #f0f0f8;
+  --d-text2: #9090a8;
+  --d-text3: #5a5a70;
+  --d-r: 10px;
+  --d-r2: 16px;
+}
+body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--d-bg); }
+::-webkit-scrollbar-thumb { background: var(--d-bg4); border-radius: 2px; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: 260px; min-width: 260px; background: var(--d-bg2); border-right: 1px solid var(--d-border); display: flex; flex-direction: column; overflow-y: auto; }
+.main { flex: 1; overflow-y: auto; }
+.brand { padding: 24px 20px 16px; border-bottom: 1px solid var(--d-border); }
+.brand-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--d-accent); line-height: 1; }
+.brand-sub { font-size: 11px; color: var(--d-text3); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+.sidebar-section { padding: 12px 0; }
+.sidebar-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--d-text3); padding: 0 20px 8px; font-weight: 500; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 14px; color: var(--d-text2); transition: all .15s; border-left: 2px solid transparent; text-decoration: none; }
+.nav-item:hover { background: var(--d-bg3); color: var(--d-text); border-left-color: var(--d-border2); }
+.nav-item.active { background: var(--d-accent-dim); color: var(--d-accent); border-left-color: var(--d-accent); }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--d-accent); color: #000; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
+.streak-card-s { margin: 12px; background: var(--d-accent-dim); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r); padding: 14px; }
+.streak-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.streak-flame { font-size: 22px; }
+.streak-num-s { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--d-accent); line-height: 1; }
+.streak-label-s { font-size: 11px; color: var(--d-text2); }
+.streak-bar-s { display: flex; gap: 3px; margin-top: 8px; }
+.streak-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--d-bg4); }
+.streak-dot.done { background: var(--d-accent); }
+.weeks-grid { display: grid; gap: 2px; padding: 0 12px 12px; }
+.week-btn { background: none; border: 1px solid var(--d-border); border-radius: 6px; color: var(--d-text2); padding: 8px 12px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; text-align: left; transition: all .15s; display: flex; align-items: center; justify-content: space-between; }
+.week-btn:hover { border-color: var(--d-border2); color: var(--d-text); }
+.week-btn.active { border-color: var(--d-accent); background: var(--d-accent-dim); color: var(--d-accent); }
+.week-pct { font-size: 11px; color: var(--d-text3); }
+.page-header { padding: 28px 32px 20px; border-bottom: 1px solid var(--d-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; line-height: 1; }
+.page-sub { font-size: 14px; color: var(--d-text2); margin-top: 4px; }
+.header-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+.hstat { text-align: center; background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r); padding: 10px 16px; min-width: 80px; }
+.hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--d-accent); }
+.hstat-lbl { font-size: 10px; color: var(--d-text3); letter-spacing: 1px; text-transform: uppercase; }
+.view { display: none; }
+.view.active { display: block; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 24px 32px; }
+@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .dashboard-grid { grid-template-columns: 1fr; } }
+.card-s { background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r2); padding: 20px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--d-text3); font-weight: 500; }
+.card-icon { font-size: 18px; }
+.skill-rings { display: flex; flex-wrap: wrap; gap: 14px; }
+.skill-ring-wrap { text-align: center; }
+.skill-ring-lbl { font-size: 11px; color: var(--d-text2); margin-top: 6px; }
+.lesson-today-s { grid-column: 1 / -1; background: linear-gradient(135deg, #1a1a24 0%, #16161f 100%); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r2); padding: 24px; position: relative; overflow: hidden; }
+.lesson-today-s::before { content: ''; position: absolute; top: -30px; right: -30px; width: 160px; height: 160px; background: var(--d-accent-dim); border-radius: 50%; }
+.lesson-today-tag { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--d-accent); font-weight: 600; }
+.lesson-today-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; margin-top: 6px; }
+.lesson-today-desc { font-size: 14px; color: var(--d-text2); margin-top: 6px; max-width: 500px; }
+.lesson-today-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+.lesson-meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--d-text2); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: var(--d-r); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all .15s; text-decoration: none; }
+.btn-primary { background: var(--d-accent); color: #000; }
+.btn-primary:hover { background: var(--d-accent2); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--d-text2); border: 1px solid var(--d-border); }
+.btn-ghost:hover { border-color: var(--d-border2); color: var(--d-text); }
+.btn-green { background: var(--d-green); color: #000; }
+.btn-green:hover { opacity: .9; }
+.prog-bar { height: 6px; background: var(--d-bg4); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.prog-fill { height: 100%; background: var(--d-accent); border-radius: 3px; transition: width .6s cubic-bezier(0.4,0,0.2,1); }
+.prog-fill.green { background: var(--d-green); }
+.prog-fill.blue { background: var(--d-blue); }
+.prog-fill.purple { background: var(--d-purple); }
+.achievement { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--d-border); }
+.achievement:last-child { border-bottom: none; }
+.ach-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--d-accent-dim); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.ach-name { font-size: 14px; font-weight: 500; }
+.ach-desc { font-size: 12px; color: var(--d-text2); }
+.ach-points { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--d-accent); }
+.xp-bar-wrap { display: flex; align-items: center; gap: 10px; padding: 14px 14px 0; }
+.xp-level { width: 36px; height: 36px; border-radius: 50%; background: var(--d-accent); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; font-family: 'Bebas Neue', sans-serif; }
+.xp-detail { flex: 1; }
+.xp-label { font-size: 12px; color: var(--d-text2); display: flex; justify-content: space-between; }
+.skill-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.skill-bar-label { font-size: 13px; min-width: 28px; font-family: 'JetBrains Mono', monospace; color: var(--d-accent); }
+.skill-bar-track { flex: 1; height: 8px; background: var(--d-bg4); border-radius: 4px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+.skill-bar-pct { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--d-text2); min-width: 36px; text-align: right; }
+.calendar-section { padding: 0 32px 32px; }
+.week-section { margin-bottom: 28px; }
+.week-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--d-text2); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+.week-theme { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--d-accent); background: var(--d-accent-dim); border: 1px solid var(--d-accent-glow); padding: 3px 10px; border-radius: 20px; font-weight: 500; letter-spacing: 1px; }
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+@media(max-width:700px){.days-grid{grid-template-columns:repeat(4,1fr)}}
+.day-card { background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r); padding: 12px 10px; cursor: pointer; transition: all .15s; text-align: center; position: relative; }
+.day-card:hover { border-color: var(--d-border2); transform: translateY(-2px); }
+.day-card.completed { border-color: var(--d-green); background: var(--d-green-dim); }
+.day-card.today { border-color: var(--d-accent); background: var(--d-accent-dim); box-shadow: 0 0 20px var(--d-accent-dim); }
+.day-card.locked { opacity: .35; cursor: not-allowed; }
+.day-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; color: var(--d-text2); }
+.day-card.today .day-num { color: var(--d-accent); }
+.day-card.completed .day-num { color: var(--d-green); }
+.day-name { font-size: 10px; color: var(--d-text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+.day-check { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; background: var(--d-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+.challenge-banner { background: linear-gradient(135deg, var(--d-purple-dim) 0%, var(--d-accent-dim) 100%); border: 1px solid rgba(167,139,250,0.25); border-radius: var(--d-r2); padding: 20px 24px; display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.challenge-icon { font-size: 40px; }
+.challenge-text { flex: 1; }
+.challenge-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; }
+.challenge-desc { font-size: 14px; color: var(--d-text2); margin-top: 4px; }
+.challenge-reward { background: var(--d-accent); color: #000; padding: 8px 16px; border-radius: var(--d-r); font-weight: 600; font-size: 14px; white-space: nowrap; }
+.ring-svg { transform: rotate(-90deg); }
+.ring-bg { stroke: var(--d-bg4); fill: none; stroke-width: 6; }
+.ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1); }
+.badge-glow { animation: badgePulse 2s ease-in-out infinite; }
+@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 var(--d-accent-glow); } 50% { box-shadow: 0 0 20px 4px var(--d-accent-glow); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.animate-in { animation: fadeUp .4s ease-out forwards; }
+@media(max-width:768px){
+  .sidebar { width: 200px; min-width: 200px; }
+  .dashboard-grid { padding: 16px; }
+  .page-header { padding: 16px; }
+  .calendar-section { padding: 0 16px 16px; }
+}
+@media(max-width:560px){
+  .sidebar { position: fixed; left: -260px; z-index: 200; transition: left .3s; }
+  .sidebar.open { left: 0; }
+  .main { width: 100%; }
+  .days-grid { grid-template-columns: repeat(5, 1fr); }
+}
+.toast-s { position: fixed; top: 20px; right: 20px; background: var(--d-surface); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r); padding: 14px 18px; max-width: 300px; z-index: 999; animation: slideIn .4s cubic-bezier(0.34,1.56,0.64,1); display: flex; gap: 10px; align-items: flex-start; }
+.toast-s.hide { animation: slideOut .3s ease-in forwards; }
+@keyframes slideOut { to { transform: translateX(120px); opacity: 0; } }
+</style>
 </head>
-<body class="guitar-app">
-<div class="screen active">
-  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Dashboard</div><div id="xp-header" style="font-size:12px;color:var(--gld);font-weight:600"></div></div>
-  <div class="scrollable" style="flex:1;overflow-y:auto;max-width:900px;margin:0 auto;width:100%;padding:16px 20px">
-
-    <!-- Auth Gate -->
-    <div id="dash-auth" style="text-align:center;padding:60px 0">
-      <div style="font-size:56px;margin-bottom:12px">📊</div>
-      <div class="dash-greeting">Your Progress Dashboard</div>
-      <div style="font-size:14px;color:var(--text2);margin-top:6px">Sign in to track your learning journey</div>
-      <div style="display:flex;flex-direction:column;gap:8px;max-width:300px;margin:16px auto">
-        <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/dashboard/'})">Sign In <i class="ti ti-arrow-right"></i></button>
-      </div>
+<body>
+<div class="app">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">🎸 GIDEON GUITAR</div>
+      <div class="brand-sub">Learn. Practice. Master.</div>
     </div>
-
-    <!-- Dashboard Content -->
-    <div id="dash-content" style="display:none">
-
-      <!-- Greeting + Stats -->
-      <div class="page-header" style="padding:0 0 16px;border:none">
-        <div>
-          <div class="dash-greeting" id="dash-greeting">GOOD MORNING, HERO 🤘</div>
-          <div class="dash-sub" id="dash-sub">You're on a streak — keep it going!</div>
+    <div id="sidebar-xp-area">
+      <div class="xp-bar-wrap">
+        <div class="xp-level" id="xp-level-badge">1</div>
+        <div class="xp-detail">
+          <div class="xp-label"><span id="xp-label-text">Level 1 — Beginner</span></div>
+          <div class="xp-label" style="margin-top:3px"><span id="xp-cur">0</span><span style="color:var(--d-text3)"> / 50 XP</span></div>
+          <div class="prog-bar" style="margin-top:6px"><div class="prog-fill" id="xp-bar" style="width:0%"></div></div>
         </div>
       </div>
-      <div class="stats-hero" id="stats-hero">
-        <div class="stat-hero"><div class="stat-hero-num" style="color:var(--gld)" id="h-days">0</div><div class="stat-hero-lbl">Days Done</div></div>
-        <div class="stat-hero"><div class="stat-hero-num" style="color:var(--green-light)" id="h-streak">0</div><div class="stat-hero-lbl">Day Streak</div></div>
-        <div class="stat-hero"><div class="stat-hero-num" style="color:var(--blue-light)" id="h-xp">0</div><div class="stat-hero-lbl">Total XP</div></div>
-        <div class="stat-hero"><div class="stat-hero-num" style="color:var(--gld)" id="h-lessons">0</div><div class="stat-hero-lbl">Lessons Done</div></div>
+    </div>
+    <div class="streak-card-s" id="sidebar-streak" style="margin-top:12px">
+      <div class="streak-top">
+        <span class="streak-flame">🔥</span>
+        <div>
+          <div class="streak-num-s" id="streak-num">0</div>
+          <div class="streak-label-s">Day streak</div>
+        </div>
+      </div>
+      <div class="streak-bar-s" id="streak-bar"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigate</div>
+      <a class="nav-item active" href="/guitar/dashboard/"><span class="nav-icon">⊡</span> Dashboard</a>
+      <a class="nav-item" href="/guitar/learn/"><span class="nav-icon">📅</span> Learn</a>
+      <a class="nav-item" href="/guitar/learn/"><span class="nav-icon">🎯</span> Today's Lesson</a>
+      <a class="nav-item" href="/guitar/practice/"><span class="nav-icon">✋</span> Practice</a>
+      <a class="nav-item" href="/guitar/songs/"><span class="nav-icon">🎵</span> Songs</a>
+    </div>
+    <div class="sidebar-section" id="sidebar-modules">
+      <div class="sidebar-label">Modules</div>
+      <div class="weeks-grid" id="weeks-grid"></div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main" id="main">
+
+    <!-- ══ AUTH GATE ══ -->
+    <div class="view active" id="view-auth" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center">
+      <div style="font-size:56px;margin-bottom:12px">📊</div>
+      <div class="page-title" style="font-size:42px">Your Progress Dashboard</div>
+      <div class="page-sub" style="margin-top:6px;margin-bottom:20px">Sign in to track your learning journey</div>
+      <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/dashboard/'})">Sign In <i class="ti ti-arrow-right"></i></button>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="view" id="view-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title" id="dash-greeting">GOOD MORNING, HERO 🤘</div>
+          <div class="page-sub" id="dash-sub">You're on a streak — keep it going!</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><div class="hstat-num" style="color:var(--d-accent)" id="h-days">0</div><div class="hstat-lbl">Days Done</div></div>
+          <div class="hstat"><div class="hstat-num" style="color:var(--d-green)" id="h-streak">0</div><div class="hstat-lbl">Day Streak</div></div>
+          <div class="hstat"><div class="hstat-num" style="color:var(--d-blue)" id="h-xp">0</div><div class="hstat-lbl">Total XP</div></div>
+          <div class="hstat"><div class="hstat-num" style="color:var(--d-accent)" id="h-lessons">0</div><div class="hstat-lbl">Lessons Done</div></div>
+        </div>
       </div>
 
-      <!-- Dashboard Grid -->
-      <div class="dash-grid" style="margin-top:16px">
-
+      <div class="dashboard-grid">
         <!-- Today's Lesson -->
-        <div class="lesson-today">
-          <div class="lesson-today-tag" id="today-tag">🎯 TODAY</div>
+        <div class="lesson-today-s">
+          <div class="lesson-today-tag" id="today-tag">🎯 TODAY · MODULE 1</div>
           <div class="lesson-today-title" id="today-title">Start Your First Lesson</div>
           <div class="lesson-today-desc" id="today-desc">Begin your guitar journey with the fundamentals. No experience needed.</div>
           <div class="lesson-today-meta" id="today-meta"></div>
-          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" id="today-cta" onclick="location.href='/guitar/learn/'">▶ Start Learning</button>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="today-cta">▶ Start Lesson</button>
             <button class="btn btn-ghost" onclick="location.href='/guitar/practice/'">Practice Chords</button>
           </div>
         </div>
 
         <!-- Skill Rings -->
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">Skill Levels</div><div class="dash-card-icon">🎯</div></div>
-          <div class="skill-rings" id="skill-rings"><div style="font-size:12px;color:var(--text3);text-align:center;width:100%;padding:12px">Loading...</div></div>
+        <div class="card-s">
+          <div class="card-header">
+            <div class="card-title">Skill Levels</div>
+            <div class="card-icon">🎯</div>
+          </div>
+          <div class="skill-rings" id="skill-rings"><div style="font-size:12px;color:var(--d-text2);text-align:center;width:100%;padding:12px">Loading...</div></div>
         </div>
 
         <!-- Daily Challenge -->
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">Daily Goal</div><div class="dash-card-icon">⚡</div></div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.5px;margin-bottom:6px" id="challenge-title">Practice 15 minutes</div>
-          <div style="font-size:12px;color:var(--text2);margin-bottom:10px" id="challenge-desc">Complete today's lesson and earn XP</div>
+        <div class="card-s">
+          <div class="card-header">
+            <div class="card-title">Daily Challenge</div>
+            <div class="card-icon">⚡</div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:8px" id="challenge-title">Practice 15 minutes</div>
+          <div style="font-size:13px;color:var(--d-text2);margin-bottom:14px" id="challenge-desc">Complete today's lesson and earn XP</div>
           <div class="prog-bar"><div class="prog-fill" id="challenge-prog" style="width:0%"></div></div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px" id="challenge-stat">0 / 1 lessons</div>
-          <div style="margin-top:12px"><button class="btn btn-primary" onclick="location.href='/guitar/learn/'" style="width:100%;justify-content:center">Start Practice → +50 XP</button></div>
+          <div style="font-size:12px;color:var(--d-text3);margin-top:6px" id="challenge-stat">0 / 1 lessons</div>
+          <div style="margin-top:14px"><button class="btn btn-primary" onclick="location.href='/guitar/learn/'" style="width:100%;justify-content:center">Accept Challenge → +50 XP</button></div>
         </div>
 
-        <!-- Recent Achievements -->
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">Recent Achievements</div><div class="dash-card-icon">🏆</div></div>
-          <div id="achievements-list"><div style="font-size:12px;color:var(--text3);padding:8px 0">Complete lessons to unlock achievements</div></div>
+        <!-- Achievements -->
+        <div class="card-s">
+          <div class="card-header">
+            <div class="card-title">Recent Achievements</div>
+            <div class="card-icon">🏆</div>
+          </div>
+          <div id="achievements-list"><div style="font-size:12px;color:var(--d-text2);padding:8px 0">Complete lessons to unlock achievements</div></div>
         </div>
 
         <!-- Chord Mastery -->
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">Chord Mastery</div><div class="dash-card-icon">✋</div></div>
-          <div id="chord-mastery-bars"><div style="font-size:12px;color:var(--text3);padding:8px 0;text-align:center">Learn chords to see mastery</div></div>
+        <div class="card-s">
+          <div class="card-header">
+            <div class="card-title">Chord Mastery</div>
+            <div class="card-icon">✋</div>
+          </div>
+          <div id="chord-mastery-bars"><div style="font-size:12px;color:var(--d-text2);padding:8px 0;text-align:center">Learn chords to see mastery</div></div>
         </div>
 
-        <!-- Practice Stats -->
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">This Week</div><div class="dash-card-icon">📈</div></div>
-          <div id="practice-graph" style="margin-bottom:8px"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px">Loading...</div></div>
-          <div style="font-size:11px;color:var(--text3);text-align:center" id="week-total">0 sessions this week</div>
+        <!-- Weekly Practice -->
+        <div class="card-s">
+          <div class="card-header">
+            <div class="card-title">This Week</div>
+            <div class="card-icon">📈</div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:8px;height:80px;padding-top:8px" id="practice-graph"><div style="font-size:12px;color:var(--d-text2);text-align:center;width:100%;padding:8px">Loading...</div></div>
+          <div style="font-size:12px;color:var(--d-text3);text-align:center;margin-top:8px" id="week-total">0 sessions this week</div>
         </div>
-
       </div>
 
       <!-- 30-Day Journey Calendar -->
-      <div style="margin-top:24px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-          <div class="dash-card-title" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:500">Your Journey</div>
-          <span style="font-size:10px;color:var(--text3);background:rgba(255,255,255,.04);padding:2px 8px;border-radius:10px;letter-spacing:.5px">16 Modules · 64 Lessons</span>
+      <div class="calendar-section" style="padding-bottom:40px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div class="card-title" style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--d-text3);font-weight:500">Your Journey</div>
+          <span class="week-theme">16 Modules · 64 Lessons</span>
         </div>
         <div id="calendar-container"></div>
       </div>
 
       <!-- One-Minute Records -->
-      <div style="margin-top:20px;margin-bottom:60px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div class="dash-card-title" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:500">⚡ One-Minute Records</div>
+      <div class="calendar-section" style="padding-bottom:80px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div class="card-title" style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--d-text3);font-weight:500">⚡ One-Minute Records</div>
         </div>
-        <div id="om-records"><div style="font-size:12px;color:var(--text3);padding:8px 0">No records yet. Practice chord changes!</div></div>
+        <div id="om-records"><div style="font-size:12px;color:var(--d-text2);padding:8px 0">No records yet. Practice chord changes!</div></div>
       </div>
-
     </div>
-  </div>
-  <nav class="bottom-nav">
-    <a class="nav-item active" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
-    <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
-    <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
-    <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
-    <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-    <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
-  </nav>
+
+  </main>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script>
 // ═══════════════════════════════════════════
-// SVG Skill Rings
+// Render Functions
 // ═══════════════════════════════════════════
+
 function buildSkillRings(stats) {
   const el = document.getElementById('skill-rings');
   const skills = [
@@ -136,22 +333,15 @@ function buildSkillRings(stats) {
       <svg width="${size}" height="${size}" class="ring-svg" viewBox="0 0 52 52">
         <circle class="ring-bg" cx="${cx}" cy="${cy}" r="${r}" />
         <circle class="ring-fg" cx="${cx}" cy="${cy}" r="${r}"
-          stroke="${s.color}"
-          stroke-dasharray="${circ}"
-          stroke-dashoffset="${offset}" />
+          stroke="${s.color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" />
         <text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle"
-          style="font-size:10px;font-weight:600;fill:${s.color};transform:rotate(90deg);transform-origin:${cx}px ${cy}px;">
-          ${s.val}%
-        </text>
+          style="font-size:10px;font-weight:600;fill:${s.color};transform:rotate(90deg);transform-origin:${cx}px ${cy}px">${s.val}%</text>
       </svg>
       <div class="skill-ring-lbl">${s.name}</div>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// Chord Mastery Bars
-// ═══════════════════════════════════════════
 function buildChordMastery(stats, progress) {
   const el = document.getElementById('chord-mastery-bars');
   const chordNames = ['Em', 'Am', 'E', 'D', 'C', 'G'];
@@ -162,21 +352,17 @@ function buildChordMastery(stats, progress) {
   el.innerHTML = chords.map(c => `
     <div class="skill-bar-row">
       <span class="skill-bar-label">${c.name}</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${c.pct}%;background:${c.pct>70?'var(--green-light)':c.pct>40?'var(--gld)':'var(--blue-light)'};"></div></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${c.pct}%;background:${c.pct>70?'var(--d-green)':c.pct>40?'var(--d-accent)':'var(--d-blue)'};"></div></div>
       <span class="skill-bar-pct">${c.pct}%</span>
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════
-// 30-Day Calendar from modules/lessons
-// ═══════════════════════════════════════════
 function buildCalendar(modules) {
   const container = document.getElementById('calendar-container');
   if (!modules || !modules.length) {
-    container.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:20px">No modules loaded yet</div>';
+    container.innerHTML = '<div style="font-size:12px;color:var(--d-text2);text-align:center;padding:20px">No modules loaded yet</div>';
     return;
   }
-  const total = modules.reduce((s, m) => s + (m.lesson_count || m.lessons || 4), 0);
   let dayNum = 0;
   container.innerHTML = modules.map(mod => {
     const lessons = [];
@@ -184,7 +370,7 @@ function buildCalendar(modules) {
       dayNum++;
       const completed = mod.progress && mod.progress[i] && mod.progress[i].completed;
       const isToday = dayNum === 1 && !completed;
-      lessons.push(`<div class="day-card ${completed?'completed':''} ${isToday?'today':''}" onclick="${!completed?`location.href='/guitar/learn/'`:`''`}">
+      lessons.push(`<div class="day-card ${completed?'completed':''} ${isToday?'today':''}" onclick="${!completed?`location.href='/guitar/learn/'`:''}">
         ${completed?'<div class="day-check">✓</div>':''}
         <div class="day-num">${dayNum}</div>
         <div class="day-name">${(mod.lessons&&mod.lessons[i]&&mod.lessons[i].title)||'Lesson'}</div>
@@ -198,9 +384,6 @@ function buildCalendar(modules) {
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// Practice Graph
-// ═══════════════════════════════════════════
 function buildPracticeGraph(sessions) {
   const graph = document.getElementById('practice-graph');
   const weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -219,50 +402,63 @@ function buildPracticeGraph(sessions) {
   document.getElementById('week-total').textContent = week.reduce((s, w) => s + w.count, 0) + ' sessions this week';
   graph.innerHTML = week.map(w => `
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
-      <div style="font-size:9px;color:var(--text3);">${w.count>0?w.count:''}</div>
-      <div style="width:100%;background:${w.count>0?'var(--gld)':'rgba(255,255,255,.04)'};height:${Math.max(4,Math.round((w.count/max)*64))}px;border-radius:4px 4px 0 0;min-height:${w.count>0?4:0}px;transition:height .5s"></div>
-      <div style="font-size:9px;color:var(--text3);">${w.day}</div>
+      <div style="font-size:9px;color:var(--d-text3)">${w.count>0?w.count:''}</div>
+      <div style="width:100%;background:${w.count>0?'var(--d-accent)':'rgba(255,255,255,.04)'};height:${Math.max(4,Math.round((w.count/max)*64))}px;border-radius:4px 4px 0 0;min-height:${w.count>0?4:0}px;transition:height .5s"></div>
+      <div style="font-size:9px;color:var(--d-text3)">${w.day}</div>
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════
-// Achievements
-// ═══════════════════════════════════════════
 function buildAchievements(achievements, earnedKeys) {
   const list = document.getElementById('achievements-list');
   if (!achievements || !achievements.length) {
-    list.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0">Complete lessons to unlock achievements</div>';
+    list.innerHTML = '<div style="font-size:12px;color:var(--d-text2);padding:8px 0">Complete lessons to unlock achievements</div>';
     return;
   }
   const shown = achievements.slice(0, 4);
   list.innerHTML = shown.map(a => {
     const earned = a.earned || (earnedKeys||[]).includes(a.key);
     return `<div class="achievement">
-      <div class="ach-icon" style="${earned?'background:rgba(200,155,60,.15)':'opacity:.4'}">${earned?(a.icon||'🏆'):'🔒'}</div>
-      <div><div class="ach-name" style="${earned?'':'color:var(--text3)'}">${a.title||a.name}</div><div class="ach-desc">${earned?a.desc||'':'Keep going!'}</div></div>
+      <div class="ach-icon" style="${earned?'background:var(--d-accent-dim)':'opacity:.4;background:var(--d-bg4)'}">${earned?(a.icon||'🏆'):'🔒'}</div>
+      <div><div class="ach-name" style="${earned?'':'color:var(--d-text3)'}">${a.title||a.name}</div><div class="ach-desc">${earned?a.desc||'':'Keep going!'}</div></div>
       ${earned?`<div class="ach-points">+${a.xp||a.points||0} XP</div>`:''}
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// One-Minute Records
-// ═══════════════════════════════════════════
 function buildOmRecords(records) {
   const el = document.getElementById('om-records');
   if (!records || !records.length) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0">No records yet. Practice chord changes!</div>';
+    el.innerHTML = '<div style="font-size:12px;color:var(--d-text2);padding:8px 0">No records yet. Practice chord changes!</div>';
     return;
   }
   const shown = records.slice(-5).reverse();
   el.innerHTML = shown.map(r =>
-    `<div class="flex justify-between" style="padding:8px 14px;background:rgba(255,255,255,.04);border-radius:var(--radius-md);margin-bottom:6px;font-size:12px"><span>${r.chord_pair}</span><span style="color:var(--gld);font-weight:600">${r.best_score||r.score} changes</span></div>`
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--d-bg3);border-radius:var(--d-r);margin-bottom:8px;font-size:13px"><span>${r.chord_pair}</span><span style="color:var(--d-accent);font-weight:600;font-family:'JetBrains Mono',monospace">${r.best_score||r.score} changes</span></div>`
   ).join('');
 }
 
-// ═══════════════════════════════════════════
-// Main render
-// ═══════════════════════════════════════════
+function buildStreakDots(streak) {
+  const bar = document.getElementById('streak-bar');
+  const total = 14;
+  bar.innerHTML = Array.from({length: total}, (_, i) =>
+    `<div class="streak-dot ${i < streak ? 'done' : ''}"></div>`
+  ).join('');
+}
+
+function buildModuleNav(modules) {
+  const grid = document.getElementById('weeks-grid');
+  if (!modules || !modules.length) {
+    grid.innerHTML = '';
+    return;
+  }
+  const colors = { bronze: '#e8c547', silver: '#9090a8', gold: '#e8c547' };
+  grid.innerHTML = modules.map((m, i) =>
+    `<button class="week-btn ${i === 0 ? 'active' : ''}" onclick="location.href='/guitar/learn/'" style="border-left:2px solid ${colors[m.tier]||'var(--d-border)'}">
+      ${m.tier === 'bronze' ? '🥉' : m.tier === 'silver' ? '🥈' : '🥇'} ${m.title} <span class="week-pct">${(m.lesson_count||m.lessons||4)}</span>
+    </button>`
+  ).join('');
+}
+
 function getHourGreeting() {
   const h = new Date().getHours();
   if (h < 12) return 'GOOD MORNING';
@@ -271,9 +467,9 @@ function getHourGreeting() {
 }
 
 async function renderDashboard(user) {
-  const section = document.getElementById('dash-content');
-  section.style.display = 'block';
-  document.getElementById('dash-auth').style.display = 'none';
+  document.getElementById('view-auth').style.display = 'none';
+  document.getElementById('view-auth').classList.remove('active');
+  document.getElementById('view-dashboard').classList.add('active');
 
   try {
     const data = await Guitar.getProgress();
@@ -291,7 +487,18 @@ async function renderDashboard(user) {
     document.getElementById('dash-sub').textContent = streak > 0
       ? `You're on a ${streak}-day streak — don't break it today!`
       : 'Start your practice to build a streak!';
-    document.getElementById('xp-header').textContent = `Lv ${lvl} · ${xp}/${lvl * 50} XP`;
+
+    // Sidebar XP
+    document.getElementById('xp-level-badge').textContent = lvl;
+    document.getElementById('xp-label-text').textContent = `Level ${lvl} — ${lvl <= 3 ? 'Beginner' : lvl <= 6 ? 'Chord Seeker' : lvl <= 10 ? 'Musician' : 'Guitar Master'}`;
+    document.getElementById('xp-cur').textContent = xp;
+    const nextXp = lvl * 50;
+    const xpPct = Math.min(100, Math.round((xp / nextXp) * 100));
+    document.getElementById('xp-bar').style.width = xpPct + '%';
+
+    // Streak
+    document.getElementById('streak-num').textContent = streak;
+    buildStreakDots(streak);
 
     // Stats
     document.getElementById('h-days').textContent = completedLessons;
@@ -300,14 +507,13 @@ async function renderDashboard(user) {
     document.getElementById('h-lessons').textContent = `${completedLessons}/64`;
 
     // Animate stats
-    document.querySelectorAll('.stat-hero-num').forEach(el => {
+    document.querySelectorAll('.hstat-num').forEach(el => {
       const num = parseInt(el.textContent);
       if (!isNaN(num)) { el.textContent = '0'; Guitar.countUp(el, num, 600); }
     });
 
     // Today's lesson
     const currentModule = data.current_module || 1;
-    const currentLesson = data.current_lesson || 1;
     const modData = data.modules || [];
     const curMod = modData.find(m => m.id === currentModule) || {};
     document.getElementById('today-tag').textContent = `🎯 TODAY · MODULE ${currentModule}`;
@@ -323,6 +529,8 @@ async function renderDashboard(user) {
     const goalPct = Math.min(100, Math.round((completedLessons / Math.max(1, streak + 1)) * 100));
     document.getElementById('challenge-prog').style.width = goalPct + '%';
     document.getElementById('challenge-stat').textContent = `${completedLessons} / ${Math.max(1, streak + 1)} lessons`;
+    document.getElementById('challenge-title').textContent = streak > 0 ? `${streak}-day streak — keep it alive!` : 'Complete your first lesson';
+    document.getElementById('challenge-desc').textContent = streak > 0 ? `Practice today to maintain your ${streak}-day streak` : 'Start your learning journey today';
 
     // Skill rings
     buildSkillRings(stats);
@@ -336,18 +544,21 @@ async function renderDashboard(user) {
     // Chord mastery
     buildChordMastery(stats, progress);
 
+    // Module nav
+    if (modData.length) buildModuleNav(modData);
+
     // Calendar
     if (modData.length) {
       buildCalendar(modData);
     } else {
-      // Fallback: create module entries from curriculum data
       try {
         const modRes = await fetch('/api/guitar/modules');
         if (modRes.ok) {
           const modJson = await modRes.json();
           buildCalendar(modJson.modules || []);
+          if (modJson.modules) buildModuleNav(modJson.modules);
         }
-      } catch(e) { document.getElementById('calendar-container').innerHTML = ''; }
+      } catch(e) {}
     }
 
     // Practice graph
@@ -363,7 +574,6 @@ async function renderDashboard(user) {
     } catch(e) { buildOmRecords([]); }
 
   } catch(e) {
-    // Show basic info even without full data
     document.getElementById('h-days').textContent = '--';
     document.getElementById('h-streak').textContent = '--';
     document.getElementById('h-xp').textContent = '--';
@@ -371,9 +581,13 @@ async function renderDashboard(user) {
   }
 }
 
-(async function() {
-  const user = await Guitar.init();
-  if (user) await renderDashboard(user);
+// ═══════════════════════════════════════════
+// Init
+// ═══════════════════════════════════════════
+(function() {
+  Guitar.init().then(user => {
+    if (user) renderDashboard(user);
+  });
 })();
 </script>
 </body></html>
