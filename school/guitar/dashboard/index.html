@@ -531,7 +531,7 @@ async function renderDashboard(user) {
     metaEl.innerHTML = `<div class="lesson-meta-item">⏱ ${curMod.duration||'15'} min</div>
       <div class="lesson-meta-item">📖 ${(curMod.lesson_count||curMod.lessons||4)} lessons</div>
       <div class="lesson-meta-item">🔥 +${15 + lvl * 5} XP</div>`;
-    document.getElementById('today-cta').onclick = () => location.href = '/guitar/learn/';
+    document.getElementById('today-cta').onclick = () => location.href = '/school/guitar/learn/';
 
     // Daily goal
     const goalPct = Math.min(100, Math.round((completedLessons / Math.max(1, streak + 1)) * 100));

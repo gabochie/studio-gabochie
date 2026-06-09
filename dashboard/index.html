@@ -122,6 +122,7 @@ h1 span{color:#C9A84C}
 <div class="wrap" id="dashboardView" style="display:none">
   <h1>Student <span>Dashboard</span></h1>
   <div class="subtitle" id="studentInfo"></div>
+  <div id="programTabs" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap"></div>
   <div class="card">
     <div class="program-header">
       <h3 id="programTitle">—</h3>
@@ -234,7 +235,7 @@ function loadDashboard() {
     return;
   }
 
-  api('/api/enroll')
+  api('/api/enroll?enrollments=1')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       document.getElementById('loadingView').style.display = 'none';
@@ -247,6 +248,21 @@ function loadDashboard() {
       var e = data.enrollment;
       document.getElementById('dashboardView').style.display = 'block';
       document.getElementById('studentInfo').textContent = 'Welcome, ' + e.student_name + ' (' + e.student_email + ')';
+
+      // Build program tabs
+      var programTabs = document.getElementById('programTabs');
+      programTabs.innerHTML = '';
+      var currentSlug = e.program_slug;
+      var allPrograms = data.enrollments || [{title: e.program_title, slug: e.program_slug, status: e.status}];
+      allPrograms.forEach(function(p) {
+        var isActive = p.slug === currentSlug;
+        var tab = document.createElement('a');
+        tab.href = isActive ? '#' : '?program=' + p.slug + (token ? '&token=' + token : '');
+        tab.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:.08em;text-transform:uppercase;background:' + (isActive ? '#C9A84C' : 'rgba(255,255,255,.06)') + ';color:' + (isActive ? '#0A1628' : '#CBD5E1') + ';border:1px solid ' + (isActive ? '#C9A84C' : '#1E3250');
+        tab.textContent = p.title;
+        programTabs.appendChild(tab);
+      });
+
       document.getElementById('programTitle').textContent = e.program_title;
       document.getElementById('programTagline').textContent = e.tagline;
       document.getElementById('programDuration').innerHTML = 'Duration: <strong>' + e.duration + '</strong>';

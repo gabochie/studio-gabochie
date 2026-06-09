@@ -139,7 +139,7 @@ const Guitar = {
     const path = window.location.pathname;
     document.querySelectorAll('.nav-item').forEach(a => {
       const href = a.getAttribute('href');
-      a.classList.toggle('active', href === path || (href !== '/guitar/' && path.startsWith(href)));
+      a.classList.toggle('active', href === path || (href !== '/school/guitar/' && path.startsWith(href)));
     });
   },
 

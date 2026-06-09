@@ -171,11 +171,11 @@ All prefixed with `guitar_` to avoid clashes with existing tables:
 - [ ] Check `/api/payments/flutterwave` webhook responds (test in Flutterwave)
 - [ ] Visit `/api/guitar/setup` — returns `"Guitar tables ready"`
 - [ ] Visit `/api/guitar/modules` — returns 16 modules with lessons
-- [ ] Visit `/guitar/` — landing page renders with animated hero and curriculum
-- [ ] Visit `/guitar/learn/` — module grid loads, lesson content plays YouTube
-- [ ] Visit `/guitar/practice/` — timer, metronome, one-minute drill all render
-- [ ] Visit `/guitar/tuner/` — canvas needle and cents meter render, mic prompt appears
-- [ ] Visit `/guitar/dashboard/` — stat counters render (may show zeros for new user)
-- [ ] Visit `/guitar/songs/` — song cards load with filter pills
+- [ ] Visit `/school/guitar/` — landing page renders with animated hero and curriculum
+- [ ] Visit `/school/guitar/learn/` — module grid loads, lesson content plays YouTube
+- [ ] Visit `/school/guitar/practice/` — timer, metronome, one-minute drill all render
+- [ ] Visit `/school/guitar/tuner/` — canvas needle and cents meter render, mic prompt appears
+- [ ] Visit `/school/guitar/dashboard/` — stat counters render (may show zeros for new user)
+- [ ] Visit `/school/guitar/songs/` — song cards load with filter pills
 - [ ] Test enrollment: `POST /api/guitar/enroll {"plan":"free"}` returns 200
 - [ ] Verify desktop layout ≥1024px: sidebar replaces bottom nav

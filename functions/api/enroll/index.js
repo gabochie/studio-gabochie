@@ -32,9 +32,33 @@ export async function onRequest(context) {
       });
     }
     try {
-      var row = await db.prepare(
+      var url = new URL(request.url);
+      var programSlug = url.searchParams.get('program') || '';
+      var row;
+
+      // Try lookup by enrollment access_token first
+      row = await db.prepare(
         'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
       ).bind(token).first();
+
+      // Fallback: look up by session token (ga_token) → find user's enrollments
+      if (!row) {
+        var session = await db.prepare(
+          'SELECT s.user_id, u.email, u.name FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ? AND s.expires_at > datetime(\'now\')'
+        ).bind(token).first();
+        if (session) {
+          if (programSlug) {
+            row = await db.prepare(
+              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+            ).bind(session.email, programSlug).first();
+          } else {
+            row = await db.prepare(
+              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+            ).bind(session.email).first();
+          }
+        }
+      }
+
       if (!row) {
         return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
           status: 404, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
@@ -64,6 +88,17 @@ export async function onRequest(context) {
           full_content: isPaidAccess ? (row.full_content || '') : ''
         }
       };
+
+      // If ?enrollments=1, also return all enrollments for the user
+      if (url.searchParams.get('enrollments') === '1') {
+        var allRows = await db.prepare(
+          'SELECT p.title, p.slug, e.status, e.enrolled_at FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC'
+        ).bind(row.student_email).all();
+        response.enrollments = (allRows.results || []).map(function(r) {
+          return { title: r.title, slug: r.slug, status: r.status, enrolled_at: r.enrolled_at };
+        });
+      }
+
       return new Response(JSON.stringify(response), {
         headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
