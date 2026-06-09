@@ -1,7 +1,8 @@
 /* ── Nav highlight ── */
 (function() {
   var path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.header-nav a').forEach(function(a) {
+  var nav = document.querySelector('.header-nav');
+  if (nav) nav.querySelectorAll('a').forEach(function(a) {
     if (a.getAttribute('href') === path) a.classList.add('active');
   });
 })();
@@ -114,6 +115,12 @@ function renderDashboard() {
   } catch(e) {}
 })();
 
+/* ── Escape HTML (XSS prevention) ── */
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
 /* ── Admin API helpers ── */
 function getAdminKey() {
   try { return sessionStorage.getItem('ga_admin_key') || ''; } catch(e) { return ''; }
@@ -130,14 +137,43 @@ function adminFetch(url, opts) {
   return fetch(url, opts);
 }
 
-/* Prompt for admin key once on first action that needs it */
+/* Show modal to set admin key instead of prompt() */
 function ensureAdminKey() {
   var key = getAdminKey();
   if (!key) {
-    key = prompt('Enter Admin API Key:');
-    storeAdminKey(key);
+    var m = Modal.create('adminKeyModal');
+    m.render(
+      '<div class="modal-title" id="adminKeyModal-title">Admin API Key Required</div>' +
+      '<div class="modal-body" style="margin-bottom:16px">' +
+        '<label class="form-label">Enter your Admin API Key</label>' +
+        '<input class="input" id="adminKeyInput" type="password" placeholder="Paste your key..." style="margin-top:4px" />' +
+      '</div>' +
+      '<div class="modal-footer">' +
+        '<button class="btn btn-outline" onclick="Modal.close(\'adminKeyModal\')">Cancel</button>' +
+        '<button class="btn btn-gold" id="adminKeySubmit">Set Key</button>' +
+      '</div>'
+    );
+    m.open();
+    setTimeout(function() {
+      var input = document.getElementById('adminKeyInput');
+      var btn = document.getElementById('adminKeySubmit');
+      if (input) input.focus();
+      if (btn) btn.addEventListener('click', function() {
+        var val = input ? input.value.trim() : '';
+        if (val) { storeAdminKey(val); Modal.close('adminKeyModal'); }
+      });
+    }, 100);
   }
   return key;
+}
+
+/* ── Logout ── */
+function adminLogout() {
+  try {
+    sessionStorage.removeItem('ga_admin_key');
+    localStorage.removeItem('ga_ak');
+  } catch(e) {}
+  window.location.href = '../functions/admin/api/logout';
 }
 
 /* ── Init ── */

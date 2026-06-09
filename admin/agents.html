@@ -601,6 +601,11 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 </div>
 
 <div id="tc"></div>
+<script src="admin-ui.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey() && typeof ensureAdminKey === 'function') ensureAdminKey();
+</script>
 <script src="admin-state.js"></script>
 <script src="admin-api.js"></script>
 <script>
@@ -610,6 +615,7 @@ var tabs = ['dashboard','agents','workflows','campaign','runs','queue','submissi
 var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', submissions:'Submissions', invoices:'Invoices', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
+function _e(s) { var d=document.createElement('div'); d.appendChild(document.createTextNode(s||'')); return d.innerHTML; }
 
 function getHashTab() {
   var h = window.location.hash.slice(1);
@@ -645,7 +651,7 @@ function fmtTime(iso) {
 }
 
 function showError(el, msg, retryFn) {
-  el.innerHTML = '<div style="text-align:center;padding:24px 20px"><div style="font-size:24px;margin-bottom:8px;opacity:.4;color:var(--red)">&#9888;</div><div style="font-size:13px;color:var(--red);margin-bottom:4px">'+msg+'</div>'+(retryFn?'<button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="('+retryFn.toString()+')()">Retry</button>':'')+'</div>';
+  el.innerHTML = '<div style="text-align:center;padding:24px 20px"><div style="font-size:24px;margin-bottom:8px;opacity:.4;color:var(--red)">&#9888;</div><div style="font-size:13px;color:var(--red);margin-bottom:4px">'+_e(msg)+'</div>'+(retryFn?'<button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="('+retryFn.toString()+')()">Retry</button>':'')+'</div>';
 }
 function showEmpty(el, icon, msg, desc) {
   el.innerHTML = '<div class="empty-state"><div class="ei">'+(icon||'&#9881;')+'</div><div class="et">'+(msg||'No data')+'</div>'+(desc?'<div class="ed">'+desc+'</div>':'')+'</div>';
@@ -684,8 +690,8 @@ function renderDashboard() {
       var dc = a.status==='idle'?'gold':a.status==='busy'?'blue':a.status==='error'?'red':'dim';
       return '<div class="agent-row" data-action="agent-detail" data-id="'+a.id+'">'+
         '<span class="ar-dot '+dc+'"></span>'+
-        '<div class="ar-info"><div class="ar-name">'+(a.name||a.agent_type_name||'Agent')+' '+tag(a.status)+'</div>'+
-        '<div class="ar-meta"><span>'+(a.agent_type_name||'')+'</span><span>'+ (a.total_runs||0) +' runs</span><span>'+ (a.total_errors||0) +' errors</span></div></div>'+
+        '<div class="ar-info"><div class="ar-name">'+_e(a.name||a.agent_type_name||'Agent')+' '+tag(a.status)+'</div>'+
+        '<div class="ar-meta"><span>'+_e(a.agent_type_name||'')+'</span><span>'+ (a.total_runs||0) +' runs</span><span>'+ (a.total_errors||0) +' errors</span></div></div>'+
         '<div class="ar-right"><span style="font-size:11px;color:var(--text-dim)">'+fmtTime(a.last_run_at)+'</span></div>'+
         '</div>';
     }).join('') + '</div>';
@@ -699,7 +705,7 @@ function renderDashboard() {
       var dc = r.status==='completed'?'green':r.status==='error'?'red':r.status==='in_progress'?'blue':'dim';
       return '<div class="tl-item">'+
         '<span class="tl-dot '+dc+'"></span>'+
-        '<div class="tl-body"><div class="tl-head"><span class="tl-agent">['+(r.agent_type_name||'unknown')+']</span> '+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-dim);font-size:12px;font-weight:400">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div>'+
+        '<div class="tl-body"><div class="tl-head"><span class="tl-agent">['+_e(r.agent_type_name||'unknown')+']</span> '+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-dim);font-size:12px;font-weight:400">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div>'+
         '<div class="tl-meta">'+fmtTime(r.created_at)+(r.sub_agent_count?' <span>&#8618; '+r.sub_agent_count+' sub-agents</span>':'')+'</div></div>'+
         '<div class="tl-actions"><button class="btn-icon" data-action="run-detail" data-id="'+r.id+'" title="View detail">&#8594;</button></div>'+
         '</div>';
@@ -720,7 +726,7 @@ function renderAgents() {
       else if (a.status === 'error') { health = 'red'; }
       else if (a.status === 'offline') { health = 'dim'; }
       var healthLabel = {green:'Healthy',gold:'Busy',red:'Error',dim:'Offline'}[health] || 'Unknown';
-      return '<tr><td style="font-weight:500;color:var(--text-primary)">'+(a.name||'')+'</td><td>'+(a.agent_type_name||'')+'</td><td><span class="sd '+health+'" style="margin-right:4px"></span><span style="font-size:11px;color:var(--text-dim)">'+healthLabel+'</span></td><td>'+tag(a.status)+'</td><td>'+(a.total_runs||0)+'</td><td>'+(a.total_errors||0)+'</td><td style="font-size:12px;color:var(--text-dim)">'+fmtTime(a.last_run_at)+'</td><td style="display:flex;gap:4px">'+
+      return '<tr><td style="font-weight:500;color:var(--text-primary)">'+_e(a.name||'')+'</td><td>'+_e(a.agent_type_name||'')+'</td><td><span class="sd '+health+'" style="margin-right:4px"></span><span style="font-size:11px;color:var(--text-dim)">'+healthLabel+'</span></td><td>'+tag(a.status)+'</td><td>'+(a.total_runs||0)+'</td><td>'+(a.total_errors||0)+'</td><td style="font-size:12px;color:var(--text-dim)">'+fmtTime(a.last_run_at)+'</td><td style="display:flex;gap:4px">'+
       (a.status === 'idle'?'<button class="btn btn-secondary btn-sm" onclick="agentAction('+a.id+',\'busy\')" title="Restart">&#8635;</button>':'')+
       (a.status === 'error'||a.status==='offline'?'<button class="btn btn-secondary btn-sm" onclick="agentAction('+a.id+',\'idle\')" title="Restart">&#8635;</button>':'')+
       '<button class="btn-icon" data-action="agent-detail" data-id="'+a.id+'" title="View">&#8594;</button>'+
@@ -741,7 +747,7 @@ function renderWorkflows() {
   var wfs = AppState.get('workflows');
   var el = $('workflowList');
   if (!wfs||!wfs.length) { showEmpty(el, '&#8617;', 'No workflows defined'); return; }
-  el.innerHTML = '<div class="crd-body">'+wfs.map(function(w){return '<div class="wf-row" data-action="wf-detail" data-id="'+w.id+'"><div class="wf-name">'+tag(w.status||'inactive')+' '+(w.name||'')+'</div><div class="wf-desc">'+(w.description||'')+'</div><div class="wf-meta"><span>&#9654; '+(w.step_count||0)+' steps</span><span>&#9881; '+(w.trigger_type||'manual')+'</span><span>&#8635; '+(w.total_runs||0)+' runs</span><span>&#36; GH\u00a2 '+Number(w.revenue_tracked||0).toLocaleString()+'</span></div></div>';}).join('')+'</div>';
+  el.innerHTML = '<div class="crd-body">'+wfs.map(function(w){return '<div class="wf-row" data-action="wf-detail" data-id="'+w.id+'"><div class="wf-name">'+tag(w.status||'inactive')+' '+_e(w.name||'')+'</div><div class="wf-desc">'+_e(w.description||'')+'</div><div class="wf-meta"><span>&#9654; '+(w.step_count||0)+' steps</span><span>&#9881; '+_e(w.trigger_type||'manual')+'</span><span>&#8635; '+(w.total_runs||0)+' runs</span><span>&#36; GH\u00a2 '+Number(w.revenue_tracked||0).toLocaleString()+'</span></div></div>';}).join('')+'</div>';
 }
 
 function renderRuns() {
@@ -749,7 +755,7 @@ function renderRuns() {
   var el = $('runsList');
   if (!runs||!runs.length) { showEmpty(el, '&#9776;', 'No runs found'); return; }
   el.innerHTML = '<table class="tbl"><thead><tr><th>Time</th><th>Agent</th><th>Status</th><th>Duration</th><th>Sub</th><th>Summary</th><th></th></tr></thead><tbody>'+
-    runs.map(function(r){return '<tr><td style="font-size:12px;color:var(--text-dim)">'+fmtTime(r.created_at)+'</td><td>'+(r.agent_type_name||'')+'</td><td>'+tag(r.status)+'</td><td style="font-family:var(--font-heading);font-size:13px">'+(r.duration_ms?(r.duration_ms/1000).toFixed(1)+'s':'-')+'</td><td>'+(r.sub_agent_count||0)+'</td><td style="font-size:12px;color:var(--text-dim);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.response_summary?r.response_summary.substring(0,50):'-')+'</td><td><button class="btn-icon" data-action="run-detail" data-id="'+r.id+'" title="View">&#8594;</button></td></tr>';}).join('')+
+    runs.map(function(r){return '<tr><td style="font-size:12px;color:var(--text-dim)">'+fmtTime(r.created_at)+'</td><td>'+_e(r.agent_type_name||'')+'</td><td>'+tag(r.status)+'</td><td style="font-family:var(--font-heading);font-size:13px">'+(r.duration_ms?(r.duration_ms/1000).toFixed(1)+'s':'-')+'</td><td>'+(r.sub_agent_count||0)+'</td><td style="font-size:12px;color:var(--text-dim);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_e(r.response_summary?r.response_summary.substring(0,50):'-')+'</td><td><button class="btn-icon" data-action="run-detail" data-id="'+r.id+'" title="View">&#8594;</button></td></tr>';}).join('')+
     '</tbody></table>';
 }
 
@@ -780,7 +786,7 @@ function renderQueue() {
     html += '<div class="crd-body">'+
       emailItems.map(function(e){
         var sent = e.sent_at ? tag('sent') : tag('pending');
-        return '<div class="q-item"><div class="qi-info">'+sent+' <strong style="font-size:13px;color:var(--text-primary)">'+e.to_email+'</strong> <span class="qi-meta">'+(e.subject||'').substring(0,50)+' &middot; '+fmtTime(e.created_at)+'</span></div></div>';
+        return '<div class="q-item"><div class="qi-info">'+sent+' <strong style="font-size:13px;color:var(--text-primary)">'+_e(e.to_email)+'</strong> <span class="qi-meta">'+_e((e.subject||'').substring(0,50))+' &middot; '+fmtTime(e.created_at)+'</span></div></div>';
       }).join('')+'</div></div>';
   }
 
@@ -793,7 +799,7 @@ function showQueueDetail(id) {
   if (!item) { Toast.error('Queue item not found'); return; }
   var h = '<div class="m-detail-row"><span class="mdl-l">ID</span><span class="mdl-v">#'+item.id+'</span></div>';
   h += '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(item.status)+'</span></div>';
-  h += '<div class="m-detail-row"><span class="mdl-l">Agent Type</span><span class="mdl-v">'+(item.agent_type||'')+'</span></div>';
+  h += '<div class="m-detail-row"><span class="mdl-l">Agent Type</span><span class="mdl-v">'+_e(item.agent_type||'')+'</span></div>';
   h += '<div class="m-detail-row"><span class="mdl-l">Priority</span><span class="mdl-v">P'+(item.priority||0)+'</span></div>';
   h += '<div class="m-detail-row"><span class="mdl-l">Created</span><span class="mdl-v">'+fmtTime(item.created_at)+'</span></div>';
   if (item.scheduled_at) h += '<div class="m-detail-row"><span class="mdl-l">Scheduled</span><span class="mdl-v">'+fmtTime(item.scheduled_at)+'</span></div>';
@@ -802,16 +808,16 @@ function showQueueDetail(id) {
   if (item.payload) {
     try {
       var p = typeof item.payload === 'string' ? JSON.parse(item.payload) : item.payload;
-      h += '<div class="m-detail-row"><span class="mdl-l">Payload</span><span class="mdl-v" style="font-size:11px;font-family:monospace;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto">'+JSON.stringify(p, null, 2)+'</span></div>';
-    } catch(e) { h += '<div class="m-detail-row"><span class="mdl-l">Payload</span><span class="mdl-v">'+item.payload.substring(0,300)+'</span></div>'; }
+      h += '<div class="m-detail-row"><span class="mdl-l">Payload</span><span class="mdl-v" style="font-size:11px;font-family:monospace;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto">'+_e(JSON.stringify(p, null, 2))+'</span></div>';
+    } catch(e) { h += '<div class="m-detail-row"><span class="mdl-l">Payload</span><span class="mdl-v">'+_e(item.payload.substring(0,300))+'</span></div>'; }
   }
   if (item.result) { 
     try {
       var r = typeof item.result === 'string' ? JSON.parse(item.result) : item.result;
-      h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v" style="font-size:11px;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto">'+(typeof r==='object'?JSON.stringify(r,null,2):r)+'</span></div>';
-    } catch(e) { h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v">'+item.result.substring(0,300)+'</span></div>'; }
+      h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v" style="font-size:11px;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto">'+_e((typeof r==='object'?JSON.stringify(r,null,2):r))+'</span></div>';
+    } catch(e) { h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v">'+_e(item.result.substring(0,300))+'</span></div>'; }
   }
-  if (item.error) h += '<div class="m-detail-row"><span class="mdl-l" style="color:var(--red)">Error</span><span class="mdl-v" style="color:var(--red);font-size:12px">'+item.error+'</span></div>';
+  if (item.error) h += '<div class="m-detail-row"><span class="mdl-l" style="color:var(--red)">Error</span><span class="mdl-v" style="color:var(--red);font-size:12px">'+_e(item.error)+'</span></div>';
   if (item.status==='pending') h += '<div style="margin-top:14px"><button class="btn btn-primary btn-sm" onclick="processQueue(1);$(\'detailModal\').classList.remove(\'open\')">&#9654; Process Now</button></div>';
   $('detailTitle').textContent = 'Queue Item #'+item.id;
   $('detailBody').innerHTML = h;
@@ -865,10 +871,10 @@ function showAgentDetail(id) {
   var agent = agents.filter(function(a){return a.id===id})[0];
   var name = agent?(agent.name||'Agent #'+id):'Agent #'+id;
   API.getRuns({agent_id:id,limit:10}).then(function(runs){
-    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(agent?agent.name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v">'+(agent?agent.agent_type_name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+(agent?tag(agent.status):'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Runs</span><span class="mdl-v">'+(agent?agent.total_runs||0:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Errors</span><span class="mdl-v">'+(agent?agent.total_errors||0:'')+'</span></div>';
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+_e(agent?agent.name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v">'+_e(agent?agent.agent_type_name:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+(agent?tag(agent.status):'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Runs</span><span class="mdl-v">'+(agent?agent.total_runs||0:'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Errors</span><span class="mdl-v">'+(agent?agent.total_errors||0:'')+'</span></div>';
     h += '<div style="margin:18px 0 10px;font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px">Recent Runs</div>';
     if (!runs||!runs.length) { h += '<div style="text-align:center;padding:16px;color:var(--text-dim);font-size:12px">No runs yet</div>'; }
-    else { runs.forEach(function(r){ h += '<div class="tl-item" style="padding:6px 0"><span class="tl-dot '+(r.status==='completed'?'green':r.status==='error'?'red':r.status==='in_progress'?'blue':'dim')+'"></span><div class="tl-body"><div class="tl-head">'+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-dim);font-size:11px">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div><div class="tl-meta">'+fmtTime(r.created_at)+(r.response_summary?' &middot; '+r.response_summary.substring(0,100):'')+'</div></div></div>'; }); }
+    else { runs.forEach(function(r){ h += '<div class="tl-item" style="padding:6px 0"><span class="tl-dot '+(r.status==='completed'?'green':r.status==='error'?'red':r.status==='in_progress'?'blue':'dim')+'"></span><div class="tl-body"><div class="tl-head">'+tag(r.status)+(r.duration_ms?' <span style="color:var(--text-dim);font-size:11px">('+(r.duration_ms/1000).toFixed(1)+'s)</span>':'')+'</div><div class="tl-meta">'+fmtTime(r.created_at)+(r.response_summary?' &middot; '+_e(r.response_summary.substring(0,100)):'')+'</div></div></div>'; }); }
     $('detailTitle').textContent = name;
     $('detailBody').innerHTML = h;
     $('detailModal').classList.add('open');
@@ -882,10 +888,10 @@ function showRunDetail(id) {
   renderRunModal(run);
 }
 function renderRunModal(run) {
-  var h = '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(run.status)+'</span></div><div class="m-detail-row"><span class="mdl-l">Agent</span><span class="mdl-v">'+(run.agent_type_name||'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Duration</span><span class="mdl-v" style="font-family:var(--font-heading);font-size:14px">'+(run.duration_ms?(run.duration_ms/1000).toFixed(1)+'s':'-')+'</span></div><div class="m-detail-row"><span class="mdl-l">Sub-agents</span><span class="mdl-v">'+(run.sub_agent_count||0)+'</span></div><div class="m-detail-row"><span class="mdl-l">Created</span><span class="mdl-v">'+fmtTime(run.created_at)+'</span></div>';
-  if (run.result) h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v" style="font-size:12px;word-break:break-word">'+run.result.substring(0,500)+'</span></div>';
-  if (run.error) h += '<div class="m-detail-row"><span class="mdl-l" style="color:var(--red)">Error</span><span class="mdl-v" style="color:var(--red);font-size:12px">'+run.error+'</span></div>';
-  if (run.response_summary) h += '<div class="m-detail-row"><span class="mdl-l">Summary</span><span class="mdl-v" style="font-size:12px">'+run.response_summary.substring(0,300)+'</span></div>';
+  var h = '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(run.status)+'</span></div><div class="m-detail-row"><span class="mdl-l">Agent</span><span class="mdl-v">'+_e(run.agent_type_name||'')+'</span></div><div class="m-detail-row"><span class="mdl-l">Duration</span><span class="mdl-v" style="font-family:var(--font-heading);font-size:14px">'+(run.duration_ms?(run.duration_ms/1000).toFixed(1)+'s':'-')+'</span></div><div class="m-detail-row"><span class="mdl-l">Sub-agents</span><span class="mdl-v">'+(run.sub_agent_count||0)+'</span></div><div class="m-detail-row"><span class="mdl-l">Created</span><span class="mdl-v">'+fmtTime(run.created_at)+'</span></div>';
+  if (run.result) h += '<div class="m-detail-row"><span class="mdl-l">Result</span><span class="mdl-v" style="font-size:12px;word-break:break-word">'+_e(run.result.substring(0,500))+'</span></div>';
+  if (run.error) h += '<div class="m-detail-row"><span class="mdl-l" style="color:var(--red)">Error</span><span class="mdl-v" style="color:var(--red);font-size:12px">'+_e(run.error)+'</span></div>';
+  if (run.response_summary) h += '<div class="m-detail-row"><span class="mdl-l">Summary</span><span class="mdl-v" style="font-size:12px">'+_e(run.response_summary.substring(0,300))+'</span></div>';
   $('detailTitle').textContent = 'Run #'+run.id;
   $('detailBody').innerHTML = h;
   $('detailModal').classList.add('open');
@@ -895,16 +901,16 @@ function showWorkflowDetail(id) {
   var wfs = AppState.get('workflows')||[];
   var wf = wfs.filter(function(w){return w.id===id})[0];
   if (!wf) { Toast.error('Workflow not found'); return; }
-  var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+wf.name+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(wf.status||'inactive')+'</span></div><div class="m-detail-row"><span class="mdl-l">Trigger</span><span class="mdl-v">'+(wf.trigger_type||'manual')+'</span></div>'+
-    (wf.trigger_config?'<div class="m-detail-row"><span class="mdl-l">Trigger Config</span><span class="mdl-v" style="font-size:12px">'+(typeof wf.trigger_config==='object'?JSON.stringify(wf.trigger_config):wf.trigger_config)+'</span></div>':'')+
-    '<div class="m-detail-row"><span class="mdl-l">Description</span><span class="mdl-v">'+(wf.description||'-')+'</span></div>';
+  var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+_e(wf.name)+'</span></div><div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(wf.status||'inactive')+'</span></div><div class="m-detail-row"><span class="mdl-l">Trigger</span><span class="mdl-v">'+_e(wf.trigger_type||'manual')+'</span></div>'+
+    (wf.trigger_config?'<div class="m-detail-row"><span class="mdl-l">Trigger Config</span><span class="mdl-v" style="font-size:12px">'+_e(typeof wf.trigger_config==='object'?JSON.stringify(wf.trigger_config):wf.trigger_config)+'</span></div>':'')+
+    '<div class="m-detail-row"><span class="mdl-l">Description</span><span class="mdl-v">'+_e(wf.description||'-')+'</span></div>';
   if (wf.steps&&wf.steps.length) {
     h += '<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px"><span style="font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px">Steps</span><button class="btn btn-sm btn-secondary" onclick="addStepTo('+id+')">+ Add Step</button></div>';
     wf.steps.forEach(function(s,i){ 
       h += '<div class="tl-item" style="padding:6px 0">'+
         '<span class="tl-dot green" style="cursor:pointer" onclick="deleteStep('+s.id+','+wf.id+')" title="Delete step">&#10007;</span>'+
-        '<div class="tl-body"><div class="tl-head">'+(i+1)+'. '+s.step_type+' <span class="tg tg-blue" style="font-size:10px">'+s.agent_type+'</span></div>'+
-        (s.config?'<div class="tl-meta">'+JSON.stringify(s.config).substring(0,120)+'</div>':'')+
+        '<div class="tl-body"><div class="tl-head">'+(i+1)+'. '+_e(s.step_type)+' <span class="tg tg-blue" style="font-size:10px">'+_e(s.agent_type)+'</span></div>'+
+        (s.config?'<div class="tl-meta">'+_e(JSON.stringify(s.config).substring(0,120))+'</div>':'')+
         '</div></div>';
     });
   } else {
@@ -1038,10 +1044,10 @@ function renderSubmissions(data) {
     items.map(function(s){
       return '<tr style="' + (s.status === 'new' ? 'font-weight:600' : '') + '">'+
         '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(s.created_at)+'</td>'+
-        '<td style="color:var(--text-primary)">'+(s.name||'-')+'</td>'+
-        '<td style="font-size:12px">'+(s.email||'-')+'</td>'+
-        '<td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.subject||'-')+'</td>'+
-        '<td><span class="tg tg-dim" style="font-size:10px">'+(s.source||'-')+'</span></td>'+
+        '<td style="color:var(--text-primary)">'+_e(s.name||'-')+'</td>'+
+        '<td style="font-size:12px">'+_e(s.email||'-')+'</td>'+
+        '<td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_e(s.subject||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+_e(s.source||'-')+'</span></td>'+
         '<td>'+tag(s.status||'new')+'</td>'+
         '<td><button class="btn-icon" onclick="showSubmissionDetail('+s.id+')" title="View">&#8594;</button></td></tr>';
     }).join('') + '</tbody></table>';
@@ -1050,12 +1056,12 @@ function showSubmissionDetail(id) {
   API.getSubmissions({ id: id, limit: 1 }).then(function(data){
     var item = data.items && data.items[0];
     if (!item) { Toast.error('Submission not found'); return; }
-    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(item.name||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v"><a href="mailto:'+item.email+'">'+(item.email||'-')+'</a></span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Subject</span><span class="mdl-v">'+(item.subject||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+(item.source||'-')+'</span></div>'+
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+_e(item.name||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v"><a href="mailto:'+_e(item.email)+'">'+_e(item.email||'-')+'</a></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Subject</span><span class="mdl-v">'+_e(item.subject||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+_e(item.source||'-')+'</span></div>'+
       '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(item.status||'new')+'</span></div>'+
-      (item.message ? '<div class="m-detail-row" style="flex-direction:column;padding:8px 0"><span class="mdl-l" style="margin-bottom:4px">Message</span><span class="mdl-v" style="text-align:left;font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--bg-primary);padding:10px;border-radius:6px">'+item.message+'</span></div>' : '');
+      (item.message ? '<div class="m-detail-row" style="flex-direction:column;padding:8px 0"><span class="mdl-l" style="margin-bottom:4px">Message</span><span class="mdl-v" style="text-align:left;font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--bg-primary);padding:10px;border-radius:6px">'+_e(item.message)+'</span></div>' : '');
     h += '<div style="margin-top:16px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Mark as</label>'+
       '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
       '<button class="btn btn-sm '+(item.status==='new'?'btn-primary':'btn-secondary')+'" onclick="updateSubmissionStatus('+id+',\'new\')">New</button>'+
@@ -1099,13 +1105,13 @@ function renderInvoices(data) {
   if (!items.length) { showEmpty(el, '&#36;', 'No invoices yet', 'Invoices are auto-generated when payments are processed.'); return; }
   el.innerHTML = '<table class="tbl"><thead><tr><th>Invoice</th><th>Customer</th><th>Type</th><th>Amount</th><th>Date</th><th></th></tr></thead><tbody>' +
     items.map(function(inv){
-      return '<tr><td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--gold)">'+inv.invoice_number+'</td>'+
-        '<td style="font-size:12px;color:var(--text-primary)">'+(inv.customer_name||inv.customer_email||'-')+'</td>'+
-        '<td><span class="tg tg-dim" style="font-size:10px">'+(inv.invoice_type||'')+'</span></td>'+
-        '<td style="font-family:var(--font-heading)">'+inv.currency+' '+Number(inv.total).toLocaleString()+'</td>'+
+      return '<tr><td style="font-family:monospace;font-size:12px;font-weight:600;color:var(--gold)">'+_e(inv.invoice_number)+'</td>'+
+        '<td style="font-size:12px;color:var(--text-primary)">'+_e(inv.customer_name||inv.customer_email||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+_e(inv.invoice_type||'')+'</span></td>'+
+        '<td style="font-family:var(--font-heading)">'+_e(inv.currency)+' '+Number(inv.total).toLocaleString()+'</td>'+
         '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(inv.created_at)+'</td>'+
         '<td><button class="btn-icon" onclick="showInvoiceDetail('+inv.id+')" title="View">&#8594;</button>'+
-        ' <a href="/api/invoices/'+inv.invoice_number+'?token='+inv.invoice_number+'" target="_blank" class="btn-icon" title="Open invoice">&#128196;</a></td></tr>';
+        ' <a href="/api/invoices/'+_e(inv.invoice_number)+'?token='+_e(inv.invoice_number)+'" target="_blank" class="btn-icon" title="Open invoice">&#128196;</a></td></tr>';
     }).join('') + '</tbody></table>';
 }
 function showInvoiceDetail(id) {
@@ -1114,18 +1120,18 @@ function showInvoiceDetail(id) {
     if (!inv) { Toast.error('Invoice not found'); return; }
     var items = JSON.parse(inv.items || '[]');
     var itemsHtml = items.map(function(it){
-      return '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><span>'+(it.description||'')+'</span><span style="color:var(--gold);font-weight:600">'+inv.currency+' '+Number(it.total||0).toLocaleString()+'</span></div>';
+      return '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)"><span>'+_e(it.description||'')+'</span><span style="color:var(--gold);font-weight:600">'+_e(inv.currency)+' '+Number(it.total||0).toLocaleString()+'</span></div>';
     }).join('');
-    var h = '<div class="m-detail-row"><span class="mdl-l">Invoice</span><span class="mdl-v" style="font-family:monospace;color:var(--gold);font-weight:700">'+inv.invoice_number+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v"><span class="tg tg-dim">'+inv.invoice_type+'</span></span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v"><span class="tg tg-green">'+inv.status+'</span></span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Customer</span><span class="mdl-v">'+(inv.customer_name||inv.customer_email||'-')+'</span></div>'+
-      (inv.customer_email ? '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+inv.customer_email+'</span></div>' : '')+
-      '<div class="m-detail-row"><span class="mdl-l">Reference</span><span class="mdl-v" style="font-size:11px;font-family:monospace">'+(inv.reference_tx_ref||'-')+'</span></div>'+
+    var h = '<div class="m-detail-row"><span class="mdl-l">Invoice</span><span class="mdl-v" style="font-family:monospace;color:var(--gold);font-weight:700">'+_e(inv.invoice_number)+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v"><span class="tg tg-dim">'+_e(inv.invoice_type)+'</span></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v"><span class="tg tg-green">'+_e(inv.status)+'</span></span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Customer</span><span class="mdl-v">'+_e(inv.customer_name||inv.customer_email||'-')+'</span></div>'+
+      (inv.customer_email ? '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+_e(inv.customer_email)+'</span></div>' : '')+
+      '<div class="m-detail-row"><span class="mdl-l">Reference</span><span class="mdl-v" style="font-size:11px;font-family:monospace">'+_e(inv.reference_tx_ref||'-')+'</span></div>'+
       '<div style="margin:12px 0 6px;font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px">Items</div>'+
       itemsHtml+
-      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;border-top:2px solid var(--gold);margin-top:6px"><span>Total</span><span style="color:var(--gold)">'+inv.currency+' '+Number(inv.total).toLocaleString()+'</span></div>'+
-      '<div style="margin-top:14px"><a href="/api/invoices/'+inv.invoice_number+'?token='+inv.invoice_number+'" target="_blank" class="btn btn-primary btn-sm">&#128196; View Invoice</a></div>';
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;border-top:2px solid var(--gold);margin-top:6px"><span>Total</span><span style="color:var(--gold)">'+_e(inv.currency)+' '+Number(inv.total).toLocaleString()+'</span></div>'+
+      '<div style="margin-top:14px"><a href="/api/invoices/'+_e(inv.invoice_number)+'?token='+_e(inv.invoice_number)+'" target="_blank" class="btn btn-primary btn-sm">&#128196; View Invoice</a></div>';
     $('detailTitle').textContent = inv.invoice_number;
     $('detailBody').innerHTML = h;
     $('detailModal').classList.add('open');
@@ -1145,7 +1151,7 @@ function loadSettings() {
       if (!keys.length) { $('prefsList').innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:8px 0">No saved preferences</div>'; }
       else {
         $('prefsList').innerHTML = '<table class="tbl"><thead><tr><th>Key</th><th>Value</th><th>Updated</th><th></th></tr></thead><tbody>' +
-          keys.map(function(k){return '<tr><td style="font-size:12px;font-family:monospace">'+k+'</td><td style="font-size:12px">'+prefs[k]+'</td><td style="font-size:11px;color:var(--text-dim)"></td><td><button class="btn-icon" style="color:var(--red);font-size:11px" onclick="setPreference(\''+k+'\',\'\')">&#10007;</button></td></tr>';}).join('') +
+          keys.map(function(k){return '<tr><td style="font-size:12px;font-family:monospace">'+_e(k)+'</td><td style="font-size:12px">'+_e(prefs[k])+'</td><td style="font-size:11px;color:var(--text-dim)"></td><td><button class="btn-icon" style="color:var(--red);font-size:11px" onclick="setPreference(\''+_e(k)+'\',\'\')">&#10007;</button></td></tr>';}).join('') +
           '</tbody></table>';
       }
     }
@@ -1173,9 +1179,9 @@ function loadAuditLog() {
           return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:6px;align-items:center">' +
             '<span class="sd dim"></span>' +
             '<span style="font-family:monospace;font-size:11px;color:var(--text-dim)">'+fmtTime(a.created_at)+'</span>' +
-            '<span class="tg tg-blue">'+a.action+'</span>' +
-            (a.entity_type?'<span style="color:var(--text-dim)">'+a.entity_type+'</span>':'') +
-            (a.entity_id?'<span style="color:var(--text-muted)">#'+a.entity_id+'</span>':'') +
+            '<span class="tg tg-blue">'+_e(a.action)+'</span>' +
+            (a.entity_type?'<span style="color:var(--text-dim)">'+_e(a.entity_type)+'</span>':'') +
+            (a.entity_id?'<span style="color:var(--text-muted)">#'+_e(a.entity_id)+'</span>':'') +
             '</div>';
         }).join('');
       }
@@ -1229,7 +1235,7 @@ function renderCampaign(data) {
   $('campaignCount').textContent = total;
   var catSelect = $('campaignCategoryFilter');
   var currentCat = catSelect.value;
-  catSelect.innerHTML = '<option value="">All categories</option>' + categories.map(function(c){ return '<option value="'+c.category+'">'+c.category+' ('+c.c+')</option>'; }).join('');
+  catSelect.innerHTML = '<option value="">All categories</option>' + categories.map(function(c){ return '<option value="'+_e(c.category)+'">'+_e(c.category)+' ('+c.c+')</option>'; }).join('');
   catSelect.value = currentCat;
 
   var statMap = {}; stats.forEach(function(s){ statMap[s.status] = s.c; });
@@ -1250,12 +1256,12 @@ function renderCampaign(data) {
   if (!items.length) { showEmpty(el, '&#9993;', 'No contacts found', 'Try adjusting your filters or import cold outreach data first.'); return; }
   el.innerHTML = '<table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Category</th><th>Status</th><th>Campaign</th><th>Imported</th><th></th></tr></thead><tbody>' +
     items.map(function(c){
-      return '<tr><td style="font-weight:500;color:var(--text-primary)">'+(c.name||'-')+'</td>'+
-        '<td style="font-size:12px">'+(c.email||'-')+'</td>'+
-        '<td style="font-size:12px">'+(c.phone||'-')+'</td>'+
-        '<td><span class="tg tg-dim" style="font-size:10px">'+(c.category||'other')+'</span></td>'+
+      return '<tr><td style="font-weight:500;color:var(--text-primary)">'+_e(c.name||'-')+'</td>'+
+        '<td style="font-size:12px">'+_e(c.email||'-')+'</td>'+
+        '<td style="font-size:12px">'+_e(c.phone||'-')+'</td>'+
+        '<td><span class="tg tg-dim" style="font-size:10px">'+_e(c.category||'other')+'</span></td>'+
         '<td>'+tag(c.status||'pending')+'</td>'+
-        '<td style="font-size:12px;color:var(--text-dim)">'+(c.campaign||'-')+'</td>'+
+        '<td style="font-size:12px;color:var(--text-dim)">'+_e(c.campaign||'-')+'</td>'+
         '<td style="font-size:11px;color:var(--text-dim)">'+fmtTime(c.imported_at)+'</td>'+
         '<td><button class="btn-icon" onclick="showCampaignDetail('+c.id+')" title="View">&#8594;</button></td></tr>';
     }).join('') + '</tbody></table>';
@@ -1274,17 +1280,17 @@ function showCampaignDetail(id) {
   API.getColdOutreach({ id: id, limit: 1 }).then(function(data){
     var item = data.items && data.items[0];
     if (!item) { Toast.error('Contact not found'); return; }
-    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(item.name||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+(item.email||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Phone</span><span class="mdl-v">'+(item.phone||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Website</span><span class="mdl-v">'+(item.website?'<a href="'+item.website+'" target="_blank">'+item.website+'</a>':'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Address</span><span class="mdl-v">'+(item.address||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Category</span><span class="mdl-v"><span class="tg tg-dim">'+(item.category||'other')+'</span></span></div>'+
+    var h = '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+_e(item.name||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+_e(item.email||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Phone</span><span class="mdl-v">'+_e(item.phone||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Website</span><span class="mdl-v">'+(item.website?'<a href="'+_e(item.website)+'" target="_blank">'+_e(item.website)+'</a>':'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Address</span><span class="mdl-v">'+_e(item.address||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Category</span><span class="mdl-v"><span class="tg tg-dim">'+_e(item.category||'other')+'</span></span></div>'+
       '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+tag(item.status||'pending')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Campaign</span><span class="mdl-v">'+(item.campaign||'-')+'</span></div>'+
-      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+(item.source||'-')+'</span></div>'+
-      (item.contacted_at ? '<div class="m-detail-row"><span class="mdl-l">Contacted</span><span class="mdl-v">'+item.contacted_at+'</span></div>' : '')+
-      (item.notes ? '<div class="m-detail-row"><span class="mdl-l">Notes</span><span class="mdl-v">'+item.notes+'</span></div>' : '');
+      '<div class="m-detail-row"><span class="mdl-l">Campaign</span><span class="mdl-v">'+_e(item.campaign||'-')+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+_e(item.source||'-')+'</span></div>'+
+      (item.contacted_at ? '<div class="m-detail-row"><span class="mdl-l">Contacted</span><span class="mdl-v">'+_e(item.contacted_at)+'</span></div>' : '')+
+      (item.notes ? '<div class="m-detail-row"><span class="mdl-l">Notes</span><span class="mdl-v">'+_e(item.notes)+'</span></div>' : '');
     h += '<div style="margin-top:16px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Update Status</label>'+
       '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
       '<button class="btn btn-sm '+(item.status==='pending'?'btn-primary':'btn-secondary')+'" onclick="updateCampaignStatus('+id+',\'pending\')">Pending</button>'+
@@ -1295,11 +1301,11 @@ function showCampaignDetail(id) {
       '</div></div>';
     h += '<div style="margin-top:12px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Campaign</label>'+
       '<div style="display:flex;gap:6px">'+
-      '<input type="text" id="campaignEditCampaign" value="'+(item.campaign||'')+'" placeholder="Campaign name" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px">'+
+      '<input type="text" id="campaignEditCampaign" value="'+_e(item.campaign||'')+'" placeholder="Campaign name" style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px">'+
       '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'campaign\')">Save</button></div></div>';
     h += '<div style="margin-top:12px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Notes</label>'+
       '<div style="display:flex;gap:6px">'+
-      '<textarea id="campaignEditNotes" placeholder="Internal notes..." style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px;min-height:60px">'+(item.notes||'')+'</textarea>'+
+      '<textarea id="campaignEditNotes" placeholder="Internal notes..." style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px;min-height:60px">'+_e(item.notes||'')+'</textarea>'+
       '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'notes\')">Save</button></div></div>';
     $('detailTitle').textContent = item.name || 'Contact #'+id;
     $('detailBody').innerHTML = h;

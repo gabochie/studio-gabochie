@@ -31,22 +31,7 @@
 <body>
 
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html" class="active">Subscribers</a>
-      <a href="submissions.html">Submissions</a>
-      <a href="donations.html">Donations</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="bookings.html">Bookings</a>
-            <a href="sponsors.html">Sponsors</a>
-<a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-    </div>
+
   </div>
 
   <h1 class="page-title">Subscriber <span>List</span></h1>
@@ -101,8 +86,11 @@
   </div>
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 var _items = [];
 
 function refresh() {
@@ -150,7 +138,7 @@ function renderTable(items) {
     var tag = item.onboarding_tag || '';
     var tagLabel = tagLabels[tag] || tag;
     var date = item.subscribed_at ? new Date(item.subscribed_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '-';
-    html += '<tr><td>' + (item.email || '-') + '</td><td>' + (item.name || '-') + '</td><td>' + flag + ' ' + edition + '</td><td style="font-family:monospace;color:#C9A84C;font-size:11px">' + (ref || '—') + '</td><td><span class="source-tag ' + srcClass + '">' + source + '</span></td><td><span class="source-tag" style="background:rgba(201,168,76,0.12);color:#C9A84C">' + tagLabel + '</span></td><td style="font-size:11px;color:#5A7A9F">' + date + '</td></tr>';
+    html += '<tr><td>' + escapeHtml(item.email || '-') + '</td><td>' + escapeHtml(item.name || '-') + '</td><td>' + flag + ' ' + escapeHtml(edition) + '</td><td style="font-family:monospace;color:#C9A84C;font-size:11px">' + escapeHtml(ref || '—') + '</td><td><span class="source-tag ' + escapeHtml(srcClass) + '">' + escapeHtml(source) + '</span></td><td><span class="source-tag" style="background:rgba(201,168,76,0.12);color:#C9A84C">' + escapeHtml(tagLabel) + '</span></td><td style="font-size:11px;color:#5A7A9F">' + date + '</td></tr>';
   });
   document.getElementById('subsBody').innerHTML = html;
 }

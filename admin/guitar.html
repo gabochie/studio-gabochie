@@ -33,24 +33,7 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="enrollments.html">Enrollments</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">&#127928; Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="agents.html" style="color:#C9A84C;font-weight:700">&#9889; Command Center</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
+
   </div>
 
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:20px">
@@ -108,8 +91,11 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 async function loadGuitarData() {
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
@@ -142,7 +128,7 @@ async function loadGuitarData() {
     } else {
       wlItems.forEach(function(r) {
         var date = r.registered_at ? new Date(r.registered_at + 'Z').toLocaleDateString() : '—';
-        wlHtml += '<tr><td>' + (r.name || '—') + '</td><td style="color:#5A7A9F">' + (r.email || '') + '</td><td>' + (r.phone || '—') + '</td><td><span class="tag ' + (r.skill_level === 'beginner' ? 'tag-green' : 'tag-gold') + '">' + (r.skill_level || 'beginner') + '</span></td><td style="color:#5A7A9F">' + date + '</td></tr>';
+        wlHtml += '<tr><td>' + escapeHtml(r.name || '—') + '</td><td style="color:#5A7A9F">' + escapeHtml(r.email || '') + '</td><td>' + escapeHtml(r.phone || '—') + '</td><td><span class="tag ' + (r.skill_level === 'beginner' ? 'tag-green' : 'tag-gold') + '">' + escapeHtml(r.skill_level || 'beginner') + '</span></td><td style="color:#5A7A9F">' + date + '</td></tr>';
       });
     }
     document.getElementById('waitlistBody').innerHTML = wlHtml;
@@ -157,7 +143,7 @@ async function loadGuitarData() {
       payItems.forEach(function(p) {
         var statusClass = p.status === 'completed' ? 'tag-green' : (p.status === 'pending' ? 'tag-gold' : 'tag-red');
         var date = p.created_at ? new Date(p.created_at + 'Z').toLocaleDateString() : '—';
-        payHtml += '<tr><td style="color:#5A7A9F">' + (p.email || '') + '</td><td>GH₵ ' + (p.amount || 0) + '</td><td><span class="tag ' + statusClass + '">' + p.status + '</span></td><td style="color:#5A7A9F;font-size:11px">' + (p.flw_tx_ref || '—') + '</td><td style="color:#5A7A9F">' + date + '</td></tr>';
+        payHtml += '<tr><td style="color:#5A7A9F">' + escapeHtml(p.email || '') + '</td><td>GH₵ ' + escapeHtml(p.amount || 0) + '</td><td><span class="tag ' + statusClass + '">' + escapeHtml(p.status) + '</span></td><td style="color:#5A7A9F;font-size:11px">' + escapeHtml(p.flw_tx_ref || '—') + '</td><td style="color:#5A7A9F">' + date + '</td></tr>';
       });
     }
     document.getElementById('paymentsBody').innerHTML = payHtml;
@@ -172,7 +158,7 @@ async function loadGuitarData() {
         var xp = s.total_xp || 0;
         var maxXp = Math.max.apply(null, top.map(function(t){return t.total_xp||0}));
         var pct = maxXp > 0 ? Math.round((xp / maxXp) * 100) : 0;
-        stuHtml += '<tr><td><span class="rank-num">#' + (i+1) + '</span></td><td>' + (s.name || s.email || 'User') + '</td><td>Lv. ' + (s.level || 1) + '</td><td><div class="xp-bar"><div class="xp-bar-fill" style="width:' + pct + '%"></div></div>' + xp + '</td><td>' + (s.streak || 0) + 'd</td><td>' + (s.total_sessions || 0) + '</td><td>' + (s.total_practice_min || 0) + 'm</td></tr>';
+        stuHtml += '<tr><td><span class="rank-num">#' + (i+1) + '</span></td><td>' + escapeHtml(s.name || s.email || 'User') + '</td><td>Lv. ' + escapeHtml(s.level || 1) + '</td><td><div class="xp-bar"><div class="xp-bar-fill" style="width:' + pct + '%"></div></div>' + escapeHtml(xp) + '</td><td>' + escapeHtml(s.streak || 0) + 'd</td><td>' + escapeHtml(s.total_sessions || 0) + '</td><td>' + escapeHtml(s.total_practice_min || 0) + 'm</td></tr>';
       });
     }
     document.getElementById('studentsBody').innerHTML = stuHtml;
@@ -184,7 +170,7 @@ async function loadGuitarData() {
     var eTypes = ev.byType || [];
     evStats.innerHTML = eTypes.map(function(t) {
       var icons = { registration_complete:'📝', buy_click:'💳', start_free:'🎸', paywall_view:'🔒', lesson_complete:'✅' };
-      return '<div class="guitar-stat"><span class="num">' + t.cnt + '</span><span class="label">' + (icons[t.event_type]||'') + ' ' + t.event_type.replace(/_/g,' ') + '</span></div>';
+      return '<div class="guitar-stat"><span class="num">' + t.cnt + '</span><span class="label">' + (icons[t.event_type]||'') + ' ' + escapeHtml(t.event_type.replace(/_/g,' ')) + '</span></div>';
     }).join('') || '<div class="guitar-stat"><span class="num">0</span><span class="label">No events yet</span></div>';
 
     var evItems = ev.recent || [];
@@ -194,7 +180,7 @@ async function loadGuitarData() {
     } else {
       evItems.forEach(function(e) {
         var time = e.created_at ? new Date(e.created_at + 'Z').toLocaleString() : '—';
-        evHtml += '<tr><td><span class="tag tag-purple">' + (e.event_type||'') + '</span></td><td style="color:#5A7A9F;font-size:11px">' + (e.page_url ? e.page_url.replace(/https?:\/\/[^\/]+/,'') : '—') + '</td><td style="color:#5A7A9F">' + (e.source||'—') + '</td><td style="color:#5A7A9F">' + (e.user_id||'—') + '</td><td style="color:#5A7A9F;font-size:11px">' + time + '</td></tr>';
+        evHtml += '<tr><td><span class="tag tag-purple">' + escapeHtml(e.event_type||'') + '</span></td><td style="color:#5A7A9F;font-size:11px">' + escapeHtml(e.page_url ? e.page_url.replace(/https?:\/\/[^\/]+/,'') : '—') + '</td><td style="color:#5A7A9F">' + escapeHtml(e.source||'—') + '</td><td style="color:#5A7A9F">' + escapeHtml(e.user_id||'—') + '</td><td style="color:#5A7A9F;font-size:11px">' + time + '</td></tr>';
       });
     }
     document.getElementById('eventsBody').innerHTML = evHtml;

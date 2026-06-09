@@ -67,23 +67,7 @@ h1 span{color:#C9A84C}
 </style>
 </head>
 <body>
-<div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html" style="color:#C9A84C">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
-    <a href="../functions/admin/api/logout" class="logout-btn" onclick="return confirm('Sign out?')">Sign Out</a>
-  </div>
+
   <div class="main-content">
     <h1>Content <span>Calendar</span></h1>
     <p class="page-desc">Plan all 52 issues of The Studio Weekly — one year of content, every Saturday.</p>
@@ -130,8 +114,11 @@ h1 span{color:#C9A84C}
     <div id="calendarWrap"></div>
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 var STORAGE_KEY = 'ga_calendar';
 var DEFAULT_THEMES = [
   "Launch Issue: The Genesis of Creativity",
@@ -317,7 +304,7 @@ function updateIssue(key, field, value) {
 
 function exportCalendar() {
   var data = getCalendar();
-  if (!data) { alert('No calendar data.'); return; }
+  if (!data) { Toast.error('No calendar data.'); return; }
   var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -338,8 +325,8 @@ function handleImport(e) {
       var data = JSON.parse(ev.target.result);
       saveCalendar(data);
       renderCalendar();
-      alert('Calendar imported successfully!');
-    } catch(err) { alert('Invalid file.'); }
+      Toast.success('Calendar imported successfully!');
+    } catch(err) { Toast.error('Invalid file.'); }
   };
   reader.readAsText(file);
 }

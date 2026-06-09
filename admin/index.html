@@ -8,148 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="admin.css">
-<style>
-/* ── Live stat cards ── */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
-.stat-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px;position:relative;overflow:hidden}
-.stat-card .num{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3vw,38px);font-weight:700;line-height:1;display:block}
-.stat-card .num.gold{color:#C9A84C}
-.stat-card .num.green{color:#22C55E}
-.stat-card .num.blue{color:#3B82F6}
-.stat-card .num.pink{color:#EC4899}
-.stat-card .num .delta{font-size:12px;margin-left:6px;font-family:'DM Sans',sans-serif}
-.stat-card .num .delta.up{color:#22C55E}
-.stat-card .num .delta.down{color:#EF4444}
-.stat-card .label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:4px}
-.stat-card .sub{font-size:10px;color:#3A5278;margin-top:2px}
-.stat-loading{opacity:.4}
-.stat-error{color:#EF4444;font-size:11px;margin-top:4px}
 
-/* ── Chart sections ── */
-.section-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;color:#F1F5F9;margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid #1E3250;display:flex;align-items:center;gap:10px}
-.section-title .badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(59,130,246,.12);color:#3B82F6;font-family:'DM Sans',sans-serif;font-weight:500;text-transform:none;letter-spacing:0}
-
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-@media(max-width:860px){.chart-grid{grid-template-columns:1fr}}
-
-.chart-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px}
-.chart-card .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.chart-card .card-title{font-size:13px;font-weight:600;color:#F1F5F9}
-.chart-card .card-sub{font-size:11px;color:#5A7A9F}
-
-/* ── Bar chart ── */
-.chart-bars{display:flex;align-items:flex-end;gap:4px;height:140px;padding:0 4px}
-.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
-.chart-bar{width:100%;min-height:4px;border-radius:3px 3px 0 0;transition:height .6s ease;position:relative;max-width:40px}
-.chart-bar.gold{background:linear-gradient(180deg,#C9A84C,#8B7034)}
-.chart-bar.green{background:linear-gradient(180deg,#22C55E,#166534)}
-.chart-bar.blue{background:linear-gradient(180deg,#3B82F6,#1D4ED8)}
-.chart-bar.pink{background:linear-gradient(180deg,#EC4899,#BE185D)}
-.chart-bar-label{font-size:9px;color:#3A5278;margin-top:6px;text-align:center;font-weight:500;white-space:nowrap}
-.chart-bar:hover{opacity:.8}
-.chart-bar .tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:4px 8px;font-size:10px;color:#CBD5E1;white-space:nowrap;margin-bottom:4px;z-index:10}
-.chart-bar:hover .tooltip{display:block}
-
-/* ── Top pages list ── */
-.page-list{margin:0}
-.page-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(30,50,80,.4);font-size:12px}
-.page-row:last-child{border:none}
-.page-row .page-name{color:#CBD5E1}
-.page-row .page-count{color:#5A7A9F;font-weight:600}
-.page-row .page-bar{flex:1;height:4px;background:#1E3250;border-radius:2px;margin:0 12px;overflow:hidden}
-.page-row .page-bar-fill{height:100%;background:#3B82F6;border-radius:2px;transition:width .5s ease}
-
-/* ── Activity feed ── */
-.activity-feed{margin:0}
-.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(30,50,80,.3);align-items:flex-start}
-.activity-item:last-child{border:none}
-.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.activity-dot.donation{background:#22C55E}
-.activity-dot.subscriber{background:#3B82F6}
-.activity-dot.booking{background:#C9A84C}
-.activity-body{flex:1;min-width:0}
-.activity-body .text{font-size:12px;color:#CBD5E1;line-height:1.4}
-.activity-body .text strong{color:#F1F5F9}
-.activity-body .time{font-size:10px;color:#3A5278;margin-top:2px}
-.activity-empty{color:#3A5278;font-size:13px;padding:20px;text-align:center}
-
-/* ── Booking status pills ── */
-.status-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.status-pill.pending{background:rgba(234,179,8,.12);color:#EAB308}
-.status-pill.active{background:rgba(34,197,94,.12);color:#22C55E}
-.status-pill.completed{background:rgba(59,130,246,.12);color:#3B82F6}
-
-/* ── Loading / Error ── */
-.loading-pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3A5278;animation:pulse 1s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-
-/* ── Date filter ── */
-.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.filter-btn{background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-.filter-btn:hover{border-color:#3A5278;color:#94A3B8}
-.filter-btn.active{background:rgba(59,130,246,.1);border-color:#3B82F6;color:#3B82F6}
-
-/* ── Coming Soon Toggle ── */
-.cs-bar{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.cs-bar.active{border-color:rgba(234,179,8,.3);background:#1E2A1E}
-.cs-bar .cs-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.cs-bar .cs-icon.off{background:rgba(34,197,94,.1);color:#22C55E}
-.cs-bar .cs-icon.on{background:rgba(234,179,8,.15);color:#EAB308}
-.cs-bar .cs-info{flex:1;min-width:150px}
-.cs-bar .cs-label{font-size:13px;font-weight:600;color:#F1F5F9}
-.cs-bar .cs-desc{font-size:11px;color:#5A7A9F;margin-top:2px}
-.cs-toggle{position:relative;width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;transition:all .2s;flex-shrink:0}
-.cs-toggle.off{background:#1E3250}
-.cs-toggle.on{background:#EAB308}
-.cs-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
-.cs-toggle.on::after{transform:translateX(22px)}
-.cs-toggle:disabled{opacity:.4;cursor:not-allowed}
-.cs-toggle-label{font-size:11px;color:#3A5278;font-weight:600;min-width:40px}
-
-/* ── Country list ── */
-.chart-grid-3{grid-template-columns:repeat(3,1fr)}
-@media(max-width:900px){.chart-grid-3{grid-template-columns:1fr;gap:16px}}
-
-/* ── Donut chart ── */
-.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.donut-svg{flex-shrink:0}
-.donut-legend{flex:1;min-width:120px}
-.donut-legend-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(30,50,80,.3);font-size:11px;color:#94A3B8}
-.donut-legend-item:last-child{border:none}
-.donut-legend-item .dl-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.donut-legend-item .dl-pct{color:#F1F5F9;font-weight:700;margin-left:auto;font-size:13px}
-.donut-legend-item .dl-count{color:#3A5278;margin-right:8px}
-
-/* ── World map ── */
-.map-wrap{height:280px;border-radius:8px;overflow:hidden;border:1px solid #1E3250;position:relative}
-.map-wrap .leaflet-container{background:#0A1628;font-family:'DM Sans',sans-serif}
-.map-wrap .leaflet-control-zoom a{background:#0F1E38;color:#CBD5E1;border-color:#1E3250}
-.map-wrap .leaflet-control-zoom a:hover{background:#1E3250;color:#F1F5F9}
-.map-popup{font-size:11px;line-height:1.5}
-.map-popup strong{display:block;font-size:13px;color:#0A1628}
-</style>
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-<a href="subscribers.html">Subscribers</a>
-<a href="enrollments.html">Enrollments</a>
-<a href="donations.html">Donations</a>
-<a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="agents.html" style="color:#C9A84C;font-weight:700">&#9889; Command Center</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
-  </div>
 
   <h1 class="page-title">Live <span>Dashboard</span></h1>
   <p class="page-desc" style="margin-bottom:20px">Real-time data from D1 database. <span style="color:#3A5278" id="lastUpdated">Loading...</span></p>
@@ -365,11 +227,14 @@
   </div>
 </div>
 
-<div class="footer"><a href="../index.html">&larr; Back to site</a> &nbsp; <a href="roadmap.html">ToDo List</a> &nbsp; <a href="../functions/admin/api/logout" class="logout" onclick="return confirm('Sign out?')">Sign Out</a></div>
+<div class="footer"><a href="../index.html">&larr; Back to site</a> &nbsp; <a href="roadmap.html">ToDo List</a></div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
 var DASH_KEY = 'gideon_dash_cache';
+if (!getAdminKey()) ensureAdminKey();
 
 function $(id){return document.getElementById(id)}
 
@@ -402,9 +267,10 @@ function barChart(containerId, data, labelKey, valueKey, colorClass, maxVal){
   var max = maxVal || Math.max.apply(null, data.map(function(d){return d[valueKey]})) || 1;
   var html = data.map(function(d){
     var h = Math.max(4, (d[valueKey] / max) * 130);
-    var label = d[labelKey];
+    var raw = d[labelKey];
+    var label = raw;
     if (label && label.length > 7) label = label.replace('https://','').replace('http://','').replace('www.','').slice(0,12);
-    return '<div class="chart-bar-wrap"><div class="chart-bar ' + colorClass + '" style="height:' + h + 'px"><span class="tooltip">' + d[labelKey] + ': ' + fmtNum(d[valueKey]) + '</span></div><div class="chart-bar-label">' + (label||'') + '</div></div>';
+    return '<div class="chart-bar-wrap"><div class="chart-bar ' + colorClass + '" style="height:' + h + 'px"><span class="tooltip">' + escapeHtml(raw) + ': ' + fmtNum(d[valueKey]) + '</span></div><div class="chart-bar-label">' + escapeHtml(label||'') + '</div></div>';
   }).join('');
   el.innerHTML = html;
 }
@@ -419,7 +285,7 @@ function renderTopPages(data){
   var max = data[0].count || 1;
   var html = data.map(function(p){
     var pc = (p.count / max) * 100;
-    var name = p.page || '/';
+    var name = escapeHtml(p.page || '/');
     if (name.length > 30) name = name.slice(0,30)+'…';
     return '<div class="page-row"><span class="page-name">' + name + '</span><div class="page-bar"><div class="page-bar-fill" style="width:' + pc + '%"></div></div><span class="page-count">' + fmtNum(p.count) + '</span></div>';
   }).join('');
@@ -439,9 +305,12 @@ function renderActivity(data){
   var html = data.map(function(a){
     var dot = a.type || 'donation';
     var text = '';
-    if (a.type === 'donation') text = '<strong>' + (a.name||'Anonymous') + '</strong> donated ' + money(a.val) + ' <span style="color:#5A7A9F">(' + (a.note||'pending') + ')</span>';
-    else if (a.type === 'subscriber') text = '<strong>' + (a.val||'New subscriber') + '</strong> subscribed <span style="color:#5A7A9F">via ' + (a.note||'web') + '</span>';
-    else if (a.type === 'booking') text = '<strong>' + (a.name||'Someone') + '</strong> requested <span style="color:#C9A84C">' + a.val + '</span> <span style="color:#5A7A9F">(' + a.note + ')</span>';
+    var name = escapeHtml(a.name || 'Anonymous');
+    var val = escapeHtml(a.val || '');
+    var note = escapeHtml(a.note || '');
+    if (a.type === 'donation') text = '<strong>' + name + '</strong> donated ' + escapeHtml(money(a.val)) + ' <span style="color:#5A7A9F">(' + note + ')</span>';
+    else if (a.type === 'subscriber') text = '<strong>' + (val||'New subscriber') + '</strong> subscribed <span style="color:#5A7A9F">via ' + (note||'web') + '</span>';
+    else if (a.type === 'booking') text = '<strong>' + name + '</strong> requested <span style="color:#C9A84C">' + val + '</span> <span style="color:#5A7A9F">(' + note + ')</span>';
     return '<div class="activity-item"><div class="activity-dot ' + dot + '"></div><div class="activity-body"><div class="text">' + text + '</div><div class="time">' + fmtTime(a.ts) + '</div></div></div>';
   }).join('');
   el.innerHTML = html;
@@ -480,7 +349,7 @@ function renderWorldMap(data){
     var marker = L.circleMarker([lat, lng], {
       radius: radius, fillColor: '#3B82F6', color: '#60A5FA', weight: 1, fillOpacity: 0.5
     }).addTo(worldMap);
-    marker.bindPopup('<div class="map-popup"><strong>' + c.country + '</strong>' + fmtNum(c.count) + ' visitors</div>');
+    marker.bindPopup('<div class="map-popup"><strong>' + escapeHtml(c.country) + '</strong>' + fmtNum(c.count) + ' visitors</div>');
     mapMarkers.push(marker);
   });
   if(mapMarkers.length){
@@ -532,13 +401,15 @@ function renderDonut(containerId, data, labelKey, valueKey, colors, total) {
   });
   var svg = '<svg class="donut-svg" width="140" height="140" viewBox="0 0 100 100"><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#1E3250" stroke-width="12"/>';
   segments.forEach(function(s) {
-    svg += '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + s.color + '" stroke-width="12" stroke-dasharray="' + s.dash + ' ' + C + '" stroke-dashoffset="' + s.offset + '" transform="rotate(-90 50 50)" opacity="0.9"><title>' + s.label + ': ' + fmtNum(s.count) + ' (' + s.pct + '%)</title></circle>';
+    var label = escapeHtml(s.label);
+    svg += '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + s.color + '" stroke-width="12" stroke-dasharray="' + s.dash + ' ' + C + '" stroke-dashoffset="' + s.offset + '" transform="rotate(-90 50 50)" opacity="0.9"><title>' + label + ': ' + fmtNum(s.count) + ' (' + s.pct + '%)</title></circle>';
   });
-  var center = segments.length ? segments[0] : { label: '', count: 0, pct: 0 };
+  var center = segments.length ? { label: escapeHtml(segments[0].label), count: segments[0].count, pct: segments[0].pct } : { label: '', count: 0, pct: 0 };
   svg += '<text x="50" y="46" text-anchor="middle" fill="#F1F5F9" font-size="18" font-weight="700">' + center.pct + '%</text><text x="50" y="60" text-anchor="middle" fill="#5A7A9F" font-size="7">' + center.label + '</text></svg>';
   var legend = '<div class="donut-legend">';
   segments.forEach(function(s) {
-    legend += '<div class="donut-legend-item"><span class="dl-swatch" style="background:' + s.color + '"></span>' + s.label + '<span class="dl-count">' + fmtNum(s.count) + '</span><span class="dl-pct">' + s.pct + '%</span></div>';
+    var label = escapeHtml(s.label);
+    legend += '<div class="donut-legend-item"><span class="dl-swatch" style="background:' + s.color + '"></span>' + label + '<span class="dl-count">' + fmtNum(s.count) + '</span><span class="dl-pct">' + s.pct + '%</span></div>';
   });
   legend += '</div>';
   el.innerHTML = svg + legend;
@@ -562,7 +433,7 @@ function loadAudience() {
     var maxRef = referrers.length ? referrers[0].count : 1;
     var refHtml = referrers.map(function(r) {
       var pc = (r.count / maxRef) * 100;
-      var name = r.referrer || '(empty)';
+      var name = escapeHtml(r.referrer || '(empty)');
       if (name.length > 40) name = name.slice(0, 40) + '\u2026';
       return '<div class="page-row"><span class="page-name" style="font-size:10px">' + name + '</span><div class="page-bar"><div class="page-bar-fill" style="width:' + pc + '%;background:#C9A84C"></div></div><span class="page-count">' + fmtNum(r.count) + '</span></div>';
     }).join('');
@@ -728,7 +599,7 @@ function fallbackLocalStats(){
   // Show localStorage visit data as fallback
   if(Object.keys(visits).length){
     var html = Object.keys(visits).sort(function(a,b){return visits[b]-visits[a]}).map(function(p){
-      return '<div class="page-row"><span class="page-name">' + p + '</span><span class="page-count">' + visits[p] + '</span></div>';
+      return '<div class="page-row"><span class="page-name">' + escapeHtml(p) + '</span><span class="page-count">' + visits[p] + '</span></div>';
     }).join('');
     $('topPages').innerHTML = html;
   }
@@ -797,7 +668,7 @@ function toggleComingSoon(){
     toggle.disabled = false;
   }).catch(function(){
     toggle.disabled = false;
-    alert('Failed to toggle. Try visiting /api/db/setup to run migrations first, then try again.');
+    Toast.error('Failed to toggle coming soon mode. Try visiting /api/db/setup to run migrations first.');
   });
 }
 
@@ -818,12 +689,16 @@ function loadCI() {
     var statusColor = ok ? '#22C55E' : '#EF4444';
     var statusIcon = ok ? '&#10003;' : '&#10007;';
     $('ciTimestamp').textContent = r.created_at ? fmtTime(r.created_at) : '';
+    var status = escapeHtml(r.status || 'unknown');
+    var runId = escapeHtml(String(r.run_id || ''));
+    var branch = escapeHtml(r.branch || '');
+    var triggeredBy = escapeHtml(r.triggered_by || '');
     $('ciContent').innerHTML =
       '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
         '<span style="font-size:28px;color:' + statusColor + '">' + statusIcon + '</span>' +
-        '<div><span style="font-size:20px;font-weight:700;color:#F1F5F9;display:block">' + r.status + '</span>' +
-        '<span style="font-size:11px;color:#5A7F9A">#' + r.run_id + ' &middot; ' + r.branch +
-        ' &middot; ' + r.triggered_by + '</span></div>' +
+        '<div><span style="font-size:20px;font-weight:700;color:#F1F5F9;display:block">' + status + '</span>' +
+        '<span style="font-size:11px;color:#5A7F9A">#' + runId + ' &middot; ' + branch +
+        ' &middot; ' + triggeredBy + '</span></div>' +
         '<div style="border-left:1px solid #1E3250;padding-left:16px">' +
           '<span style="font-size:11px;color:#5A7F9A;display:block">Tests</span>' +
           '<span style="font-size:18px;font-weight:700;color:' + (failed > 0 ? '#EF4444' : '#22C55E') + '">' +

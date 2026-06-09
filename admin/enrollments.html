@@ -22,22 +22,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="enrollments.html">Enrollments</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-    </div>
+
   </div>
 
   <h1 class="page-title">School <span>Enrollments</span></h1>
@@ -61,8 +46,11 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 async function loadEnrollments() {
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
@@ -83,7 +71,7 @@ async function loadEnrollments() {
       items.forEach(function(e) {
         var date = e.enrolled_at ? new Date(e.enrolled_at).toLocaleDateString() : '—';
         var statusClass = e.status === 'active' ? 'active' : (e.status === 'completed' ? 'completed' : 'pending');
-        html += '<tr><td><div style="display:flex;flex-direction:column;gap:2px"><span style="color:#E8EEF7;font-weight:500;font-size:13px">' + (e.student_name || '—') + '</span><span style="color:#5A7A9F;font-size:11px">' + (e.student_email || '') + '</span></div></td><td style="font-size:12px;color:#5A7A9F">' + (e.student_phone || '—') + '</td><td style="font-size:13px;color:#CBD5E1">' + (e.program_title || '—') + '</td><td style="font-size:12px;color:#5A7A9F">' + date + '</td><td><span class="status-pill ' + statusClass + '">' + e.status + '</span></td></tr>';
+        html += '<tr><td><div style="display:flex;flex-direction:column;gap:2px"><span style="color:#E8EEF7;font-weight:500;font-size:13px">' + escapeHtml(e.student_name || '—') + '</span><span style="color:#5A7A9F;font-size:11px">' + escapeHtml(e.student_email || '') + '</span></div></td><td style="font-size:12px;color:#5A7A9F">' + escapeHtml(e.student_phone || '—') + '</td><td style="font-size:13px;color:#CBD5E1">' + escapeHtml(e.program_title || '—') + '</td><td style="font-size:12px;color:#5A7A9F">' + escapeHtml(date) + '</td><td><span class="status-pill ' + escapeHtml(statusClass) + '">' + escapeHtml(e.status) + '</span></td></tr>';
       });
     }
     document.getElementById('enrollmentsBody').innerHTML = html;

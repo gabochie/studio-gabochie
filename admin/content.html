@@ -44,21 +44,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-    </div>
+
   </div>
 
   <h1 class="page-title">Content <span>Manager</span></h1>
@@ -94,8 +80,11 @@
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 var currentTab = 'testimonials';
 
 function switchTab(tab) {
@@ -140,11 +129,24 @@ function loadTestimonials() {
 function showForm(type, data) {
   var form = document.getElementById(type + 'Form');
   if (type === 'testimonial') {
-    form.innerHTML = '<h3>' + (data ? 'Edit Testimonial' : 'New Testimonial') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Author</label><input id="tAuthor" value="' + ((data && data.author) || '') + '"></div><div class="field"><label>Role</label><input id="tRole" value="' + ((data && data.role) || '') + '"></div><div class="field"><label>Rating (1-5)</label><input id="tRating" type="number" min="1" max="5" value="' + ((data && data.rating) || 5) + '"></div></div><div class="field"><label>Content</label><textarea id="tContent">' + ((data && data.content) || '') + '</textarea></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveTestimonial(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'testimonial\')">Cancel</button></div>';
+    var a = data ? escapeHtml(data.author || '') : '';
+    var r = data ? escapeHtml(data.role || '') : '';
+    var rt = data ? escapeHtml(String(data.rating || 5)) : '5';
+    var c = data ? escapeHtml(data.content || '') : '';
+    form.innerHTML = '<h3>' + (data ? 'Edit Testimonial' : 'New Testimonial') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Author</label><input id="tAuthor" value="' + a + '"></div><div class="field"><label>Role</label><input id="tRole" value="' + r + '"></div><div class="field"><label>Rating (1-5)</label><input id="tRating" type="number" min="1" max="5" value="' + rt + '"></div></div><div class="field"><label>Content</label><textarea id="tContent">' + c + '</textarea></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveTestimonial(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'testimonial\')">Cancel</button></div>';
   } else if (type === 'stat') {
-    form.innerHTML = '<h3>' + (data ? 'Edit Stat' : 'New Stat') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Label</label><input id="sLabel" value="' + ((data && data.label) || '') + '"></div><div class="field"><label>Value</label><input id="sValue" value="' + ((data && data.value) || '') + '"></div><div class="field"><label>Icon (emoji)</label><input id="sIcon" value="' + ((data && data.icon) || '') + '"></div></div><div class="field"><label>Sort Order</label><input id="sOrder" type="number" value="' + ((data && data.sort_order) || 0) + '"></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveStat(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'stat\')">Cancel</button></div>';
+    var sl = data ? escapeHtml(data.label || '') : '';
+    var sv = data ? escapeHtml(data.value || '') : '';
+    var si = data ? escapeHtml(data.icon || '') : '';
+    var so = data ? escapeHtml(String(data.sort_order || 0)) : '0';
+    form.innerHTML = '<h3>' + (data ? 'Edit Stat' : 'New Stat') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Label</label><input id="sLabel" value="' + sl + '"></div><div class="field"><label>Value</label><input id="sValue" value="' + sv + '"></div><div class="field"><label>Icon (emoji)</label><input id="sIcon" value="' + si + '"></div></div><div class="field"><label>Sort Order</label><input id="sOrder" type="number" value="' + so + '"></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveStat(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'stat\')">Cancel</button></div>';
   } else if (type === 'gallery') {
-    form.innerHTML = '<h3>' + (data ? 'Edit Gallery Item' : 'New Gallery Item') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Title</label><input id="gTitle" value="' + ((data && data.title) || '') + '"></div><div class="field"><label>Category</label><input id="gCategory" value="' + ((data && data.category) || '') + '"></div><div class="field"><label>Sort Order</label><input id="gOrder" type="number" value="' + ((data && data.sort_order) || 0) + '"></div></div><div class="field"><label>Image URL</label><input id="gImage" value="' + ((data && data.image_url) || '') + '"></div><div class="field"><label>Description</label><textarea id="gDesc">' + ((data && data.description) || '') + '</textarea></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveGallery(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'gallery\')">Cancel</button></div>';
+    var gt = data ? escapeHtml(data.title || '') : '';
+    var gc = data ? escapeHtml(data.category || '') : '';
+    var go = data ? escapeHtml(String(data.sort_order || 0)) : '0';
+    var gi = data ? escapeHtml(data.image_url || '') : '';
+    var gd = data ? escapeHtml(data.description || '') : '';
+    form.innerHTML = '<h3>' + (data ? 'Edit Gallery Item' : 'New Gallery Item') + '</h3><div class="fields"><div class="field-row"><div class="field"><label>Title</label><input id="gTitle" value="' + gt + '"></div><div class="field"><label>Category</label><input id="gCategory" value="' + gc + '"></div><div class="field"><label>Sort Order</label><input id="gOrder" type="number" value="' + go + '"></div></div><div class="field"><label>Image URL</label><input id="gImage" value="' + gi + '"></div><div class="field"><label>Description</label><textarea id="gDesc">' + gd + '</textarea></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveGallery(' + (data ? data.id : 'null') + ')">Save</button><button class="btn btn-ghost" onclick="hideForm(\'gallery\')">Cancel</button></div>';
   }
   form.style.display = 'block';
 }

@@ -410,7 +410,12 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+</script>
 <script>
 (function(){
   var agentTypeMap = {

@@ -107,22 +107,7 @@ h1 span{color:#C9A84C}
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html" class="active">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
+
   </div>
 
   <h1>Newsletter <span>Builder</span></h1>
@@ -232,8 +217,11 @@ h1 span{color:#C9A84C}
   </div>
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 // ── State ──
 var blocks = [];
 var loadedCalendarDate = null; // tracks which calendar issue was loaded (for auto-publish)
@@ -331,26 +319,26 @@ function renderEditor() {
   blocks.forEach(function(b, i) {
     html += '<div class="block-card">';
     html += '<div class="block-head"><span class="block-type">' + labelFor(b.type) + '</span><div class="block-actions">';
-    if (i > 0) html += '<button onclick="moveBlock(\'' + b.id + '\',-1)" title="Move up">&#9650;</button>';
-    if (i < blocks.length - 1) html += '<button onclick="moveBlock(\'' + b.id + '\',1)" title="Move down">&#9660;</button>';
-    html += '<button class="del" onclick="removeBlock(\'' + b.id + '\')" title="Remove">&#10005;</button></div></div>';
+    if (i > 0) html += '<button onclick="moveBlock(\'' + escapeHtml(b.id) + '\',-1)" title="Move up">&#9650;</button>';
+    if (i < blocks.length - 1) html += '<button onclick="moveBlock(\'' + escapeHtml(b.id) + '\',1)" title="Move down">&#9660;</button>';
+    html += '<button class="del" onclick="removeBlock(\'' + escapeHtml(b.id) + '\')" title="Remove">&#10005;</button></div></div>';
 
     switch (b.type) {
       case 'header':
-        html += '<div class="field"><label>Title</label><input value="' + esc(b.title) + '" oninput="updateBlockField(\'' + b.id + '\',\'title\',this.value)"></div>';
-        html += '<div class="field"><label>Subtitle</label><input value="' + esc(b.subtitle) + '" oninput="updateBlockField(\'' + b.id + '\',\'subtitle\',this.value)"></div>';
+        html += '<div class="field"><label>Title</label><input value="' + esc(b.title) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'title\',this.value)"></div>';
+        html += '<div class="field"><label>Subtitle</label><input value="' + esc(b.subtitle) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'subtitle\',this.value)"></div>';
         break;
       case 'text':
-        html += '<div class="field"><label>Content</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'content\',this.value)">' + esc(b.content) + '</textarea></div>';
+        html += '<div class="field"><label>Content</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'content\',this.value)">' + esc(b.content) + '</textarea></div>';
         break;
       case 'image':
-        html += '<div class="field"><label>Image URL</label><input value="' + esc(b.src) + '" oninput="updateBlockField(\'' + b.id + '\',\'src\',this.value)" placeholder="https://..."></div>';
-        html += '<div class="field"><label>Alt text</label><input value="' + esc(b.alt) + '" oninput="updateBlockField(\'' + b.id + '\',\'alt\',this.value)"></div>';
-        html += '<div class="field"><label>Link to</label><input value="' + esc(b.link) + '" oninput="updateBlockField(\'' + b.id + '\',\'imgLink\',this.value)" placeholder="Optional URL"></div>';
+        html += '<div class="field"><label>Image URL</label><input value="' + esc(b.src) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'src\',this.value)" placeholder="https://..."></div>';
+        html += '<div class="field"><label>Alt text</label><input value="' + esc(b.alt) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'alt\',this.value)"></div>';
+        html += '<div class="field"><label>Link to</label><input value="' + esc(b.link) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'imgLink\',this.value)" placeholder="Optional URL"></div>';
         break;
       case 'cta':
-        html += '<div class="field"><label>Button text</label><input value="' + esc(b.text) + '" oninput="updateBlockField(\'' + b.id + '\',\'text\',this.value)"></div>';
-        html += '<div class="field"><label>Button URL</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + b.id + '\',\'url\',this.value)"></div>';
+        html += '<div class="field"><label>Button text</label><input value="' + esc(b.text) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'text\',this.value)"></div>';
+        html += '<div class="field"><label>Button URL</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'url\',this.value)"></div>';
         break;
       case 'divider':
         html += '<div style="color:#3A5278;font-size:11px;text-align:center;padding:4px 0">&#9472; Horizontal divider &#9472;</div>';
@@ -359,41 +347,41 @@ function renderEditor() {
         html += '<div style="color:#3A5278;font-size:11px;text-align:center;padding:4px 0">&#64; Social media links will be auto-generated</div>';
         break;
       case 'article':
-        html += '<div class="field"><label>Title</label><input value="' + esc(b.articleTitle) + '" oninput="updateBlockField(\'' + b.id + '\',\'articleTitle\',this.value)"></div>';
-        html += '<div class="field"><label>Description</label><input value="' + esc(b.description) + '" oninput="updateBlockField(\'' + b.id + '\',\'description\',this.value)"></div>';
-        html += '<div class="field"><label>Link</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + b.id + '\',\'articleLink\',this.value)"></div>';
+        html += '<div class="field"><label>Title</label><input value="' + esc(b.articleTitle) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'articleTitle\',this.value)"></div>';
+        html += '<div class="field"><label>Description</label><input value="' + esc(b.description) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'description\',this.value)"></div>';
+        html += '<div class="field"><label>Link</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'articleLink\',this.value)"></div>';
         break;
       case 'footer':
         html += '<div style="color:#3A5278;font-size:11px;text-align:center;padding:4px 0">&#9432; Footer with unsubscribe link and address</div>';
         break;
       case 'offer':
-        html += '<div class="field"><label>Headline</label><input value="' + esc(b.headline) + '" oninput="updateBlockField(\'' + b.id + '\',\'headline\',this.value)"></div>';
-        html += '<div class="field"><label>Description</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'description\',this.value)">' + esc(b.description) + '</textarea></div>';
-        html += '<div class="field"><label>Price</label><input value="' + esc(b.price) + '" oninput="updateBlockField(\'' + b.id + '\',\'price\',this.value)" placeholder="GH¢250 or Free"></div>';
-        html += '<div class="field"><label>Button</label><input value="' + esc(b.buttonText) + '" oninput="updateBlockField(\'' + b.id + '\',\'offerBtnText\',this.value)"></div>';
-        html += '<div class="field"><label>Button URL</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + b.id + '\',\'url\',this.value)"></div>';
+        html += '<div class="field"><label>Headline</label><input value="' + esc(b.headline) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'headline\',this.value)"></div>';
+        html += '<div class="field"><label>Description</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'description\',this.value)">' + esc(b.description) + '</textarea></div>';
+        html += '<div class="field"><label>Price</label><input value="' + esc(b.price) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'price\',this.value)" placeholder="GH¢250 or Free"></div>';
+        html += '<div class="field"><label>Button</label><input value="' + esc(b.buttonText) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'offerBtnText\',this.value)"></div>';
+        html += '<div class="field"><label>Button URL</label><input value="' + esc(b.url) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'url\',this.value)"></div>';
         break;
       case 'testimonial':
-        html += '<div class="field"><label>Quote</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'testimonialQuote\',this.value)">' + esc(b.quote) + '</textarea></div>';
-        html += '<div class="field"><label>Author</label><input value="' + esc(b.author) + '" oninput="updateBlockField(\'' + b.id + '\',\'author\',this.value)"></div>';
+        html += '<div class="field"><label>Quote</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'testimonialQuote\',this.value)">' + esc(b.quote) + '</textarea></div>';
+        html += '<div class="field"><label>Author</label><input value="' + esc(b.author) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'author\',this.value)"></div>';
         break;
       case 'urgency':
-        html += '<div class="field"><label>Urgency text</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
+        html += '<div class="field"><label>Urgency text</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
         break;
       case 'ps':
-        html += '<div class="field"><label>P.S. Content</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'content\',this.value)">' + esc(b.content) + '</textarea></div>';
+        html += '<div class="field"><label>P.S. Content</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'content\',this.value)">' + esc(b.content) + '</textarea></div>';
         break;
       case 'guarantee':
-        html += '<div class="field"><label>Guarantee text</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
+        html += '<div class="field"><label>Guarantee text</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
         break;
       case 'reply':
-        html += '<div class="field"><label>Reply prompt</label><textarea oninput="updateBlockField(\'' + b.id + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
+        html += '<div class="field"><label>Reply prompt</label><textarea oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'text\',this.value)">' + esc(b.text) + '</textarea></div>';
         break;
       case 'ad':
-        html += '<div class="field"><label>Sponsor name</label><input value="' + esc(b.sponsorName) + '" oninput="updateBlockField(\'' + b.id + '\',\'sponsorName\',this.value)"></div>';
-        html += '<div class="field"><label>Tagline</label><input value="' + esc(b.sponsorTagline) + '" oninput="updateBlockField(\'' + b.id + '\',\'sponsorTagline\',this.value)"></div>';
-        html += '<div class="field"><label>Image URL</label><input value="' + esc(b.imageUrl) + '" oninput="updateBlockField(\'' + b.id + '\',\'imageUrl\',this.value)" placeholder="https://..."></div>';
-        html += '<div class="field"><label>Link URL</label><input value="' + esc(b.linkUrl) + '" oninput="updateBlockField(\'' + b.id + '\',\'linkUrl\',this.value)"></div>';
+        html += '<div class="field"><label>Sponsor name</label><input value="' + esc(b.sponsorName) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'sponsorName\',this.value)"></div>';
+        html += '<div class="field"><label>Tagline</label><input value="' + esc(b.sponsorTagline) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'sponsorTagline\',this.value)"></div>';
+        html += '<div class="field"><label>Image URL</label><input value="' + esc(b.imageUrl) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'imageUrl\',this.value)" placeholder="https://..."></div>';
+        html += '<div class="field"><label>Link URL</label><input value="' + esc(b.linkUrl) + '" oninput="updateBlockField(\'' + escapeHtml(b.id) + '\',\'linkUrl\',this.value)"></div>';
         break;
     }
     html += '</div>';
@@ -538,12 +526,12 @@ function renderPreview() {
 function copyHTML() {
   var html = renderToHTML(blocks, '');
   navigator.clipboard.writeText(html).then(function() {
-    alert('HTML copied to clipboard! Paste it into Brevo campaign editor.');
+    Toast.success('HTML copied to clipboard! Paste it into Brevo campaign editor.');
   }).catch(function() {
     var ta = document.createElement('textarea');
     ta.value = html; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); ta.remove();
-    alert('HTML copied!');
+    Toast.success('HTML copied!');
   });
 }
 
@@ -567,11 +555,11 @@ function clearAll() {
 
 // ── Template management ──
 function saveTemplate() {
-  if (!ensureAdminKey()) { alert('Admin API Key required'); return; }
+  if (!ensureAdminKey()) { Toast.error('Admin API Key required'); return; }
   var name = document.getElementById('tplNameInput').value.trim();
   var subject = document.getElementById('subjectInput').value.trim();
-  if (!name) { alert('Enter a template name'); return; }
-  if (!blocks.length) { alert('Add at least one block first'); return; }
+  if (!name) { Toast.error('Enter a template name'); return; }
+  if (!blocks.length) { Toast.error('Add at least one block first'); return; }
 
   // Check if updating existing
   var sel = document.getElementById('tplSelect');
@@ -583,45 +571,45 @@ function saveTemplate() {
     body: JSON.stringify({ name: name, subject: subject, blocks: blocks, template_id: tplId })
   }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
-      alert('Template saved!');
+      Toast.success('Template saved!');
       loadTplList();
       document.getElementById('tplNameInput').value = '';
     } else {
-      alert(d.message || 'Failed to save');
+      Toast.error(d.message || 'Failed to save');
     }
-  }).catch(function(){ alert('Error saving template'); });
+  }).catch(function(){ Toast.error('Error saving template'); });
 }
 
 function loadTemplate(id) {
   if (!id) return;
   if (!ensureAdminKey()) return;
   adminFetch('/admin/api/newsletter/templates?id=' + id).then(function(r){ return r.json(); }).then(function(d){
-    if (!d || !d.blocks) { alert('Template not found'); return; }
+    if (!d || !d.blocks) { Toast.error('Template not found'); return; }
     try {
       blocks = typeof d.blocks === 'string' ? JSON.parse(d.blocks) : d.blocks;
-    } catch(e) { alert('Invalid template data'); return; }
+    } catch(e) { Toast.error('Invalid template data'); return; }
     document.getElementById('subjectInput').value = d.subject || '';
     document.getElementById('tplNameInput').value = d.name || '';
     renderEditor();
     renderPreview();
-  }).catch(function(){ alert('Error loading template'); });
+  }).catch(function(){ Toast.error('Error loading template'); });
 }
 
 function deleteTemplate() {
   if (!ensureAdminKey()) return;
   var sel = document.getElementById('tplSelect');
   var id = sel.value;
-  if (!id) { alert('Select a template first'); return; }
+  if (!id) { Toast.error('Select a template first'); return; }
   if (!confirm('Delete this template?')) return;
   adminFetch('/admin/api/newsletter/templates?id=' + id, { method: 'DELETE' }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       loadTplList();
       sel.value = '';
-      alert('Template deleted');
+      Toast.success('Template deleted');
     } else {
-      alert(d.message || 'Failed');
+      Toast.error(d.message || 'Failed');
     }
-  }).catch(function(){ alert('Error'); });
+  }).catch(function(){ Toast.error('Error'); });
 }
 
 function loadTplList() {
@@ -743,7 +731,7 @@ function updateCalendarIssues(datesToUpdate, newStatus) {
 function openCalModal() {
   try {
     var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
-    if (!calData || !calData.issues) { alert('No calendar data found. Go to Calendar first to set up your content plan.'); return; }
+    if (!calData || !calData.issues) { Toast.error('No calendar data found. Go to Calendar first to set up your content plan.'); return; }
     var keys = Object.keys(calData.issues);
     var unpublished = [];
     for (var i = 0; i < keys.length; i++) {
@@ -751,21 +739,21 @@ function openCalModal() {
         unpublished.push({ key: keys[i], issue: calData.issues[keys[i]], num: i + 1 });
       }
     }
-    if (!unpublished.length) { alert('All calendar issues are published! Add a new year in the Calendar page.'); return; }
+    if (!unpublished.length) { Toast.error('All calendar issues are published! Add a new year in the Calendar page.'); return; }
 
     var listEl = document.getElementById('calIssueList');
     var html = '';
     unpublished.forEach(function(item) {
       var statusClass = item.issue.status || 'planned';
-      html += '<div class="cal-issue-row" onclick="loadIssueFromCalendar(\'' + item.key + '\')">' +
+      html += '<div class="cal-issue-row" onclick="loadIssueFromCalendar(\'' + escapeHtml(item.key) + '\')">' +
         '<div class="num">#' + item.num + '</div>' +
-        '<div class="info"><div class="theme">' + esc(item.issue.theme || 'Untitled') + '</div><div class="date">' + item.key + '</div></div>' +
-        '<span class="status-badge ' + statusClass + '">' + (item.issue.status || 'planned') + '</span>' +
+        '<div class="info"><div class="theme">' + esc(item.issue.theme || 'Untitled') + '</div><div class="date">' + escapeHtml(item.key) + '</div></div>' +
+        '<span class="status-badge ' + escapeHtml(statusClass) + '">' + escapeHtml(item.issue.status || 'planned') + '</span>' +
         '</div>';
     });
     listEl.innerHTML = html;
     document.getElementById('calModal').style.display = 'flex';
-  } catch(e) { alert('Error reading calendar: ' + e.message); }
+  } catch(e) { Toast.error('Error reading calendar: ' + e.message); }
 }
 
 function closeCalModal() {
@@ -776,7 +764,7 @@ function loadIssueFromCalendar(dateKey) {
   closeCalModal();
   try {
     var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
-    if (!calData || !calData.issues || !calData.issues[dateKey]) { alert('Issue not found in calendar.'); return; }
+    if (!calData || !calData.issues || !calData.issues[dateKey]) { Toast.error('Issue not found in calendar.'); return; }
     var issue = calData.issues[dateKey];
     var keys = Object.keys(calData.issues);
     var issueNum = keys.indexOf(dateKey) + 1;
@@ -792,7 +780,7 @@ function loadIssueFromCalendar(dateKey) {
 
     renderEditor();
     renderPreview();
-  } catch(e) { alert('Error loading issue: ' + e.message); }
+  } catch(e) { Toast.error('Error loading issue: ' + e.message); }
 }
 
 // ── Send test ──
@@ -800,9 +788,9 @@ function sendTest() {
   if (!ensureAdminKey()) return;
   var subject = document.getElementById('subjectInput').value.trim();
   var email = document.getElementById('testEmail').value.trim();
-  if (!subject) { alert('Enter a subject line'); return; }
-  if (!email) { alert('Enter a test email address'); return; }
-  if (!blocks.length) { alert('Add at least one block first'); return; }
+  if (!subject) { Toast.error('Enter a subject line'); return; }
+  if (!email) { Toast.error('Enter a test email address'); return; }
+  if (!blocks.length) { Toast.error('Add at least one block first'); return; }
   var html = renderToHTML(blocks, '');
   var status = document.getElementById('sendStatus');
   status.className = 'active';
@@ -814,14 +802,14 @@ function sendTest() {
   }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       status.className = 'active ok';
-      status.innerHTML = '&#10003; Test sent to ' + email;
+      status.innerHTML = '&#10003; Test sent to ' + escapeHtml(email);
     } else {
       status.className = 'active err';
-      status.innerHTML = '&#10007; ' + (d.message || 'Failed');
+      status.innerHTML = '&#10007; ' + escapeHtml(d.message || 'Failed');
     }
   }).catch(function(err){
     status.className = 'active err';
-    status.innerHTML = '&#10007; Error: ' + err.message;
+    status.innerHTML = '&#10007; Error: ' + escapeHtml(err.message);
   });
   setTimeout(function(){ status.className = ''; }, 6000);
 }
@@ -830,8 +818,8 @@ function sendTest() {
 function broadcast() {
   if (!ensureAdminKey()) return;
   var subject = document.getElementById('subjectInput').value.trim();
-  if (!subject) { alert('Enter a subject line'); return; }
-  if (!blocks.length) { alert('Add at least one block first'); return; }
+  if (!subject) { Toast.error('Enter a subject line'); return; }
+  if (!blocks.length) { Toast.error('Add at least one block first'); return; }
   if (!confirm('Send this newsletter to ALL subscribers? This cannot be undone.')) return;
   if (!confirm('Are you sure? This will broadcast to your entire subscriber list.')) return;
   var html = renderToHTML(blocks, '');
@@ -845,7 +833,7 @@ function broadcast() {
   }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       status.className = 'active ok';
-      status.innerHTML = '&#10003; Sent to ' + d.sent + ' subscribers' + (d.failed ? ' (' + d.failed + ' failed)' : '') + '. Issue #' + d.issue_number + ' archived.';
+      status.innerHTML = '&#10003; Sent to ' + escapeHtml(d.sent) + ' subscribers' + (d.failed ? ' (' + escapeHtml(d.failed) + ' failed)' : '') + '. Issue #' + escapeHtml(d.issue_number) + ' archived.';
       // Mark the calendar issue as published
       if (loadedCalendarDate) {
         updateCalendarIssues(loadedCalendarDate, 'published');
@@ -853,11 +841,11 @@ function broadcast() {
       }
     } else {
       status.className = 'active err';
-      status.innerHTML = '&#10007; ' + (d.message || 'Failed');
+      status.innerHTML = '&#10007; ' + escapeHtml(d.message || 'Failed');
     }
   }).catch(function(err){
     status.className = 'active err';
-    status.innerHTML = '&#10007; Error: ' + err.message;
+    status.innerHTML = '&#10007; Error: ' + escapeHtml(err.message);
   });
 }
 

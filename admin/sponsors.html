@@ -34,23 +34,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="enrollments.html">Enrollments</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
+
   </div>
 
   <h1 class="page-title">Sponsor <span>Accounts</span></h1>
@@ -92,8 +76,11 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../newsletter/advertise.html">View Sponsorship Page</a></div>
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 async function loadSponsors() {
   document.getElementById('sponsorsBody').innerHTML = '<tr><td colspan="6" class="table-empty">Loading...</td></tr>';
   try {
@@ -117,8 +104,8 @@ async function loadSponsors() {
         '<td><span class="status-pill ' + statusClass + '">' + escapeHtml(s.status) + '</span></td>' +
         '<td>' + created + '</td>' +
         '<td>' +
-          '<button class="btn-sm" onclick="toggleStatus(' + s.id + ', \'' + s.status + '\')">' + (s.status === 'active' ? 'Deactivate' : 'Activate') + '</button> ' +
-          '<button class="btn-sm danger" onclick="deleteSponsor(' + s.id + ')">Delete</button>' +
+          '<button class="btn-sm" onclick="toggleStatus(' + escapeHtml(s.id) + ', \'' + escapeHtml(s.status) + '\')">' + (s.status === 'active' ? 'Deactivate' : 'Activate') + '</button> ' +
+          '<button class="btn-sm danger" onclick="deleteSponsor(' + escapeHtml(s.id) + ')">Delete</button>' +
         '</td>' +
         '</tr>';
     });
@@ -151,12 +138,12 @@ function addSponsor(e) {
       document.getElementById('newCode').value = '';
       loadSponsors();
     } else {
-      alert(data.error || 'Failed to add sponsor');
+      Toast.error(data.error || 'Failed to add sponsor');
     }
     btn.disabled = false;
     btn.textContent = '+ Add Sponsor';
   }).catch(function() {
-    alert('Error adding sponsor');
+    Toast.error('Error adding sponsor');
     btn.disabled = false;
     btn.textContent = '+ Add Sponsor';
   });

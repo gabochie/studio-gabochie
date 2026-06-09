@@ -316,8 +316,11 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 // ══════════════════════════════════════════════
 // DATA — Each step has launch URLs tied to it
 // ══════════════════════════════════════════════
@@ -2152,7 +2155,7 @@ function loadAgentTasks() {
     renderAgentTasks(d.items||[]);
   }).catch(function(err){
     var list = document.getElementById('agentTaskList');
-    if(list) list.innerHTML = '<div class="agent-empty">D1 not connected — ' + err.message + '</div>';
+    if(list) list.innerHTML = '<div class="agent-empty">D1 not connected — ' + escapeHtml(err.message) + '</div>';
   });
 }
 
@@ -2216,7 +2219,7 @@ function addAgentTask() {
       loadAgentTasks();
     }
   }).catch(function(err){
-    alert('Failed to add task: ' + err.message);
+    Toast.error('Failed to add task: ' + err.message);
   });
 }
 

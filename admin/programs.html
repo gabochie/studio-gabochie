@@ -39,24 +39,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="subscribers.html">Subscribers</a>
-      <a href="enrollments.html">Enrollments</a>
-      <a href="donations.html">Donations</a>
-      <a href="bookings.html">Bookings</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="programs.html">Programs</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
-      <a href="strategy.html">Strategy</a>
-    </div>
+
   </div>
 
   <h1 class="page-title">Program <span>Manager</span></h1>
@@ -104,8 +87,11 @@
   </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../school/index.html">View School Page</a></div>
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 async function loadPrograms() {
   document.getElementById('programsBody').innerHTML = '<tr><td colspan="5" class="table-empty">Loading...</td></tr>';
   try {
@@ -141,7 +127,7 @@ async function loadPrograms() {
 }
 
 function editProgram(id) {
-  fetch('/admin/api/programs?id=' + id, {headers:{'Referer':'/admin/programs.html'}})
+  adminFetch('/admin/api/programs?id=' + id, {headers:{'Referer':'/admin/programs.html'}})
     .then(function(r) { return r.json(); })
     .then(function(p) {
       if (!p) return;
@@ -197,7 +183,7 @@ function saveProgram(e) {
   var method = id ? 'PATCH' : 'POST';
   var url = id ? '/admin/api/programs?id=' + id : '/admin/api/programs';
 
-  fetch(url, {
+  adminFetch(url, {
     method: method,
     headers: { 'Content-Type': 'application/json', 'Referer': '/admin/programs.html' },
     body: JSON.stringify(body)
@@ -220,7 +206,7 @@ function saveProgram(e) {
 
 function deleteProgram(id) {
   if (!confirm('Delete this program permanently?')) return;
-  fetch('/admin/api/programs?id=' + id, {
+  adminFetch('/admin/api/programs?id=' + id, {
     method: 'DELETE',
     headers: { 'Referer': '/admin/programs.html' }
   }).then(function(r) { return r.json(); }).then(function(data) {

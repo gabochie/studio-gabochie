@@ -32,7 +32,7 @@ td.email{font-family:'Courier Prime',monospace;font-size:12px;color:#94A3B8}
 </head>
 <body>
 <div class="wrap">
-  <nav><a href="index.html">Dashboard</a> <a href="subscribers.html">Subscribers</a> <a href="newsletter.html">Newsletter</a> <a href="email.html" class="active">Email Automation</a> <a href="sponsors.html">Sponsors</a></nav>
+
   <h1 class="page-title">Email <span>Automation</span></h1>
   <p class="page-desc">Outgoing email queue — welcome sequences, follow-ups, and impact updates sent via Brevo.</p>
 
@@ -52,11 +52,14 @@ td.email{font-family:'Courier Prime',monospace;font-size:12px;color:#94A3B8}
   </tr></thead><tbody id="queueBody"></tbody></table>
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 async function loadQueue() {
   try {
-    const r = await fetch('/api/email/process?list=1');
+    const r = await adminFetch('/api/email/process?list=1');
     const d = await r.json();
     render(d);
   } catch(e) { document.getElementById('queueBody').innerHTML = '<tr><td colspan="6" class="empty">Failed to load queue</td></tr>'; }

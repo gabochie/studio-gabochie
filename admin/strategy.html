@@ -220,7 +220,11 @@
 .auto-badge.na{background:rgba(100,116,139,.12);color:#64748B}
 </style>
 
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 var STORAGE_KEY = 'gideon_strategy_state';
 var state = loadStrategyState();
 

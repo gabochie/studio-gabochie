@@ -10,22 +10,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
-    <span class="header-tag">Admin Panel</span>
-    <div class="header-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="submissions.html">Submissions</a>
-      <a href="donations.html">Donations</a>
-      <a href="content.html">Content</a>
-      <a href="newsletter.html">Newsletter</a>
-      <a href="bookings.html">Bookings</a>
-            <a href="sponsors.html">Sponsors</a>
-<a href="calendar.html">Calendar</a>
-      <a href="guitar.html" style="color:#C9A84C;font-weight:700">🎸 Guitar</a>
-      <a href="roadmap.html">ToDo List</a>
 
-    </div>
   </div>
 
   <h1 class="page-title">Form <span>Submissions</span></h1>
@@ -52,8 +37,11 @@
   </div>
 </div>
 
+<script src="admin-ui.js"></script>
 <script src="admin.js"></script>
+<script src="sidebar.js"></script>
 <script>
+if (!getAdminKey()) ensureAdminKey();
 function loadSubmissions() {
   document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#3A5278">Loading&hellip;</td></tr>';
   adminFetch('/api/admin/submissions').then(function(r){return r.json()}).then(function(d){
@@ -66,26 +54,26 @@ function loadSubmissions() {
     }
     var html = items.map(function(s){
       var stCls = s.status==='new'?'tag-yellow':s.status==='read'?'tag-blue':s.status==='replied'?'tag-green':'tag-dim';
-      return '<tr><td>'+(s.name||'-')+'</td><td>'+(s.email||'-')+'</td><td style="font-size:12px;color:#94A3B8;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.subject||'-')+'</td><td style="font-size:12px;color:#5A7A9F">'+new Date(s.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</td><td><span class="source-tag">'+(s.source||'web')+'</span></td><td><span class="tag '+stCls+'">'+s.status+'</span></td><td><button class="btn-icon" onclick="viewSubmission('+s.id+')" title="View">&#8594;</button></td></tr>';
+      return '<tr><td>'+escapeHtml(s.name||'-')+'</td><td>'+escapeHtml(s.email||'-')+'</td><td style="font-size:12px;color:#94A3B8;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(s.subject||'-')+'</td><td style="font-size:12px;color:#5A7A9F">'+escapeHtml(new Date(s.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}))+'</td><td><span class="source-tag">'+escapeHtml(s.source||'web')+'</span></td><td><span class="tag '+escapeHtml(stCls)+'">'+escapeHtml(s.status)+'</span></td><td><button class="btn-icon" onclick="viewSubmission('+escapeHtml(s.id)+')" title="View">&#8594;</button></td></tr>';
     }).join('');
     document.getElementById('subsBody').innerHTML = html;
   }).catch(function(e){
-    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#E8637A">Failed: '+e.message+'</td></tr>';
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#E8637A">Failed: '+escapeHtml(e.message)+'</td></tr>';
   });
 }
 
 function viewSubmission(id) {
   adminFetch('/api/admin/submissions').then(function(r){return r.json()}).then(function(d){
     var s=(d.items||[]).filter(function(x){return x.id===id})[0];
-    if(!s){alert('Not found');return;}
+    if(!s){Toast.error('Not found');return;}
     var h = '';
-    h += '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+(s.name||'-')+'</span></div>';
-    h += '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+(s.email||'-')+'</span></div>';
-    h += '<div class="m-detail-row"><span class="mdl-l">Subject</span><span class="mdl-v">'+(s.subject||'-')+'</span></div>';
-    h += '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+(s.source||'web')+'</span></div>';
-    h += '<div class="m-detail-row"><span class="mdl-l">Date</span><span class="mdl-v">'+new Date(s.created_at).toLocaleString()+'</span></div>';
-    if(s.message) h += '<div class="m-detail-row"><span class="mdl-l">Message</span><span class="mdl-v" style="font-size:13px;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto">'+s.message+'</span></div>';
-    h += '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+(s.status||'new')+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">'+escapeHtml(s.name||'-')+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">'+escapeHtml(s.email||'-')+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Subject</span><span class="mdl-v">'+escapeHtml(s.subject||'-')+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Source</span><span class="mdl-v">'+escapeHtml(s.source||'web')+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Date</span><span class="mdl-v">'+escapeHtml(new Date(s.created_at).toLocaleString())+'</span></div>';
+    if(s.message) h += '<div class="m-detail-row"><span class="mdl-l">Message</span><span class="mdl-v" style="font-size:13px;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto">'+escapeHtml(s.message)+'</span></div>';
+    h += '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">'+escapeHtml(s.status||'new')+'</span></div>';
     h += '<div style="display:flex;gap:6px;margin-top:14px">'+
       (s.status==='new'?'<button class="btn btn-secondary btn-sm" onclick="markSub('+id+',\'read\')">Mark Read</button>':'')+
       (s.status==='read'?'<button class="btn btn-primary btn-sm" onclick="markSub('+id+',\'replied\')">Mark Replied</button>':'')+
@@ -93,14 +81,14 @@ function viewSubmission(id) {
     document.getElementById('detailTitle').textContent = 'Submission #'+id;
     document.getElementById('detailBody').innerHTML = h;
     document.getElementById('detailModal').classList.add('open');
-  }).catch(function(e){alert('Failed: '+e.message);});
+  }).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 
 function markSub(id, status) {
   adminFetch('/api/admin/submissions?id='+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})}).then(function(r){return r.json()}).then(function(d){
     if(d.status==='ok'){document.getElementById('detailModal').classList.remove('open');loadSubmissions();}
     else throw new Error(d.message);
-  }).catch(function(e){alert('Failed: '+e.message);});
+  }).catch(function(e){Toast.error('Failed: '+e.message);});
 }
 
 loadSubmissions();
