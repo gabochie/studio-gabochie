@@ -285,7 +285,7 @@ E|-------------------------|</pre><p>Play this over a G chord. This is a classic
 
     for (const sql of seeds) { try { await db.prepare(sql).run(); } catch(e) { console.error('Seed:', e.message, e.stack); } }
 
-    return new Response(JSON.stringify({ok:true, message:'Guitar tables ready', tables:['guitar_modules','guitar_lessons','guitar_exercises','guitar_songs','guitar_achievements','guitar_progress','guitar_practice_sessions','guitar_one_minute_records','guitar_user_stats','guitar_user_achievements','guitar_payments','guitar_tuner_history','guitar_waitlist']}), {headers:{'Content-Type':'application/json'}});
+    return new Response(JSON.stringify({ok:true, message:'Guitar tables ready', tables:['guitar_modules','guitar_lessons','guitar_exercises','guitar_songs','guitar_achievements','guitar_progress','guitar_practice_sessions','guitar_one_minute_records','guitar_user_stats','guitar_user_achievements','guitar_payments','guitar_tuner_history','guitar_waitlist','guitar_conversion_events']}), {headers:{'Content-Type':'application/json'}});
   } catch(e) {
     return new Response(JSON.stringify({error:e.message}), {status:500, headers:{'Content-Type':'application/json'}});
   }
