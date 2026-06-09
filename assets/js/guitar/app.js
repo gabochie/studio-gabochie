@@ -166,7 +166,7 @@ const Guitar = {
 
   /* ----- Register Modal (one-click) ----- */
   showRegisterModal(opts = {}) {
-    const redirect = opts.redirect || '/guitar/learn/';
+    const redirect = opts.redirect || '/guitar/waitlist/?registered=1';
     const existing = document.querySelector('.sheet-overlay');
     if (existing) existing.remove();
     const html = `<div class="sheet" style="border-radius:24px 24px 0 0;max-width:400px;margin:auto auto 0">

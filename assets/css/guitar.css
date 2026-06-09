@@ -9,6 +9,27 @@
   --gld-glow: rgba(200,155,60,.15);
   --gld-glass: rgba(200,155,60,.08);
 
+  --black: #0a0a0a;
+  --text: #f0f0f8;
+  --text2: #9090a8;
+  --text3: #5a5a70;
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #1a1a24;
+  --bg4: #22222f;
+  --surface: #1e1e2a;
+  --border: rgba(255,255,255,.08);
+  --border2: rgba(255,255,255,.15);
+
+  --red-light: #f87171;
+  --red-dim: rgba(248,113,113,.12);
+  --red-glass: rgba(248,113,113,.15);
+  --green-light: #4ade80;
+  --green-dim: rgba(74,222,128,.12);
+  --green-glass: rgba(74,222,128,.15);
+  --blue-light: #60a5fa;
+  --blue-dim: rgba(96,165,250,.12);
+
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;

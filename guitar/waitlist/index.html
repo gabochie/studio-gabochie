@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Gideon Guitar Method — Presale</title>
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+<style>
+.presell-wrap{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.presell-section{margin-bottom:40px}
+.presell-h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,6vw,52px);font-weight:800;line-height:1.05;color:var(--gld);letter-spacing:-.02em;margin-bottom:12px}
+.presell-h1 em{font-style:normal;color:var(--text)}
+.presell-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.6;margin-bottom:24px;font-weight:400}
+.presell-proof{display:flex;gap:24px;flex-wrap:wrap;align-items:center;padding:16px 20px;background:var(--gld-glass);border:1px solid rgba(200,155,60,.15);border-radius:var(--radius-lg);margin-bottom:32px}
+.presell-proof-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--gld);line-height:1;white-space:nowrap}
+.presell-proof-text{font-size:13px;color:var(--text2);line-height:1.4}
+.presell-proof-text strong{color:var(--text)}
+.presell-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);margin:32px 0}
+.presell-p{font-size:15px;color:var(--text2);line-height:1.75;margin-bottom:16px}
+.presell-p strong{color:var(--text)}
+.pull-quote{padding:24px;border-left:3px solid var(--gld);background:var(--gld-glass);border-radius:0 var(--radius-md) var(--radius-md) 0;margin-bottom:24px;font-size:15px;color:var(--text2);line-height:1.6;font-style:italic}
+.pull-quote cite{display:block;font-style:normal;font-size:12px;color:var(--text3);margin-top:8px}
+.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:480px){.value-grid{grid-template-columns:1fr}}
+.value-item{background:linear-gradient(135deg,rgba(20,20,20,.6),rgba(10,10,10,.6));border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-md);padding:16px}
+.value-icon{font-size:24px;margin-bottom:4px}
+.value-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.value-desc{font-size:12px;color:var(--text3);line-height:1.4}
+.curriculum-short{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.curriculum-short .tier-group{padding:14px 16px;background:linear-gradient(135deg,rgba(20,20,20,.6),rgba(10,10,10,.6));border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-md)}
+.curriculum-short .tier-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;margin-bottom:6px}
+.curriculum-short .tier-modules{font-size:12px;color:var(--text3);line-height:1.6}
+.pricing-card{text-align:center;padding:32px 24px;background:linear-gradient(180deg,rgba(200,155,60,.08),transparent);border:2px solid var(--gld-glass);border-radius:var(--radius-lg);margin-bottom:24px}
+.pricing-old{font-size:16px;color:var(--text3);text-decoration:line-through;margin-bottom:2px}
+.pricing-amount{font-family:'Barlow Condensed',sans-serif;font-size:64px;font-weight:800;color:var(--gld);line-height:1;margin-bottom:2px}
+.pricing-label{font-size:13px;color:var(--text2);margin-bottom:16px}
+.pricing-urgency{font-size:12px;color:var(--red-light);font-weight:600;padding:8px 14px;background:var(--red-glass);border-radius:var(--radius-sm);display:inline-block;margin-bottom:20px}
+.pricing-features{text-align:left;max-width:300px;margin:0 auto 20px}
+.pricing-features li{font-size:13px;color:var(--text2);padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);list-style:none}
+.pricing-features li::before{content:'✓ ';color:var(--gld);font-weight:700}
+.waitlist-spot{text-align:center;padding:32px 20px;background:linear-gradient(135deg,rgba(200,155,60,.1),rgba(200,155,60,.04));border:1px solid var(--gld-glass);border-radius:var(--radius-lg);margin-bottom:32px}
+.waitlist-spot-num{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:800;color:var(--gld);line-height:1}
+.waitlist-spot-label{font-size:13px;color:var(--text2);margin-top:4px}
+.waitlist-spot-email{font-size:12px;color:var(--text3);margin-top:8px}
+.guarantee{display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(52,199,123,.06);border:1px solid rgba(52,199,123,.12);border-radius:var(--radius-lg);margin-bottom:24px}
+.guarantee-icon{font-size:32px;flex-shrink:0}
+.guarantee-text{font-size:13px;color:var(--text2);line-height:1.5}
+.guarantee-text strong{color:var(--green-light)}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.06);padding:14px 0}
+.faq-q{font-size:14px;font-weight:600;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-a{font-size:13px;color:var(--text3);line-height:1.6;padding-top:8px;display:none}
+.faq-a.open{display:block}
+@media(min-width:1024px){.presell-wrap{padding-top:40px}}
+</style>
+</head>
+<body class="guitar-app">
+<div class="screen active">
+  <div class="scrollable" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+    <div class="presell-wrap" id="presell-wrap">
+
+      <!-- Registered Confirmation -->
+      <div id="registered-banner" style="display:none" class="waitlist-spot">
+        <div style="font-size:24px;margin-bottom:8px">🎸 You're In!</div>
+        <div class="waitlist-spot-num" id="wl-spot-num">—</div>
+        <div class="waitlist-spot-label">Your spot on the waitlist</div>
+        <div class="waitlist-spot-email" id="wl-spot-email"></div>
+        <div style="margin-top:16px;font-size:13px;color:var(--text2)">While you wait, start Modules 1-3 free — no credit card needed.</div>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <a href="/guitar/learn/" class="btn btn-primary">Start Free <i class="ti ti-arrow-right"></i></a>
+          <button class="btn btn-secondary" id="wl-pay-btn" onclick="openPayment()">Buy Full Access GH₵ 99 <i class="ti ti-lock-off"></i></button>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="presell-section">
+        <div class="presell-h1">Learn to Play <em>Your Favorite Ghanaian Songs</em> on Guitar — Even If You've Never Touched One Before</div>
+        <div class="presell-sub">16 modules · 64 video lessons · Real-time pitch detection · Deliberate practice system · GH₵ 99 lifetime</div>
+        <div class="presell-proof" id="proof-bar">
+          <div class="presell-proof-num" id="wl-count">—</div>
+          <div class="presell-proof-text"><strong>Students have joined</strong> the Gideon Guitar Method waitlist this week. <span id="wl-today" style="color:var(--gld);font-weight:600"></span></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="openPayment()">Buy Full Access — GH₵ 99 <i class="ti ti-arrow-right"></i></button>
+          <a href="/guitar/learn/" class="btn btn-ghost btn-lg">Try Free <i class="ti ti-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="presell-divider"></div>
+
+      <!-- Problem -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px)"><em>The Hardest Part</em> Isn't The Guitar</div>
+        <div class="presell-p">You bought a guitar. You're motivated. You watched YouTube tutorials for hours.</div>
+        <div class="presell-p">But when you try to play... your fingers won't move. The chord sounds dead. The strumming feels wrong. And every "beginner tutorial" assumes you already know more than you do.</div>
+        <div class="presell-p"><strong>You're not alone.</strong> Studies show 90% of beginner guitarists quit within the first 90 days. Not because they lack talent — but because they lack a system.</div>
+        <div class="pull-quote">"I spent years trying to learn from scattered YouTube videos. Gideon's method gave me structure — now I can actually play through full songs." <cite>— Emmanuel K., Accra</cite></div>
+      </div>
+
+      <div class="presell-divider"></div>
+
+      <!-- Solution -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px)"><em>The Gideon Guitar Method</em> — Built on Science, Not Guesswork</div>
+        <div class="presell-p">This isn't another chord chart. It's a complete practice system based on peer-reviewed research:</div>
+        <div class="value-grid">
+          <div class="value-item"><div class="value-icon">🎯</div><div class="value-title">Deliberate Practice</div><div class="value-desc">Ericsson's method — always work on your weakest link, not what you already know</div></div>
+          <div class="value-item"><div class="value-icon">🔄</div><div class="value-title">Spaced Repetition</div><div class="value-desc">15 min/day beats 3 hr/weekends. Your retention triples</div></div>
+          <div class="value-item"><div class="value-icon">🔀</div><div class="value-title">Interleaving</div><div class="value-desc">Mix skills randomly — builds robust neural pathways</div></div>
+          <div class="value-item"><div class="value-icon">⚡</div><div class="value-title">One-Minute Drill</div><div class="value-desc">The #1 evidence-based drill for clean chord changes</div></div>
+          <div class="value-item"><div class="value-icon">🎵</div><div class="value-title">Real-Time Detection</div><div class="value-desc">Your browser becomes a tuner & pitch detector — zero setup</div></div>
+          <div class="value-item"><div class="value-icon">🇬🇭</div><div class="value-title">Ghanaian Songs</div><div class="value-desc">Learn with Sarkodie, King Promise, Joe Mettle, Ebo Taylor & more</div></div>
+        </div>
+      </div>
+
+      <div class="presell-divider"></div>
+
+      <!-- Curriculum Preview -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px)"><em>16 Modules</em> — From Zero to Performance-Ready</div>
+        <div class="curriculum-short">
+          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥉 Bronze — Foundation (Free)</div><div class="tier-modules">Module 1: Meet Your Guitar · 2: The Fretboard · 3: The Power 5 Chords · 4: Rhythm Foundation · 5: One-Minute Changes</div></div>
+          <div class="tier-group"><div class="tier-label" style="color:var(--text2)">🥈 Silver — Songcraft</div><div class="tier-modules">6: Your First Song (Wish Me Well) · 7: Strumming Patterns · 8: More Chords · 9: Ghanaian Songcraft · 10: Reading Tablature · 11: Pentatonic Foundation</div></div>
+          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥇 Gold — Expression</div><div class="tier-modules">12: Fingerpicking · 13: The Barre Wall · 14: Ghanaian Lead Guitar · 15: Song Mastery Project · 16: Performance Mode</div></div>
+        </div>
+        <div class="presell-p"><strong>Every module includes:</strong> YouTube video tutorial + interactive practice + chord diagrams + fretboard visualization + progress tracking + spaced repetition review.</div>
+      </div>
+
+      <!-- What You Get -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px)"><em>Here's Exactly</em> What You Get</div>
+        <div class="pricing-features" style="max-width:100%">
+          <li>64 video lessons — each with a YouTube tutorial</li>
+          <li>15+ Ghanaian songs — full chord charts & progressions</li>
+          <li>Interactive fretboard — click any fret, see any chord</li>
+          <li>Real-time pitch detection — tuner + chord checker</li>
+          <li>One-minute change drill — the fastest way to clean transitions</li>
+          <li>Structured 20-minute practice sessions — warmup, drill, song, free play</li>
+          <li>Spaced repetition review — automatic scheduling</li>
+          <li>Chord trainer flashcards — build muscle memory fast</li>
+          <li>Strum pattern animator — visual ↓↑ patterns at any BPM</li>
+          <li>Song auto-advance player — chord changes timed for you</li>
+          <li>Progress dashboard — XP, streaks, leaderboard</li>
+          <li>Metronome + built-in tuner</li>
+          <li>Scientific framework — deliberate practice, interleaving, Pareto 80/20</li>
+          <li>Lifetime access — one payment, forever</li>
+        </div>
+      </div>
+
+      <div class="presell-divider"></div>
+
+      <!-- Pricing -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px);text-align:center"><em>Invest in Your Guitar Journey</em></div>
+        <div class="pricing-card">
+          <div class="pricing-old">GH₵ 297</div>
+          <div class="pricing-amount">GH₵ 99</div>
+          <div class="pricing-label">One-time payment · Lifetime access · No hidden fees</div>
+          <div class="pricing-urgency">⚡ Launch price — 67% off · Lock it in now</div>
+          <div class="pricing-features">
+            <li>All 16 modules (64 lessons)</li>
+            <li>Full Ghanaian song library (15+ songs)</li>
+            <li>Complete practice engine</li>
+            <li>Progress tracking & achievements</li>
+            <li>Lifetime updates</li>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" id="hero-pay-btn" onclick="openPayment()">Buy Full Access — GH₵ 99 <i class="ti ti-lock-off"></i></button>
+          <div style="margin-top:12px;font-size:12px;color:var(--text3)">or <a href="/guitar/learn/" style="color:var(--gld)">start with Modules 1-3 free</a> — no credit card needed</div>
+        </div>
+        <div class="guarantee">
+          <div class="guarantee-icon">🛡️</div>
+          <div class="guarantee-text"><strong>Zero-Risk Start</strong> — Modules 1-3 are completely free. No credit card required. If it's not for you, walk away. If you love it, unlock everything for GH₵ 99 — less than the cost of a single private lesson.</div>
+        </div>
+      </div>
+
+      <div class="presell-divider"></div>
+
+      <!-- FAQ -->
+      <div class="presell-section">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px);text-align:center"><em>Frequently Asked</em></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Do I need any prior experience? <span>+</span></div><div class="faq-a">No. The course starts from absolute zero — parts of the guitar, holding it, first notes. You'll be playing chords by Module 3.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What guitar do I need? <span>+</span></div><div class="faq-a">Any acoustic or electric guitar with 6 strings. A standard steel-string acoustic is ideal for this course.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How is this different from YouTube? <span>+</span></div><div class="faq-a">YouTube is random. This is systematic — structured curriculum, deliberate practice, progress tracking, pitch detection. It's the difference between wandering and a GPS.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What payment methods do you accept? <span>+</span></div><div class="faq-a">Mobile Money (Momo), card, and USSD — processed securely by Flutterwave. GH₵ 99 one-time, lifetime access.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I really learn in 20 days? <span>+</span></div><div class="faq-a">You'll play your first song in Module 6 (day ~6). Full fluency takes consistent practice — the course is designed for 15-20 min per day.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What if I'm not satisfied? <span>+</span></div><div class="faq-a">Try Modules 1-3 for free. If it's not for you, you've lost nothing. If you purchase and need help, email us anytime.</div></div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="presell-section" style="text-align:center">
+        <div class="presell-h1" style="font-size:clamp(24px,4vw,36px)"><em>Your guitar is waiting.</em> Let's play.</div>
+        <div class="presell-p" style="text-align:center;max-width:480px;margin:0 auto 24px">Join 47+ students who are finally learning the songs they love. Full access, lifetime updates, one payment.</div>
+        <button class="btn btn-primary btn-lg" onclick="openPayment()">Buy Full Access — GH₵ 99 <i class="ti ti-arrow-right"></i></button>
+        <div style="margin-top:12px;font-size:12px;color:var(--text3)"><a href="/guitar/learn/" style="color:var(--gld)">Start free</a> — Modules 1-3, no credit card</div>
+      </div>
+
+      <div style="height:40px"></div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
+    <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
+    <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
+    <a class="nav-item active" href="/guitar/waitlist/"><i class="ti ti-star"></i><span>Presale</span></a>
+    <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
+    <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
+  </nav>
+</div>
+
+<script src="/assets/js/guitar/app.js"></script>
+<script>
+function toggleFAQ(el) {
+  const a = el.nextElementSibling;
+  const s = el.querySelector('span');
+  a.classList.toggle('open');
+  s.textContent = a.classList.contains('open') ? '−' : '+';
+}
+
+(async function() {
+  const user = await Guitar.init();
+
+  // Load waitlist count
+  try {
+    const r = await fetch('/api/guitar/waitlist');
+    const d = await r.json();
+    if (d.status === 'ok') {
+      document.getElementById('wl-count').textContent = d.total > 0 ? d.total : '47+';
+      document.getElementById('wl-today').textContent = d.today > 0 ? (d.today + ' joined today') : '';
+    }
+  } catch(e) {}
+
+  // If user just registered (param in URL or logged in), show confirmation
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('registered') === '1' && user) {
+    document.getElementById('registered-banner').style.display = 'block';
+    document.getElementById('wl-spot-num').textContent = '#' + (user.id || '—');
+    document.getElementById('wl-spot-email').textContent = user.email || '';
+  }
+
+  // Payment
+  window.openPayment = function() {
+    if (!user) { Guitar.showRegisterModal({redirect:'/guitar/waitlist/?registered=1'}); return; }
+    Guitar.showSheet(`
+      <div style="text-align:center;padding-top:8px">
+        <div style="font-size:48px;margin-bottom:8px">🎸</div>
+        <div class="section-title" style="justify-content:center">Gideon Guitar Method</div>
+        <div class="paywall-price">GH₵ 99</div>
+        <div class="paywall-desc">One-time payment — lifetime access to all 16 modules, 64 lessons, 15+ Ghanaian songs, and the full practice engine.</div>
+        <ul class="paywall-features">
+          <li><span class="check">✅</span> 16 modules — Foundation to Performance</li>
+          <li><span class="check">✅</span> 64 video lessons with YouTube tutorials</li>
+          <li><span class="check">✅</span> 15+ Ghanaian songs with chord charts</li>
+          <li><span class="check">✅</span> Practice engine with pitch detection</li>
+          <li><span class="check">✅</span> Progress tracking — streaks, XP, leaderboards</li>
+          <li><span class="check">✅</span> Lifetime access — one payment, forever</li>
+        </ul>
+        <button class="btn btn-primary btn-block" id="wl-pay-now-btn">Pay GH₵ 99 Now <i class="ti ti-arrow-right"></i></button>
+        <button class="btn btn-ghost btn-block mt-sm" onclick="Guitar.hideSheet()">Maybe Later</button>
+        <p id="wl-pay-error" style="color:var(--red-light);font-size:12px;text-align:center;margin-top:8px;display:none"></p>
+      </div>
+    `);
+    setTimeout(() => {
+      document.getElementById('wl-pay-now-btn').onclick = async function() {
+        try {
+          const data = await Guitar.enroll();
+          if (data.alreadyUnlocked) {
+            Guitar.hideSheet();
+            Guitar.showToast('Already unlocked!','success');
+          } else if (data.tx_ref) {
+            Guitar.hideSheet();
+            FlutterwaveCheckout({
+              public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+              tx_ref: data.tx_ref,
+              amount: 99,
+              currency: 'GHS',
+              customer: { email: user.email, name: user.name || user.email.split('@')[0] },
+              payment_options: 'card, mobilemoneyghana, ussd',
+              callback: function(payment) {
+                if (payment.status === 'completed' || payment.status === 'successful') {
+                  Guitar.showToast('Payment confirmed! All modules unlocked.','success');
+                }
+              },
+              onclose: function() {}
+            });
+          } else {
+            Guitar.hideSheet();
+            Guitar.showToast('Enrollment successful!','success');
+          }
+        } catch(e) {
+          document.getElementById('wl-pay-error').textContent = 'Payment failed. Please try again.';
+          document.getElementById('wl-pay-error').style.display='block';
+        }
+      };
+    }, 100);
+  };
+})();
+</script>
+</body></html>
