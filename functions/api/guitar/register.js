@@ -1,12 +1,12 @@
 import { genToken } from '../auth/_hash.js';
 
 export async function onRequest(context) {
+  const { request, env } = context;
   const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), { status: 405, headers: { ...cors, 'Content-Type': 'application/json' } });
   }
-  const { request, env } = context;
   const db = env.DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { ...cors, 'Content-Type': 'application/json' } });
