@@ -883,7 +883,9 @@
       `UPDATE programs SET sort_order = 8 WHERE slug = 'intro-biomimicry'`,
       `UPDATE programs SET sort_order = 9 WHERE slug = 'intro-geometry'`,
       `UPDATE programs SET sort_order = 10 WHERE slug = 'intro-computing'`,
-      `UPDATE programs SET sort_order = 11 WHERE slug = 'intro-storytelling'`,
+       `UPDATE programs SET sort_order = 11 WHERE slug = 'intro-storytelling'`,
+       // Fix guitar-method title for existing installs (was seeded as 'Guitar in 30 Days')
+       `UPDATE programs SET title = 'Gideon Guitar Method', tagline = 'Learn to play your favorite Ghanaian songs on guitar.', description = 'The fastest path from zero to your first Ghanaian song. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system built on peer-reviewed learning science. Start with bronze modules free, unlock silver and gold for full access.', duration = 'Self-paced', price = 250, price_label = 'Free Sample &middot; Full Access GH&cent; 250', sort_order = 0 WHERE slug = 'guitar-method'`,
       // Newsletter builder tables
       `CREATE TABLE IF NOT EXISTS newsletter_templates (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
