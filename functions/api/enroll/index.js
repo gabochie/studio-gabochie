@@ -125,7 +125,7 @@ export async function onRequest(context) {
 
   try {
     var body = await request.json();
-    var programSlug = body.program_slug || '';
+    programSlug = body.program_slug || '';
     var studentName = sanitize(body.name);
     var studentEmail = (body.email || '').trim().toLowerCase();
     var studentPhone = sanitize(body.phone);
