@@ -241,7 +241,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 <div class="content">
 
 <div class="tab-panel active" id="panel-dashboard">
-  <div class="page-header"><p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:12px">Real-time agent operations overview</p>
+  <div class="page-header"><h2>Dashboard</h2><p>Real-time agent operations overview</p></div>
   <div class="metrics" id="metrics"></div>
   <div class="section-header"><h3>Agent Registry</h3><span class="sh-count" id="agentCount">0</span></div>
   <div class="crd" id="agentRegistry"></div>
@@ -413,7 +413,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <ol style="padding-left:18px">
       <li style="margin-bottom:6px"><strong>Admin Key:</strong> On first API call you'll be prompted for an admin key. This is stored in your browser (<code style="background:var(--bg-primary);padding:1px 5px;border-radius:3px;font-size:12px">localStorage</code>) and sent as <code style="background:var(--bg-primary);padding:1px 5px;border-radius:3px;font-size:12px">X-Admin-Key</code> on every request. Set or clear it in <strong>Settings tab</strong>.</li>
       <li style="margin-bottom:6px"><strong>Keyboard:</strong> Press <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">1</kbd>-<kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">9</kbd> to switch tabs, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">R</kbd> to refresh current tab, <kbd style="background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:11px">ESC</kbd> to close modals.</li>
-      <li style="margin-bottom:6px"><strong>Mobile:</strong> The sidebar collapses automatically below 900px. Use the hamburger icon (&#9776;) in the top-left to open it. Tap outside the sidebar to close it.</li>
+      <li style="margin-bottom:6px"><strong>Mobile:</strong> Use the hamburger icon (&#9776;) in the top-left to open the navigation sidebar. Tap outside to close it.</li>
     </ol>
   </div></div>
 
@@ -1272,10 +1272,8 @@ function saveCampaignField(id, field) {
 function switchTab(name) {
   TAB = name; setHashTab(name);
   document.querySelectorAll('.tab-panel').forEach(function(el){el.classList.remove('active');});
-  document.querySelectorAll('.sidebar-item').forEach(function(el){el.classList.toggle('active',el.getAttribute('data-tab')===name);});
+  document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.toggle('active',el.getAttribute('data-tab')===name);});
   $('panel-'+name).classList.add('active');
-  $('bcLabel').textContent = tabLabels[name]||name;
-  if(window.innerWidth<=900) $('sidebar').classList.remove('open');
   if(name==='help') return;
   if(name==='dashboard') loadDashboard();
   else if(name==='agents') loadAgentsTab();
@@ -1289,9 +1287,7 @@ function switchTab(name) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelector('.sidebar-nav').addEventListener('click', function(e){ var item = e.target.closest('.sidebar-item'); if(item && item.getAttribute('data-tab')) switchTab(item.getAttribute('data-tab')); });
-  $('menuBtn').addEventListener('click', function(){ $('sidebar').classList.toggle('open'); });
-  document.addEventListener('click', function(e){ if(window.innerWidth<=900&&!e.target.closest('.sidebar')&&!e.target.closest('.mobile-menu')) $('sidebar').classList.remove('open'); });
+  document.querySelector('.tab-bar').addEventListener('click', function(e){ var item = e.target.closest('.tab-btn'); if(item && item.getAttribute('data-tab')) switchTab(item.getAttribute('data-tab')); });
   $('refreshBtn').addEventListener('click', function(){ switchTab(TAB); });
   $('spawnBtn').addEventListener('click', function(){ $('spawnName').value='';$('spawnPrompt').value='';$('spawnModal').classList.add('open'); });
   $('spawnConfirm').addEventListener('click', spawnAgent);
@@ -1373,6 +1369,8 @@ window.campaignPage = 1;
 
 })();
 </script>
+<script src="admin-ui.js"></script>
+<script src="sidebar.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>
