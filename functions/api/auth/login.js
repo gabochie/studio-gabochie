@@ -21,44 +21,53 @@ export async function onRequest(context) {
     var body = await request.json();
     var email = (body.email || '').trim().toLowerCase();
     var accessCode = (body.access_code || '').trim();
-    if (!email || !accessCode) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Email and access code are required' }), {
+    if (!email) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Email is required' }), {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     var student = await db.prepare(
       'SELECT id, name, email, access_code, salt FROM students WHERE email = ?'
     ).bind(email).first();
+
+    // If not in students table, try users table (guitar-only users)
+    var user;
     if (!student) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
-        status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
-      });
-    }
-    var valid = false;
-    if (student.salt) {
-      var hashed = await hashCode(accessCode, student.salt);
-      valid = hashed === student.access_code;
+      user = await db.prepare('SELECT id, name, email FROM users WHERE email = ?').bind(email).first();
+      if (!user || !accessCode) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
+          status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+        });
+      }
     } else {
-      valid = accessCode === student.access_code;
-      if (valid) {
-        var salt = genSalt();
-        hashed = await hashCode(accessCode, salt);
-        await db.prepare(
-          'UPDATE students SET access_code = ?, salt = ? WHERE id = ?'
-        ).bind(hashed, salt, student.id).run();
+      var valid = false;
+      if (student.salt) {
+        var hashed = await hashCode(accessCode, student.salt);
+        valid = hashed === student.access_code;
+      } else {
+        valid = accessCode === student.access_code;
+        if (valid) {
+          var salt = genSalt();
+          hashed = await hashCode(accessCode, salt);
+          await db.prepare(
+            'UPDATE students SET access_code = ?, salt = ? WHERE id = ?'
+          ).bind(hashed, salt, student.id).run();
+        }
+      }
+      if (!valid) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
+          status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+        });
       }
     }
-    if (!valid) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Invalid email or access code' }), {
-        status: 401, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
-      });
-    }
 
-    // Also create/find a users record (for guitar API / shared auth) and generate session token
-    var user = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+    // Create/find a users record and generate session token
     if (!user) {
-      var r = await db.prepare('INSERT INTO users (name, email) VALUES (?, ?)').bind(student.name, email).run();
-      user = { id: r.meta.last_row_id };
+      user = await db.prepare('SELECT id, name, email FROM users WHERE email = ?').bind(email).first();
+    }
+    if (!user) {
+      var r = await db.prepare('INSERT INTO users (name, email) VALUES (?, ?)').bind(student ? student.name : email, email).run();
+      user = { id: r.meta.last_row_id, name: student ? student.name : email, email: email };
     }
     var token = genToken();
     await db.prepare("INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, datetime('now', '+30 days'))").bind(user.id, token).run();
@@ -71,7 +80,7 @@ export async function onRequest(context) {
     ).bind(email).all();
     return new Response(JSON.stringify({
       status: 'ok',
-      student: { id: user.id, name: student.name, email: student.email },
+      student: { id: user.id, name: user.name, email: user.email },
       token: token,
       enrollments: enrollments.results || []
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
