@@ -225,6 +225,6 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Deploy
-        run: npx wrangler pages deploy . --project-name gideonabochie-org
+        run: npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
