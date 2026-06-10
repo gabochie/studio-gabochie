@@ -520,7 +520,12 @@ function loadPrograms() {
     }
     grid.innerHTML = '';
     var student = getStudent();
+    var nationBuilding = ['civic-intelligence','ai-fundamentals','essential-values','digital-entrepreneurship','youth-leadership'];
     d.programs.sort(function(a,b){
+      var aNB = nationBuilding.indexOf(a.slug) >= 0;
+      var bNB = nationBuilding.indexOf(b.slug) >= 0;
+      if (aNB && !bNB) return -1;
+      if (!aNB && bNB) return 1;
       if (a.status === 'active' && b.status !== 'active') return -1;
       if (a.status !== 'active' && b.status === 'active') return 1;
       return 0;
