@@ -81,6 +81,7 @@ function getAllHtmlFiles() {
   function walk(dir, depth) {
     if (depth === undefined) depth = 0;
     var entries;
+    // eslint-disable-next-line no-unused-vars
     try { entries = fs.readdirSync(dir); } catch (e) { /* directory unreadable */ }
     for (var i = 0; i < entries.length; i++) {
       var full = path.join(dir, entries[i]);
