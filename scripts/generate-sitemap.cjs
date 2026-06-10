@@ -12,16 +12,16 @@ var http = require('http');
 var ROOT = path.resolve(__dirname, '..');
 var SITEMAP = path.join(ROOT, 'sitemap.xml');
 var SITE_URL = 'https://gideonabochie.org';
+var NEWS_SITE_URL = 'https://news.gideonabochie.org';
 var VALIDATE = process.argv.includes('--validate');
 
 // Patterns to exclude from sitemap
-var EXCLUDE_DIRS = ['admin', 'dashboard', 'node_modules', 'workers', 'test-results', '.git'];
+var EXCLUDE_DIRS = ['admin', 'dashboard', 'node_modules', 'workers', 'test-results', '.git', 'news'];
 var EXCLUDE_FILES = ['404.html', 'coming-soon.html'];
 
 // Manual URL overrides for files that get clean URLs via _redirects
 var URL_OVERRIDES = {
   'books/premium-bundle.html': '/books/premium-bundle',
-  'newsletter/advertise.html': '/newsletter/advertise',
   'donate.html': '/donate'
 };
 
@@ -32,7 +32,6 @@ function getPriority(url) {
   if (url.startsWith('/school/guitar/')) return 0.5;
   if (url.startsWith('/school/')) return 0.8;
   if (url.startsWith('/books/')) return 0.7;
-  if (url.startsWith('/newsletter/')) return 0.7;
   return 0.6;
 }
 
@@ -137,6 +136,18 @@ function generateSitemap() {
   xml += '</urlset>\n';
   fs.writeFileSync(SITEMAP, xml, 'utf8');
   console.log('Generated sitemap.xml with ' + (urls.length + 1) + ' URLs');
+
+  // Generate news subdomain sitemap
+  var newsDir = path.join(ROOT, 'news');
+  if (fs.existsSync(newsDir)) {
+    var newsXml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    newsXml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    newsXml += '  <url><loc>' + NEWS_SITE_URL + '/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>\n';
+    newsXml += '</urlset>\n';
+    fs.writeFileSync(path.join(ROOT, 'news', 'sitemap.xml'), newsXml, 'utf8');
+    console.log('Generated news/sitemap.xml with 1 URL');
+  }
+
   return urls;
 }
 

@@ -77,7 +77,7 @@ async function triggerScan() {
   $('runStatusBadge').style.color = '#fff';
   $('runSummaryText').textContent = 'Scan in progress...';
   try {
-    var res = await adminFetch('/api/qa/scan', {
+      var res = await adminFetch('/admin/api/qa/scan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Referer': '/admin/quality.html' },
       body: JSON.stringify({ trigger: 'manual' })

@@ -7,9 +7,11 @@
 # Donate
 /donate /donate/ 200
 
-# Newsletter
-/newsletter /newsletter/ 200
-/advertise /newsletter/advertise 200
+# Newsletter → subdomain
+/newsletter/* https://news.gideonabochie.org/:splat 301
+/newsletter https://news.gideonabochie.org/ 301
+/newsletter/ https://news.gideonabochie.org/ 301
+/advertise https://news.gideonabochie.org/ 301
 
 # School
 /school /school/ 200

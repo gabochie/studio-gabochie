@@ -11,33 +11,35 @@ export async function onRequest(context) {
   if (authErr) return authErr;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
+  const scope = url.searchParams.get('scope');
   try {
     if (request.method === 'GET') {
       if (id) {
-        const row = await env.DB.prepare('SELECT * FROM subscribers WHERE id = ?').bind(id).first();
+        var row = await env.DB.prepare('SELECT * FROM subscribers WHERE id = ?').bind(id).first();
         return new Response(JSON.stringify(row || null), {
           headers: { 'Content-Type': 'application/json' }
         });
       }
-      const search = url.searchParams.get('q') || '';
-      const group = url.searchParams.get('group') || '';
+      var search = url.searchParams.get('q') || '';
+      var group = url.searchParams.get('group') || '';
       if (group === 'edition') {
-        const rows = await env.DB.prepare(
+        var rows = await env.DB.prepare(
           "SELECT COALESCE(NULLIF(edition,''), 'ROW') AS edition, COUNT(*) AS count FROM subscribers GROUP BY edition ORDER BY count DESC"
         ).all();
-        const editions = {};
+        var editions = {};
         rows.results.forEach(function(r){ editions[r.edition] = r.count; });
         return new Response(JSON.stringify({ status: 'ok', editions }), {
           headers: { 'Content-Type': 'application/json' }
         });
       }
-      let rows;
+      var rows;
+      var scopeSql = scope === 'newsletter' ? " AND source = 'newsletter_subdomain'" : '';
       if (search) {
         rows = await env.DB.prepare(
-          "SELECT * FROM subscribers WHERE email LIKE ? OR name LIKE ? ORDER BY subscribed_at DESC"
+          "SELECT * FROM subscribers WHERE (email LIKE ? OR name LIKE ?)" + scopeSql + " ORDER BY subscribed_at DESC"
         ).bind('%' + search + '%', '%' + search + '%').all();
       } else {
-        rows = await env.DB.prepare("SELECT * FROM subscribers ORDER BY subscribed_at DESC").all();
+        rows = await env.DB.prepare("SELECT * FROM subscribers WHERE 1=1" + scopeSql + " ORDER BY subscribed_at DESC").all();
       }
       return new Response(JSON.stringify({ status: 'ok', count: rows.results.length, items: rows.results }), {
         headers: { 'Content-Type': 'application/json' }

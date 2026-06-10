@@ -103,7 +103,7 @@ h1 span{color:#C9A84C}
 <div class="wrap">
 
   <h1>Newsletter <span>Builder</span></h1>
-  <p class="page-desc">Build, preview, and send The Studio Weekly — block by block.</p>
+  <p class="page-desc">Build, preview, and send The Studio Weekly — block by block. <span id="scopeLabel" style="color:#5A7A9F;font-size:11px;display:none">[Newsletter scope active]</span></p>
 
   <div class="stats-row" id="statsRow"></div>
 
@@ -196,7 +196,7 @@ h1 span{color:#C9A84C}
   </div>
 </div>
 
-<div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="../newsletter/index.html">Public Archive</a></div>
+<div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="https://news.gideonabochie.org/">Public Archive</a></div>
 
 <div id="calModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center" onclick="if(event.target===this)closeCalModal()">
   <div style="background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto">
@@ -229,7 +229,7 @@ var DEFAULT_BLOCKS = [
   { id:'d8', type:'guarantee', text:'You\'re protected by our no-risk guarantee. If the first module doesn\'t meet your expectations, we\'ll refund your full enrollment within 14 days — no questions asked.' },
   { id:'d9', type:'cta', text:'Yes, I Want In — Enroll Now', url:'https://gideonabochie.org/school/' },
   { id:'d10', type:'divider' },
-  { id:'d11', type:'ad', sponsorName:'Your Brand Here', sponsorTagline:'Sponsor The Studio Weekly and reach Ghana\'s creative class', imageUrl:'', linkUrl:'https://gideonabochie.org/newsletter/advertise' },
+  { id:'d11', type:'ad', sponsorName:'Your Brand Here', sponsorTagline:'Sponsor The Studio Weekly and reach Ghana\'s creative class', imageUrl:'', linkUrl:'https://news.gideonabochie.org/' },
   { id:'d12', type:'divider' },
   { id:'d13', type:'ps', content:'P.S. I mentioned only 6 of 20 spots remain. Last cohort sold out in 4 days. If you\'re feeling that nudge right now, that\'s not coincidence — that\'s the Spirit prompting you to stop waiting and start becoming who you were made to be. <a href="https://gideonabochie.org/school/" style="color:#C9A84C;text-decoration:underline">Reserve your spot here.</a>' },
   { id:'d14', type:'reply', text:'Just hit reply and tell me — what\'s one thing you\'ve been putting off that you know you need to start? I read every response and will pray for you by name.' },
@@ -254,7 +254,7 @@ function createBlock(type) {
     case 'ps': b.content = 'P.S. If you&#39;re still on the fence, remember that every week you wait is a week of growth you won&#39;t get back. Your future self will thank you for starting today.'; break;
     case 'guarantee': b.text = 'If you don&#39;t find value in the first module, we&#39;ll refund your full enrollment — no questions asked.'; break;
     case 'reply': b.text = 'Just hit reply and tell me — what&#39;s the biggest challenge you&#39;re facing right now? I read every response personally.'; break;
-    case 'ad': b.sponsorName = 'Your Brand Here'; b.sponsorTagline = 'Reach our audience'; b.imageUrl = ''; b.linkUrl = 'https://gideonabochie.org/newsletter/advertise'; break;
+    case 'ad': b.sponsorName = 'Your Brand Here'; b.sponsorTagline = 'Reach our audience'; b.imageUrl = ''; b.linkUrl = 'https://news.gideonabochie.org/'; break;
   }
   return b;
 }
@@ -690,7 +690,7 @@ function generateDraftForTheme(theme, issueNum, dateStr) {
   blocks.push({ id:'c10', type:'divider' });
 
   // Sponsor Ad block
-  blocks.push({ id:'c11', type:'ad', sponsorName:'Your Brand Here', sponsorTagline:'Sponsor The Studio Weekly \u2014 reach Ghana\'s creative class', imageUrl:'', linkUrl:'https://gideonabochie.org/newsletter/advertise' });
+  blocks.push({ id:'c11', type:'ad', sponsorName:'Your Brand Here', sponsorTagline:'Sponsor The Studio Weekly \u2014 reach Ghana\'s creative class', imageUrl:'', linkUrl:'https://news.gideonabochie.org/' });
 
   // PS with final objection handling
   blocks.push({ id:'c12', type:'ps', content:'P.S. Still not sure? That\u2019s fair. Here\u2019s the thing \u2014 you don\u2019t need to have everything figured out. You just need to take the first step. The Spirit of God hovered over the waters before He spoke light into existence (Genesis 1:2). Sometimes the hovering is part of the process. But you can\u2019t hover forever. At some point, you have to let God speak through you. <a href="https://gideonabochie.org/school/" style="color:#C9A84C;text-decoration:underline">Take that step here.</a>' });
@@ -882,6 +882,17 @@ loadDefault();
 loadTplList();
 loadStats();
 setInterval(loadStats, 30000);
+
+// Scope awareness
+(function() {
+  try {
+    var scope = localStorage.getItem('ga_admin_scope');
+    if (scope === 'newsletter') {
+      var label = document.getElementById('scopeLabel');
+      if (label) label.style.display = 'inline';
+    }
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>

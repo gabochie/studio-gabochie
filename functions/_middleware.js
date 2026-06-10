@@ -73,6 +73,23 @@ export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const path = url.pathname;
+  const host = request.headers.get('Host') || '';
+
+  // News subdomain: serve from /news/ directory
+  if (host === 'news.gideonabochie.org' || host.startsWith('news.')) {
+    // API requests pass through to main site function handlers
+    if (path.startsWith('/api/')) {
+      return context.next();
+    }
+    // Try /news/{path} first
+    var assetPath = path === '/' ? '/news/index.html' : '/news' + path;
+    var response = await env.ASSETS.fetch(new URL(assetPath, request.url));
+    // Fall back to root for shared assets (CSS, images, etc.)
+    if (response.status === 404) {
+      response = await env.ASSETS.fetch(request.url);
+    }
+    return response;
+  }
 
   // Never block admin, API, static assets, or the coming-soon page itself
   if (

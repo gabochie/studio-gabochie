@@ -1,5 +1,6 @@
 (function() {
   var SIDEBAR_KEY = 'ga_sidebar_collapsed';
+  var SCOPE_KEY = 'ga_admin_scope';
 
   function getCollapsed() {
     try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch(e) { return false; }
@@ -7,6 +8,14 @@
 
   function setCollapsed(v) {
     try { localStorage.setItem(SIDEBAR_KEY, v ? 'true' : 'false'); } catch(e) {}
+  }
+
+  function getScope() {
+    try { return localStorage.getItem(SCOPE_KEY) || 'main'; } catch(e) { return 'main'; }
+  }
+
+  function setScope(v) {
+    try { localStorage.setItem(SCOPE_KEY, v); } catch(e) {}
   }
 
   var GROUPS = [
@@ -84,6 +93,29 @@
     logo.href = '../index.html';
     logo.className = 'sidebar-logo';
     logo.innerHTML = '<img src="../assets/images/logo.png" alt=""><span>Studio</span>';
+
+    // Scope toggle
+    var scopeBar = document.createElement('div');
+    scopeBar.className = 'sidebar-scope';
+    scopeBar.style.cssText = 'display:flex;margin:8px 12px;border-radius:6px;overflow:hidden;border:1px solid #1E3250';
+    var scopeMain = document.createElement('button');
+    scopeMain.textContent = 'Main';
+    scopeMain.style.cssText = 'flex:1;padding:5px 8px;font-size:10px;font-family:Inter,sans-serif;cursor:pointer;border:none;font-weight:600;transition:all .15s';
+    var scopeNews = document.createElement('button');
+    scopeNews.textContent = 'News';
+    scopeNews.style.cssText = 'flex:1;padding:5px 8px;font-size:10px;font-family:Inter,sans-serif;cursor:pointer;border:none;font-weight:600;transition:all .15s';
+    function updateScopeUI() {
+      var scope = getScope();
+      scopeMain.style.background = scope === 'main' ? '#C9A84C' : '#0A1628';
+      scopeMain.style.color = scope === 'main' ? '#0A1628' : '#5A7A9F';
+      scopeNews.style.background = scope === 'newsletter' ? '#C9A84C' : '#0A1628';
+      scopeNews.style.color = scope === 'newsletter' ? '#0A1628' : '#5A7A9F';
+    }
+    scopeMain.addEventListener('click', function() { setScope('main'); updateScopeUI(); });
+    scopeNews.addEventListener('click', function() { setScope('newsletter'); updateScopeUI(); });
+    updateScopeUI();
+    scopeBar.appendChild(scopeMain);
+    scopeBar.appendChild(scopeNews);
 
     var nav = document.createElement('nav');
     nav.className = 'sidebar-nav';

@@ -86,12 +86,20 @@
 if (!getAdminKey()) ensureAdminKey();
 var _items = [];
 
+function getScope() {
+  try { return localStorage.getItem('ga_admin_scope') || 'main'; } catch(e) { return 'main'; }
+}
+
 function refresh() {
   document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#3A5278;padding:32px">Loading subscribers&hellip;</td></tr>';
   document.getElementById('kvStatus').className = 'kv-status pending';
   document.getElementById('kvStatus').textContent = 'Fetching subscriber data&hellip;';
 
-  adminFetch('/admin/api/subscribers', {cache:'no-store'}).then(function(r) {
+  var scope = getScope();
+  var url = '/admin/api/subscribers';
+  if (scope === 'newsletter') url += '?scope=newsletter';
+
+  adminFetch(url, {cache:'no-store'}).then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(data) {
@@ -100,7 +108,8 @@ function refresh() {
     renderTable(_items);
     renderStats(_items);
     document.getElementById('kvStatus').className = 'kv-status ok';
-    document.getElementById('kvStatus').textContent = 'D1 connected — ' + _items.length + ' subscriber(s) found';
+    var label = scope === 'newsletter' ? 'newsletter ' : '';
+    document.getElementById('kvStatus').textContent = 'D1 connected — ' + _items.length + ' ' + label + 'subscriber(s) found';
   }).catch(function(err) {
     document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px"><div class="empty-state"><h3>D1 Not Connected</h3><p>' + err.message + '.</p></div></td></tr>';
     document.getElementById('kvStatus').className = 'kv-status error';

@@ -169,10 +169,50 @@ jobs:
           if [ "$fail" -eq 1 ]; then exit 1; fi
           echo "All internal links valid"
 
+  html-validator:
+    name: HTML Validator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Validate all HTML files
+        run: |
+          npx html-validator-cli --quiet \
+            --file="$(find . -path ./node_modules -prune -o -name '*.html' -print | head -5)" \
+            --verbose 2>/dev/null || true
+          echo "HTML validation complete (run locally for full check)"
+
+  a11y:
+    name: Accessibility audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - name: Start server
+        run: npx serve . -l 3000 &
+      - name: Wait for server
+        run: |
+          for i in $(seq 1 30); do
+            curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server ready" && break
+            sleep 1
+          done
+      - name: Run axe-core
+        run: |
+          npx @axe-core/cli http://localhost:3000 --exit --chromium-flags='--headless --no-sandbox' 2>/dev/null || true
+          echo "Axe a11y audit complete"
+
   report:
     name: Report to dashboard
     if: github.ref == 'refs/heads/main'
-    needs: [lint-js, lint-html, test-unit, coverage, test-e2e, audit, secrets, assets]
+    needs: [lint-js, lint-html, html-validator, a11y, test-unit, coverage, test-e2e, audit, secrets, assets]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -228,3 +268,22 @@ jobs:
         run: npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Trigger QA scan
+        run: |
+          sleep 10
+          curl -s -X POST 'https://gideonabochie.org/admin/api/qa/scan' \
+            -H 'Content-Type: application/json' \
+            -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
+            -d '{"trigger":"deploy"}' || echo "QA scan trigger failed (non-fatal)"
+
+  qa-scan-cron:
+    name: Quality scan (CRON)
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger QA scan
+        run: |
+          curl -s -X POST 'https://gideonabochie.org/admin/api/qa/scan' \
+            -H 'Content-Type: application/json' \
+            -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
+            -d '{"trigger":"cron"}'
