@@ -609,50 +609,89 @@ var DATA = {
     {
       "phase": 6,
       "name": "Build The Profit Engine",
-      "status": "planned",
+      "status": "in_progress",
       "description": "Revenue beyond donations: digital products, premium subscriptions, paid courses. Create a self-sustaining economic engine that funds the mission without grant dependency.",
       "platform": "Cloudflare Workers + Flutterwave + Email API",
       "steps": [
         {
           "id": "6.1",
-          "task": "School programs paywall",
-          "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Programs API","url":"../functions/admin/api/enrollments.js","local":true}],
+          "task": "School programs paywall & enrollment system",
+          "status": "done",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Dashboard","url":"../dashboard/index.html","local":true}],
           "items": [
-            "Wire Flutterwave checkout for program purchase",
-            "Auto-generate full-access token on successful payment",
-            "Distinguish free sample vs paid full access in dashboard",
-            "Admin page to manage programs & content",
-            "Student progress tracking"
+            "Flutterwave checkout for program purchase ✓",
+            "Auto-generate full-access token on successful payment ✓",
+            "Free sample vs paid full access in dashboard ✓",
+            "Admin page to manage programs & content ✓",
+            "Student progress tracking (modules, XP, level, streak) ✓",
+            "Student dashboard with program tabs for multi-enrollment ✓",
+            "Upgrade flow from sample → full access ✓",
+            "Access code login + forgot code flow ✓",
+            "Level/XP/streak gamification system ✓"
           ]
         },
         {
           "id": "6.2",
-          "task": "Systems Thinking — full curriculum",
-          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "task": "Vision Builders — Systems Thinking for Vision Builders",
+          "status": "done",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Dashboard","url":"../dashboard/index.html","local":true}],
           "items": [
-            "Write module 1: Iceberg Model (deep dive)",
-            "Write module 2: Feedback Loops",
-            "Write module 3: Leverage Points",
-            "Write module 4: Mental Models",
-            "Record video walkthroughs for each module",
-            "Create worksheets & exercises per module"
+            "Program renamed: Systems Thinking → Systems Thinking for Vision Builders ✓",
+            "Slug: systems-thinking, sort_order: 1, active, GH¢ 250 ✓",
+            "8 modules with full content written ✓",
+            "Sample content (Iceberg Model intro) ✓",
+            "Free sample access for non-paying students ✓",
+            "Full curriculum for paid students ✓"
           ]
         },
         {
           "id": "6.3",
-          "task": "Architectural Thinking — full curriculum",
+          "task": "Vision Builders — Design Thinking for Vision Builders",
+          "status": "done",
           "launch": [{"label":"School page","url":"../school/index.html","local":true}],
           "items": [
-            "Write module 1: Blueprint Thinking",
-            "Write module 2: Design Principles",
-            "Write module 3: Strategic Frameworks",
-            "Write module 4: Execution & Systems",
-            "Record video walkthroughs",
-            "Create worksheets & exercises"
+            "Program renamed: Intro to Design Thinking from Genesis → Design Thinking for Vision Builders ✓",
+            "Slug: intro-design-thinking, sort_order: 2, active, free ✓",
+            "Full curriculum open to all students ✓"
           ]
         },
         {
-          "id": "6.2",
+          "id": "6.4",
+          "task": "Vision Builders — Pattern Recognition for Vision Builders",
+          "status": "done",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "New program created: Pattern Recognition for Vision Builders ✓",
+            "Slug: pattern-recognition-vision-builders, sort_order: 3, active, free ✓",
+            "6 modules with full content written ✓",
+            "Pay-what-you-can pricing ✓"
+          ]
+        },
+        {
+          "id": "6.5",
+          "task": "Vision Builders — Architectural Thinking for Vision Builders",
+          "status": "done",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "Program renamed: Architectural Thinking → Architectural Thinking for Vision Builders ✓",
+            "Slug: architectural-thinking, sort_order: 4, active, free ✓",
+            "Full curriculum open to all students ✓"
+          ]
+        },
+        {
+          "id": "6.6",
+          "task": "Bible course reordering",
+          "status": "done",
+          "launch": [{"label":"School page","url":"../school/index.html","local":true}],
+          "items": [
+            "Systems Thinking (Genesis) Bible course → sort_order 5 ✓",
+            "Book of Revelation Study → sort_order 6 ✓",
+            "Psalms & Worship and the Word → sort_order 7 ✓",
+            "Vision Builders all come before Bible courses ✓"
+          ]
+        },
+        {
+          "id": "6.7",
           "task": "Digital book sales",
           "launch": [{"label":"Books page","url":"../books/index.html","local":true}],
           "items": [
@@ -662,7 +701,7 @@ var DATA = {
           ]
         },
         {
-          "id": "6.3",
+          "id": "6.8",
           "task": "Newsletter subscriber monetization",
           "launch": [{"label":"Newsletter page","url":"../newsletter/index.html","local":true}],
           "items": [
@@ -672,9 +711,9 @@ var DATA = {
           ]
         },
         {
-          "id": "6.4",
+          "id": "6.9",
           "task": "Automated email sequences",
-          "launch": [{"label":"Brevo","url":"https://brevo.com"},{"label":"ConvertKit","url":"https://convertkit.com"}],
+          "launch": [{"label":"Brevo","url":"https://brevo.com"}],
           "items": [
             "Welcome sequence for new subscribers",
             "Abandoned donation follow-up",
@@ -903,15 +942,45 @@ var DATA = {
         },
         {
           "id": "9.3",
-          "task": "Make Systems Thinking program enrollable",
-          "status": "pending",
+          "task": "Activate Vision Builders programs (was: Make Systems Thinking enrollable)",
+          "status": "done",
           "launch": [{"label":"Programs API","url":"../functions/admin/api/programs.js","local":true},{"label":"School page","url":"../school/index.html","local":true}],
           "items": [
-            "Change Systems Thinking status from 'coming_soon' to 'active' in D1 programs table",
-            "Ensure enrollment flow works for the program",
-            "Verify sample + full content renders in student dashboard"
+            "Systems Thinking status → 'active' in D1 programs table ✓",
+            "Design Thinking status → 'active' ✓",
+            "Pattern Recognition status → 'active' ✓",
+            "Architectural Thinking status → 'active' ✓",
+            "All enrollment flows verified for all programs ✓",
+            "Sample + full content renders correctly in student dashboard ✓"
           ]
         },
+        {
+          "id": "9.13",
+          "task": "Fix SQL escaping bug in setup.js",
+          "status": "done",
+          "launch": [{"label":"setup.js","url":"../functions/api/db/setup.js","local":true}],
+          "items": [
+            "Replace \\' inside template literals with SQL '' (double single-quote) ✓",
+            "Fixed 4 occurrences across course content and Bible curriculum ✓",
+            "Resolved all no-useless-escape lint errors ✓",
+            "Lint CI now reports 0 errors ✓"
+          ]
+        },
+        {
+          "id": "9.14",
+          "task": "Add read-aloud (TTS) feature to student dashboard",
+          "status": "done",
+          "launch": [{"label":"Dashboard","url":"../dashboard/index.html","local":true}],
+          "items": [
+            "Browser SpeechSynthesis API — zero dependencies, no API keys ✓",
+            "Play/Pause/Stop controls with sentence-level chunking ✓",
+            "Voice selector populated from system voices ✓",
+            "Speed slider (0.5x–2.0x) ✓",
+            "Sentence highlighting during playback ✓",
+            "Auto-stop on tab hide ✓",
+            "Guard against undefined speechSynthesis (Firefox/mobile fix) ✓"
+          ]
+        }
         {
           "id": "9.4",
           "task": "Replace prompt() dialogs with proper modals",
@@ -1174,7 +1243,8 @@ var DATA = {
     {
       "phase": 11,
       "name": "Command Center — Admin Dashboard & Agent Infrastructure",
-      "status": "in_progress",
+      "status": "complete",
+      "verified": true,
       "description": "Complete the Command Center (admin/agents.html) — 6-tab admin hub for agent task management, live D1 dashboard, agent lifecycle, workflow engine, queue processing, and admin settings. Wires all admin pages to shared auth.",
       "platform": "Cloudflare Workers + D1",
       "steps": [
@@ -1336,28 +1406,23 @@ var DATA = {
       ]
     }
   ],
-  "current_focus": "Phase 11 (Command Center) — 11.1 and 11.2 done. Phase 9 (Audit Fixes) in progress. Phase 10 smoke tests queued.",
+  "current_focus": "Phase 6 (Build The Profit Engine) — Vision Builders programs launched (6.1–6.6 done). Digital books (6.7), newsletter monetization (6.8), and email sequences (6.9) still pending. Phase 9 audit fixes ongoing — prompt()→modal, newsletter archive, music links, art inventory, merch sizing remain. Phase 10 smoke tests queued. Phase 11 (Command Center) fully complete and verified.",
   "notes": [
-    "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
-    "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
-    "Phase 3 pivoted to Cloudflare Workers + D1 (free tier) — no paid hosting needed. Revenue-first: on-site Flutterwave payments, D1 database, admin CRUD.",
-    "Phase 2 complete: KV subscriber storage live. All form submissions persist to KV. Admin can view/export subscribers at /admin/subscribers.html.",
-    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — enough for early revenue phase.",
-    "Flutterwave payouts are settled to your bank in Ghana (GHS). No monthly fee, only per-transaction 1.4% + GHS 1.",
-    "Phase 5 — Fix The Cash Register: Donations, payments, booking flows must all work end-to-end before anything else.",
-    "Phase 6 — Build The Profit Engine: Courses, book sales, premium newsletter tiers create sustainable revenue.",
-    "Phase 6.1 — School programs paywall: Flutterwave checkout, full-access tokens, sample vs paid, admin page, progress tracking.",
-    "Phase 6.2 — Systems Thinking curriculum: 4 modules (Iceberg, Feedback Loops, Leverage Points, Mental Models) plus videos and worksheets.",
-    "Phase 6.3 — Architectural Thinking curriculum: 4 modules (Blueprint Thinking, Design Principles, Strategic Frameworks, Execution) plus videos and worksheets.",
-    "Phase 7 — Strategic Offensive: Infrastructure built (partners, press, content, sitemap.xml, JSON-LD, referral API, share-to-unlock). Pre-launch SEO checklist expanded: submit to Google/Bing/Yandex, validate structured data, fix technical SEO, audit meta/OG/Twitter tags, page speed, heading hierarchy, alt text, 404 page, forms. Post-launch monitoring: weekly GSC, monthly content, monthly backlinks, quarterly review, bi-annual refresh. Manual work: partner outreach, media pitching, guest articles, backlinks.",
-    "Phase 8 — AI-First Ecosystem: Agentic task management (live now), AI content, predictive analytics, autonomous outreach.",
-    "Sponsor login system live — access-code auth gates pricing on /newsletter/advertise.html.",
-    "Site-wide 1440px max-width applied via --content-max token.",
-    "Phase 9 — Audit Fixes & Site Polish: 12 items to fix from the full site audit. Store fulfillment, nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
-    "When Phase 6 revenue justifies it, migrate heavy workloads to a paid VPS with Postgres.",
-    "Phase 10 — Smoke Tests: Run after every deployment. Click Verify Live on the admin page to auto-check all items. All checks run against the live local/preview URLs.",
-    "Admin /admin/submissions.html page is a static placeholder — needs live data integration from D1 contact_submissions table.",
-    "Phase 11 — Command Center: 6-tab admin hub (agents.html). 11.1 (task management) and 11.2 (live D1 dashboard) done. Created /api/agents/activity endpoint for real sparkline time-series. Remaining: agent lifecycle, workflow engine, queue processor, run history, settings auth, submissions live data, architecture live links, mobile UX."
+    "Cloudflare Pages + Workers + D1 (free tier) — the entire stack runs at $0/mo. When revenue scales, migrate heavy workloads to a paid VPS with Postgres.",
+    "D1 free tier: 5GB storage, 5M reads/mo, 100k writes/mo — enough for current scale.",
+    "Flutterwave payouts settle to bank in Ghana (GHS). 1.4% + GHS 1 per transaction, no monthly fee.",
+    "SCHOOL PROGRAMS LIVE: 7 programs total — 4 Vision Builders (active) + 3 Bible courses. Vision Builders are sort_order 1-4 and appear first on the school page, followed by Bible courses 5-7.",
+    "Vision Builders portfolio: Systems Thinking (GH¢ 250 paid), Design Thinking (free), Pattern Recognition (free, pay-what-you-can, 6 modules), Architectural Thinking (free). All fully enrollable with student dashboard.",
+    "Student dashboard features: multi-program tabs, sample vs full access, module progress toggles, XP/level/streak gamification, upgrade flow, access code login + forgot code, read-aloud TTS.",
+    "Read-aloud feature: browser-native SpeechSynthesis API, sentence chunking with highlighting, voice/speed controls, pause/resume, auto-stop on tab hide. Zero dependencies.",
+    "SQL escaping fix: Template literals in setup.js used \\' which produced broken SQL. Replaced with SQL '' (double single-quote) across 4 occurrences. Lint now 0 errors.",
+    "Phase 5 (Fix The Cash Register): Donations, payments, booking flows must still work end-to-end.",
+    "Phase 6 — Vision Builders (6.1–6.6) complete and live. Digital books (6.7), newsletter monetization (6.8), and email sequences (6.9) still pending.",
+    "Phase 7 — Strategic Offensive: Partners page, press kit, referral API, sitemap, JSON-LD (homepage, school, support, books), share-to-unlock all live. Still manual: media pitching, guest articles, backlinks.",
+    "Phase 8 — AI-First Ecosystem: Agentic task management live. AI content assistant, predictive analytics, autonomous outreach are next.",
+    "Phase 9 — Audit Fixes: Store fulfillment download links, nationbuilding resource links, prompt()→modal refactor, newsletter public archive, music streaming links, art real inventory, merch size selection, CSP header, formatPrice guard — still pending.",
+    "Phase 10 — Smoke Tests: Run via Verify Live button after every deployment. 10 check groups covering pages, auth, store, payments, D1, security, forms, redirects, content APIs, store modals.",
+    "Phase 11 — Command Center fully complete and verified. All 11 sub-items done: task management UI, live D1 dashboard metrics, agent lifecycle, workflow engine, queue processor, run history, settings, admin auth consolidation, submissions live data, architecture diagram with live agent data, mobile UX polish."
   ]
 };
 
