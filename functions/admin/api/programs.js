@@ -60,15 +60,36 @@ export async function onRequest(context) {
     }
 
     if (request.method === 'DELETE' && id) {
+      const cascade = url.searchParams.get('cascade') === 'true';
+
       const enrollmentCount = await env.DB.prepare(
         'SELECT COUNT(*) AS cnt FROM enrollments WHERE program_id = ?'
       ).bind(id).first();
-      if (enrollmentCount && enrollmentCount.cnt > 0) {
+      const moduleCount = await env.DB.prepare(
+        'SELECT COUNT(*) AS cnt FROM modules WHERE program_id = ?'
+      ).bind(id).first();
+      const totalRefs = (enrollmentCount ? enrollmentCount.cnt : 0) + (moduleCount ? moduleCount.cnt : 0);
+
+      if (totalRefs > 0 && !cascade) {
+        var details = [];
+        if (enrollmentCount && enrollmentCount.cnt > 0) details.push(enrollmentCount.cnt + ' enrollment(s)');
+        if (moduleCount && moduleCount.cnt > 0) details.push(moduleCount.cnt + ' module(s)');
         return new Response(JSON.stringify({
           status: 'error',
-          message: 'Cannot delete: ' + enrollmentCount.cnt + ' student(s) enrolled. Remove or reassign enrollments first.'
+          message: 'Cannot delete: ' + details.join(', ') + ' reference this program. Add ?cascade=true to force delete.',
+          enrollment_count: enrollmentCount ? enrollmentCount.cnt : 0,
+          module_count: moduleCount ? moduleCount.cnt : 0
         }), { status: 409, headers: { 'Content-Type': 'application/json' } });
       }
+
+      if (cascade) {
+        await env.DB.prepare(
+          'DELETE FROM module_completions WHERE module_id IN (SELECT id FROM modules WHERE program_id = ?)'
+        ).bind(id).run();
+        await env.DB.prepare('DELETE FROM modules WHERE program_id = ?').bind(id).run();
+        await env.DB.prepare('DELETE FROM enrollments WHERE program_id = ?').bind(id).run();
+      }
+
       await env.DB.prepare('DELETE FROM programs WHERE id = ?').bind(id).run();
       return new Response(JSON.stringify({ status: 'ok', deleted: id }), {
         headers: { 'Content-Type': 'application/json' }

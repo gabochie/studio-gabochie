@@ -196,14 +196,24 @@ function saveProgram(e) {
   return false;
 }
 
-function deleteProgram(id) {
-  if (!confirm('Delete this program permanently?')) return;
-  adminFetch('/admin/api/programs?id=' + id, {
+function deleteProgram(id, force) {
+  var msg = force
+    ? 'Force delete this program? All enrollments and modules will be permanently removed.'
+    : 'Delete this program permanently?';
+  if (!confirm(msg)) return;
+  var url = '/admin/api/programs?id=' + id + (force ? '&cascade=true' : '');
+  adminFetch(url, {
     method: 'DELETE',
     headers: { 'Referer': '/admin/programs.html' }
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data.status === 'ok') {
       loadPrograms();
+    } else if (data.enrollment_count || data.module_count) {
+      var details = [];
+      if (data.enrollment_count) details.push(data.enrollment_count + ' enrollment(s)');
+      if (data.module_count) details.push(data.module_count + ' module(s)');
+      var msg2 = 'This program has ' + details.join(', ') + '.\nClick OK to force delete (removes everything), or Cancel to keep the program.';
+      if (confirm(msg2)) deleteProgram(id, true);
     } else {
       Toast.error(data.message || data.error || 'Delete failed');
     }
