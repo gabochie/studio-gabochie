@@ -23,11 +23,11 @@ export async function onRequest(context) {
       var search = url.searchParams.get('q') || '';
       var group = url.searchParams.get('group') || '';
       if (group === 'edition') {
-        var rows = await env.DB.prepare(
+        var editionRows = await env.DB.prepare(
           "SELECT COALESCE(NULLIF(edition,''), 'ROW') AS edition, COUNT(*) AS count FROM subscribers GROUP BY edition ORDER BY count DESC"
         ).all();
         var editions = {};
-        rows.results.forEach(function(r){ editions[r.edition] = r.count; });
+        editionRows.results.forEach(function(r){ editions[r.edition] = r.count; });
         return new Response(JSON.stringify({ status: 'ok', editions }), {
           headers: { 'Content-Type': 'application/json' }
         });

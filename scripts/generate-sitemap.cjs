@@ -5,7 +5,7 @@
  */
 var fs = require('fs');
 var path = require('path');
-var glob = require('child_process').execSync;
+// var glob = require('child_process').execSync;
 var https = require('https');
 var http = require('http');
 
@@ -81,7 +81,7 @@ function getAllHtmlFiles() {
   function walk(dir, depth) {
     if (depth === undefined) depth = 0;
     var entries;
-    try { entries = fs.readdirSync(dir); } catch(e) { return; }
+    try { entries = fs.readdirSync(dir); } catch (e) { /* directory unreadable */ }
     for (var i = 0; i < entries.length; i++) {
       var full = path.join(dir, entries[i]);
       var stat = fs.statSync(full);

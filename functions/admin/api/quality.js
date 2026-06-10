@@ -49,12 +49,12 @@ export async function onRequest(context) {
       var reports = (await env.DB.prepare(
         "SELECT id, category, page_url, check_name, status, message, created_at FROM quality_reports WHERE run_id = ? ORDER BY category, page_url, id"
       ).bind(runId).all()).results || [];
-      var categories = {};
+      var cat = {};
       reports.forEach(function(r) {
-        if (!categories[r.category]) categories[r.category] = [];
-        categories[r.category].push(r);
+        if (!cat[r.category]) cat[r.category] = [];
+        cat[r.category].push(r);
       });
-      return new Response(JSON.stringify({ status: 'ok', run: run[0], reports_by_category: categories, reports: reports }), {
+      return new Response(JSON.stringify({ status: 'ok', run: run[0], reports_by_category: cat, reports: reports }), {
         headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
