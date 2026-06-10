@@ -29,7 +29,7 @@ export async function onRequest(context) {
       });
     }
     var enrollment = await db.prepare(
-      'SELECT e.id, e.student_name, e.student_email, e.status, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
+      'SELECT e.id, e.program_id, e.student_name, e.student_email, e.status, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
     ).bind(token).first();
     if (!enrollment) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
@@ -47,6 +47,20 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'error', message: 'Complete all modules first' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
       });
+    }
+    // Check quiz passed (if quiz questions exist for this program)
+    var qCount = await db.prepare(
+      'SELECT COUNT(*) AS c FROM quiz_questions WHERE program_id = ?'
+    ).bind(enrollment.program_id).first();
+    if (qCount && qCount.c > 0) {
+      var passAttempt = await db.prepare(
+        'SELECT id FROM quiz_attempts WHERE enrollment_id = ? AND passed = 1 LIMIT 1'
+      ).bind(enrollment.id).first();
+      if (!passAttempt) {
+        return new Response(JSON.stringify({ status: 'error', message: 'You must pass the final quiz first' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
     // Check if certificate already exists
     var existing = await db.prepare(

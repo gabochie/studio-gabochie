@@ -391,6 +391,28 @@
         FOREIGN KEY (enrollment_id) REFERENCES enrollments(id),
         UNIQUE(student_email, enrollment_id, achievement_key)
       )`,
+      // Quiz tables
+      `CREATE TABLE IF NOT EXISTS quiz_questions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_id INTEGER NOT NULL,
+        question TEXT NOT NULL,
+        options TEXT NOT NULL,
+        correct_answer INTEGER NOT NULL,
+        sort_order INTEGER DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (program_id) REFERENCES programs(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_quiz_questions_program ON quiz_questions(program_id)`,
+      `CREATE TABLE IF NOT EXISTS quiz_attempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enrollment_id INTEGER NOT NULL,
+        score INTEGER NOT NULL,
+        total INTEGER NOT NULL,
+        passed INTEGER NOT NULL DEFAULT 0,
+        attempted_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_quiz_attempts_enrollment ON quiz_attempts(enrollment_id)`,
       // Auth tables (users, sessions, OTP)
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

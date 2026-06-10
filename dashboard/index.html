@@ -216,6 +216,16 @@ h1 span{color:#C9A84C}
       <h2 style="margin-bottom:12px">Achievements</h2>
       <div id="achievementsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:8px"></div>
     </div>
+    <div id="quizSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)">
+      <h2 style="margin-bottom:4px">Final <span>Quiz</span></h2>
+      <p id="quizStatus" style="color:#8A9BB5;font-size:13px;margin-bottom:16px">Complete the final quiz to unlock your certificate. You need 70% to pass.</p>
+      <div id="quizQuestions"></div>
+      <div id="quizActions" style="text-align:center;margin-top:12px">
+        <button class="btn btn-primary" id="quizStartBtn" onclick="startQuiz()">Start Final Quiz</button>
+        <button class="btn btn-primary" id="quizSubmitBtn" onclick="submitQuiz()" style="display:none">Submit Answers</button>
+      </div>
+      <div id="quizResult" style="display:none;text-align:center;padding:20px"></div>
+    </div>
     <div id="certSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center">
       <div style="font-size:32px;margin-bottom:8px">&#9733;</div>
       <p style="color:#22C55E;font-size:14px;font-weight:600;margin-bottom:12px">All modules completed!</p>
@@ -372,28 +382,12 @@ function loadProgress() {
       });
       // Load achievements
       fetchAchievements();
-      // Show certificate section when all modules complete
-      var certSection = document.getElementById('certSection');
-      var certBtn = document.getElementById('certBtn');
-      var certLink = document.getElementById('certLink');
+      // Show certificate section when all modules complete (with quiz gate)
       if (d.total_modules > 0 && d.completed_modules >= d.total_modules) {
-        certSection.style.display = 'block';
-        api('/api/certificates/generate', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({})
-        }).then(function(r){return r.json()}).then(function(cd){
-          if (cd.status === 'ok') {
-            certBtn.style.display = 'none';
-            certLink.style.display = 'block';
-            document.getElementById('certHref').href = '/certificate/?code=' + cd.certificate_code;
-          } else {
-            certBtn.style.display = 'block';
-            certLink.style.display = 'none';
-          }
-        }).catch(function(){});
+        checkQuizStatus();
       } else {
-        certSection.style.display = 'none';
+        document.getElementById('certSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
       }
     })
     .catch(function() {});
@@ -437,6 +431,132 @@ function handleCertificate() {
   }).catch(function(){
     btn.disabled = false;
     btn.textContent = 'Claim Your Certificate';
+    alert('Network error. Please try again.');
+  });
+}
+
+function showCertificateSection() {
+  var certSection = document.getElementById('certSection');
+  var certBtn = document.getElementById('certBtn');
+  var certLink = document.getElementById('certLink');
+  certSection.style.display = 'block';
+  api('/api/certificates/generate', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({})
+  }).then(function(r){return r.json()}).then(function(cd){
+    if (cd.status === 'ok') {
+      certBtn.style.display = 'none';
+      certLink.style.display = 'block';
+      document.getElementById('certHref').href = '/certificate/?code=' + cd.certificate_code;
+    } else {
+      certBtn.style.display = 'block';
+      certLink.style.display = 'none';
+    }
+  }).catch(function(){});
+}
+
+function checkQuizStatus() {
+  api('/api/quiz/questions')
+    .then(function(r){return r.json()})
+    .then(function(d) {
+      if (d.status === 'ok' && d.questions && d.questions.length > 0) {
+        api('/api/quiz/attempts')
+          .then(function(r){return r.json()})
+          .then(function(a) {
+            if (a.latest_passed) {
+              showCertificateSection();
+            } else {
+              document.getElementById('quizSection').style.display = 'block';
+              document.getElementById('quizStatus').textContent = 'Complete the final quiz to unlock your certificate. You need 70% to pass.';
+            }
+          })
+          .catch(function() { showCertificateSection(); });
+      } else {
+        showCertificateSection();
+      }
+    })
+    .catch(function() { showCertificateSection(); });
+}
+
+function startQuiz() {
+  document.getElementById('quizStartBtn').style.display = 'none';
+  document.getElementById('quizQuestions').innerHTML = '<div style="text-align:center;padding:20px;color:#8A9BB5">Loading questions...</div>';
+  api('/api/quiz/questions')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok' || !d.questions || !d.questions.length) {
+        document.getElementById('quizQuestions').innerHTML = '<p style="color:#E8637A">No questions available.</p>';
+        document.getElementById('quizStartBtn').style.display = 'inline-flex';
+        return;
+      }
+      var html = '';
+      d.questions.forEach(function(q, i) {
+        var opts = JSON.parse(q.options);
+        html += '<div class="quiz-question" style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px">' +
+          '<p style="font-weight:600;margin-bottom:10px;color:#E8EEF7;font-size:14px">' + (i+1) + '. ' + q.question + '</p>';
+        opts.forEach(function(opt, j) {
+          html += '<label style="display:block;padding:8px 12px;margin-bottom:4px;border-radius:6px;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid transparent;transition:all .2s">' +
+            '<input type="radio" name="q_' + q.id + '" value="' + j + '" style="margin-right:8px;accent-color:#C9A84C">' +
+            opt + '</label>';
+        });
+        html += '</div>';
+      });
+      document.getElementById('quizQuestions').innerHTML = html;
+      document.getElementById('quizSubmitBtn').style.display = 'inline-flex';
+    })
+    .catch(function() {
+      document.getElementById('quizQuestions').innerHTML = '<p style="color:#E8637A">Failed to load questions. Check your connection.</p>';
+      document.getElementById('quizStartBtn').style.display = 'inline-flex';
+    });
+}
+
+function submitQuiz() {
+  var questions = document.querySelectorAll('.quiz-question');
+  var answers = {};
+  questions.forEach(function(q) {
+    var checked = q.querySelector('input[type=radio]:checked');
+    if (checked) {
+      var id = checked.name.replace('q_', '');
+      answers[id] = parseInt(checked.value);
+    }
+  });
+  var btn = document.getElementById('quizSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  api('/api/quiz/submit', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ answers: answers })
+  }).then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.status === 'ok') {
+      btn.style.display = 'none';
+      document.getElementById('quizQuestions').style.display = 'none';
+      document.getElementById('quizStartBtn').style.display = 'none';
+      var result = document.getElementById('quizResult');
+      result.style.display = 'block';
+      var pct = Math.round(d.score / d.total * 100);
+      if (d.passed) {
+        result.innerHTML = '<div style="font-size:32px;margin-bottom:8px">&#127881;</div>' +
+          '<p style="color:#22C55E;font-size:16px;font-weight:600">You passed! Score: ' + d.score + '/' + d.total + ' (' + pct + '%)</p>' +
+          '<p style="color:#8A9BB5;font-size:13px;margin:8px 0 16px">You can now claim your certificate.</p>' +
+          '<button class="btn btn-primary" onclick="handleCertificate()">Claim Your Certificate</button>';
+      } else {
+        result.innerHTML = '<div style="font-size:32px;margin-bottom:8px">&#128546;</div>' +
+          '<p style="color:#E8637A;font-size:16px;font-weight:600">Score: ' + d.score + '/' + d.total + ' (' + pct + '%)</p>' +
+          '<p style="color:#8A9BB5;font-size:13px;margin:8px 0 16px">You need ' + d.pass_threshold + '% to pass. Review the material and try again.</p>' +
+          '<button class="btn btn-primary" onclick="location.reload()">Retake Quiz</button>';
+      }
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Submit Answers';
+      alert(d.message || 'Could not submit quiz.');
+    }
+  })
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Submit Answers';
     alert('Network error. Please try again.');
   });
 }

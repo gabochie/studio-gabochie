@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Quiz — GideonAbochie Admin</title><link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>"><link rel="stylesheet" href="admin.css"></head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Quiz <span>Management</span></h1>
+  <p class="page-desc" style="margin-bottom:20px">Create and manage final quiz questions per program. Students must pass (70%) to unlock certificates.</p>
+
+  <div class="stats" style="grid-template-columns:1fr">
+    <div class="stat-card">
+      <span class="stat-label">Program</span>
+      <select id="programSelect" onchange="loadQuestions()" style="width:100%;margin-top:6px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:8px 12px;font-family:inherit;cursor:pointer"><option value="">— Select a program —</option></select>
+    </div>
+  </div>
+
+  <div id="questionsContainer" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px">
+      <span class="section-title" style="margin:0">Questions</span>
+      <button class="btn btn-primary btn-sm" onclick="showQuestionForm()">+ Add Question</button>
+    </div>
+    <div id="questionsList"></div>
+  </div>
+</div>
+
+<div id="questionModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)hideQuestionForm()">
+  <div class="modal" style="max-width:600px;margin:40px auto;background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px">
+    <h2 style="font-size:18px;font-weight:700;color:#fff;font-family:'Syne',sans-serif;margin-bottom:16px" id="questionModalTitle">Add Question</h2>
+    <input type="hidden" id="editQuestionId" value="">
+    <label style="display:block;color:#8A9BB5;font-size:12px;margin-bottom:4px">Question</label>
+    <textarea id="qQuestion" rows="3" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:8px 12px;font-family:inherit;margin-bottom:12px;resize:vertical"></textarea>
+    <label style="display:block;color:#8A9BB5;font-size:12px;margin-bottom:8px">Options (select the correct one)</label>
+    <div id="optionsList"></div>
+    <label style="display:block;color:#8A9BB5;font-size:12px;margin:12px 0 4px">Sort Order</label>
+    <input type="number" id="qSortOrder" value="0" style="width:80px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:8px 12px;font-family:inherit;margin-bottom:16px">
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="hideQuestionForm()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQuestion()">Save Question</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+
+var QUESTION_COUNT = 4;
+
+function $(id){return document.getElementById(id)}
+
+function adminFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  if (!opts.method || opts.method === 'GET') opts.cache = 'no-store';
+  return fetch(url, opts);
+}
+
+async function loadPrograms() {
+  var sel = $('programSelect');
+  sel.innerHTML = '<option value="">Loading...</option>';
+  try {
+    var res = await adminFetch('/admin/api/programs', {headers:{'Referer':'/admin/quiz.html'}});
+    var data = await res.json();
+    sel.innerHTML = '<option value="">— Select a program —</option>';
+    (data.items || data.programs || []).forEach(function(p) {
+      var id = p.id || p.program_id;
+      var title = p.title || p.name;
+      sel.innerHTML += '<option value="' + id + '">' + title + '</option>';
+    });
+  } catch(e) {
+    sel.innerHTML = '<option value="">Error loading programs</option>';
+  }
+}
+
+async function loadQuestions() {
+  var programId = $('programSelect').value;
+  var container = $('questionsContainer');
+  var list = $('questionsList');
+  if (!programId) { container.style.display = 'none'; return; }
+  container.style.display = 'block';
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">Loading...</div>';
+  try {
+    var res = await adminFetch('/api/admin/quiz?program_id=' + programId, {headers:{'Referer':'/admin/quiz.html'}});
+    var data = await res.json();
+    if (data.status !== 'ok' || !data.items.length) {
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">No questions yet. Click "Add Question" to create one.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    data.items.forEach(function(q, i) {
+      var options = JSON.parse(q.options);
+      var optHtml = '';
+      options.forEach(function(o, j) {
+        var isCorrect = j === q.correct_answer;
+        optHtml += '<div style="padding:4px 0;font-size:13px;color:' + (isCorrect ? '#22C55E' : '#CBD5E1') + '">' + (j+1) + '. ' + o + (isCorrect ? ' ✓' : '') + '</div>';
+      });
+      list.innerHTML += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:16px;margin-bottom:10px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:14px;font-weight:600;color:#E8EEF7;margin-bottom:8px">' + (i+1) + '. ' + q.question + '</div>' +
+        '<div style="font-size:12px;color:#3A5278;margin-bottom:6px">Sort: ' + q.sort_order + ' | ID: ' + q.id + '</div>' +
+        optHtml +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+        '<button class="btn btn-ghost btn-sm" onclick="editQuestion(' + q.id + ')">Edit</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteQuestion(' + q.id + ')">Delete</button>' +
+        '</div></div></div>';
+    });
+  } catch(e) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#E8637A;font-size:13px">Error loading questions.</div>';
+  }
+}
+
+function showQuestionForm(editData) {
+  $('questionModal').style.display = 'block';
+  if (editData) {
+    $('questionModalTitle').textContent = 'Edit Question';
+    $('editQuestionId').value = editData.id;
+    $('qQuestion').value = editData.question;
+    $('qSortOrder').value = editData.sort_order;
+    renderOptions(JSON.parse(editData.options), editData.correct_answer);
+  } else {
+    $('questionModalTitle').textContent = 'Add Question';
+    $('editQuestionId').value = '';
+    $('qQuestion').value = '';
+    $('qSortOrder').value = '0';
+    renderOptions(['', '', '', ''], 0);
+  }
+}
+
+function hideQuestionForm() {
+  $('questionModal').style.display = 'none';
+}
+
+function renderOptions(options, correctIdx) {
+  var html = '';
+  for (var i = 0; i < QUESTION_COUNT; i++) {
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<input type="radio" name="correctAnswer" value="' + i + '" ' + (i === correctIdx ? 'checked' : '') + ' style="accent-color:#C9A84C;cursor:pointer">' +
+      '<input type="text" id="opt_' + i + '" value="' + (options[i] || '') + '" placeholder="Option ' + (i+1) + '" style="flex:1;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:8px 12px;font-family:inherit">' +
+      '</div>';
+  }
+  html += '<div style="font-size:11px;color:#3A5278;margin-top:4px">Select the radio button next to the correct answer</div>';
+  $('optionsList').innerHTML = html;
+}
+
+async function saveQuestion() {
+  var programId = $('programSelect').value;
+  var question = $('qQuestion').value.trim();
+  if (!question) { alert('Please enter a question.'); return; }
+  var options = [];
+  var correctAnswer = -1;
+  var radios = document.querySelectorAll('input[name="correctAnswer"]');
+  for (var i = 0; i < radios.length; i++) {
+    if (radios[i].checked) correctAnswer = parseInt(radios[i].value);
+  }
+  for (var i = 0; i < QUESTION_COUNT; i++) {
+    var opt = $('opt_' + i).value.trim();
+    if (!opt) { alert('Please fill in all options.'); return; }
+    options.push(opt);
+  }
+  if (correctAnswer < 0) { alert('Please select the correct answer.'); return; }
+  var sortOrder = parseInt($('qSortOrder').value) || 0;
+  var editId = $('editQuestionId').value;
+  var action = editId ? 'update' : 'add';
+  var payload = { action: action, program_id: parseInt(programId), question: question, options: options, correct_answer: correctAnswer, sort_order: sortOrder };
+  if (editId) payload.id = parseInt(editId);
+  try {
+    var res = await adminFetch('/api/admin/quiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Referer': '/admin/quiz.html' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (data.status === 'ok') {
+      hideQuestionForm();
+      loadQuestions();
+    } else {
+      alert(data.message || 'Error saving question');
+    }
+  } catch(e) {
+    alert('Network error');
+  }
+}
+
+async function editQuestion(id) {
+  try {
+    var res = await adminFetch('/api/admin/quiz?program_id=' + $('programSelect').value, {headers:{'Referer':'/admin/quiz.html'}});
+    var data = await res.json();
+    var q = data.items.find(function(x) { return x.id === id; });
+    if (q) showQuestionForm(q);
+  } catch(e) {}
+}
+
+async function deleteQuestion(id) {
+  if (!confirm('Delete this question?')) return;
+  try {
+    var res = await adminFetch('/api/admin/quiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Referer': '/admin/quiz.html' },
+      body: JSON.stringify({ action: 'delete', id: id })
+    });
+    var data = await res.json();
+    if (data.status === 'ok') loadQuestions();
+    else alert(data.message || 'Error deleting question');
+  } catch(e) {
+    alert('Network error');
+  }
+}
+
+loadPrograms();
+</script>
+</body></html>

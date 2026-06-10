@@ -42,6 +42,7 @@
         { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
         { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
         { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },
+        { href: 'quiz.html',       icon: '\uD83D\uDCDD', label: 'Quiz' },
         { href: 'agents.html',      icon: '\u26A1',        label: 'Command Center' },
         { href: 'strategy.html',    icon: '\uD83C\uDFAF', label: 'Strategy' },
         { href: 'roadmap.html',     icon: '\u2705',        label: 'ToDo List' },
