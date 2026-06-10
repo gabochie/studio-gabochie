@@ -53,6 +53,6 @@ export async function onRequest(context) {
 
     return json({ error: 'Method not allowed' }, 405);
   } catch (err) {
-    return json({ status: 'error', message: 'Internal error' }, 500);
+    return json({ status: 'error', message: err.message || 'Internal error' }, 500);
   }
 }

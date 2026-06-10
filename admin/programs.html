@@ -184,12 +184,12 @@ function saveProgram(e) {
       cancelEdit();
       loadPrograms();
     } else {
-      alert(data.error || 'Failed to save');
+      Toast.error(data.message || data.error || 'Failed to save');
     }
     btn.disabled = false;
     btn.textContent = id ? 'Save Changes' : '+ Add Program';
-  }).catch(function() {
-    alert('Error saving program');
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
     btn.disabled = false;
     btn.textContent = id ? 'Save Changes' : '+ Add Program';
   });
@@ -202,7 +202,13 @@ function deleteProgram(id) {
     method: 'DELETE',
     headers: { 'Referer': '/admin/programs.html' }
   }).then(function(r) { return r.json(); }).then(function(data) {
-    if (data.status === 'ok') loadPrograms();
+    if (data.status === 'ok') {
+      loadPrograms();
+    } else {
+      Toast.error(data.message || data.error || 'Delete failed');
+    }
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
   });
 }
 

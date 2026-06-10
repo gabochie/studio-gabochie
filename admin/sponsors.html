@@ -144,22 +144,34 @@ function addSponsor(e) {
 
 function toggleStatus(id, currentStatus) {
   var newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-  fetch('/admin/api/sponsors?id=' + id, {
+  adminFetch('/admin/api/sponsors?id=' + id, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Referer': '/admin/sponsors.html' },
     body: JSON.stringify({ status: newStatus })
   }).then(function(r) { return r.json(); }).then(function(data) {
-    if (data.status === 'ok') loadSponsors();
+    if (data.status === 'ok') {
+      loadSponsors();
+    } else {
+      Toast.error(data.message || data.error || 'Toggle failed');
+    }
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
   });
 }
 
 function deleteSponsor(id) {
   if (!confirm('Delete this sponsor account?')) return;
-  fetch('/admin/api/sponsors?id=' + id, {
+  adminFetch('/admin/api/sponsors?id=' + id, {
     method: 'DELETE',
     headers: { 'Referer': '/admin/sponsors.html' }
   }).then(function(r) { return r.json(); }).then(function(data) {
-    if (data.status === 'ok') loadSponsors();
+    if (data.status === 'ok') {
+      loadSponsors();
+    } else {
+      Toast.error(data.message || data.error || 'Delete failed');
+    }
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
   });
 }
 

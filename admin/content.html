@@ -165,7 +165,12 @@ function editTestimonial(id) {
 
 function deleteTestimonial(id) {
   if (!confirm('Delete this testimonial?')) return;
-  api('/admin/api/testimonials?id=' + id, {method:'DELETE'}).then(loadTestimonials);
+  api('/admin/api/testimonials?id=' + id, {method:'DELETE'}).then(function(data) {
+    if (data && data.status === 'ok') loadTestimonials();
+    else Toast.error(data.message || data.error || 'Delete failed');
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
+  });
 }
 
 // ── STATS ──
@@ -202,7 +207,12 @@ function editStat(id) {
 
 function deleteStat(id) {
   if (!confirm('Delete this stat?')) return;
-  api('/admin/api/stats?id=' + id, {method:'DELETE'}).then(loadStats);
+  api('/admin/api/stats?id=' + id, {method:'DELETE'}).then(function(data) {
+    if (data && data.status === 'ok') loadStats();
+    else Toast.error(data.message || data.error || 'Delete failed');
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
+  });
 }
 
 // ── GALLERY ──
@@ -239,7 +249,12 @@ function editGallery(id) {
 
 function deleteGallery(id) {
   if (!confirm('Delete this gallery item?')) return;
-  api('/admin/api/gallery?id=' + id, {method:'DELETE'}).then(loadGallery);
+  api('/admin/api/gallery?id=' + id, {method:'DELETE'}).then(function(data) {
+    if (data && data.status === 'ok') loadGallery();
+    else Toast.error(data.message || data.error || 'Delete failed');
+  }).catch(function(e) {
+    Toast.error('Network error: ' + (e.message || 'Could not reach server'));
+  });
 }
 
 // Init
