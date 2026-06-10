@@ -1003,8 +1003,10 @@
         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 5: Pattern-Based Decision Making', 'pr-decisions', 'Using pattern recognition in leadership, strategy, and problem-solving. How to distinguish meaningful patterns from noise, and how to apply pattern intelligence to real-world challenges.', 5),
         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 6: Capstone \u2014 Pattern Mapping Project', 'pr-capstone', 'Identify a pattern in your community, industry, or personal life. Map it, analyze it, and present your findings. Output: a pattern map with observations, analysis, and recommended actions.', 6)
       `,
-      // Rename Systems Thinking for Vision Builders (existing DBs)
-      `UPDATE programs SET title = 'Systems Thinking for Vision Builders' WHERE slug = 'systems-thinking'`,
+      // Rename & activate Systems Thinking for Vision Builders (existing DBs)
+      `UPDATE programs SET title = 'Systems Thinking for Vision Builders', status = 'active' WHERE slug = 'systems-thinking'`,
+      // Fix Architectural Thinking price_label for existing DBs
+      `UPDATE programs SET price_label = 'Free' WHERE slug = 'architectural-thinking' AND price_label = 'Coming Soon'`,
       // Force Vision Builders sort_orders
       `UPDATE programs SET sort_order = 2 WHERE slug = 'intro-design-thinking' AND sort_order != 2`,
       `UPDATE programs SET sort_order = 3 WHERE slug = 'pattern-recognition-vision-builders'`,
