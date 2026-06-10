@@ -1,4 +1,4 @@
-import { requireAdminAuth } from '../_admin-auth.js';
+import { requireAdminAuth } from '../../../api/admin/_admin-auth.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
