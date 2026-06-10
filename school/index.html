@@ -5,9 +5,9 @@
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School &mdash; GideonAbochie Studio</title>
-<meta name="description" content="Self-paced programs in Systems Thinking and Architectural Thinking. Start free, learn at your own pace, and build the skills to think clearly and create what matters.">
+<meta name="description" content="Self-paced programs in Systems Thinking, Design Thinking, Architectural Thinking, and Pattern Recognition. Start free, learn at your own pace, and build the skills to think clearly and create what matters.">
 <meta property="og:title" content="School &mdash; GideonAbochie Studio">
-<meta property="og:description" content="Start learning at GideonAbochie Studio. Self-paced programs in Systems Thinking and Architectural Thinking &mdash; free to start, rooted in biblical wisdom.">
+<meta property="og:description" content="Start learning at GideonAbochie Studio. Self-paced programs for Vision Builders &mdash; Systems Thinking, Design Thinking, Architectural Thinking, Pattern Recognition &mdash; free to start, rooted in biblical wisdom.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/school/">
 <meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
@@ -16,7 +16,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/main.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"EducationalOrganization","name":"GideonAbochie Studio — School","url":"https://gideonabochie.org/school/","description":"Self-paced programs in Systems Thinking and Architectural Thinking. Start free, learn at your own pace.","provider":{"@type":"Organization","name":"GideonAbochie Studio"},"teaches":["Systems Thinking","Architectural Thinking","Biblical Leadership","Creative Excellence"]}
+{"@context":"https://schema.org","@type":"EducationalOrganization","name":"GideonAbochie Studio — School","url":"https://gideonabochie.org/school/","description":"Self-paced programs for Vision Builders — Systems Thinking, Design Thinking, Architectural Thinking, Pattern Recognition. Start free, learn at your own pace.","provider":{"@type":"Organization","name":"GideonAbochie Studio"},"teaches":["Systems Thinking","Design Thinking","Architectural Thinking","Pattern Recognition","Biblical Leadership","Creative Excellence"]}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -213,7 +213,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="step">
       <div class="step-num">01</div>
       <h3>Choose Your Path</h3>
-      <p>Systems Thinking, Guitar Method, Architectural Thinking — or all three. Each program starts with a free sample so you can try before you commit.</p>
+      <p>Systems Thinking, Guitar Method, Architectural Thinking, and more — each program starts with a free sample so you can try before you commit.</p>
     </div>
     <div class="step">
       <div class="step-num">02</div>
@@ -440,8 +440,8 @@ function startEnrollFlow(slug) {
   document.getElementById('enrollMsg').style.display = 'none';
   var descMap = {
     'systems-thinking-genesis': 'You picked The Spirit of God in Genesis — a Bible-centered journey through creativity, wisdom, and love. One quick question:',
-    'systems-thinking': 'You picked Systems Thinking — great for understanding how things really work. One quick question:',
-    'architectural-thinking': 'You picked Architectural Thinking — perfect for learning how to build things that last. One quick question:',
+    'systems-thinking': 'You picked Systems Thinking for Vision Builders — great for understanding how things really work. One quick question:',
+    'architectural-thinking': 'You picked Architectural Thinking for Vision Builders — perfect for learning how to build things that last. One quick question:',
     'guitar-method': 'You picked the Gideon Guitar Method — time to start playing real songs! One quick question:'
   };
   document.getElementById('stepDesc').textContent = descMap[slug] || 'Great choice! One quick question:';
@@ -460,11 +460,11 @@ function nextStep() {
   if (selectedSlug === 'systems-thinking-genesis') {
     rec.textContent = '\u2b50 You picked the flagship course! The Spirit of God in Genesis covers creativity, wisdom, and love through all 50 chapters.';
   } else if (selectedPurpose === 'solving' || selectedSlug === 'systems-thinking') {
-    rec.textContent = '\u2b50 Suggested: Systems Thinking — understanding systems is the fastest path to solving complex problems.';
+    rec.textContent = '\u2b50 Suggested: Systems Thinking for Vision Builders — understanding systems is the fastest path to solving complex problems.';
   } else if (selectedPurpose === 'building' || selectedSlug === 'architectural-thinking') {
-    rec.textContent = '\u2b50 Suggested: Architectural Thinking — learn to structure and execute projects with clarity.';
+    rec.textContent = '\u2b50 Suggested: Architectural Thinking for Vision Builders — learn to structure and execute projects with clarity.';
   } else {
-    rec.textContent = '\u2b50 Suggested: Start with Systems Thinking to understand problems, then Architectural Thinking to build solutions. You can enroll in both.';
+    rec.textContent = '\u2b50 Suggested: Start with Systems Thinking for Vision Builders to understand problems, then Architectural Thinking for Vision Builders to build solutions. You can enroll in both.';
   }
   document.getElementById('q-purpose').style.display = 'none';
   document.getElementById('q-details').style.display = 'block';
