@@ -81,7 +81,7 @@ function getAllHtmlFiles() {
   function walk(dir, depth) {
     if (depth === undefined) depth = 0;
     var entries;
-    try { entries = fs.readdirSync(dir); } catch (e) { /* directory unreadable */ }
+    try { entries = fs.readdirSync(dir); } catch { /* directory unreadable */ }
     for (var i = 0; i < entries.length; i++) {
       var full = path.join(dir, entries[i]);
       var stat = fs.statSync(full);
