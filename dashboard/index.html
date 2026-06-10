@@ -251,6 +251,7 @@ function api(url, options) {
   options = options || {};
   options.headers = options.headers || {};
   if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  options.cache = 'no-store';
   return fetch(url, options);
 }
 

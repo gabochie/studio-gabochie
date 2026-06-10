@@ -18,7 +18,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({
       status: 'ok',
       programs: programs.results || []
-    }), { headers: { 'Content-Type': 'application/json' } });
+    }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
