@@ -41,6 +41,19 @@ h1 span{color:#C9A84C}
 .content-area em{color:#C9A84C}
 .content-area p{margin-bottom:12px}
 .content-area hr{border:none;border-top:1px solid #1E3250;margin:20px 0}
+.readaloud-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;margin-bottom:12px;flex-wrap:wrap}
+.readaloud-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.readaloud-btn.play{background:#C9A84C;color:#0A1628}
+.readaloud-btn.play:hover{background:#D9B85C}
+.readaloud-btn.play.active{background:#E8637A}
+.readaloud-btn.play.active:hover{background:#EF7A94}
+.readaloud-btn.stop{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
+.readaloud-btn.stop:hover{background:rgba(255,255,255,.1)}
+.readaloud-status{font-size:12px;color:#8A9BB5;flex:1;min-width:100px}
+.readaloud-voice{background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:11px;padding:5px 8px;font-family:inherit;max-width:180px;cursor:pointer}
+.readaloud-rate{display:flex;align-items:center;gap:4px;font-size:11px;color:#8A9BB5}
+.readaloud-rate input{width:60px;accent-color:#C9A84C;cursor:pointer}
+.readaloud-highlight{background:rgba(201,168,76,.15);border-radius:2px;transition:background .2s}
 .loading{text-align:center;padding:60px 0;color:#5A7A9F;font-size:14px}
 .error-msg{text-align:center;padding:60px 0}
 .error-msg h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#EF4444;margin-bottom:8px}
@@ -141,12 +154,26 @@ h1 span{color:#C9A84C}
   <!-- Sample content (shown to all) -->
   <div class="card" id="sampleCard">
     <h2>Sample <span>Module</span></h2>
+    <div class="readaloud-bar no-print" id="readAloudBar1" style="display:none">
+      <button class="readaloud-btn play" id="playBtn1" onclick="toggleReadAloud('sampleContent','playBtn1','status1')">&#9654; Read Aloud</button>
+      <button class="readaloud-btn stop" onclick="stopReadAloud()" style="display:none" id="stopBtn1">&#9632; Stop</button>
+      <span class="readaloud-status" id="status1">Ready</span>
+      <select class="readaloud-voice" id="voiceSelect1" onchange="changeVoice()"></select>
+      <span class="readaloud-rate">Speed <input type="range" min="0.5" max="2" step="0.25" value="1" id="rateInput" oninput="changeRate(this.value)"></span>
+    </div>
     <div class="content-area" id="sampleContent"></div>
   </div>
 
   <!-- Full content (shown only when paid) -->
   <div class="card" id="fullContentCard" style="display:none">
     <h2>Full <span>Curriculum</span></h2>
+    <div class="readaloud-bar no-print" id="readAloudBar2" style="display:none">
+      <button class="readaloud-btn play" id="playBtn2" onclick="toggleReadAloud('fullContent','playBtn2','status2')">&#9654; Read Aloud</button>
+      <button class="readaloud-btn stop" onclick="stopReadAloud()" style="display:none" id="stopBtn2">&#9632; Stop</button>
+      <span class="readaloud-status" id="status2">Ready</span>
+      <select class="readaloud-voice" id="voiceSelect2" onchange="changeVoice()"></select>
+      <span class="readaloud-rate">Speed <input type="range" min="0.5" max="2" step="0.25" value="1" id="rateInput2" oninput="changeRate(this.value)"></span>
+    </div>
     <div class="content-area" id="fullContent"></div>
   </div>
 
@@ -287,6 +314,7 @@ function loadDashboard() {
       // Show sample content
       if (e.sample_content) {
         document.getElementById('sampleContent').innerHTML = e.sample_content;
+        showReadAloud('1');
       } else {
         document.getElementById('sampleContent').innerHTML = '<p style="color:#5A7A9F">Sample content will appear here once available.</p>';
       }
@@ -295,6 +323,7 @@ function loadDashboard() {
       if (e.full_content) {
         document.getElementById('fullContentCard').style.display = 'block';
         document.getElementById('fullContent').innerHTML = e.full_content;
+        showReadAloud('2');
       }
 
       // Show upgrade card if sample access and price > 0
@@ -686,8 +715,280 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
+/* Read Aloud — Text-to-Speech */
+var readAloud = {
+  utterance: null,
+  speaking: false,
+  paused: false,
+  currentContentId: null,
+  currentPlayBtnId: null,
+  currentStatusId: null,
+  chunks: [],
+  chunkIndex: 0
+};
+
+function populateVoices(selectId) {
+  var sel = document.getElementById(selectId);
+  if (!sel) return;
+  var voices = window.speechSynthesis.getVoices();
+  sel.innerHTML = '<option value="">Browser default</option>';
+  var preferred = [];
+  voices.forEach(function(v, i) {
+    // Prefer English voices
+    if (v.lang && v.lang.startsWith('en')) {
+      preferred.push(v);
+    }
+  });
+  preferred.forEach(function(v) {
+    var opt = document.createElement('option');
+    opt.value = v.name;
+    opt.textContent = v.name + ' (' + v.lang + ')';
+    sel.appendChild(opt);
+  });
+  // Also add non-English voices
+  voices.forEach(function(v, i) {
+    if (!v.lang || !v.lang.startsWith('en')) {
+      var opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = v.name + ' (' + v.lang + ')';
+      sel.appendChild(opt);
+    }
+  });
+}
+
+function getVoiceByName(name) {
+  var voices = window.speechSynthesis.getVoices();
+  for (var i = 0; i < voices.length; i++) {
+    if (voices[i].name === name) return voices[i];
+  }
+  return null;
+}
+
+function toggleReadAloud(contentId, playBtnId, statusId) {
+  if (readAloud.speaking && readAloud.currentContentId === contentId) {
+    // Pause / Resume
+    if (readAloud.paused) {
+      window.speechSynthesis.resume();
+      readAloud.paused = false;
+      document.getElementById(playBtnId).innerHTML = '&#9646;&#9646; Pause';
+      document.getElementById(statusId).textContent = 'Playing...';
+    } else {
+      window.speechSynthesis.pause();
+      readAloud.paused = true;
+      document.getElementById(playBtnId).innerHTML = '&#9654; Resume';
+      document.getElementById(statusId).textContent = 'Paused';
+    }
+    return;
+  }
+
+  // Stop any current speech
+  stopReadAloud();
+
+  var content = document.getElementById(contentId);
+  if (!content) return;
+
+  var text = extractText(content);
+  if (!text.trim()) {
+    document.getElementById(statusId).textContent = 'No text to read';
+    return;
+  }
+
+  readAloud.currentContentId = contentId;
+  readAloud.currentPlayBtnId = playBtnId;
+  readAloud.currentStatusId = statusId;
+
+  // Split into sentences for chunked reading
+  var sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+  readAloud.chunks = sentences.filter(function(s) { return s.trim(); });
+  readAloud.chunkIndex = 0;
+
+  var btn = document.getElementById(playBtnId);
+  btn.innerHTML = '&#9646;&#9646; Pause';
+  btn.classList.add('active');
+
+  var stopBtn = document.getElementById('stopBtn' + (contentId === 'sampleContent' ? '1' : '2'));
+  if (stopBtn) stopBtn.style.display = 'inline-flex';
+
+  document.getElementById(statusId).textContent = 'Reading...';
+  readAloud.speaking = true;
+  readAloud.paused = false;
+  speakChunk(contentId, playBtnId, statusId);
+}
+
+function speakChunk(contentId, playBtnId, statusId) {
+  if (readAloud.chunkIndex >= readAloud.chunks.length) {
+    finishReadAloud(playBtnId, statusId);
+    return;
+  }
+
+  var chunk = readAloud.chunks[readAloud.chunkIndex];
+  var utterance = new SpeechSynthesisUtterance(chunk);
+  readAloud.utterance = utterance;
+
+  // Set voice
+  var selectId = 'voiceSelect' + (contentId === 'sampleContent' ? '1' : '2');
+  var voiceSel = document.getElementById(selectId);
+  if (voiceSel && voiceSel.value) {
+    var v = getVoiceByName(voiceSel.value);
+    if (v) utterance.voice = v;
+  }
+
+  // Set rate
+  var rateInput = document.getElementById(contentId === 'sampleContent' ? 'rateInput' : 'rateInput2');
+  if (rateInput) utterance.rate = parseFloat(rateInput.value) || 1;
+
+  utterance.lang = 'en-US';
+
+  utterance.onend = function() {
+    readAloud.chunkIndex++;
+    speakChunk(contentId, playBtnId, statusId);
+  };
+
+  utterance.onerror = function() {
+    readAloud.chunkIndex++;
+    speakChunk(contentId, playBtnId, statusId);
+  };
+
+  // Highlight current sentence
+  highlightChunk(contentId, chunk);
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function highlightChunk(contentId, chunk) {
+  var el = document.getElementById(contentId);
+  if (!el) return;
+  var clean = chunk.trim();
+  // Remove existing highlights
+  var highlights = el.querySelectorAll('.readaloud-highlight');
+  for (var i = 0; i < highlights.length; i++) {
+    var parent = highlights[i].parentNode;
+    if (parent) {
+      parent.replaceChild(document.createTextNode(highlights[i].textContent), highlights[i]);
+      parent.normalize();
+    }
+  }
+  // Find and wrap the chunk text in the content
+  var treeWalker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  var node;
+  while (node = treeWalker.nextNode()) {
+    if (node.textContent.trim().indexOf(clean) !== -1 || clean.indexOf(node.textContent.trim()) !== -1) {
+      try {
+        var range = document.createRange();
+        var startIdx = node.textContent.indexOf(clean.substring(0, Math.min(10, clean.length)));
+        if (startIdx === -1) startIdx = 0;
+        range.setStart(node, startIdx);
+        range.setEnd(node, node.textContent.length);
+        var span = document.createElement('span');
+        span.className = 'readaloud-highlight';
+        range.surroundContents(span);
+      } catch(e) {}
+      break;
+    }
+  }
+}
+
+function finishReadAloud(playBtnId, statusId) {
+  readAloud.speaking = false;
+  readAloud.paused = false;
+  readAloud.currentContentId = null;
+  readAloud.chunks = [];
+  readAloud.chunkIndex = 0;
+  var btn = document.getElementById(playBtnId);
+  if (btn) {
+    btn.innerHTML = '&#9654; Read Aloud';
+    btn.classList.remove('active');
+    var stopBtn = document.getElementById('stopBtn' + (playBtnId === 'playBtn1' ? '1' : '2'));
+    if (stopBtn) stopBtn.style.display = 'none';
+  }
+  if (document.getElementById(statusId)) document.getElementById(statusId).textContent = 'Finished';
+  // Remove highlights
+  document.querySelectorAll('.readaloud-highlight').forEach(function(s) {
+    var parent = s.parentNode;
+    if (parent) {
+      parent.replaceChild(document.createTextNode(s.textContent), s);
+      parent.normalize();
+    }
+  });
+}
+
+function stopReadAloud() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+  }
+  if (readAloud.currentPlayBtnId) {
+    var btn = document.getElementById(readAloud.currentPlayBtnId);
+    if (btn) {
+      btn.innerHTML = '&#9654; Read Aloud';
+      btn.classList.remove('active');
+    }
+    var idx = readAloud.currentPlayBtnId === 'playBtn1' ? '1' : '2';
+    var stopBtn = document.getElementById('stopBtn' + idx);
+    if (stopBtn) stopBtn.style.display = 'none';
+  }
+  if (readAloud.currentStatusId) {
+    document.getElementById(readAloud.currentStatusId).textContent = 'Stopped';
+  }
+  readAloud.speaking = false;
+  readAloud.paused = false;
+  readAloud.utterance = null;
+  readAloud.chunks = [];
+  readAloud.chunkIndex = 0;
+  // Remove highlights
+  document.querySelectorAll('.readaloud-highlight').forEach(function(s) {
+    var parent = s.parentNode;
+    if (parent) {
+      parent.replaceChild(document.createTextNode(s.textContent), s);
+      parent.normalize();
+    }
+  });
+}
+
+function changeVoice() {
+  // Will apply on next play
+}
+
+function changeRate(val) {
+  // Sync both rate inputs
+  var r1 = document.getElementById('rateInput');
+  var r2 = document.getElementById('rateInput2');
+  if (r1) r1.value = val;
+  if (r2) r2.value = val;
+}
+
+function extractText(el) {
+  // Clone to avoid modifying live DOM
+  var clone = el.cloneNode(true);
+  // Remove no-read elements (if any)
+  var toRemove = clone.querySelectorAll('.readaloud-bar, .readaloud-btn, .readaloud-status, .readaloud-voice, .readaloud-rate');
+  toRemove.forEach(function(el) { if (el.parentNode) el.parentNode.removeChild(el); });
+  return clone.textContent || '';
+}
+
+// Populate voices when available
+window.speechSynthesis.onvoiceschanged = function() {
+  populateVoices('voiceSelect1');
+  populateVoices('voiceSelect2');
+};
+
+function showReadAloud(barKey) {
+  var bar = document.getElementById('readAloudBar' + barKey);
+  var content = document.getElementById(barKey === '1' ? 'sampleContent' : 'fullContent');
+  if (bar && content && content.textContent.trim()) {
+    bar.style.display = 'flex';
+    populateVoices('voiceSelect' + barKey);
+  }
+}
+
+// Stop speech when tab is hidden
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden && window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    readAloud.paused = true;
+  }
+});
+
 loadDashboard();
-</script>
 
 <footer>
   <div class="container">
