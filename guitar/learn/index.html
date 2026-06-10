@@ -2,6 +2,21 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Learn — Gideon Guitar Method</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.readaloud-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;margin-bottom:12px;flex-wrap:wrap}
+.readaloud-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.readaloud-btn.play{background:#C9A84C;color:#0A1628}
+.readaloud-btn.play:hover{background:#D9B85C}
+.readaloud-btn.play.active{background:#E8637A}
+.readaloud-btn.play.active:hover{background:#EF7A94}
+.readaloud-btn.stop{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
+.readaloud-btn.stop:hover{background:rgba(255,255,255,.1)}
+.readaloud-status{font-size:12px;color:#8A9BB5;flex:1;min-width:100px}
+.readaloud-voice{background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:11px;padding:5px 8px;font-family:inherit;max-width:180px;cursor:pointer}
+.readaloud-rate{display:flex;align-items:center;gap:4px;font-size:11px;color:#8A9BB5}
+.readaloud-rate input{width:60px;accent-color:#C9A84C;cursor:pointer}
+.readaloud-highlight{background:rgba(201,168,76,.15);border-radius:2px;transition:background .2s}
+</style>
 </head>
 <body class="guitar-app">
 <div class="screen active">
@@ -115,7 +130,15 @@ const MODULES = [
     }
 
     const body = loadBody(modId, lesId);
-    c.innerHTML += `<div class="lesson-viewer">${body}</div>`;
+    c.innerHTML += `<div class="readaloud-bar no-print" id="readAloudBar1" style="display:none">
+      <button class="readaloud-btn play" id="playBtn1" onclick="toggleReadAloud('lessonBody','playBtn1','status1')">&#9654; Read Aloud</button>
+      <button class="readaloud-btn stop" onclick="stopReadAloud()" style="display:none" id="stopBtn1">&#9632; Stop</button>
+      <span class="readaloud-status" id="status1">Ready</span>
+      <select class="readaloud-voice" id="voiceSelect1" onchange="changeVoice()"></select>
+      <span class="readaloud-rate">Speed <input type="range" min="0.5" max="2" step="0.25" value="1" id="rateInput" oninput="changeRate(this.value)"></span>
+    </div>`;
+    c.innerHTML += `<div class="lesson-viewer" id="lessonBody">${body}</div>`;
+    showReadAloud('1');
 
     if (user) {
       const prog = await Guitar.getModule(modId);
@@ -165,5 +188,20 @@ const MODULES = [
   else if (modId) await renderModule(modId);
   else renderModules();
 })();
+</script>
+<script>
+var readAloud={utterance:null,speaking:false,paused:false,currentContentId:null,currentPlayBtnId:null,currentStatusId:null,chunks:[],chunkIndex:0};
+function populateVoices(a){var b=document.getElementById(a);if(!b)return;var c=window.speechSynthesis.getVoices();b.innerHTML='';var d=c.filter(function(a){return a.lang.startsWith('en')}),e=c.filter(function(a){return !a.lang.startsWith('en')}),f=d.concat(e);f.forEach(function(a,c){var d=document.createElement('option');d.value=a.name;d.textContent=a.name+' ('+a.lang+')';c===0&&(d.selected=!0);b.appendChild(d)})}
+function getVoiceByName(a){var b=window.speechSynthesis.getVoices();for(var c=0;c<b.length;c++){if(b[c].name===a)return b[c]}return null}
+function toggleReadAloud(a,b,c){if(readAloud.speaking&&readAloud.currentContentId===a){if(readAloud.paused){window.speechSynthesis.resume();readAloud.paused=!1;document.getElementById(b).innerHTML='&#9646;&#9646; Pause';document.getElementById(c).textContent='Playing...'}else{window.speechSynthesis.pause();readAloud.paused=!0;document.getElementById(b).innerHTML='&#9654; Resume';document.getElementById(c).textContent='Paused'}return}stopReadAloud();var d=document.getElementById(a);if(!d)return;var e=extractText(d);if(!e.trim()){document.getElementById(c).textContent='No text to read';return}readAloud.currentContentId=a;readAloud.currentPlayBtnId=b;readAloud.currentStatusId=c;var f=e.match(/[^.!?\n]+[.!?\n]+/g)||[e];readAloud.chunks=f.filter(function(a){return a.trim()});readAloud.chunkIndex=0;var g=document.getElementById(b);g.innerHTML='&#9646;&#9646; Pause';g.classList.add('active');var h=document.getElementById('stopBtn1');h&&(h.style.display='inline-flex');document.getElementById(c).textContent='Reading...';readAloud.speaking=!0;readAloud.paused=!1;speakChunk(a,b,c)}
+function speakChunk(a,b,c){if(readAloud.chunkIndex>=readAloud.chunks.length){finishReadAloud(b,c);return}var d=readAloud.chunks[readAloud.chunkIndex],e=new SpeechSynthesisUtterance(d);readAloud.utterance=e;var f=document.getElementById('voiceSelect1');if(f&&f.value){var g=getVoiceByName(f.value);g&&(e.voice=g)}var h=document.getElementById('rateInput');h&&(e.rate=parseFloat(h.value)||1);e.lang='en-US';e.onend=function(){readAloud.chunkIndex++;speakChunk(a,b,c)};e.onerror=function(){readAloud.chunkIndex++;speakChunk(a,b,c)};highlightChunk(a,d);window.speechSynthesis.speak(e)}
+function highlightChunk(a,b){var c=document.getElementById(a);if(!c)return;var d=b.trim(),e=c.querySelectorAll('.readaloud-highlight');for(var f=0;f<e.length;f++){var g=e[f].parentNode;g&&(g.replaceChild(document.createTextNode(e[f].textContent),e[f]),g.normalize())}var h=document.createTreeWalker(c,NodeFilter.SHOW_TEXT,null,!1),i;while(i=h.nextNode()){if(i.textContent.trim().indexOf(d)!==-1||d.indexOf(i.textContent.trim())!==-1){try{var j=document.createRange(),k=i.textContent.indexOf(d.substring(0,Math.min(10,d.length)));k===-1&&(k=0);j.setStart(i,k);j.setEnd(i,i.textContent.length);var l=document.createElement('span');l.className='readaloud-highlight';j.surroundContents(l)}catch(a){}break}}}
+function finishReadAloud(a,b){readAloud.speaking=!1;readAloud.paused=!1;readAloud.currentContentId=null;readAloud.chunks=[];readAloud.chunkIndex=0;var c=document.getElementById(a);if(c){c.innerHTML='&#9654; Read Aloud';c.classList.remove('active');var d=document.getElementById('stopBtn1');d&&(d.style.display='none')}document.getElementById(b)&&(document.getElementById(b).textContent='Finished');document.querySelectorAll('.readaloud-highlight').forEach(function(a){var b=a.parentNode;b&&(b.replaceChild(document.createTextNode(a.textContent),a),b.normalize())})}
+function stopReadAloud(){window.speechSynthesis.speaking&&window.speechSynthesis.cancel();if(readAloud.currentPlayBtnId){var a=document.getElementById(readAloud.currentPlayBtnId);a&&(a.innerHTML='&#9654; Read Aloud',a.classList.remove('active'));var b=document.getElementById('stopBtn1');b&&(b.style.display='none')}readAloud.currentStatusId&&(document.getElementById(readAloud.currentStatusId).textContent='Stopped');readAloud.speaking=!1;readAloud.paused=!1;readAloud.utterance=null;readAloud.chunks=[];readAloud.chunkIndex=0;document.querySelectorAll('.readaloud-highlight').forEach(function(a){var b=a.parentNode;b&&(b.replaceChild(document.createTextNode(a.textContent),a),b.normalize())})}
+function changeVoice(){}
+function changeRate(a){var b=document.getElementById('rateInput');b&&(b.value=a)}
+function extractText(a){var b=a.cloneNode(!0),c=b.querySelectorAll('.readaloud-bar, .readaloud-btn, .readaloud-status, .readaloud-voice, .readaloud-rate');c.forEach(function(a){a.parentNode&&a.parentNode.removeChild(a)});return b.textContent||''}
+function showReadAloud(a){var b=document.getElementById('readAloudBar'+a),c=document.getElementById('lessonBody');b&&c&&c.textContent.trim()&&(b.style.display='flex',populateVoices('voiceSelect'+a))}
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){populateVoices('voiceSelect1')};document.addEventListener('visibilitychange',function(){document.hidden&&window.speechSynthesis.speaking&&(window.speechSynthesis.pause(),readAloud.paused=!0)})}
 </script>
 </body></html>
