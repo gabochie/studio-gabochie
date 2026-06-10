@@ -188,6 +188,29 @@
     </div>
   </div>
 
+  <!-- Quality Audit -->
+  <div class="section-title" id="qualitySectionTitle" style="display:none">&#10003; <a href="quality.html" style="color:inherit;text-decoration:none">Quality Audit</a></div>
+  <div class="chart-grid" id="qualityWidget" style="display:none">
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Latest Scan</span>
+        <span class="card-sub" id="qaTimestamp">—</span>
+      </div>
+      <div id="qaContent" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;min-height:60px">
+        <div class="loading-pulse"></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Category Breakdown</span>
+        <span class="card-sub" id="qaCategoryCount">—</span>
+      </div>
+      <div id="qaCategories" style="display:flex;gap:12px;flex-wrap:wrap;min-height:60px">
+        <div class="loading-pulse"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- System Utilities -->
   <div class="section-title">&#9881; System</div>
   <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
@@ -644,6 +667,51 @@ function toggleComingSoon(){
   });
 }
 
+// ── Quality Audit Widget ──
+function loadQualityWidget() {
+  adminFetch('/admin/api/quality?summary=1', { cache: 'no-store' }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.status !== 'ok' || !d.latest_run) {
+      $('qaTimestamp').textContent = 'No scans yet';
+      $('qaContent').innerHTML = '<a href="quality.html" style="color:#3B82F6;font-size:13px;text-decoration:none">Run your first quality scan &#8599;</a>';
+      $('qaCategories').innerHTML = '<span style="color:#5A7F9A;font-size:13px">No data</span>';
+      $('qaCategoryCount').textContent = '—';
+      return;
+    }
+    $('qualitySectionTitle').style.display = 'block';
+    $('qualityWidget').style.display = 'grid';
+    var r = d.latest_run;
+    var passed = Number(r.passed_checks) || 0;
+    var failed = Number(r.failed_checks) || 0;
+    var total = Number(r.total_checks) || 0;
+    var ok = failed === 0;
+    var statusColor = ok ? '#22C55E' : '#EF4444';
+    var statusIcon = ok ? '&#10003;' : '&#10007;';
+    $('qaTimestamp').textContent = r.completed_at ? fmtTime(r.completed_at) : '';
+    $('qaContent').innerHTML =
+      '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
+        '<span style="font-size:28px;color:' + statusColor + '">' + statusIcon + '</span>' +
+        '<div><span style="font-size:18px;font-weight:700;color:#F1F5F9;display:block">' + (ok ? 'All Checks Passed' : failed + ' Checks Failed') + '</span>' +
+        '<span style="font-size:11px;color:#5A7F9A">' + passed + '/' + total + ' passed &middot; Trigger: ' + r.trigger + '</span></div>' +
+        '<a href="quality.html" style="margin-left:auto;font-size:11px;color:#3B82F6;text-decoration:none">View Details &#8599;</a>' +
+      '</div>';
+
+    $('qaCategoryCount').textContent = (d.categories || []).length + ' categories';
+    var catHtml = '';
+    (d.categories || []).forEach(function(c) {
+      var pct = c.count > 0 ? Math.round((c.passed / c.count) * 100) : 0;
+      var color = pct === 100 ? '#22C55E' : pct >= 80 ? '#EAB308' : '#EF4444';
+      catHtml += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:8px 12px;min-width:100px;flex:1">' +
+        '<div style="font-size:11px;color:#5A7F9A;text-transform:uppercase">' + c.category + '</div>' +
+        '<div style="font-size:18px;font-weight:700;color:' + color + '">' + pct + '%</div>' +
+        '<div style="font-size:10px;color:#3A5278">' + c.passed + '/' + c.count + '</div></div>';
+    });
+    $('qaCategories').innerHTML = catHtml || '<span style="color:#5A7F9A;font-size:13px">No data</span>';
+  }).catch(function() {
+    $('qaTimestamp').textContent = 'Unavailable';
+    $('qaContent').innerHTML = '<span style="color:#5A7F9A;font-size:13px">Could not load quality data.</span>';
+  });
+}
+
 // ── CI/CD Status ──
 function loadCI() {
   adminFetch('/api/admin/ci/status', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(d){
@@ -693,6 +761,7 @@ function loadCI() {
 loadSummary();
 loadAudience();
 loadComingSoonStatus();
+loadQualityWidget();
 loadCI();
 setInterval(loadSummary, 30000);
 setInterval(loadAudience, 60000);

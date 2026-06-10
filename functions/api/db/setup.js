@@ -1037,6 +1037,36 @@
       `UPDATE programs SET sort_order = 5 WHERE slug = 'systems-thinking-genesis' AND sort_order != 5`,
       `UPDATE programs SET sort_order = 6 WHERE slug = 'revelation-study' AND sort_order != 6`,
       `UPDATE programs SET sort_order = 7 WHERE slug = 'psalms-worship-word' AND sort_order != 7`,
+      // ── Quality Audit Tables ──
+      `CREATE TABLE IF NOT EXISTS quality_runs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trigger TEXT NOT NULL DEFAULT 'manual',
+        status TEXT NOT NULL DEFAULT 'in_progress',
+        total_checks INTEGER NOT NULL DEFAULT 0,
+        passed_checks INTEGER NOT NULL DEFAULT 0,
+        failed_checks INTEGER NOT NULL DEFAULT 0,
+        warn_checks INTEGER NOT NULL DEFAULT 0,
+        started_at TEXT DEFAULT '',
+        completed_at TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_quality_runs_status ON quality_runs(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_quality_runs_trigger ON quality_runs(trigger)`,
+      `CREATE TABLE IF NOT EXISTS quality_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id INTEGER NOT NULL,
+        category TEXT NOT NULL,
+        page_url TEXT DEFAULT '',
+        check_name TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'fail',
+        message TEXT DEFAULT '',
+        details TEXT DEFAULT '{}',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (run_id) REFERENCES quality_runs(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_quality_reports_run ON quality_reports(run_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_quality_reports_category ON quality_reports(category)`,
+      `CREATE INDEX IF NOT EXISTS idx_quality_reports_status ON quality_reports(status)`,
     ];
     const results = [];
     for (const sql of statements) {

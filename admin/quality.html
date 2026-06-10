@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Quality Audit — GideonAbochie Admin</title><link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>"><link rel="stylesheet" href="admin.css"></head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Quality <span>Audit</span></h1>
+  <p class="page-desc" style="margin-bottom:20px">Automated quality checks across HTML, SEO, security, links, and performance.</p>
+
+  <div class="stats" style="grid-template-columns:1fr auto">
+    <div class="stat-card" style="display:flex;align-items:center;gap:12px">
+      <span id="runStatusBadge" style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#1E3250;color:#5A7F9A">No runs yet</span>
+      <span id="runSummaryText" style="color:#5A7F9A;font-size:13px"></span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="triggerScan()" id="scanBtn">&#9654; Run Scan</button>
+    </div>
+  </div>
+
+  <div class="stats" id="categoryStats" style="display:none;grid-template-columns:repeat(5,1fr);margin-bottom:16px">
+    <div class="stat-card scan-html"><span class="stat-num blue" id="catHtmlTotal">0</span><span class="stat-label">HTML <span class="stat-sub" id="catHtmlDetail"></span></span></div>
+    <div class="stat-card scan-seo"><span class="stat-num green" id="catSeoTotal">0</span><span class="stat-label">SEO <span class="stat-sub" id="catSeoDetail"></span></span></div>
+    <div class="stat-card scan-security"><span class="stat-num gold" id="catSecurityTotal">0</span><span class="stat-label">Security <span class="stat-sub" id="catSecurityDetail"></span></span></div>
+    <div class="stat-card scan-links"><span class="stat-num" id="catLinksTotal">0</span><span class="stat-label">Links <span class="stat-sub" id="catLinksDetail"></span></span></div>
+    <div class="stat-card scan-performance"><span class="stat-num" id="catPerformanceTotal">0</span><span class="stat-label">Performance <span class="stat-sub" id="catPerformanceDetail"></span></span></div>
+  </div>
+
+  <div id="reportsContainer" style="display:none">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <select id="filterCategory" onchange="renderReports()" style="background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:6px 10px;font-family:inherit">
+        <option value="">All categories</option>
+        <option value="html">HTML</option>
+        <option value="seo">SEO</option>
+        <option value="security">Security</option>
+        <option value="links">Links</option>
+        <option value="performance">Performance</option>
+      </select>
+      <select id="filterStatus" onchange="renderReports()" style="background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:13px;padding:6px 10px;font-family:inherit">
+        <option value="">All statuses</option>
+        <option value="pass">Pass</option>
+        <option value="fail">Fail</option>
+        <option value="warn">Warning</option>
+      </select>
+      <span style="color:#3A5278;font-size:12px;align-self:center" id="filterCount"></span>
+    </div>
+    <div id="reportsList"></div>
+  </div>
+
+  <div id="recentRuns" style="margin-top:24px">
+    <div class="section-title" style="margin:0 0 12px">Recent Runs</div>
+    <div id="runsList"><div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">Loading...</div></div>
+  </div>
+</div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+
+function $(id){return document.getElementById(id)}
+
+function adminFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  if (!opts.method || opts.method === 'GET') opts.cache = 'no-store';
+  return fetch(url, opts);
+}
+
+var currentRunData = null;
+
+async function triggerScan() {
+  var btn = $('scanBtn');
+  btn.disabled = true;
+  btn.textContent = 'Scanning...';
+  $('runStatusBadge').textContent = 'Running';
+  $('runStatusBadge').style.background = '#3B82F6';
+  $('runStatusBadge').style.color = '#fff';
+  $('runSummaryText').textContent = 'Scan in progress...';
+  try {
+    var res = await adminFetch('/api/qa/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Referer': '/admin/quality.html' },
+      body: JSON.stringify({ trigger: 'manual' })
+    });
+    var data = await res.json();
+    if (data.status === 'ok') {
+      loadRun(data.run_id);
+      loadRecentRuns();
+    } else {
+      $('runStatusBadge').textContent = 'Failed';
+      $('runStatusBadge').style.background = '#EF4444';
+      $('runSummaryText').textContent = data.message || 'Scan failed';
+    }
+  } catch(e) {
+    $('runStatusBadge').textContent = 'Error';
+    $('runStatusBadge').style.background = '#EF4444';
+    $('runSummaryText').textContent = 'Network error: ' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = '\u25B6 Run Scan';
+}
+
+async function loadRun(runId) {
+  try {
+    var res = await adminFetch('/admin/api/quality?run_id=' + runId);
+    var data = await res.json();
+    if (data.status !== 'ok') throw new Error(data.message);
+    currentRunData = data;
+    displayRun(data.run, data.reports_by_category);
+  } catch(e) {
+    $('reportsContainer').style.display = 'none';
+    $('categoryStats').style.display = 'none';
+  }
+}
+
+function displayRun(run, categories) {
+  var badge = $('runStatusBadge');
+  if (run.status === 'completed') {
+    badge.textContent = run.failed_checks > 0 ? 'Failed ' + run.failed_checks : 'Passed';
+    badge.style.background = run.failed_checks > 0 ? '#EF4444' : '#22C55E';
+    badge.style.color = '#fff';
+  } else if (run.status === 'in_progress') {
+    badge.textContent = 'In Progress';
+    badge.style.background = '#3B82F6';
+    badge.style.color = '#fff';
+  } else {
+    badge.textContent = run.status;
+    badge.style.background = '#1E3250';
+    badge.style.color = '#5A7F9A';
+  }
+  $('runSummaryText').textContent = (run.passed_checks || 0) + ' passed, ' + (run.failed_checks || 0) + ' failed, ' + (run.warn_checks || 0) + ' warnings | ' + fmtTime(run.completed_at || run.created_at);
+
+  // Category stats
+  var catMap = {};
+  (Object.keys(categories) || []).forEach(function(k) { catMap[k] = categories[k]; });
+  var catOrder = ['html', 'seo', 'security', 'links', 'performance'];
+  var catLabels = { 'html': 'HTML', 'seo': 'SEO', 'security': 'Security', 'links': 'Links', 'performance': 'Performance' };
+  catOrder.forEach(function(cat) {
+    var items = catMap[cat] || [];
+    var total = items.length;
+    var passCount = items.filter(function(i) { return i.status === 'pass'; }).length;
+    var failCount = items.filter(function(i) { return i.status === 'fail'; }).length;
+    var warnCount = items.filter(function(i) { return i.status === 'warn'; }).length;
+    var totalEl = $('cat' + catLabels[cat] + 'Total');
+    var detailEl = $('cat' + catLabels[cat] + 'Detail');
+    if (totalEl) totalEl.textContent = total;
+    if (detailEl) detailEl.textContent = passCount + '/' + total;
+  });
+  $('categoryStats').style.display = 'grid';
+  $('reportsContainer').style.display = 'block';
+  renderReports();
+}
+
+function renderReports() {
+  var catFilter = $('filterCategory').value;
+  var statusFilter = $('filterStatus').value;
+  var list = $('reportsList');
+  if (!currentRunData || !currentRunData.reports) { list.innerHTML = ''; return; }
+  var reports = currentRunData.reports;
+  if (catFilter) reports = reports.filter(function(r) { return r.category === catFilter; });
+  if (statusFilter) reports = reports.filter(function(r) { return r.status === statusFilter; });
+  $('filterCount').textContent = reports.length + ' checks';
+  if (!reports.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">No matching checks.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  reports.forEach(function(r) {
+    var statusColor = r.status === 'pass' ? '#22C55E' : r.status === 'fail' ? '#EF4444' : '#EAB308';
+    var statusLabel = r.status === 'pass' ? 'Pass' : r.status === 'fail' ? 'Fail' : 'Warn';
+    var pageDisplay = r.page_url.replace('https://gideonabochie.org', '');
+    list.innerHTML += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:flex-start;gap:12px">' +
+      '<span style="flex-shrink:0;width:48px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;text-align:center;background:' + statusColor + '22;color:' + statusColor + '">' + statusLabel + '</span>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div style="font-size:13px;font-weight:600;color:#E8EEF7;margin-bottom:2px">' + escapeHtml(r.check_name) + '</div>' +
+      '<div style="font-size:11px;color:#3A5278">' + escapeHtml(pageDisplay) + '</div>' +
+      '<div style="font-size:12px;color:#8A9BB5;margin-top:2px">' + escapeHtml(r.message || '') + '</div>' +
+      '</div></div>';
+  });
+}
+
+function fmtTime(iso) {
+  try {
+    var d = new Date(iso), now = new Date(), diff = Math.round((now - d) / 60000);
+    if (diff < 1) return 'just now';
+    if (diff < 60) return diff + 'm ago';
+    var hrs = Math.round(diff / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    return d.toLocaleDateString();
+  } catch(e) { return ''; }
+}
+
+function escapeHtml(s) {
+  if (typeof s !== 'string') return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function loadRecentRuns() {
+  try {
+    var res = await adminFetch('/admin/api/quality');
+    var data = await res.json();
+    if (data.status !== 'ok') throw new Error(data.message);
+    var list = $('runsList');
+    if (!data.runs.length) {
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">No quality runs recorded yet. Click "Run Scan" to start.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    data.runs.forEach(function(r) {
+      var statusColor = r.status === 'completed' ? (r.failed_checks > 0 ? '#EF4444' : '#22C55E') : r.status === 'in_progress' ? '#3B82F6' : '#5A7F9A';
+      var triggerLabel = r.trigger === 'deploy' ? 'Deploy' : r.trigger === 'cron' ? 'CRON' : 'Manual';
+      list.innerHTML += '<div style="cursor:pointer;background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px" onclick="loadRun(' + r.id + ')">' +
+        '<span style="flex-shrink:0;width:10px;height:10px;border-radius:50%;background:' + statusColor + '"></span>' +
+        '<span style="flex-shrink:0;font-size:11px;padding:2px 8px;border-radius:4px;background:#1E3250;color:#8A9BB5">' + triggerLabel + '</span>' +
+        '<span style="flex:1;font-size:13px;color:#E8EEF7">Run #' + r.id + ' — ' + (r.passed_checks || 0) + '/' + (r.total_checks || 0) + ' passed</span>' +
+        '<span style="font-size:11px;color:#3A5278">' + fmtTime(r.created_at) + '</span>' +
+        '</div>';
+    });
+  } catch(e) {
+    $('runsList').innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">Error loading runs.</div>';
+  }
+}
+
+// Init
+loadRecentRuns();
+</script>
+</body></html>
