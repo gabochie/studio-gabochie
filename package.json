@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "wrangler pages dev . --d1 DB",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:api": "vitest run tests/api",
@@ -14,6 +15,9 @@
     "check:mojibake": "node scripts/check-mojibake.cjs",
     "audit": "npm audit --audit-level=high",
     "check": "npm run lint && npm run lint:html && npm run check:mojibake && npm run test",
+    "predeploy": "npm run lint && node scripts/check-fk-refs.js && npm run check:mojibake",
+    "db:seed": "node scripts/db-seed.js",
+    "db:backup": "node scripts/db-backup.js",
     "deploy": "npx wrangler pages deploy . --project-name gideonabochie-org"
   },
   "devDependencies": {
