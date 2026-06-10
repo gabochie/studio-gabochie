@@ -2502,10 +2502,12 @@ function subSubmit(e) {
   var msg = document.getElementById('subMsg');
   if (!email || !email.includes('@')) { msg.textContent = 'Enter a valid email'; msg.style.color = '#E8245A'; return false; }
   btn.disabled = true; btn.textContent = 'Subscribing\u2026';
+  var fd = new FormData();
+  fd.append('email', email);
+  fd.append('source', 'newsletter_subdomain');
   fetch('https://gideonabochie.org/api/subscribe', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email, source: 'newsletter_subdomain', name: '' })
+    body: fd
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.status === 'ok') {
       msg.textContent = d.existing ? 'You\u2019re already subscribed!' : '\u2713 Welcome to The Studio Weekly!';

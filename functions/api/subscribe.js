@@ -25,9 +25,11 @@ import { queueEmail, welcomeFollowup, daysFromNow } from './email/_send.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), {
-      status: 405, headers: { 'Content-Type': 'application/json' }
+      status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   try {
@@ -48,7 +50,7 @@ export async function onRequest(context) {
     }
     if (!email || !email.includes('@')) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), {
-        status: 400, headers: { 'Content-Type': 'application/json' }
+        status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
     const cf = request.cf || {};
@@ -58,7 +60,7 @@ export async function onRequest(context) {
 
     if (!env.DB) {
       return new Response(JSON.stringify({ error: 'D1 not bound' }), {
-        status: 501, headers: { 'Content-Type': 'application/json' }
+        status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
     }
 
@@ -74,7 +76,7 @@ export async function onRequest(context) {
         ref_code: refCode,
         edition: edition,
         message: 'You are already subscribed!'
-      }), { headers: { 'Content-Type': 'application/json' } });
+      }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
     // Generate unique ref code
@@ -167,7 +169,7 @@ export async function onRequest(context) {
               <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">Every week, you will receive essays on creativity, love, wisdom, and the future of learning — plus curated news from Ghana and the diaspora.</p>
               <div style="background:#0A1628;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px">
                 <p style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#C9A84C;margin:0 0 8px;text-transform:uppercase;letter-spacing:.15em">Your Referral Link</p>
-                <p style="font-family:'Courier Prime',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://gideonabochie.org/newsletter/?ref=${refCode}</p>
+                <p style="font-family:'Courier Prime',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://news.gideonabochie.org/?ref=${refCode}</p>
               </div>
               <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Share your referral link to earn free ad space. Refer 3 friends → Footer Banner ad. Refer 10 → Leaderboard ad. Refer 50 → Premium Package. Full details in your dashboard.</p>
             </td></tr>
@@ -205,10 +207,10 @@ export async function onRequest(context) {
       referral_count: referralCount,
       earned_rewards: earnedRewards,
       message: 'Welcome to The Studio Weekly!'
-    }), { headers: { 'Content-Type': 'application/json' } });
+    }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
+      status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 }
