@@ -540,7 +540,7 @@ function loadPrograms() {
       var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : (isActive && i === 0 ? '<span class="badge badge-active">Active Course</span>' : '<span class="badge badge-free">Free Sample</span>');
       var btnHtml;
       if (isComing) {
-        btnHtml = '<button class="btn btn-coming" disabled>Coming Soon</button>';
+        btnHtml = '<button class="btn btn-coming" onclick="openWaitlist(\'' + p.slug + '\')">Notify Me</button>';
       } else if (isGuitar) {
         btnHtml = '<a href="/school/guitar/" class="btn btn-primary">Start Free Trial &rarr;</a>';
       } else {
@@ -554,6 +554,48 @@ function loadPrograms() {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F">Could not load programs. Please refresh.</div>';
   });
 }
+
+// ——— Waitlist ———
+function openWaitlist(slug) {
+  var el = document.getElementById('waitlistModal');
+  el.style.display = 'flex';
+  el.dataset.slug = slug;
+}
+function closeWaitlist() {
+  document.getElementById('waitlistModal').style.display = 'none';
+}
+document.addEventListener('click', function(e){
+  var m = document.getElementById('waitlistModal');
+  if (e.target === m) closeWaitlist();
+});
+document.addEventListener('submit', function(e){
+  if (e.target.id !== 'waitlistForm') return;
+  e.preventDefault();
+  var f = e.target;
+  var btn = f.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  var slug = document.getElementById('waitlistModal').dataset.slug;
+  fetch('/api/waitlist', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      program_slug: slug,
+      name: f.name.value.trim(),
+      email: f.email.value.trim(),
+      phone: f.phone.value.trim()
+    })
+  }).then(function(r){return r.json()}).then(function(d){
+    if (d.status === 'ok') {
+      document.getElementById('waitlistSuccess').style.display = 'block';
+      document.getElementById('waitlistForm').style.display = 'none';
+    } else {
+      alert(d.message || 'Something went wrong. Try again.');
+      btn.disabled = false;
+      btn.textContent = 'Notify Me';
+    }
+  });
+});
 
 // ——— Init ———
 (function(){
@@ -624,5 +666,27 @@ function loadPrograms() {
 </footer>
 
 <script src="../assets/js/main.js"></script>
+
+<div id="waitlistModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px;max-width:400px;width:90%;position:relative">
+    <button onclick="closeWaitlist()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer">&times;</button>
+    <div id="waitlistForm">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff;margin:0 0 4px">Get notified</h3>
+      <p style="color:#8A9BB5;font-size:13px;margin:0 0 20px">We'll let you know when this program launches.</p>
+      <form>
+        <input type="text" name="name" placeholder="Your name" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff;font-size:14px;margin-bottom:12px;box-sizing:border-box">
+        <input type="email" name="email" placeholder="Your email" required style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff;font-size:14px;margin-bottom:12px;box-sizing:border-box">
+        <input type="text" name="phone" placeholder="Phone (optional)" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff;font-size:14px;margin-bottom:20px;box-sizing:border-box">
+        <button type="submit" style="width:100%;padding:10px;border-radius:8px;border:none;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer">Notify Me</button>
+      </form>
+    </div>
+    <div id="waitlistSuccess" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:40px;margin-bottom:8px">&#10003;</div>
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;margin:0 0 4px">You're on the list!</h3>
+      <p style="color:#8A9BB5;font-size:13px;margin:0">We'll email you when this program launches.</p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -956,6 +956,16 @@
       )`,
       `CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)`,
       `CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic)`,
+      `CREATE TABLE IF NOT EXISTS program_waitlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        program_slug TEXT NOT NULL,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL,
+        phone TEXT DEFAULT '',
+        registered_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_pw_program ON program_waitlist(program_slug)`,
+      `CREATE INDEX IF NOT EXISTS idx_pw_email ON program_waitlist(email)`,
     ];
     const results = [];
     for (const sql of statements) {
