@@ -729,7 +729,7 @@ var readAloud = {
 
 function populateVoices(selectId) {
   var sel = document.getElementById(selectId);
-  if (!sel) return;
+  if (!sel || !window.speechSynthesis) return;
   var voices = window.speechSynthesis.getVoices();
   sel.innerHTML = '<option value="">Browser default</option>';
   var preferred = [];
@@ -757,6 +757,7 @@ function populateVoices(selectId) {
 }
 
 function getVoiceByName(name) {
+  if (!window.speechSynthesis) return null;
   var voices = window.speechSynthesis.getVoices();
   for (var i = 0; i < voices.length; i++) {
     if (voices[i].name === name) return voices[i];
@@ -966,10 +967,12 @@ function extractText(el) {
 }
 
 // Populate voices when available
-window.speechSynthesis.onvoiceschanged = function() {
-  populateVoices('voiceSelect1');
-  populateVoices('voiceSelect2');
-};
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    populateVoices('voiceSelect1');
+    populateVoices('voiceSelect2');
+  };
+}
 
 function showReadAloud(barKey) {
   var bar = document.getElementById('readAloudBar' + barKey);
@@ -981,12 +984,14 @@ function showReadAloud(barKey) {
 }
 
 // Stop speech when tab is hidden
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden && window.speechSynthesis.speaking) {
-    window.speechSynthesis.pause();
-    readAloud.paused = true;
-  }
-});
+if (window.speechSynthesis) {
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      readAloud.paused = true;
+    }
+  });
+}
 
 loadDashboard();
 
