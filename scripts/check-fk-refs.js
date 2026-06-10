@@ -5,6 +5,14 @@ import { join } from 'path';
 
 const DB = 'gahq';
 
+// Skip FK checks if wrangler isn't authenticated (e.g. local dev without CLOUDFLARE_API_TOKEN)
+try {
+  execSync('npx wrangler whoami 2>&1', { encoding: 'utf8', timeout: 10000 });
+} catch {
+  console.warn('⚠ wrangler not authenticated — skipping FK checks (CI will enforce them)');
+  process.exit(0);
+}
+
 const CHECKS = [
   ['orphaned enrollments (no program)',
     'SELECT COUNT(*) AS cnt FROM enrollments WHERE program_id NOT IN (SELECT id FROM programs)'],
