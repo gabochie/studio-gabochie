@@ -224,7 +224,7 @@ function loadGallery() {
       html = '<div class="table-empty">No gallery items yet. Add one to get started.</div>';
     } else {
       items.forEach(function(g) {
-        html += '<div class="card"><img src="' + g.image_url + '" class="gallery-img" onerror="this.style.display=\'none\'"><div class="card-content"><div class="title">' + g.title + (g.category ? ' <span style="color:#5A7A9F;font-weight:400">· ' + g.category + '</span>' : '') + '</div><div class="sub">' + (g.description || '').slice(0, 80) + (g.description && g.description.length > 80 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editGallery(' + g.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteGallery(' + g.id + ')">Delete</button></div></div>';
+        html += '<div class="card"><img src="' + g.image_url + '" alt="' + (g.title || 'Gallery image') + '" class="gallery-img" onerror="this.style.display=\'none\'"><div class="card-content"><div class="title">' + g.title + (g.category ? ' <span style="color:#5A7A9F;font-weight:400">· ' + g.category + '</span>' : '') + '</div><div class="sub">' + (g.description || '').slice(0, 80) + (g.description && g.description.length > 80 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editGallery(' + g.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteGallery(' + g.id + ')">Delete</button></div></div>';
       });
     }
     document.getElementById('galleryList').innerHTML = html;
