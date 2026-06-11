@@ -75,31 +75,21 @@ export async function onRequest(context) {
   const path = url.pathname;
   const host = request.headers.get('Host') || '';
 
-  // Determine if this is the news subdomain
   var isNews = host === 'news.gideonabochie.org' || host.startsWith('news.');
 
-  // Public paths — no login required
-  var publicPaths = [
-    '/api/', '/assets/',
-    '/login', '/register',
-    '/coming-soon.html', '/donate.html', '/donate',
-    '/art/', '/merch/', '/music/', '/store/',
-    '/favicon.ico', '/robots.txt', '/sitemap.xml'
-  ];
-  if (!isNews) publicPaths.push('/admin/');
-  var isPublic = false;
-  for (var i = 0; i < publicPaths.length; i++) {
-    if (path === publicPaths[i] || path.startsWith(publicPaths[i])) {
-      isPublic = true;
+  // Only gate these paths (require login)
+  var gatedPaths = ['/dashboard/'];
+  var isGated = false;
+  for (var i = 0; i < gatedPaths.length; i++) {
+    if (path === gatedPaths[i] || path.startsWith(gatedPaths[i])) {
+      isGated = true;
       break;
     }
   }
-  // Root landing page is always public (both domains)
-  if (path === '/' || path === '/index.html') isPublic = true;
 
-  // Validate session once for gated paths
+  // Validate session for gated paths
   var sessionValid = false;
-  if (env.DB && !isPublic) {
+  if (env.DB && isGated) {
     var cookie = request.headers.get('Cookie') || '';
     var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
     if (m) {
@@ -112,9 +102,8 @@ export async function onRequest(context) {
     }
   }
 
-  // Redirect unauthenticated users for non-public paths
-  if (!isPublic && !sessionValid) {
-    var loginUrl = isNews ? 'https://gideonabochie.org/login/?redirect=' + encodeURIComponent(path) : '/login/?redirect=' + encodeURIComponent(path);
+  if (isGated && !sessionValid) {
+    var loginUrl = '/login/?redirect=' + encodeURIComponent(path);
     return new Response(null, {
       status: 302,
       headers: { 'Location': loginUrl }
@@ -132,8 +121,8 @@ export async function onRequest(context) {
     return response;
   }
 
-  // Check maintenance mode for main domain public pages
-  if (isPublic && !path.startsWith('/api/') && !path.startsWith('/admin/') && env.DB) {
+  // Check maintenance mode
+  if (env.DB) {
     try {
       const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
       if (row && row.value === 'true') {

@@ -35,6 +35,8 @@
       <span class="stat-label">Bookings <span style="color:#EAB308;font-size:10px">pending</span> <span style="color:#22C55E;font-size:10px">active</span> <span style="color:#3B82F6;font-size:10px">done</span></span>
       <span class="stat-sub" id="statBookingsSub">Click to manage</span>
     </div>
+    <div class="stat-card"><span class="stat-num gold" id="statMembPremium">—</span><span class="stat-label">Premium</span><span class="stat-sub" id="statMembPremiumSub">Members</span></div>
+    <div class="stat-card"><span class="stat-num" id="statMembVip">—</span><span class="stat-label">VIP</span><span class="stat-sub" id="statMembVipSub">Expiring soon: —</span></div>
   </div>
 
   <!-- Coming Soon Toggle -->
@@ -306,6 +308,7 @@ function renderActivity(data){
     if (a.type === 'donation') text = '<strong>' + name + '</strong> donated ' + escapeHtml(money(a.val)) + ' <span style="color:#5A7A9F">(' + note + ')</span>';
     else if (a.type === 'subscriber') text = '<strong>' + (val||'New subscriber') + '</strong> subscribed <span style="color:#5A7A9F">via ' + (note||'web') + '</span>';
     else if (a.type === 'booking') text = '<strong>' + name + '</strong> requested <span style="color:#C9A84C">' + val + '</span> <span style="color:#5A7A9F">(' + note + ')</span>';
+    else if (a.type === 'member') text = '<strong>' + escapeHtml(name) + '</strong> registered as <span style="color:#C9A84C">' + escapeHtml(val || 'free') + '</span> <span style="color:#5A7A9F">(' + escapeHtml(note) + ')</span>';
     return '<div class="activity-item"><div class="activity-dot ' + dot + '"></div><div class="activity-body"><div class="text">' + text + '</div><div class="time">' + fmtTime(a.ts) + '</div></div></div>';
   }).join('');
   el.innerHTML = html;
@@ -489,6 +492,18 @@ function loadSummary(){
     $('statBookingsPending').textContent = fmtNum(bok.pending || 0);
     $('statBookingsActive').textContent = fmtNum(bok.active || 0);
     $('statBookingsDone').textContent = fmtNum(bok.completed || 0);
+
+    // Membership stats
+    var memb = d.members || {};
+    var byTier = memb.by_tier || [];
+    var premiumCount = 0, vipCount = 0;
+    byTier.forEach(function(t) {
+      if (t.membership_tier === 'premium') premiumCount = t.count;
+      if (t.membership_tier === 'vip') vipCount = t.count;
+    });
+    $('statMembPremium').textContent = fmtNum(premiumCount);
+    $('statMembVip').textContent = fmtNum(vipCount);
+    $('statMembVipSub').textContent = 'Expiring soon: ' + fmtNum(memb.expiring_soon || 0) + ' | Expired: ' + fmtNum(memb.expired || 0);
 
     // Audience
     $('statUniques').textContent = fmtNum(uniq.total || 0);

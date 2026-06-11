@@ -47,7 +47,8 @@
       label: 'System',
       items: [
         { href: 'index.html',       icon: '\uD83D\uDCCA', label: 'Dashboard' },
-        { href: 'subscribers.html', icon: '\uD83D\uDC65', label: 'Subscribers' },
+        { href: 'members.html',     icon: '\uD83D\uDC65', label: 'Members' },
+        { href: 'subscribers.html', icon: '\uD83D\uDCEB', label: 'Subscribers' },
         { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
         { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
         { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },

@@ -39,6 +39,17 @@ export async function onRequest(context) {
       "SELECT COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active, COUNT(*) AS total FROM enrollments"
     ).first();
 
+    // Membership stats
+    const memberCounts = await env.DB.prepare(
+      "SELECT membership_tier, COUNT(*) AS count FROM users GROUP BY membership_tier"
+    ).all();
+    const memberExpiring = await env.DB.prepare(
+      "SELECT COUNT(*) AS count FROM users WHERE membership_tier IN ('premium','vip') AND membership_expires_at != '' AND membership_expires_at < datetime('now', '+7 days') AND membership_expires_at > datetime('now')"
+    ).first();
+    const memberExpired = await env.DB.prepare(
+      "SELECT COUNT(*) AS count FROM users WHERE membership_tier IN ('premium','vip') AND membership_expires_at != '' AND membership_expires_at < datetime('now')"
+    ).first();
+
     const views = await env.DB.prepare(
       "SELECT COUNT(*) AS total, COALESCE(SUM(CASE WHEN viewed_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END), 0) AS this_week, COALESCE(SUM(CASE WHEN viewed_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END), 0) AS this_month FROM page_views"
     ).first();
@@ -87,7 +98,10 @@ export async function onRequest(context) {
     const recentBookings = await env.DB.prepare(
       "SELECT 'booking' AS type, name, ad_type AS val, status AS note, created_at AS ts FROM bookings ORDER BY created_at DESC LIMIT 5"
     ).all();
-    recent = [...recentDonations.results, ...recentSubs.results, ...recentBookings.results]
+    const recentMembers = await env.DB.prepare(
+      "SELECT 'member' AS type, name, membership_tier AS val, email AS note, created_at AS ts FROM users ORDER BY created_at DESC LIMIT 5"
+    ).all();
+    recent = [...recentDonations.results, ...recentSubs.results, ...recentBookings.results, ...recentMembers.results]
       .sort((a,b) => new Date(b.ts) - new Date(a.ts))
       .slice(0, 10);
 
@@ -104,6 +118,7 @@ export async function onRequest(context) {
       },
       bookings: { pending: bookings.pending, active: bookings.active, completed: bookings.completed, revenue: bookingRevenue.total, paid_count: bookingRevenue.count },
       enrollments: { total: enrollments.total, active: enrollments.active },
+      members: { by_tier: memberCounts.results || [], expiring_soon: memberExpiring ? memberExpiring.count : 0, expired: memberExpired ? memberExpired.count : 0 },
       page_views: { total: views.total, this_week: views.this_week, this_month: views.this_month },
       unique_visitors: {
         total: uniqueVisitors.total,

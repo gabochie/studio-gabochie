@@ -311,6 +311,10 @@ kbd{display:inline-block;padding:1px 5px;font-size:var(--text-2xs);font-family:v
 .activity-dot.error{background:var(--red)}
 .activity-dot.in_progress,.activity-dot.busy{background:var(--blue)}
 .activity-dot.pending{background:var(--text-muted)}
+.activity-dot.donation{background:#C9A84C}
+.activity-dot.subscriber{background:#22C55E}
+.activity-dot.booking{background:#3B82F6}
+.activity-dot.member{background:#34C77B}
 .activity-time{color:var(--text-muted);font-size:var(--text-xs);white-space:nowrap;min-width:70px}
 .activity-text{flex:1;color:var(--text-body);min-width:0}
 .activity-text .agent-label{color:var(--gold);font-size:var(--text-2xs)}

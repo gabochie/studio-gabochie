@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Members — GAHQ Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.kv-status{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:20px}
+.kv-status.ok{background:rgba(52,199,123,0.1);border:1px solid rgba(52,199,123,0.2);color:#34C77B}
+.kv-status.pending{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:#C9A84C}
+.kv-status.error{background:rgba(232,99,122,0.1);border:1px solid rgba(232,99,122,0.2);color:#E8637A}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.empty-state{text-align:center;padding:60px 24px;background:#0F1E38;border:1px dashed #1E3250;border-radius:12px}
+.empty-state h3{font-size:18px;color:#E8EEF7;margin-bottom:8px}
+.empty-state p{font-size:13px;color:#5A7A9F}
+.tier-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em}
+.tier-free{background:rgba(90,122,159,0.15);color:#5A7A9F}
+.tier-premium{background:rgba(201,168,76,0.15);color:#C9A84C}
+.tier-vip{background:rgba(232,99,122,0.15);color:#E8637A}
+.sub-status{font-size:10px;padding:2px 8px;border-radius:4px}
+.sub-active{background:rgba(52,199,123,0.12);color:#34C77B}
+.sub-cancelled{background:rgba(232,99,122,0.12);color:#E8637A}
+.sub-inactive{background:rgba(90,122,159,0.12);color:#5A7A9F}
+.override-form{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:20px;margin-top:16px;display:none}
+.override-form.open{display:block}
+.override-form label{display:block;font-size:11px;color:#5A7A9F;margin-bottom:4px;margin-top:12px}
+.override-form label:first-child{margin-top:0}
+.override-form select,.override-form input{width:100%;padding:8px 12px;border:1px solid #1E3250;border-radius:6px;background:#0A1628;color:#CBD5E1;font-size:13px;outline:none}
+.pagination{display:flex;gap:8px;align-items:center;margin-top:16px;justify-content:center}
+.pagination button{padding:6px 14px;border:1px solid #1E3250;border-radius:6px;background:#0F1E38;color:#CBD5E1;cursor:pointer;font-size:12px}
+.pagination button:hover{background:#1E3250}
+.pagination button:disabled{opacity:.4;cursor:default}
+.pagination span{font-size:12px;color:#5A7A9F}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1 class="page-title">Member <span>Management</span></h1>
+  <p class="page-desc">View and manage all registered users, their membership tiers, and subscription status.</p>
+
+  <div id="dbStatus" class="kv-status pending">Checking database connection&hellip;</div>
+
+  <div class="stats" id="statsRow">
+    <div class="stat-card"><span class="stat-num" id="statTotal">-</span><span class="stat-label">Total Members</span></div>
+    <div class="stat-card"><span class="stat-num dim" id="statFree">-</span><span class="stat-label">Free</span></div>
+    <div class="stat-card"><span class="stat-num gold" id="statPremium">-</span><span class="stat-label">Premium</span></div>
+    <div class="stat-card"><span class="stat-num" id="statVip">-</span><span class="stat-label">VIP</span></div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-input" id="searchInput" placeholder="Search by name, email, or phone&hellip;" oninput="debounceSearch()">
+    <select id="tierFilter" onchange="loadMembers(1)" style="padding:8px 14px;border:1px solid #1E3250;border-radius:6px;background:#0F1E38;color:#CBD5E1;font-size:12px;outline:none;min-width:120px">
+      <option value="">All Tiers</option>
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+      <option value="vip">VIP</option>
+    </select>
+    <button class="btn btn-outline" onclick="loadMembers(1)">Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Tier</th>
+          <th>Expires</th>
+          <th>Subscription</th>
+          <th>Joined</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="membersBody">
+        <tr><td colspan="8" style="text-align:center;color:#3A5278;padding:32px">Loading members&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+
+  <!-- Override Form -->
+  <div class="override-form" id="overrideForm">
+    <h3 style="font-size:14px;color:#E8EEF7;margin:0 0 8px">Override Membership</h3>
+    <p style="font-size:11px;color:#5A7A9F;margin:0 0 12px" id="overrideUser">User: —</p>
+    <form id="overrideFormInner" onsubmit="submitOverride(event)">
+      <label>Tier</label>
+      <select id="overrideTier">
+        <option value="free">Free</option>
+        <option value="premium">Premium</option>
+        <option value="vip">VIP</option>
+      </select>
+      <label>Expires At (YYYY-MM-DD HH:MM — leave blank for no expiry)</label>
+      <input type="text" id="overrideExpires" placeholder="e.g. 2026-12-31 23:59:59">
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button type="submit" class="btn btn-gold">Save</button>
+        <button type="button" class="btn btn-outline" onclick="closeOverride()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+var _members = [];
+var _currentPage = 1;
+var _searchTimer = null;
+
+function debounceSearch() {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(function() { loadMembers(1); }, 300);
+}
+
+function loadMembers(page) {
+  _currentPage = page || 1;
+  document.getElementById('membersBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:#3A5278;padding:32px">Loading members&hellip;</td></tr>';
+
+  var search = encodeURIComponent(document.getElementById('searchInput').value || '');
+  var tier = encodeURIComponent(document.getElementById('tierFilter').value || '');
+  var url = '/admin/api/members?page=' + _currentPage + '&limit=50';
+  if (search) url += '&search=' + search;
+
+  adminFetch(url, {cache:'no-store'}).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.message || 'Unknown error');
+    _members = data.items || [];
+    renderTable(_members);
+    renderStats(data);
+    renderPagination(data.total, data.page, data.limit);
+    document.getElementById('dbStatus').className = 'kv-status ok';
+    document.getElementById('dbStatus').textContent = 'D1 connected — ' + data.total + ' member(s) total';
+  }).catch(function(err) {
+    document.getElementById('membersBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px"><div class="empty-state"><h3>D1 Not Connected</h3><p>' + err.message + '</p></div></td></tr>';
+    document.getElementById('dbStatus').className = 'kv-status error';
+    document.getElementById('dbStatus').textContent = 'D1 error: ' + err.message;
+  });
+}
+
+function renderTable(items) {
+  var tierFilter = document.getElementById('tierFilter').value;
+  if (tierFilter) items = items.filter(function(m) { return m.membership_tier === tierFilter; });
+
+  if (!items.length) {
+    document.getElementById('membersBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:#3A5278">No members found.</td></tr>';
+    return;
+  }
+
+  var html = '';
+  items.forEach(function(m) {
+    var tierClass = 'tier-' + (m.membership_tier || 'free');
+    var tierLabel = (m.membership_tier || 'free').charAt(0).toUpperCase() + (m.membership_tier || 'free').slice(1);
+    var expires = m.membership_expires_at ? new Date(m.membership_expires_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+    var sub = m.subscription;
+    var subHtml = '—';
+    if (sub) {
+      var subStatusClass = 'sub-' + (sub.status === 'active' ? 'active' : sub.status === 'cancelled' ? 'cancelled' : 'inactive');
+      subHtml = '<span style="font-size:10px;color:#5A7A9F">' + escapeHtml(sub.tier || '') + '</span> <span class="sub-status ' + subStatusClass + '">' + escapeHtml(sub.status || '') + '</span>';
+    }
+    var joined = m.created_at ? new Date(m.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '-';
+    html += '<tr>' +
+      '<td><strong>' + escapeHtml(m.name || '—') + '</strong></td>' +
+      '<td><span style="color:#5A7A9F;font-size:12px">' + escapeHtml(m.email) + '</span></td>' +
+      '<td style="font-size:12px;color:#5A7A9F">' + escapeHtml(m.phone || '—') + '</td>' +
+      '<td><span class="tier-badge ' + tierClass + '">' + tierLabel + '</span></td>' +
+      '<td style="font-size:11px;color:#5A7A9F">' + expires + '</td>' +
+      '<td>' + subHtml + '</td>' +
+      '<td style="font-size:11px;color:#5A7A9F">' + joined + '</td>' +
+      '<td><button class="btn btn-outline" style="padding:4px 10px;font-size:10px" onclick="openOverride(' + m.id + ', \'' + escapeHtml(m.name || m.email) + '\', \'' + (m.membership_tier || 'free') + '\', \'' + (m.membership_expires_at || '') + '\')">Override</button></td>' +
+      '</tr>';
+  });
+  document.getElementById('membersBody').innerHTML = html;
+}
+
+function renderStats(data) {
+  var total = data.total || 0;
+  var free = 0, premium = 0, vip = 0;
+  (data.items || []).forEach(function(m) {
+    if (m.membership_tier === 'premium') premium++;
+    else if (m.membership_tier === 'vip') vip++;
+    else free++;
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statFree').textContent = free;
+  document.getElementById('statPremium').textContent = premium;
+  document.getElementById('statVip').textContent = vip;
+}
+
+function renderPagination(total, page, limit) {
+  var el = document.getElementById('pagination');
+  if (!total) { el.innerHTML = ''; return; }
+  var pages = Math.ceil(total / limit);
+  var html = '';
+  html += '<button ' + (page <= 1 ? 'disabled' : '') + ' onclick="loadMembers(' + (page - 1) + ')">Prev</button>';
+  html += '<span>Page ' + page + ' of ' + pages + ' (' + total + ' total)</span>';
+  html += '<button ' + (page >= pages ? 'disabled' : '') + ' onclick="loadMembers(' + (page + 1) + ')">Next</button>';
+  el.innerHTML = html;
+}
+
+function openOverride(id, name, currentTier, currentExpires) {
+  document.getElementById('overrideUser').textContent = 'User: ' + name + ' (ID: ' + id + ')';
+  document.getElementById('overrideTier').value = currentTier;
+  document.getElementById('overrideExpires').value = currentExpires || '';
+  document.getElementById('overrideForm').className = 'override-form open';
+  document.getElementById('overrideForm').dataset.userId = id;
+}
+
+function closeOverride() {
+  document.getElementById('overrideForm').className = 'override-form';
+}
+
+function submitOverride(e) {
+  e.preventDefault();
+  var id = parseInt(document.getElementById('overrideForm').dataset.userId, 10);
+  var tier = document.getElementById('overrideTier').value;
+  var expires = document.getElementById('overrideExpires').value.trim();
+
+  var body = { id: id };
+  if (tier) body.membership_tier = tier;
+  if (expires !== undefined) body.membership_expires_at = expires;
+
+  adminFetch('/admin/api/members', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.message || 'Update failed');
+    closeOverride();
+    loadMembers(_currentPage);
+  }).catch(function(err) {
+    alert('Error: ' + err.message);
+  });
+}
+
+loadMembers(1);
+</script>
+</body>
+</html>
