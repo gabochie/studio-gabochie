@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Original music by GideonAbochie Studio — worship, instrumentals, and creative soundscapes. Stream or download.">
+<meta property="og:title" content="Music — GideonAbochie Studio">
+<meta property="og:description" content="Original music — worship, instrumentals, and creative soundscapes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gideonabochie.org/music/">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://checkout.flutterwave.com">
+<title>Music — GideonAbochie Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--content-max:1440px}
+body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:104px 24px 24px}
+.wrap{max-width:var(--content-max);margin:0 auto;width:100%}
+.intro{text-align:center;margin-bottom:40px}
+.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.intro h2 span{color:#C9A84C}
+.intro p{color:#5A7A9F;font-size:14px;max-width:600px;margin:0 auto;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.music-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;overflow:hidden;transition:border-color .3s;padding:24px;text-align:center}
+.music-card:hover{border-color:#C9A84C}
+.music-card .icon-wrap{font-size:48px;color:#C9A84C;margin-bottom:12px}
+.music-card h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;color:#F1F5F9;margin-bottom:4px}
+.music-card .artist{font-size:12px;color:#5A7A9F;margin-bottom:8px}
+.music-card .desc{font-size:13px;color:#8A9BB5;margin-bottom:16px;line-height:1.5}
+.music-card .links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.music-card .links a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s}
+.music-card .links a.stream{background:rgba(30,50,80,.5);color:#CBD5E1;border:1px solid #1E3250}
+.music-card .links a.stream:hover{background:#1E3250;color:#fff}
+.music-card .links a.download{background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.2)}
+.music-card .links a.download:hover{background:#C9A84C;color:#0A1628}
+.music-card .links a.buy{background:#C9A84C;color:#0A1628;border:1px solid #C9A84C}
+.music-card .links a.buy:hover{background:#D9B85C}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <a href="/" class="nav-brand"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="/#story">Story</a>
+      <a href="/#pillars">Teaching</a>
+      <a href="/school/">School</a>
+      <a href="/art/">Art</a>
+      <a href="/merch/">Merch</a>
+      <a href="/music/" class="active">Music</a>
+      <a href="/manifesto/">Manifesto</a>
+      <a href="/contact/">Contact</a>
+      <a href="/support/" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+    </div>
+    <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
+<div class="wrap">
+  <div class="intro">
+    <h2>Original <span>Music</span></h2>
+    <p>Worship, instrumentals, and creative soundscapes — music that lifts the soul and inspires the mind.</p>
+  </div>
+  <div class="grid" id="musicGrid">
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <div>
+      <div class="brand-footer"><img src="../assets/images/logo.png" alt="GideonAbochie Studio"><span class="brand-footer-wrapper"><span class="brand-footer-title">GideonAbochie Studio</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>
+      <p class="footer-about">A Bible-based ministry teaching a generation to create with excellence, love with devotion, and walk in the wisdom of God's Word.</p>
+      <div class="footer-social">
+        <a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>
+        <a href="https://web.facebook.com/GideonAbochie/" target="_blank" title="Facebook"><i class="ti ti-brand-facebook"></i></a>
+        <a href="https://www.instagram.com/gideonabochie/" target="_blank" title="Instagram"><i class="ti ti-brand-instagram"></i></a>
+        <a href="https://www.tiktok.com/@gideonabochie" target="_blank" title="TikTok"><i class="ti ti-brand-tiktok"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4>Content</h4>
+      <a href="/manifesto/">Read the Manifesto</a>
+      <a href="/school/">School Programs</a>
+      <a href="/nationbuilding/">Nationbuilding</a>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <a href="/donate/">One-Time Donation</a>
+      <a href="/support/">Recurring Support</a>
+      <a href="/books/">Buy Books</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a>
+      <a href="tel:+233243262019">+233 243 262 019</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="/legal/privacy.html">Privacy Policy</a>
+      <a href="/legal/terms.html">Terms of Use</a>
+    </div>
+    <div class="footer-bottom">&copy; 2026 GideonAbochie Studio</div>
+  </div>
+</footer>
+<script src="../assets/js/main.js"></script>
+<script>
+var musicAlbums = [
+  { title: 'Worship Sessions Vol. 1', artist: 'Gideon Abochie', desc: 'Original worship songs for personal devotion and congregation.', spotify: '#', apple: '#', youtube: '#', download: true },
+  { title: 'Instrumentals for the Soul', artist: 'Gideon Abochie', desc: 'Calm, meditative instrumentals for study, prayer, and reflection.', spotify: '#', apple: '#', youtube: '#', download: true },
+  { title: 'Kingdom Soundscapes', artist: 'Gideon Abochie', desc: 'Cinematic compositions capturing the beauty of God\'s creation.', spotify: '#', apple: '#', youtube: '#', download: true }
+];
+
+function renderMusic() {
+  var grid = document.getElementById('musicGrid');
+  grid.innerHTML = musicAlbums.map(function(a) {
+    var links = '';
+    if (a.spotify && a.spotify !== '#') links += '<a href="' + a.spotify + '" target="_blank" rel="noopener" class="stream"><i class="ti ti-brand-spotify"></i> Spotify</a>';
+    if (a.apple && a.apple !== '#') links += '<a href="' + a.apple + '" target="_blank" rel="noopener" class="stream"><i class="ti ti-music"></i> Apple Music</a>';
+    if (a.youtube && a.youtube !== '#') links += '<a href="' + a.youtube + '" target="_blank" rel="noopener" class="stream"><i class="ti ti-brand-youtube"></i> YouTube</a>';
+    if (a.download) links += '<a href="#" class="download" onclick="event.preventDefault();alert(\'Download coming soon. Stay tuned.\')"><i class="ti ti-download"></i> Download</a>';
+    return '<div class="music-card">' +
+      '<div class="icon-wrap"><i class="ti ti-disc"></i></div>' +
+      '<h3>' + a.title + '</h3>' +
+      '<div class="artist">' + a.artist + '</div>' +
+      '<div class="desc">' + a.desc + '</div>' +
+      '<div class="links">' + links + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+renderMusic();
+</script>
+</body>
+</html>

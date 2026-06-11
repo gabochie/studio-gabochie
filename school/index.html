@@ -299,6 +299,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 </div>
 
 <script>
+if (typeof window.formatPrice !== 'function') { window.formatPrice = function(a,c){return(c||'GH¢ ')+(Number(a)||0).toFixed(2)}; }
 var selectedPurpose = '';
 var selectedSlug = '';
 var studentEmail = '';
