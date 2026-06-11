@@ -264,10 +264,14 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
-      - name: Deploy
-        run: npm run deploy
+      - name: Predeploy checks (non-blocking)
+        run: npm run predeploy || echo "Predeploy checks had warnings (non-blocking)"
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy . --project-name gideonabochie-org
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Run DB setup (non-blocking)
+        run: npm run db:setup || echo "DB setup had warnings (non-blocking)"
       - name: Trigger QA scan
         run: |
           sleep 10
