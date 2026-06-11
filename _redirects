@@ -58,6 +58,8 @@
 # Referral tracking
 /ref /content/ 200
 
+/campaigns /campaigns/ 200
+
 /nationbuilding /nationbuilding/ 200
 
 /store /store/ 200
