@@ -91,34 +91,57 @@ export async function onRequest(context) {
     return response;
   }
 
-  // Never block admin, API, static assets, or the coming-soon page itself
-  if (
-    path.startsWith('/admin/') ||
-    path.startsWith('/api/') ||
-    path.startsWith('/assets/') ||
-    path.startsWith('/school/') ||
-    path.startsWith('/dashboard/') ||
-    path === '/coming-soon.html' ||
-    path === '/donate.html' ||
-    path === '/donate' ||
-    path === '/favicon.ico' ||
-    path === '/robots.txt'
-  ) {
+  // Public paths — no login required
+  const publicPaths = [
+    '/admin/', '/api/', '/assets/',
+    '/login', '/register',
+    '/coming-soon.html', '/donate.html', '/donate',
+    '/favicon.ico', '/robots.txt', '/sitemap.xml'
+  ];
+  var isPublic = false;
+  for (var i = 0; i < publicPaths.length; i++) {
+    if (path === publicPaths[i] || path.startsWith(publicPaths[i])) {
+      isPublic = true;
+      break;
+    }
+  }
+  // Root landing page is always public
+  if (path === '/' || path === '/index.html') isPublic = true;
+
+  if (isPublic) {
+    // Check maintenance mode for non-API, non-admin paths
+    if (!path.startsWith('/api/') && !path.startsWith('/admin/') && env.DB) {
+      try {
+        const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
+        if (row && row.value === 'true') {
+          return new Response(COMING_SOON, {
+            status: 200,
+            headers: { 'Content-Type': 'text/html;charset=utf-8' }
+          });
+        }
+      } catch (e) {}
+    }
     return context.next();
   }
 
-  // Check maintenance mode
-  if (env.DB) {
+  // Membership gating — require valid ga_session cookie
+  var cookie = request.headers.get('Cookie') || '';
+  var token = '';
+  var match = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
+  if (match) token = match[1];
+
+  if (token && env.DB) {
     try {
-      const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
-      if (row && row.value === 'true') {
-        return new Response(COMING_SOON, {
-          status: 200,
-          headers: { 'Content-Type': 'text/html;charset=utf-8' }
-        });
-      }
+      var row = await env.DB.prepare(
+        "SELECT user_id FROM sessions WHERE id = ? AND expires_at > datetime('now')"
+      ).bind(token).first();
+      if (row) return context.next();
     } catch (e) {}
   }
 
-  return context.next();
+  // Not authenticated — redirect to login
+  return new Response(null, {
+    status: 302,
+    headers: { 'Location': '/login/?redirect=' + encodeURIComponent(path) }
+  });
 }

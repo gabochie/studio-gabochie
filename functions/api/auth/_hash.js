@@ -21,3 +21,18 @@ export function genToken() {
   crypto.getRandomValues(bytes);
   return Array.from(bytes).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
 }
+
+export async function hashPassword(password) {
+  var salt = genSalt();
+  var hash = await hashCode(password, salt);
+  return salt + ':' + hash;
+}
+
+export async function verifyPassword(password, stored) {
+  var parts = stored.split(':');
+  if (parts.length !== 2) return false;
+  var salt = parts[0];
+  var expectedHash = parts[1];
+  var actualHash = await hashCode(password, salt);
+  return actualHash === expectedHash;
+}

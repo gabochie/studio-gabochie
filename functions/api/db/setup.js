@@ -420,6 +420,9 @@
         email TEXT NOT NULL UNIQUE,
         phone TEXT DEFAULT '',
         email_verified INTEGER NOT NULL DEFAULT 0,
+        password_hash TEXT DEFAULT '',
+        membership_tier TEXT NOT NULL DEFAULT 'free',
+        membership_expires_at TEXT DEFAULT '',
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         last_login_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
@@ -443,7 +446,26 @@
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       `CREATE INDEX IF NOT EXISTS idx_otp_identifier ON otp_codes(identifier)`,
-      // Add user_id to store_orders
+      `ALTER TABLE users ADD COLUMN password_hash TEXT DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN membership_tier TEXT NOT NULL DEFAULT 'free'`,
+      `ALTER TABLE users ADD COLUMN membership_expires_at TEXT DEFAULT ''`,
+      `ALTER TABLE enrollments ADD COLUMN user_id INTEGER DEFAULT 0`,
+      `CREATE TABLE IF NOT EXISTS membership_plans (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tier TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        price_ghs REAL NOT NULL DEFAULT 0,
+        price_usd REAL NOT NULL DEFAULT 0,
+        features TEXT DEFAULT '[]',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `INSERT OR IGNORE INTO membership_plans (tier, name, description, price_ghs, price_usd, features, sort_order) VALUES
+        ('free', 'Free', 'Basic access to public content', 0, 0, '["Browse courses","Read articles","Subscribe to newsletter"]', 0),
+        ('premium', 'Premium', 'Full course access + exclusive content', 99, 6, '["All courses","Download materials","Premium articles","Priority support"]', 1),
+        ('vip', 'VIP', 'Everything plus personal mentorship', 299, 17, '["Everything in Premium","1-on-1 mentorship","Early access","Certificate fees included"]', 2)
+      `,
       `ALTER TABLE store_orders ADD COLUMN user_id INTEGER DEFAULT 0`,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (

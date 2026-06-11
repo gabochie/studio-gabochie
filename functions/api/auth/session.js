@@ -2,7 +2,11 @@ function getToken(request) {
   var auth = request.headers.get('Authorization') || '';
   if (auth.startsWith('Bearer ')) return auth.slice(7);
   var url = new URL(request.url);
-  return url.searchParams.get('token') || '';
+  var qs = url.searchParams.get('token');
+  if (qs) return qs;
+  var cookie = request.headers.get('Cookie') || '';
+  var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
+  return m ? m[1] : '';
 }
 
 export async function onRequest(context) {
