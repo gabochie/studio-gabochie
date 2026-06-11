@@ -257,8 +257,14 @@ h1 span{color:#C9A84C}
 
 <script>
 var FLW_PUBLIC_KEY = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
-var token = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ga_token') || '';
-if (token) {
+function getCookie(name) {
+  var m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return m ? m[2] : '';
+}
+var token = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ga_token') || getCookie('ga_session') || '';
+if (token && !token.startsWith('ga_')) {
+  // Session token — don't store in sessionStorage (it's in the cookie)
+} else if (token) {
   sessionStorage.setItem('ga_token', token);
   var cleanUrl = window.location.pathname + window.location.hash;
   if (window.location.search) window.history.replaceState(null, '', cleanUrl);
@@ -599,6 +605,7 @@ function handleChangeCode() {
 function logout() {
   localStorage.removeItem('ga_student');
   sessionStorage.removeItem('ga_token');
+  document.cookie = 'ga_session=; path=/; domain=.gideonabochie.org; max-age=0; SameSite=Lax; Secure';
   window.location.href = '/school/';
 }
 

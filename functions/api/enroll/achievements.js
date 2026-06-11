@@ -1,4 +1,4 @@
-import { getToken } from './_token.js';
+import { getToken, getSessionUser } from './_token.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -18,6 +18,19 @@ export async function onRequest(context) {
     var enrollment = await db.prepare(
       'SELECT id, student_email, program_id FROM enrollments WHERE access_token = ?'
     ).bind(token).first();
+    if (!enrollment) {
+      var session = await getSessionUser(db, token);
+      if (session) {
+        enrollment = await db.prepare(
+          'SELECT id, student_email, program_id FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC LIMIT 1'
+        ).bind(session.user_id).first();
+        if (!enrollment) {
+          enrollment = await db.prepare(
+            'SELECT id, student_email, program_id FROM enrollments WHERE student_email = ? ORDER BY enrolled_at DESC LIMIT 1'
+          ).bind(session.email).first();
+        }
+      }
+    }
     if (!enrollment) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
         status: 404, headers: { 'Content-Type': 'application/json' }

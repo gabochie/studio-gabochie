@@ -1,4 +1,4 @@
-import { getToken } from './_token.js';
+import { getToken, getSessionUser } from './_token.js';
 function calcLevel(xp) {
   return Math.floor(Math.sqrt(xp / 100)) + 1;
 }
@@ -22,8 +22,21 @@ export async function onRequest(context) {
     }
     try {
       var enrollment = await db.prepare(
-        'SELECT id, program_id, status, xp, xp_level, streak FROM enrollments WHERE access_token = ?'
+        'SELECT id, program_id, status, student_email, xp, xp_level, streak, user_id FROM enrollments WHERE access_token = ?'
       ).bind(token).first();
+      if (!enrollment) {
+        var session = await getSessionUser(db, token);
+        if (session) {
+          enrollment = await db.prepare(
+            'SELECT id, program_id, status, student_email, xp, xp_level, streak, user_id FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC LIMIT 1'
+          ).bind(session.user_id).first();
+          if (!enrollment) {
+            enrollment = await db.prepare(
+              'SELECT id, program_id, status, student_email, xp, xp_level, streak, user_id FROM enrollments WHERE student_email = ? ORDER BY enrolled_at DESC LIMIT 1'
+            ).bind(session.email).first();
+          }
+        }
+      }
       if (!enrollment) {
         return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
           status: 404, headers: { 'Content-Type': 'application/json' }
@@ -77,6 +90,19 @@ export async function onRequest(context) {
     enrollment = await db.prepare(
       'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE access_token = ?'
     ).bind(postToken).first();
+    if (!enrollment) {
+      var session = await getSessionUser(db, postToken);
+      if (session) {
+        enrollment = await db.prepare(
+          'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC LIMIT 1'
+        ).bind(session.user_id).first();
+        if (!enrollment) {
+          enrollment = await db.prepare(
+            'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE student_email = ? ORDER BY enrolled_at DESC LIMIT 1'
+          ).bind(session.email).first();
+        }
+      }
+    }
     if (!enrollment) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
         status: 404, headers: { 'Content-Type': 'application/json' }

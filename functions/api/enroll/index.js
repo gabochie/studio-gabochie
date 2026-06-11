@@ -1,6 +1,6 @@
 import { checkRateLimit } from '../_rate-limit.js';
 import { queueEmail, enrollmentFollowup, daysFromNow } from '../email/_send.js';
-import { getToken } from './_token.js';
+import { getToken, getSessionUser } from './_token.js';
 
 function genToken() {
   var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -41,20 +41,29 @@ export async function onRequest(context) {
         'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
       ).bind(token).first();
 
-      // Fallback: look up by session token (ga_token) → find user's enrollments
+      // Fallback: look up by session → find user's enrollments
       if (!row) {
-        var session = await db.prepare(
-          'SELECT s.user_id, u.email, u.name FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ? AND s.expires_at > datetime(\'now\')'
-        ).bind(token).first();
+        var session = await getSessionUser(db, token);
         if (session) {
+          // Try by user_id first (new enrollments)
           if (programSlug) {
             row = await db.prepare(
-              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
-            ).bind(session.email, programSlug).first();
+              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.user_id = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+            ).bind(session.user_id, programSlug).first();
+            if (!row) {
+              row = await db.prepare(
+                'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+              ).bind(session.email, programSlug).first();
+            }
           } else {
             row = await db.prepare(
-              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC LIMIT 1'
-            ).bind(session.email).first();
+              'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.user_id = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+            ).bind(session.user_id).first();
+            if (!row) {
+              row = await db.prepare(
+                'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+              ).bind(session.email).first();
+            }
           }
         }
       }
@@ -92,8 +101,8 @@ export async function onRequest(context) {
       // If ?enrollments=1, also return all enrollments for the user
       if (url.searchParams.get('enrollments') === '1') {
         var allRows = await db.prepare(
-          'SELECT p.title, p.slug, e.status, e.enrolled_at FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC'
-        ).bind(row.student_email).all();
+          'SELECT p.title, p.slug, e.status, e.enrolled_at FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? OR e.user_id = (SELECT user_id FROM enrollments WHERE id = ?) ORDER BY e.enrolled_at DESC'
+        ).bind(row.student_email, row.id).all();
         response.enrollments = (allRows.results || []).map(function(r) {
           return { title: r.title, slug: r.slug, status: r.status, enrolled_at: r.enrolled_at };
         });
@@ -159,6 +168,13 @@ export async function onRequest(context) {
       });
     }
 
+    // Detect logged-in user for user_id link
+    var sessionUser = null;
+    var sessToken = getToken(request);
+    if (sessToken) {
+      try { sessionUser = await getSessionUser(db, sessToken); } catch (e) {}
+    }
+    var userId = sessionUser ? sessionUser.user_id : null;
     var enrollmentStatus = program.price > 0 ? 'sample' : 'active';
 
     var existing = await db.prepare(
@@ -174,8 +190,8 @@ export async function onRequest(context) {
     var expiresAt = new Date(Date.now() + 7776000000).toISOString();
 
     await db.prepare(
-      'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status, token_expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus, expiresAt).run();
+      'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status, token_expires_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus, expiresAt, userId).run();
 
     // Guitar-specific setup: create user_stats and waitlist entry
     if (programSlug === 'guitar-method') {

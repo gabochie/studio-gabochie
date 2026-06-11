@@ -1,4 +1,4 @@
-import { getToken } from '../enroll/_token.js';
+import { getToken, getSessionUser } from '../enroll/_token.js';
 
 function genCode() {
   var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -31,6 +31,19 @@ export async function onRequest(context) {
     var enrollment = await db.prepare(
       'SELECT e.id, e.program_id, e.student_name, e.student_email, e.status, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
     ).bind(token).first();
+    if (!enrollment) {
+      var session = await getSessionUser(db, token);
+      if (session) {
+        enrollment = await db.prepare(
+          'SELECT e.id, e.program_id, e.student_name, e.student_email, e.status, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.user_id = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+        ).bind(session.user_id).first();
+        if (!enrollment) {
+          enrollment = await db.prepare(
+            'SELECT e.id, e.program_id, e.student_name, e.student_email, e.status, p.title AS program_title, p.slug AS program_slug FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+          ).bind(session.email).first();
+        }
+      }
+    }
     if (!enrollment) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid token' }), {
         status: 404, headers: { 'Content-Type': 'application/json' }
