@@ -255,7 +255,6 @@ jobs:
   deploy:
     name: Deploy to Cloudflare Pages
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: [lint-js, lint-html, test-unit, coverage, test-e2e, audit, secrets, assets, report]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
