@@ -83,6 +83,7 @@ export async function onRequest(context) {
     '/api/', '/assets/',
     '/login', '/register',
     '/coming-soon.html', '/donate.html', '/donate',
+    '/art/', '/merch/', '/music/', '/store/',
     '/favicon.ico', '/robots.txt', '/sitemap.xml'
   ];
   if (!isNews) publicPaths.push('/admin/');

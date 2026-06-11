@@ -173,6 +173,40 @@ function checkSession(callback) {
     .catch(function() { callback(null); });
 }
 
+/* ── Session-aware Nav ── */
+function initNavAuth() {
+  var container = document.getElementById('navAuth');
+  if (!container) return;
+  checkSession(function(user) {
+    if (user) {
+      container.innerHTML =
+        '<a href="/dashboard/" class="nav-auth-link">Dashboard</a>' +
+        '<a href="#" class="nav-auth-link nav-auth-logout" onclick="logoutUser(event)">Log Out</a>';
+    } else {
+      container.innerHTML =
+        '<a href="/login/" class="nav-auth-link">Log In</a>' +
+        '<a href="/register/" class="nav-auth-btn">Sign Up</a>';
+    }
+  });
+}
+
+function logoutUser(e) {
+  if (e) e.preventDefault();
+  var token = getSessionToken();
+  if (token) {
+    navigator.sendBeacon('/api/auth/logout', JSON.stringify({ token: token }));
+  }
+  clearSession();
+  document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org';
+  window.location.href = '/';
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNavAuth);
+} else {
+  initNavAuth();
+}
+
 /* ── Store Modal (auth-aware) ── */
 function showStoreModal(callback) {
   checkSession(function(user) {

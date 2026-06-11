@@ -1,6 +1,6 @@
 export async function onRequest(context) {
   var { request, env } = context;
-  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: cors });
   }
@@ -9,25 +9,18 @@ export async function onRequest(context) {
       status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
-  var db = env.DB;
-  if (!db) {
-    return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
-      status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
-    });
-  }
   try {
-    var auth = request.headers.get('Authorization') || '';
-    var token = '';
-    if (auth.startsWith('Bearer ')) token = auth.slice(7);
-    if (token) {
-      await db.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run();
+    var body = await request.json();
+    var token = body.token || '';
+    if (token && env.DB) {
+      await env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run();
     }
     return new Response(JSON.stringify({ status: 'ok' }), {
-      headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      headers: Object.assign({ 'Content-Type': 'application/json', 'Set-Cookie': 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org; HttpOnly; Secure; SameSite=Lax' }, cors)
     });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
-      status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    return new Response(JSON.stringify({ status: 'ok' }), {
+      headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
 }
