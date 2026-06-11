@@ -178,6 +178,49 @@ export async function onRequest(context) {
       }
     }
 
+    // Handle membership subscription payments (tx_ref prefix: memb_)
+    if (event === 'charge.completed' && tx_ref.startsWith('memb_')) {
+      var membSub = await db.prepare('SELECT email, tier, amount FROM subscriptions WHERE tx_ref = ?').bind(tx_ref).first();
+      if (membSub) {
+        var membUser = await db.prepare('SELECT id, name FROM users WHERE email = ?').bind(membSub.email).first();
+        if (membUser) {
+          var membTier = membSub.tier === 'vip' ? 'vip' : 'premium';
+          await db.prepare(
+            "UPDATE users SET membership_tier = ?, membership_expires_at = datetime('now', '+1 month') WHERE id = ?"
+          ).bind(membTier, membUser.id).run();
+          await db.prepare(
+            "UPDATE subscriptions SET status = 'active', amount = ? WHERE tx_ref = ?"
+          ).bind(verifiedAmount, tx_ref).run();
+          if (env.BREVO_API_KEY && donor_email) {
+            try {
+              var membHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
+                '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
+                '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
+                '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
+                '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>' +
+                '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership Active</p></td></tr>' +
+                '<tr><td style="padding:32px">' +
+                '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (membUser.name || donor_name) + ',</p>' +
+                '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + (membTier === 'vip' ? 'VIP' : 'Premium') + '</strong> membership is now active. Enjoy full access to all courses, resources, and features.</p>' +
+                '<a href="https://gideonabochie.org/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
+                '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
+                '</td></tr></table></td></tr></table></body></html>';
+              await fetch('https://api.brevo.com/v3/smtp/email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+                body: JSON.stringify({
+                  sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+                  to: [{ email: donor_email, name: membUser.name || donor_name }],
+                  subject: 'Welcome to ' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership',
+                  htmlContent: membHtml
+                })
+              });
+            } catch (_e) {}
+          }
+        }
+      }
+    }
+
     // Handle subscription payments (tx_ref prefix: sub_)
     if (event === 'charge.completed' && tx_ref.startsWith('sub_')) {
       const tierMap = { monthly: 'Monthly Supporter', annual: 'Annual Patron', founding: 'Founding Partner' };
