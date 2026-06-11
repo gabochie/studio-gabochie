@@ -184,8 +184,8 @@ export function mockDb(tables) {
         // NOT IN (...)
         var ni = part.match(/^((?:\w+\.)?\w+)\s+NOT\s+IN\s+\((.+)\)$/i);
         if (ni) {
-          var vals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
-          acc.push({ col: db._stripTable(ni[1]), op: 'NOT IN', vals: vals }); return acc;
+          var nivals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
+          acc.push({ col: db._stripTable(ni[1]), op: 'NOT IN', vals: nivals }); return acc;
         }
         // Handle `col = ?` or `col != value`
         var m = part.match(/^((?:\w+\.)?\w+)\s*(=|!=|LIKE)\s*(.+)$/i);
@@ -243,11 +243,11 @@ export function mockDb(tables) {
         found = true;
       }
       // SUM(col) AS alias (without COALESCE)
-      var sumRe = /SUM\(\s*(\w+)\s*\)\s+AS\s+(\w+)/gi;
-      while ((m = sumRe.exec(sql)) !== null) {
+      var sumRe2 = /SUM\(\s*(\w+)\s*\)\s+AS\s+(\w+)/gi;
+      while ((m = sumRe2.exec(sql)) !== null) {
         if (result[m[2]] === undefined) {
-          var total = rows.reduce(function(acc, r) { return acc + (parseFloat(r[m[1]]) || 0); }, 0);
-          result[m[2]] = total;
+          var sumTotal = rows.reduce(function(acc, r) { return acc + (parseFloat(r[m[1]]) || 0); }, 0);
+          result[m[2]] = sumTotal;
           found = true;
         }
       }

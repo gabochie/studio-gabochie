@@ -84,8 +84,8 @@ export async function onRequest(context) {
 
     // ── PUT: update contact ──
     if (request.method === 'PUT') {
-      var body = await request.json();
-      var { id, status, campaign, notes, response } = body;
+      var putBody = await request.json();
+      var { id, status, campaign, notes, response } = putBody;
       if (!id) return new Response(JSON.stringify({ status: 'error', message: 'id required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
       var fields = []; params = [];
@@ -105,8 +105,8 @@ export async function onRequest(context) {
 
     // ── DELETE: remove contact ──
     if (request.method === 'DELETE') {
-      var url = new URL(request.url);
-      var delId = url.searchParams.get('id');
+      var delUrl = new URL(request.url);
+      var delId = delUrl.searchParams.get('id');
       if (!delId) return new Response(JSON.stringify({ status: 'error', message: 'id required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       await env.DB.prepare("DELETE FROM cold_outreach WHERE id = ?").bind(delId).run();
       return new Response(JSON.stringify({ status: 'ok', deleted: delId }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
