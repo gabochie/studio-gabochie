@@ -85,6 +85,19 @@ export async function onRequest(context) {
          donor_phone = excluded.donor_phone`
     ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
 
+    // Attribute donation to campaign if tx_ref starts with camp_
+    if (tx_ref.startsWith('camp_') && event === 'charge.completed') {
+      var campSlug = tx_ref.split('_')[1] || '';
+      if (campSlug) {
+        try {
+          var campRow = await db.prepare("SELECT id FROM campaigns WHERE slug = ?").bind(campSlug).first();
+          if (campRow) {
+            await db.prepare("UPDATE donations SET campaign_id = ?, metadata = json_set(COALESCE(NULLIF(metadata,''), '{}'), '$.campaign_slug', ?) WHERE tx_ref = ?").bind(campRow.id, campSlug, tx_ref).run();
+          }
+        } catch (_ce) {}
+      }
+    }
+
     // Update booking status on successful charge
     if (event === 'charge.completed' && tx_ref.startsWith('booking_')) {
       await db.prepare(

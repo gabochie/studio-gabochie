@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundraising Campaigns — GideonAbochie Studio</title>
+<meta name="description" content="Support Bible-based creative education in Ghana. Explore our fundraising campaigns and help us teach creativity, wisdom, and love through Scripture.">
+<meta property="og:title" content="Fundraising Campaigns — GideonAbochie Studio">
+<meta property="og:description" content="Support Bible-based creative education in Ghana. Explore our fundraising campaigns.">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/og-image.png">
+<meta property="og:url" content="https://gideonabochie.org/campaigns/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://gideonabochie.org/campaigns/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+:root{--gold:#C9A84C;--gold-hover:#B8942F;--bg-dark:#0A1628;--bg-card:#0F1F35;--text-body:#CDD5E0;--text-muted:#6B7F9A;--text-dim:#4A5F7A;--border:#1E3456;--green:#34C77B;--red:#E8637A;--blue:#4A8FE4;--radius:12px}
+body{background:var(--bg-dark);color:var(--text-body);font-family:Inter,sans-serif;margin:0}
+.page-hero{text-align:center;padding:80px 20px 40px;background:linear-gradient(180deg,var(--bg-dark) 0%,#0D1E33 100%)}
+.page-hero h1{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:#fff;margin:0 0 12px;letter-spacing:-.02em}
+.page-hero p{font-size:16px;color:var(--text-muted);max-width:600px;margin:0 auto;line-height:1.6}
+.campaigns-grid{max-width:800px;margin:0 auto;padding:40px 20px 80px;display:flex;flex-direction:column;gap:24px}
+.campaign-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:border-color .2s}
+.campaign-card:hover{border-color:var(--gold)}
+.campaign-card h2{margin:0 0 6px;font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff}
+.campaign-card .desc{font-size:14px;color:var(--text-muted);margin:0 0 16px;line-height:1.5}
+.progress-bar-wrap{height:10px;background:var(--bg-dark);border-radius:5px;overflow:hidden;margin-bottom:8px}
+.progress-bar-fill{height:100%;border-radius:5px;transition:width .6s;background:linear-gradient(90deg,var(--gold),#D4B85A)}
+.progress-bar-fill.complete{background:linear-gradient(90deg,var(--green),#5DEAA8)}
+.progress-stats{display:flex;justify-content:space-between;font-size:13px;margin-bottom:16px}
+.progress-stats .raised{color:var(--gold);font-weight:600}
+.progress-stats .raised.complete{color:var(--green)}
+.progress-stats .goal{color:var(--text-dim)}
+.progress-stats .pct{color:var(--text-muted)}
+.campaign-meta{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;font-size:12px}
+.campaign-meta .tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;background:rgba(201,168,76,0.12);color:var(--gold)}
+.campaign-meta .tag.green{background:rgba(52,199,123,0.12);color:var(--green)}
+.campaign-card .cta{margin-top:16px;display:inline-block;padding:12px 28px;background:var(--gold);color:var(--bg-dark);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;text-decoration:none;transition:background .2s}
+.campaign-card .cta:hover{background:var(--gold-hover)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-dim)}
+.empty-state .icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.empty-state h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--text-muted);margin:0 0 8px}
+.empty-state p{font-size:14px;max-width:400px;margin:0 auto;line-height:1.6}
+.sp{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.page-hero h1{font-size:32px}.page-hero{padding:60px 16px 32px}.campaign-card{padding:20px}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-hero">
+  <h1>Fundraising Campaigns</h1>
+  <p>Every book, video, and teaching we create is made possible by people like you. Support a campaign that moves you.</p>
+</div>
+<div class="campaigns-grid" id="campaignList">
+  <div class="sp"></div>
+</div>
+<div id="footer-placeholder"></div>
+<script src="../nav.js"></script>
+<script>
+(async function(){
+  try {
+    var res = await fetch('/api/campaigns');
+    var data = await res.json();
+    var items = data.items || [];
+    var container = document.getElementById('campaignList');
+
+    if (!items.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">&#36;</div><h3>No Active Campaigns</h3><p>There are no fundraising campaigns running right now. Check back soon or <a href="/support/" style="color:var(--gold)">support our mission</a> in other ways.</p></div>';
+      return;
+    }
+
+    container.innerHTML = items.map(function(c) {
+      var pct = c.progress_pct || 0;
+      var barW = Math.min(pct, 100);
+      var isComplete = pct >= 100;
+      var donateRef = c.slug ? 'camp_' + c.slug : '';
+      var currencySymbol = c.currency === 'GHS' ? 'GH\u00a2' : c.currency === 'USD' ? '$' : c.currency;
+      return '<div class="campaign-card">'+
+        '<h2>' + esc(c.name) + '</h2>'+
+        (c.description ? '<p class="desc">' + esc(c.description) + '</p>' : '')+
+        '<div class="campaign-meta">'+
+          '<span class="tag ' + (isComplete ? 'green' : '') + '">' + esc(c.type) + '</span>'+
+          (c.end_date ? '<span class="tag">Ends ' + c.end_date + '</span>' : '')+
+        '</div>'+
+        '<div class="progress-bar-wrap"><div class="progress-bar-fill ' + (isComplete ? 'complete' : '') + '" style="width:' + barW + '%"></div></div>'+
+        '<div class="progress-stats">'+
+          '<span class="raised ' + (isComplete ? 'complete' : '') + '">' + currencySymbol + ' ' + commafy(c.raised_amount) + '</span>'+
+          '<span class="pct">' + pct + '%</span>'+
+          '<span class="goal">of ' + currencySymbol + ' ' + commafy(c.goal_amount) + '</span>'+
+        '</div>'+
+        '<a class="cta" href="/donate/?campaign=' + encodeURIComponent(donateRef) + '" onclick="setCampaignRef(\'' + donateRef + '\')">Donate Now</a>'+
+      '</div>';
+    }).join('');
+
+    window.setCampaignRef = function(ref) {
+      try { sessionStorage.setItem('campaign_ref', ref); } catch(e) {}
+    };
+  } catch(e) {
+    document.getElementById('campaignList').innerHTML = '<div class="empty-state"><div class="icon">&#9888;</div><h3>Unable to load campaigns</h3><p>Please try again later.</p></div>';
+  }
+
+  function esc(s) { var d=document.createElement('div'); d.appendChild(document.createTextNode(s||'')); return d.innerHTML; }
+  function commafy(n) { return (n||0).toLocaleString(); }
+})();
+</script>
+</body>
+</html>

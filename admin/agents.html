@@ -233,6 +233,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <button class="tab-btn" data-tab="agents">Agents <span class="si-badge" id="sbdAgents">0</span></button>
   <button class="tab-btn" data-tab="workflows">Workflows</button>
   <button class="tab-btn" data-tab="campaign">Campaign <span class="si-badge" id="sbdCampaign">0</span></button>
+  <button class="tab-btn" data-tab="fundraising">Fundraising</button>
   <button class="tab-btn" data-tab="runs">Run History</button>
   <button class="tab-btn" data-tab="queue">Queue <span class="si-badge" id="sbdQueue">0</span></button>
   <button class="tab-btn" data-tab="submissions">Submissions <span class="si-badge" id="sbdSubmissions">0</span></button>
@@ -288,6 +289,20 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
   <div class="section-header"><h3>Contacts</h3><span class="sh-count" id="campaignCount">0</span></div>
   <div class="crd"><div class="tbl-wrap" id="campaignList"></div></div>
   <div style="display:flex;gap:8px;justify-content:center;margin-top:14px" id="campaignPagination"></div>
+</div>
+
+<div class="tab-panel" id="panel-fundraising">
+  <div class="page-header"><h2>Fundraising Campaigns</h2><p>Manage donation campaigns, track goals, and view progress</p></div>
+  <div class="metrics" id="fundMetrics"></div>
+  <div class="section-header" style="margin-top:8px">
+    <h3>Campaigns</h3>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary btn-sm" id="fundNewBtn">+ New Campaign</button>
+      <button class="btn btn-secondary btn-sm" id="fundRefreshBtn" onclick="loadFundraisingTab()">&#8635; Refresh</button>
+    </div>
+  </div>
+  <div class="crd"><div class="tbl-wrap" id="fundList"></div></div>
+  <div style="display:flex;gap:8px;justify-content:center;margin-top:14px" id="fundPagination"></div>
 </div>
 
 <div class="tab-panel" id="panel-runs">
@@ -624,8 +639,8 @@ if (!getAdminKey() && typeof ensureAdminKey === 'function') ensureAdminKey();
 <script>
 (function() {
 
-var tabs = ['dashboard','agents','workflows','campaign','runs','queue','submissions','invoices','settings','help','architecture'];
-var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', runs:'Run History', queue:'Queue', submissions:'Submissions', invoices:'Invoices', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
+var tabs = ['dashboard','agents','workflows','campaign','fundraising','runs','queue','submissions','invoices','settings','help','architecture'];
+var tabLabels = { dashboard:'Dashboard', agents:'Agents', workflows:'Workflows', campaign:'Campaign', fundraising:'Fundraising', runs:'Run History', queue:'Queue', submissions:'Submissions', invoices:'Invoices', settings:'Settings', help:'Help & Reference', architecture:'Architecture' };
 var TAB = getHashTab();
 var $ = function(id) { return document.getElementById(id); };
 function _e(s) { var d=document.createElement('div'); d.appendChild(document.createTextNode(s||'')); return d.innerHTML; }
@@ -1461,6 +1476,137 @@ function deleteCampaignContact(id, name) {
   }).catch(function(e){ Toast.error('Failed: ' + e.message); });
 }
 
+/* ── Fundraising Tab ── */
+var fundPage = 1;
+
+function loadFundraisingTab() {
+  $('fundList').innerHTML = '<div style="padding:18px"><div class="sp" style="margin:0 auto 8px"></div><div style="text-align:center;font-size:12px;color:var(--text-dim)">Loading campaigns...</div></div>';
+  API.getCampaigns({ page: fundPage, limit: 50 }).then(function(data){
+    renderFundraising(data);
+  }).catch(function(e){ showError($('fundList'), e.message, loadFundraisingTab); });
+}
+
+function renderFundraising(data) {
+  var items = data.items || [];
+  var total = data.total || 0;
+  $('fundList').innerHTML = '';
+
+  var activeItems = items.filter(function(c){ return c.status === 'active'; });
+  var totalRaised = items.reduce(function(s, c){ return s + (c.raised_amount || 0); }, 0);
+  var totalGoal = items.reduce(function(s, c){ return s + (c.goal_amount || 0); }, 0);
+
+  $('fundMetrics').innerHTML =
+    '<div class="metric"><div class="m-top"><div class="m-label">Active Campaigns</div><div class="m-icon blue">&#9654;</div></div><div class="m-value blue">'+activeItems.length+'</div><div class="m-sub">of '+items.length+' total</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Total Raised</div><div class="m-icon green">&#36;</div></div><div class="m-value green">GH\u00a2 '+totalRaised.toLocaleString()+'</div><div class="m-sub">Across all campaigns</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Total Goal</div><div class="m-icon orange">&#9679;</div></div><div class="m-value dim">GH\u00a2 '+totalGoal.toLocaleString()+'</div><div class="m-sub">'+(totalGoal>0?Math.round((totalRaised/totalGoal)*100)+'% achieved':'No goals set')+'</div></div>'+
+    '<div class="metric"><div class="m-top"><div class="m-label">Campaigns</div><div class="m-icon gold">&#9733;</div></div><div class="m-value">'+items.length+'</div><div class="m-sub">'+data.pages+' pages</div></div>';
+
+  if (!items.length) {
+    showEmpty($('fundList'), '&#36;', 'No campaigns yet', 'Create your first fundraising campaign to start tracking donations toward a goal.');
+    return;
+  }
+
+  var h = '<table class="tbl"><thead><tr><th>Campaign</th><th>Status</th><th>Goal</th><th>Raised</th><th>Progress</th><th>Donors</th><th>Type</th></tr></thead><tbody>';
+  items.forEach(function(c) {
+    var pct = c.progress_pct || 0;
+    var barW = Math.min(pct, 100);
+    var statusClass = c.status === 'active' ? 'tg-green' : c.status === 'draft' ? 'tg-dim' : c.status === 'archived' ? 'tg-red' : 'tg-purple';
+    h += '<tr style="cursor:pointer" onclick="showFundDetail('+c.id+')">'+
+      '<td style="font-weight:500;color:var(--text-primary)">'+_e(c.name)+'</td>'+
+      '<td><span class="tg '+statusClass+'">'+_e(c.status)+'</span></td>'+
+      '<td>'+_e(c.currency)+' '+(c.goal_amount||0).toLocaleString()+'</td>'+
+      '<td style="color:var(--green);font-weight:600">'+_e(c.currency)+' '+(c.raised_amount||0).toLocaleString()+'</td>'+
+      '<td style="min-width:120px"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:6px;background:var(--bg-primary);border-radius:3px;overflow:hidden"><div style="width:'+barW+'%;height:100%;background:'+(pct>=100?'var(--green)':'var(--gold)')+';border-radius:3px;transition:width .4s"></div></div><span style="font-size:11px;font-weight:600">'+pct+'%</span></div></td>'+
+      '<td style="font-size:12px">'+(c.donor_count||0)+'</td>'+
+      '<td><span class="tg tg-dim">'+_e(c.type)+'</span></td>'+
+      '</tr>';
+  });
+  h += '</tbody></table>';
+  $('fundList').innerHTML = h;
+
+  if (data.pages > 1) {
+    var pg = '';
+    for (var i = 1; i <= data.pages; i++) {
+      pg += '<button class="btn btn-sm '+(i===fundPage?'btn-primary':'btn-secondary')+'" onclick="fundPage='+i+';loadFundraisingTab()">'+i+'</button>';
+    }
+    $('fundPagination').innerHTML = pg;
+  } else {
+    $('fundPagination').innerHTML = '';
+  }
+}
+
+function showFundDetail(id) {
+  API.getCampaigns({ limit: 200 }).then(function(data){
+    var all = data.items || [];
+    var c = all.filter(function(x){ return x.id === id; })[0];
+    if (!c) { Toast.error('Campaign not found'); return; }
+
+    var pct = c.progress_pct || 0;
+    var barW = Math.min(pct, 100);
+    var statusClass = c.status === 'active' ? 'tg-green' : c.status === 'draft' ? 'tg-dim' : c.status === 'archived' ? 'tg-red' : 'tg-purple';
+
+    var h = '<div style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><h3 style="font-family:var(--font-heading);font-size:18px;color:var(--text-primary);margin:0">'+_e(c.name)+'</h3> <span class="tg '+statusClass+'">'+_e(c.status)+'</span></div>'+
+      (c.description ? '<p style="font-size:13px;color:var(--text-muted);margin:0 0 10px">'+_e(c.description)+'</p>' : '')+
+      '<div class="m-detail-row"><span class="mdl-l">Goal</span><span class="mdl-v" style="font-weight:600">'+_e(c.currency)+' '+(c.goal_amount||0).toLocaleString()+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Raised</span><span class="mdl-v" style="font-weight:600;color:var(--green)">'+_e(c.currency)+' '+(c.raised_amount||0).toLocaleString()+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Progress</span><span class="mdl-v"><div style="width:200px;height:8px;background:var(--bg-primary);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px"><div style="width:'+barW+'%;height:100%;background:'+(pct>=100?'var(--green)':'var(--gold)')+';border-radius:4px"></div></div>'+pct+'%</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Type</span><span class="mdl-v">'+_e(c.type)+'</span></div>'+
+      (c.start_date ? '<div class="m-detail-row"><span class="mdl-l">Start</span><span class="mdl-v">'+_e(c.start_date)+'</span></div>' : '')+
+      (c.end_date ? '<div class="m-detail-row"><span class="mdl-l">End</span><span class="mdl-v">'+_e(c.end_date)+'</span></div>' : '')+
+      '<div class="m-detail-row"><span class="mdl-l">Slug</span><span class="mdl-v" style="font-family:monospace;font-size:12px">'+_e(c.slug)+'</span></div>'+
+      '<div class="m-detail-row"><span class="mdl-l">Donors</span><span class="mdl-v">'+(c.donor_count||0)+'</span></div>'+
+      (c.cover_image ? '<div class="m-detail-row"><span class="mdl-l">Cover</span><span class="mdl-v" style="font-size:11px;word-break:break-all">'+_e(c.cover_image)+'</span></div>' : '')+
+      '</div>';
+
+    h += '<div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+      '<button class="btn btn-sm btn-primary" onclick="quickEditFund('+c.id+',\'name\')">&#9998; Edit Name</button>'+
+      '<button class="btn btn-sm btn-primary" onclick="quickEditFund('+c.id+',\'goal_amount\')">&#9998; Edit Goal</button>'+
+      '<button class="btn btn-sm '+(c.status==='draft'?'btn-primary':'btn-secondary')+'" onclick="quickSetStatus('+c.id+',\'draft\')">Draft</button>'+
+      '<button class="btn btn-sm '+(c.status==='active'?'btn-primary':'btn-secondary')+'" onclick="quickSetStatus('+c.id+',\'active\')">Activate</button>'+
+      '<button class="btn btn-sm '+(c.status==='paused'?'btn-primary':'btn-secondary')+'" onclick="quickSetStatus('+c.id+',\'paused\')">Pause</button>'+
+      '<button class="btn btn-sm btn-secondary" onclick="quickEditFund('+c.id+',\'description\')">&#9998; Description</button>'+
+      '<button class="btn btn-sm" style="background:transparent;color:var(--red);border-color:var(--red)" onclick="quickArchiveFund('+c.id+')">&#10007; Archive</button>'+
+      '</div></div>';
+
+    $('detailTitle').textContent = c.name;
+    $('detailBody').innerHTML = h;
+    $('detailModal').classList.add('open');
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
+function quickEditFund(id, field) {
+  var labels = { name:'Campaign name', goal_amount:'Goal amount', description:'Description' };
+  var current = '';
+  var items = AppState.get('campaigns') || [];
+  var c = items.filter(function(x){ return x.id === id; })[0];
+  if (c) current = (c[field] !== undefined && c[field] !== null) ? String(c[field]) : '';
+  var val = prompt(labels[field] || 'Value', current);
+  if (val === null) return;
+  var data = {};
+  if (field === 'goal_amount') val = parseFloat(val) || 0;
+  data[field] = val;
+  API.updateCampaign(id, data).then(function(d){
+    if (d.status === 'ok') { Toast.success('Updated'); $('detailModal').classList.remove('open'); loadFundraisingTab(); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
+function quickSetStatus(id, status) {
+  API.updateCampaign(id, { status: status }).then(function(d){
+    if (d.status === 'ok') { Toast.success('Status: ' + status); $('detailModal').classList.remove('open'); loadFundraisingTab(); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
+function quickArchiveFund(id) {
+  if (!confirm('Archive this campaign? It will be hidden from public view.')) return;
+  API.archiveCampaign(id).then(function(d){
+    if (d.status === 'ok') { Toast.success('Archived'); $('detailModal').classList.remove('open'); loadFundraisingTab(); }
+    else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
 function switchTab(name) {
   TAB = name; setHashTab(name);
   document.querySelectorAll('.tab-panel').forEach(function(el){el.classList.remove('active');});
@@ -1471,6 +1617,7 @@ function switchTab(name) {
   else if(name==='agents') loadAgentsTab();
   else if(name==='workflows') loadWorkflowsTab();
   else if(name==='campaign') loadCampaignTab();
+  else if(name==='fundraising') loadFundraisingTab();
   else if(name==='runs') loadRunsTab();
   else if(name==='queue') loadQueueTab();
   else if(name==='submissions') loadSubmissionsTab();
@@ -1486,6 +1633,19 @@ document.addEventListener('DOMContentLoaded', function() {
   $('wfNewBtn').addEventListener('click', function(){ $('wfName').value='';$('wfDesc').value='';$('wfModal').classList.add('open'); });
   $('wfConfirm').addEventListener('click', createWorkflow);
   $('processBtn').addEventListener('click', function(){ processQueue(10); });
+  $('fundNewBtn').addEventListener('click', function(){
+    var name = prompt('Campaign name:');
+    if (!name) return;
+    var goal = prompt('Goal amount (e.g. 5000):', '5000');
+    if (goal === null) return;
+    goal = parseFloat(goal) || 0;
+    var desc = prompt('Short description (optional):');
+    if (desc === null) desc = '';
+    API.createCampaign({ name: name, goal_amount: goal, description: desc || '', status: 'draft' }).then(function(d){
+      if (d.status === 'ok') { Toast.success('Campaign created!'); loadFundraisingTab(); }
+      else throw new Error(d.message);
+    }).catch(function(e){ Toast.error('Failed: '+e.message); });
+  });
   $('runFilter').addEventListener('change', function(){ loadRunsTab(); });
   $('campaignStatusFilter').addEventListener('change', function(){ campaignPage = 1; loadCampaignTab(); });
   $('campaignCategoryFilter').addEventListener('change', function(){ campaignPage = 1; loadCampaignTab(); });
@@ -1530,6 +1690,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(document.hidden) return;
     if(TAB==='dashboard') loadDashboard();
     else if(TAB==='campaign') loadCampaignTab();
+    else if(TAB==='fundraising') loadFundraisingTab();
     else if(TAB==='queue') API.getQueue().then(renderQueue);
     else if(TAB==='submissions') loadSubmissionsTab();
     else if(TAB==='invoices') loadInvoicesTab();
@@ -1557,7 +1718,13 @@ window.agentAction = agentAction;
 window.loadInvoicesTab = loadInvoicesTab;
 window.loadSubmissionsTab = loadSubmissionsTab;
 window.loadCampaignTab = loadCampaignTab;
+window.loadFundraisingTab = loadFundraisingTab;
+window.showFundDetail = showFundDetail;
+window.quickEditFund = quickEditFund;
+window.quickSetStatus = quickSetStatus;
+window.quickArchiveFund = quickArchiveFund;
 window.campaignPage = 1;
+window.fundPage = 1;
 
 })();
 </script>

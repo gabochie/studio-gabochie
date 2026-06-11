@@ -226,6 +226,28 @@ var API = (function() {
     return adminRequest('PUT', '/invoices?id=' + encodeURIComponent(id), data);
   }
 
+  function getCampaigns(params) {
+    var q = '';
+    if (params) {
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.page) q += '&page=' + params.page;
+      if (params.limit) q += '&limit=' + params.limit;
+    }
+    return adminRequest('GET', '/campaigns?' + q.substring(1));
+  }
+
+  function createCampaign(data) {
+    return adminRequest('POST', '/campaigns', data);
+  }
+
+  function updateCampaign(id, data) {
+    return adminRequest('PUT', '/campaigns', Object.assign({ id: id }, data));
+  }
+
+  function archiveCampaign(id) {
+    return adminRequest('DELETE', '/campaigns?id=' + encodeURIComponent(id));
+  }
+
   function getSubmissions(params) {
     var q = '';
     if (params) {
@@ -279,6 +301,10 @@ var API = (function() {
     getInvoices: getInvoices,
     updateInvoice: updateInvoice,
     getEmailQueue: getEmailQueue,
+    getCampaigns: getCampaigns,
+    createCampaign: createCampaign,
+    updateCampaign: updateCampaign,
+    archiveCampaign: archiveCampaign,
     getSubmissions: getSubmissions,
     updateSubmission: updateSubmission,
     orchestrate: orchestrate,

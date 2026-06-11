@@ -692,9 +692,11 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)`,
       `CREATE INDEX IF NOT EXISTS idx_invoices_type ON invoices(invoice_type)`,
       `CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number)`,
-      // Outreach prompt for cold newsletter
+      // Outreach prompts
       `INSERT OR IGNORE INTO agent_prompts (agent_type, prompt_key, system_prompt, user_template) VALUES
-        ('outreach', 'cold_newsletter', 'You are a cold email outreach specialist for GideonAbochie Studio, a Bible-based ministry teaching creativity, love, and wisdom. Your goal is to warmly introduce the ministry to cold contacts and invite them to subscribe or engage. Tone: warm, professional, non-pushy. Do not sound spammy or salesy.', 'Write a cold outreach email for {{name}} (category: {{category}} from {{region}}). The recipient is a cold contact who has not interacted with us before. Introduce GideonAbochie Studio as a Bible-based ministry that teaches creativity, wisdom, and love through Scripture. Mention one relevant offering: The Spirit of God in Genesis program, free books (The Bible as Kingdom OS, The Divine Algorithm), or the weekly newsletter. Keep it under 200 words. End with a gentle invitation to visit gideonabochie.org.')
+        ('outreach', 'cold_newsletter', 'You are a cold email outreach specialist for GideonAbochie Studio, a Bible-based ministry teaching creativity, love, and wisdom. Your goal is to warmly introduce the ministry to cold contacts and invite them to subscribe or engage. Tone: warm, professional, non-pushy. Do not sound spammy or salesy.', 'Write a cold outreach email for {{name}} (category: {{category}} from {{region}}). The recipient is a cold contact who has not interacted with us before. Introduce GideonAbochie Studio as a Bible-based ministry that teaches creativity, wisdom, and love through Scripture. Mention one relevant offering: The Spirit of God in Genesis program, free books (The Bible as Kingdom OS, The Divine Algorithm), or the weekly newsletter. Keep it under 200 words. End with a gentle invitation to visit gideonabochie.org.'),
+        ('outreach', 'fundraising_campaign', 'You are a fundraising email specialist for GideonAbochie Studio, a Bible-based ministry in Ghana that creates books, courses, and resources on creativity, wisdom, and love. Your goal is to write compelling fundraising emails that inspire donations for specific campaigns. Tone: warm, urgent, mission-driven. Reference the vision and impact of the ministry.', 'Write a fundraising email for campaign "{{campaign_name}}" which has a goal of {{campaign_goal}} {{campaign_currency}} and has raised {{campaign_raised}} so far ({{campaign_pct}}% complete). The campaign is: {{campaign_description}}. The recipient is {{recipient_name}}. Write a compelling email that explains the campaign purpose, why support matters, and includes a clear call to action to donate via gideonabochie.org. Keep it under 250 words. End with the campaign slug "{{campaign_slug}}" as the donation reference.'),
+        ('outreach', 'fundraising_thank_you', 'You are a donor stewardship specialist for GideonAbochie Studio. Your goal is to write warm, personal thank-you emails that make donors feel appreciated and connected to the mission. Tone: grateful, personal, warm.', 'Write a thank-you email to {{recipient_name}} who just donated {{donation_amount}} {{donation_currency}} to the campaign "{{campaign_name}}". Explain how their gift contributes to the campaign goal of {{campaign_goal}} {{campaign_currency}} and the broader mission of teaching creativity, wisdom, and love through Scripture. Keep it under 150 words and end with a blessing.')
       `,
       // CI/CD pipeline reports
       `CREATE TABLE IF NOT EXISTS ci_reports (
@@ -1082,6 +1084,27 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `CREATE INDEX IF NOT EXISTS idx_quality_reports_run ON quality_reports(run_id)`,
       `CREATE INDEX IF NOT EXISTS idx_quality_reports_category ON quality_reports(category)`,
       `CREATE INDEX IF NOT EXISTS idx_quality_reports_status ON quality_reports(status)`,
+      // ── Fundraising Campaigns ──
+      `CREATE TABLE IF NOT EXISTS campaigns (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        description TEXT DEFAULT '',
+        goal_amount REAL NOT NULL DEFAULT 0,
+        raised_amount REAL NOT NULL DEFAULT 0,
+        currency TEXT NOT NULL DEFAULT 'GHS',
+        type TEXT NOT NULL DEFAULT 'donation',
+        status TEXT NOT NULL DEFAULT 'draft',
+        cover_image TEXT DEFAULT '',
+        start_date TEXT DEFAULT '',
+        end_date TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_campaigns_slug ON campaigns(slug)`,
+      `ALTER TABLE donations ADD COLUMN campaign_id INTEGER DEFAULT 0`,
+      `CREATE INDEX IF NOT EXISTS idx_donations_campaign ON donations(campaign_id)`,
     ];
     const results = [];
     for (const sql of statements) {
