@@ -2510,7 +2510,7 @@ function subSubmit(e) {
     body: fd
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.status === 'ok') {
-      msg.textContent = d.existing ? 'You\u2019re already subscribed!' : '\u2713 Welcome to The Studio Weekly!';
+      msg.textContent = d.confirmed ? 'You\u2019re already subscribed!' : 'Check your email to confirm!';
       msg.style.color = '#22C55E';
       document.getElementById('subEmail').value = '';
     } else {
