@@ -1,4 +1,4 @@
-import { queueEmail, welcomeFollowup, daysFromNow } from '../../email/_send.js';
+import { queueEmail, welcomeFollowup, daysFromNow } from '../email/_send.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
