@@ -103,6 +103,33 @@ export function mockDb(tables) {
           return { results: matched.slice() };
         },
         async run() {
+          var sql = db._lastSql;
+          // Track auto-increment IDs per table
+          if (!db._autoId) db._autoId = {};
+          // INSERT INTO table (col1, col2, ...) VALUES (?, ?, ...)
+          var insertRe = /INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i;
+          var im = sql.match(insertRe);
+          if (im) {
+            var tbl = im[1];
+            if (!db._tables[tbl]) db._tables[tbl] = [];
+            var cols = im[2].split(',').map(function(c) { return c.trim(); });
+            var row = {};
+            var valParts = im[3].split(',').map(function(v) { return v.trim(); });
+            var bi = 0;
+            for (var ci = 0; ci < cols.length; ci++) {
+              if (valParts[ci] === '?') {
+                row[cols[ci]] = chain._bound[bi] !== undefined ? chain._bound[bi] : '';
+                bi++;
+              } else {
+                row[cols[ci]] = valParts[ci].replace(/^['"]|['"]$/g, '');
+              }
+            }
+            if (!db._autoId[tbl]) db._autoId[tbl] = db._tables[tbl].length;
+            db._autoId[tbl]++;
+            row.id = db._autoId[tbl];
+            db._tables[tbl].push(row);
+            return { success: true, meta: { changes: 1, last_row_id: row.id } };
+          }
           return { success: true, meta: { changes: 1 } };
         },
       };
@@ -123,6 +150,12 @@ export function mockDb(tables) {
       return db._lastSql && /WHERE/i.test(db._lastSql);
     },
 
+    _stripTable(col) {
+      // Remove table alias prefix: co.category -> category
+      var dot = col.indexOf('.');
+      return dot >= 0 ? col.slice(dot + 1) : col;
+    },
+
     _parseWhere(bound) {
       bound = bound || [];
       var wherePart = db._lastSql.split(/WHERE/i)[1];
@@ -130,43 +163,40 @@ export function mockDb(tables) {
       // Strip ORDER BY and LIMIT clauses from WHERE part
       wherePart = wherePart.replace(/\s+ORDER\s+BY\s+.+$/i, '');
       wherePart = wherePart.replace(/\s+LIMIT\s+\d+(?:\s+OFFSET\s+\d+)?$/i, '');
-      // Handle parenthesized OR groups like (email LIKE ? OR name LIKE ?)
-      var orRe = /\(\s*(\w+)\s+LIKE\s+\?\s+OR\s+\1\s+LIKE\s+\?\s*\)/i;
-      wherePart = wherePart.replace(orRe, function(match, col) {
-        return '1=1';
-      });
+      // Replace parenthesized OR groups with 1=1 (wildcard approach)
+      var orRe = /\(\s*(?:\w+\.)?\w+\s+LIKE\s+\?\s+(?:OR\s+(?:\w+\.)?\w+\s+LIKE\s+\?\s*)+\)/i;
+      wherePart = wherePart.replace(orRe, '1=1');
       var parts = wherePart.split(/ AND /i);
       return parts.reduce(function (acc, part) {
         part = part.trim();
         if (part === '1=1') return acc;
         // Handle simple column = column (e.g. 1=1)
-        if (/^\w+\s*=\s*\w+$/.test(part)) return acc;
+        if (/^(?:\w+\.)?\w+\s*=\s*(?:\w+\.)?\w+$/.test(part)) return acc;
         // IS NOT NULL
-        var nn = part.match(/^(\w+)\s+IS\s+NOT\s+NULL$/i);
-        if (nn) { acc.push({ col: nn[1], op: 'IS NOT NULL' }); return acc; }
+        var nn = part.match(/^((?:\w+\.)?\w+)\s+IS\s+NOT\s+NULL$/i);
+        if (nn) { acc.push({ col: db._stripTable(nn[1]), op: 'IS NOT NULL' }); return acc; }
         // IN (...)
-        var inM = part.match(/^(\w+)\s+IN\s+\((.+)\)$/i);
+        var inM = part.match(/^((?:\w+\.)?\w+)\s+IN\s+\((.+)\)$/i);
         if (inM) {
           var vals = inM[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
-          acc.push({ col: inM[1], op: 'IN', vals: vals }); return acc;
+          acc.push({ col: db._stripTable(inM[1]), op: 'IN', vals: vals }); return acc;
         }
         // NOT IN (...)
-        var ni = part.match(/^(\w+)\s+NOT\s+IN\s+\((.+)\)$/i);
+        var ni = part.match(/^((?:\w+\.)?\w+)\s+NOT\s+IN\s+\((.+)\)$/i);
         if (ni) {
           var vals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
-          acc.push({ col: ni[1], op: 'NOT IN', vals: vals }); return acc;
+          acc.push({ col: db._stripTable(ni[1]), op: 'NOT IN', vals: vals }); return acc;
         }
-        // Handle `col = ?` or `col != value` — capture only up to the value or ?
-        var m = part.match(/^(\w+(?:\.\w+)?)\s*(=|!=|LIKE)\s*(.+)$/i);
+        // Handle `col = ?` or `col != value`
+        var m = part.match(/^((?:\w+\.)?\w+)\s*(=|!=|LIKE)\s*(.+)$/i);
         if (!m) return acc;
         var raw = m[3].trim();
-        // If the value is `?` followed by nothing else (after stripping ORDER BY/LIMIT above), keep it as ?
-        if (raw === '?') { acc.push({ col: m[1], val: '?', isLike: m[2] === 'LIKE', op: m[2] }); return acc; }
-        // Strip quotes
+        var col = db._stripTable(m[1]);
+        if (raw === '?') { acc.push({ col: col, val: '?', isLike: m[2] === 'LIKE', op: m[2] }); return acc; }
         raw = raw.replace(/^['"]|['"]$/g, '');
         var op = m[2];
-        if (op === 'LIKE') { acc.push({ col: m[1], val: raw, isLike: true, op: '=' }); }
-        else { acc.push({ col: m[1], val: raw, op: op }); }
+        if (op === 'LIKE') { acc.push({ col: col, val: raw, isLike: true, op: '=' }); }
+        else { acc.push({ col: col, val: raw, op: op }); }
         return acc;
       }, []);
     },

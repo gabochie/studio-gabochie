@@ -1,14 +1,19 @@
 import { requireAdminAuth } from './_admin-auth.js';
 
+function corsHeaders(extraMethods) {
+  return { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE' + (extraMethods ? ', ' + extraMethods : ''), 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
+}
+
 export async function onRequest(context) {
   var { request, env } = context;
-  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
+  var cors = corsHeaders();
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   var authErr = requireAdminAuth(request, env);
   if (authErr) return authErr;
 
   try {
+    // ── GET: list/search ──
     if (request.method === 'GET') {
       var url = new URL(request.url);
       var st = url.searchParams.get('status') || '';
@@ -44,6 +49,40 @@ export async function onRequest(context) {
       }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
+    // ── POST: create single or bulk import ──
+    if (request.method === 'POST') {
+      var body = await request.json();
+      var contacts = body.contacts || [body];
+      if (!contacts.length) return new Response(JSON.stringify({ status: 'error', message: 'No contacts provided' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+
+      var imported = []; var errors = [];
+      for (var i = 0; i < contacts.length; i++) {
+        var c = contacts[i];
+        if (!c.name || (!c.email && !c.phone)) {
+          errors.push({ index: i, name: c.name || '', message: 'name + (email or phone) required' });
+          continue;
+        }
+        try {
+          var result = await env.DB.prepare(
+            'INSERT INTO cold_outreach (name, phone, email, website, address, category, source, region, country, campaign, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+          ).bind(c.name, c.phone || '', c.email || '', c.website || '', c.address || '', c.category || '', c.source || '', c.region || '', c.country || '', c.campaign || '', c.notes || '').run();
+          var row = await env.DB.prepare('SELECT * FROM cold_outreach WHERE id = ?').bind(result.meta.last_row_id).first();
+          imported.push(row);
+        } catch (e) {
+          errors.push({ index: i, name: c.name, message: e.message });
+        }
+      }
+
+      return new Response(JSON.stringify({
+        status: 'ok',
+        imported: imported.length,
+        errors: errors.length,
+        items: imported,
+        errors_list: errors
+      }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
+
+    // ── PUT: update contact ──
     if (request.method === 'PUT') {
       var body = await request.json();
       var { id, status, campaign, notes, response } = body;
@@ -62,6 +101,15 @@ export async function onRequest(context) {
       await env.DB.prepare("UPDATE cold_outreach SET " + fields.join(', ') + " WHERE id = ?").bind(...params).run();
       var updated = await env.DB.prepare("SELECT * FROM cold_outreach WHERE id = ?").bind(id).first();
       return new Response(JSON.stringify({ status: 'ok', item: updated }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
+
+    // ── DELETE: remove contact ──
+    if (request.method === 'DELETE') {
+      var url = new URL(request.url);
+      var delId = url.searchParams.get('id');
+      if (!delId) return new Response(JSON.stringify({ status: 'error', message: 'id required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      await env.DB.prepare("DELETE FROM cold_outreach WHERE id = ?").bind(delId).run();
+      return new Response(JSON.stringify({ status: 'ok', deleted: delId }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

@@ -193,6 +193,14 @@ var API = (function() {
     return adminRequest('PUT', '/cold-outreach', Object.assign({ id: id }, data));
   }
 
+  function importColdOutreach(contacts) {
+    return adminRequest('POST', '/cold-outreach', { contacts: Array.isArray(contacts) ? contacts : [contacts] });
+  }
+
+  function deleteColdOutreach(id) {
+    return adminRequest('DELETE', '/cold-outreach?id=' + encodeURIComponent(id));
+  }
+
   function getInvoices(params) {
     var q = '';
     if (params) {
@@ -266,6 +274,8 @@ var API = (function() {
     deleteAgent: deleteAgent,
     getColdOutreach: getColdOutreach,
     updateColdOutreach: updateColdOutreach,
+    importColdOutreach: importColdOutreach,
+    deleteColdOutreach: deleteColdOutreach,
     getInvoices: getInvoices,
     updateInvoice: updateInvoice,
     getEmailQueue: getEmailQueue,
