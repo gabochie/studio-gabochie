@@ -75,29 +75,17 @@ export async function onRequest(context) {
   const path = url.pathname;
   const host = request.headers.get('Host') || '';
 
-  // News subdomain: serve from /news/ directory
-  if (host === 'news.gideonabochie.org' || host.startsWith('news.')) {
-    // API requests pass through to main site function handlers
-    if (path.startsWith('/api/')) {
-      return context.next();
-    }
-    // Try /news/{path} first
-    var assetPath = path === '/' ? '/news/index.html' : '/news' + path;
-    var response = await env.ASSETS.fetch(new URL(assetPath, request.url));
-    // Fall back to root for shared assets (CSS, images, etc.)
-    if (response.status === 404) {
-      response = await env.ASSETS.fetch(request.url);
-    }
-    return response;
-  }
+  // Determine if this is the news subdomain
+  var isNews = host === 'news.gideonabochie.org' || host.startsWith('news.');
 
   // Public paths — no login required
-  const publicPaths = [
-    '/admin/', '/api/', '/assets/',
+  var publicPaths = [
+    '/api/', '/assets/',
     '/login', '/register',
     '/coming-soon.html', '/donate.html', '/donate',
     '/favicon.ico', '/robots.txt', '/sitemap.xml'
   ];
+  if (!isNews) publicPaths.push('/admin/');
   var isPublic = false;
   for (var i = 0; i < publicPaths.length; i++) {
     if (path === publicPaths[i] || path.startsWith(publicPaths[i])) {
@@ -105,43 +93,56 @@ export async function onRequest(context) {
       break;
     }
   }
-  // Root landing page is always public
+  // Root landing page is always public (both domains)
   if (path === '/' || path === '/index.html') isPublic = true;
 
-  if (isPublic) {
-    // Check maintenance mode for non-API, non-admin paths
-    if (!path.startsWith('/api/') && !path.startsWith('/admin/') && env.DB) {
+  // Validate session once for gated paths
+  var sessionValid = false;
+  if (env.DB && !isPublic) {
+    var cookie = request.headers.get('Cookie') || '';
+    var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
+    if (m) {
       try {
-        const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
-        if (row && row.value === 'true') {
-          return new Response(COMING_SOON, {
-            status: 200,
-            headers: { 'Content-Type': 'text/html;charset=utf-8' }
-          });
-        }
+        var row = await env.DB.prepare(
+          "SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime('now')"
+        ).bind(m[1]).first();
+        if (row) sessionValid = true;
       } catch (e) {}
     }
-    return context.next();
   }
 
-  // Membership gating — require valid ga_session cookie
-  var cookie = request.headers.get('Cookie') || '';
-  var token = '';
-  var match = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
-  if (match) token = match[1];
+  // Redirect unauthenticated users for non-public paths
+  if (!isPublic && !sessionValid) {
+    var loginUrl = isNews ? 'https://gideonabochie.org/login/?redirect=' + encodeURIComponent(path) : '/login/?redirect=' + encodeURIComponent(path);
+    return new Response(null, {
+      status: 302,
+      headers: { 'Location': loginUrl }
+    });
+  }
 
-  if (token && env.DB) {
+  // News subdomain: serve from /news/ directory
+  if (isNews) {
+    if (path.startsWith('/api/')) return context.next();
+    var assetPath = path === '/' ? '/news/index.html' : '/news' + path;
+    var response = await env.ASSETS.fetch(new URL(assetPath, request.url));
+    if (response.status === 404) {
+      response = await env.ASSETS.fetch(request.url);
+    }
+    return response;
+  }
+
+  // Check maintenance mode for main domain public pages
+  if (isPublic && !path.startsWith('/api/') && !path.startsWith('/admin/') && env.DB) {
     try {
-      var row = await env.DB.prepare(
-        "SELECT user_id FROM sessions WHERE id = ? AND expires_at > datetime('now')"
-      ).bind(token).first();
-      if (row) return context.next();
+      const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'coming_soon'").first();
+      if (row && row.value === 'true') {
+        return new Response(COMING_SOON, {
+          status: 200,
+          headers: { 'Content-Type': 'text/html;charset=utf-8' }
+        });
+      }
     } catch (e) {}
   }
 
-  // Not authenticated — redirect to login
-  return new Response(null, {
-    status: 302,
-    headers: { 'Location': '/login/?redirect=' + encodeURIComponent(path) }
-  });
+  return context.next();
 }
