@@ -63,7 +63,7 @@ export async function onRequest(context) {
       '</style></head><body>' +
       '<div class="no-print" style="margin-bottom:12px"><button onclick="window.print()">Download / Print PDF</button></div>' +
       '<div class="inv">' +
-      '<div class="inv-hdr"><h1>GideonAbochie Studio</h1><p>Official Invoice</p></div>' +
+      '<div class="inv-hdr"><img src="https://gideonabochie.org/assets/images/logo.png" alt="GideonAbochie Studio" style="height:40px;margin-bottom:8px"><h1>GideonAbochie Studio</h1><p>Official Invoice</p></div>' +
       '<div class="inv-body">' +
       '<div class="inv-meta">' +
       '<div><div class="lbl">Invoice #</div><div class="val num">' + invoice.invoice_number + '</div></div>' +

@@ -153,7 +153,7 @@ if (!tx_ref && !email) {
     if (d.status === 'ok' && d.books && d.books.length) {
       document.getElementById('successView').style.display = 'block';
       var html = d.books.filter(function(b){return b.slug !== 'premium-bundle'}).map(function(b){
-        return '<div class="book-item"><span class="title">' + b.title + '</span><a href="/api/books/serve?slug=' + b.slug + '&tx_ref=' + encodeURIComponent(tx_ref) + '" class="badge" target="_blank">Download</a></div>';
+        return '<div class="book-item"><span class="title">' + b.title + '</span><a href="/api/books/serve?slug=' + b.slug + '&tx_ref=' + encodeURIComponent(tx_ref) + '" class="btn btn-gold btn-sm" target="_blank">Download</a></div>';
       }).join('');
       document.getElementById('bookList').innerHTML = html;
       var tb = document.getElementById('thankYouBtn');

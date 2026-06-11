@@ -2505,6 +2505,8 @@ function subSubmit(e) {
   var fd = new FormData();
   fd.append('email', email);
   fd.append('source', 'newsletter_subdomain');
+  var ref = new URLSearchParams(window.location.search).get('ref') || '';
+  if (ref) fd.append('ref', ref);
   fetch('https://gideonabochie.org/api/subscribe', {
     method: 'POST',
     body: fd
