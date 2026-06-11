@@ -467,6 +467,26 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
         ('premium', 'Premium', 'Full course access + exclusive content', 99, 6, '["All courses","Download materials","Premium articles","Priority support"]', 1),
         ('vip', 'VIP', 'Everything plus personal mentorship', 299, 17, '["Everything in Premium","1-on-1 mentorship","Early access","Certificate fees included"]', 2)
       `,
+      `CREATE TABLE IF NOT EXISTS unified_tiers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        monthly_price_ghs REAL NOT NULL DEFAULT 0,
+        yearly_price_ghs REAL NOT NULL DEFAULT 0,
+        features TEXT DEFAULT '[]',
+        badge TEXT DEFAULT '',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        flw_plan_id TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `INSERT OR IGNORE INTO unified_tiers (slug, name, description, monthly_price_ghs, yearly_price_ghs, features, badge, sort_order) VALUES
+        ('free', 'Free', 'Get started with public content and the newsletter.', 0, 0, '["Browse all courses","Read articles & books","Subscribe to newsletter"]', '', 0),
+        ('supporter', 'Supporter', 'Early access, supporter badge, and ad-free reading.', 50, 500, '["All Free features","Early access to new content","Supporter badge on profile","Monthly teaching video","Ad-free newsletter","Direct email access to Gideon"]', '', 1),
+        ('scholar', 'Scholar', 'Full course access, all books PDF, and premium content.', 99, 990, '["All Supporter features","Full course access","Download study materials","Premium articles & content","All books in PDF format","Priority support"]', 'Most Popular', 2),
+        ('patron', 'Patron', 'Everything plus personal mentorship and certificate fees.', 299, 2990, '["All Scholar features","1-on-1 mentorship sessions","Early access to new content","Certificate fees included","Quarterly video call with Gideon","Name listed in supporter roll"]', '', 3),
+        ('founding', 'Founding Partner', 'Top-tier partnership with recognition and exclusive community.', 0, 5000, '["All Patron features","Name featured on website","Private Founding Partner community","Co-branded content opportunities","Priority feature requests","Exclusive event invitations"]', 'Flagship', 4)
+      `,
       `ALTER TABLE store_orders ADD COLUMN user_id INTEGER DEFAULT 0`,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (

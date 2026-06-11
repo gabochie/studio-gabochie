@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Choose your membership tier at GideonAbochie Studio — Free, Premium, or VIP. Unlock courses, downloads, mentorship, and more.">
+<meta name="description" content="Support the mission and unlock courses, books, and mentorship. Choose from Free, Supporter, Scholar, Patron, or Founding Partner.">
 <meta property="og:title" content="Membership — GideonAbochie Studio">
-<meta property="og:description" content="Pick the plan that fits your journey. Free access to start, Premium and VIP for deeper learning, mentorship, and community.">
+<meta property="og:description" content="One unified ladder: support the mission, access courses, download books, and get personal mentorship. Find your tier.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/membership/">
 <meta property="og:image" content="https://gideonabochie.org/assets/images/banner.jpg">
@@ -20,7 +20,7 @@
 <script src="../assets/js/main.js"></script>
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Product","name":"GideonAbochie Studio Membership","offers":{"@type":"AggregateOffer","lowPrice":0,"highPrice":299,"priceCurrency":"GHS","offerCount":3,"offers":[{"@type":"Offer","name":"Free","price":0},{"@type":"Offer","name":"Premium","price":99},{"@type":"Offer","name":"VIP","price":299}]}}
+{"@context":"https://schema.org","@type":"Product","name":"GideonAbochie Studio Membership","offers":{"@type":"AggregateOffer","lowPrice":0,"highPrice":5000,"priceCurrency":"GHS","offerCount":5,"offers":[{"@type":"Offer","name":"Free","price":0},{"@type":"Offer","name":"Supporter","price":50},{"@type":"Offer","name":"Scholar","price":99},{"@type":"Offer","name":"Patron","price":299},{"@type":"Offer","name":"Founding Partner","price":5000}]}}
 </script>
 <style>
 :root{--content-max:1440px}
@@ -39,7 +39,12 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 
 /* Plans */
 .plans-section{padding:60px 0}
-.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:960px;margin:0 auto}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:1200px;margin:0 auto}
+.plans-grid .plan-card{min-width:0}
+.interval-toggle{display:flex;gap:8px;margin:0 auto 24px;background:#0A1628;border-radius:10px;padding:4px;max-width:240px;justify-content:center}
+.interval-btn{flex:1;padding:8px 16px;border:none;border-radius:8px;background:transparent;color:#5A7A9F;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.03em}
+.interval-btn.active{background:#C9A84C;color:#0A1628}
+.interval-btn:hover:not(.active){color:#CBD5E1}
 .plan-card{background:#162540;border:1px solid #1E3250;border-radius:14px;padding:36px 28px;text-align:center;display:flex;flex-direction:column;transition:all .3s;position:relative}
 .plan-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.3);border-color:#C9A84C}
 .plan-card.popular{border-color:#C9A84C;background:rgba(201,168,76,.04);box-shadow:0 0 0 1px rgba(201,168,76,.2)}
@@ -116,12 +121,16 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
 
 <div class="hero">
-  <div class="hero-eyebrow">Unlock Your Potential</div>
-  <h1>Choose Your <span>Membership</span></h1>
-  <p>Start free and upgrade as you grow. Every tier unlocks more of the Studio library — from courses and books to personal mentorship and community.</p>
+  <div class="hero-eyebrow">Support the Mission, Unlock the Studio</div>
+  <h1>Your <span>Membership</span> Ladder</h1>
+  <p>One unified path from free access to full partnership. Every tier includes everything below it. Choose monthly or yearly.</p>
 </div>
 
 <section class="wrap plans-section">
+  <div class="interval-toggle" id="intervalToggle">
+    <button class="interval-btn active" data-interval="monthly">Monthly</button>
+    <button class="interval-btn" data-interval="yearly">Yearly <small style="font-size:10px;opacity:.6">save ~17%</small></button>
+  </div>
   <div class="plans-grid" id="plansGrid">
     <div class="loading" id="plansLoading">Loading plans&hellip;</div>
   </div>
@@ -132,23 +141,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   <h2 class="section-title">What's Included</h2>
   <p class="section-sub">See exactly what you get at each tier. All plans include access to our public content library.</p>
   <div class="compare-table-wrap">
-    <table class="compare-table">
+    <table class="compare-table" id="compareTable">
       <thead>
-        <tr><th>Feature</th><th>Free</th><th>Premium</th><th>VIP</th></tr>
+        <tr><th>Feature</th><th>Free</th><th>Supporter</th><th>Scholar</th><th>Patron</th><th>Founding</th></tr>
       </thead>
-      <tbody>
-        <tr><td>Browse all courses</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Read articles &amp; books</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Subscribe to newsletter</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Full course access</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Download study materials</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Premium articles &amp; content</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Priority support</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>1-on-1 mentorship sessions</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Early access to new content</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Certificate fees included</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Private VIP community</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
-        <tr><td>Priority feature requests</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
+      <tbody id="compareBody">
       </tbody>
     </table>
   </div>
@@ -164,23 +161,23 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">Is there a contract or can I cancel? <i class="ti ti-chevron-down"></i></button>
-      <div class="faq-answer">There is no contract. You can cancel your subscription at any time from your dashboard. Premium and VIP are billed monthly. Downgrading takes effect at the end of your current billing period &mdash; you keep access until then.</div>
+      <div class="faq-answer">There is no contract. You can cancel your subscription at any time from your dashboard. Supporter, Scholar, and Patron are billed monthly or yearly depending on your selection. Founding Partner is annual only. Downgrading takes effect at the end of your current billing period &mdash; you keep access until then.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">What payment methods are accepted? <i class="ti ti-chevron-down"></i></button>
       <div class="faq-answer">We accept credit/debit cards, mobile money (MTN, Vodafone, AirtelTigo Ghana), and USSD. All payments are processed securely by Flutterwave. Prices are in Ghana Cedis. International supporters can use cards &mdash; your bank handles the conversion.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question" onclick="toggleFaq(this)">Can I switch from Premium to VIP mid-month? <i class="ti ti-chevron-down"></i></button>
-      <div class="faq-answer">Yes. Upgrading mid-month is prorated &mdash; you get instant VIP access and are billed the difference. Downgrading from VIP to a lower tier takes effect at the end of your current billing cycle.</div>
+      <button class="faq-question" onclick="toggleFaq(this)">Can I switch tiers mid-cycle? <i class="ti ti-chevron-down"></i></button>
+      <div class="faq-answer">Yes. Upgrading mid-cycle is prorated &mdash; you get instant access and are billed the difference. Downgrading takes effect at the end of your current billing cycle. Founding Partner is a standalone annual tier and can be held alongside any other plan.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">What happens when my membership expires? <i class="ti ti-chevron-down"></i></button>
-      <div class="faq-answer">When a paid membership expires, your account reverts to Free tier. You will lose access to Premium/VIP content, downloads, and mentorship. Your public content access (courses you browsed, articles, newsletter) remains. You can re-subscribe at any time.</div>
+      <div class="faq-answer">When a paid membership expires, your account reverts to Free tier. You will lose access to paid-tier content, downloads, and mentorship. Your public content access (courses you browsed, articles, newsletter) remains. You can re-subscribe at any time.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">Do you offer student or hardship discounts? <i class="ti ti-chevron-down"></i></button>
-      <div class="faq-answer">We believe formation should be accessible. If the price of Premium or VIP is genuinely out of reach, email us at <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a> &mdash; we review requests on a case-by-case basis and may offer a reduced rate or sponsored access.</div>
+      <div class="faq-answer">We believe formation should be accessible. If the price of Scholar or Patron is genuinely out of reach, email us at <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a> &mdash; we review requests on a case-by-case basis and may offer a reduced rate or sponsored access.</div>
     </div>
   </div>
 </section>
@@ -253,6 +250,37 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 var FLW_PUBLIC_KEY = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
 var sessionToken = '';
 var currentTier = 'free';
+var selectedInterval = 'monthly';
+var allTiers = [];
+
+var TIER_ICONS = {free:'ti-user',supporter:'ti-heart',scholar:'ti-star',patron:'ti-crown',founding:'ti-diamond'};
+var TIER_COLORS = {free:'free',supporter:'free',scholar:'premium',patron:'vip',founding:'vip'};
+var TIER_BADGES = {scholar:'popular',founding:'popular'};
+
+var COMPARE_FEATURES = [
+  {l:'Browse all courses',a:[0,1,2,3,4]},
+  {l:'Read articles & books',a:[0,1,2,3,4]},
+  {l:'Subscribe to newsletter',a:[0,1,2,3,4]},
+  {l:'Early access to content',a:[1,2,3,4]},
+  {l:'Supporter badge on profile',a:[1,2,3,4]},
+  {l:'Monthly teaching video',a:[1,2,3,4]},
+  {l:'Ad-free newsletter',a:[1,2,3,4]},
+  {l:'Direct email access',a:[1,2,3,4]},
+  {l:'Full course access',a:[2,3,4]},
+  {l:'Download study materials',a:[2,3,4]},
+  {l:'Premium articles & content',a:[2,3,4]},
+  {l:'All books in PDF format',a:[2,3,4]},
+  {l:'Priority support',a:[2,3,4]},
+  {l:'1-on-1 mentorship sessions',a:[3,4]},
+  {l:'Certificate fees included',a:[3,4]},
+  {l:'Quarterly call with Gideon',a:[3,4]},
+  {l:'Name in supporter roll',a:[3,4]},
+  {l:'Name featured on website',a:[4]},
+  {l:'Private Partner community',a:[4]},
+  {l:'Co-branded opportunities',a:[4]},
+  {l:'Priority feature requests',a:[4]},
+  {l:'Exclusive event invitations',a:[4]}
+];
 
 function getCookie(name) {
   var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -260,83 +288,114 @@ function getCookie(name) {
 }
 
 function toggleFaq(btn) {
-  var item = btn.parentNode;
-  item.classList.toggle('open');
+  btn.parentNode.classList.toggle('open');
 }
 
-function renderPlans(plans) {
+function initIntervalToggle() {
+  var btns = document.querySelectorAll('.interval-btn');
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('active')});
+      this.classList.add('active');
+      selectedInterval = this.getAttribute('data-interval');
+      renderPlans();
+      renderCompare();
+    });
+  });
+}
+
+function renderPlans() {
   var grid = document.getElementById('plansGrid');
   var html = '';
-  for (var i = 0; i < plans.length; i++) {
-    var p = plans[i];
-    var isCurrent = sessionToken && p.tier === currentTier;
-    var isPremiumVip = p.tier === 'premium' || p.tier === 'vip';
-    var features = (typeof p.features === 'string' ? JSON.parse(p.features) : p.features) || [];
+  allTiers.forEach(function(p,i){
+    var price = selectedInterval === 'yearly' ? p.yearly_price_ghs : p.monthly_price_ghs;
+    var periodLabel = selectedInterval === 'yearly' ? '/yr' : '/mo';
+    if (p.slug === 'founding') { price = p.yearly_price_ghs; periodLabel = '/yr'; }
+    if (p.slug === 'free') { price = 0; periodLabel = ''; }
 
-    var featureLis = '';
-    for (var j = 0; j < features.length; j++) {
-      featureLis += '<li><i class="ti ti-circle-check check"></i> ' + features[j] + '</li>';
-    }
+    var isCurrent = sessionToken && p.slug === currentTier;
+    var isPaidTier = p.slug !== 'free';
+    var features = p.features || [];
+    var featureLis = features.map(function(f){ return '<li><i class="ti ti-circle-check check"></i> ' + f + '</li>'; }).join('');
 
-    var popularClass = p.tier === 'premium' ? ' popular' : '';
-    var iconClass = p.tier === 'free' ? 'free' : (p.tier === 'premium' ? 'premium' : 'vip');
-    var iconName = p.tier === 'free' ? 'ti-user' : (p.tier === 'premium' ? 'ti-star' : 'ti-crown');
+    var popularClass = TIER_BADGES[p.slug] === 'popular' ? ' popular' : '';
+    var iconClass = TIER_COLORS[p.slug] || 'free';
+    var iconName = TIER_ICONS[p.slug] || 'ti-user';
+
+    var displayPrice = price > 0 ? 'GH\u00a2 ' + price : 'Free';
 
     var btnHtml;
     if (isCurrent) {
-      btnHtml = '<button class="btn btn-outline" disabled style="opacity:.5">Current Plan</button>';
-    } else if (!sessionToken) {
-      btnHtml = '<a href="/register/" class="btn btn-gold">' + (p.price_ghs > 0 ? 'Get Started &mdash; GHS ' + p.price_ghs + '/mo' : 'Join Free') + '</a>';
-    } else if (isPremiumVip) {
-      btnHtml = '<button class="btn btn-gold" onclick="upgrade(\'' + p.tier + '\',' + p.price_ghs + ',this)">Upgrade &mdash; GHS ' + p.price_ghs + '/mo</button>';
-    } else {
+      btnHtml = '<button class="btn btn-outline" disabled style="opacity:.5">Current</button>';
+    } else if (p.slug === 'free') {
       btnHtml = '<a href="/register/" class="btn btn-outline">Join Free</a>';
+    } else if (!sessionToken) {
+      btnHtml = '<a href="/register/" class="btn btn-gold">Get Started</a>';
+    } else {
+      btnHtml = '<button class="btn btn-gold" onclick="subscribe(\'' + p.slug + '\',this)">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
     }
 
     html += '<div class="plan-card' + popularClass + '">' +
       '<div class="plan-icon ' + iconClass + '"><i class="ti ' + iconName + '"></i></div>' +
       '<h3>' + p.name + '</h3>' +
-      '<div class="plan-price">' + (p.price_ghs > 0 ? 'GHS ' + p.price_ghs : 'Free') + '<span>' + (p.price_ghs > 0 ? '/mo' : '') + '</span></div>' +
+      '<div class="plan-price">' + displayPrice + '<span>' + periodLabel + '</span></div>' +
       '<p class="plan-desc">' + (p.description || '') + '</p>' +
       '<ul class="plan-features">' + featureLis + '</ul>' +
       btnHtml +
       '</div>';
-  }
+  });
   grid.innerHTML = html;
 }
 
-function upgrade(tier, price, btn) {
-  if (!sessionToken || price === 0) return;
+function renderCompare() {
+  var body = document.getElementById('compareBody');
+  var rows = COMPARE_FEATURES.map(function(f){
+    var cells = f.a.map(function(idx){
+      return '<td class="' + (allTiers[idx] && allTiers[idx].slug ? 'yes' : 'no') + '">' + (f.a.indexOf(idx) >= 0 ? '\u2713' : '\u2014') + '</td>';
+    }).join('');
+    return '<tr><td>' + f.l + '</td>' + cells + '</tr>';
+  }).join('');
+  body.innerHTML = rows;
+}
+
+function subscribe(slug, btn) {
+  if (!sessionToken) return;
   btn.disabled = true;
   btn.textContent = 'Processing\u2026';
-  fetch('/api/membership/subscribe', {
+  fetch('/api/tiers/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
-    body: JSON.stringify({ tier: tier })
+    body: JSON.stringify({ tier: slug, interval: selectedInterval })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed to start checkout'); return; }
-    FlutterwaveCheckout({
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed'); return; }
+    var opts = {
       public_key: FLW_PUBLIC_KEY,
       tx_ref: d.tx_ref,
       amount: d.amount,
-      currency: d.currency,
+      currency: d.currency || 'GHS',
       payment_options: 'card, mobilemoneyghana, ussd',
       customer: d.customer,
-      callback: function(payload) {
+      customizations: {
+        title: 'GideonAbochie Studio',
+        description: slug.charAt(0).toUpperCase() + slug.slice(1) + ' Tier',
+        logo: window.location.origin + '/assets/images/logo.png'
+      },
+      callback: function(payload){
         if (payload.status === 'successful' || payload.transaction_id) {
-          document.cookie = 'ga_upgrade=' + d.tier + '; path=/; max-age=60';
-          window.location.href = '/member/?success=' + d.tier;
+          window.location.href = '/member/?success=' + slug;
         }
       },
-      onclose: function() {
+      onclose: function(){
         btn.disabled = false;
         btn.textContent = 'Upgrade';
       }
-    });
+    };
+    if (d.is_recurring && d.plan_id) opts.payment_plan = parseInt(d.plan_id);
+    FlutterwaveCheckout(opts);
   })
-  .catch(function() {
+  .catch(function(){
     btn.disabled = false;
     btn.textContent = 'Upgrade';
     alert('Connection error. Please try again.');
@@ -345,41 +404,41 @@ function upgrade(tier, price, btn) {
 
 document.addEventListener('DOMContentLoaded', function() {
   sessionToken = getCookie('ga_session');
+  initIntervalToggle();
+
+  function loadTiers() {
+    return fetch('/api/tiers').then(function(r){ return r.json(); });
+  }
+
+  function afterTiers(data) {
+    if (data.status !== 'ok' || !data.tiers) {
+      document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Could not load plans.</div>';
+      return;
+    }
+    allTiers = data.tiers;
+    renderPlans();
+    renderCompare();
+    // Show Founding badge in thead
+    var ths = document.querySelectorAll('#compareTable thead th');
+    if (ths.length >= 6) ths[5].innerHTML = 'Founding <small style="display:block;font-size:9px;color:#C9A84C;font-weight:400">Flagship</small>';
+  }
 
   if (sessionToken) {
     fetch('/api/auth/session', { headers: { 'Authorization': 'Bearer ' + sessionToken } })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
+      .then(function(r){ return r.json(); })
+      .then(function(d){
         if (d.status === 'ok') currentTier = d.user.membership_tier || 'free';
       })
-      .catch(function() {})
-      .then(function() {
-        return fetch('/api/membership/plans');
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d.status === 'ok' && d.plans) {
-          renderPlans(d.plans.sort(function(a,b) { return (a.sort_order || 0) - (b.sort_order || 0); }));
-        } else {
-          document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Could not load plans. Please refresh.</div>';
-        }
-      })
-      .catch(function() {
-        document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Something went wrong. Please try again later.</div>';
-      });
-  } else {
-    fetch('/api/membership/plans')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d.status === 'ok' && d.plans) {
-          renderPlans(d.plans.sort(function(a,b) { return (a.sort_order || 0) - (b.sort_order || 0); }));
-        } else {
-          document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Could not load plans.</div>';
-        }
-      })
-      .catch(function() {
+      .catch(function(){})
+      .then(loadTiers)
+      .then(afterTiers)
+      .catch(function(){
         document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Something went wrong.</div>';
       });
+  } else {
+    loadTiers().then(afterTiers).catch(function(){
+      document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Something went wrong.</div>';
+    });
   }
 });
 </script>

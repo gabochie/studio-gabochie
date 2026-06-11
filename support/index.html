@@ -153,19 +153,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   </div>
 </div>
 
-<div class="tier-section">
+<div class="tier-section" style="text-align:center;max-width:680px;margin:0 auto 60px">
   <div class="section-label">Recurring Support</div>
-  <h2 class="section-title">Choose Your Tier</h2>
-  <p class="section-sub">Pick a recurring plan that fits your capacity. Switch currency below to see prices in your local equivalent. All payments are processed securely by Flutterwave. You can cancel anytime.</p>
-  <div class="currency-toggle" id="currencyToggle">
-    <button class="currency-btn active" data-currency="GHS">GH&#162;</button>
-    <button class="currency-btn" data-currency="USD">&#36; USD</button>
-    <button class="currency-btn" data-currency="EUR">&euro; EUR</button>
-    <button class="currency-btn" data-currency="GBP">&pound; GBP</button>
-  </div>
-  <div class="tier-grid" id="tierGrid">
-    <div class="loading" style="grid-column:1/-1;text-align:center;padding:60px;color:var(--ink-lt)">Loading plans...</div>
-  </div>
+  <h2 class="section-title">One Unified <em style="font-style:italic;color:var(--gold)">Membership Ladder</em></h2>
+  <p class="section-sub" style="margin:0 auto 28px">We have consolidated all tiers into one clear progression — from Free to Founding Partner. Every tier includes everything below it. Choose monthly or yearly.</p>
+  <a href="/membership/" class="subscribe-btn popular-btn" style="display:inline-block;width:auto;padding:14px 40px;text-decoration:none">View All Tiers &rarr;</a>
+  <p style="font-size:13px;color:var(--ink-lt);margin-top:12px">Need a one-time gift? <a href="/donate/" style="color:var(--gold)">Donate here</a></p>
 </div>
 
 <div class="faq-section">
@@ -287,31 +280,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
   </div>
 </footer>
 
-<!-- Subscription form overlay -->
-<div class="form-overlay" id="formOverlay">
-  <div class="form-modal">
-    <button class="close-btn" onclick="closeForm()">&times;</button>
-    <h3 id="formTitle">Start Supporting</h3>
-    <div class="selected-plan" id="formPlan">Monthly Supporter &middot; GH¢50/mo</div>
-    <label for="formName">Your name</label>
-    <input id="formName" type="text" placeholder="e.g. Kwame Asante" autocomplete="name">
-    <label for="formEmail">Email address</label>
-    <input id="formEmail" type="email" placeholder="e.g. kwame@example.com" autocomplete="email">
-    <label for="formPhone">Phone (optional)</label>
-    <input id="formPhone" type="tel" placeholder="+233 XX XXX XXXX" autocomplete="tel">
-    <button class="submit-btn" id="formSubmit" onclick="startSubscription()">Continue to Payment</button>
-    <div class="secure-badge"><i class="ti ti-lock"></i> Secured by Flutterwave &middot; Cancel anytime</div>
-  </div>
-</div>
-
 <script>
-var selectedTier = null;
-var plans = [];
-var publicKey = 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
-var exchangeRates = null;
-var selectedCurrency = 'GHS';
-var fallbackRates = { GHS: 15.2, USD: 1.09, EUR: 1.0, GBP: 0.86 };
-
 function trackEvent(type, data) {
   if (navigator.sendBeacon) {
     navigator.sendBeacon('/api/event', JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}));
@@ -319,197 +288,6 @@ function trackEvent(type, data) {
     fetch('/api/event', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_type: type, event_data: data || '', page: location.pathname}),cache:'no-store'}).catch(function(){});
   }
 }
-
-function loadPlans() {
-  // Fetch live exchange rates from Frankfurter API (no key needed)
-  // Uses EUR as base because GHS is not tracked by ECB data
-  fetch('https://api.frankfurter.app/latest?from=EUR&to=GHS,USD,GBP').then(function(r){return r.json()}).then(function(d){
-    if (d.rates) {
-      exchangeRates = d.rates;
-      if (plans.length) renderPlans();
-    }
-  }).catch(function(e){
-    console.error('Frankfurter API failed, using fallback rates', e);
-    if (!exchangeRates) exchangeRates = fallbackRates;
-    if (plans.length) renderPlans();
-  });
-  // Fetch subscription plans
-  fetch('/api/subscription/plans').then(function(r){return r.json()}).then(function(d){
-    if (d.status !== 'ok') throw new Error('Failed to load');
-    plans = d.plans;
-    publicKey = d.public_key || publicKey;
-    renderPlans();
-  }).catch(function(){
-    // Fallback plans if API fails
-    plans = [
-      {id:'monthly', name:'Monthly Supporter', amount:50, currency:'GHS', per:'/mo', popular:false, features:['Early access to new content','Supporter badge','Monthly teaching video','Ad-free newsletter']},
-      {id:'annual', name:'Annual Patron', amount:500, currency:'GHS', per:'/yr', popular:true, features:['All Monthly benefits','All books in PDF','Monthly Q&A sessions','Ad-free newsletter','Supporter roll listing']},
-      {id:'founding', name:'Founding Partner', amount:2500, currency:'GHS', per:'/yr', popular:false, features:['All Annual benefits','Name on website','Quarterly video call','Private community','Co-branded content']}
-    ];
-    renderPlans();
-  });
-  initCurrencyToggle();
-}
-
-function formatPrice(amount, currency) {
-  if (currency === 'GHS') return 'GH\u00a2 ' + amount;
-  var rates = exchangeRates || {};
-  // Cross-rate: convert GHS → EUR → target currency
-  // rates.GHS = how many GHS per EUR, rates[target] = how many target per EUR
-  if (!rates.GHS || !rates[currency]) return null;
-  var converted = (amount / rates.GHS) * rates[currency];
-  var d = converted >= 10 ? 0 : 1;
-  var sym = {USD: '$', EUR: '\u20AC', GBP: '\u00A3'};
-  return (sym[currency] || '') + converted.toFixed(d);
-}
-
-function renderPlans() {
-  var grid = document.getElementById('tierGrid');
-  grid.innerHTML = '';
-  var cur = selectedCurrency || 'GHS';
-  var rates = exchangeRates || {};
-  var mainOrder = ['GHS', 'USD', 'EUR', 'GBP'];
-  var smallCurrencies = mainOrder.filter(function(c){ return c !== cur; });
-  plans.forEach(function(p, i){
-    var isPopular = p.popular;
-    var featuresHtml = '';
-    (p.features || []).forEach(function(f){
-      featuresHtml += '<li>' + f + '</li>';
-    });
-    var mainPrice = formatPrice(p.amount, cur) || 'GH\u00a2 ' + p.amount;
-    var smallParts = [];
-    smallCurrencies.forEach(function(c) {
-      var fp = formatPrice(p.amount, c);
-      if (fp) smallParts.push(fp);
-    });
-    var converted = smallParts.length ? '<div class="tier-converted" style="font-family:\'DM Sans\',sans-serif;font-size:11px;color:var(--ink-lt);margin:4px 0 8px;letter-spacing:.03em">~' + smallParts.join(' \u00b7 ') + '</div>' : '';
-    grid.innerHTML +=
-      '<div class="tier-card' + (isPopular ? ' popular' : '') + '">' +
-      (isPopular ? '<div class="popular-badge">Best Value</div>' : '') +
-      '<div class="tier-name">' + p.name + '</div>' +
-      '<div class="tier-price">' + mainPrice + ' <small>' + (p.per || '/mo') + '</small></div>' +
-      converted +
-      '<div class="tier-desc">' + (p.description || '') + '</div>' +
-      '<ul class="tier-features">' + featuresHtml + '</ul>' +
-      '<button class="subscribe-btn' + (isPopular ? ' popular-btn' : '') + '" onclick="openForm(' + i + ')">Subscribe Now</button>' +
-      '</div>';
-  });
-}
-
-function initCurrencyToggle() {
-  var btns = document.querySelectorAll('.currency-btn');
-  btns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      btns.forEach(function(b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      selectedCurrency = this.getAttribute('data-currency');
-      renderPlans();
-    });
-  });
-}
-
-function openForm(index) {
-  selectedTier = plans[index];
-  document.getElementById('formTitle').textContent = 'Start Supporting';
-  document.getElementById('formPlan').textContent = selectedTier.name + ' \u00b7 GH\u00a2' + selectedTier.amount + (selectedTier.per || '/mo');
-  document.getElementById('formName').value = '';
-  document.getElementById('formEmail').value = '';
-  document.getElementById('formPhone').value = '';
-  document.getElementById('formSubmit').disabled = false;
-  document.getElementById('formSubmit').textContent = 'Continue to Payment';
-  document.getElementById('formOverlay').classList.add('open');
-  trackEvent('subscription_form_open', selectedTier.id);
-}
-
-function closeForm() {
-  document.getElementById('formOverlay').classList.remove('open');
-}
-
-function startSubscription() {
-  var name = document.getElementById('formName').value.trim();
-  var email = document.getElementById('formEmail').value.trim();
-  var phone = document.getElementById('formPhone').value.trim();
-  if (!email) {
-    document.getElementById('formEmail').style.borderColor = '#E8637A';
-    return;
-  }
-  if (!name) {
-    document.getElementById('formName').style.borderColor = '#E8637A';
-    return;
-  }
-  tagOnboard(email, name, 'patron');
-  var btn = document.getElementById('formSubmit');
-  btn.disabled = true;
-  btn.textContent = 'Opening...';
-  trackEvent('subscription_started', selectedTier.id + ':' + selectedTier.amount);
-  // Create pending subscription in D1
-  fetch('/api/subscription/create', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      tier: selectedTier.id,
-      name: name,
-      email: email,
-      phone: phone,
-      amount: selectedTier.amount,
-      currency: selectedTier.currency || 'GHS',
-      plan_id: selectedTier.plan_id || ''
-    })
-  }).then(function(r){return r.json()}).then(function(data){
-    if (data.status !== 'ok') throw new Error(data.error || 'Failed to create');
-    FlutterwaveCheckout({
-      public_key: publicKey,
-      tx_ref: data.tx_ref,
-      amount: data.amount,
-      currency: data.currency || 'GHS',
-      payment_plan: selectedTier.plan_id ? parseInt(selectedTier.plan_id) : undefined,
-      payment_options: 'card, mobilemoneyghana, ussd',
-      customer: { email: email, name: name, phone: phone },
-      customizations: {
-        title: 'GideonAbochie Studio',
-        description: selectedTier.name + ' \u2014 ' + selectedTier.amount + (selectedTier.per || '/mo'),
-        logo: 'https://gideonabochie.org/assets/images/logo.png'
-      },
-      callback: function(response) {
-        trackEvent('subscription_success', data.tx_ref);
-        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=' + encodeURIComponent(response.status || 'successful') + '&tier=' + encodeURIComponent(selectedTier.id);
-      },
-      onclose: function() {
-        trackEvent('subscription_cancelled', selectedTier.id);
-        btn.disabled = false;
-        btn.textContent = 'Continue to Payment';
-      }
-    });
-  }).catch(function(err){
-    trackEvent('subscription_error', err.message);
-    btn.disabled = false;
-    btn.textContent = 'Try Again';
-    alert('Something went wrong. Please try again or email info@gideonabochie.com');
-  });
-}
-
-// Show success message if returning from payment
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  var tx_ref = params.get('tx_ref');
-  var status = params.get('status');
-  var tier = params.get('tier');
-  if (tx_ref && (status === 'successful' || status === 'completed')) {
-    var tierName = {monthly:'Monthly Supporter', annual:'Annual Patron', founding:'Founding Partner'}[tier] || 'supporter';
-    var overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px';
-    overlay.innerHTML = '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px;max-width:460px;width:100%;text-align:center">' +
-      '<div style="font-size:48px;margin-bottom:16px">\u2705</div>' +
-      '<h2 style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">Welcome, ' + tierName + '!</h2>' +
-      '<p style="color:#8A9BB5;font-size:14px;line-height:1.6;margin-bottom:24px">Your recurring support has been set up. You will receive a confirmation email shortly. Thank you for fueling this mission.</p>' +
-      '<a href="/" class="subscribe-btn popular-btn" style="display:inline-block;width:auto;padding:12px 32px;text-decoration:none">Back to Home</a>' +
-      '</div>';
-    document.body.appendChild(overlay);
-    setTimeout(function(){ overlay.querySelector('a').focus(); }, 100);
-  }
-})();
-
-loadPlans();
 </script>
 
 <section id="sponsor" class="page-wrap" style="padding-bottom:80px;margin-top:40px">
