@@ -91,7 +91,7 @@ export async function onRequest(context) {
       'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE access_token = ?'
     ).bind(postToken).first();
     if (!enrollment) {
-      var session = await getSessionUser(db, postToken);
+      session = await getSessionUser(db, postToken);
       if (session) {
         enrollment = await db.prepare(
           'SELECT id, program_id, status, student_email, xp, xp_level, streak, last_module_at FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC LIMIT 1'
