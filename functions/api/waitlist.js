@@ -1,3 +1,5 @@
+import { queueEmail, waitlistConfirmation } from '../email/_send.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   if (request.method !== 'POST') {
@@ -21,6 +23,16 @@ export async function onRequest(context) {
     await db.prepare(
       'INSERT OR IGNORE INTO program_waitlist (program_slug, name, email, phone) VALUES (?, ?, ?, ?)'
     ).bind(programSlug, name, email, phone).run();
+
+    // Queue waitlist confirmation email
+    var programTitle = programSlug;
+    try {
+      var prog = await db.prepare('SELECT title FROM programs WHERE slug = ?').bind(programSlug).first();
+      if (prog && prog.title) programTitle = prog.title;
+    } catch (_) {}
+    try {
+      await queueEmail(env, email, name, 'You Are on the List — GideonAbochie Studio', waitlistConfirmation(name, programTitle), 'waitlist_confirmation');
+    } catch (_) {}
 
     return new Response(JSON.stringify({ status: 'ok', message: 'You\'re on the list!' }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {

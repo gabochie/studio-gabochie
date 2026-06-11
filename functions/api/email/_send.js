@@ -189,6 +189,29 @@ export const abandonedDonationReminder = (name) => `<!DOCTYPE html><html><body s
     </td></tr>
   </table></body></html>`;
 
+export const waitlistConfirmation = (name, programTitle) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+  <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
+    <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">GideonAbochie Studio</span>
+    </td></tr>
+    <tr><td style="padding:32px 0 24px">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">You Are on the <span style="color:#C9A84C">List</span></h1>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Thank you for joining the waitlist for <strong>${programTitle || 'our upcoming program'}</strong>. You are now first in line to know when enrollment opens.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Here is what happens next:</p>
+      <ul style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;line-height:1.8;padding-left:20px;margin:0 0 24px">
+        <li>We will notify you as soon as the program launches</li>
+        <li>Early waitlist members get priority access and any launch discounts</li>
+        <li>You will receive occasional updates on the programs progress</li>
+      </ul>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">In the meantime, feel free to explore the <a href="https://gideonabochie.org/school/" style="color:#C9A84C">GideonAbochie School</a> for existing courses and resources.</p>
+      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Warmly,<br>Gideon Abochie</p>
+    </td></tr>
+    <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
+      <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">GideonAbochie Studio &mdash; Accra, Ghana</p>
+    </td></tr>
+  </table></body></html>`;
+
 export const bookUpsell = (name) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
   <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
     <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">

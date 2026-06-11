@@ -215,6 +215,28 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
 .qr-donate img{width:150px;height:150px;margin:0 auto 12px;border-radius:8px}
 .qr-donate span{display:block;font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F;line-height:1.5}
 @media(max-width:640px){.give-card{padding:32px 20px}.give-card h2{font-size:26px}}
+.membership{background:#0F1E38}
+.membership-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px;max-width:960px;margin-left:auto;margin-right:auto}
+.member-card{background:#162540;border:1px solid #1E3250;border-radius:14px;padding:36px 28px;text-align:center;display:flex;flex-direction:column;transition:all .3s;position:relative}
+.member-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.3);border-color:#C9A84C}
+.member-card.popular{border-color:#C9A84C;background:rgba(201,168,76,.04);box-shadow:0 0 0 1px rgba(201,168,76,.2)}
+.member-card.popular::before{content:'Most Popular';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 14px;border-radius:10px;line-height:1}
+.member-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px}
+.member-icon.free{background:rgba(148,163,184,.1);color:#94A3B8}
+.member-icon.premium{background:rgba(201,168,76,.12);color:#C9A84C}
+.member-icon.vip{background:rgba(232,99,122,.12);color:#E8637A}
+.member-card h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:#fff;margin-bottom:4px;letter-spacing:.05em}
+.member-price{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#fff;margin:12px 0 4px}
+.member-price span{font-size:14px;color:#5A7A9F;font-weight:400}
+.member-desc{font-family:'Barlow',sans-serif;font-size:12px;color:#5A7A9F;margin-bottom:20px;line-height:1.5;min-height:36px}
+.member-features{list-style:none;padding:0;margin:0 0 24px;flex:1;text-align:left}
+.member-features li{display:flex;align-items:center;gap:8px;padding:6px 0;font-family:'Barlow',sans-serif;font-size:13px;color:#94A3B8;border-bottom:1px solid rgba(255,255,255,.04)}
+.member-features li:last-child{border-bottom:none}
+.member-features li i{font-size:14px;flex-shrink:0}
+.member-features li .check{color:#22C55E}
+.member-features li .muted{color:#3A5278}
+.member-card .btn{width:100%}
+@media(max-width:860px){.membership-grid{grid-template-columns:1fr;max-width:400px}}
 .faq{background:#0A1628}
 .faq-list{max-width:680px;margin:0 auto}
 .faq-item{border-bottom:1px solid #1E3250;padding:20px 0}
@@ -482,6 +504,62 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
         <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:12px">Blueprint thinking. Design principles. Strategic frameworks.</p>
         <span style="display:inline-block;padding:8px 20px;border-radius:8px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Enroll Free &rarr;</span>
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MEMBERSHIP ═══ -->
+<section class="section membership" id="membership">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center"><i class="ti ti-crown"></i> Membership</div>
+    <h2 class="section-heading">Choose Your <span>Path</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Start free and upgrade as you grow. Every tier unlocks more of the Studio library, community, and mentorship.</p>
+    <div class="membership-grid">
+      <div class="member-card">
+        <div class="member-icon free"><i class="ti ti-user"></i></div>
+        <h3>Free</h3>
+        <div class="member-price">GH&#8373;0<span>/mo</span></div>
+        <p class="member-desc">Get started with full access to public content</p>
+        <ul class="member-features">
+          <li><i class="ti ti-circle-check check"></i> Browse all courses</li>
+          <li><i class="ti ti-circle-check check"></i> Read articles &amp; books</li>
+          <li><i class="ti ti-circle-check check"></i> Subscribe to newsletter</li>
+          <li><i class="ti ti-circle-minus muted"></i> Download materials</li>
+          <li><i class="ti ti-circle-minus muted"></i> Premium courses</li>
+          <li><i class="ti ti-circle-minus muted"></i> 1-on-1 mentorship</li>
+        </ul>
+        <a href="/register/" class="btn btn-outline">Join Free</a>
+      </div>
+      <div class="member-card popular">
+        <div class="member-icon premium"><i class="ti ti-star"></i></div>
+        <h3>Premium</h3>
+        <div class="member-price">GH&#8373;99<span>/mo</span></div>
+        <p class="member-desc">Full course access with downloads and priority support</p>
+        <ul class="member-features">
+          <li><i class="ti ti-circle-check check"></i> All courses unlocked</li>
+          <li><i class="ti ti-circle-check check"></i> Download study materials</li>
+          <li><i class="ti ti-circle-check check"></i> Premium articles &amp; content</li>
+          <li><i class="ti ti-circle-check check"></i> Priority support</li>
+          <li><i class="ti ti-circle-minus muted"></i> 1-on-1 mentorship</li>
+          <li><i class="ti ti-circle-minus muted"></i> Certificate fees included</li>
+        </ul>
+        <a href="/register/" class="btn btn-gold">Go Premium</a>
+      </div>
+      <div class="member-card">
+        <div class="member-icon vip"><i class="ti ti-crown"></i></div>
+        <h3>VIP</h3>
+        <div class="member-price">GH&#8373;299<span>/mo</span></div>
+        <p class="member-desc">Everything plus personal mentorship and early access</p>
+        <ul class="member-features">
+          <li><i class="ti ti-circle-check check"></i> Everything in Premium</li>
+          <li><i class="ti ti-circle-check check"></i> 1-on-1 mentorship sessions</li>
+          <li><i class="ti ti-circle-check check"></i> Early access to new content</li>
+          <li><i class="ti ti-circle-check check"></i> Certificate fees included</li>
+          <li><i class="ti ti-circle-check check"></i> Priority feature requests</li>
+          <li><i class="ti ti-circle-check check"></i> Private VIP community</li>
+        </ul>
+        <a href="/register/" class="btn btn-outline">Go VIP</a>
+      </div>
     </div>
   </div>
 </section>
