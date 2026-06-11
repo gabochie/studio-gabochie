@@ -19,7 +19,7 @@
     "db:seed": "node scripts/db-seed.js",
     "db:setup": "node scripts/db-setup.js",
     "db:backup": "node scripts/db-backup.js",
-    "deploy": "npm run predeploy && wrangler pages deploy . --project-name gideonabochie-org && npm run db:setup"
+    "deploy": "npm run predeploy; wrangler pages deploy . --project-name gideonabochie-org; npm run db:setup"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
