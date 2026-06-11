@@ -152,6 +152,10 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
 /* ═══ MODAL ═══ */
 .m-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);z-index:100;justify-content:center;align-items:center;padding:20px}
 .m-overlay.open{display:flex}
+.tab-mini{padding:8px 18px;font-size:12px;font-weight:600;color:var(--text-dim);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--font-body);transition:all .15s}
+.tab-mini.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-mini:hover{color:var(--text-body)}
+#importBulk textarea::placeholder{color:var(--text-dim);opacity:.5}
 .m{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px;max-height:85vh;overflow-y:auto;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:modalIn .25s var(--ease)}
 @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .m-title{font-family:var(--font-heading);font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:20px;text-transform:uppercase;letter-spacing:-.02em}
@@ -279,6 +283,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <input type="search" id="campaignSearch" placeholder="Search name, email, phone..." style="flex:1;min-width:180px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text-body);font-size:12px;font-family:var(--font-body);outline:none">
     <button class="btn btn-primary btn-sm" id="campaignSearchBtn">&#128269; Search</button>
     <button class="btn btn-secondary btn-sm" id="campaignRefreshBtn">&#8635; Refresh</button>
+    <button class="btn btn-primary btn-sm" id="campaignImportBtn" onclick="openImportModal()">&#43; Import</button>
   </div>
   <div class="section-header"><h3>Contacts</h3><span class="sh-count" id="campaignCount">0</span></div>
   <div class="crd"><div class="tbl-wrap" id="campaignList"></div></div>
@@ -538,6 +543,73 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:18px
     <div class="m-title" id="detailTitle">Details</div>
     <div class="m-body" id="detailBody"></div>
     <div class="m-footer"><button class="btn btn-secondary" data-action="close-modal" data-target="detailModal">Close</button></div>
+  </div>
+</div>
+
+<div class="m-overlay" id="importModal">
+  <div class="m" style="max-width:560px">
+    <div class="m-title">Import Contacts</div>
+    <div class="m-body" id="importBody">
+      <div class="tabs-mini" style="display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)">
+        <button class="tab-mini active" data-import-tab="manual" onclick="switchImportTab('manual')">Manual Add</button>
+        <button class="tab-mini" data-import-tab="bulk" onclick="switchImportTab('bulk')">Bulk Import</button>
+      </div>
+
+      <div id="importManual">
+        <div class="input-group" style="margin-bottom:10px">
+          <label>Name <span style="color:var(--red)">*</span></label>
+          <input type="text" id="impName" placeholder="Full name" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+        </div>
+        <div class="form-row" style="display:flex;gap:10px;margin-bottom:10px">
+          <div class="input-group" style="flex:1">
+            <label>Email</label>
+            <input type="email" id="impEmail" placeholder="Email address" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+          </div>
+          <div class="input-group" style="flex:1">
+            <label>Phone</label>
+            <input type="text" id="impPhone" placeholder="Phone number" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+          </div>
+        </div>
+        <div class="form-row" style="display:flex;gap:10px;margin-bottom:10px">
+          <div class="input-group" style="flex:1">
+            <label>Category</label>
+            <select id="impCategory" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+              <option value="">Select category</option>
+              <option value="business">Business</option>
+              <option value="church">Church</option>
+              <option value="media">Media</option>
+              <option value="education">Education</option>
+              <option value="ngo">NGO</option>
+              <option value="government">Government</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="input-group" style="flex:1">
+            <label>Campaign</label>
+            <input type="text" id="impCampaign" placeholder="Campaign name" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom:14px">
+          <label>Source</label>
+          <input type="text" id="impSource" value="manual" style="width:100%;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:13px;box-sizing:border-box">
+        </div>
+        <div id="impManualResult" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:6px;font-size:12px"></div>
+        <button class="btn btn-primary btn-sm" onclick="importManual()" id="impManualBtn">Add Contact</button>
+      </div>
+
+      <div id="importBulk" style="display:none">
+        <p style="font-size:12px;color:var(--text-dim);margin:0 0 10px">Paste one contact per line. Format: <code style="background:var(--bg-primary);padding:1px 5px;border-radius:3px">Name, Email, Phone, Category, Campaign</code></p>
+        <textarea id="impBulkData" placeholder="John Doe, john@example.com, +233501234567, business, Q1&#10;Jane Smith, jane@example.com, , church," style="width:100%;min-height:140px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px;font-family:monospace;box-sizing:border-box;resize:vertical"></textarea>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-dim)">Only <strong>name</strong> and at least one of <strong>email</strong> or <strong>phone</strong> are required per contact.</div>
+        <div id="impBulkPreview" style="margin-top:10px;display:none"></div>
+        <div id="impBulkResult" style="display:none;margin-top:10px;padding:10px 14px;border-radius:6px;font-size:12px"></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm" onclick="previewBulkImport()">Preview</button>
+          <button class="btn btn-primary btn-sm" onclick="importBulk()" id="impBulkBtn" disabled>Import Contacts</button>
+        </div>
+      </div>
+    </div>
+    <div class="m-footer"><button class="btn btn-secondary" data-action="close-modal" data-target="importModal">Close</button></div>
   </div>
 </div>
 
@@ -1248,7 +1320,9 @@ function showCampaignDetail(id) {
     h += '<div style="margin-top:12px"><label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Notes</label>'+
       '<div style="display:flex;gap:6px">'+
       '<textarea id="campaignEditNotes" placeholder="Internal notes..." style="flex:1;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text-body);font-size:12px;min-height:60px">'+_e(item.notes||'')+'</textarea>'+
-      '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'notes\')">Save</button></div></div>';
+      '<button class="btn btn-primary btn-sm" onclick="saveCampaignField('+id+',\'notes\')">Save</button></div></div>'+
+      '<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">'+
+      '<button class="btn btn-sm" style="background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.3)" onclick="deleteCampaignContact('+id+',\''+_e(item.name||'Contact')+'\')">&#10005; Delete Contact</button></div>';
     $('detailTitle').textContent = item.name || 'Contact #'+id;
     $('detailBody').innerHTML = h;
     $('detailModal').classList.add('open');
@@ -1268,6 +1342,123 @@ function saveCampaignField(id, field) {
     if (d.status === 'ok') { Toast.success(field.charAt(0).toUpperCase() + field.slice(1) + ' saved'); showCampaignDetail(id); }
     else throw new Error(d.message);
   }).catch(function(e){ Toast.error('Failed: '+e.message); });
+}
+
+/* ── Import UI ── */
+var _importedParsed = [];
+function openImportModal() {
+  _importedParsed = [];
+  $('importManual').style.display = '';
+  $('importBulk').style.display = 'none';
+  $('impName').value = ''; $('impEmail').value = ''; $('impPhone').value = '';
+  $('impCategory').value = ''; $('impCampaign').value = ''; $('impSource').value = 'manual';
+  $('impManualResult').style.display = 'none';
+  $('impBulkData').value = ''; $('impBulkPreview').style.display = 'none'; $('impBulkResult').style.display = 'none';
+  $('impBulkBtn').disabled = true;
+  document.querySelectorAll('[data-import-tab]').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-import-tab')==='manual'); });
+  $('importModal').classList.add('open');
+}
+function switchImportTab(tab) {
+  document.querySelectorAll('[data-import-tab]').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-import-tab')===tab); });
+  $('importManual').style.display = tab === 'manual' ? '' : 'none';
+  $('importBulk').style.display = tab === 'bulk' ? '' : 'none';
+}
+function importManual() {
+  var name = $('impName').value.trim();
+  var email = $('impEmail').value.trim();
+  var phone = $('impPhone').value.trim();
+  if (!name || (!email && !phone)) {
+    $('impManualResult').style.cssText = 'display:block;margin-bottom:10px;padding:10px 14px;border-radius:6px;font-size:12px;background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.2)';
+    $('impManualResult').textContent = 'Name is required, and at least one of Email or Phone.';
+    return;
+  }
+  var btn = $('impManualBtn'); btn.disabled = true; btn.textContent = 'Adding…';
+  API.importColdOutreach({ name: name, email: email, phone: phone, category: $('impCategory').value, campaign: $('impCampaign').value, source: $('impSource').value }).then(function(d){
+    if (d.status === 'ok' && d.imported > 0) {
+      Toast.success('Contact imported');
+      $('importModal').classList.remove('open');
+      loadCampaignTab();
+    } else {
+      var errMsg = (d.errors_list && d.errors_list.length) ? d.errors_list[0].message : 'Import failed';
+      throw new Error(errMsg);
+    }
+  }).catch(function(e){
+    btn.disabled = false; btn.textContent = 'Add Contact';
+    $('impManualResult').style.cssText = 'display:block;margin-bottom:10px;padding:10px 14px;border-radius:6px;font-size:12px;background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.2)';
+    $('impManualResult').textContent = e.message;
+  });
+}
+function previewBulkImport() {
+  var raw = $('impBulkData').value.trim();
+  var lines = raw.split('\n').filter(function(l){ return l.trim(); });
+  var parsed = [];
+  var errors = [];
+  for (var i = 0; i < lines.length; i++) {
+    var parts = lines[i].split(',').map(function(p){ return p.trim(); });
+    var name = parts[0] || '';
+    var email = parts[1] || '';
+    var phone = parts[2] || '';
+    var category = parts[3] || '';
+    var campaign = parts[4] || '';
+    if (!name || (!email && !phone)) {
+      errors.push('Line ' + (i+1) + ': ' + (name || 'unnamed') + ' — name + (email or phone) required');
+      continue;
+    }
+    parsed.push({ name: name, email: email, phone: phone, category: category, campaign: campaign, source: 'bulk-import' });
+  }
+  _importedParsed = parsed;
+  var preview = $('impBulkPreview');
+  if (parsed.length === 0) {
+    preview.style.display = 'block';
+    preview.innerHTML = '<div style="padding:10px 14px;border-radius:6px;font-size:12px;background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.2)">No valid contacts found. Check the format and try again.</div>';
+    $('impBulkBtn').disabled = true;
+    return;
+  }
+  var h = '<div style="font-size:12px;font-weight:600;color:var(--text-body);margin-bottom:6px">' + parsed.length + ' contact(s) ready' + (errors.length ? ', ' + errors.length + ' error(s)' : '') + '</div>';
+  if (errors.length) {
+    h += '<div style="margin-bottom:8px;padding:8px 12px;border-radius:4px;font-size:11px;background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.2)">' + errors.join('<br>') + '</div>';
+  }
+  h += '<div class="tbl-wrap" style="max-height:220px;overflow-y:auto"><table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Category</th></tr></thead><tbody>';
+  for (var i = 0; i < Math.min(parsed.length, 20); i++) {
+    h += '<tr><td style="font-weight:500;color:var(--text-primary);font-size:12px">'+_e(parsed[i].name)+'</td>'+
+      '<td style="font-size:11px">'+_e(parsed[i].email||'-')+'</td>'+
+      '<td style="font-size:11px">'+_e(parsed[i].phone||'-')+'</td>'+
+      '<td style="font-size:11px">'+_e(parsed[i].category||'-')+'</td></tr>';
+  }
+  if (parsed.length > 20) h += '<tr><td colspan="4" style="text-align:center;font-size:11px;color:var(--text-dim)">… and ' + (parsed.length - 20) + ' more</td></tr>';
+  h += '</tbody></table></div>';
+  preview.style.display = 'block';
+  preview.innerHTML = h;
+  $('impBulkBtn').disabled = false;
+}
+function importBulk() {
+  if (!_importedParsed.length) return;
+  var btn = $('impBulkBtn'); btn.disabled = true; btn.textContent = 'Importing…';
+  API.importColdOutreach(_importedParsed).then(function(d){
+    if (d.status === 'ok') {
+      Toast.success(d.imported + ' contact(s) imported' + (d.errors ? ', ' + d.errors + ' error(s)' : ''));
+      $('importModal').classList.remove('open');
+      loadCampaignTab();
+    } else {
+      throw new Error(d.message || 'Import failed');
+    }
+  }).catch(function(e){
+    btn.disabled = false; btn.textContent = 'Import Contacts';
+    var result = $('impBulkResult');
+    result.style.cssText = 'display:block;padding:10px 14px;border-radius:6px;font-size:12px;background:var(--bg-error);color:var(--red);border:1px solid rgba(232,99,122,.2)';
+    result.textContent = e.message;
+  });
+}
+
+function deleteCampaignContact(id, name) {
+  if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+  API.deleteColdOutreach(id).then(function(d){
+    if (d.status === 'ok') {
+      Toast.success('Contact deleted');
+      $('detailModal').classList.remove('open');
+      loadCampaignTab();
+    } else throw new Error(d.message);
+  }).catch(function(e){ Toast.error('Failed: ' + e.message); });
 }
 
 function switchTab(name) {
