@@ -50,6 +50,8 @@ Add these to **Cloudflare Pages** → project → **Settings** → **Environment
 | `FLW_SECRET_KEY` | Yes | Flutterwave secret key (from Settings → API) |
 | `FLW_SECRET_HASH` | Yes | Flutterwave webhook hash (set in webhook config) |
 | `BREVO_API_KEY` | Yes | Brevo SMTP API key (for email automation) |
+| `CRON_SECRET` | Yes | Shared secret for `/api/email/cron` (must match GitHub Actions secret) |
+| `AGENT_AUTH_KEY` | Yes | Shared secret for `/api/agents/*` endpoints (must match GitHub Actions secret) |
 | `CI_WEBHOOK_SECRET` | If using CI | Shared secret between GitHub Actions and this endpoint |
 
 Each variable should have values for **Production** (and optionally Preview).
@@ -92,16 +94,26 @@ To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 
 ---
 
-## Step 6: GitHub Actions (CI/CD)
+## Step 6: GitHub Actions (CI/CD + Cron)
 
 1. Go to repo → **Settings** → **Secrets and variables** → **Actions**
 2. Add the following secrets:
    - `CI_WEBHOOK_SECRET` — same value used in Cloudflare env vars
    - `CLOUDFLARE_API_TOKEN` — Cloudflare API token with **Cloudflare Pages** edit permissions
+   - `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account ID (for D1 backup script)
+   - `CRON_SECRET` — shared secret for `/api/email/cron` endpoint, must match `CRON_SECRET` in Cloudflare env vars
+   - `AGENT_AUTH_KEY` — shared secret for `/api/agents/*` endpoints, must match `AGENT_AUTH_KEY` in Cloudflare env vars
 3. The pipeline runs automatically on every push/PR to `main`:
    - **Test phase**: lint JS, lint HTML, unit tests, coverage, E2E, audit, secrets scan, asset checks
    - **Deploy phase**: only on push to `main`, after all tests pass, deploys to Cloudflare Pages via `wrangler pages deploy`
 4. Results post to your admin dashboard at `/admin/`
+
+### Automated Cron Workflows
+
+| Workflow | Schedule | What it does |
+|---|---|---|
+| `email-cron.yml` | Every hour | Processes email queue (abandoned donations), drains pending agent queue items (cold outreach, analytics, fulfillment) |
+| `backup.yml` | Daily at midnight UTC | Dumps all D1 tables to JSON, uploads as 7-day retention artifact |
 
 ---
 
