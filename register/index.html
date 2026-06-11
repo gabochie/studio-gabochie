@@ -50,6 +50,11 @@ h1 span{color:#C9A84C}
         <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
       </div>
       <div class="input-group">
+        <label>WhatsApp Number</label>
+        <input type="tel" id="phone" placeholder="+233 XX XXX XXXX" autocomplete="tel">
+        <p style="font-size:10px;color:#5A7A9F;margin-top:4px">For course updates and community communication.</p>
+      </div>
+      <div class="input-group">
         <label>Password</label>
         <input type="password" id="password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password">
       </div>
@@ -73,19 +78,20 @@ function doRegister(e) {
   var msg = document.getElementById('registerMsg');
   var name = document.getElementById('name').value.trim();
   var email = document.getElementById('email').value.trim();
+  var phone = document.getElementById('phone').value.trim();
   var password = document.getElementById('password').value;
   var confirm = document.getElementById('confirm').value;
   if (!name || !email || !password || !confirm) { msg.className = 'form-msg error'; msg.textContent = 'Please fill in all fields.'; return false; }
   if (password.length < 6) { msg.className = 'form-msg error'; msg.textContent = 'Password must be at least 6 characters.'; return false; }
   if (password !== confirm) { msg.className = 'form-msg error'; msg.textContent = 'Passwords do not match.'; return false; }
   btn.disabled = true; btn.textContent = 'Creating account\u2026';
-  fetch('/api/membership/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password }) })
+  fetch('/api/membership/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, password }) })
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.status === 'ok') {
         msg.className = 'form-msg success'; msg.textContent = 'Account created! Redirecting\u2026';
         document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gideonabochie.org; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
-        setTimeout(function() { window.location.href = '/member/'; }, 500);
+        setTimeout(function() { window.location.href = '/dashboard/'; }, 500);
       } else {
         msg.className = 'form-msg error'; msg.textContent = d.message || 'Registration failed.';
         btn.disabled = false; btn.textContent = 'Create Account';
