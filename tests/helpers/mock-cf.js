@@ -85,20 +85,17 @@ export function mockDb(tables) {
           var gbMatch = db._lastSql && db._lastSql.match(/GROUP\s+BY\s+(\w+(?:\.\w+)?)/i);
           if (gbMatch) {
             var gbCol = gbMatch[1].replace(/^\w+\./, ''); // strip table prefix: w.id -> id
-            // Detect if the SELECT has literal string AS alias patterns
-            var selectPart = db._lastSql.match(/SELECT\s+(.+?)\s+FROM/i);
             var groups = {};
             matched.forEach(function (r) {
               var key = r[gbCol];
               if (key === undefined) key = 'undefined';
-              if (!groups[key]) groups[key] = { _count: 0 };
-              groups[key]._count++;
+              if (!groups[key]) groups[key] = { _rows: [] };
+              groups[key]._rows.push(r);
             });
-            // Build results: include GROUP BY col and any aggregate aliases
             var results = Object.keys(groups).map(function (k) {
-              var row = {};
-              row[gbCol] = k;
-              row.count = groups[k]._count;
+              var firstRow = groups[k]._rows[0];
+              var row = Object.assign({}, firstRow);
+              row.count = groups[k]._rows.length;
               return row;
             });
             return { results: results };
