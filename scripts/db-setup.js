@@ -23,7 +23,7 @@ writeFileSync(tmpFile, statements.join(';\n\n') + ';', 'utf8');
 console.log(`Running ${statements.length} setup statements...`);
 
 try {
-  const out = execSync(`npx wrangler d1 execute ${DB} --file="${tmpFile}" 2>&1`, {
+  const out = execSync(`npx wrangler d1 execute ${DB} --file="${tmpFile}" --remote 2>&1`, {
     encoding: 'utf8', timeout: 120000
   });
   console.log(out);
