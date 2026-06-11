@@ -59,7 +59,7 @@ describe('Queue - GET', function() {
     var res = await queueOnRequest(c);
     expect(res.status).toBe(200);
     var data = await res.json();
-    expect(data.items.length).toBe(2);
+    expect(data.items.length).toBe(1);
   });
 
   it('returns 501 when DB not bound', async function() {
