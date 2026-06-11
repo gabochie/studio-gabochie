@@ -997,6 +997,19 @@
         subscriber_count INTEGER DEFAULT 0,
         sent_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      // Newsletter calendar table (replaces localStorage)
+      `CREATE TABLE IF NOT EXISTS newsletter_calendar (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        year INTEGER NOT NULL,
+        date_key TEXT NOT NULL,
+        issue_number INTEGER DEFAULT 0,
+        theme TEXT DEFAULT '',
+        status TEXT DEFAULT 'planned',
+        tags TEXT DEFAULT '[]',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+        UNIQUE(year, date_key)
+      )`,
       // Survey responses table
       `CREATE TABLE IF NOT EXISTS survey_responses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

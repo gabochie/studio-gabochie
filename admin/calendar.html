@@ -102,6 +102,36 @@
 <script>
 if (!getAdminKey()) ensureAdminKey();
 var STORAGE_KEY = 'ga_calendar';
+var _calCache = null; // in-memory cache to avoid async lag on every update
+
+function getCalFromAPI(year) {
+  return adminFetch('/admin/api/newsletter/calendar?year=' + year, {cache:'no-store'}).then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(d){
+    if (d.status !== 'ok') throw new Error(d.message || 'API error');
+    _calCache = { year: d.year, issues: d.issues || {} };
+    return _calCache;
+  }).catch(function(){
+    // Fallback to localStorage
+    var data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : null;
+  });
+}
+
+function saveCalToAPI(year, issues) {
+  _calCache = { year: year, issues: issues };
+  // Also write to localStorage as backup
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ year: year, issues: issues })); } catch(_e) {}
+  return adminFetch('/admin/api/newsletter/calendar', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ year: year, issues: issues })
+  }).then(function(r){ return r.json(); }).catch(function(){
+    return { status: 'ok' };
+  });
+}
+
 var DEFAULT_THEMES = [
   "Launch Issue: The Genesis of Creativity",
   "Created in His Image",
@@ -168,15 +198,6 @@ function getSaturdays(year) {
   return dates;
 }
 
-function getCalendar() {
-  var data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : null;
-}
-
-function saveCalendar(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
 function buildDefaultCalendar(year) {
   var saturdays = getSaturdays(year);
   var issues = {};
@@ -188,9 +209,8 @@ function buildDefaultCalendar(year) {
       tags: []
     };
   });
-  var data = { year: year, issues: issues };
-  saveCalendar(data);
-  return data;
+  saveCalToAPI(year, issues);
+  return { year: year, issues: issues };
 }
 
 function formatDate(d) {
@@ -207,63 +227,68 @@ function displayDate(d) {
 
 function renderCalendar() {
   var year = parseInt(document.getElementById('yearSelect').value);
-  var data = getCalendar();
-  if (!data || data.year !== year) {
-    data = buildDefaultCalendar(year);
-  }
-  var saturdays = getSaturdays(year);
-  var months = {};
-  saturdays.forEach(function(d) {
-    var m = d.getMonth();
-    if (!months[m]) months[m] = [];
-    months[m].push(new Date(d));
-  });
-
   var wrap = document.getElementById('calendarWrap');
-  var html = '';
-  var total = saturdays.length;
-  var counts = { planned: 0, drafted: 0, ready: 0, published: 0 };
-  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  wrap.innerHTML = '<div style="text-align:center;padding:40px;color:#3A5278;font-size:13px">Loading calendar...</div>';
 
-  Object.keys(months).forEach(function(m) {
-    var dates = months[m];
-    html += '<div class="month-block">';
-    html += '<div class="month-header">' + monthNames[m] + ' <span class="count">' + dates.length + ' issues</span></div>';
-    dates.forEach(function(d) {
-      var key = formatDate(d);
-      var issue = data.issues[key] || { theme: '', status: 'planned', tags: [] };
-      if (counts[issue.status] !== undefined) counts[issue.status]++;
-      var statusClass = 'status-' + (issue.status || 'planned');
-      html += '<div class="issue-row">';
-      html += '<div class="num">#' + (saturdays.indexOf(d) + 1) + '</div>';
-      html += '<div class="date">' + displayDate(d) + '</div>';
-      html += '<div class="theme"><input type="text" value="' + escapeHtml(issue.theme || '') + '" onchange="updateIssue(\'' + key + '\',\'theme\',this.value)" placeholder="Theme / topic"></div>';
-      html += '<div class="status ' + statusClass + '"><select onchange="updateIssue(\'' + key + '\',\'status\',this.value)">';
-      ['planned','drafted','ready','published'].forEach(function(s) {
-        html += '<option value="' + s + '"' + (issue.status === s ? ' selected' : '') + '>' + s + '</option>';
+  getCalFromAPI(year).then(function(data) {
+    if (!data || data.year !== year) {
+      data = buildDefaultCalendar(year);
+    }
+    var saturdays = getSaturdays(year);
+    var months = {};
+    saturdays.forEach(function(d) {
+      var m = d.getMonth();
+      if (!months[m]) months[m] = [];
+      months[m].push(new Date(d));
+    });
+
+    var html = '';
+    var total = saturdays.length;
+    var counts = { planned: 0, drafted: 0, ready: 0, published: 0 };
+    var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    Object.keys(months).forEach(function(m) {
+      var dates = months[m];
+      html += '<div class="month-block">';
+      html += '<div class="month-header">' + monthNames[m] + ' <span class="count">' + dates.length + ' issues</span></div>';
+      dates.forEach(function(d) {
+        var key = formatDate(d);
+        var issue = data.issues[key] || { theme: '', status: 'planned', tags: [] };
+        if (counts[issue.status] !== undefined) counts[issue.status]++;
+        var statusClass = 'status-' + (issue.status || 'planned');
+        html += '<div class="issue-row">';
+        html += '<div class="num">#' + (saturdays.indexOf(d) + 1) + '</div>';
+        html += '<div class="date">' + displayDate(d) + '</div>';
+        html += '<div class="theme"><input type="text" value="' + escapeHtml(issue.theme || '') + '" onchange="updateIssue(\'' + key + '\',\'theme\',this.value,\'' + year + '\')" placeholder="Theme / topic"></div>';
+        html += '<div class="status ' + statusClass + '"><select onchange="updateIssue(\'' + key + '\',\'status\',this.value,\'' + year + '\')">';
+        ['planned','drafted','ready','published'].forEach(function(s) {
+          html += '<option value="' + s + '"' + (issue.status === s ? ' selected' : '') + '>' + s + '</option>';
+        });
+        html += '</select></div>';
+        html += '<div class="tags">';
+        html += '<span class="status-dot" style="background:' + dotColor(issue.status) + '"></span>';
+        html += '</div>';
+        html += '</div>';
       });
-      html += '</select></div>';
-      html += '<div class="tags">';
-      html += '<span class="status-dot" style="background:' + dotColor(issue.status) + '"></span>';
-      html += '</div>';
       html += '</div>';
     });
-    html += '</div>';
-  });
-  wrap.innerHTML = html;
+    wrap.innerHTML = html;
 
-  // Stats
-  var statsHtml = '';
-  var stats = [
-    { label: 'Total Issues', num: total, cls: 'gold' },
-    { label: 'Planned', num: counts.planned, cls: 'dim' },
-    { label: 'Ready to Publish', num: counts.ready, cls: 'blue' },
-    { label: 'Published', num: counts.published, cls: 'green' }
-  ];
-  stats.forEach(function(s) {
-    statsHtml += '<div class="stat-card"><span class="stat-num ' + s.cls + '">' + s.num + '</span><span class="stat-label">' + s.label + '</span></div>';
+    // Stats
+    var statsHtml = '';
+    var stats = [
+      { label: 'Total Issues', num: total, cls: 'gold' },
+      { label: 'Planned', num: counts.planned, cls: 'dim' },
+      { label: 'Ready to Publish', num: counts.ready, cls: 'blue' },
+      { label: 'Published', num: counts.published, cls: 'green' }
+    ];
+    stats.forEach(function(s) {
+      statsHtml += '<div class="stat-card"><span class="stat-num ' + s.cls + '">' + s.num + '</span><span class="stat-label">' + s.label + '</span></div>';
+    });
+    document.getElementById('statsBar').innerHTML = statsHtml;
+  }).catch(function() {
+    wrap.innerHTML = '<div style="text-align:center;padding:40px;color:#E8637A;font-size:13px">Failed to load calendar. Check admin API key.</div>';
   });
-  document.getElementById('statsBar').innerHTML = statsHtml;
 }
 
 function dotColor(status) {
@@ -276,21 +301,19 @@ function escapeHtml(t) {
   return d.innerHTML;
 }
 
-function updateIssue(key, field, value) {
-  var data = getCalendar();
-  if (!data) return;
-  if (!data.issues[key]) data.issues[key] = { theme: '', status: 'planned', tags: [] };
-  data.issues[key][field] = value;
-  saveCalendar(data);
+function updateIssue(key, field, value, year) {
+  if (!_calCache) { getCalFromAPI(year || new Date().getFullYear()); return; }
+  if (!_calCache.issues[key]) _calCache.issues[key] = { theme: '', status: 'planned', tags: [] };
+  _calCache.issues[key][field] = value;
+  saveCalToAPI(_calCache.year, _calCache.issues);
 }
 
 function exportCalendar() {
-  var data = getCalendar();
-  if (!data) { Toast.error('No calendar data.'); return; }
-  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  if (!_calCache) { Toast.error('Calendar not loaded yet.'); return; }
+  var blob = new Blob([JSON.stringify(_calCache, null, 2)], {type:'application/json'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'studio-weekly-calendar-' + data.year + '.json';
+  a.download = 'studio-weekly-calendar-' + _calCache.year + '.json';
   a.click();
 }
 
@@ -305,37 +328,42 @@ function handleImport(e) {
   reader.onload = function(ev) {
     try {
       var data = JSON.parse(ev.target.result);
-      saveCalendar(data);
-      renderCalendar();
-      Toast.success('Calendar imported successfully!');
+      if (data && data.issues) {
+        saveCalToAPI(data.year || new Date().getFullYear(), data.issues);
+        renderCalendar();
+        Toast.success('Calendar imported successfully!');
+      } else {
+        Toast.error('Invalid calendar file.');
+      }
     } catch(err) { Toast.error('Invalid file.'); }
   };
   reader.readAsText(file);
 }
 
 function resetCalendar() {
+  if (!confirm('Reset all issues to default?')) return;
   var year = parseInt(document.getElementById('yearSelect').value);
   buildDefaultCalendar(year);
   renderCalendar();
 }
 
 function addThemePills() {
-  var data = getCalendar();
-  if (!data) return;
-  var keys = Object.keys(data.issues);
+  if (!_calCache) { Toast.error('Calendar not loaded yet.'); return; }
+  var keys = Object.keys(_calCache.issues);
   var idx = 0;
   keys.forEach(function(key) {
-    if (!data.issues[key].theme && DEFAULT_THEMES[idx]) {
-      data.issues[key].theme = DEFAULT_THEMES[idx];
+    if (!_calCache.issues[key].theme && DEFAULT_THEMES[idx]) {
+      _calCache.issues[key].theme = DEFAULT_THEMES[idx];
       idx++;
     }
   });
-  saveCalendar(data);
+  saveCalToAPI(_calCache.year, _calCache.issues);
   renderCalendar();
 }
 
 // Init
 (function() {
+  if (!getAdminKey()) ensureAdminKey();
   var sel = document.getElementById('yearSelect');
   var thisYear = new Date().getFullYear();
   for (var y = thisYear; y <= thisYear + 1; y++) {
@@ -344,10 +372,6 @@ function addThemePills() {
     opt.textContent = y;
     if (y === thisYear) opt.selected = true;
     sel.appendChild(opt);
-  }
-  var data = getCalendar();
-  if (!data) {
-    data = buildDefaultCalendar(thisYear);
   }
   renderCalendar();
 })();

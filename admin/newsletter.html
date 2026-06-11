@@ -621,7 +621,6 @@ function loadTplList() {
 }
 
 // ── Calendar integration ──
-var CAL_STORAGE_KEY = 'ga_calendar';
 
 function getScriptureForTheme(theme) {
   var t = (theme || '').toLowerCase();
@@ -707,37 +706,27 @@ function generateDraftForTheme(theme, issueNum, dateStr) {
   return blocks;
 }
 
-function updateCalendarIssues(datesToUpdate, newStatus) {
-  try {
-    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
-    if (!calData || !calData.issues) return;
-    (Array.isArray(datesToUpdate) ? datesToUpdate : [datesToUpdate]).forEach(function(key) {
-      if (calData.issues[key]) {
-        calData.issues[key].status = newStatus;
-      }
-    });
-    localStorage.setItem(CAL_STORAGE_KEY, JSON.stringify(calData));
-  } catch(_e) {}
-}
-
 function openCalModal() {
-  try {
-    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
-    if (!calData || !calData.issues) { Toast.error('No calendar data found. Go to Calendar first to set up your content plan.'); return; }
-    var keys = Object.keys(calData.issues);
+  adminFetch('/admin/api/newsletter/calendar?year=' + (new Date().getFullYear()), {cache:'no-store'}).then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.message || 'API error');
+    var issues = data.issues || {};
+    var keys = Object.keys(issues);
     var unpublished = [];
     for (var i = 0; i < keys.length; i++) {
-      if (calData.issues[keys[i]].status !== 'published') {
-        unpublished.push({ key: keys[i], issue: calData.issues[keys[i]], num: i + 1 });
+      if (issues[keys[i]].status !== 'published') {
+        unpublished.push({ key: keys[i], issue: issues[keys[i]], num: i + 1 });
       }
     }
-    if (!unpublished.length) { Toast.error('All calendar issues are published! Add a new year in the Calendar page.'); return; }
+    if (!unpublished.length) { Toast.error('All calendar issues are published!'); return; }
 
     var listEl = document.getElementById('calIssueList');
     var html = '';
     unpublished.forEach(function(item) {
       var statusClass = item.issue.status || 'planned';
-      html += '<div class="cal-issue-row" onclick="loadIssueFromCalendar(\'' + escapeHtml(item.key) + '\')">' +
+      html += '<div class="cal-issue-row" onclick="loadIssueFromCalendar(\'' + escapeHtml(item.key) + '\', ' + (data.year || new Date().getFullYear()) + ')">' +
         '<div class="num">#' + item.num + '</div>' +
         '<div class="info"><div class="theme">' + esc(item.issue.theme || 'Untitled') + '</div><div class="date">' + escapeHtml(item.key) + '</div></div>' +
         '<span class="status-badge ' + escapeHtml(statusClass) + '">' + escapeHtml(item.issue.status || 'planned') + '</span>' +
@@ -745,34 +734,44 @@ function openCalModal() {
     });
     listEl.innerHTML = html;
     document.getElementById('calModal').style.display = 'flex';
-  } catch(e) { Toast.error('Error reading calendar: ' + e.message); }
+  }).catch(function(err) {
+    Toast.error('Error loading calendar: ' + err.message);
+  });
 }
 
 function closeCalModal() {
   document.getElementById('calModal').style.display = 'none';
 }
 
-function loadIssueFromCalendar(dateKey) {
+function loadIssueFromCalendar(dateKey, year) {
   closeCalModal();
-  try {
-    var calData = JSON.parse(localStorage.getItem(CAL_STORAGE_KEY));
-    if (!calData || !calData.issues || !calData.issues[dateKey]) { Toast.error('Issue not found in calendar.'); return; }
-    var issue = calData.issues[dateKey];
-    var keys = Object.keys(calData.issues);
+  adminFetch('/admin/api/newsletter/calendar?year=' + (year || new Date().getFullYear()), {cache:'no-store'}).then(function(r){
+    return r.json();
+  }).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.message || 'API error');
+    var issues = data.issues || {};
+    var issue = issues[dateKey];
+    if (!issue) { Toast.error('Issue not found in calendar.'); return; }
+    var keys = Object.keys(issues);
     var issueNum = keys.indexOf(dateKey) + 1;
 
-    // Generate full draft from theme
     blocks = generateDraftForTheme(issue.theme, issueNum, dateKey);
     document.getElementById('subjectInput').value = 'The Studio Weekly \u2014 Issue #' + issueNum + ': ' + issue.theme;
 
-    // Track which calendar issue is loaded
     loadedCalendarDate = dateKey;
-    // Mark calendar as drafted
-    updateCalendarIssues(dateKey, 'drafted');
+    // Mark calendar as drafted via API
+    issue.status = 'drafted';
+    var update = {};
+    update[dateKey] = issue;
+    adminFetch('/admin/api/newsletter/calendar', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ year: year || new Date().getFullYear(), issues: update })
+    }).catch(function(){});
 
     renderEditor();
     renderPreview();
-  } catch(e) { Toast.error('Error loading issue: ' + e.message); }
+  }).catch(function(e) { Toast.error('Error loading issue: ' + e.message); });
 }
 
 // ── Send test ──
@@ -828,7 +827,15 @@ function broadcast() {
       status.innerHTML = '&#10003; Sent to ' + escapeHtml(d.sent) + ' subscribers' + (d.failed ? ' (' + escapeHtml(d.failed) + ' failed)' : '') + '. Issue #' + escapeHtml(d.issue_number) + ' archived.';
       // Mark the calendar issue as published
       if (loadedCalendarDate) {
-        updateCalendarIssues(loadedCalendarDate, 'published');
+        // Mark calendar issue as published via API
+        var year = loadedCalendarDate.split('-')[0];
+        var update = {};
+        update[loadedCalendarDate] = { status: 'published' };
+        adminFetch('/admin/api/newsletter/calendar', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ year: parseInt(year, 10) || new Date().getFullYear(), issues: update })
+        }).catch(function(){});
         loadedCalendarDate = null;
       }
     } else {
@@ -863,18 +870,36 @@ function fmtNum(n) {
 
 // ── Load stats ──
 function loadStats() {
+  var el = document.getElementById('statsRow');
+  el.innerHTML = '<div class="stat-pill">Loading stats...</div>';
+
   adminFetch('/admin/api/summary', {cache:'no-store'}).then(function(r){
     if (!r.ok) throw new Error('Status '+r.status);
     return r.json();
   }).then(function(d){
     if (d.status !== 'ok') throw new Error(d.message);
     var s = d.subscribers || {};
-    var el = document.getElementById('statsRow');
-    el.innerHTML = '<div class="stat-pill"><strong>' + fmtNum(s.total || 0) + '</strong> subscribers</div>' +
+    var html = '<div class="stat-pill"><strong>' + fmtNum(s.total || 0) + '</strong> subscribers</div>' +
       '<div class="stat-pill"><strong>+' + fmtNum(s.this_month || 0) + '</strong> this month</div>' +
       '<div class="stat-pill"><strong>' + fmtNum(d.unique_visitors?.this_month || 0) + '</strong> visitors (30d)</div>' +
       '<div class="stat-pill"><strong>' + fmtNum(d.page_views?.total || 0) + '</strong> total views</div>';
-  }).catch(function(){});
+
+    // Also fetch Brevo campaign stats
+    adminFetch('/admin/api/newsletter/stats', {cache:'no-store'}).then(function(r2){
+      return r2.json();
+    }).then(function(b){
+      if (b.status === 'ok') {
+        html += '<div class="stat-pill" style="border-color:rgba(59,130,246,.3)"><strong>' + fmtNum(b.contacts || 0) + '</strong> Brevo contacts</div>' +
+          '<div class="stat-pill" style="border-color:rgba(52,199,123,.3)"><strong>' + (b.open_rate || '—') + '</strong> open rate</div>' +
+          '<div class="stat-pill" style="border-color:rgba(201,168,76,.3)"><strong>' + (b.click_rate || '—') + '</strong> click rate</div>';
+      }
+      el.innerHTML = html;
+    }).catch(function(){
+      el.innerHTML = html;
+    });
+  }).catch(function(){
+    el.innerHTML = '<div class="stat-pill">Failed to load stats</div>';
+  });
 }
 
 // ── Init ──

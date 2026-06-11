@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unsubscribe — GideonAbochie Studio</title>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{max-width:480px;width:100%;text-align:center}
+.logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#C9A84C;margin-bottom:4px;letter-spacing:-.03em}
+.logo-sub{font-size:12px;color:#5A7A9F;margin-bottom:32px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px 32px}
+.card h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.card p{font-size:14px;color:#6B7F9A;line-height:1.6;margin-bottom:24px}
+.input-group{display:flex;gap:8px;margin-bottom:12px}
+.input-group input{flex:1;padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.input-group input:focus{border-color:#C9A84C}
+.input-group button{padding:12px 24px;border:none;border-radius:8px;background:#C9A84C;color:#0A1628;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.input-group button:hover{opacity:.9}
+.input-group button:disabled{opacity:.5;cursor:default}
+.status{border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.5;display:none;margin-top:8px}
+.status.visible{display:block}
+.status.success{background:rgba(52,199,123,0.1);border:1px solid rgba(52,199,123,0.2);color:#34C77B}
+.status.error{background:rgba(232,99,122,0.1);border:1px solid rgba(232,99,122,0.2);color:#E8637A}
+.status.info{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);color:#60A5FA}
+.back-link{display:inline-block;margin-top:24px;font-size:12px;color:#5A7A9F;text-decoration:none;transition:color .15s}
+.back-link:hover{color:#C9A84C}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">GideonAbochie Studio</div>
+  <div class="logo-sub">School of Creativity, Love &amp; Wisdom</div>
+
+  <div class="card">
+    <h1>Unsubscribe</h1>
+    <p>Enter your email below to unsubscribe from The Studio Weekly newsletter. You can always re-subscribe later.</p>
+
+    <div class="input-group">
+      <input type="email" id="emailInput" placeholder="your@email.com" autofocus>
+      <button id="unsubBtn" onclick="unsubscribe()">Unsubscribe</button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <a class="back-link" href="https://gideonabochie.org">&larr; Back to GideonAbochie Studio</a>
+</div>
+
+<script>
+function $(id) { return document.getElementById(id); }
+
+function setStatus(msg, type) {
+  var el = $('status');
+  el.textContent = msg;
+  el.className = 'status visible ' + (type || 'info');
+}
+
+function unsubscribe() {
+  var email = $('emailInput').value.trim();
+  if (!email) { setStatus('Please enter your email address.', 'error'); return; }
+  if (!email.includes('@') || !email.includes('.')) { setStatus('Please enter a valid email address.', 'error'); return; }
+
+  var btn = $('unsubBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  setStatus('Processing your request...', 'info');
+
+  fetch('/api/unsubscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.status === 'ok') {
+      setStatus(d.message, 'success');
+      $('emailInput').value = '';
+    } else {
+      setStatus(d.message || 'Something went wrong. Please try again.', 'error');
+    }
+  }).catch(function() {
+    setStatus('Network error. Please try again.', 'error');
+  }).finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Unsubscribe';
+  });
+}
+
+// Auto-process if email is in URL
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var email = params.get('email');
+  if (email) {
+    $('emailInput').value = email;
+    unsubscribe();
+  }
+})();
+</script>
+</body>
+</html>
