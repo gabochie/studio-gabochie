@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Become a Tutor · GideonAbochie Studio</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.apply-wrap{max-width:640px;margin:0 auto;padding:40px 24px 80px}
+.apply-wrap h1{font-family:var(--display);font-size:28px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.apply-wrap .subtitle{color:var(--gray);font-size:14px;margin-bottom:28px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.field label .req{color:var(--pink)}
+.field input,.field select,.field textarea{width:100%;padding:10px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;font-family:Inter,sans-serif}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+.field textarea{min-height:80px;resize:vertical}
+.hint{font-size:11px;color:var(--gray);margin-top:4px}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin:8px 0}
+.subject-grid label{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:6px 10px;border:1px solid #E5E7EB;border-radius:6px;transition:all .15s}
+.subject-grid label:hover{border-color:var(--gold)}
+.subject-grid input:checked + span{color:var(--gold);font-weight:600}
+.subject-grid span{color:#374151}
+.submit-btn{width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer}
+.submit-btn:hover{background:#1A2D4A}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+.msg{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.msg.success{display:block;background:#F0FDF4;border:1px solid var(--green);color:#166534}
+.msg.error{display:block;background:#FEF2F2;border:1px solid #FCA5A5;color:#991B1B}
+@media(max-width:640px){.row-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<script src="/nav.js"></script>
+
+<div class="apply-wrap">
+  <a href="/tutoring/" style="color:var(--gray);font-size:13px;text-decoration:none;display:inline-block;margin-bottom:20px">← Back to Tutors</a>
+  <h1>Become a Tutor</h1>
+  <p class="subtitle">Share your knowledge with Ghana's next generation. Fill in your details and we'll review your application.</p>
+  <div id="msgBox" class="msg"></div>
+
+  <form id="tutorForm" onsubmit="return submitApplication(event)">
+    <div class="field">
+      <label>Full Name <span class="req">*</span></label>
+      <input type="text" id="name" required placeholder="Your full name">
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" id="email" required placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" id="phone" placeholder="0XX XXX XXXX">
+      </div>
+    </div>
+    <div class="field">
+      <label>Subjects You Teach <span class="req">*</span></label>
+      <div class="subject-grid" id="subjectGrid"></div>
+      <div class="hint">Select all that apply.</div>
+    </div>
+    <div class="field">
+      <label>Bio <span class="req">*</span></label>
+      <textarea id="bio" required placeholder="Tell us about your teaching experience, background, and approach..."></textarea>
+    </div>
+    <div class="field">
+      <label>Qualifications & Certifications</label>
+      <textarea id="qualifications" placeholder="Degrees, certifications, teaching experience..."></textarea>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Hourly Rate (GHS) <span class="req">*</span></label>
+        <input type="number" id="hourly_rate" required min="0" step="5" placeholder="e.g. 50">
+      </div>
+      <div class="field">
+        <label>Availability</label>
+        <input type="text" id="availability" placeholder="e.g. Weekdays 4-7pm, Weekends">
+      </div>
+    </div>
+    <div class="field">
+      <label>Profile Photo URL (optional)</label>
+      <input type="url" id="photo_url" placeholder="https://example.com/your-photo.jpg">
+    </div>
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+  </form>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/nav.js"></script>
+<script>
+var allSubjects = [];
+
+function loadSubjects() {
+  fetch('/api/tutoring?limit=1').then(function(r){return r.json()}).then(function(data) {
+    allSubjects = data.subjects || [];
+    renderSubjectCheckboxes();
+  }).catch(function(){});
+}
+
+function renderSubjectCheckboxes() {
+  var grid = document.getElementById('subjectGrid');
+  var cats = {academic:'📚 Academic',creative:'🎨 Creative',bible:'📖 Bible Studies',professional:'💼 Professional'};
+  var html = '';
+  Object.keys(cats).forEach(function(cat) {
+    var items = allSubjects.filter(function(s){return s.category===cat});
+    if (!items.length) return;
+    html += '<div style="grid-column:1/-1;font-size:11px;font-weight:700;color:var(--gray);margin-top:4px;text-transform:uppercase;letter-spacing:.08em">' + cats[cat] + '</div>';
+    items.forEach(function(s) {
+      html += '<label><input type="checkbox" value="' + escapeHtml(s.name) + '"> <span>' + s.icon + ' ' + escapeHtml(s.name) + '</span></label>';
+    });
+  });
+  grid.innerHTML = html;
+}
+
+function submitApplication(e) {
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  var checked = document.querySelectorAll('#subjectGrid input:checked');
+  var subjects = Array.from(checked).map(function(c){return c.value});
+
+  var data = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    bio: document.getElementById('bio').value.trim(),
+    qualifications: document.getElementById('qualifications').value.trim(),
+    hourly_rate: parseFloat(document.getElementById('hourly_rate').value) || 0,
+    availability: document.getElementById('availability').value.trim(),
+    photo_url: document.getElementById('photo_url').value.trim(),
+    subjects: subjects
+  };
+
+  if (!data.name || !data.email || !subjects.length) {
+    showMsg('Please fill in all required fields.', 'error');
+    btn.disabled = false; btn.textContent = 'Submit Application';
+    return;
+  }
+
+  fetch('/api/tutoring', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  }).then(function(r){return r.json()}).then(function(res) {
+    if (res.status === 'ok') {
+      showMsg(res.message || 'Application submitted!', 'success');
+      document.getElementById('tutorForm').reset();
+    } else {
+      showMsg(res.error || 'Something went wrong.', 'error');
+    }
+  }).catch(function(){showMsg('Network error. Please try again.','error')}).finally(function(){
+    btn.disabled = false; btn.textContent = 'Submit Application';
+  });
+  return false;
+}
+
+function showMsg(msg, type) {
+  var box = document.getElementById('msgBox');
+  box.textContent = msg;
+  box.className = 'msg ' + type;
+  box.style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+loadSubjects();
+</script>
+</body>
+</html>

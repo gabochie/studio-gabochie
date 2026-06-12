@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutoring Marketplace · GideonAbochie Studio</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.tutoring-hero{background:linear-gradient(135deg,var(--navy),#1A2D4A);color:white;padding:60px 24px;text-align:center}
+.tutoring-hero h1{font-size:36px;font-weight:900;margin-bottom:12px;font-family:var(--display)}
+.tutoring-hero p{font-size:16px;color:rgba(255,255,255,.7);max-width:600px;margin:0 auto 24px}
+.tutoring-hero .cta-btn{background:var(--gold);color:var(--navy);padding:12px 28px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block}
+.filters{display:flex;gap:10px;padding:20px 24px;max-width:1100px;margin:0 auto;flex-wrap:wrap}
+.filters input,.filters select{padding:10px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;flex:1;min-width:180px;font-family:Inter,sans-serif}
+.filters select{flex:0 0 auto}
+.tutor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:0 24px 60px;max-width:1100px;margin:0 auto}
+.tutor-card{background:white;border:1px solid #E5E7EB;border-radius:12px;overflow:hidden;transition:box-shadow .2s}
+.tutor-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.tutor-card-photo{height:120px;background:linear-gradient(135deg,var(--navy),#2D3561);display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--gold)}
+.tutor-card-photo img{width:100%;height:100%;object-fit:cover}
+.tutor-card-body{padding:16px}
+.tutor-card-body h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.tutor-card-body .subjects{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tutor-card-body .subjects span{background:#F3F4F6;padding:2px 8px;border-radius:10px;font-size:10px;color:#4B5563}
+.tutor-card-body .bio{font-size:12px;color:#6B7280;margin-bottom:10px;line-height:1.5}
+.tutor-card-body .meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--gray)}
+.tutor-card-body .rate{font-weight:700;color:var(--gold);font-size:14px}
+.tutor-card-body .actions{display:flex;gap:8px;margin-top:12px}
+.tutor-card-body .actions a{flex:1;padding:8px;text-align:center;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none}
+.tutor-card-body .actions .book{background:var(--navy);color:white}
+.tutor-card-body .actions .profile{background:#F3F4F6;color:var(--navy);border:1px solid #D1D5DB}
+.empty-state{text-align:center;padding:60px 24px;color:var(--gray);grid-column:1/-1}
+.empty-state h3{font-size:18px;margin-bottom:8px;color:var(--navy)}
+@media(max-width:640px){.tutor-grid{grid-template-columns:1fr}.tutoring-hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<script src="/nav.js"></script>
+
+<div class="tutoring-hero">
+  <h1>Find a Tutor</h1>
+  <p>Connect with expert tutors in academics, creative arts, Bible studies, and professional skills — live sessions or online.</p>
+  <a href="/tutoring/apply/" class="cta-btn">Become a Tutor</a>
+</div>
+
+<div class="filters">
+  <input type="text" id="searchInput" placeholder="Search tutors by name, subject, or keyword..." onkeyup="if(event.key==='Enter')loadTutors()">
+  <select id="subjectFilter" onchange="loadTutors()">
+    <option value="">All Subjects</option>
+  </select>
+</div>
+
+<div class="tutor-grid" id="tutorGrid">
+  <div class="empty-state"><h3>Loading tutors...</h3><p>Please wait while we find available tutors.</p></div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/nav.js"></script>
+<script>
+function loadTutors() {
+  var grid = document.getElementById('tutorGrid');
+  var search = document.getElementById('searchInput').value.trim();
+  var subject = document.getElementById('subjectFilter').value;
+  var params = new URLSearchParams();
+  if (search) params.set('search', search);
+  if (subject) params.set('subject', subject);
+
+  grid.innerHTML = '<div class="empty-state"><h3>Loading tutors...</h3></div>';
+
+  fetch('/api/tutoring?' + params.toString())
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok') throw new Error(data.error);
+      populateSubjectFilter(data.subjects || []);
+      renderTutors(grid, data.tutors || []);
+    })
+    .catch(function() {
+      grid.innerHTML = '<div class="empty-state"><h3>Could not load tutors</h3><p>Please refresh the page or try again later.</p></div>';
+    });
+}
+
+function populateSubjectFilter(subjects) {
+  var sel = document.getElementById('subjectFilter');
+  var current = sel.value;
+  sel.innerHTML = '<option value="">All Subjects</option>';
+  var cats = { academic: '📚 Academic', creative: '🎨 Creative', bible: '📖 Bible Studies', professional: '💼 Professional' };
+  Object.keys(cats).forEach(function(cat) {
+    var group = subjects.filter(function(s) { return s.category === cat; });
+    if (!group.length) return;
+    group.forEach(function(s) {
+      var opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.icon + ' ' + s.name;
+      sel.appendChild(opt);
+    });
+  });
+  sel.value = current;
+}
+
+function renderTutors(grid, tutors) {
+  if (!tutors.length) {
+    grid.innerHTML = '<div class="empty-state"><h3>No tutors found</h3><p>Try a different search or check back later.</p></div>';
+    return;
+  }
+  var html = '';
+  tutors.forEach(function(t) {
+    var subjects = [];
+    try { subjects = JSON.parse(t.subjects || '[]'); } catch(e) { subjects = []; }
+    var initial = t.name ? t.name.charAt(0).toUpperCase() : '?';
+    html += '<div class="tutor-card">';
+    html += '<div class="tutor-card-photo">' + (t.photo_url ? '<img src="' + t.photo_url + '" alt="' + escapeHtml(t.name) + '">' : initial) + '</div>';
+    html += '<div class="tutor-card-body">';
+    html += '<h3>' + escapeHtml(t.name) + '</h3>';
+    html += '<div class="subjects">' + subjects.map(function(s) { return '<span>' + escapeHtml(s) + '</span>'; }).join('') + '</div>';
+    if (t.bio) html += '<div class="bio">' + escapeHtml(t.bio.substring(0, 150)) + '</div>';
+    html += '<div class="meta"><span class="rate">GH¢' + (t.hourly_rate || 0) + '/hr</span>' + (t.availability ? '<span>' + escapeHtml(t.availability) + '</span>' : '') + '</div>';
+    html += '<div class="actions"><a class="book" href="mailto:' + escapeHtml(t.email) + '?subject=Booking%20Request%3A%20' + encodeURIComponent(t.name) + '">Book Session</a><a class="profile" href="mailto:' + escapeHtml(t.email) + '">Contact</a></div>';
+    html += '</div></div>';
+  });
+  grid.innerHTML = html;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+loadTutors();
+</script>
+</body>
+</html>

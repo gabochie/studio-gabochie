@@ -27,7 +27,10 @@
         { href: 'newsletter.html',  icon: '\uD83D\uDCEB', label: 'Newsletter' },
         { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' },
         { href: 'content-ai.html',  icon: '\u2728',       label: 'AI Content' },
-        { href: 'classifieds.html', icon: '\uD83D\uDCE3', label: 'Classifieds' }
+        { href: 'classifieds.html',  icon: '\uD83D\uDCE3', label: 'Classifieds' },
+        { href: 'tutoring.html',    icon: '\uD83C\uDF93', label: 'Tutoring' },
+        { href: '/careers/',        icon: '\uD83D\uDCBC', label: 'Careers' },
+        { href: 'tutor-roadmap.html', icon: '\uD83D\uDDFA', label: 'Tutor Roadmap' }
       ]
     },
     {

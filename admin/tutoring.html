@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutors — Admin · GideonAbochie Studio</title>
+<link rel="stylesheet" href="/admin/admin.css">
+<style>
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:4px}
+.tab{flex:1;padding:8px 16px;border:none;border-radius:8px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#5A7A9F;text-align:center;transition:all .2s}
+.tab.active{background:#C9A84C;color:#0A1628}
+.tab:hover{color:#E8EEF7}
+.list{display:grid;gap:10px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card-title{font-family:Syne,sans-serif;font-size:15px;font-weight:600;color:#F1F5F9}
+.card-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:#5A7A9F;font-family:Inter,sans-serif}
+.card-meta span{background:#0A1628;padding:3px 8px;border-radius:4px}
+.card-body{font-size:13px;color:#94A3B8;line-height:1.6}
+.card-actions{display:flex;gap:8px;margin-top:4px}
+.badge{padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:Inter,sans-serif}
+.badge.pending{background:rgba(234,179,8,.15);color:#F59E0B}
+.badge.approved{background:rgba(34,197,94,.15);color:#22C55E}
+.badge.rejected{background:rgba(239,68,68,.15);color:#EF4444}
+.empty{text-align:center;padding:40px;color:#5A7A9F;font-size:13px}
+</style>
+</head>
+<body>
+<script src="/admin/admin.js"></script>
+<script src="/admin/sidebar.js"></script>
+<div class="wrap">
+  <div class="header">
+    <a href="/" class="header-brand"><img src="/assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="/admin/index.html">Dashboard</a>
+      <a href="/admin/tutoring.html" class="active">Tutors</a>
+    </div>
+  </div>
+
+  <h1>Tutoring Marketplace</h1>
+  <div class="tabs" id="tabs">
+    <button class="tab active" onclick="setFilter('')">All</button>
+    <button class="tab" onclick="setFilter('pending')">Pending</button>
+    <button class="tab" onclick="setFilter('approved')">Approved</button>
+    <button class="tab" onclick="setFilter('rejected')">Rejected</button>
+  </div>
+
+  <div class="list" id="listContainer"><div class="empty">Loading...</div></div>
+</div>
+
+<script>
+var currentFilter = '';
+
+function setFilter(s) { currentFilter = s; loadTutors(); }
+
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  return fetch(path, opts).then(function(r){return r.json()});
+}
+
+function loadTutors() {
+  var p = currentFilter ? '?status=' + currentFilter : '';
+  api('/admin/api/tutoring' + p).then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.error);
+    renderList(data.items || []);
+  }).catch(function(e) {
+    document.getElementById('listContainer').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+  });
+}
+
+function renderList(items) {
+  var html = '';
+  if (!items.length) {
+    html = '<div class="empty">No tutors found.</div>';
+  } else {
+    items.forEach(function(t) {
+      var subjects = [];
+      try { subjects = JSON.parse(t.subjects || '[]'); } catch(e) {}
+      html += '<div class="card">';
+      html += '<div class="card-header">';
+      html += '<div class="card-title">' + escapeHtml(t.name) + '<span class="badge ' + t.status + '" style="margin-left:8px">' + t.status + '</span></div>';
+      html += '</div>';
+      html += '<div class="card-meta">' + subjects.map(function(s){return '<span>' + escapeHtml(s) + '</span>'}).join('') + '<span>GH¢' + (t.hourly_rate||0) + '/hr</span>' + (t.availability ? '<span>' + escapeHtml(t.availability) + '</span>' : '') + '</div>';
+      if (t.bio) html += '<div class="card-body">' + escapeHtml(t.bio.substring(0,200)) + '</div>';
+      html += '<div class="card-meta">📧 ' + escapeHtml(t.email) + (t.phone ? ' · 📞 ' + escapeHtml(t.phone) : '') + '</div>';
+      html += '<div class="card-actions">';
+      if (t.status === 'pending') {
+        html += '<button class="btn btn-ghost" onclick="update(' + t.id + ',\'approved\')" style="color:#22C55E;font-size:12px">✓ Approve</button>';
+        html += '<button class="btn btn-ghost" onclick="update(' + t.id + ',\'rejected\')" style="color:#EF4444;font-size:12px">✗ Reject</button>';
+      }
+      if (t.status === 'approved') {
+        html += '<button class="btn btn-ghost" onclick="toggleFeatured(' + t.id + ',' + (t.featured ? 0 : 1) + ')" style="color:#F5C200;font-size:12px">' + (t.featured ? 'Unfeature' : '⭐ Feature') + '</button>';
+      }
+      html += '<button class="btn btn-danger" onclick="del(' + t.id + ')" style="font-size:12px">Delete</button>';
+      html += '</div></div>';
+    });
+  }
+  document.getElementById('listContainer').innerHTML = html;
+}
+
+function update(id, status) {
+  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({status:status})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)});
+}
+
+function toggleFeatured(id, val) {
+  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({featured:val})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)});
+}
+
+function del(id) { if (!confirm('Delete this tutor?')) return; api('/admin/api/tutoring?id=' + id, {method:'DELETE',headers:{'X-Admin-Key':getAdminKey()}}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)}); }
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+loadTutors();
+</script>
+</body>
+</html>

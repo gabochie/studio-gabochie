@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutor Roadmap — Admin · GideonAbochie Studio</title>
+<link rel="stylesheet" href="admin.css">
+<style>
+.roadmap-hero{background:linear-gradient(135deg,#0A1628,#1A2D4A);border-radius:12px;padding:32px;margin-bottom:24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.roadmap-hero h1{font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#F1F5F9;margin:0;line-height:1.3}
+.roadmap-hero p{color:#6B7F9A;font-size:12px;margin:4px 0 0;font-family:Inter,sans-serif}
+.roadmap-hero .overall{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:16px 24px;text-align:center;margin-left:auto}
+.roadmap-hero .overall .pct{font-family:Syne,sans-serif;font-size:36px;font-weight:800;color:#C9A84C;display:block}
+.roadmap-hero .overall .label{font-size:10px;color:#6B7F9A;text-transform:uppercase;letter-spacing:.08em}
+.progress-track{height:6px;background:#0F1E38;border-radius:3px;overflow:hidden;margin:0 0 24px}
+.progress-track .fill{height:100%;background:linear-gradient(90deg,#C9A84C,#F5C200);border-radius:3px;transition:width .5s ease}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:24px}
+.stat{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px;text-align:center}
+.stat .num{font-family:Syne,sans-serif;font-size:20px;font-weight:700;display:block}
+.stat .num.completed{color:#22C55E}
+.stat .num.in-progress{color:#3B82F6}
+.stat .num.planned{color:#6B7F9A}
+.stat .num.skipped{color:#F59E0B}
+.stat .label{font-size:10px;color:#6B7F9A;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.phase-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;overflow:hidden;margin-bottom:16px}
+.phase-header{padding:16px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;transition:background .15s}
+.phase-header:hover{background:rgba(201,168,76,.04)}
+.phase-header .icon{font-size:24px;width:36px;text-align:center}
+.phase-header .info{flex:1}
+.phase-header .info h3{font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#F1F5F9;margin:0}
+.phase-header .info .meta{font-size:11px;color:#6B7F9A;margin-top:2px}
+.phase-header .depends{font-size:10px;color:#5A7A9F;background:#0A1628;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.phase-header .pct{font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#C9A84C;min-width:40px;text-align:right}
+.phase-header .arrow{color:#5A7A9F;font-size:12px;transition:transform .2s}
+.phase-card.open .phase-header .arrow{transform:rotate(180deg)}
+.phase-body{display:none;border-top:1px solid #1E3250}
+.phase-card.open .phase-body{display:block}
+.task-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #0A1628;transition:background .15s}
+.task-item:last-child{border-bottom:none}
+.task-item:hover{background:rgba(255,255,255,.02)}
+.task-status{width:20px;height:20px;border-radius:50%;border:2px solid #1E3250;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;position:relative}
+.task-status.completed{background:#22C55E;border-color:#22C55E}
+.task-status.completed::after{content:'✓';color:white;font-weight:700}
+.task-status.in_progress{border-color:#3B82F6;background:rgba(59,130,246,.15)}
+.task-status.in_progress::after{content:'◉';color:#3B82F6;font-size:10px}
+.task-status.skipped{border-color:#F59E0B;background:rgba(245,158,11,.15)}
+.task-status.skipped::after{content:'—';color:#F59E0B;font-weight:700}
+.task-text{flex:1;font-size:13px;color:#CDD5E0;font-family:Inter,sans-serif}
+.task-text .done{text-decoration:line-through;opacity:.5}
+.task-actions{display:flex;gap:4px;opacity:0;transition:opacity .2s}
+.task-item:hover .task-actions{opacity:1}
+.task-actions button{background:transparent;border:1px solid #1E3250;border-radius:4px;padding:3px 8px;font-size:9px;cursor:pointer;color:#6B7F9A;font-family:Inter,sans-serif;transition:all .15s}
+.task-actions button:hover{background:#1E3250;color:#CDD5E0}
+.task-actions button.active{border-color:#C9A84C;color:#C9A84C}
+.status-menu{display:none;position:absolute;top:24px;left:0;background:#1A2D4A;border:1px solid #1E3250;border-radius:6px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.4);min-width:130px;padding:4px}
+.status-menu.open{display:block}
+.status-menu button{display:block;width:100%;text-align:left;background:transparent;border:none;padding:7px 12px;font-size:11px;color:#94A3B8;cursor:pointer;font-family:Inter,sans-serif;border-radius:4px}
+.status-menu button:hover{background:rgba(201,168,76,.1);color:#F1F5F9}
+@media(max-width:640px){.roadmap-hero{flex-direction:column;text-align:center}.roadmap-hero .overall{margin-left:0;width:100%}.task-actions{opacity:1}}
+</style>
+</head>
+<body>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<div class="wrap">
+
+  <div class="roadmap-hero">
+    <div>
+      <h1>🧭 Tutor Platform Build Roadmap</h1>
+      <p>Track the build progress of the online tutoring business across all 4 systems</p>
+    </div>
+    <div class="overall">
+      <span class="pct" id="overallPct">0%</span>
+      <span class="label">Complete</span>
+    </div>
+  </div>
+
+  <div class="progress-track"><div class="fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="stat-row" id="statsRow"></div>
+
+  <div id="phasesContainer"></div>
+
+</div>
+
+<script>
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  return fetch(path, opts).then(function(r){return r.json()});
+}
+
+function loadRoadmap() {
+  api('/admin/api/tutor-roadmap').then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.error);
+    renderStats(data.counts);
+    renderPhases(data.phases);
+    renderProgress(data.percent);
+  }).catch(function(e) {
+    document.getElementById('phasesContainer').innerHTML = '<div class="empty" style="text-align:center;padding:40px;color:#5A7A9F;font-size:13px">Error: ' + e.message + '</div>';
+  });
+}
+
+function renderStats(counts) {
+  document.getElementById('overallPct').textContent = counts.total ? Math.round(counts.completed / counts.total * 100) + '%' : '0%';
+  var html = '';
+  var items = [
+    { key: 'completed', label: 'Completed', cls: 'completed' },
+    { key: 'in_progress', label: 'In Progress', cls: 'in-progress' },
+    { key: 'planned', label: 'Planned', cls: 'planned' },
+    { key: 'skipped', label: 'Skipped', cls: 'skipped' },
+  ];
+  items.forEach(function(item) {
+    html += '<div class="stat"><span class="num ' + item.cls + '">' + (counts[item.key] || 0) + '</span><span class="label">' + item.label + '</span></div>';
+  });
+  html += '<div class="stat"><span class="num" style="color:#F1F5F9">' + counts.total + '</span><span class="label">Total</span></div>';
+  document.getElementById('statsRow').innerHTML = html;
+}
+
+function renderProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderPhases(phases) {
+  var html = '';
+  (phases || []).forEach(function(phase) {
+    var pct = phase.tasks.length ? Math.round(phase.tasks.filter(function(t){return t.status==='completed'}).length / phase.tasks.length * 100) : 0;
+    var completed = phase.tasks.filter(function(t){return t.status==='completed'}).length;
+    var total = phase.tasks.length;
+    html += '<div class="phase-card" id="phase-' + phase.phase + '">';
+    html += '<div class="phase-header" onclick="togglePhase(\'' + phase.phase + '\')">';
+    html += '<span class="icon">' + (phase.phase_icon || '📋') + '</span>';
+    html += '<div class="info"><h3>' + escapeHtml(phase.phase_name) + '</h3><div class="meta">' + completed + '/' + total + ' tasks · ' + escapeHtml(phase.timeline) + '</div></div>';
+    if (phase.depends_on) html += '<span class="depends">Depends on: ' + escapeHtml(phase.depends_on) + '</span>';
+    html += '<span class="pct">' + pct + '%</span>';
+    html += '<span class="arrow">▼</span>';
+    html += '</div>';
+    html += '<div class="phase-body">';
+    phase.tasks.forEach(function(task) {
+      html += '<div class="task-item">';
+      html += '<div class="task-status ' + task.status + '" onclick="toggleStatusMenu(this, ' + task.id + ')" title="' + task.status + '"><div class="status-menu" id="menu-' + task.id + '">';
+      var statuses = ['planned', 'in_progress', 'completed', 'skipped'];
+      statuses.forEach(function(s) {
+        html += '<button class="' + (s === task.status ? 'active' : '') + '" onclick="updateStatus(' + task.id + ',\'' + s + '\', event)">' + s.charAt(0).toUpperCase() + s.slice(1).replace('_', ' ') + '</button>';
+      });
+      html += '</div></div>';
+      html += '<div class="task-text' + (task.status === 'completed' || task.status === 'skipped' ? '' : '') + '">' + (task.status === 'completed' || task.status === 'skipped' ? '<span class="done">' : '') + escapeHtml(task.task) + (task.status === 'completed' || task.status === 'skipped' ? '</span>' : '') + '</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('phasesContainer').innerHTML = html;
+
+  (phases || []).forEach(function(phase) {
+    var pct = phase.tasks.length ? Math.round(phase.tasks.filter(function(t){return t.status==='completed'}).length / phase.tasks.length * 100) : 0;
+    if (pct === 100) document.getElementById('phase-' + phase.phase).classList.add('open');
+  });
+}
+
+function togglePhase(phase) {
+  var card = document.getElementById('phase-' + phase);
+  card.classList.toggle('open');
+}
+
+function toggleStatusMenu(el, id) {
+  var menu = document.getElementById('menu-' + id);
+  var open = menu.classList.contains('open');
+  document.querySelectorAll('.status-menu.open').forEach(function(m) { m.classList.remove('open'); });
+  if (!open) menu.classList.add('open');
+  el.appendChild(menu);
+}
+
+function updateStatus(id, status, event) {
+  event.stopPropagation();
+  api('/admin/api/tutor-roadmap', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
+    body: JSON.stringify({ id: id, status: status })
+  }).then(function(data) {
+    if (data.status === 'ok') loadRoadmap();
+    else Toast.error(data.error || 'Update failed');
+  }).catch(function(e) { Toast.error('Error: ' + e.message); });
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.status-menu') && !e.target.closest('.task-status')) {
+    document.querySelectorAll('.status-menu.open').forEach(function(m) { m.classList.remove('open'); });
+  }
+});
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+loadRoadmap();
+</script>
+</body>
+</html>

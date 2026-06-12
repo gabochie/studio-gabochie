@@ -8,6 +8,8 @@
     '<a href="/books/">Books</a>' +
     '<a href="/membership/">Membership</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Fundraising</a>' +
+    '<a href="/tutoring/">Tutoring</a>' +
+    '<a href="/careers/">Careers</a>' +
     '<a href="/support/" class="nav-donate"><i class="ti ti-heart"></i> Support</a>' +
     '<span id="navAuth" class="nav-auth"></span>' +
     '</div>' +
@@ -35,6 +37,8 @@
     '<a href="/newsletter/">The Studio Weekly</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Flagship Campaign</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
+    '<a href="/tutoring/">Tutoring Marketplace</a>' +
+    '<a href="/careers/">Careers</a>' +
     '</div>' +
     '<div>' +
     '<h4>Support</h4>' +
