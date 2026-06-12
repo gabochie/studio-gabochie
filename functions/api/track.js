@@ -32,11 +32,26 @@ export async function onRequest(context) {
     });
   }
   try {
-    const { page, referrer } = await request.json();
+    const body = await request.json();
+    const { page, referrer, event, tx_ref, amount, email, name, campaign } = body;
     const cf = request.cf || {};
     const ip = request.headers.get('CF-Connecting-IP') || '';
     const ua = request.headers.get('User-Agent') || '';
-    if (env.DB) {
+
+    if (!env.DB) {
+      return new Response(JSON.stringify({ status: 'ok' }), { headers: { 'Content-Type': 'application/json' } });
+    }
+
+    if (event) {
+      // Custom event tracking (e.g. donation_started)
+      await env.DB.prepare(
+        'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, datetime(\'now\'))'
+      ).bind(
+        event, JSON.stringify({ tx_ref, amount, name, campaign }),
+        page || '/', email || ''
+      ).run();
+    } else {
+      // Page view tracking
       var device = detectDevice(ua);
       var hostname = new URL(request.url).hostname;
       var source = categorizeSource(referrer, hostname);

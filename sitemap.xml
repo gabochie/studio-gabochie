@@ -3,8 +3,6 @@
   <url><loc>https://gideonabochie.org/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://gideonabochie.org/art/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/books/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://gideonabochie.org/books/divine_algorithm_report</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://gideonabochie.org/books/premium-bundle</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/campaigns/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/campaigns/1-million-systems-thinkers</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/contact/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>

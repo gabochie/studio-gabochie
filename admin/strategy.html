@@ -114,13 +114,15 @@
 
   <!-- ============ MEASUREMENT ============ -->
   <h2>How to Measure Effectiveness</h2>
-  <p>You need <strong>metrics, not guesses</strong>. Currently there are zero analytics on the site — no tracking, no conversion logging, no way to know traffic, conversion rates, or revenue sources.</p>
+  <p>You need <strong>metrics, not guesses</strong>. Analytics infrastructure is now in place:</p>
 
   <h3>Existing Free Tools Available</h3>
   <ul>
-    <li><strong>Cloudflare Web Analytics</strong> — already available, just enable it (privacy-friendly, no GDPR banner, 2 clicks in dashboard)</li>
-    <li><strong>D1 database</strong> — already created; can log every event (page view, donation attempt, sponsorship inquiry, book download)</li>
-    <li><strong>Flutterwave dashboard</strong> — shows donation amounts, frequency, currency (already available)</li>
+    <li><strong>Cloudflare Web Analytics</strong> — auto-injected by Cloudflare Pages when enabled in dashboard ✓</li>
+    <li><strong>/api/track endpoint</strong> — logs page views + custom events (donation_started) to D1 events table, with device type, country, traffic source</li>
+    <li><strong>Donation funnel tracking</strong> — donation_started event fires on checkout open, enabling abandoned-donation recovery</li>
+    <li><strong>Abandoned donation recovery cron</strong> — runs hourly, checks for donation_started events >24h old with no completed donation, queues reminder email</li>
+    <li><strong>Flutterwave dashboard</strong> — shows donation amounts, frequency, currency</li>
   </ul>
 
   <h3>Key Metrics to Track</h3>
@@ -138,7 +140,7 @@
     </table>
   </div>
 
-  <div class="callout"><strong>Current reality:</strong> You can't measure anything right now. No analytics, no conversion tracking, no revenue logging beyond what Flutterwave's dashboard shows. <strong>First step: enable Cloudflare Web Analytics.</strong></div>
+  <div class="callout"><strong>Current status:</strong> Page views, donation_started events, and donation receipts/recovery emails are all logging to D1. Cloudflare Web Analytics auto-injected ✓. All analytics infrastructure is in place.</div>
 
   <!-- ============ REVENUE POTENTIAL ============ -->
   <h2>Annual Revenue Potential</h2>

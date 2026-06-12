@@ -180,6 +180,7 @@ export async function onRequest(context) {
       'if(!amt||amt<5){alert("Minimum donation is GHS 5");return}' +
       'var btn=document.getElementById("dnBtn");btn.disabled=true;btn.textContent="Opening...";' +
       'var tx_ref="camp_"+CAMPAIGN_SLUG+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);' +
+      'try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"donation_started",tx_ref:tx_ref,amount:amt,email:email,name:name,campaign:CAMPAIGN_SLUG})})}catch(e){}' +
       'FlutterwaveCheckout({' +
       'public_key:FLW_KEY,tx_ref:tx_ref,amount:amt,currency:"GHS",' +
       'payment_options:"card,mobilemoneyghana,ussd",' +

@@ -51,13 +51,30 @@
     {
       "phase": 4,
       "name": "Growth & Automation",
-      "status": "future",
+      "status": "active",
       "description": "Email automation, analytics dashboards, premium content gate, paid courses.",
       "platform": "Cloudflare Workers + D1 + Email API",
       "steps": [
-        {"id": 4.1, "task": "Email automation", "items": ["Welcome sequence", "Manifesto follow-up", "Donation thank-you"]},
-        {"id": 4.2, "task": "Analytics & dashboards", "items": ["Cloudflare Analytics", "Donation funnel", "Newsletter growth", "Revenue reporting"]},
-        {"id": 4.3, "task": "Premium content & courses", "items": ["Members-only chapters", "Exclusive videos behind paywall", "Paid courses"]}
+        {"id": 4.1, "task": "Email automation", "items": [
+          "Welcome sequence — immediate + day-3 follow-up ✓",
+          "Manifesto follow-up (day-3 after book download) ✓",
+          "Donation receipt + day-3 impact follow-up ✓",
+          "Abandoned donation recovery (checks events table hourly) ✓",
+          "Book purchase + day-3 upsell ✓",
+          "Enrollment follow-up (day-3) ✓",
+          "donation_started event fired on checkout open — abandoned recovery now works ✓"
+        ]},
+        {"id": 4.2, "task": "Analytics & dashboards", "items": [
+          "Cloudflare Web Analytics — auto-injected by Cloudflare Pages ✓",
+          "Donation funnel — donation_started events logged to D1 events table ✓",
+          "Page views tracked via /api/track ✓",
+          "Revenue reporting — Flutterwave dashboard + D1 donations table ✓"
+        ]},
+        {"id": 4.3, "task": "Premium content & courses", "items": [
+          "School page badges now show Free for All vs Free Sample (paid) ✓",
+          "Membership tiers gate full content access via dashboard",
+          "Paid courses — Systems Thinking, Guitar Method with paywall ✓"
+        ]}
       ]
     },
     {
@@ -224,7 +241,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 7 (Strategic Offensive) — sitemap expanded to 35 URLs, canonical URLs added to 11 pages, JSON-LD on campaign pages, robots.txt enhanced with AI crawler rules, press kit with downloadable assets. Phase 9 (Audit Fixes) in progress. Phase 11 (Command Center) complete.",
+  "current_focus": "Phase 4 (Growth & Automation) — donation_started event tracking added to campaign checkout flows, abandoned donation recovery now functional, school page badges differentiate free vs paid programs, Cloudflare Web Analytics ready to enable via dashboard. Phase 7 (Strategic Offensive) — sitemap, canonical URLs, JSON-LD, robots.txt, press kit done.",
   "last_updated": "2026-06-12",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

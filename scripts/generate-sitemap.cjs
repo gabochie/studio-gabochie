@@ -21,9 +21,14 @@ var EXCLUDE_FILES = ['404.html', 'coming-soon.html'];
 
 // Manual URL overrides for files that get clean URLs via _redirects
 var URL_OVERRIDES = {
-  'books/premium-bundle.html': '/books/premium-bundle',
   'donate.html': '/donate'
 };
+
+// Files that exist on disk but are redirected (via _redirects) to auth-gated API endpoints
+var REDIRECTED_TO_SERVE = [
+  'books/divine_algorithm_report.html',
+  'books/premium-bundle.html',
+];
 
 // Dynamic URLs served by Cloudflare Functions (SSR) — add manually since they have no static HTML file
 var DYNAMIC_URLS = [
@@ -63,6 +68,8 @@ function isExcluded(filePath) {
   if (filePath.indexOf('survey/') !== -1) return true;
   // Skip coverage directory
   if (filePath.indexOf('coverage/') !== -1) return true;
+  // Skip files redirected to auth-gated API endpoints
+  if (REDIRECTED_TO_SERVE.indexOf(filePath.replace(/\\/g, '/')) !== -1) return true;
   return false;
 }
 
