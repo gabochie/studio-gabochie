@@ -26,7 +26,8 @@
         { href: 'programs.html',    icon: '\uD83D\uDCD6', label: 'Programs' },
         { href: 'newsletter.html',  icon: '\uD83D\uDCEB', label: 'Newsletter' },
         { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' },
-        { href: 'content-ai.html',  icon: '\u2728',       label: 'AI Content' }
+        { href: 'content-ai.html',  icon: '\u2728',       label: 'AI Content' },
+        { href: 'classifieds.html', icon: '\uD83D\uDCE3', label: 'Classifieds' }
       ]
     },
     {

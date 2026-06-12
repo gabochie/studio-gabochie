@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Place a Classified · The Studio Weekly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0A1628;--gold:#C9A84C;--cream:#FEFCF5;--ink:#1F2937;--gray:#6B7280;--pink:#E8245A;--sky:#3B82F6;--green:#22C55E;--orange:#F59E0B}
+body{background:var(--cream);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6}
+.container{max-width:700px;margin:0 auto;padding:24px 16px 60px}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--gray);font-size:13px;text-decoration:none;margin-bottom:20px;font-weight:500}
+.back-link:hover{color:var(--navy)}
+h1{font-family:Playfair Display,serif;font-size:32px;font-weight:900;color:var(--navy);margin-bottom:6px}
+.subtitle{font-size:14px;color:var(--gray);margin-bottom:28px}
+.form-section{background:white;border:1px solid #E5E7EB;border-radius:8px;padding:24px;margin-bottom:16px}
+.form-section h2{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:16px;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:5px;font-family:Inter,sans-serif}
+label .req{color:var(--pink)}
+input,select,textarea{width:100%;padding:10px 14px;border:1px solid #D1D5DB;border-radius:6px;font-size:14px;font-family:Inter,sans-serif;color:var(--ink);background:white;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+textarea{resize:vertical;min-height:80px}
+.hint{font-size:11px;color:var(--gray);margin-top:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.submit-btn{width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px}
+.submit-btn:hover{background:#1A2D4A}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+.msg{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.msg.success{display:block;background:#F0FDF4;border:1px solid var(--green);color:#166534}
+.msg.error{display:block;background:#FEF2F2;border:1px solid #FCA5A5;color:#991B1B}
+.terms{font-size:11px;color:var(--gray);margin-top:12px;text-align:center}
+.terms a{color:var(--navy)}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="index.html#classifieds/jobs" class="back-link">← Back to Classifieds</a>
+  <h1>Place a Classified</h1>
+  <p class="subtitle">Submit your listing for free. All submissions are reviewed before going live.</p>
+
+  <div id="msgBox" class="msg"></div>
+
+  <form id="classifiedForm" onsubmit="return submitListing(event)">
+    <div class="form-section">
+      <h2>Listing Details</h2>
+      <div class="field">
+        <label>Title <span class="req">*</span></label>
+        <input type="text" id="title" maxlength="200" required placeholder="e.g. Junior Software Developer Wanted">
+      </div>
+      <div class="field">
+        <label>Category <span class="req">*</span></label>
+        <select id="category" required>
+          <option value="">Select category...</option>
+          <option value="jobs">💼 Jobs & Career</option>
+          <option value="services">🛠️ Services</option>
+          <option value="products">📦 Products & Goods</option>
+          <option value="events">🎪 Events</option>
+          <option value="housing">🏠 Housing</option>
+          <option value="community">🤝 Community</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="description" maxlength="2000" placeholder="Describe your listing in detail..."></textarea>
+        <div class="hint">Up to 2,000 characters.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Price (optional)</label>
+          <input type="text" id="price" placeholder="e.g. GHS 3,500/mo or Free">
+        </div>
+        <div class="field">
+          <label>Location (optional)</label>
+          <input type="text" id="location" placeholder="e.g. Accra, Kumasi, Remote">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Contact Information</h2>
+      <div class="field">
+        <label>Your Name <span class="req">*</span></label>
+        <input type="text" id="contact_name" required placeholder="Full name or business name">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="contact_email" placeholder="email@example.com">
+        </div>
+        <div class="field">
+          <label>Phone <span class="req">*</span></label>
+          <input type="tel" id="contact_phone" placeholder="0XX XXX XXXX">
+        </div>
+      </div>
+      <div class="hint" style="margin-top:-8px">Provide at least email or phone so people can reach you.</div>
+      <div class="field" style="margin-top:12px">
+        <label>Website / Social (optional)</label>
+        <input type="url" id="website" placeholder="https://example.com or @socialhandle">
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Submit for Review</button>
+  </form>
+
+  <div class="terms">
+    By submitting, you agree to our <a href="index.html">terms of service</a>. Listings must be relevant to the Ghanaian youth community. Spam, scams, or inappropriate content will be removed.
+  </div>
+</div>
+
+<script>
+function $(id) { return document.getElementById(id); }
+
+function showMsg(msg, type) {
+  var box = $('msgBox');
+  box.textContent = msg;
+  box.className = 'msg ' + type;
+  box.style.display = 'block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function submitListing(e) {
+  e.preventDefault();
+  var btn = $('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  var title = $('title').value.trim();
+  var description = $('description').value.trim();
+  var category = $('category').value;
+  var price = $('price').value.trim();
+  var contact_name = $('contact_name').value.trim();
+  var contact_email = $('contact_email').value.trim();
+  var contact_phone = $('contact_phone').value.trim();
+  var location = $('location').value.trim();
+  var website = $('website').value.trim();
+
+  if (!title || !contact_name || (!contact_email && !contact_phone)) {
+    showMsg('Please fill in all required fields.', 'error');
+    btn.disabled = false; btn.textContent = 'Submit for Review';
+    return;
+  }
+
+  fetch('https://gideonabochie.org/api/classifieds', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: title, description: description, category: category, price: price, contact_name: contact_name, contact_email: contact_email, contact_phone: contact_phone, location: location, website: website })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status === 'ok') {
+      showMsg('Thank you! Your listing has been submitted for review. We will notify you once approved.', 'success');
+      $('classifiedForm').reset();
+    } else {
+      showMsg(data.error || 'Something went wrong. Please try again.', 'error');
+    }
+  }).catch(function() {
+    showMsg('Network error. Please check your connection and try again.', 'error');
+  }).finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Submit for Review';
+  });
+
+  return false;
+}
+</script>
+</body>
+</html>

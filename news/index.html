@@ -1948,57 +1948,8 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
     </div>
   </div>
 
-  <!-- CLASSIFIED GRID -->
-  <div class="grid-3" style="margin-bottom:24px;">
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">🖥️ Tech · Accra</span>
-        <h3 style="font-size:15px;">Junior Software Developer</h3>
-        <p style="font-size:12px;">Fintech startup in East Legon needs a passionate junior dev. React + Node.js. GHS 3,500–5,000/mo. Fresh graduates welcome. 3-month probation.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 jobs@[startup].com · Ref: SW-001</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">📱 Marketing · Remote</span>
-        <h3 style="font-size:15px;">Social Media Manager</h3>
-        <p style="font-size:12px;">Ghanaian fashion brand seeks creative SMM. Must know Reels, TikTok, and copywriting. GHS 2,500/mo + commission. Show your portfolio.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 careers@[brand].com · Ref: SMM-07</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">🎓 Education · Kumasi</span>
-        <h3 style="font-size:15px;">Youth Programme Facilitator</h3>
-        <p style="font-size:12px;">NGO in Kumasi needs energetic youth facilitator for after-school empowerment programs. Passion for youth development essential. GHS 2,000/mo + benefits.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 hr@[ngo].org · Ref: YPF-12</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">🎨 Design · Accra</span>
-        <h3 style="font-size:15px;">Graphic Designer (Mid-Level)</h3>
-        <p style="font-size:12px;">Leading Accra media house needs talented designer. Adobe Suite mastery required. Brand identity, print & digital. GHS 3,000–4,500/mo.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 design@[media].com · Ref: GD-04</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">🌱 AgriTech · Volta Region</span>
-        <h3 style="font-size:15px;">Farm Operations Coordinator</h3>
-        <p style="font-size:12px;">Modern cassava processing farm needs coordinator. Agric background preferred. Housing + GHS 2,800/mo. Drive for impact in rural Ghana.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 farms@[agri].com · Ref: FOC-09</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div class="card-body">
-        <span class="label">📹 Media · Accra</span>
-        <h3 style="font-size:15px;">Video Editor / Videographer</h3>
-        <p style="font-size:12px;">YouTube channel (200K+ subs) needs full-time video editor. Premiere Pro / DaVinci. Creative, fast, detail-oriented. GHS 3,200/mo + bonuses.</p>
-        <p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 studio@[channel].com · Ref: VE-15</p>
-      </div>
-    </div>
-  </div>
+  <!-- CLASSIFIED GRID — loaded from API -->
+  <div id="classifieds-jobs-grid" class="grid-3" style="margin-bottom:24px;"><div class="empty-state" style="text-align:center;padding:24px;color:var(--gray);font-size:13px;grid-column:1/-1">Loading classifieds...</div></div>
 
   <!-- SCHOLARSHIPS SECTION -->
   <div class="section-header"><span class="eyebrow">Study & Grow</span><h2>🎓 Scholarships & Training Opportunities</h2></div>
@@ -2040,7 +1991,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
   <!-- PLACE YOUR AD CTA -->
   <div class="ad-leaderboard">
     <p>📋 <strong>Post a job, internship, or scholarship here.</strong> Reach Ghana's most talented young professionals. From GHS 50/listing.</p>
-    <a href="mailto:info@gideonabochie.com">Post a Classified →</a>
+    <a href="classifieds-submit.html">Post a Classified →</a>
   </div>
 </div>
 
@@ -2072,104 +2023,26 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
   <!-- 2-COL BUSINESS LISTINGS -->
   <div class="grid-2" style="margin-bottom:24px;">
 
-    <!-- COLUMN 1: SERVICES FOR HIRE -->
+      <!-- COLUMN 1: SERVICES FOR HIRE — loaded from API -->
     <div>
       <div class="section-header"><span class="eyebrow">Services</span><h2>Services For Hire</h2></div>
-      <div style="border:1px solid #E5E7EB;background:white;">
-        <div style="background:var(--navy);padding:10px 16px;">
-          <span style="font-family:Oswald,sans-serif;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;">🎨 Creative & Design</span>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Logo & Brand Identity Design</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Professional branding packages from GHS 350. Turnaround: 3–5 days. 100% original. Contact: 0XX XXX XXXX</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Wedding & Event Photography</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Premium photo + video coverage across Ghana. Packages from GHS 1,200. IG: @[photographer]</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Social Media Content Creation</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Monthly content packages: 30 posts, reels, stories. GHS 800/month. WhatsApp: 0XX XXX XXXX</p>
-        </div>
-        <div style="background:var(--navy);padding:10px 16px;margin-top:0;">
-          <span style="font-family:Oswald,sans-serif;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;">💻 Tech Services</span>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Website Design & Development</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Professional websites from GHS 500. E-commerce, portfolios, church sites. 0XX XXX XXXX</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Mobile App Development</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Android & iOS apps for Ghanaian businesses. From GHS 3,000. Free consultation. apps@[dev].gh</p>
-        </div>
-        <div style="padding:16px;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">IT Support & Computer Repairs</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Home & office visits in Accra. Same-day service. GHS 80 call-out fee. 0XX XXX XXXX</p>
-        </div>
-      </div>
+      <div id="classifieds-services-grid" style="border:1px solid #E5E7EB;background:white;"><div class="empty-state" style="padding:24px;text-align:center;color:var(--gray);font-size:13px;">Loading services...</div></div>
     </div>
 
-    <!-- COLUMN 2: PRODUCTS & GOODS -->
+    <!-- COLUMN 2: PRODUCTS & GOODS — loaded from API -->
     <div>
       <div class="section-header"><span class="eyebrow">Products</span><h2>Products & Goods</h2></div>
-      <div style="border:1px solid #E5E7EB;background:white;">
-        <div style="background:var(--pink);padding:10px 16px;">
-          <span style="font-family:Oswald,sans-serif;font-size:13px;color:white;text-transform:uppercase;letter-spacing:.08em;">🍫 Food & Agriculture</span>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Organic Ghanaian Honey — Farm Direct</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Pure raw honey from Brong-Ahafo. 500ml = GHS 35. Bulk orders available. Delivery in Accra. 0XX XXX XXXX</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Fresh Organic Vegetables — Subscription Box</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Weekly organic vegetable box delivered to your door. GHS 120/box. East Legon, Adenta, Tema areas. 0XX XXX XXXX</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Moringa Powder & Supplements</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">100% Ghanaian-grown moringa. Export quality. 250g = GHS 45. WhatsApp orders: 0XX XXX XXXX</p>
-        </div>
-        <div style="background:var(--sky);padding:10px 16px;">
-          <span style="font-family:Oswald,sans-serif;font-size:13px;color:white;text-transform:uppercase;letter-spacing:.08em;">👗 Fashion & Accessories</span>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Handmade Beaded Jewellery</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Authentic Ghanaian waist beads, necklaces, bracelets. Custom orders. From GHS 30. IG: @[beads_gh]</p>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid #F3F4F6;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Afro-Urban Sneaker Brand — Pre-Order Open</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Ghana's first locally designed sneaker brand. Pre-order now from GHS 450. Limited edition. sneakers@[brand].com</p>
-        </div>
-        <div style="padding:16px;">
-          <strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">Natural Hair & Skincare Products</strong>
-          <p style="font-size:12px;color:#4B5563;margin-top:4px;">Shea butter, black soap, natural oils — all local ingredients. Starter kit GHS 95. ships nationwide. 0XX XXX XXXX</p>
-        </div>
-      </div>
+      <div id="classifieds-products-grid" style="border:1px solid #E5E7EB;background:white;"><div class="empty-state" style="padding:24px;text-align:center;color:var(--gray);font-size:13px;">Loading products...</div></div>
     </div>
   </div>
 
-  <!-- BARTER / COLLABORATION -->
+  <!-- BARTER / COLLABORATION — loaded from API -->
   <div class="section-header"><span class="eyebrow">Win Together</span><h2>🤝 Collaboration & Partnership Requests</h2></div>
-  <div class="grid-3">
-    <div style="background:var(--cream);border:1px solid #E5E7EB;padding:16px;">
-      <span style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;">Seeking Collaborator</span>
-      <h4 style="font-family:Playfair Display,serif;font-size:16px;color:var(--navy);margin:8px 0;">Music Producer + Visual Artist Collab</h4>
-      <p style="font-size:12px;color:#4B5563;">Afrobeats producer (5 years experience) seeking visual artist for EP artwork and music video. Rev share model. No upfront cost. DM: @[producer]</p>
-    </div>
-    <div style="background:var(--cream);border:1px solid #E5E7EB;padding:16px;">
-      <span style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;color:var(--green);letter-spacing:.1em;text-transform:uppercase;">Co-Founder Wanted</span>
-      <h4 style="font-family:Playfair Display,serif;font-size:16px;color:var(--navy);margin:8px 0;">EdTech Startup Needs Tech Co-Founder</h4>
-      <p style="font-size:12px;color:#4B5563;">We have the content, the market, and seed funding. Need a passionate developer. Equity deal. Let's build Ghana's biggest learning platform. founders@[edtech].com</p>
-    </div>
-    <div style="background:var(--cream);border:1px solid #E5E7EB;padding:16px;">
-      <span style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;color:var(--pink);letter-spacing:.1em;text-transform:uppercase;">Investment Opportunity</span>
-      <h4 style="font-family:Playfair Display,serif;font-size:16px;color:var(--navy);margin:8px 0;">Profitable Laundry Business — Investor Needed</h4>
-      <p style="font-size:12px;color:#4B5563;">Established East Legon laundry service. 3 years running, profitable. Seeking GHS 25,000 to expand. Full books available. invest@[laundry].com</p>
-    </div>
-  </div>
+  <div id="classifieds-collab-grid" class="grid-3"><div class="empty-state" style="grid-column:1/-1;background:var(--cream);border:1px solid #E5E7EB;padding:32px;text-align:center;color:var(--gray);font-size:13px;">Loading collaborations...</div></div>
 
   <div class="ad-leaderboard">
     <p>🛒 <strong>Sell your product or service to Ghana's most engaged youth community.</strong> From GHS 50 per listing. Business package: GHS 300/month for premium placement.</p>
-    <a href="mailto:info@gideonabochie.com">List Your Business →</a>
+    <a href="classifieds-submit.html">List Your Business →</a>
   </div>
 </div>
 
@@ -2184,119 +2057,17 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
     <div class="bubble"><strong>Star Gideon says:</strong> "Community is Ghana's greatest asset. When we gather, share, and support each other, we become unstoppable. Use these listings to connect, grow, and build together! 🌍🤝"</div>
   </div>
 
-  <!-- EVENTS FEATURED -->
+  <!-- EVENTS FEATURED — loaded from API -->
   <div class="section-header"><span class="eyebrow">Coming Up</span><h2>🎪 Upcoming Events & Programmes</h2></div>
-  <div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-family:Inter,sans-serif;font-size:13px;background:white;border:1px solid #E5E7EB;">
-      <thead>
-        <tr style="background:var(--navy);color:white;">
-          <th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Date</th>
-          <th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Event</th>
-          <th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Location</th>
-          <th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Cost</th>
-          <th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Contact</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid #F3F4F6;background:#FFFDF4;">
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">June 21</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">🌟 Ghana Youth Creativity Summit 2025</strong><br><span style="color:#6B7280;font-size:12px;">Full-day conference on creativity, entrepreneurship & nation-building. Keynote by Gideon Abochie.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">KNUST Great Hall, Kumasi</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--green);">Free</strong></td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">gideonabochie.org/summit</td>
-        </tr>
-        <tr style="border-bottom:1px solid #F3F4F6;">
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">June 28</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">💼 Accra StartUp Pitch Night</strong><br><span style="color:#6B7280;font-size:12px;">Youth entrepreneurs pitch to investors. 10 spots. GHS 5,000 prize pool.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">Impact Hub Accra</td>
-          <td style="padding:12px 16px;color:#4B5563;">GHS 20</td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">impacthub.net/accra</td>
-        </tr>
-        <tr style="border-bottom:1px solid #F3F4F6;background:#FFFDF4;">
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">July 5</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">🎵 Highlife & Gospel Music Workshop</strong><br><span style="color:#6B7280;font-size:12px;">Learn from professional musicians. Music theory, production basics, live performance tips.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">National Theatre, Accra</td>
-          <td style="padding:12px 16px;color:#4B5563;">GHS 50</td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">music@[workshop].gh</td>
-        </tr>
-        <tr style="border-bottom:1px solid #F3F4F6;">
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">July 12</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">🌱 Green Ghana Youth Forum</strong><br><span style="color:#6B7280;font-size:12px;">Youth-led environmental action conference. Fighting galamsey, plastic waste & climate change.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">University of Ghana, Legon</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--green);">Free</strong></td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">greenghana@[org].com</td>
-        </tr>
-        <tr style="border-bottom:1px solid #F3F4F6;background:#FFFDF4;">
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">July 19</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">📖 Scripture & Success Workshop</strong><br><span style="color:#6B7280;font-size:12px;">How biblical principles build prosperous lives and businesses. With Gideon Abochie.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">Online + Accra Hub</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--green);">Free</strong></td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">gideonabochie.org</td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px;color:var(--pink);font-weight:700;">Aug 2</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--navy);">🇬🇭 Ghana Independence Day Youth March</strong><br><span style="color:#6B7280;font-size:12px;">Annual youth-organised national pride march through Accra CBD. All welcome.</span></td>
-          <td style="padding:12px 16px;color:#4B5563;">Black Star Square, Accra</td>
-          <td style="padding:12px 16px;"><strong style="color:var(--green);">Free</strong></td>
-          <td style="padding:12px 16px;font-size:12px;color:#4B5563;">march@[org].gh</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div id="classifieds-events-container" style="overflow-x:auto;"><div class="empty-state" style="padding:32px;text-align:center;color:var(--gray);font-size:13px;">Loading events...</div></div>
 
-  <!-- HOUSING & ROOMS -->
+  <!-- HOUSING & ROOMS — loaded from API -->
   <div class="section-header" style="margin-top:32px;"><span class="eyebrow">Find Your Space</span><h2>🏠 Housing & Accommodation</h2></div>
-  <div class="grid-3">
-    <div class="article-card">
-      <div style="background:linear-gradient(135deg,var(--navy),#2D3561);height:80px;display:flex;align-items:center;justify-content:center;font-size:36px;">🏠</div>
-      <div class="card-body">
-        <span class="label">For Rent · East Legon</span>
-        <h3 style="font-size:15px;">1-Bedroom Self-Contained</h3>
-        <p style="font-size:12px;">Secure, furnished 1BR apartment. Water & electricity inclusive. GHS 1,200/month. Professionals & students preferred. 0XX XXX XXXX</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div style="background:linear-gradient(135deg,var(--sky),var(--navy));height:80px;display:flex;align-items:center;justify-content:center;font-size:36px;">🛏️</div>
-      <div class="card-body">
-        <span class="label">Room Share · Kasoa</span>
-        <h3 style="font-size:15px;">Room in Shared House — Female Only</h3>
-        <p style="font-size:12px;">Quiet neighbourhood, 2 female housemates. GHS 400/month. Shared kitchen & bathroom. Clean, secure compound. WhatsApp: 0XX XXX XXXX</p>
-      </div>
-    </div>
-    <div class="article-card">
-      <div style="background:linear-gradient(135deg,var(--gold),var(--orange));height:80px;display:flex;align-items:center;justify-content:center;font-size:36px;">🏢</div>
-      <div class="card-body">
-        <span class="label">Office Space · Accra CBD</span>
-        <h3 style="font-size:15px;">Coworking Desk — Monthly Rental</h3>
-        <p style="font-size:12px;">Dedicated desk in premium Accra coworking space. High-speed WiFi, meeting room access, printer. GHS 600/month. spaces@[cowork].gh</p>
-      </div>
-    </div>
-  </div>
+  <div id="classifieds-housing-grid" class="grid-3"><div class="empty-state" style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);font-size:13px;">Loading housing listings...</div></div>
 
-  <!-- COMMUNITY NOTICES -->
+  <!-- COMMUNITY NOTICES — loaded from API -->
   <div class="section-header" style="margin-top:32px;"><span class="eyebrow">Community Board</span><h2>📌 Community Notices, Lost & Found</h2></div>
-  <div class="classifieds-notices" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
-    <div style="background:#FFF9C4;border:1px solid #F5C200;border-top:4px solid var(--gold);padding:16px;font-family:Inter,sans-serif;">
-      <span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">🔍 LOST</span>
-      <strong style="font-size:14px;color:var(--navy);">Lost: MacBook Pro + Bag near Accra Mall</strong>
-      <p style="font-size:12px;color:#4B5563;margin-top:6px;">Lost on June 2nd. Black backpack, MacBook Pro 14", design portfolio inside. Reward: GHS 500. Please contact: 0XX XXX XXXX. No questions asked.</p>
-    </div>
-    <div style="background:#F0FDF4;border:1px solid var(--green);border-top:4px solid var(--green);padding:16px;font-family:Inter,sans-serif;">
-      <span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">✅ FOUND</span>
-      <strong style="font-size:14px;color:var(--navy);">Found: Student ID + Wallet, Legon Campus</strong>
-      <p style="font-size:12px;color:#4B5563;margin-top:6px;">Found near the main library on May 30. Name partially visible. Please describe contents to claim. Contact: campus@[finder].edu.gh</p>
-    </div>
-    <div style="background:#EFF6FF;border:1px solid var(--sky);border-top:4px solid var(--sky);padding:16px;font-family:Inter,sans-serif;">
-      <span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">🤝 VOLUNTEER NEEDED</span>
-      <strong style="font-size:14px;color:var(--navy);">Teachers Needed — Free Saturday School, Nima</strong>
-      <p style="font-size:12px;color:#4B5563;margin-top:6px;">Community free school in Nima needs volunteer teachers for Math, English, and Science. Every Saturday 8am–12pm. Give back. volunteer@[school].gh</p>
-    </div>
-    <div style="background:#FDF4FF;border:1px solid #8B5CF6;border-top:4px solid #8B5CF6;padding:16px;font-family:Inter,sans-serif;">
-      <span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">📣 COMMUNITY NOTICE</span>
-      <strong style="font-size:14px;color:var(--navy);">Free Coding Club — All Ages Welcome, Tema</strong>
-      <p style="font-size:12px;color:#4B5563;margin-top:6px;">New free coding club starting in Tema Community 5. Every Wednesday & Friday, 4–6pm. Laptops provided. Aimed at ages 10–25. code@[club].gh</p>
-    </div>
-  </div>
+  <div id="classifieds-community-grid" class="classifieds-notices" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;"><div class="empty-state" style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);font-size:13px;">Loading community notices...</div></div>
 
   <!-- PLACE YOUR AD -->
   <div style="background:linear-gradient(135deg,var(--navy),#2D3561);padding:32px;text-align:center;color:white;margin-top:32px;border-radius:4px;">
@@ -2304,7 +2075,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
     <p style="font-family:Inter,sans-serif;font-size:14px;color:rgba(255,255,255,.8);max-width:500px;margin:0 auto 20px;">Community notices are <strong style="color:var(--gold);">FREE</strong> for all Ghanaians. Business & job listings from <strong style="color:var(--gold);">GHS 50</strong>. Premium featured spots from <strong style="color:var(--gold);">GHS 200</strong>. Reach 50,000+ ambitious young Ghanaians weekly.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="mailto:info@gideonabochie.com" style="background:var(--gold);color:var(--navy);font-family:Inter,sans-serif;font-weight:800;font-size:14px;padding:12px 28px;border-radius:20px;text-decoration:none;">📧 Email Your Ad →</a>
-      <a href="https://gideonabochie.org" target="_blank" style="border:2px solid var(--gold);color:var(--gold);font-family:Inter,sans-serif;font-weight:700;font-size:14px;padding:10px 28px;border-radius:20px;text-decoration:none;">🌐 Submit Online →</a>
+      <a href="classifieds-submit.html" style="border:2px solid var(--gold);color:var(--gold);font-family:Inter,sans-serif;font-weight:700;font-size:14px;padding:10px 28px;border-radius:20px;text-decoration:none;">🌐 Submit Online →</a>
     </div>
   </div>
 </div>
@@ -2662,11 +2433,159 @@ function subSubmit(e) {
 // ========================
 // INIT
 // ========================
+// ========================
+// CLASSIFIEDS (API-powered)
+// ========================
+function escapeHtml(str) {
+  if (!str) return '';
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+function loadClassifieds() {
+  var catMap = {
+    'classifieds-jobs-grid': 'jobs',
+    'classifieds-services-grid': 'services',
+    'classifieds-products-grid': 'products',
+    'classifieds-events-container': 'events',
+    'classifieds-housing-grid': 'housing',
+    'classifieds-community-grid': 'community',
+    'classifieds-collab-grid': 'community'
+  };
+
+  Object.keys(catMap).forEach(function(containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var category = catMap[containerId];
+
+    fetch('https://gideonabochie.org/api/classifieds?category=' + category + '&status=approved&limit=20', { method: 'GET' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status !== 'ok' || !data.items || !data.items.length) {
+          container.innerHTML = '<div class="empty-state" style="padding:24px;text-align:center;color:var(--gray);font-size:13px;">No listings yet. Check back next week!</div>';
+          return;
+        }
+        renderClassifieds(container, containerId, data.items);
+      })
+      .catch(function() {
+        container.innerHTML = '<div class="empty-state" style="padding:24px;text-align:center;color:var(--gray);font-size:13px;">Could not load listings. Please refresh.</div>';
+      });
+  });
+}
+
+function renderClassifieds(container, containerId, items) {
+  if (containerId === 'classifieds-events-container') {
+    renderEventsTable(container, items);
+    return;
+  }
+  if (containerId === 'classifieds-services-grid' || containerId === 'classifieds-products-grid') {
+    renderVerticalList(container, items);
+    return;
+  }
+  if (containerId === 'classifieds-community-grid') {
+    renderNoticeCards(container, items);
+    return;
+  }
+  if (containerId === 'classifieds-collab-grid') {
+    renderCollabCards(container, items);
+    return;
+  }
+  // default: article cards grid
+  renderArticleGrid(container, items);
+}
+
+function renderArticleGrid(container, items) {
+  var html = '';
+  items.forEach(function(item) {
+    var meta = '<span class="label">' + escapeHtml(item.category || '') + ((item.location) ? ' · ' + escapeHtml(item.location) : '') + '</span>';
+    html += '<div class="article-card"><div class="card-body">' + meta;
+    html += '<h3 style="font-size:15px;">' + escapeHtml(item.title) + '</h3>';
+    html += '<p style="font-size:12px;">' + escapeHtml((item.description || '').substring(0, 200)) + '</p>';
+    if (item.price) html += '<div style="font-size:11px;color:var(--gold);font-family:Inter,sans-serif;font-weight:700;margin-top:6px;">' + escapeHtml(item.price) + '</div>';
+    html += '<p style="font-size:11px;color:var(--gray);margin-top:8px;font-family:Inter,sans-serif;">📧 ' + escapeHtml(item.contact_email || item.contact_phone || 'Contact via listing') + '</p>';
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderVerticalList(container, items) {
+  var html = '';
+  items.forEach(function(item) {
+    html += '<div style="padding:16px;border-bottom:1px solid #F3F4F6;">';
+    html += '<strong style="font-family:Inter,sans-serif;font-size:13px;color:var(--navy);">' + escapeHtml(item.title) + '</strong>';
+    html += '<p style="font-size:12px;color:#4B5563;margin-top:4px;">' + escapeHtml((item.description || '').substring(0, 150)) + '</p>';
+    if (item.price) html += '<div style="font-size:11px;color:var(--gold);font-weight:700;font-family:Inter,sans-serif;margin-top:4px;">' + escapeHtml(item.price) + '</div>';
+    html += '<div style="font-size:11px;color:var(--gray);font-family:Inter,sans-serif;margin-top:4px;">📧 ' + escapeHtml(item.contact_email || item.contact_phone || '') + (item.location ? ' · 📍 ' + escapeHtml(item.location) : '') + '</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderNoticeCards(container, items) {
+  var colors = ['#FFF9C4,#F5C200,var(--gold)', '#F0FDF4,var(--green),var(--green)', '#EFF6FF,var(--sky),var(--sky)', '#FDF4FF,#8B5CF6,#8B5CF6'];
+  var labels = ['📌 NOTICE', '✅ COMMUNITY', '🤝 VOLUNTEER', '📣 ANNOUNCEMENT'];
+  var html = '';
+  items.forEach(function(item, i) {
+    var c = colors[i % colors.length].split(',');
+    html += '<div style="background:' + c[0] + ';border:1px solid ' + c[1] + ';border-top:4px solid ' + c[2] + ';padding:16px;font-family:Inter,sans-serif;">';
+    html += '<span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">' + labels[i % labels.length] + '</span>';
+    html += '<strong style="font-size:14px;color:var(--navy);">' + escapeHtml(item.title) + '</strong>';
+    html += '<p style="font-size:12px;color:#4B5563;margin-top:6px;">' + escapeHtml((item.description || '').substring(0, 200)) + '</p>';
+    if (item.contact_email || item.contact_phone) html += '<div style="font-size:11px;color:var(--navy);margin-top:6px;font-weight:500;">📧 ' + escapeHtml(item.contact_email || item.contact_phone) + '</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderCollabCards(container, items) {
+  var colors = ['var(--sky)', 'var(--green)', 'var(--pink)'];
+  var labels = ['Seeking Collaborator', 'Co-Founder Wanted', 'Investment Opportunity'];
+  var html = '';
+  items.forEach(function(item, i) {
+    var c = colors[i % colors.length];
+    var l = labels[i % labels.length];
+    html += '<div style="background:var(--cream);border:1px solid #E5E7EB;padding:16px;">';
+    html += '<span style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;color:' + c + ';letter-spacing:.1em;text-transform:uppercase;">' + l + '</span>';
+    html += '<h4 style="font-family:Playfair Display,serif;font-size:16px;color:var(--navy);margin:8px 0;">' + escapeHtml(item.title) + '</h4>';
+    html += '<p style="font-size:12px;color:#4B5563;">' + escapeHtml((item.description || '').substring(0, 180)) + '</p>';
+    html += '<div style="font-size:11px;color:var(--gray);font-family:Inter,sans-serif;margin-top:8px;">📧 ' + escapeHtml(item.contact_email || item.contact_phone || '') + '</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderEventsTable(container, items) {
+  var html = '<table style="width:100%;border-collapse:collapse;font-family:Inter,sans-serif;font-size:13px;background:white;border:1px solid #E5E7EB;">';
+  html += '<thead><tr style="background:var(--navy);color:white;">';
+  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Date</th>';
+  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Event</th>';
+  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Location</th>';
+  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Cost</th>';
+  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Contact</th>';
+  html += '</tr></thead><tbody>';
+  items.forEach(function(item, i) {
+    var bg = i % 2 === 0 ? ' style="background:#FFFDF4;"' : '';
+    html += '<tr' + bg + '>';
+    html += '<td style="padding:12px 16px;color:var(--pink);font-weight:700;">' + escapeHtml(item.price || 'TBA') + '</td>';
+    html += '<td style="padding:12px 16px;"><strong style="color:var(--navy);">' + escapeHtml(item.title) + '</strong>';
+    if (item.description) html += '<br><span style="color:#6B7280;font-size:12px;">' + escapeHtml(item.description.substring(0, 120)) + '</span>';
+    html += '</td>';
+    html += '<td style="padding:12px 16px;color:#4B5563;">' + escapeHtml(item.location || '') + '</td>';
+    html += '<td style="padding:12px 16px;color:#4B5563;">' + (item.price ? escapeHtml(item.price) : 'Free') + '</td>';
+    html += '<td style="padding:12px 16px;font-size:12px;color:#4B5563;">' + escapeHtml(item.contact_email || item.contact_phone || '') + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   routeFromHash();
   buildCrossword();
   buildSudoku();
   buildWordSearch();
+  loadClassifieds();
 });
 </script>
 </body>

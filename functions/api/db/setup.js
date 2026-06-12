@@ -1140,6 +1140,28 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `CREATE INDEX IF NOT EXISTS idx_campaigns_slug ON campaigns(slug)`,
       `ALTER TABLE donations ADD COLUMN campaign_id INTEGER DEFAULT 0`,
       `CREATE INDEX IF NOT EXISTS idx_donations_campaign ON donations(campaign_id)`,
+      // ── Classifieds ──
+      `CREATE TABLE IF NOT EXISTS classifieds (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        category TEXT NOT NULL DEFAULT 'jobs',
+        listing_type TEXT NOT NULL DEFAULT 'free',
+        price TEXT DEFAULT '',
+        contact_name TEXT DEFAULT '',
+        contact_email TEXT DEFAULT '',
+        contact_phone TEXT DEFAULT '',
+        location TEXT DEFAULT '',
+        website TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        featured INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        expires_at TEXT NOT NULL DEFAULT (datetime('now', '+30 days')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_classifieds_status ON classifieds(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_classifieds_category ON classifieds(category)`,
+      `CREATE INDEX IF NOT EXISTS idx_classifieds_expires ON classifieds(expires_at)`,
     ];
     const results = [];
     for (const sql of statements) {
