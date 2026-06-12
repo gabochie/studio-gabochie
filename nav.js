@@ -90,4 +90,16 @@
   if (phFooter) {
     phFooter.outerHTML = footerHtml;
   }
+
+  window.toggleNav = function(el) {
+    var nav = document.querySelector('.nav-links');
+    var overlay = document.querySelector('.nav-mobile-overlay');
+    var btn = document.querySelector('.nav-toggle');
+    if (!nav) return;
+    var opening = !nav.classList.contains('open');
+    nav.classList.toggle('open');
+    if (btn) btn.classList.toggle('active', opening);
+    if (overlay) overlay.classList.toggle('open', opening);
+    document.body.style.overflow = opening ? 'hidden' : '';
+  };
 })();
