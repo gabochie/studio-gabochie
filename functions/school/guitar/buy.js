@@ -24,7 +24,7 @@ export async function onRequest(context) {
     '<meta property="og:description" content="16 modules, 64 video lessons, real-time pitch detection. Play Sarkodie, King Promise, Joe Mettle & more. Lifetime access GH¢ 299.">' +
     '<meta property="og:type" content="website">' +
     '<meta property="og:url" content="' + pageUrl + '">' +
-    '<meta property="og:image" content="https://gideonabochie.org/assets/img/guitar-og.jpg">' +
+    '<meta property="og:image" content="https://gideonabochie.org/assets/images/guitar-og.jpg">' +
     '<meta name="twitter:card" content="summary_large_image">' +
     '<meta name="twitter:title" content="Gideon Guitar Method — Learn Ghanaian Songs on Guitar">' +
     '<meta name="twitter:description" content="16 modules, 64 video lessons, real-time pitch detection. Play your favorite Ghanaian songs. Lifetime access GH¢ 299.">' +

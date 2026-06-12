@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Content — Admin · GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:4px;overflow-x:auto}
+.tab{flex:1;padding:10px 20px;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:transparent;color:#5A7A9F;transition:all .2s;white-space:nowrap}
+.tab:hover{color:#E8EEF7}
+.tab.active{background:#C9A84C;color:#0A1628}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.field{flex:1;min-width:180px}
+.field label{display:block;font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.field input,.field textarea,.field select{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:13px;font-family:inherit;box-sizing:border-box}
+.field textarea{min-height:120px;resize:vertical}
+.field textarea:focus,input:focus{outline:none;border-color:#C9A84C}
+.result-box{background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:16px;margin-top:16px;font-size:13px;line-height:1.7;color:#CBD5E1;white-space:pre-wrap;display:none}
+.result-box.show{display:block}
+.copy-btn{background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;margin-top:8px;font-family:'Inter',sans-serif}
+.copy-btn:hover{border-color:#C9A84C;color:#C9A84C}
+.btn{background:#C9A84C;border:none;color:#0A1628;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;transition:background .2s}
+.btn:hover{background:#D9B85C}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.input-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.hint{font-size:11px;color:#475569;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="subscribers.html">Subscribers</a>
+      <a href="donations.html">Donations</a>
+      <a href="bookings.html">Bookings</a>
+      <a href="sponsors.html">Sponsors</a>
+      <a href="content.html">Content</a>
+      <a href="newsletter.html">Newsletter</a>
+      <a href="calendar.html">Calendar</a>
+      <a href="guitar.html">Guitar</a>
+      <a href="content-ai.html" class="active">AI Content</a>
+      <a href="agents.html">Agents</a>
+      <a href="roadmap.html">ToDo List</a>
+      <a href="strategy.html">Strategy</a>
+    </div>
+  </div>
+
+  <h1>AI Content Assistant <span style="color:#C9A84C;font-size:14px;font-weight:400;font-family:'Inter',sans-serif">v1</span></h1>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="newsletter">Newsletter</button>
+    <button class="tab" data-tab="seo">SEO Meta</button>
+    <button class="tab" data-tab="outline">Blog Outline</button>
+  </div>
+
+  <div id="tab-newsletter" class="tab-content active">
+    <div class="field" style="margin-bottom:12px">
+      <label>Topic</label>
+      <input type="text" id="nl-topic" placeholder="e.g. Why Systems Thinking Matters for Ghanaian Youth">
+    </div>
+    <div class="input-row">
+      <div class="field">
+        <label>Audience</label>
+        <input type="text" id="nl-audience" value="African youth and creatives">
+      </div>
+      <div class="field">
+        <label>Tone</label>
+        <select id="nl-tone">
+          <option value="professional">Professional</option>
+          <option value="conversational" selected>Conversational</option>
+          <option value="inspiring">Inspiring</option>
+          <option value="teaching">Teaching</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="nl-btn" onclick="generate('newsletter')">Generate Newsletter</button>
+    <div class="result-box" id="nl-result"></div>
+  </div>
+
+  <div id="tab-seo" class="tab-content">
+    <div class="field" style="margin-bottom:12px">
+      <label>Page Topic</label>
+      <input type="text" id="seo-topic" placeholder="e.g. School of Creativity, Love & Wisdom">
+    </div>
+    <div class="input-row">
+      <div class="field">
+        <label>Target Audience</label>
+        <input type="text" id="seo-audience" value="African youth, educators, creatives">
+      </div>
+    </div>
+    <button class="btn" id="seo-btn" onclick="generate('seo')">Generate SEO Tags</button>
+    <div class="result-box" id="seo-result"></div>
+  </div>
+
+  <div id="tab-outline" class="tab-content">
+    <div class="field" style="margin-bottom:12px">
+      <label>Blog Topic</label>
+      <input type="text" id="ol-topic" placeholder="e.g. How to Build a Creative Career in Ghana">
+    </div>
+    <div class="input-row">
+      <div class="field">
+        <label>Audience</label>
+        <input type="text" id="ol-audience" value="African youth and creatives">
+      </div>
+      <div class="field">
+        <label>Tone</label>
+        <select id="ol-tone">
+          <option value="professional">Professional</option>
+          <option value="conversational">Conversational</option>
+          <option value="inspiring" selected>Inspiring</option>
+          <option value="teaching">Teaching</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="ol-btn" onclick="generate('outline')">Generate Outline</button>
+    <div class="result-box" id="ol-result"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('tab-' + tabId).classList.add('active');
+  document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+}
+
+document.getElementById('tabs').addEventListener('click', function(e) {
+  if (e.target.classList.contains('tab')) switchTab(e.target.dataset.tab);
+});
+
+async function generate(type) {
+  var btn = document.getElementById(type + '-btn');
+  var result = document.getElementById(type + '-result');
+  var topic = document.getElementById(type + '-topic').value.trim();
+  var audience = document.getElementById(type + '-audience').value.trim();
+  var tone = document.getElementById(type + '-tone') ? document.getElementById(type + '-tone').value : 'professional';
+
+  if (!topic) { alert('Enter a topic'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  result.className = 'result-box show';
+  result.textContent = 'Loading...';
+
+  try {
+    var r = await fetch('/api/ai/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
+      body: JSON.stringify({ type: type, topic: topic, audience: audience, tone: tone })
+    });
+    var d = await r.json();
+    if (d.status === 'ok') {
+      result.textContent = d.content;
+    } else {
+      result.textContent = 'Error: ' + (d.error || 'Unknown error');
+    }
+  } catch (err) {
+    result.textContent = 'Network error: ' + err.message;
+  }
+  btn.disabled = false;
+  btn.textContent = type === 'newsletter' ? 'Generate Newsletter' : type === 'seo' ? 'Generate SEO Tags' : 'Generate Outline';
+}
+</script>
+</body>
+</html>

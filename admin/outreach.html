@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outreach — Admin · GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.seg-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+.seg-card:hover{border-color:#C9A84C}
+.seg-card.active{border-color:#C9A84C;background:rgba(201,168,76,.08)}
+.seg-card .num{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:#C9A84C;display:block}
+.seg-card .label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+.field label{display:block;font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.field input,.field textarea{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:13px;font-family:inherit;box-sizing:border-box}
+.field textarea{min-height:200px;resize:vertical;font-family:monospace;font-size:12px}
+.field{margin-bottom:12px}
+.btn{background:#C9A84C;border:none;color:#0A1628;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s}
+.btn:hover{background:#D9B85C}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid #1E3250;color:#CBD5E1}
+.btn-outline:hover{border-color:#C9A84C;color:#C9A84C}
+.preview-box{background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:20px;margin-top:16px;font-size:13px;line-height:1.7;display:none}
+.preview-box.show{display:block}
+.preview-box .subj{color:#C9A84C;font-weight:600;font-size:14px;margin-bottom:8px}
+.rec-card{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:12px;margin-top:8px}
+.rec-card .rec-page{color:#C9A84C;font-weight:600;font-size:13px}
+.rec-card .rec-reason{color:#5A7A9F;font-size:12px;margin-top:2px}
+.status-msg{padding:10px;border-radius:6px;font-size:13px;margin-top:12px;display:none}
+.status-msg.ok{display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
+.status-msg.err{display:block;background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:4px}
+.tab{flex:1;padding:10px 20px;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:#5A7A9F;transition:all .2s;text-align:center}
+.tab:hover{color:#E8EEF7}
+.tab.active{background:#C9A84C;color:#0A1628}
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="subscribers.html">Subscribers</a>
+      <a href="outreach.html" class="active">Outreach</a>
+      <a href="content-ai.html">AI Content</a>
+      <a href="agents.html">Agents</a>
+      <a href="roadmap.html">ToDo List</a>
+    </div>
+  </div>
+
+  <h1>Autonomous Outreach <span style="color:#C9A84C;font-size:14px;font-weight:400;font-family:'Inter',sans-serif">AI-powered re-engagement</span></h1>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="email">Email Campaign</button>
+    <button class="tab" data-tab="recommend">Recommendations</button>
+  </div>
+
+  <div id="tab-email" class="tab-content active">
+    <div class="section-title" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#F1F5F9;margin-bottom:12px">Select Segment</div>
+    <div class="grid" id="seg-grid"></div>
+
+    <div id="email-form" style="display:none">
+      <div class="field">
+        <label>Subject Line (leave blank for AI to generate)</label>
+        <input type="text" id="subject" placeholder="We miss you — GideonAbochie Studio">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" id="preview-btn" onclick="previewCampaign()">Preview</button>
+        <button class="btn" id="send-btn" onclick="sendCampaign()">Send to Segment</button>
+      </div>
+      <div class="preview-box" id="preview-box">
+        <div class="subj" id="preview-subj"></div>
+        <div id="preview-body"></div>
+        <div style="margin-top:8px;font-size:11px;color:#475569" id="preview-count"></div>
+      </div>
+      <div class="status-msg" id="status-msg"></div>
+    </div>
+  </div>
+
+  <div id="tab-recommend" class="tab-content">
+    <div class="field">
+      <label>User Email</label>
+      <input type="email" id="rec-email" placeholder="user@example.com">
+    </div>
+    <button class="btn" onclick="getRecommendations()">Get Recommendations</button>
+    <div id="rec-results" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+var selectedSegment = '';
+
+document.querySelectorAll('.tab').forEach(function(t) {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(x) { x.classList.remove('active'); });
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+async function loadSegments() {
+  try {
+    var r = await fetch('/api/ai/outreach?action=segments', { headers: { 'X-Admin-Key': getAdminKey() } });
+    var d = await r.json();
+    if (d.status !== 'ok') throw new Error(d.error);
+
+    var html = '';
+    for (var key in d.segments) {
+      var s = d.segments[key];
+      html += '<div class="seg-card" data-segment="' + key + '" onclick="selectSegment(\'' + key + '\')">' +
+        '<span class="num">' + (s.count || 0) + '</span>' +
+        '<div class="label">' + s.label + '</div></div>';
+    }
+    document.getElementById('seg-grid').innerHTML = html;
+  } catch (err) {
+    document.getElementById('seg-grid').innerHTML = '<div style="color:#F87171;font-size:13px">Error: ' + err.message + '</div>';
+  }
+}
+
+function selectSegment(key) {
+  selectedSegment = key;
+  document.querySelectorAll('.seg-card').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelector('[data-segment="' + key + '"]').classList.add('active');
+  document.getElementById('email-form').style.display = 'block';
+  document.getElementById('preview-box').classList.remove('show');
+  document.getElementById('status-msg').className = 'status-msg';
+}
+
+async function previewCampaign() {
+  if (!selectedSegment) return;
+  var btn = document.getElementById('preview-btn');
+  var box = document.getElementById('preview-box');
+  btn.disabled = true; btn.textContent = 'Generating...';
+
+  try {
+    var r = await fetch('/api/ai/outreach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
+      body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, preview: true })
+    });
+    var d = await r.json();
+    if (d.status !== 'ok') throw new Error(d.error);
+
+    document.getElementById('preview-subj').textContent = d.subject || '(no subject)';
+    document.getElementById('preview-body').innerHTML = d.body || '(no content)';
+    document.getElementById('preview-count').textContent = 'Will be sent to ' + d.recipients + ' recipients. Sample: ' + (d.sampleUser ? d.sampleUser.email || d.sampleUser.donor_email : 'N/A');
+    box.classList.add('show');
+  } catch (err) {
+    document.getElementById('status-msg').className = 'status-msg err';
+    document.getElementById('status-msg').textContent = 'Error: ' + err.message;
+  }
+  btn.disabled = false; btn.textContent = 'Preview';
+}
+
+async function sendCampaign() {
+  if (!selectedSegment) return;
+  if (!confirm('Send email to this entire segment?')) return;
+  var btn = document.getElementById('send-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  try {
+    var r = await fetch('/api/ai/outreach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
+      body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, preview: false })
+    });
+    var d = await r.json();
+    var msg = document.getElementById('status-msg');
+    if (d.status === 'ok') {
+      msg.className = 'status-msg ok';
+      msg.textContent = 'Queued ' + (d.sent || 0) + ' emails for segment: ' + (d.segment || selectedSegment);
+    } else {
+      throw new Error(d.error);
+    }
+  } catch (err) {
+    document.getElementById('status-msg').className = 'status-msg err';
+    document.getElementById('status-msg').textContent = 'Error: ' + err.message;
+  }
+  btn.disabled = false; btn.textContent = 'Send to Segment';
+  loadSegments();
+}
+
+async function getRecommendations() {
+  var email = document.getElementById('rec-email').value.trim();
+  if (!email) { alert('Enter an email'); return; }
+  var box = document.getElementById('rec-results');
+  box.innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loading...</div>';
+
+  try {
+    var r = await fetch('/api/ai/outreach?action=recommend&email=' + encodeURIComponent(email), { headers: { 'X-Admin-Key': getAdminKey() } });
+    var d = await r.json();
+    if (d.status !== 'ok') throw new Error(d.error);
+
+    var html = '<div style="font-size:12px;color:#5A7A9F;margin-bottom:8px">Recent activity: ' + (d.profile.recentEvents.length > 0 ? d.profile.recentEvents.join(', ') : 'None') + '</div>';
+    if (d.recommendations && d.recommendations.length > 0) {
+      d.recommendations.forEach(function(rec) {
+        html += '<div class="rec-card"><div class="rec-page"><a href="' + rec.page + '" target="_blank" style="color:#C9A84C;text-decoration:none">' + rec.page + '</a></div><div class="rec-reason">' + rec.reason + '</div></div>';
+      });
+    } else {
+      html += '<div style="color:#5A7A9F;font-size:13px">No recommendations available</div>';
+    }
+    box.innerHTML = html;
+  } catch (err) {
+    box.innerHTML = '<div style="color:#F87171;font-size:13px">Error: ' + err.message + '</div>';
+  }
+}
+
+loadSegments();
+</script>
+</body>
+</html>

@@ -176,9 +176,9 @@
       "platform": "Cloudflare Workers + D1 + AI APIs",
       "steps": [
         {"id": 8.1, "task": "Agentic task management", "status": "done", "items": ["D1 tasks table with CRUD API ✓", "AI can create tasks via API ✓", "Admin shows agent tasks ✓", "Persists across sessions ✓"]},
-        {"id": 8.2, "task": "AI content assistant", "items": ["Draft newsletter by API", "Auto SEO meta", "Blog outlines"]},
-        {"id": 8.3, "task": "Predictive analytics", "items": ["Revenue forecasting", "Subscriber predictions", "Anomaly detection"]},
-        {"id": 8.4, "task": "Autonomous outreach", "items": ["Audience segmentation", "Dormant follow-up", "Content recommendations"]}
+        {"id": 8.2, "task": "AI content assistant", "status": "done", "items": ["Draft newsletter by API ✓", "Auto SEO meta ✓", "Blog outlines ✓", "Admin UI at /admin/content-ai.html ✓"]},
+        {"id": 8.3, "task": "Predictive analytics", "status": "done", "items": ["Revenue forecasting ✓", "Subscriber predictions ✓", "Anomaly detection ✓", "Admin dashboard at /admin/analytics.html ✓"]},
+        {"id": 8.4, "task": "Autonomous outreach", "status": "done", "items": ["Audience segmentation ✓", "Dormant follow-up via email queue ✓", "Content recommendations by user ✓", "Admin page at /admin/outreach.html ✓"]}
       ]
     },
     {
@@ -241,7 +241,7 @@
       ]
     }
   ],
-  "current_focus": "Phase 4 (Growth & Automation) — donation_started event tracking added to campaign checkout flows, abandoned donation recovery now functional, school page badges differentiate free vs paid programs, Cloudflare Web Analytics ready to enable via dashboard. Phase 7 (Strategic Offensive) — sitemap, canonical URLs, JSON-LD, robots.txt, press kit done.",
+  "current_focus": "Phase 8.2 (AI Content Assistant) — /api/ai/content endpoint for newsletter drafting, SEO meta generation, blog outlines. Admin page at /admin/content-ai.html.",
   "last_updated": "2026-06-12",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",

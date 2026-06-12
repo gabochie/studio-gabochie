@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics — Admin · GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px}
+.card-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;display:block;line-height:1}
+.card-label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+.card-trend{font-size:12px;margin-top:4px}
+.card-trend.up{color:#22C55E}
+.card-trend.down{color:#F87171}
+.card-trend.stable{color:#C9A84C}
+.insight-list{margin:0;padding:0;list-style:none}
+.insight-list li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:#CBD5E1;line-height:1.5}
+.insight-list li:last-child{border:none}
+.insight-list li::before{content:"→ ";color:#C9A84C}
+.section-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:600;color:#F1F5F9;margin:24px 0 12px}
+.loading{text-align:center;padding:60px;color:#5A7A9F;font-size:14px}
+.error-box{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5;padding:16px;border-radius:8px;font-size:13px}
+.refresh-btn{background:#C9A84C;border:none;color:#0A1628;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:16px}
+.refresh-btn:hover{background:#D9B85C}
+.rec-list{margin:0;padding:0;list-style:none}
+.rec-list li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:#CBD5E1}
+.rec-list li::before{content:"💡 ";color:#C9A84C}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="analytics.html" class="active">Analytics</a>
+      <a href="subscribers.html">Subscribers</a>
+      <a href="donations.html">Donations</a>
+      <a href="content-ai.html">AI Content</a>
+      <a href="agents.html">Agents</a>
+      <a href="roadmap.html">ToDo List</a>
+    </div>
+  </div>
+
+  <h1>Predictive Analytics <span style="color:#C9A84C;font-size:14px;font-weight:400;font-family:'Inter',sans-serif">AI-powered forecasts</span></h1>
+  <button class="refresh-btn" onclick="loadAnalytics()">⟳ Refresh</button>
+
+  <div id="loading" class="loading">Loading analytics...</div>
+  <div id="error" class="error-box" style="display:none"></div>
+  <div id="content" style="display:none">
+    <div class="grid" id="summary-grid"></div>
+    <div class="section-title">🔮 Forecast</div>
+    <div class="grid" id="forecast-grid"></div>
+    <div class="section-title">💡 Insights</div>
+    <div class="card" id="insights-card"></div>
+    <div class="section-title">📋 Recommendations</div>
+    <div class="card" id="recs-card"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+async function loadAnalytics() {
+  var loading = document.getElementById('loading');
+  var error = document.getElementById('error');
+  var content = document.getElementById('content');
+
+  loading.style.display = 'block';
+  error.style.display = 'none';
+  content.style.display = 'none';
+
+  try {
+    var r = await fetch('/api/ai/analytics', { headers: { 'X-Admin-Key': getAdminKey() } });
+    var d = await r.json();
+
+    if (d.status !== 'ok') { throw new Error(d.error || 'Unknown error'); }
+
+    // Summary grid
+    var totals = d.historical.totals;
+    document.getElementById('summary-grid').innerHTML = [
+      { num: 'GHS ' + (totals.revenue || 0).toLocaleString(), label: '12-Month Revenue', trend: d.forecast.revenue_forecast ? d.forecast.revenue_forecast.trend : '' },
+      { num: totals.subscribers || 0, label: 'New Subscribers (12mo)', trend: d.forecast.subscriber_forecast ? d.forecast.subscriber_forecast.trend : '' },
+      { num: totals.pageViews || 0, label: 'Page Views (12mo)', trend: '' },
+      { num: d.historical.revenue.length || 0, label: 'Active Months', trend: '' },
+    ].map(function(item) {
+      var trendClass = item.trend === 'up' ? 'up' : item.trend === 'down' ? 'down' : item.trend ? 'stable' : '';
+      var trendLabel = item.trend ? item.trend.charAt(0).toUpperCase() + item.trend.slice(1) : '';
+      return '<div class="card"><span class="card-num">' + item.num + '</span><div class="card-label">' + item.label + '</div>' +
+        (trendLabel ? '<div class="card-trend ' + trendClass + '">Trend: ' + trendLabel + '</div>' : '') + '</div>';
+    }).join('');
+
+    // Forecast grid
+    var fc = d.forecast;
+    var forecastHtml = '';
+    if (fc.revenue_forecast) {
+      forecastHtml += '<div class="card"><span class="card-num">GHS ' + (fc.revenue_forecast.next_month || 0).toLocaleString() + '</span><div class="card-label">Forecast Next Month</div><div class="card-trend">Confidence: ' + (fc.revenue_forecast.confidence || 'medium') + '</div></div>';
+      forecastHtml += '<div class="card"><span class="card-num">GHS ' + (fc.revenue_forecast.next_quarter || 0).toLocaleString() + '</span><div class="card-label">Forecast Next Quarter</div></div>';
+    }
+    if (fc.subscriber_forecast) {
+      forecastHtml += '<div class="card"><span class="card-num">' + (fc.subscriber_forecast.next_month || 0) + '</span><div class="card-label">Subscribers Next Month</div></div>';
+      forecastHtml += '<div class="card"><span class="card-num">' + (fc.subscriber_forecast.next_quarter || 0) + '</span><div class="card-label">Subscribers Next Quarter</div></div>';
+    }
+    document.getElementById('forecast-grid').innerHTML = forecastHtml || '<div class="card"><div style="color:#5A7A9F;font-size:13px">Insufficient data for forecast</div></div>';
+
+    // Insights
+    var insights = fc.insights || [];
+    document.getElementById('insights-card').innerHTML = insights.length
+      ? '<ul class="insight-list">' + insights.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>'
+      : '<div style="color:#5A7A9F;font-size:13px">Not enough data for insights yet. Keep collecting data.</div>';
+
+    // Recommendations
+    var recs = fc.recommendations || [];
+    document.getElementById('recs-card').innerHTML = recs.length
+      ? '<ul class="rec-list">' + recs.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul>'
+      : '<div style="color:#5A7A9F;font-size:13px">Not enough data for recommendations yet.</div>';
+
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  } catch (err) {
+    loading.style.display = 'none';
+    error.style.display = 'block';
+    error.textContent = 'Error: ' + err.message;
+  }
+}
+
+loadAnalytics();
+</script>
+</body>
+</html>
