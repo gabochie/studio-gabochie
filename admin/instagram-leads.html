@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instagram Leads — Admin · GideonAbochie Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,8 +174,6 @@
 <script src="admin.js"></script>
 <script src="sidebar.js"></script>
 <script src="admin-ui.js"></script>
-<script src="admin-state.js"></script>
-<script src="admin-api.js"></script>
 <script>
 var currentPage = 1;
 var currentTotal = 0;
@@ -185,10 +182,6 @@ var currentItems = [];
 var selectedIds = {};
 var detailLeadId = null;
 var filterTimeout = null;
-
-function getAdminKey() {
-  try { return sessionStorage.getItem('ga_ak'); } catch(e) { return ''; }
-}
 
 function api(path, opts) {
   opts = opts || {};
@@ -616,11 +609,6 @@ function fmtDate(iso) {
     var d = new Date(iso.replace(' ', 'T') + 'Z');
     return d.toLocaleDateString();
   } catch(e) { return iso; }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
 // Keyboard shortcuts
