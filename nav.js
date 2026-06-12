@@ -102,4 +102,54 @@
     if (overlay) overlay.classList.toggle('open', opening);
     document.body.style.overflow = opening ? 'hidden' : '';
   };
+
+  /* ── Session-aware Nav (Login/Signup) ── */
+  var GA_SESSION_KEY = 'ga_session_token';
+  function getSessionToken() {
+    try { return localStorage.getItem(GA_SESSION_KEY); } catch(e) { return null; }
+  }
+  function clearSession() {
+    try { localStorage.removeItem(GA_SESSION_KEY); } catch(e) {}
+  }
+  function checkSession(callback) {
+    var token = getSessionToken();
+    if (!token) { callback(null); return; }
+    fetch('/api/auth/session?token=' + encodeURIComponent(token))
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.status === 'ok' && d.user) { callback(d.user); }
+        else { clearSession(); callback(null); }
+      })
+      .catch(function() { callback(null); });
+  }
+  function initNavAuth() {
+    var container = document.getElementById('navAuth');
+    if (!container) return;
+    checkSession(function(user) {
+      if (user) {
+        container.innerHTML =
+          '<a href="/dashboard/" class="nav-auth-link">Dashboard</a>' +
+          '<a href="#" class="nav-auth-link nav-auth-logout" onclick="window.logoutUser(event)">Log Out</a>';
+      } else {
+        container.innerHTML =
+          '<a href="/login/" class="nav-auth-link">Log In</a>' +
+          '<a href="/register/" class="nav-auth-btn">Sign Up</a>';
+      }
+    });
+  }
+  window.logoutUser = function(e) {
+    if (e) e.preventDefault();
+    var token = getSessionToken();
+    if (token) {
+      navigator.sendBeacon('/api/auth/logout', JSON.stringify({ token: token }));
+    }
+    clearSession();
+    document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org';
+    window.location.href = '/';
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavAuth);
+  } else {
+    initNavAuth();
+  }
 })();
