@@ -1,4 +1,4 @@
-import { checkRateLimit } from '../_rate-limit.js';
+import { checkRateLimit } from './_rate-limit.js';
 
 var CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 
