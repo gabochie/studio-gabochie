@@ -1,3 +1,5 @@
+import { verifyPassword, hashCode, genSalt } from './auth/_hash.js';
+
 export async function onRequest(context) {
   const db = context.env.DB;
   if (!db) {
@@ -46,10 +48,27 @@ export async function onRequest(context) {
     }
 
     const sponsor = await db.prepare(
-      'SELECT id, email, company FROM sponsors WHERE email = ? AND access_code = ? AND status = \'active\''
-    ).bind(email.trim().toLowerCase(), code.trim()).first();
+      'SELECT id, email, company, access_code FROM sponsors WHERE email = ? AND status = \'active\''
+    ).bind(email.trim().toLowerCase()).first();
 
     if (!sponsor) {
+      return new Response(JSON.stringify({ error: 'Invalid email or access code' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    var storedCode = sponsor.access_code || '';
+    var valid = false;
+    if (storedCode.includes(':')) {
+      valid = await verifyPassword(code.trim(), storedCode);
+    } else {
+      // Legacy plaintext — migrate on successful login
+      valid = (code.trim() === storedCode);
+      if (valid && storedCode) {
+        var salt = genSalt();
+        var hashed = await hashCode(code.trim(), salt);
+        await db.prepare('UPDATE sponsors SET access_code = ? WHERE id = ?').bind(salt + ':' + hashed, sponsor.id).run();
+      }
+    }
+    if (!valid) {
       return new Response(JSON.stringify({ error: 'Invalid email or access code' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
     }
 

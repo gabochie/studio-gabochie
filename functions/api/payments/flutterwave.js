@@ -22,7 +22,7 @@ export async function onRequest(context) {
       });
     }
     const expectedHash = env.FLW_SECRET_HASH;
-    if (expectedHash && signature !== expectedHash) {
+    if (!expectedHash || signature !== expectedHash) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid signature' }), {
         status: 401, headers: { 'Content-Type': 'application/json' }
       });

@@ -362,8 +362,8 @@ function renderStrategy() {
     html += '<div class="strategy-item ' + doneCls + '">';
     html += '<div class="strategy-check ' + checkCls + '" onclick="toggleStrategy(\'' + s.id + '\')">' + (st.done ? '&#10003;' : '') + '</div>';
     html += '<div class="strategy-body">';
-    html += '<div class="strategy-title">' + s.title + ' ' + autoBadge + '</div>';
-    html += '<div class="strategy-desc">' + s.desc + '</div>';
+    html += '<div class="strategy-title">' + escapeHtml(s.title) + ' ' + autoBadge + '</div>';
+    html += '<div class="strategy-desc">' + escapeHtml(s.desc) + '</div>';
     html += '</div>';
     html += '<div class="strategy-actions">';
     if (s.verify) {

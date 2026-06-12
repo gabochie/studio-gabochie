@@ -1,6 +1,7 @@
 import { callAI } from '../agents/_ai.js';
+import { requireAdminAuth } from '../admin/_admin-auth.js';
 
-var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 var SYSTEM_PROMPTS = {
   newsletter: 'You are a newsletter writer for GideonAbochie Studio — a Bible-based school of creativity, love, and wisdom based in Ghana. Write engaging, warm newsletter content that teaches, inspires, and connects readers to the mission. Use clear headings, short paragraphs, and a conversational tone. Include a call to action at the end.',
@@ -34,6 +35,9 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), { status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   }
+
+  var authError = requireAdminAuth(request, env);
+  if (authError) return authError;
 
   try {
     var body = await request.json();

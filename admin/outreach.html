@@ -164,7 +164,7 @@ async function previewCampaign() {
         if (d.status !== 'ok') throw new Error(d.error);
 
         document.getElementById('preview-subj').textContent = d.subject || '(no subject)';
-        document.getElementById('preview-body').innerHTML = d.body || '(no content)';
+        document.getElementById('preview-body').textContent = d.body || '(no content)';
         var channelLabel = (d.channel || 'email').replace('email','Email').replace('whatsapp','WhatsApp').replace('both','Email + WhatsApp');
         document.getElementById('preview-count').textContent = channelLabel + ' — ' + d.recipients + ' recipients. Sample: ' + (d.sampleUser ? d.sampleUser.email || d.sampleUser.donor_email || d.sampleUser.phone || 'N/A' : 'N/A');
         box.classList.add('show');
@@ -219,7 +219,7 @@ async function getRecommendations() {
     var html = '<div style="font-size:12px;color:#5A7A9F;margin-bottom:8px">Recent activity: ' + (d.profile.recentEvents.length > 0 ? d.profile.recentEvents.join(', ') : 'None') + '</div>';
     if (d.recommendations && d.recommendations.length > 0) {
       d.recommendations.forEach(function(rec) {
-        html += '<div class="rec-card"><div class="rec-page"><a href="' + rec.page + '" target="_blank" style="color:#C9A84C;text-decoration:none">' + rec.page + '</a></div><div class="rec-reason">' + rec.reason + '</div></div>';
+        html += '<div class="rec-card"><div class="rec-page"><a href="' + escapeHtml(rec.page) + '" target="_blank" style="color:#C9A84C;text-decoration:none">' + escapeHtml(rec.page) + '</a></div><div class="rec-reason">' + escapeHtml(rec.reason) + '</div></div>';
       });
     } else {
       html += '<div style="color:#5A7A9F;font-size:13px">No recommendations available</div>';

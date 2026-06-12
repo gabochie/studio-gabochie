@@ -1,3 +1,5 @@
+import { hashCode, genSalt } from '../auth/_hash.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   if (!env.DB) {
@@ -47,11 +49,14 @@ export async function onRequest(context) {
     return r;
   };
   const accessCode = `SPON-${gen(4)}-${gen(4)}`;
+  const salt = genSalt();
+  const hashed = await hashCode(accessCode, salt);
+  const stored = salt + ':' + hashed;
 
   try {
     await env.DB.prepare(
       'INSERT INTO sponsors (email, company, access_code) VALUES (?, ?, ?)'
-    ).bind(normalizedEmail, company || '', accessCode).run();
+    ).bind(normalizedEmail, company || '', stored).run();
   } catch (e) {
     if (e.message && e.message.includes('UNIQUE')) {
       return new Response(JSON.stringify({ error: 'A sponsor with this email already exists' }), {

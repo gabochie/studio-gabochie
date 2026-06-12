@@ -1,6 +1,7 @@
 import { callAI } from '../agents/_ai.js';
+import { requireAdminAuth } from '../admin/_admin-auth.js';
 
-var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 var REVENUE_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as txns, SUM(amount) as total, AVG(amount) as avg FROM donations WHERE status = 'successful' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
 var SUBSCRIBER_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as total FROM subscribers WHERE created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
@@ -15,6 +16,9 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
+
+  var authError = requireAdminAuth(request, env);
+  if (authError) return authError;
 
   if (!env.DB) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } });

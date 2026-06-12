@@ -10,7 +10,7 @@ export async function onRequest(context) {
   }
 
   var url = new URL(request.url);
-  var cronSecret = url.searchParams.get('secret') || request.headers.get('X-Cron-Secret') || '';
+  var cronSecret = request.headers.get('X-Cron-Secret') || '';
 
   if (!env.CRON_SECRET || cronSecret !== env.CRON_SECRET) {
     return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } });

@@ -1,4 +1,5 @@
 import { hashCode, genSalt, genToken } from './_hash.js';
+import { checkRateLimit } from '../_rate-limit.js';
 function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
@@ -16,6 +17,12 @@ export async function onRequest(context) {
   if (!db) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
       status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    });
+  }
+  var ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'register', 5, 300)) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many attempts. Try again later.' }), {
+      status: 429, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   try {

@@ -73,11 +73,7 @@ var AdminState = (function() {
 
 (function initTokens() {
   try {
-    var at = localStorage.getItem('ga_at');
-    var ak = localStorage.getItem('ga_ak');
-    var ai = localStorage.getItem('ga_ai');
-    if (at) AdminState.set('agentAuthToken', at);
+    var ak = sessionStorage.getItem('ga_ak');
     if (ak) AdminState.set('adminKey', ak);
-    if (ai) AdminState.set('aiKey', ai);
   } catch(e) {}
 })();

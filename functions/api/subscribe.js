@@ -24,6 +24,7 @@ var REWARD_TIERS = [
 ];
 
 import { confirmSubscription } from './email/_send.js';
+import { checkRateLimit } from './_rate-limit.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -58,11 +59,18 @@ export async function onRequest(context) {
     var edition = detectEdition(country);
     var confirmUrl = '';
 
-    if (!env.DB) {
-      return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-    }
+  if (!env.DB) {
+    return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+  }
 
-    // Check if existing subscriber
+  var ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'subscribe', 5, 60)) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many subscriptions. Try again later.' }), {
+      status: 429, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    });
+  }
+
+  // Check if existing subscriber
     var existing = await env.DB.prepare(
       'SELECT id, ref_code, confirmed, confirm_token FROM subscribers WHERE email = ?'
     ).bind(email).first();

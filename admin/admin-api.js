@@ -266,9 +266,7 @@ var API = (function() {
   }
 
   function runAction(action, payload) {
-    var aiKey = AdminState.get('aiKey') || '';
     var opts = Object.assign({ action: action }, payload || {});
-    if (aiKey) opts.ai_key = aiKey;
     return post('/run', opts);
   }
 

@@ -1,3 +1,5 @@
+import { requireAdminAuth } from './admin/_admin-auth.js';
+
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 export async function onRequest(context) {
@@ -5,6 +7,9 @@ export async function onRequest(context) {
 
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
   if (request.method !== 'POST') return new Response(JSON.stringify({ error: 'POST required' }), { status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+
+  var authError = requireAdminAuth(request, env);
+  if (authError) return authError;
 
   try {
     var body = await request.json();

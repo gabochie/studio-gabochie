@@ -134,5 +134,16 @@ export async function onRequest(context) {
     } catch (e) {}
   }
 
+  // CSRF protection: reject cross-origin mutating requests
+  var origin = request.headers.get('Origin') || '';
+  if (origin && !origin.includes(url.hostname) && !origin.includes('gideonabochie.org')) {
+    var method = request.method;
+    if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   return context.next();
 }

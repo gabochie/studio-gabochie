@@ -98,7 +98,6 @@ function loadTab(tab) {
 function api(path, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
-  opts.headers['Referer'] = '/admin/content.html';
   return adminFetch(path, opts).then(function(r){return r.json()});
 }
 
@@ -111,7 +110,7 @@ function loadTestimonials() {
       html = '<div class="table-empty">No testimonials yet. Add one to get started.</div>';
     } else {
       items.forEach(function(t) {
-        html += '<div class="card"><div class="card-content"><div class="title">' + t.author + (t.role ? ' <span style="color:#5A7A9F;font-weight:400">· ' + t.role + '</span>' : '') + (t.rating ? ' <span style="color:#C9A84C">' + '★'.repeat(t.rating) + '</span>' : '') + '</div><div class="sub">' + (t.content || '').slice(0, 120) + (t.content && t.content.length > 120 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editTestimonial(' + t.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteTestimonial(' + t.id + ')">Delete</button></div></div>';
+        html += '<div class="card"><div class="card-content"><div class="title">' + escapeHtml(t.author) + (t.role ? ' <span style="color:#5A7A9F;font-weight:400">· ' + escapeHtml(t.role) + '</span>' : '') + (t.rating ? ' <span style="color:#C9A84C">' + '★'.repeat(t.rating) + '</span>' : '') + '</div><div class="sub">' + escapeHtml((t.content || '').slice(0, 120)) + (t.content && t.content.length > 120 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editTestimonial(' + t.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteTestimonial(' + t.id + ')">Delete</button></div></div>';
       });
     }
     document.getElementById('testimonialsList').innerHTML = html;
@@ -182,7 +181,7 @@ function loadStats() {
       html = '<div class="table-empty">No stats yet. Add one to get started.</div>';
     } else {
       items.forEach(function(s) {
-        html += '<div class="card"><div class="card-content"><div class="title">' + (s.icon || '') + ' ' + s.label + ': <span style="color:#C9A84C">' + s.value + '</span></div><div class="sub">Order: ' + (s.sort_order || 0) + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editStat(' + s.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteStat(' + s.id + ')">Delete</button></div></div>';
+        html += '<div class="card"><div class="card-content"><div class="title">' + escapeHtml(s.icon || '') + ' ' + escapeHtml(s.label) + ': <span style="color:#C9A84C">' + escapeHtml(s.value) + '</span></div><div class="sub">Order: ' + escapeHtml(String(s.sort_order || 0)) + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editStat(' + s.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteStat(' + s.id + ')">Delete</button></div></div>';
       });
     }
     document.getElementById('statsList').innerHTML = html;
@@ -224,7 +223,7 @@ function loadGallery() {
       html = '<div class="table-empty">No gallery items yet. Add one to get started.</div>';
     } else {
       items.forEach(function(g) {
-        html += '<div class="card"><img src="' + g.image_url + '" alt="' + (g.title || 'Gallery image') + '" class="gallery-img" onerror="this.style.display=\'none\'"><div class="card-content"><div class="title">' + g.title + (g.category ? ' <span style="color:#5A7A9F;font-weight:400">· ' + g.category + '</span>' : '') + '</div><div class="sub">' + (g.description || '').slice(0, 80) + (g.description && g.description.length > 80 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editGallery(' + g.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteGallery(' + g.id + ')">Delete</button></div></div>';
+        html += '<div class="card"><img src="' + escapeHtml(g.image_url || '') + '" alt="' + escapeHtml(g.title || 'Gallery image') + '" class="gallery-img" onerror="this.style.display=\'none\'"><div class="card-content"><div class="title">' + escapeHtml(g.title) + (g.category ? ' <span style="color:#5A7A9F;font-weight:400">· ' + escapeHtml(g.category) + '</span>' : '') + '</div><div class="sub">' + escapeHtml((g.description || '').slice(0, 80)) + (g.description && g.description.length > 80 ? '...' : '') + '</div></div><div class="card-actions"><button class="btn btn-ghost" onclick="editGallery(' + g.id + ')">Edit</button><button class="btn btn-danger" onclick="deleteGallery(' + g.id + ')">Delete</button></div></div>';
       });
     }
     document.getElementById('galleryList').innerHTML = html;

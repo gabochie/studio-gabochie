@@ -1,4 +1,6 @@
 import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
+import { requireAdminAuth } from './admin/_admin-auth.js';
+import { checkRateLimit } from './_rate-limit.js';
 
 const notifyHtml = (name, email, msg, source) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
   <h2 style="color:#0A1628">New Contact Submission</h2>
@@ -13,14 +15,10 @@ const notifyHtml = (name, email, msg, source) => `<!DOCTYPE html><html><body sty
 export async function onRequest(context) {
   const { request, env } = context;
 
-  // GET — admin subscriber listing (protected by referer check)
+  // GET — admin subscriber listing (protected by admin key)
   if (request.method === 'GET') {
-    const referer = request.headers.get('Referer') || '';
-    if (!referer.includes('/admin/')) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
-        status: 403, headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    var authError = requireAdminAuth(request, env);
+    if (authError) return authError;
     const db = env.DB;
     if (!db) {
       return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {
@@ -32,7 +30,7 @@ export async function onRequest(context) {
         "SELECT * FROM subscribers ORDER BY subscribed_at DESC"
       ).all();
       return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'X-Admin-Key' }
       });
     } catch (err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
@@ -45,6 +43,12 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405, headers: { 'Content-Type': 'application/json', 'Allow': 'GET, POST' }
+    });
+  }
+  var ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'contact', 5, 60)) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many submissions. Try again later.' }), {
+      status: 429, headers: { 'Content-Type': 'application/json' }
     });
   }
   try {

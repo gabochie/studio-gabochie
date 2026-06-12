@@ -1,4 +1,5 @@
 import { hashCode, genSalt, genToken } from './_hash.js';
+import { checkRateLimit } from '../_rate-limit.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -9,6 +10,12 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ status: 'error', message: 'Method not allowed' }), {
       status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+    });
+  }
+  var ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'login', 10, 60)) {
+    return new Response(JSON.stringify({ status: 'error', message: 'Too many attempts. Try again later.' }), {
+      status: 429, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
   }
   var db = env.DB;

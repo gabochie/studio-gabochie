@@ -1,8 +1,10 @@
 import { callAI } from '../agents/_ai.js';
 import { queueEmail, daysFromNow } from '../email/_send.js';
 import { queueWhatsApp } from '../_whatsapp.js';
+import { requireAdminAuth } from '../admin/_admin-auth.js';
+import { checkRateLimit } from '../_rate-limit.js';
 
-var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 var SEGMENTS = {
   active: { label: 'Active (last 30d)', sql: "SELECT DISTINCT email, name, phone FROM subscribers WHERE email IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) LIMIT 20" },
@@ -18,6 +20,9 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
+
+  var authError = requireAdminAuth(request, env);
+  if (authError) return authError;
 
   if (!env.DB) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
@@ -41,6 +46,10 @@ export async function onRequest(context) {
     }
 
     if (request.method === 'POST') {
+      var ip = request.headers.get('CF-Connecting-IP') || '';
+      if (!await checkRateLimit(env.DB, ip, 'outreach', 3, 300)) {
+        return new Response(JSON.stringify({ error: 'Too many campaigns. Try again later.' }), { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+      }
       var body = await request.json();
       var segment = body.segment || 'dormant';
       var subject = body.subject || '';
