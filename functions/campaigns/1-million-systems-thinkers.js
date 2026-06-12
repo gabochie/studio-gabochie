@@ -85,11 +85,12 @@ export async function onRequest(context) {
       '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">' +
       '<link rel="stylesheet" href="/style.css">' +
+      '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">' +
       '<script src="https://checkout.flutterwave.com/v3.js"></script>' +
       '<style>' +
       ':root{--gold:#C9A84C;--gold-dark:#A68A2E;--bg:#0A1628;--bg2:#0F1F35;--bg3:#132642;--text:#CDD5E0;--muted:#6B7F9A;--dim:#4A5F7A;--border:#1E3456;--green:#34C77B;--red:#E8637A;--radius:12px}' +
       '*,*:before,*:after{box-sizing:border-box}' +
-      'body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.5}' +
+      'body{margin:0;padding-top:60px;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.5}' +
       '.hero{position:relative;background:linear-gradient(135deg,#0A1628 0%,#0F1F35 40%,#132642 70%,#0A1628 100%);overflow:hidden;padding:60px 20px 50px;text-align:center}' +
       '.hero:before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.06) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(52,199,123,0.04) 0%,transparent 60%);pointer-events:none}' +
       '.hero-badge{display:inline-block;padding:5px 14px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);border-radius:20px;font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:16px}' +

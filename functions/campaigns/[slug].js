@@ -73,9 +73,10 @@ export async function onRequest(context) {
       '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">' +
       '<link rel="stylesheet" href="/style.css">' +
+      '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">' +
       '<style>' +
       ':root{--gold:#C9A84C;--gold-hover:#B8942F;--bg-dark:#0A1628;--bg-card:#0F1F35;--text-body:#CDD5E0;--text-muted:#6B7F9A;--text-dim:#4A5F7A;--border:#1E3456;--green:#34C77B;--red:#E8637A;--radius:12px}' +
-      'body{background:var(--bg-dark);color:var(--text-body);font-family:Inter,sans-serif;margin:0}' +
+      'body{background:var(--bg-dark);color:var(--text-body);font-family:Inter,sans-serif;margin:0;padding-top:60px}' +
       '.campaign-page{max-width:800px;margin:0 auto;padding:20px}' +
       '.cover-img{width:100%;height:240px;object-fit:cover;border-radius:var(--radius);background:var(--bg-card);margin-bottom:24px}' +
       '.no-cover{width:100%;height:240px;border-radius:var(--radius);background:linear-gradient(135deg,var(--bg-card),#0D1E33);display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-family:Barlow Condensed,sans-serif;font-size:48px;color:var(--text-dim);letter-spacing:.05em}' +
