@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0A1628"/>
+      <stop offset="50%" stop-color="#0F1F35"/>
+      <stop offset="100%" stop-color="#0A1628"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A84C"/>
+      <stop offset="100%" stop-color="#D9B85C"/>
+    </linearGradient>
+    <linearGradient id="goldH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D9B85C"/>
+      <stop offset="100%" stop-color="#B8942F"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.02">
+    <line x1="0" y1="180" x2="1080" y2="180" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="0" y1="360" x2="1080" y2="360" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="0" y1="540" x2="1080" y2="540" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="0" y1="720" x2="1080" y2="720" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="0" y1="900" x2="1080" y2="900" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="180" y1="0" x2="180" y2="1080" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="360" y1="0" x2="360" y2="1080" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="540" y1="0" x2="540" y2="1080" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="720" y1="0" x2="720" y2="1080" stroke="#C9A84C" stroke-width="1"/>
+    <line x1="900" y1="0" x2="900" y2="1080" stroke="#C9A84C" stroke-width="1"/>
+  </g>
+
+  <!-- Top gold accent bar -->
+  <rect x="0" y="0" width="1080" height="6" fill="#C9A84C"/>
+
+  <!-- Logo area -->
+  <image x="466" y="48" width="148" height="40" xlink:href="https://gideonabochie.org/assets/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Decorative line -->
+  <line x1="340" y1="110" x2="740" y2="110" stroke="#1E3456" stroke-width="1.5"/>
+
+  <!-- Headline -->
+  <text x="540" y="200" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="82" font-weight="700" fill="#F1F5F9" text-anchor="middle" letter-spacing="1">Play Guitar.</text>
+  <text x="540" y="268" font-family="'Barlow Condensed','Arial',sans-serif" font-size="34" font-weight="400" fill="#6B7F9A" text-anchor="middle" letter-spacing="5" text-transform="uppercase">In 30 Days. No Experience Needed.</text>
+
+  <!-- Price badge -->
+  <rect x="340" y="310" width="400" height="64" rx="32" fill="url(#gold)"/>
+  <text x="540" y="352" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="32" font-weight="700" fill="#0A1628" text-anchor="middle">GH¢ 299  <tspan fill="#5A3D1A" font-size="20" text-decoration="line-through" font-weight="400">was GH¢ 500</tspan></text>
+
+  <!-- Divider -->
+  <line x1="200" y1="390" x2="880" y2="390" stroke="#1E3456" stroke-width="1"/>
+
+  <!-- Bullet points -->
+  <g font-family="'DM Sans','Arial',sans-serif" font-size="26" fill="#CDD5E0">
+    <rect x="250" y="422" width="12" height="12" rx="6" fill="#C9A84C"/>
+    <text x="280" y="435">Beginner to intermediate — step by step</text>
+
+    <rect x="250" y="482" width="12" height="12" rx="6" fill="#C9A84C"/>
+    <text x="280" y="495">Highlife / Gospel / Contemporary Ghanaian songs</text>
+
+    <rect x="250" y="542" width="12" height="12" rx="6" fill="#C9A84C"/>
+    <text x="280" y="555">Video lessons — watch anytime, replay as needed</text>
+
+    <rect x="250" y="602" width="12" height="12" rx="6" fill="#C9A84C"/>
+    <text x="280" y="615">Lifetime access — one payment, no subscriptions</text>
+
+    <rect x="250" y="662" width="12" height="12" rx="6" fill="#C9A84C"/>
+    <text x="280" y="675">Learn on phone, tablet, or laptop</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="200" y1="710" x2="880" y2="710" stroke="#1E3456" stroke-width="1"/>
+
+  <!-- CTA Button -->
+  <rect x="240" y="745" width="600" height="72" rx="36" fill="url(#goldH)" filter="url(#shadow)"/>
+  <text x="540" y="792" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="28" font-weight="700" fill="#0A1628" text-anchor="middle" letter-spacing="3">ENROLL NOW — LIMITED SPOTS</text>
+
+  <!-- URL -->
+  <text x="540" y="858" font-family="'Courier New',monospace" font-size="16" fill="#6B7F9A" text-anchor="middle">gideonabochie.org/school/guitar/buy</text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="1074" width="1080" height="6" fill="#C9A84C"/>
+
+  <!-- Footer -->
+  <text x="540" y="940" font-family="'DM Sans',sans-serif" font-size="13" fill="#4A5F7A" text-anchor="middle">GideonAbochie Studio &middot; School of Creativity, Love &amp; Wisdom</text>
+
+  <!-- Payment icons text -->
+  <text x="540" y="990" font-family="'DM Sans',sans-serif" font-size="12" fill="#4A5F7A" text-anchor="middle">Pay via Mobile Money &middot; Card</text>
+
+  <!-- Logo mark -->
+  <g transform="translate(540,1040)" opacity="0.15">
+    <image x="-20" y="-12" width="40" height="24" xlink:href="https://gideonabochie.org/assets/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+</svg>
