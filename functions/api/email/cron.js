@@ -1,4 +1,5 @@
 import { sendBrevoEmail, queueEmail, abandonedDonationReminder, daysFromNow } from './_send.js';
+import { sendWhatsApp } from '../whatsapp/_send.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -64,6 +65,27 @@ export async function onRequest(context) {
       result.process.pending = queueResults.length - result.process.sent;
     } catch (err) {
       result.errors.push('process: ' + err.message);
+    }
+
+    // Step 3: Process WhatsApp queue
+    try {
+      var { results: waResults } = await env.DB.prepare(
+        "SELECT * FROM whatsapp_queue WHERE status = 'pending' AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
+      ).all();
+      var waSent = 0;
+      for (var wa of waResults) {
+        try {
+          await sendWhatsApp(env, wa.to_phone, wa.message_text);
+          await env.DB.prepare("UPDATE whatsapp_queue SET status = 'sent', sent_at = datetime('now') WHERE id = ?").bind(wa.id).run();
+          waSent++;
+        } catch (err) {
+          await env.DB.prepare("UPDATE whatsapp_queue SET status = 'failed' WHERE id = ?").bind(wa.id).run();
+          result.errors.push('whatsapp-' + wa.id + ': ' + err.message);
+        }
+      }
+      result.whatsapp = { sent: waSent, pending: waResults.length - waSent };
+    } catch (err) {
+      result.errors.push('whatsapp-process: ' + err.message);
     }
 
     return new Response(JSON.stringify({ status: 'ok', ...result }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });

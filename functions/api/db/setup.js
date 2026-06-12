@@ -181,6 +181,8 @@
       `ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT ''`,
       `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
       `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN phone TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN whatsapp_opt_in INTEGER DEFAULT 0`,
       `ALTER TABLE subscribers ADD COLUMN onboarding_tag TEXT DEFAULT ''
 ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
@@ -293,6 +295,19 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       )`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
+      // WhatsApp message queue
+      `CREATE TABLE IF NOT EXISTS whatsapp_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_phone TEXT NOT NULL,
+        message_text TEXT NOT NULL,
+        msg_type TEXT NOT NULL DEFAULT 'text',
+        status TEXT NOT NULL DEFAULT 'pending',
+        sent_at TEXT DEFAULT NULL,
+        scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_scheduled ON whatsapp_queue(scheduled_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_status ON whatsapp_queue(status)`,
       // Seed test sponsor
       `INSERT OR IGNORE INTO sponsors (email, company, access_code) VALUES ('sponsor@test.com', 'Test Corp', 'SPONSOR2026')`,
       // Subscriptions table for recurring supporter tiers

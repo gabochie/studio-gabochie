@@ -437,6 +437,7 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
       <form class="lead-form" action="/api/contact" method="POST">
         <input type="text" name="name" placeholder="Your Name" required>
         <input type="email" name="email" placeholder="Your Email" required>
+        <input type="tel" name="phone" placeholder="WhatsApp (e.g. 233501234567)" style="margin-top:6px">
         <button type="submit">Send Me the Free Manifesto</button>
         <span class="form-note">No spam. Unsubscribe anytime.</span>
       </form>
@@ -847,6 +848,7 @@ if (el) observer.observe(el);
     <form id="leadForm">
       <input type="text" name="name" placeholder="Your name" required>
       <input type="email" name="email" id="leadEmail" placeholder="Your email" required>
+      <input type="tel" name="phone" placeholder="WhatsApp (e.g. 233501234567)" style="margin-top:4px">
       <input type="hidden" name="book" id="leadBookInput" value="">
       <input type="hidden" name="_subject" value="Book download request">
       <button type="submit" class="submit" id="leadSubmitBtn">Send Me the Book &rarr;</button>

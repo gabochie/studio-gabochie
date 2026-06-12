@@ -1,14 +1,15 @@
 import { callAI } from '../agents/_ai.js';
 import { queueEmail, daysFromNow } from '../email/_send.js';
+import { queueWhatsApp } from '../whatsapp/_send.js';
 
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 
 var SEGMENTS = {
-  active: { label: 'Active (last 30d)', sql: "SELECT DISTINCT email, name FROM subscribers WHERE email IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) LIMIT 20" },
-  dormant: { label: 'Dormant (31-90d)', sql: "SELECT DISTINCT s.email, s.name FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) AND s.created_at >= datetime('now', '-90 days') LIMIT 20" },
-  churned: { label: 'Churned (90d+)', sql: "SELECT DISTINCT s.email, s.name FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-90 days')) AND s.created_at <= datetime('now', '-90 days') LIMIT 20" },
-  donors: { label: 'Donors', sql: "SELECT DISTINCT donor_email as email, donor_name as name FROM donations WHERE status = 'successful' AND created_at >= datetime('now', '-180 days') LIMIT 20" },
-  students: { label: 'Students', sql: "SELECT DISTINCT email, name FROM students WHERE created_at >= datetime('now', '-180 days') LIMIT 20" },
+  active: { label: 'Active (last 30d)', sql: "SELECT DISTINCT email, name, phone FROM subscribers WHERE email IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) LIMIT 20" },
+  dormant: { label: 'Dormant (31-90d)', sql: "SELECT DISTINCT s.email, s.name, s.phone FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) AND s.created_at >= datetime('now', '-90 days') LIMIT 20" },
+  churned: { label: 'Churned (90d+)', sql: "SELECT DISTINCT s.email, s.name, s.phone FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-90 days')) AND s.created_at <= datetime('now', '-90 days') LIMIT 20" },
+  donors: { label: 'Donors', sql: "SELECT DISTINCT donor_email as email, donor_name as name, donor_phone as phone FROM donations WHERE status = 'successful' AND created_at >= datetime('now', '-180 days') LIMIT 20" },
+  students: { label: 'Students', sql: "SELECT DISTINCT email, name, student_phone as phone FROM students WHERE created_at >= datetime('now', '-180 days') LIMIT 20" },
 };
 
 export async function onRequest(context) {
@@ -27,7 +28,6 @@ export async function onRequest(context) {
 
   try {
     if (request.method === 'GET' && action === 'segments') {
-      // Return segment counts
       var segments = {};
       for (var key in SEGMENTS) {
         try {
@@ -45,12 +45,12 @@ export async function onRequest(context) {
       var segment = body.segment || 'dormant';
       var subject = body.subject || '';
       var preview = body.preview || false;
+      var channel = body.channel || 'email';
 
       if (!SEGMENTS[segment]) {
         return new Response(JSON.stringify({ error: 'Invalid segment' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      // Fetch users in this segment
       var usersResult = await env.DB.prepare(SEGMENTS[segment].sql).all();
       var users = usersResult.results || [];
 
@@ -58,10 +58,16 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ status: 'ok', message: 'No users in this segment', sent: 0 }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      // Generate email content via AI
       var segmentLabel = SEGMENTS[segment].label;
-      var systemPrompt = 'You are an outreach specialist for GideonAbochie Studio — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
-      var userPrompt = 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — GideonAbochie Studio') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit gideonabochie.org/school/. Wrap subject in SUBJECT: and body in BODY:.';
+
+      // Generate content via AI (different prompts per channel)
+      var isWhatsApp = channel === 'whatsapp' || channel === 'both';
+      var systemPrompt = isWhatsApp
+        ? 'You are an outreach specialist for GideonAbochie Studio. Write warm, personal WhatsApp messages. Keep it under 300 characters. No HTML. No formatting.'
+        : 'You are an outreach specialist for GideonAbochie Studio — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
+      var userPrompt = isWhatsApp
+        ? 'Write a WhatsApp re-engagement message for segment: ' + segmentLabel + '. The message should sound personal, remind them of our mission (creativity, love, wisdom), and include a CTA to visit gideonabochie.org. Wrap subject in SUBJECT: and body in BODY:.'
+        : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — GideonAbochie Studio') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit gideonabochie.org/school/. Wrap subject in SUBJECT: and body in BODY:.';
 
       var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.7, max_tokens: 800 });
 
@@ -72,36 +78,51 @@ export async function onRequest(context) {
       var content = result.content || '';
       var subjectLine = subject || 'We miss you — GideonAbochie Studio';
       var bodyLines = content.split('BODY:');
-      var emailBody = bodyLines.length > 1 ? bodyLines[1].trim() : content;
+      var messageBody = bodyLines.length > 1 ? bodyLines[1].trim() : content;
 
-      // Extract subject from AI if not provided
       if (!subject && content.includes('SUBJECT:')) {
         var subMatch = content.match(/SUBJECT:\s*(.+)/);
         if (subMatch) subjectLine = subMatch[1].trim();
       }
 
       if (preview) {
-        return new Response(JSON.stringify({ status: 'ok', preview: true, subject: subjectLine, body: emailBody, recipients: users.length, sampleUser: users[0] }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+        return new Response(JSON.stringify({
+          status: 'ok', preview: true, channel: channel,
+          subject: subjectLine, body: messageBody,
+          recipients: users.length, sampleUser: users[0]
+        }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      // Queue emails
       var sent = 0;
       for (var i = 0; i < users.length; i++) {
         var user = users[i];
         var name = user.name || user.donor_name || '';
         var email = user.email || user.donor_email || '';
-        if (!email) continue;
+        var phone = user.phone || user.donor_phone || user.student_phone || '';
 
-        var personalizedBody = emailBody.replace(/\[name\]/g, name || 'Friend').replace(/{name}/g, name || 'Friend');
-        try {
-          await queueEmail(env, email, name || 'Friend', subjectLine, personalizedBody, 'outreach_' + segment, daysFromNow(0));
-          sent++;
-        } catch (e) {
-          // skip failed
+        if (channel === 'email' || channel === 'both') {
+          if (!email) continue;
+          var personalizedHtml = messageBody.replace(/\[name\]/g, name || 'Friend').replace(/{name}/g, name || 'Friend');
+          try {
+            await queueEmail(env, email, name || 'Friend', subjectLine, personalizedHtml, 'outreach_' + segment, daysFromNow(0));
+            sent++;
+          } catch (e) {}
+        }
+
+        if (channel === 'whatsapp' || channel === 'both') {
+          if (!phone) continue;
+          var personalizedMsg = messageBody.replace(/\[name\]/g, name || 'Friend').replace(/{name}/g, name || 'Friend').replace(/<[^>]+>/g, '');
+          try {
+            await queueWhatsApp(env, phone, personalizedMsg, 'outreach_' + segment, daysFromNow(0));
+            sent++;
+          } catch (e) {}
         }
       }
 
-      return new Response(JSON.stringify({ status: 'ok', message: 'Queued ' + sent + ' emails', segment: segment, subject: subjectLine, sent: sent }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+      return new Response(JSON.stringify({
+        status: 'ok', message: 'Queued ' + sent + ' messages via ' + channel,
+        segment: segment, channel: channel, sent: sent
+      }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
 
     // GET content recommendations for a user
@@ -111,7 +132,6 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ error: 'email param required' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      // Get user's recent activity
       var events = await env.DB.prepare("SELECT event_type, page FROM events WHERE email = ? ORDER BY created_at DESC LIMIT 10").bind(userEmail).all();
       var donations = await env.DB.prepare("SELECT amount, created_at FROM donations WHERE donor_email = ? AND status = 'successful' ORDER BY created_at DESC LIMIT 5").bind(userEmail).all();
 

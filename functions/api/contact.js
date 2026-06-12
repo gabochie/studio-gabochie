@@ -51,6 +51,7 @@ export async function onRequest(context) {
     const formData = await request.formData();
     const name = formData.get('name') || '';
     const email = formData.get('email') || '';
+    const phone = formData.get('phone') || '';
     const msg = formData.get('message') || '';
     const book = formData.get('book') || formData.get('_subject') || '';
     const spam = formData.get('_gotcha');
@@ -63,8 +64,11 @@ export async function onRequest(context) {
     const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
     if (db && email) {
       await db.prepare(
-        `INSERT OR IGNORE INTO subscribers (name, email, source, book) VALUES (?, ?, ?, ?)`
-      ).bind(name, email, book || 'contact', book || '').run();
+        `INSERT OR IGNORE INTO subscribers (name, email, source, book, phone) VALUES (?, ?, ?, ?, ?)`
+      ).bind(name, email, book || 'contact', book || '', phone).run();
+      if (phone) {
+        await db.prepare("UPDATE subscribers SET phone = ? WHERE email = ? AND (phone IS NULL OR phone = '')").bind(phone, email).run();
+      }
       // Store in contact_submissions for admin review
       await db.prepare(
         `INSERT INTO contact_submissions (name, email, subject, message, source) VALUES (?, ?, ?, ?, ?)`

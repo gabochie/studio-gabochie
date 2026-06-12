@@ -71,6 +71,14 @@
 
     <div id="email-form" style="display:none">
       <div class="field">
+        <label>Channel</label>
+        <select id="channel" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:13px;font-family:inherit;box-sizing:border-box">
+          <option value="email">Email</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="both">Both (Email + WhatsApp)</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Subject Line (leave blank for AI to generate)</label>
         <input type="text" id="subject" placeholder="We miss you — GideonAbochie Studio">
       </div>
@@ -145,19 +153,21 @@ async function previewCampaign() {
   var box = document.getElementById('preview-box');
   btn.disabled = true; btn.textContent = 'Generating...';
 
+  var channel = document.getElementById('channel').value;
   try {
-    var r = await fetch('/api/ai/outreach', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
-      body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, preview: true })
-    });
-    var d = await r.json();
-    if (d.status !== 'ok') throw new Error(d.error);
+        var r = await fetch('/api/ai/outreach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
+          body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, channel: channel, preview: true })
+        });
+        var d = await r.json();
+        if (d.status !== 'ok') throw new Error(d.error);
 
-    document.getElementById('preview-subj').textContent = d.subject || '(no subject)';
-    document.getElementById('preview-body').innerHTML = d.body || '(no content)';
-    document.getElementById('preview-count').textContent = 'Will be sent to ' + d.recipients + ' recipients. Sample: ' + (d.sampleUser ? d.sampleUser.email || d.sampleUser.donor_email : 'N/A');
-    box.classList.add('show');
+        document.getElementById('preview-subj').textContent = d.subject || '(no subject)';
+        document.getElementById('preview-body').innerHTML = d.body || '(no content)';
+        var channelLabel = (d.channel || 'email').replace('email','Email').replace('whatsapp','WhatsApp').replace('both','Email + WhatsApp');
+        document.getElementById('preview-count').textContent = channelLabel + ' — ' + d.recipients + ' recipients. Sample: ' + (d.sampleUser ? d.sampleUser.email || d.sampleUser.donor_email || d.sampleUser.phone || 'N/A' : 'N/A');
+        box.classList.add('show');
   } catch (err) {
     document.getElementById('status-msg').className = 'status-msg err';
     document.getElementById('status-msg').textContent = 'Error: ' + err.message;
@@ -167,7 +177,9 @@ async function previewCampaign() {
 
 async function sendCampaign() {
   if (!selectedSegment) return;
-  if (!confirm('Send email to this entire segment?')) return;
+  var channel = document.getElementById('channel').value;
+  var channelLabel = channel.replace('email','Email').replace('whatsapp','WhatsApp').replace('both','Email + WhatsApp');
+  if (!confirm('Send ' + channelLabel + ' to this entire segment?')) return;
   var btn = document.getElementById('send-btn');
   btn.disabled = true; btn.textContent = 'Sending...';
 
@@ -175,13 +187,13 @@ async function sendCampaign() {
     var r = await fetch('/api/ai/outreach', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Admin-Key': getAdminKey() },
-      body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, preview: false })
+      body: JSON.stringify({ segment: selectedSegment, subject: document.getElementById('subject').value, channel: channel, preview: false })
     });
     var d = await r.json();
     var msg = document.getElementById('status-msg');
     if (d.status === 'ok') {
       msg.className = 'status-msg ok';
-      msg.textContent = 'Queued ' + (d.sent || 0) + ' emails for segment: ' + (d.segment || selectedSegment);
+      msg.textContent = 'Queued ' + (d.sent || 0) + ' ' + channel + ' messages for segment: ' + (d.segment || selectedSegment);
     } else {
       throw new Error(d.error);
     }

@@ -34,19 +34,21 @@ export async function onRequest(context) {
   }
   try {
     var ct = request.headers.get('Content-Type') || '';
-    var name = '', email = '', source = 'newsletter', ref = '';
+    var name = '', email = '', source = 'newsletter', ref = '', phone = '';
     if (ct.includes('application/json')) {
       var body = await request.json();
       name = body.name || '';
       email = body.email || '';
       source = body.source || 'newsletter';
       ref = body.ref || '';
+      phone = body.phone || '';
     } else {
       var fd = await request.formData();
       name = fd.get('name') || '';
       email = fd.get('email') || '';
       source = fd.get('source') || 'newsletter';
       ref = fd.get('ref') || '';
+      phone = fd.get('phone') || '';
     }
     if (!email || !email.includes('@')) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
@@ -77,6 +79,9 @@ export async function onRequest(context) {
       }
       if (existing.confirm_token) {
         // New subscriber who hasn't confirmed — resend confirmation
+        if (phone) {
+          await env.DB.prepare("UPDATE subscribers SET phone = ? WHERE email = ?").bind(phone, email).run();
+        }
         confirmUrl = 'https://gideonabochie.org/api/subscribe/confirm?token=' + existing.confirm_token;
         if (env.BREVO_API_KEY) {
           try {
@@ -130,8 +135,8 @@ export async function onRequest(context) {
     var confirmToken = genToken();
 
     await env.DB.prepare(
-      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token) VALUES (?, ?, ?, ?, ?, ?, 0, ?)"
-    ).bind(name, email, source, refCode, edition, JSON.stringify({ country }), confirmToken).run();
+      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)"
+    ).bind(name, email, source, refCode, edition, JSON.stringify({ country }), confirmToken, phone).run();
 
     // Handle referral if provided
     var referralCount = 0;

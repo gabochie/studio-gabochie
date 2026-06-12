@@ -41,6 +41,7 @@ h1 span{color:#C9A84C}
   <p class="desc">We're building something beautiful — a space where <strong>creativity</strong>, <strong>love</strong>, and <strong>wisdom</strong> come together. <em>The Studio Weekly</em> newsletter, teachings, and resources are being prepared. Leave your email and we'll let you know the moment we launch.</p>
   <div class="notify">
     <input type="email" id="notifyEmail" placeholder="Your email address" required>
+    <input type="tel" id="notifyPhone" placeholder="WhatsApp number (e.g. 233501234567)" style="width:100%;padding:10px 14px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(255,255,255,.05);color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:8px">
     <button id="notifyBtn" onclick="notifyMe()">Notify Me</button>
   </div>
   <div class="success" id="notifySuccess">&#10003; You're on the list! We'll notify you at launch.</div>
@@ -58,7 +59,8 @@ function notifyMe(){
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
   tagOnboard(email, '', 'newsletter');
   btn.disabled = true; btn.textContent = 'Subscribing\u2026';
-    var fd = new FormData(); fd.append('email', email); fd.append('source', 'coming-soon');
+    var phone = document.getElementById('notifyPhone').value.trim();
+    var fd = new FormData(); fd.append('email', email); fd.append('phone', phone); fd.append('source', 'coming-soon');
     fetch('/api/subscribe', {method:'POST', body:fd}).then(function(r){
     if (!r.ok) throw new Error('Failed');
     document.getElementById('notifySuccess').style.display = 'block';
