@@ -11,6 +11,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--navy:#0A1628;--gold:#C9A84C;--cream:#FEFCF5;--ink:#1F2937;--gray:#6B7280;--pink:#E8245A;--sky:#3B82F6;--green:#22C55E;--orange:#F59E0B}
 body{background:var(--cream);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6}
+.brand-header{background:var(--navy);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.brand-header a{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-header img{height:36px;object-fit:contain}
+.brand-name{color:white;font-family:Playfair Display,serif;font-size:18px;font-weight:900}
+.brand-name em{color:var(--gold);font-style:normal}
+.brand-tag{color:var(--gold);font-size:12px;font-weight:600;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.08em}
 .container{max-width:700px;margin:0 auto;padding:24px 16px 60px}
 .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--gray);font-size:13px;text-decoration:none;margin-bottom:20px;font-weight:500}
 .back-link:hover{color:var(--navy)}
@@ -38,6 +44,14 @@ textarea{resize:vertical;min-height:80px}
 </style>
 </head>
 <body>
+
+<div class="brand-header">
+  <a href="https://gideonabochie.org">
+    <img src="https://gideonabochie.org/assets/images/logo.png" alt="GideonAbochie Studio">
+    <span class="brand-name">GideonAbochie <em>Studio</em></span>
+  </a>
+  <span class="brand-tag">The Studio Weekly</span>
+</div>
 
 <div class="container">
   <a href="index.html#classifieds/jobs" class="back-link">← Back to Classifieds</a>
