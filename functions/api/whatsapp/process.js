@@ -1,4 +1,4 @@
-import { sendWhatsApp } from './_send.js';
+import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
   var { request, env } = context;

@@ -1,6 +1,6 @@
 import { callAI } from '../agents/_ai.js';
 import { queueEmail, daysFromNow } from '../email/_send.js';
-import { queueWhatsApp } from '../whatsapp/_send.js';
+import { queueWhatsApp } from '../_whatsapp.js';
 
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 

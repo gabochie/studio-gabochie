@@ -1,4 +1,4 @@
-import { sendWhatsApp, queueWhatsApp } from './whatsapp/_send.js';
+import { queueWhatsApp } from './_whatsapp.js';
 
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
