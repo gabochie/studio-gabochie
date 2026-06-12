@@ -180,12 +180,12 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 .nav-inner a {
   color:rgba(255,255,255,.75);
   font-family:'Inter',sans-serif;
-  font-size:12px;
+  font-size:11px;
   font-weight:600;
   text-decoration:none;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
   text-transform:uppercase;
-  padding:13px 14px;
+  padding:11px 8px;
   white-space:nowrap;
   border-bottom:3px solid transparent;
   transition:all .2s;
@@ -932,20 +932,20 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 <nav id="nav-bar">
   <div class="nav-inner" id="navInner">
     <button id="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation menu">☰</button>
-    <a href="#" class="active" onclick="showPage('cover',this)">🏠 Cover</a>
-    <a href="#" onclick="showPage('creativity',this)">🎨 Creativity Coaching</a>
-    <a href="#" onclick="showPage('love',this)">❤️ Love Coaching</a>
-    <a href="#" onclick="showPage('wisdom',this)">📖 Wisdom Coaching</a>
-    <a href="#" onclick="showPage('civic',this)">🏛️ Civic Education</a>
-    <a href="#" onclick="showPage('youth',this)">⚡ Youth Empowerment</a>
-    <a href="#" onclick="showPage('nation',this)">🇬🇭 Nation Building</a>
-    <a href="#" onclick="showPage('diaspora',this)">🌍 Diaspora & Culture</a>
-    <a href="#" onclick="showPage('business',this)">💼 Business & Economy</a>
-    <a href="#" onclick="showPage('general',this)">📰 General</a>
-    <a href="#" onclick="showPage('puzzle',this)">🧩 Puzzles</a>
-    <a href="#" onclick="showPage('classifieds1',this)">📋 Classifieds I</a>
-    <a href="#" onclick="showPage('classifieds2',this)">📋 Classifieds II</a>
-    <a href="#" onclick="showPage('classifieds3',this)">📋 Classifieds III</a>
+    <a href="#cover" class="active" onclick="return showPage('cover',this)">🏠 Cover</a>
+    <a href="#creativity" onclick="return showPage('creativity',this)">🎨 Creative</a>
+    <a href="#love" onclick="return showPage('love',this)">❤️ Love</a>
+    <a href="#wisdom" onclick="return showPage('wisdom',this)">📖 Wisdom</a>
+    <a href="#civic" onclick="return showPage('civic',this)">🏛️ Civic</a>
+    <a href="#youth" onclick="return showPage('youth',this)">⚡ Youth</a>
+    <a href="#nation" onclick="return showPage('nation',this)">🇬🇭 Nation</a>
+    <a href="#diaspora" onclick="return showPage('diaspora',this)">🌍 Diaspora</a>
+    <a href="#business" onclick="return showPage('business',this)">💼 Business</a>
+    <a href="#general" onclick="return showPage('general',this)">📰 General</a>
+    <a href="#puzzle" onclick="return showPage('puzzle',this)">🧩 Puzzles</a>
+    <a href="#classifieds/jobs" onclick="return showPage('classifieds1',this)">📋 Jobs</a>
+    <a href="#classifieds/business" onclick="return showPage('classifieds2',this)">📋 Services</a>
+    <a href="#classifieds/community" onclick="return showPage('classifieds3',this)">📋 Events</a>
   </div>
 </nav>
 
@@ -958,7 +958,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
     <h1>How to Live With More<br>Creativity, Love & Wisdom</h1>
     <p class="subtitle">Ghana is sitting on the greatest untapped treasure in human history — and that treasure is <em>YOU</em>. This edition explores what's holding Ghana back, what's possible, and the exact steps to unlock your full potential.</p>
     <a href="https://gideonabochie.org" class="cta-btn" target="_blank">🚀 Unlock Your Potential</a>
-    <a href="#" class="sec-btn" onclick="showPage('creativity',null)">Read This Issue →</a>
+    <a href="#creativity" class="sec-btn" onclick="return showPage('creativity',null)">Read This Issue →</a>
     <div class="cover-tags">
       <span>🎨 Creativity</span><span>❤️ Love</span><span>📖 Wisdom</span><span>🇬🇭 Nation Building</span><span>💡 Youth Power</span><span>🌍 Diaspora</span>
     </div>
@@ -2329,20 +2329,20 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
       </div>
       <div class="footer-col">
         <h5>Sections</h5>
-        <a href="#" onclick="showPage('cover',null)">🏠 Cover</a>
-        <a href="#" onclick="showPage('creativity',null)">🎨 Creativity</a>
-        <a href="#" onclick="showPage('love',null)">❤️ Love</a>
-        <a href="#" onclick="showPage('wisdom',null)">📖 Wisdom</a>
-        <a href="#" onclick="showPage('civic',null)">🏛️ Civic Education</a>
-        <a href="#" onclick="showPage('puzzle',null)">🧩 Puzzles</a>
+        <a href="#cover" onclick="return showPage('cover',null)">🏠 Cover</a>
+        <a href="#creativity" onclick="return showPage('creativity',null)">🎨 Creative</a>
+        <a href="#love" onclick="return showPage('love',null)">❤️ Love</a>
+        <a href="#wisdom" onclick="return showPage('wisdom',null)">📖 Wisdom</a>
+        <a href="#civic" onclick="return showPage('civic',null)">🏛️ Civic</a>
+        <a href="#puzzle" onclick="return showPage('puzzle',null)">🧩 Puzzles</a>
       </div>
       <div class="footer-col">
         <h5>More</h5>
-        <a href="#" onclick="showPage('youth',null)">⚡ Youth Empowerment</a>
-        <a href="#" onclick="showPage('nation',null)">🇬🇭 Nation Building</a>
-        <a href="#" onclick="showPage('diaspora',null)">🌍 Diaspora</a>
-        <a href="#" onclick="showPage('business',null)">💼 Business</a>
-        <a href="#" onclick="showPage('general',null)">📰 General</a>
+        <a href="#youth" onclick="return showPage('youth',null)">⚡ Youth Empowerment</a>
+        <a href="#nation" onclick="return showPage('nation',null)">🇬🇭 Nation Building</a>
+        <a href="#diaspora" onclick="return showPage('diaspora',null)">🌍 Diaspora</a>
+        <a href="#business" onclick="return showPage('business',null)">💼 Business</a>
+        <a href="#general" onclick="return showPage('general',null)">📰 General</a>
       </div>
       <div class="footer-col">
         <h5>Contact</h5>
@@ -2366,19 +2366,45 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 // ========================
 // PAGE NAVIGATION
 // ========================
-function showPage(id, link) {
+var HASH_MAP = {
+  'classifieds/jobs': 'classifieds1',
+  'classifieds/business': 'classifieds2',
+  'classifieds/community': 'classifieds3',
+};
+var REVERSE_HASH = {};
+for (var k in HASH_MAP) REVERSE_HASH[HASH_MAP[k]] = k;
+
+function showPage(id, link, pushHash) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('#nav-bar a').forEach(a => a.classList.remove('active'));
   if (link) link.classList.add('active');
+  else {
+    var hashKey = REVERSE_HASH[id];
+    if (hashKey) document.querySelectorAll('#nav-bar a[href*="' + hashKey + '"]').forEach(a => a.classList.add('active'));
+  }
   window.scrollTo({top:0, behavior:'smooth'});
   document.getElementById('navInner').classList.remove('open');
+  if (pushHash !== false) {
+    var hash = REVERSE_HASH[id] ? '#classifieds/' + REVERSE_HASH[id] : '#' + id;
+    if (window.location.hash !== hash) history.pushState(null, '', hash);
+  }
   return false;
 }
 
 function toggleNav() {
   document.getElementById('navInner').classList.toggle('open');
 }
+
+function routeFromHash() {
+  var hash = window.location.hash.replace(/^#/, '');
+  if (!hash) return;
+  var pageId = HASH_MAP[hash];
+  if (pageId) { showPage(pageId, null, false); return; }
+  if (document.getElementById('page-' + hash)) showPage(hash, null, false);
+}
+
+window.addEventListener('hashchange', routeFromHash);
 
 // ========================
 // CROSSWORD
@@ -2637,6 +2663,7 @@ function subSubmit(e) {
 // INIT
 // ========================
 document.addEventListener('DOMContentLoaded', () => {
+  routeFromHash();
   buildCrossword();
   buildSudoku();
   buildWordSearch();
