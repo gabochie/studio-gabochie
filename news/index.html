@@ -964,29 +964,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 </header>
 
 <!-- NAV BAR -->
-<nav id="nav-bar">
-  <div class="nav-inner" id="navInner">
-    <button id="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation menu">☰</button>
-    <a href="#cover" class="active" onclick="return showPage('cover',this)">🏠 Cover</a>
-    <a href="#creativity" onclick="return showPage('creativity',this)">🎨 Creative</a>
-    <a href="#love" onclick="return showPage('love',this)">❤️ Love</a>
-    <a href="#wisdom" onclick="return showPage('wisdom',this)">📖 Wisdom</a>
-    <a href="#civic" onclick="return showPage('civic',this)">🏛️ Civic</a>
-    <a href="#youth" onclick="return showPage('youth',this)">⚡ Youth</a>
-    <a href="#nation" onclick="return showPage('nation',this)">🇬🇭 Nation</a>
-    <a href="#diaspora" onclick="return showPage('diaspora',this)">🌍 Diaspora</a>
-    <a href="#business" onclick="return showPage('business',this)">💼 Business</a>
-    <a href="#general" onclick="return showPage('general',this)">📰 General</a>
-    <a href="#puzzle" onclick="return showPage('puzzle',this)">🧩 Puzzles</a>
-    <a href="#classifieds/jobs" onclick="return showPage('classifieds1',this)">📋 Jobs</a>
-    <a href="#classifieds/business" onclick="return showPage('classifieds2',this)">📋 Services</a>
-    <a href="#classifieds/community" onclick="return showPage('classifieds3',this)">📋 Events</a>
-    <span class="nav-search-wrap">
-      <input type="text" id="searchInput" class="nav-search" placeholder="Search articles, classifieds..." onkeyup="if(event.key==='Enter')doSearch()" onfocus="this.select()">
-      <button class="nav-search-btn" onclick="doSearch()" aria-label="Search">🔍</button>
-    </span>
-  </div>
-</nav>
+<div id="nav-placeholder"></div>
 
 <!-- SEARCH OVERLAY -->
 <div id="searchOverlay" class="search-overlay" onclick="closeSearch(event)">
@@ -2135,53 +2113,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 <!-- =====================
      FOOTER (on all pages)
      ===================== -->
-<footer id="footer">
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="https://gideonabochie.org/assets/images/logo.png" alt="GideonAbochie Studio" style="height:50px;object-fit:contain;margin-bottom:8px;filter:brightness(1.2);"><p style="font-family:Playfair Display,serif;font-size:24px;font-weight:900;color:#F5C200;margin-bottom:8px;">The Studio Weekly</p>
-        <p>Ghana's #1 youth development newsletter. Inspiring a generation to live with Creativity, Love, and Wisdom for the advancement of Ghana and Africa.</p>
-        <div class="footer-socials">
-          <a href="https://www.instagram.com/gideonabochie/" title="Instagram" target="_blank">📸</a>
-          <a href="https://www.tiktok.com/@gideonabochie" title="TikTok" target="_blank">🎵</a>
-          <a href="https://www.youtube.com/@GideonAbochie" title="YouTube" target="_blank">▶️</a>
-          <a href="https://www.linkedin.com/in/gideonabochie/" title="LinkedIn" target="_blank">💼</a>
-          <a href="https://x.com/GideonAbochie" title="X/Twitter" target="_blank">✖</a>
-          <a href="https://web.facebook.com/GideonAbochie/" title="Facebook" target="_blank">👥</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h5>Sections</h5>
-        <a href="#cover" onclick="return showPage('cover',null)">🏠 Cover</a>
-        <a href="#creativity" onclick="return showPage('creativity',null)">🎨 Creative</a>
-        <a href="#love" onclick="return showPage('love',null)">❤️ Love</a>
-        <a href="#wisdom" onclick="return showPage('wisdom',null)">📖 Wisdom</a>
-        <a href="#civic" onclick="return showPage('civic',null)">🏛️ Civic</a>
-        <a href="#puzzle" onclick="return showPage('puzzle',null)">🧩 Puzzles</a>
-      </div>
-      <div class="footer-col">
-        <h5>More</h5>
-        <a href="#youth" onclick="return showPage('youth',null)">⚡ Youth Empowerment</a>
-        <a href="#nation" onclick="return showPage('nation',null)">🇬🇭 Nation Building</a>
-        <a href="#diaspora" onclick="return showPage('diaspora',null)">🌍 Diaspora</a>
-        <a href="#business" onclick="return showPage('business',null)">💼 Business</a>
-        <a href="#general" onclick="return showPage('general',null)">📰 General</a>
-      </div>
-      <div class="footer-col">
-        <h5>Contact</h5>
-        <a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a>
-        <a href="https://gideonabochie.org" target="_blank">gideonabochie.org</a>
-        <a href="https://www.instagram.com/gideonabochie/" target="_blank">@gideonabochie</a>
-        <p style="font-size:12px;color:rgba(255,255,255,.4);margin-top:12px;line-height:1.6;">GideonAbochie Studio<br>Accra, Ghana</p>
-        <p style="font-size:11px;margin-top:10px;"><a href="privacy.html" style="color:rgba(255,255,255,.4);text-decoration:underline;">Privacy Policy</a> · <a href="terms.html" style="color:rgba(255,255,255,.4);text-decoration:underline;">Terms of Service</a></p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2025 GideonAbochie Studio. All Rights Reserved. | Published Weekly | Accra, Ghana</span>
-      <span>Built with ❤️ for Ghana's Rising Generation | <a href="https://gideonabochie.org" target="_blank">gideonabochie.org</a></span>
-    </div>
-  </div>
-</footer>
+<div id="footer-placeholder"></div>
 
 <!-- PRINT BUTTON -->
 <button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
@@ -2214,10 +2146,6 @@ function showPage(id, link, pushHash) {
     if (window.location.hash !== hash) history.pushState(null, '', hash);
   }
   return false;
-}
-
-function toggleNav() {
-  document.getElementById('navInner').classList.toggle('open');
 }
 
 function routeFromHash() {
@@ -2851,5 +2779,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loadClassifieds();
 });
 </script>
+<script src="/nav.js"></script>
 </body>
 </html>
