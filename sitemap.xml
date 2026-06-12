@@ -25,6 +25,7 @@
   <url><loc>https://gideonabochie.org/register/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/school/guitar/buy</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/dashboard/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/learn/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/practice/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>

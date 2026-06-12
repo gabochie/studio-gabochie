@@ -98,6 +98,13 @@ export async function onRequest(context) {
       }
     }
 
+    // Mark guitar course enrollment
+    if (event === 'charge.completed' && tx_ref.startsWith('guitar_')) {
+      try {
+        await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://gideonabochie.org/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">GideonAbochie Studio — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
+      } catch (_) {}
+    }
+
     // Update booking status on successful charge
     if (event === 'charge.completed' && tx_ref.startsWith('booking_')) {
       await db.prepare(
@@ -406,7 +413,7 @@ export async function onRequest(context) {
     // Send receipt email via Brevo for successful donations
     if (!tx_ref.startsWith('store_') && (event === 'charge.completed' || event === 'transfer.completed') && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
       var invNum = '';
-      if (!tx_ref.startsWith('booking_') && !tx_ref.startsWith('books_') && !tx_ref.startsWith('sub_') && !tx_ref.startsWith('upgrade_')) {
+      if (!tx_ref.startsWith('booking_') && !tx_ref.startsWith('books_') && !tx_ref.startsWith('sub_') && !tx_ref.startsWith('upgrade_') && !tx_ref.startsWith('guitar_')) {
         try { invNum = await generateInvoice(env, 'donation', 'donations', { name: donor_name, email: donor_email, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Donation', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
       }
       try {

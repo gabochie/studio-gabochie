@@ -33,6 +33,7 @@ var REDIRECTED_TO_SERVE = [
 // Dynamic URLs served by Cloudflare Functions (SSR) — add manually since they have no static HTML file
 var DYNAMIC_URLS = [
   '/campaigns/1-million-systems-thinkers',
+  '/school/guitar/buy',
 ];
 
 // Priority by URL pattern
