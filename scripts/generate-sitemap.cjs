@@ -16,7 +16,7 @@ var NEWS_SITE_URL = 'https://news.gideonabochie.org';
 var VALIDATE = process.argv.includes('--validate');
 
 // Patterns to exclude from sitemap
-var EXCLUDE_DIRS = ['admin', 'dashboard', 'node_modules', 'workers', 'test-results', '.git', 'news'];
+var EXCLUDE_DIRS = ['admin', 'dashboard', 'node_modules', 'workers', 'test-results', '.git', 'news', 'coverage'];
 var EXCLUDE_FILES = ['404.html', 'coming-soon.html'];
 
 // Manual URL overrides for files that get clean URLs via _redirects
@@ -24,6 +24,11 @@ var URL_OVERRIDES = {
   'books/premium-bundle.html': '/books/premium-bundle',
   'donate.html': '/donate'
 };
+
+// Dynamic URLs served by Cloudflare Functions (SSR) — add manually since they have no static HTML file
+var DYNAMIC_URLS = [
+  '/campaigns/1-million-systems-thinkers',
+];
 
 // Priority by URL pattern
 function getPriority(url) {
@@ -56,6 +61,8 @@ function isExcluded(filePath) {
   if (filePath.indexOf('store/') !== -1) return true;
   // Skip survey (internal tool)
   if (filePath.indexOf('survey/') !== -1) return true;
+  // Skip coverage directory
+  if (filePath.indexOf('coverage/') !== -1) return true;
   return false;
 }
 
@@ -121,6 +128,11 @@ function generateSitemap() {
     else if (!deduped[key]) deduped[key] = u;
   });
   urls = Object.keys(deduped).map(function(k) { return deduped[k]; });
+
+  // Add dynamic (SSR) URLs
+  DYNAMIC_URLS.forEach(function(u) {
+    if (urls.indexOf(u) === -1 && urls.indexOf(u + '/') === -1) urls.push(u);
+  });
 
   urls.sort();
 

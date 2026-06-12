@@ -69,6 +69,7 @@ export async function onRequest(context) {
       '<meta property="og:type" content="website">' +
       '<meta name="twitter:card" content="summary_large_image">' +
       '<link rel="canonical" href="' + pageUrl + '">' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"' + esc(campaign.name) + '","description":"' + esc((campaign.description || '').substring(0, 300)) + '","url":"' + pageUrl + '","image":"' + esc(imgUrl) + '","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"' + currency + '","value":"' + (campaign.goal_amount || 0) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"' + currency + '","value":"' + (campaign.raised_amount || 0) + '"}}</script>' +
       '<link rel="preconnect" href="https://fonts.googleapis.com">' +
       '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">' +

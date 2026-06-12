@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://gideonabochie.org/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://gideonabochie.org/art/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/books/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/books/divine_algorithm_report</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/books/premium-bundle</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/campaigns/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/campaigns/1-million-systems-thinkers</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/contact/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/content/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/donate/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
@@ -12,10 +15,16 @@
   <url><loc>https://gideonabochie.org/legal/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
   <url><loc>https://gideonabochie.org/legal/refund</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
   <url><loc>https://gideonabochie.org/legal/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://gideonabochie.org/login/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/manifesto/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/member/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/membership/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/merch/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/music/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/nationbuilding/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/partners/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/press/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/register/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/dashboard/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
@@ -25,4 +34,5 @@
   <url><loc>https://gideonabochie.org/school/guitar/tuner/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/school/guitar/waitlist/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://gideonabochie.org/support/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://gideonabochie.org/unsubscribe/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
 </urlset>

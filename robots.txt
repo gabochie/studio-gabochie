@@ -1,5 +1,38 @@
+# Allow all well-behaved crawlers
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /member/
+Disallow: /coverage/
 
+# Block AI training crawlers that ignore robots.txt (good-faith request)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+# Crawl delay for polite crawlers
+User-agent: *
+Crawl-delay: 2
+
+# Sitemaps
 Sitemap: https://gideonabochie.org/sitemap.xml
+Sitemap: https://news.gideonabochie.org/sitemap.xml

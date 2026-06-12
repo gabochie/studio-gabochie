@@ -112,25 +112,26 @@
     {
       "phase": 7,
       "name": "Strategic Offensive",
-      "status": "in_progress",
+      "status": "active",
       "description": "Partnerships, media presence, SEO authority, referral mechanics.",
       "platform": "Cloudflare Pages + CRMs + Social APIs",
       "steps": [
         {"id": 7.1, "task": "Strategic partnerships", "items": ["Outreach to aligned orgs", "Co-branded landing pages", "Referral tracking with rewards"]},
-        {"id": 7.2, "task": "Public relations & media", "items": ["Press kit page", "Media outreach", "Guest content"]},
+        {"id": 7.2, "task": "Public relations & media", "items": ["Press kit page with downloadable assets ✓", "Media outreach using enhanced press kit", "Guest content / podcast pitches"]},
         {"id": 7.3, "task": "Pre-launch SEO & search engine submission", "items": [
+          "Set up Google Search Console (verify domain ownership via DNS)",
           "Submit sitemap to Google Search Console",
           "Submit sitemap to Bing Webmaster Tools",
           "Register on Yandex Webmaster",
-          "Verify canonical URLs on every page",
+          "Verify canonical URLs on every page ✓",
           "Check page speed / Core Web Vitals",
-          "Validate JSON-LD with Rich Results Test",
+          "Validate JSON-LD with Rich Results Test ✓",
           "Fix broken internal links from crawl audit",
           "Verify HTTPS forced, no mixed content",
-          "Audit OG + Twitter Card tags on all pages",
+          "Audit OG + Twitter Card tags on all pages ✓",
           "Check heading hierarchy on every page",
           "Verify all images have alt text",
-          "Check noindex directives and robots.txt"
+          "Check noindex directives and robots.txt ✓"
         ]},
         {"id": 7.4, "task": "Post-launch SEO monitoring & content", "items": [
           "Monitor GSC weekly for crawl errors + indexing",
@@ -140,7 +141,14 @@
           "Quarterly search performance review",
           "Bi-annual content audit and refresh"
         ]},
-        {"id": 7.5, "task": "Referral & viral mechanics", "items": ["Referral codes", "Share-to-unlock premium content", "Social sharing tracking"]}
+        {"id": 7.5, "task": "Referral & viral mechanics", "items": ["Referral codes", "Share-to-unlock premium content", "Social sharing tracking"]},
+        {"id": 7.6, "task": "External manual steps (non-code)", "items": [
+          "Promote Cloudflare Pages preview deploy to production (via Cloudflare dashboard)",
+          "Submit sitemap to Google Search Console + Bing Webmaster Tools",
+          "Media outreach — pitch podcasters, journalists using enhanced press kit",
+          "Set up Google Search Console if not already configured — verify via DNS TXT",
+          "Run sitemap validation after each deploy: node scripts/generate-sitemap.cjs --validate"
+        ]}
       ]
     },
     {
@@ -216,8 +224,8 @@
       ]
     }
   ],
-  "current_focus": "Phase 11 (Command Center) — all 11 items complete (11.1–11.11 done). Phase 9 (Audit Fixes) in progress. Phase 10 smoke tests queued. Needs Cloudflare deployment with D1 binding to test agent/workflow/queue/preferences endpoints.",
-  "last_updated": "2026-05-31",
+  "current_focus": "Phase 7 (Strategic Offensive) — sitemap expanded to 35 URLs, canonical URLs added to 11 pages, JSON-LD on campaign pages, robots.txt enhanced with AI crawler rules, press kit with downloadable assets. Phase 9 (Audit Fixes) in progress. Phase 11 (Command Center) complete.",
+  "last_updated": "2026-06-12",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",

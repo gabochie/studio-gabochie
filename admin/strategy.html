@@ -246,7 +246,22 @@ var STRATEGY = [
    desc:'You cannot sell an audience you have not built yet. Focus on subscriber growth first.',
    verify:function(){return checkSubCount()},
    execute:function(){window.open('subscribers.html','_blank')},
-   executeLabel:'Check Sub Count'}
+   executeLabel:'Check Sub Count'},
+  {id:'seo-submit', title:'Submit sitemap to search engines (manual)',
+   desc:'Submit sitemap to Google Search Console + Bing Webmaster Tools after verifying domain ownership via DNS TXT.',
+   verify:false,
+   execute:function(){window.open('https://search.google.com/search-console','_blank')},
+   executeLabel:'Open GSC'},
+  {id:'media-outreach', title:'Media outreach using enhanced press kit',
+   desc:'Pitch podcasters, journalists, and conference organizers using the new press kit with downloadable assets and boilerplate at /press/.',
+   verify:function(){return checkPageContains('../press/index.html','Boilerplate')},
+   execute:function(){window.open('/press/','_blank')},
+   executeLabel:'View Press Kit'},
+  {id:'deploy-promote', title:'Promote preview deploy to production',
+   desc:'After each deploy, promote the Cloudflare Pages preview to production via the Cloudflare dashboard. Verify sitemap with: node scripts/generate-sitemap.cjs --validate',
+   verify:false,
+   execute:function(){window.open('https://dash.cloudflare.com','_blank')},
+   executeLabel:'Open Dashboard'}
 ];
 
 function loadStrategyState() {

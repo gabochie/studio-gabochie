@@ -82,6 +82,7 @@ export async function onRequest(context) {
       '<meta property="og:url" content="' + pageUrl + '">' +
       '<meta property="og:type" content="website">' +
       '<meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="' + pageUrl + '">' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://gideonabochie.org/assets/images/og-image.png","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"GideonAbochie Studio","url":"https://gideonabochie.org/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
       '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">' +
       '<script src="https://checkout.flutterwave.com/v3.js"></script>' +
