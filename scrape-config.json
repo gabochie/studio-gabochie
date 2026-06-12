@@ -1,0 +1,26 @@
+{
+  "output_dir": "C:\\Users\\user\\Downloads\\instascraper",
+  "headless": true,
+  "max_leads_per_source": 200,
+  "min_followers": 50,
+  "username": "",
+  "password": "",
+  "sources": {
+    "locations": {
+      "active": true,
+      "items": ["accra", "kumasi", "takoradi", "tema"]
+    },
+    "hashtags": {
+      "active": true,
+      "items": ["GhanaYouth", "AccraEntrepreneur", "GhanaTech", "GhanaStudents", "AccraCreatives", "GhanaBusiness"]
+    },
+    "followers": {
+      "active": false,
+      "accounts": []
+    }
+  },
+  "admin_api": {
+    "url": "",
+    "key": ""
+  }
+}

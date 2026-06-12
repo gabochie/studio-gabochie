@@ -248,6 +248,46 @@ var API = (function() {
     return adminRequest('DELETE', '/campaigns?id=' + encodeURIComponent(id));
   }
 
+  function getInstagramLeads(params) {
+    var q = '';
+    if (params) {
+      if (params.min_followers) q += '&min_followers=' + params.min_followers;
+      if (params.max_followers) q += '&max_followers=' + params.max_followers;
+      if (params.bio_keyword) q += '&bio_keyword=' + encodeURIComponent(params.bio_keyword);
+      if (params.region) q += '&region=' + encodeURIComponent(params.region);
+      if (params.status) q += '&status=' + encodeURIComponent(params.status);
+      if (params.scrape_source) q += '&scrape_source=' + encodeURIComponent(params.scrape_source);
+      if (params.search) q += '&search=' + encodeURIComponent(params.search);
+      if (params.scored) q += '&scored=' + params.scored;
+      if (params.has_email) q += '&has_email=' + params.has_email;
+      if (params.sort) q += '&sort=' + params.sort;
+      if (params.sort_dir) q += '&sort_dir=' + params.sort_dir;
+      if (params.page) q += '&page=' + params.page;
+      if (params.limit) q += '&limit=' + params.limit;
+    }
+    return adminRequest('GET', '/instagram-leads?' + q.substring(1));
+  }
+
+  function importInstagramLeads(leads) {
+    return adminRequest('POST', '/instagram-leads', { leads: Array.isArray(leads) ? leads : [leads] });
+  }
+
+  function scoreInstagramLeads(ids) {
+    return adminRequest('POST', '/instagram-leads?action=score', { ids: ids });
+  }
+
+  function scoreAllInstagramLeads() {
+    return adminRequest('POST', '/instagram-leads?action=score', { all: true });
+  }
+
+  function updateInstagramLead(id, data) {
+    return adminRequest('PUT', '/instagram-leads?id=' + encodeURIComponent(id), data);
+  }
+
+  function deleteInstagramLead(id) {
+    return adminRequest('DELETE', '/instagram-leads?id=' + encodeURIComponent(id));
+  }
+
   function getSubmissions(params) {
     var q = '';
     if (params) {
@@ -296,6 +336,12 @@ var API = (function() {
     updateColdOutreach: updateColdOutreach,
     importColdOutreach: importColdOutreach,
     deleteColdOutreach: deleteColdOutreach,
+    getInstagramLeads: getInstagramLeads,
+    importInstagramLeads: importInstagramLeads,
+    scoreInstagramLeads: scoreInstagramLeads,
+    scoreAllInstagramLeads: scoreAllInstagramLeads,
+    updateInstagramLead: updateInstagramLead,
+    deleteInstagramLead: deleteInstagramLead,
     getInvoices: getInvoices,
     updateInvoice: updateInvoice,
     getEmailQueue: getEmailQueue,

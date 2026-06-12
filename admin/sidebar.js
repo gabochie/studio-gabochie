@@ -30,7 +30,8 @@
         { href: 'classifieds.html',  icon: '\uD83D\uDCE3', label: 'Classifieds' },
         { href: 'tutoring.html',    icon: '\uD83C\uDF93', label: 'Tutoring' },
         { href: '/careers/',        icon: '\uD83D\uDCBC', label: 'Careers' },
-        { href: 'tutor-roadmap.html', icon: '\uD83D\uDDFA', label: 'Tutor Roadmap' }
+        { href: 'tutor-roadmap.html', icon: '\uD83D\uDDFA', label: 'Tutor Roadmap' },
+        { href: 'instagram-leads.html', icon: '\uD83D\uDCF7', label: 'Instagram Leads' }
       ]
     },
     {

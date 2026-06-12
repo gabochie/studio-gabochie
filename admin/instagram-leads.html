@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Leads — Admin · GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.ig-page-sub{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);margin-bottom:24px}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-row .input,.filter-row .select{width:auto;min-width:120px;flex:1}
+.filter-row .input{min-width:80px;flex:0}
+.action-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.lead-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:8px;transition:all .15s;cursor:pointer}
+.lead-card:hover{border-color:var(--gold);background:var(--bg-card-hover)}
+.lead-card .lc-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.lead-card .lc-avatar{width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);flex-shrink:0;overflow:hidden}
+.lead-card .lc-avatar img{width:100%;height:100%;object-fit:cover}
+.lead-card .lc-name{font-weight:600;color:var(--text-primary);font-size:14px}
+.lead-card .lc-username{color:var(--text-muted);font-size:12px}
+.lead-card .lc-bio{font-size:12px;color:var(--text-body);margin:4px 0;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lead-card .lc-meta{display:flex;gap:12px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;margin-top:4px}
+.lead-card .lc-meta span{display:flex;align-items:center;gap:3px}
+.lead-card .lc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid rgba(30,50,80,.3)}
+.lead-card .lc-status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px}
+.lead-card .lc-status.pending{background:rgba(201,168,76,.12);color:var(--gold)}
+.lead-card .lc-status.contacted{background:rgba(59,130,246,.12);color:#3B82F6}
+.lead-card .lc-status.qualified{background:rgba(52,199,123,.12);color:var(--green)}
+.lead-card .lc-status.rejected{background:rgba(232,99,122,.12);color:var(--red)}
+.lead-card .lc-score{font-size:13px;font-weight:700;min-width:32px;text-align:center}
+.lead-card .lc-score.high{color:var(--green)}
+.lead-card .lc-score.medium{color:var(--gold)}
+.lead-card .lc-score.low{color:var(--text-dim)}
+.lead-card .lc-actions{display:flex;gap:4px}
+.lead-card .lc-checkbox{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.score-bar{display:inline-block;width:60px;height:4px;border-radius:2px;background:var(--border);overflow:hidden;vertical-align:middle;margin-right:6px}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .3s}
+.score-bar-fill.high{background:var(--green)}
+.score-bar-fill.medium{background:var(--gold)}
+.score-bar-fill.low{background:var(--text-dim)}
+.status-select{font-size:11px;padding:2px 4px;background:var(--bg-primary);border:1px solid var(--border);border-radius:4px;color:var(--text-body);cursor:pointer}
+.modal-detail-row .ig-link{color:var(--gold);text-decoration:none}
+.modal-detail-row .ig-link:hover{text-decoration:underline}
+.email-present{color:var(--green);font-size:11px;font-weight:600}
+.phone-present{color:#3B82F6;font-size:11px;font-weight:600}
+.verified-badge{color:#3B82F6;font-size:11px}
+.scored-badge{background:var(--green);color:#0A1628;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600}
+.pagination{display:flex;gap:4px;justify-content:center;align-items:center;margin:20px 0}
+.pagination button{padding:6px 12px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);color:var(--text-body);cursor:pointer;font-size:12px}
+.pagination button:hover{border-color:var(--gold);color:var(--gold)}
+.pagination button.active{background:var(--gold);color:#0A1628;border-color:var(--gold)}
+.pagination button:disabled{opacity:.4;cursor:default}
+.batch-bar{display:none;align-items:center;gap:8px;padding:8px 12px;background:rgba(201,168,76,.08);border:1px solid var(--gold);border-radius:var(--radius-sm);margin-bottom:12px}
+.batch-bar.show{display:flex}
+.batch-bar .count{font-size:13px;font-weight:600;color:var(--gold)}
+.import-drop{position:relative;overflow:hidden}
+.import-drop input[type=file]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.select-all-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.select-all-wrap input[type=checkbox]{accent-color:var(--gold);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>GideonAbochie Studio</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="subscribers.html">Subscribers</a>
+      <a href="outreach.html">Outreach</a>
+      <a href="instagram-leads.html" class="active">Instagram Leads</a>
+      <a href="agents.html">Agents</a>
+    </div>
+  </div>
+
+  <h1>Instagram Leads <span style="color:var(--gold);font-size:14px;font-weight:400;font-family:'Inter',sans-serif">AI-scored cold outreach</span></h1>
+  <div class="ig-page-sub">Scrape & import Instagram profiles, score bios with AI, export to outreach campaigns</div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats-row">
+    <div class="stat-card"><span class="stat-num gold" id="stat-total">-</span><div class="stat-label">Total Leads</div></div>
+    <div class="stat-card"><span class="stat-num blue" id="stat-scored">-</span><div class="stat-label">AI Scored</div></div>
+    <div class="stat-card"><span class="stat-num green" id="stat-new">-</span><div class="stat-label">New This Week</div></div>
+    <div class="stat-card"><span class="stat-num dim" id="stat-avg">-</span><div class="stat-label">Avg Score</div></div>
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-row">
+    <button class="btn btn-gold" onclick="scoreAll()">Score All (AI) <span style="font-size:11px;opacity:.7">⚡</span></button>
+    <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
+    <button class="btn btn-outline import-drop">
+      Import JSON
+      <input type="file" accept=".json" onchange="importJSON(this)">
+    </button>
+    <button class="btn btn-ghost" onclick="loadLeads()">Refresh ↻</button>
+  </div>
+
+  <!-- Batch bar -->
+  <div class="batch-bar" id="batch-bar">
+    <span class="count" id="batch-count">0 selected</span>
+    <button class="btn btn-sm btn-outline" onclick="batchStatus('qualified')">Mark Qualified</button>
+    <button class="btn btn-sm btn-outline" onclick="batchStatus('contacted')">Mark Contacted</button>
+    <button class="btn btn-sm btn-outline" onclick="batchStatus('rejected')">Reject</button>
+    <button class="btn btn-sm btn-danger" onclick="batchDelete()">Delete</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <input class="input" id="filter-search" placeholder="Search name/@/email..." oninput="debounceLoad()">
+    <input class="input" id="filter-min-flw" type="number" placeholder="Min followers" style="min-width:100px" onchange="loadLeads()">
+    <input class="input" id="filter-max-flw" type="number" placeholder="Max followers" style="min-width:100px" onchange="loadLeads()">
+    <input class="input" id="filter-bio" placeholder="Bio keyword..." oninput="debounceLoad()">
+    <select class="select" id="filter-status" style="min-width:100px" onchange="loadLeads()">
+      <option value="">All status</option>
+      <option value="pending">Pending</option>
+      <option value="qualified">Qualified</option>
+      <option value="contacted">Contacted</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <select class="select" id="filter-scored" style="min-width:90px" onchange="loadLeads()">
+      <option value="">Score: All</option>
+      <option value="yes">Scored</option>
+      <option value="no">Unscored</option>
+    </select>
+    <select class="select" id="filter-email" style="min-width:80px" onchange="loadLeads()">
+      <option value="">Email: All</option>
+      <option value="yes">Has email</option>
+      <option value="no">No email</option>
+    </select>
+    <select class="select" id="filter-source" style="min-width:100px" onchange="loadLeads()">
+      <option value="">All sources</option>
+      <option value="location:">Location</option>
+      <option value="hashtag:">Hashtag</option>
+      <option value="followers:">Followers</option>
+    </select>
+    <select class="select" id="filter-sort" style="min-width:100px" onchange="loadLeads()">
+      <option value="imported_at">Newest</option>
+      <option value="score">Score</option>
+      <option value="follower_count">Followers</option>
+      <option value="name">Name A-Z</option>
+    </select>
+  </div>
+
+  <!-- Select all -->
+  <div class="select-all-wrap">
+    <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+    <label for="select-all">Select all <span id="select-all-count"></span></label>
+  </div>
+
+  <!-- Lead list -->
+  <div id="lead-list"></div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-title">Lead Details</div>
+    <div class="modal-body" id="detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeDetail()">Close</button>
+      <button class="btn btn-gold" id="detail-score-btn" onclick="scoreSingle()">Score with AI</button>
+      <button class="btn btn-danger" onclick="deleteSingle()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script src="admin-ui.js"></script>
+<script src="admin-state.js"></script>
+<script src="admin-api.js"></script>
+<script>
+var currentPage = 1;
+var currentTotal = 0;
+var currentPages = 0;
+var currentItems = [];
+var selectedIds = {};
+var detailLeadId = null;
+var filterTimeout = null;
+
+function getAdminKey() {
+  try { return sessionStorage.getItem('ga_ak'); } catch(e) { return ''; }
+}
+
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  opts.headers['X-Admin-Key'] = getAdminKey();
+  return fetch(path, opts).then(function(r) { return r.json(); });
+}
+
+function debounceLoad() {
+  clearTimeout(filterTimeout);
+  filterTimeout = setTimeout(loadLeads, 400);
+}
+
+async function loadLeads(page) {
+  page = page || currentPage;
+  currentPage = page;
+  var list = document.getElementById('lead-list');
+  list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:13px">Loading...</div>';
+
+  var params = new URLSearchParams();
+  params.set('page', page);
+  params.set('limit', 50);
+  var search = document.getElementById('filter-search').value.trim();
+  if (search) params.set('search', search);
+  var minFlw = document.getElementById('filter-min-flw').value;
+  if (minFlw) params.set('min_followers', minFlw);
+  var maxFlw = document.getElementById('filter-max-flw').value;
+  if (maxFlw) params.set('max_followers', maxFlw);
+  var bio = document.getElementById('filter-bio').value.trim();
+  if (bio) params.set('bio_keyword', bio);
+  var status = document.getElementById('filter-status').value;
+  if (status) params.set('status', status);
+  var scored = document.getElementById('filter-scored').value;
+  if (scored) params.set('scored', scored);
+  var email = document.getElementById('filter-email').value;
+  if (email) params.set('has_email', email);
+  var source = document.getElementById('filter-source').value;
+  if (source) params.set('scrape_source', source);
+  var sort = document.getElementById('filter-sort').value;
+  params.set('sort', sort);
+
+  try {
+    var data = await api('/admin/api/instagram-leads?' + params.toString());
+    if (data.status !== 'ok') throw new Error(data.error || 'API error');
+
+    currentTotal = data.total;
+    currentPages = data.pages;
+    currentItems = data.items || [];
+    selectedIds = {};
+
+    // Stats
+    if (data.totals) {
+      document.getElementById('stat-total').textContent = data.totals.all || 0;
+      document.getElementById('stat-scored').textContent = data.totals.scored || 0;
+      document.getElementById('stat-new').textContent = data.totals.new_week || 0;
+      document.getElementById('stat-avg').textContent = data.averages ? data.averages.score : '-';
+    }
+
+    renderLeads(data.items || []);
+    renderPagination();
+    updateBatchBar();
+    document.getElementById('select-all').checked = false;
+  } catch (err) {
+    list.innerHTML = '<div class="error-state"><div class="error-icon">⚠</div><div class="error-title">' + escapeHtml(err.message) + '</div></div>';
+  }
+}
+
+function renderLeads(items) {
+  var list = document.getElementById('lead-list');
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📷</div><div class="empty-title">No leads found</div><div class="empty-desc">Import a scraper JSON file or run the scraper script, then import the results here.</div></div>';
+    return;
+  }
+
+  var html = '';
+  items.forEach(function(lead) {
+    var score = Math.round(lead.score || 0);
+    var scoreClass = score >= 60 ? 'high' : score >= 30 ? 'medium' : 'low';
+    var statusClass = lead.status || 'pending';
+    var bio = (lead.bio || '').substring(0, 120);
+    var checked = selectedIds[lead.id] ? 'checked' : '';
+    var hasEmail = lead.email ? '<span class="email-present">✉</span>' : '';
+    var hasPhone = lead.phone ? '<span class="phone-present">📞</span>' : '';
+    var verified = lead.is_verified ? '<span class="verified-badge">✓ Verified</span>' : '';
+    var avatarInitial = (lead.name || lead.instagram_username || '?').charAt(0).toUpperCase();
+
+    html += '<div class="lead-card" onclick="openDetail(event, ' + lead.id + ')">' +
+      '<div class="lc-header">' +
+        '<div class="lc-avatar">' + avatarInitial + '</div>' +
+        '<div class="lc-name">' + escapeHtml(lead.name || lead.instagram_username || 'Unknown') + '</div>' +
+        (lead.instagram_username ? '<div class="lc-username">@' + escapeHtml(lead.instagram_username) + '</div>' : '') +
+        (lead.is_verified ? '<span class="verified-badge">✓</span>' : '') +
+        hasEmail + hasPhone +
+      '</div>' +
+      (bio ? '<div class="lc-bio">' + escapeHtml(bio) + '</div>' : '') +
+      '<div class="lc-meta">' +
+        '<span>👥 ' + fmtNum(lead.follower_count || 0) + '</span>' +
+        (lead.region ? '<span>📍 ' + escapeHtml(lead.region) + '</span>' : '') +
+        (lead.email ? '<span>✉ ' + escapeHtml(lead.email) + '</span>' : '') +
+        (lead.scrape_source ? '<span>🔍 ' + escapeHtml(lead.scrape_source).replace(':', ': ') + '</span>' : '') +
+        '<span>📅 ' + fmtDate(lead.imported_at) + '</span>' +
+      '</div>' +
+      '<div class="lc-footer">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<input type="checkbox" class="lc-checkbox" ' + checked + ' onclick="event.stopPropagation();toggleSelect(' + lead.id + ')" onchange="event.stopPropagation();toggleSelect(' + lead.id + ')">' +
+          '<span class="lc-status ' + statusClass + '">' + (lead.status || 'pending') + '</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          score > 0 ? '<span style="display:flex;align-items:center;gap:4px"><span class="score-bar"><span class="score-bar-fill ' + scoreClass + '" style="width:' + score + '%"></span></span><span class="lc-score ' + scoreClass + '">' + score + '</span></span>' : '<span class="lc-score low">-</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function renderPagination() {
+  var el = document.getElementById('pagination');
+  if (currentPages <= 1) { el.innerHTML = ''; return; }
+
+  var html = '<button onclick="loadLeads(' + (currentPage - 1) + ')" ' + (currentPage <= 1 ? 'disabled' : '') + '>‹</button>';
+  var start = Math.max(1, currentPage - 2);
+  var end = Math.min(currentPages, start + 4);
+  for (var i = start; i <= end; i++) {
+    html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="loadLeads(' + i + ')">' + i + '</button>';
+  }
+  html += '<button onclick="loadLeads(' + (currentPage + 1) + ')" ' + (currentPage >= currentPages ? 'disabled' : '') + '>›</button>';
+  html += '<span style="font-size:12px;color:var(--text-dim);margin-left:8px">' + currentTotal + ' total</span>';
+  el.innerHTML = html;
+}
+
+function toggleSelect(id) {
+  if (selectedIds[id]) delete selectedIds[id];
+  else selectedIds[id] = true;
+  updateBatchBar();
+}
+
+function toggleSelectAll() {
+  var checked = document.getElementById('select-all').checked;
+  if (checked) {
+    currentItems.forEach(function(item) { selectedIds[item.id] = true; });
+  } else {
+    selectedIds = {};
+  }
+  document.querySelectorAll('.lc-checkbox').forEach(function(cb) { cb.checked = checked; });
+  updateBatchBar();
+}
+
+function updateBatchBar() {
+  var count = Object.keys(selectedIds).length;
+  var bar = document.getElementById('batch-bar');
+  if (count > 0) {
+    bar.classList.add('show');
+    document.getElementById('batch-count').textContent = count + ' selected';
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function getSelectedIds() {
+  return Object.keys(selectedIds).map(Number).filter(function(id) { return id; });
+}
+
+function openDetail(event, id) {
+  if (event.target.type === 'checkbox' || event.target.closest('.lc-checkbox')) return;
+  detailLeadId = id;
+  var overlay = document.getElementById('detail-modal');
+  overlay.classList.add('open');
+
+  api('/admin/api/instagram-leads?id=' + id).then(function(data) {
+    if (data.status !== 'ok' || !data.items || !data.items.length) {
+      document.getElementById('detail-body').innerHTML = '<div style="color:var(--red)">Could not load lead</div>';
+      return;
+    }
+    var l = data.items[0];
+    var score = Math.round(l.score || 0);
+    var scoreClass = score >= 60 ? 'high' : score >= 30 ? 'medium' : 'low';
+
+    var html = '<div class="modal-detail-row"><span class="modal-detail-label">Username</span><span class="modal-detail-value"><a href="https://www.instagram.com/' + encodeURIComponent(l.instagram_username || '') + '/" target="_blank" class="ig-link">@' + escapeHtml(l.instagram_username || '-') + '</a></span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Name</span><span class="modal-detail-value">' + escapeHtml(l.name || '-') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Email</span><span class="modal-detail-value">' + escapeHtml(l.email || '-') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Phone</span><span class="modal-detail-value">' + escapeHtml(l.phone || '-') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Followers</span><span class="modal-detail-value">' + fmtNum(l.follower_count || 0) + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Following</span><span class="modal-detail-value">' + fmtNum(l.following_count || 0) + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Verified</span><span class="modal-detail-value">' + (l.is_verified ? 'Yes' : 'No') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Region</span><span class="modal-detail-value">' + escapeHtml(l.region || '-') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Source</span><span class="modal-detail-value">' + escapeHtml(l.scrape_source || '-') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">Status</span><span class="modal-detail-value">' + (l.status || 'pending') + '</span></div>' +
+      '<div class="modal-detail-row"><span class="modal-detail-label">AI Score</span><span class="modal-detail-value">' + (score > 0 ? score + ' <span class="score-bar"><span class="score-bar-fill ' + scoreClass + '" style="width:' + score + '%"></span></span>' : '-') + '</span></div>' +
+      (l.score_reason ? '<div class="modal-detail-row"><span class="modal-detail-label">Reason</span><span class="modal-detail-value" style="font-size:11px;color:var(--text-muted)">' + escapeHtml(l.score_reason) + '</span></div>' : '') +
+      '<div class="modal-detail-row" style="border-bottom:none;padding-top:12px"><span class="modal-detail-label">Bio</span></div>' +
+      '<div style="padding:10px 0;font-size:13px;line-height:1.5;color:var(--text-body);border-bottom:1px solid var(--border)">' + escapeHtml(l.bio || 'No bio') + '</div>' +
+      '<div class="modal-detail-row" style="margin-top:12px"><span class="modal-detail-label">Notes</span></div>' +
+      '<textarea class="textarea" id="detail-notes" style="margin-top:4px;min-height:60px">' + escapeHtml(l.notes || '') + '</textarea>' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+        '<select class="select" id="detail-status" style="flex:1">' +
+          '<option value="pending"' + (l.status === 'pending' ? ' selected' : '') + '>Pending</option>' +
+          '<option value="qualified"' + (l.status === 'qualified' ? ' selected' : '') + '>Qualified</option>' +
+          '<option value="contacted"' + (l.status === 'contacted' ? ' selected' : '') + '>Contacted</option>' +
+          '<option value="rejected"' + (l.status === 'rejected' ? ' selected' : '') + '>Rejected</option>' +
+        '</select>' +
+        '<button class="btn btn-sm btn-gold" onclick="saveDetail()">Save</button>' +
+      '</div>';
+
+    document.getElementById('detail-body').innerHTML = html;
+    document.getElementById('detail-score-btn').style.display = score > 0 ? 'none' : '';
+  }).catch(function(err) {
+    document.getElementById('detail-body').innerHTML = '<div style="color:var(--red)">' + escapeHtml(err.message) + '</div>';
+  });
+}
+
+function closeDetail() {
+  document.getElementById('detail-modal').classList.remove('open');
+  detailLeadId = null;
+}
+
+function saveDetail() {
+  if (!detailLeadId) return;
+  var status = document.getElementById('detail-status').value;
+  var notes = document.getElementById('detail-notes').value;
+  var body = {};
+  if (status) body.status = status;
+  if (notes !== undefined) body.notes = notes;
+
+  api('/admin/api/instagram-leads?id=' + detailLeadId, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(data) {
+    if (data.status === 'ok') {
+      Toast.success('Lead updated');
+      closeDetail();
+      loadLeads();
+    } else {
+      Toast.error(data.error || 'Update failed');
+    }
+  }).catch(function(err) {
+    Toast.error(err.message);
+  });
+}
+
+function scoreSingle() {
+  if (!detailLeadId) return;
+  document.getElementById('detail-score-btn').disabled = true;
+  document.getElementById('detail-score-btn').textContent = 'Scoring...';
+
+  api('/admin/api/instagram-leads?action=score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids: [detailLeadId] })
+  }).then(function(data) {
+    if (data.status === 'ok') {
+      Toast.success('Scored: ' + (data.results ? data.results[0].score : 'done'));
+      openDetail(null, detailLeadId);
+    } else {
+      Toast.error(data.error || 'Score failed');
+    }
+    document.getElementById('detail-score-btn').disabled = false;
+    document.getElementById('detail-score-btn').textContent = 'Score with AI';
+  }).catch(function(err) {
+    Toast.error(err.message);
+    document.getElementById('detail-score-btn').disabled = false;
+    document.getElementById('detail-score-btn').textContent = 'Score with AI';
+  });
+}
+
+function scoreAll() {
+  if (!confirm('Score all unscored leads with AI? This may take a while and use API credits.')) return;
+  var btn = document.querySelector('button[onclick="scoreAll()"]');
+  btn.disabled = true;
+  btn.textContent = 'Scoring...';
+
+  api('/admin/api/instagram-leads?action=score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ all: true })
+  }).then(function(data) {
+    if (data.status === 'ok') {
+      Toast.success('Scored ' + (data.scored || 0) + ' leads');
+      loadLeads();
+    } else {
+      Toast.error(data.error || 'Score failed');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Score All (AI) ⚡';
+  }).catch(function(err) {
+    Toast.error(err.message);
+    btn.disabled = false;
+    btn.textContent = 'Score All (AI) ⚡';
+  });
+}
+
+function deleteSingle() {
+  if (!detailLeadId || !confirm('Delete this lead?')) return;
+  api('/admin/api/instagram-leads?id=' + detailLeadId, { method: 'DELETE' }).then(function(data) {
+    if (data.status === 'ok') {
+      Toast.success('Deleted');
+      closeDetail();
+      loadLeads();
+    } else {
+      Toast.error(data.error || 'Delete failed');
+    }
+  }).catch(function(err) {
+    Toast.error(err.message);
+  });
+}
+
+function batchStatus(status) {
+  var ids = getSelectedIds();
+  if (!ids.length) { Toast.warning('No leads selected'); return; }
+  var count = ids.length;
+  if (!confirm('Mark ' + count + ' leads as ' + status + '?')) return;
+
+  var done = 0;
+  ids.forEach(function(id) {
+    api('/admin/api/instagram-leads?id=' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: status })
+    }).then(function(data) {
+      done++;
+      if (done >= ids.length) { Toast.success('Updated ' + done + ' leads'); selectedIds = {}; loadLeads(); }
+    }).catch(function() {
+      done++;
+      if (done >= ids.length) { Toast.success('Updated ' + done + ' leads'); loadLeads(); }
+    });
+  });
+}
+
+function batchDelete() {
+  var ids = getSelectedIds();
+  if (!ids.length) { Toast.warning('No leads selected'); return; }
+  if (!confirm('Delete ' + ids.length + ' leads? This cannot be undone.')) return;
+
+  var done = 0;
+  ids.forEach(function(id) {
+    api('/admin/api/instagram-leads?id=' + id, { method: 'DELETE' }).then(function() {
+      done++;
+      if (done >= ids.length) { Toast.success('Deleted ' + done + ' leads'); selectedIds = {}; loadLeads(); }
+    }).catch(function() {
+      done++;
+      if (done >= ids.length) { loadLeads(); }
+    });
+  });
+}
+
+function exportCSV() {
+  var params = new URLSearchParams();
+  params.set('limit', 1000);
+  params.set('sort', document.getElementById('filter-sort').value);
+  var status = document.getElementById('filter-status').value;
+  if (status) params.set('status', status);
+
+  api('/admin/api/instagram-leads?' + params.toString()).then(function(data) {
+    if (data.status !== 'ok' || !data.items.length) { Toast.warning('No leads to export'); return; }
+    var headers = ['instagram_username','name','email','phone','bio','follower_count','score','status','region','scrape_source'];
+    var rows = data.items.map(function(l) {
+      return [
+        l.instagram_username || '',
+        (l.name || '').replace(/,/g, ' '),
+        l.email || '',
+        l.phone || '',
+        (l.bio || '').replace(/,/g, ' ').replace(/\n/g, ' '),
+        l.follower_count || 0,
+        Math.round(l.score || 0),
+        l.status || 'pending',
+        l.region || '',
+        l.scrape_source || ''
+      ].join(',');
+    });
+    var csv = headers.join(',') + '\n' + rows.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'instagram-leads-' + new Date().toISOString().substring(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    Toast.success('Exported ' + data.items.length + ' leads');
+  }).catch(function(err) {
+    Toast.error(err.message);
+  });
+}
+
+function importJSON(input) {
+  if (!input.files || !input.files.length) return;
+  var file = input.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      var leads = data.leads || (Array.isArray(data) ? data : [data]);
+      if (!leads.length) { Toast.warning('No leads found in file'); return; }
+
+      api('/admin/api/instagram-leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leads: leads, campaign: 'instagram-scrape' })
+      }).then(function(res) {
+        if (res.status === 'ok') {
+          Toast.success('Imported ' + (res.imported || 0) + ' leads' + (res.errors > 0 ? ', ' + res.errors + ' errors' : ''));
+          loadLeads();
+        } else {
+          Toast.error(res.error || 'Import failed');
+        }
+      }).catch(function(err) {
+        Toast.error(err.message);
+      });
+    } catch(err) {
+      Toast.error('Invalid JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function fmtNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return String(n);
+}
+
+function fmtDate(iso) {
+  if (!iso) return '-';
+  try {
+    var d = new Date(iso.replace(' ', 'T') + 'Z');
+    return d.toLocaleDateString();
+  } catch(e) { return iso; }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDetail();
+  if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('filter-search').focus(); }
+});
+
+loadLeads();
+</script>
+</body>
+</html>

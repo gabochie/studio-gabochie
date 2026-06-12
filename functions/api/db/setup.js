@@ -527,6 +527,17 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `CREATE INDEX IF NOT EXISTS idx_cold_outreach_phone ON cold_outreach(phone)`,
       `CREATE INDEX IF NOT EXISTS idx_cold_outreach_status ON cold_outreach(status)`,
       `CREATE INDEX IF NOT EXISTS idx_cold_outreach_category ON cold_outreach(category)`,
+      // ── Instagram lead gen columns ──
+      `ALTER TABLE cold_outreach ADD COLUMN instagram_username TEXT DEFAULT ''`,
+      `ALTER TABLE cold_outreach ADD COLUMN follower_count INTEGER DEFAULT 0`,
+      `ALTER TABLE cold_outreach ADD COLUMN following_count INTEGER DEFAULT 0`,
+      `ALTER TABLE cold_outreach ADD COLUMN bio TEXT DEFAULT ''`,
+      `ALTER TABLE cold_outreach ADD COLUMN profile_url TEXT DEFAULT ''`,
+      `ALTER TABLE cold_outreach ADD COLUMN is_verified INTEGER DEFAULT 0`,
+      `ALTER TABLE cold_outreach ADD COLUMN score REAL DEFAULT 0`,
+      `ALTER TABLE cold_outreach ADD COLUMN score_reason TEXT DEFAULT ''`,
+      `ALTER TABLE cold_outreach ADD COLUMN scrape_source TEXT DEFAULT ''`,
+      `ALTER TABLE cold_outreach ADD COLUMN last_scraped TEXT DEFAULT ''`,
       // ── Agent Infrastructure ──
       `CREATE TABLE IF NOT EXISTS agent_types (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

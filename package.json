@@ -19,6 +19,7 @@
     "db:seed": "node scripts/db-seed.js",
     "db:setup": "node scripts/db-setup.js",
     "db:backup": "node scripts/db-backup.js",
+    "scrape:instagram": "node scripts/scrape-instagram.js",
     "deploy": "npm run predeploy; wrangler pages deploy . --project-name gideonabochie-org; npm run db:setup"
   },
   "devDependencies": {
@@ -37,5 +38,8 @@
     "*.html": [
       "htmlhint"
     ]
+  },
+  "dependencies": {
+    "playwright": "^1.60.0"
   }
 }
