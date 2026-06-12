@@ -154,7 +154,7 @@ export async function onRequest(context) {
       '@media(max-width:640px){.problem-grid{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr 1fr}.hero{padding:40px 16px 36px}.hero h1{font-size:32px}.sticky-cta{display:block}.section{padding:36px 16px}}' +
       '</style>' +
       '</head><body>' +
-      '<div style="text-align:center;padding:24px 20px 0"><img src="/assets/images/campaign-logo.png" alt="GideonAbochie Studio" style="height:36px;width:auto;opacity:.85"></div>' +
+      '<div style="text-align:center;padding:24px 20px 0"><img src="/assets/images/campaign-logo.png" alt="GideonAbochie Studio" style="height:44px;width:auto;opacity:1;filter:brightness(1.15)"></div>' +
       '<!-- HERO -->' +
       '<div class="hero"><div class="hero-badge">Flagship Campaign</div>' +
       '<h1>Train <em>1 Million</em> Systems Thinking Ghanaian Youth</h1>' +
