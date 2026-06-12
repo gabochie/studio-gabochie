@@ -6,10 +6,13 @@
 <title>Tutors — Admin · GideonAbochie Studio</title>
 <link rel="stylesheet" href="/admin/admin.css">
 <style>
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:4px}
-.tab{flex:1;padding:8px 16px;border:none;border-radius:8px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#5A7A9F;text-align:center;transition:all .2s}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:4px;flex-wrap:wrap}
+.tab{flex:1;padding:8px 16px;border:none;border-radius:8px;font-family:Syne,sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#5A7A9F;text-align:center;transition:all .2s;min-width:80px}
 .tab.active{background:#C9A84C;color:#0A1628}
 .tab:hover{color:#E8EEF7}
+.tab .count{font-size:10px;opacity:.7;margin-left:4px}
+.panel{display:none}
+.panel.active{display:block}
 .list{display:grid;gap:10px}
 .card{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
@@ -22,7 +25,13 @@
 .badge.pending{background:rgba(234,179,8,.15);color:#F59E0B}
 .badge.approved{background:rgba(34,197,94,.15);color:#22C55E}
 .badge.rejected{background:rgba(239,68,68,.15);color:#EF4444}
+.badge.student{background:rgba(59,130,246,.15);color:#60A5FA}
+.badge.tutor{background:rgba(245,158,11,.15);color:#F59E0B}
+.badge.both{background:rgba(168,85,247,.15);color:#C084FC}
 .empty{text-align:center;padding:40px;color:#5A7A9F;font-size:13px}
+.sub-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.sub-header h2{font-family:Syne,sans-serif;font-size:16px;color:#F1F5F9;margin:0}
+.sub-header span{font-size:12px;color:#5A7A9F}
 </style>
 </head>
 <body>
@@ -34,25 +43,62 @@
     <span class="header-tag">Admin Panel</span>
     <div class="header-nav">
       <a href="/admin/index.html">Dashboard</a>
-      <a href="/admin/tutoring.html" class="active">Tutors</a>
+      <a href="/admin/tutoring.html" class="active">Tutoring</a>
     </div>
   </div>
 
   <h1>Tutoring Marketplace</h1>
   <div class="tabs" id="tabs">
-    <button class="tab active" onclick="setFilter('')">All</button>
-    <button class="tab" onclick="setFilter('pending')">Pending</button>
-    <button class="tab" onclick="setFilter('approved')">Approved</button>
-    <button class="tab" onclick="setFilter('rejected')">Rejected</button>
+    <button class="tab active" data-panel="tutors">Tutors</button>
+    <button class="tab" data-panel="pending">Pending</button>
+    <button class="tab" data-panel="approved">Approved</button>
+    <button class="tab" data-panel="rejected">Rejected</button>
+    <button class="tab" data-panel="waitlist">Waitlist</button>
   </div>
 
-  <div class="list" id="listContainer"><div class="empty">Loading...</div></div>
+  <div id="panel-tutors" class="panel active">
+    <div class="sub-header">
+      <h2>All Tutors</h2>
+      <span id="tutorCount"></span>
+    </div>
+    <div class="list" id="tutorsList"><div class="empty">Loading...</div></div>
+  </div>
+
+  <div id="panel-pending" class="panel">
+    <div class="sub-header">
+      <h2>Pending Review</h2>
+      <span id="pendingCount"></span>
+    </div>
+    <div class="list" id="pendingList"><div class="empty">Loading...</div></div>
+  </div>
+
+  <div id="panel-approved" class="panel">
+    <div class="sub-header">
+      <h2>Approved Tutors</h2>
+      <span id="approvedCount"></span>
+    </div>
+    <div class="list" id="approvedList"><div class="empty">Loading...</div></div>
+  </div>
+
+  <div id="panel-rejected" class="panel">
+    <div class="sub-header">
+      <h2>Rejected Tutors</h2>
+      <span id="rejectedCount"></span>
+    </div>
+    <div class="list" id="rejectedList"><div class="empty">Loading...</div></div>
+  </div>
+
+  <div id="panel-waitlist" class="panel">
+    <div class="sub-header">
+      <h2>Waitlist Signups</h2>
+      <span id="waitlistCount"></span>
+    </div>
+    <div class="list" id="waitlistList"><div class="empty">Loading...</div></div>
+  </div>
 </div>
 
 <script>
-var currentFilter = '';
-
-function setFilter(s) { currentFilter = s; loadTutors(); }
+var subjectsCache = [];
 
 function api(path, opts) {
   opts = opts || {};
@@ -61,17 +107,36 @@ function api(path, opts) {
   return fetch(path, opts).then(function(r){return r.json()});
 }
 
+function switchPanel(name) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-panel')===name);});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  var el = document.getElementById('panel-'+name);
+  if (el) el.classList.add('active');
+  if (name === 'tutors' || name === 'pending' || name === 'approved' || name === 'rejected') loadTutors();
+  if (name === 'waitlist') loadWaitlist();
+}
+
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){ switchPanel(t.getAttribute('data-panel')); });
+});
+
 function loadTutors() {
-  var p = currentFilter ? '?status=' + currentFilter : '';
-  api('/admin/api/tutoring' + p).then(function(data) {
-    if (data.status !== 'ok') throw new Error(data.error);
-    renderList(data.items || []);
-  }).catch(function(e) {
-    document.getElementById('listContainer').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+  ['','pending','approved','rejected'].forEach(function(s) {
+    var p = s ? '?status=' + s : '';
+    api('/admin/api/tutoring' + p).then(function(data) {
+      if (data.status !== 'ok') throw new Error(data.error);
+      var containerId = s || 'tutors';
+      renderTutorList(data.items || [], containerId + 'List');
+      var countEl = document.getElementById(containerId + 'Count');
+      if (countEl) countEl.textContent = (data.items||[]).length + ' tutor' + ((data.items||[]).length !== 1 ? 's' : '');
+    }).catch(function(e) {
+      var containerId = s || 'tutors';
+      document.getElementById(containerId + 'List').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+    });
   });
 }
 
-function renderList(items) {
+function renderTutorList(items, containerId) {
   var html = '';
   if (!items.length) {
     html = '<div class="empty">No tutors found.</div>';
@@ -98,18 +163,51 @@ function renderList(items) {
       html += '</div></div>';
     });
   }
-  document.getElementById('listContainer').innerHTML = html;
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function loadWaitlist() {
+  api('/admin/api/tutoring?type=waitlist').then(function(data) {
+    if (data.status !== 'ok') throw new Error(data.error);
+    renderWaitlist(data.items || []);
+    var countEl = document.getElementById('waitlistCount');
+    if (countEl) countEl.textContent = (data.items||[]).length + ' signup' + ((data.items||[]).length !== 1 ? 's' : '');
+  }).catch(function(e) {
+    document.getElementById('waitlistList').innerHTML = '<div class="empty">Error: ' + e.message + '</div>';
+  });
+}
+
+function renderWaitlist(items) {
+  var html = '';
+  if (!items.length) {
+    html = '<div class="empty">No waitlist signups yet.</div>';
+  } else {
+    items.forEach(function(w) {
+      var subjects = [];
+      try { subjects = JSON.parse(w.subjects || '[]'); } catch(e) {}
+      var date = w.created_at ? new Date(w.created_at + 'Z').toLocaleDateString() : '';
+      html += '<div class="card">';
+      html += '<div class="card-header">';
+      html += '<div class="card-title">' + escapeHtml(w.name) + ' <span class="badge ' + w.role + '">' + w.role + '</span></div>';
+      html += '</div>';
+      html += '<div class="card-meta">📧 ' + escapeHtml(w.email) + (w.phone ? ' · 📞 ' + escapeHtml(w.phone) : '') + '</div>';
+      if (subjects.length) html += '<div class="card-meta">' + subjects.map(function(s){return '<span>' + escapeHtml(s) + '</span>'}).join('') + '</div>';
+      html += '<div class="card-meta" style="font-size:10px;color:#5A7A9F">Signed up: ' + date + '</div>';
+      html += '</div>';
+    });
+  }
+  document.getElementById('waitlistList').innerHTML = html;
 }
 
 function update(id, status) {
-  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({status:status})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)});
+  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({status:status})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){alert('Error: '+e.message)});
 }
 
 function toggleFeatured(id, val) {
-  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({featured:val})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)});
+  api('/admin/api/tutoring?id=' + id, {method:'PUT',headers:{'Content-Type':'application/json','X-Admin-Key':getAdminKey()},body:JSON.stringify({featured:val})}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){alert('Error: '+e.message)});
 }
 
-function del(id) { if (!confirm('Delete this tutor?')) return; api('/admin/api/tutoring?id=' + id, {method:'DELETE',headers:{'X-Admin-Key':getAdminKey()}}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){Toast.error(e.message)}); }
+function del(id) { if (!confirm('Delete this tutor?')) return; api('/admin/api/tutoring?id=' + id, {method:'DELETE',headers:{'X-Admin-Key':getAdminKey()}}).then(function(data){if(data.status==='ok')loadTutors()}).catch(function(e){alert('Error: '+e.message)}); }
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -119,6 +217,7 @@ function escapeHtml(str) {
 }
 
 loadTutors();
+loadWaitlist();
 </script>
 </body>
 </html>

@@ -27,6 +27,15 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', items: items.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
     }
 
+    if (type === 'waitlist') {
+      var role = url.searchParams.get('role') || '';
+      var conds = []; var params = [];
+      if (role) { conds.push('role = ?'); params.push(role); }
+      var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
+      var items = await env.DB.prepare("SELECT * FROM tutoring_waitlist" + where + " ORDER BY created_at DESC LIMIT 200").bind(...params).all();
+      return new Response(JSON.stringify({ status: 'ok', items: items.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
+    }
+
     if (id) {
       var tutor = await env.DB.prepare("SELECT * FROM tutors WHERE id = ?").bind(id).first();
       if (!tutor) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404, headers: { 'Content-Type': 'application/json', ...CORS } });

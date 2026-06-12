@@ -1278,6 +1278,19 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
         (21, 'phase_4', 'Delivery System', '🚀', 'In-app messaging or WhatsApp notification',                                                  'planned', 4,  '~5-6 days',  'phase_3'),
         (22, 'phase_4', 'Delivery System', '🚀', 'File/resource sharing per session',                                                          'planned', 5,  '~5-6 days',  'phase_3')
       `,
+      // ── Tutoring Waitlist ──
+      `CREATE TABLE IF NOT EXISTS tutoring_waitlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT DEFAULT '',
+        role TEXT NOT NULL DEFAULT 'both',
+        subjects TEXT NOT NULL DEFAULT '[]',
+        source TEXT NOT NULL DEFAULT 'tutoring_waitlist',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_tutoring_waitlist_email ON tutoring_waitlist(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_tutoring_waitlist_role ON tutoring_waitlist(role)`,
     ];
     const results = [];
     for (const sql of statements) {

@@ -9,6 +9,9 @@
 .apply-wrap{max-width:640px;margin:0 auto;padding:40px 24px 80px}
 .apply-wrap h1{font-family:var(--display);font-size:28px;font-weight:900;color:var(--navy);margin-bottom:4px}
 .apply-wrap .subtitle{color:var(--gray);font-size:14px;margin-bottom:28px}
+.notice{border:1px solid var(--gold);background:rgba(201,168,76,.06);border-radius:10px;padding:16px 18px;margin-bottom:24px;font-size:13px;color:#4B5563;line-height:1.6}
+.notice strong{color:var(--navy)}
+.notice a{color:var(--gold);font-weight:600;text-decoration:none}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px}
 .field label .req{color:var(--pink)}
@@ -36,9 +39,12 @@
 <script src="/nav.js"></script>
 
 <div class="apply-wrap">
-  <a href="/tutoring/" style="color:var(--gray);font-size:13px;text-decoration:none;display:inline-block;margin-bottom:20px">← Back to Tutors</a>
+  <a href="/tutoring/" style="color:var(--gray);font-size:13px;text-decoration:none;display:inline-block;margin-bottom:20px">← Back to Tutoring</a>
   <h1>Become a Tutor</h1>
   <p class="subtitle">Share your knowledge with Ghana's next generation. Fill in your details and we'll review your application.</p>
+  <div class="notice">
+    <strong>🚀 Launching soon!</strong> The tutoring marketplace is currently in development. Your application will be reviewed when the platform launches. <a href="/tutoring/#waitlist">Join the waitlist</a> to get notified.
+  </div>
   <div id="msgBox" class="msg"></div>
 
   <form id="tutorForm" onsubmit="return submitApplication(event)">
