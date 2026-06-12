@@ -195,6 +195,21 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
   border-bottom-color:var(--gold);
 }
 
+/* Hamburger toggle — hidden by default, shown on mobile */
+#nav-toggle {
+  display:none;
+  background:none;
+  border:none;
+  color:var(--white);
+  font-size:24px;
+  cursor:pointer;
+  padding:10px 14px;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  min-width:44px;
+}
+
 /* ===========================
    PAGE WRAPPER
    =========================== */
@@ -769,13 +784,94 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 @media(max-width:768px) {
   .masthead-inner { grid-template-columns:1fr; text-align:center; }
   .masthead-left, .masthead-right { text-align:center; padding:12px 0; }
-  .masthead-logo img { height:110px; }
+  .masthead-logo img { height:90px; }
+  .masthead-title { font-size:24px; }
+  .masthead-tagline { font-size:10px; }
+  .masthead-left { display:none; }
+  .masthead-right .masthead-form { flex-direction:column; align-items:center; }
+  .masthead-right input { width:100% !important; max-width:280px; }
+  #masthead { padding:16px 20px; }
+  .cover-hero { padding:32px 24px; }
+  .cover-hero h1 { font-size:28px; }
+  .cover-hero .subtitle { font-size:15px; }
   .grid-3,.grid-2,.grid-4,.grid-hero,.grid-hero-3 { grid-template-columns:1fr; }
   .stat-row { grid-template-columns:repeat(2,1fr); }
-  .footer-grid { grid-template-columns:1fr 1fr; }
-  .cover-hero h1 { font-size:32px; }
-  .masthead-title { font-size:28px; }
-  #masthead { padding:16px 20px; }
+  .stat-block .num { font-size:26px; }
+  .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+  .page { padding:20px 16px 40px; }
+  .section-header h2 { font-size:18px; }
+  .nav-inner a { font-size:11px; padding:10px 10px; }
+  .print-btn { bottom:16px; right:16px; padding:10px 16px; font-size:12px; }
+  .star-mascot { flex-direction:column; text-align:center; }
+  .star-svg { font-size:40px; }
+  .ad-box { padding:16px; }
+  .ad-box h4 { font-size:17px; }
+  .pull-quote p { font-size:17px; }
+  .scripture-box blockquote { font-size:15px; }
+  .cover-hero .cta-btn, .cover-hero .sec-btn { display:block; text-align:center; margin-right:0; margin-bottom:10px; }
+  .crossword-cell { width:30px; height:30px; font-size:14px; }
+  .sudoku-grid { grid-template-columns:repeat(9,32px); grid-template-rows:repeat(9,32px); }
+  .sudoku-cell, #sudoku-grid input { width:32px !important; height:32px !important; font-size:14px !important; }
+  #word-search { font-size:14px !important; letter-spacing:8px !important; overflow-x:auto; }
+  #top-bar { flex-direction:column; gap:4px; font-size:10px; padding:6px 12px; }
+  #top-bar .socials { font-size:13px; }
+  .masthead-rule span { font-size:8px; padding:0 6px; }
+  .chart-box { padding:14px; }
+  .bar-label { width:100px; font-size:11px; }
+  .grid-hero > div:first-child { order:2; }
+  .grid-hero > div:last-child { order:1; }
+  #nav-toggle { display:flex; }
+  .nav-inner { flex-wrap:wrap; }
+  .nav-inner a { display:none; width:100%; text-align:center; border-bottom:1px solid rgba(255,255,255,.08); padding:12px 14px; }
+  .nav-inner.open a { display:block; }
+  .nav-inner.open a.active { border-bottom-color:var(--gold); }
+}
+
+@media(max-width:480px) {
+  body { font-size:14px; }
+  .masthead-logo img { height:70px; }
+  .masthead-title { font-size:20px; }
+  #masthead { padding:12px 12px; }
+  .cover-hero { padding:24px 16px; }
+  .cover-hero h1 { font-size:22px; }
+  .cover-hero .subtitle { font-size:14px; }
+  .cover-hero .cta-btn, .cover-hero .sec-btn { font-size:13px; padding:12px 20px; }
+  .stat-row { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .stat-block { padding:12px; }
+  .stat-block .num { font-size:22px; }
+  .stat-block .label { font-size:10px; }
+  .footer-grid { grid-template-columns:1fr; }
+  .article-card h3 { font-size:16px; }
+  .article-card p { font-size:13px; }
+  .section-header h2 { font-size:16px; }
+  .section-header .eyebrow { font-size:10px; }
+  .nav-inner { padding:0 6px; }
+  .nav-inner a { font-size:10px; padding:10px 8px; }
+  .page { padding:16px 12px 32px; }
+  .grid-3, .grid-2, .grid-4 { gap:12px; }
+  .ad-leaderboard { flex-direction:column; text-align:center; padding:14px 16px; }
+  .ad-leaderboard p { font-size:12px; }
+  .star-mascot { padding:12px; }
+  .star-mascot .bubble { font-size:12px; padding:10px 12px; }
+  .pull-quote { padding:12px 14px; }
+  .pull-quote p { font-size:15px; }
+  .scripture-box { padding:16px; }
+  .scripture-box blockquote { font-size:14px; }
+  .highlight-box { padding:14px 16px; }
+  .steps li { flex-direction:column; gap:6px; padding:12px 14px; }
+  .steps li::before { font-size:18px; min-width:20px; }
+  .grid-3 { gap:12px; }
+  .classifieds-notices { grid-template-columns:1fr !important; }
+  .crossword-cell { width:26px; height:26px; font-size:12px; min-width:0; }
+  .crossword-cell.numbered::before { font-size:6px; top:1px; left:2px; }
+  .sudoku-grid { grid-template-columns:repeat(9,28px); grid-template-rows:repeat(9,28px); }
+  .sudoku-cell, #sudoku-grid input { width:28px !important; height:28px !important; font-size:12px !important; }
+  #word-search { font-size:12px !important; letter-spacing:5px !important; }
+  .masthead-right input { width:100% !important; max-width:240px; font-size:11px !important; }
+  .masthead-right button { width:100%; max-width:240px; }
+  .footer-grid { gap:16px; }
+  .footer-bottom span { font-size:10px; }
 }
 
 @media print {
@@ -834,7 +930,8 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 
 <!-- NAV BAR -->
 <nav id="nav-bar">
-  <div class="nav-inner">
+  <div class="nav-inner" id="navInner">
+    <button id="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation menu">☰</button>
     <a href="#" class="active" onclick="showPage('cover',this)">🏠 Cover</a>
     <a href="#" onclick="showPage('creativity',this)">🎨 Creativity Coaching</a>
     <a href="#" onclick="showPage('love',this)">❤️ Love Coaching</a>
@@ -2178,7 +2275,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
 
   <!-- COMMUNITY NOTICES -->
   <div class="section-header" style="margin-top:32px;"><span class="eyebrow">Community Board</span><h2>📌 Community Notices, Lost & Found</h2></div>
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+  <div class="classifieds-notices" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
     <div style="background:#FFF9C4;border:1px solid #F5C200;border-top:4px solid var(--gold);padding:16px;font-family:Inter,sans-serif;">
       <span style="font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px;">🔍 LOST</span>
       <strong style="font-size:14px;color:var(--navy);">Lost: MacBook Pro + Bag near Accra Mall</strong>
@@ -2275,7 +2372,12 @@ function showPage(id, link) {
   document.querySelectorAll('#nav-bar a').forEach(a => a.classList.remove('active'));
   if (link) link.classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('navInner').classList.remove('open');
   return false;
+}
+
+function toggleNav() {
+  document.getElementById('navInner').classList.toggle('open');
 }
 
 // ========================
