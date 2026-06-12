@@ -880,6 +880,41 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
   body { background:white; }
   #footer { page-break-after:avoid; }
 }
+/* Search */
+.nav-search-wrap{display:flex;align-items:center;margin-left:auto;gap:4px;padding:4px 8px}
+.nav-search{background:#1A2D4A;border:1px solid #243B5A;border-radius:20px;padding:6px 12px;color:#CDD5E0;font-size:11px;font-family:Inter,sans-serif;width:140px;transition:all .2s;outline:none}
+.nav-search:focus{border-color:var(--gold);width:200px;background:#0A1628}
+.nav-search::placeholder{color:#5A7A9F}
+.nav-search-btn{background:none;border:none;color:#5A7A9F;cursor:pointer;font-size:14px;padding:4px;line-height:1}
+.nav-search-btn:hover{color:var(--gold)}
+.search-overlay{display:none;position:fixed;z-index:1000;top:0;left:0;right:0;bottom:0;background:rgba(10,22,40,.85);backdrop-filter:blur(4px)}
+.search-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding-top:80px}
+.search-panel{background:var(--cream);border-radius:12px;width:90%;max-width:680px;max-height:70vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.search-panel-header{display:flex;gap:8px;padding:16px;border-bottom:1px solid #E5E7EB}
+.search-panel-header input{flex:1;padding:10px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;font-family:Inter,sans-serif;outline:none;background:white}
+.search-panel-header input:focus{border-color:var(--gold)}
+.search-close{background:none;border:none;font-size:20px;color:var(--gray);cursor:pointer;padding:4px 10px;border-radius:6px}
+.search-close:hover{background:#F3F4F6;color:var(--ink)}
+.search-results{overflow-y:auto;padding:8px;flex:1}
+.search-empty{padding:40px;text-align:center;color:var(--gray);font-size:13px}
+.search-group{margin-bottom:12px}
+.search-group-title{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;padding:6px 12px;font-family:Oswald,sans-serif}
+.search-result{display:block;padding:10px 14px;border-radius:8px;text-decoration:none;color:inherit;transition:background .15s;cursor:pointer}
+.search-result:hover{background:#F3F4F6}
+.search-result-title{font-size:13px;font-weight:600;color:var(--navy)}
+.search-result-snippet{font-size:11px;color:#6B7280;margin-top:2px;line-height:1.5}
+.search-result-meta{font-size:10px;color:var(--gray);margin-top:3px}
+.search-result-meta em{font-style:normal;color:var(--gold)}
+@media(max-width:768px){
+  .nav-search{width:100px}
+  .nav-search:focus{width:140px}
+  .search-overlay.open{padding-top:40px}
+  .search-panel{max-height:80vh}
+}
+@media(max-width:480px){
+  .nav-search{width:80px;font-size:10px;padding:4px 8px}
+  .nav-search:focus{width:110px}
+}
 </style>
 </head>
 <body>
@@ -946,8 +981,25 @@ body { font-family:'Source Serif 4',Georgia,serif; background:#EBEBEB; color:var
     <a href="#classifieds/jobs" onclick="return showPage('classifieds1',this)">📋 Jobs</a>
     <a href="#classifieds/business" onclick="return showPage('classifieds2',this)">📋 Services</a>
     <a href="#classifieds/community" onclick="return showPage('classifieds3',this)">📋 Events</a>
+    <span class="nav-search-wrap">
+      <input type="text" id="searchInput" class="nav-search" placeholder="Search articles, classifieds..." onkeyup="if(event.key==='Enter')doSearch()" onfocus="this.select()">
+      <button class="nav-search-btn" onclick="doSearch()" aria-label="Search">🔍</button>
+    </span>
   </div>
 </nav>
+
+<!-- SEARCH OVERLAY -->
+<div id="searchOverlay" class="search-overlay" onclick="closeSearch(event)">
+  <div class="search-panel" onclick="event.stopPropagation()">
+    <div class="search-panel-header">
+      <input type="text" id="searchOverlayInput" placeholder="Search articles, classifieds, events..." onkeyup="if(event.key==='Enter')runSearch()" autofocus>
+      <button class="search-close" onclick="closeSearch()">✕</button>
+    </div>
+    <div id="searchResults" class="search-results">
+      <div class="search-empty">Type something to search</div>
+    </div>
+  </div>
+</div>
 
 <!-- =====================
      COVER PAGE
@@ -2657,6 +2709,137 @@ function renderEventTimeline(container, events) {
   });
 
   html += '</div>';
+  container.innerHTML = html;
+}
+
+// ========================
+// SEARCH
+// ========================
+function doSearch() {
+  var q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  document.getElementById('searchOverlayInput').value = q;
+  document.getElementById('searchOverlay').classList.add('open');
+  runSearch();
+}
+
+function closeSearch(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+
+function findPageName(pageId) {
+  var map = {
+    'cover': '🏠 Cover', 'creativity': '🎨 Creative', 'love': '❤️ Love',
+    'wisdom': '📖 Wisdom', 'civic': '🏛️ Civic', 'youth': '⚡ Youth',
+    'nation': '🇬🇭 Nation', 'diaspora': '🌍 Diaspora', 'business': '💼 Business',
+    'general': '📰 General', 'puzzle': '🧩 Puzzles',
+    'classifieds1': '📋 Jobs', 'classifieds2': '📋 Services', 'classifieds3': '📋 Events',
+  };
+  return map[pageId] || pageId;
+}
+
+var searchCache = null;
+
+function runSearch() {
+  var q = document.getElementById('searchOverlayInput').value.trim().toLowerCase();
+  if (!q) { document.getElementById('searchResults').innerHTML = '<div class="search-empty">Type something to search</div>'; return; }
+
+  var results = [];
+  var seen = {};
+
+  document.querySelectorAll('.page').forEach(function(page) {
+    var pageId = page.id ? page.id.replace('page-', '') : '';
+    if (!pageId) return;
+    var texts = page.querySelectorAll('h1, h2, h3, h4, p, li, blockquote, .article-card, .card-body');
+    texts.forEach(function(el) {
+      var text = el.textContent.trim();
+      if (!text || text.length < 5) return;
+      var idx = text.toLowerCase().indexOf(q);
+      if (idx === -1) return;
+      var key = text.substring(0, 60);
+      if (seen[key]) return;
+      seen[key] = true;
+      var snippet = text.substring(Math.max(0, idx - 40), idx + 80) + (text.length > idx + 80 ? '…' : '');
+      var title = '';
+      if (el.tagName.match(/^H[1-4]$/)) { title = text.substring(0, 120); }
+      else {
+        var card = el.closest('.article-card');
+        var h = card ? card.querySelector('h3') : null;
+        title = h ? h.textContent : '';
+        if (!title) {
+          var prev = el.previousElementSibling;
+          while (prev && !prev.tagName.match(/^H[1-4]$/)) prev = prev.previousElementSibling;
+          title = prev ? prev.textContent : findPageName(pageId);
+        }
+      }
+      results.push({ title: title || findPageName(pageId), snippet: snippet, pageId: pageId, type: 'article' });
+    });
+  });
+
+  var container = document.getElementById('searchResults');
+  container.innerHTML = '<div class="search-empty">Searching articles, classifieds, and events…</div>';
+
+  var fetchPromises = [];
+  if (!searchCache) {
+    fetchPromises.push(
+      fetch('https://gideonabochie.org/api/classifieds?status=approved&limit=100').then(function(r){return r.json()}).then(function(d){if(d.status==='ok')searchCache=d.items||[]}).catch(function(){})
+    );
+    fetchPromises.push(
+      fetch('https://gideonabochie.org/api/events-aggregator?days=90&limit=50').then(function(r){return r.json()}).then(function(d){if(d.status==='ok'){if(!searchCache)searchCache=[];searchCache._events=d.events||[]}}).catch(function(){})
+    );
+  }
+
+  Promise.all(fetchPromises).then(function() {
+    if (searchCache && Array.isArray(searchCache)) {
+      searchCache.forEach(function(item) {
+        var text = (item.title + ' ' + (item.description||'') + ' ' + (item.contact_name||'') + ' ' + (item.category||'') + ' ' + (item.location||'')).toLowerCase();
+        if (text.indexOf(q)===-1) return;
+        var key='c-'+item.id; if(seen[key]) return; seen[key]=true;
+        results.push({title:item.title, snippet:(item.description||'').substring(0,150), pageId:(item.category==='jobs'?'classifieds1':item.category==='events'?'classifieds3':'classifieds2'), type:'classified', meta:item.category+(item.price?' · '+item.price:'')});
+      });
+    }
+    if (searchCache && searchCache._events) {
+      searchCache._events.forEach(function(e) {
+        var text = (e.title + ' ' + (e.description||'') + ' ' + (e.venue||'') + ' ' + (e.category_label||'')).toLowerCase();
+        if (text.indexOf(q)===-1) return;
+        var key='e-'+e.id; if(seen[key]) return; seen[key]=true;
+        results.push({title:e.title, snippet:(e.description||'').substring(0,150), pageId:'classifieds3', type:'event', meta:e.category_label+(e.source==='eventbrite'?' · Eventbrite':'')});
+      });
+    }
+    renderSearchResults(container, results, q);
+  });
+}
+
+function renderSearchResults(container, results, q) {
+  if (!results.length) { container.innerHTML = '<div class="search-empty">No results found for &quot;<strong>' + escapeHtml(q) + '</strong>&quot;</div>'; return; }
+
+  var groups = {};
+  results.forEach(function(r) {
+    var key = findPageName(r.pageId) || 'Other';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r);
+  });
+
+  var html = '<div class="search-group"><div class="search-group-title">' + results.length + ' result' + (results.length>1?'s':'') + ' for &quot;' + escapeHtml(q) + '&quot;</div></div>';
+
+  Object.keys(groups).forEach(function(group) {
+    html += '<div class="search-group"><div class="search-group-title">' + group + '</div>';
+    var items = groups[group];
+    items.slice(0, 6).forEach(function(r) {
+      var hash = r.pageId==='classifieds1'?'#classifieds/jobs':r.pageId==='classifieds2'?'#classifieds/business':r.pageId==='classifieds3'?'#classifieds/community':'#'+r.pageId;
+      html += '<a class="search-result" href="' + hash + '" onclick="closeSearch()">';
+      html += '<div class="search-result-title">' + escapeHtml(r.title.substring(0,100)) + '</div>';
+      if (r.snippet) html += '<div class="search-result-snippet">' + escapeHtml(r.snippet) + '</div>';
+      if (r.meta) html += '<div class="search-result-meta">' + escapeHtml(r.meta) + '</div>';
+      html += '</a>';
+    });
+    if (items.length>6) {
+      var firstHash = items[0].pageId==='classifieds1'?'#classifieds/jobs':items[0].pageId==='classifieds2'?'#classifieds/business':items[0].pageId==='classifieds3'?'#classifieds/community':'#'+items[0].pageId;
+      html += '<a class="search-result" href="' + firstHash + '" onclick="closeSearch()" style="font-size:11px;color:var(--gray);text-align:center;padding:6px">+' + (items.length-6) + ' more →</a>';
+    }
+    html += '</div>';
+  });
   container.innerHTML = html;
 }
 
