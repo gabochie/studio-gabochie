@@ -2448,7 +2448,7 @@ function loadClassifieds() {
     'classifieds-jobs-grid': 'jobs',
     'classifieds-services-grid': 'services',
     'classifieds-products-grid': 'products',
-    'classifieds-events-container': 'events',
+    'classifieds-events-container': '__aggregator__',
     'classifieds-housing-grid': 'housing',
     'classifieds-community-grid': 'community',
     'classifieds-collab-grid': 'community'
@@ -2458,6 +2458,11 @@ function loadClassifieds() {
     var container = document.getElementById(containerId);
     if (!container) return;
     var category = catMap[containerId];
+
+    if (category === '__aggregator__') {
+      loadEventsAggregator(container);
+      return;
+    }
 
     fetch('https://gideonabochie.org/api/classifieds?category=' + category + '&status=approved&limit=20', { method: 'GET' })
       .then(function(r) { return r.json(); })
@@ -2555,28 +2560,102 @@ function renderCollabCards(container, items) {
   container.innerHTML = html;
 }
 
-function renderEventsTable(container, items) {
-  var html = '<table style="width:100%;border-collapse:collapse;font-family:Inter,sans-serif;font-size:13px;background:white;border:1px solid #E5E7EB;">';
-  html += '<thead><tr style="background:var(--navy);color:white;">';
-  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Date</th>';
-  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Event</th>';
-  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Location</th>';
-  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Cost</th>';
-  html += '<th style="padding:12px 16px;text-align:left;font-weight:700;letter-spacing:.06em;font-size:11px;text-transform:uppercase;">Contact</th>';
-  html += '</tr></thead><tbody>';
-  items.forEach(function(item, i) {
-    var bg = i % 2 === 0 ? ' style="background:#FFFDF4;"' : '';
-    html += '<tr' + bg + '>';
-    html += '<td style="padding:12px 16px;color:var(--pink);font-weight:700;">' + escapeHtml(item.price || 'TBA') + '</td>';
-    html += '<td style="padding:12px 16px;"><strong style="color:var(--navy);">' + escapeHtml(item.title) + '</strong>';
-    if (item.description) html += '<br><span style="color:#6B7280;font-size:12px;">' + escapeHtml(item.description.substring(0, 120)) + '</span>';
-    html += '</td>';
-    html += '<td style="padding:12px 16px;color:#4B5563;">' + escapeHtml(item.location || '') + '</td>';
-    html += '<td style="padding:12px 16px;color:#4B5563;">' + (item.price ? escapeHtml(item.price) : 'Free') + '</td>';
-    html += '<td style="padding:12px 16px;font-size:12px;color:#4B5563;">' + escapeHtml(item.contact_email || item.contact_phone || '') + '</td>';
-    html += '</tr>';
+function loadEventsAggregator(container) {
+  container.style.overflow = 'visible';
+  fetch('https://gideonabochie.org/api/events-aggregator?days=90&limit=50')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok' || !data.events || !data.events.length) {
+        container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--gray);font-size:13px;">No upcoming events. Check back soon!</div>';
+        return;
+      }
+      renderEventTimeline(container, data.events);
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--gray);font-size:13px;">Could not load events. Please refresh.</div>';
+    });
+}
+
+function formatEventDate(utcStr) {
+  if (!utcStr) return { date: 'TBA', time: '' };
+  var d = new Date(utcStr);
+  if (isNaN(d.getTime())) return { date: 'TBA', time: '' };
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var month = months[d.getUTCMonth()];
+  var day = d.getUTCDate();
+  var hours = d.getUTCHours();
+  var mins = d.getUTCMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12 || 12;
+  var timeStr = hours + ':' + (mins < 10 ? '0' : '') + mins + ampm;
+  var today = new Date();
+  var dateStr;
+  if (d.getUTCFullYear() === today.getUTCFullYear() && d.getUTCMonth() === today.getUTCMonth() && d.getUTCDate() === today.getUTCDate()) {
+    dateStr = 'Today';
+  } else {
+    dateStr = day + ' ' + month;
+  }
+  return { date: dateStr, time: timeStr };
+}
+
+function renderEventTimeline(container, events) {
+  var html = '<div style="display:flex;flex-direction:column;gap:0;">';
+
+  events.forEach(function(e, i) {
+    var fd = formatEventDate(e.start);
+    var categoryColor = e.source === 'curated' ? '#C9A84C' : '#3B82F6';
+    var categoryBg = e.source === 'curated' ? 'rgba(201,168,76,.12)' : 'rgba(59,130,246,.12)';
+
+    html += '<div style="display:flex;gap:16px;position:relative;padding-bottom:' + (i < events.length - 1 ? '20px' : '0') + ';">';
+
+    // Timeline line & dot
+    html += '<div style="display:flex;flex-direction:column;align-items:center;width:60px;flex-shrink:0;">';
+    html += '<div style="background:' + categoryColor + ';width:14px;height:14px;border-radius:50%;border:3px solid var(--cream);box-shadow:0 0 0 2px ' + categoryColor + ';flex-shrink:0;"></div>';
+    if (i < events.length - 1) {
+      html += '<div style="width:2px;flex:1;background:linear-gradient(to bottom,' + categoryColor + ',transparent);margin-top:4px;"></div>';
+    }
+    html += '</div>';
+
+    // Date badge
+    html += '<div style="min-width:70px;text-align:center;flex-shrink:0;padding-top:2px;">';
+    html += '<div style="font-family:Inter,sans-serif;font-size:11px;font-weight:700;color:' + categoryColor + ';text-transform:uppercase;">' + fd.date + '</div>';
+    if (fd.time) html += '<div style="font-size:10px;color:var(--gray);font-family:Inter,sans-serif;">' + fd.time + '</div>';
+    html += '</div>';
+
+    // Card
+    html += '<div style="flex:1;background:white;border:1px solid #E5E7EB;border-radius:8px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04);">';
+    html += '<div style="display:flex;gap:12px;align-items:flex-start;">';
+    if (e.image) {
+      html += '<img src="' + e.image + '" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.display=\'none\'">';
+    }
+    html += '<div style="flex:1;min-width:0;">';
+    html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">';
+    html += '<span style="background:' + categoryBg + ';color:' + categoryColor + ';font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;">' + escapeHtml(e.category_icon + ' ' + e.category_label) + '</span>';
+    if (e.price && e.price !== 'Free') {
+      html += '<span style="background:rgba(34,197,94,.1);color:#22C55E;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;">' + escapeHtml(e.price) + '</span>';
+    } else {
+      html += '<span style="background:rgba(34,197,94,.1);color:#22C55E;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;">Free</span>';
+    }
+    html += '</div>';
+    if (e.url) {
+      html += '<a href="' + e.url + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">';
+    }
+    html += '<h3 style="font-family:Inter,sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin:0 0 4px;">' + escapeHtml(e.title) + '</h3>';
+    if (e.url) html += '</a>';
+    if (e.description) {
+      html += '<p style="font-size:12px;color:#4B5563;margin:0 0 6px;line-height:1.5;">' + escapeHtml(e.description.substring(0, 200)) + '</p>';
+    }
+    html += '<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--gray);font-family:Inter,sans-serif;">';
+    if (e.venue) html += '<span>📍 ' + escapeHtml(e.venue) + '</span>';
+    if (e.source === 'eventbrite') html += '<span style="color:#F05537;">Powered by Eventbrite</span>';
+    else if (e.source === 'curated') html += '<span style="color:var(--gold);">⭐ Curated</span>';
+    html += '</div>';
+    html += '</div></div></div>';
+
+    html += '</div>';
   });
-  html += '</tbody></table>';
+
+  html += '</div>';
   container.innerHTML = html;
 }
 
