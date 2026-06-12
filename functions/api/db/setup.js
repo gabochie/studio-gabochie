@@ -1302,6 +1302,15 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       )`,
       `CREATE INDEX IF NOT EXISTS idx_tutoring_waitlist_email ON tutoring_waitlist(email)`,
       `CREATE INDEX IF NOT EXISTS idx_tutoring_waitlist_role ON tutoring_waitlist(role)`,
+      // ── Career Resource Leads (lead magnet) ──
+      `CREATE TABLE IF NOT EXISTS career_resource_leads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL,
+        name TEXT NOT NULL,
+        resource_slug TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_crl_email ON career_resource_leads(email)`,
     ];
     const results = [];
     for (const sql of statements) {

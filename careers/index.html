@@ -75,6 +75,26 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .resource-card a{color:var(--gold);font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px}
 .resource-card a:hover{color:#D9B85C}
 
+/* lead modal */
+.lead-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
+.lead-modal.open{opacity:1;pointer-events:auto}
+.lead-modal-box{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:440px;width:90%;text-align:center;position:relative}
+.lead-modal-box .close-btn{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer}
+.lead-modal-box .close-btn:hover{color:var(--text-light)}
+.lead-modal-box .lm-icon{font-size:48px;margin-bottom:8px}
+.lead-modal-box h3{font-family:var(--display);font-size:22px;font-weight:800;color:#fff;margin-bottom:4px}
+.lead-modal-box p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.lead-modal-box .field{margin-bottom:12px;text-align:left}
+.lead-modal-box .field input{width:100%;padding:12px 14px;background:#0A1628;border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text-light);font-family:var(--body)}
+.lead-modal-box .field input:focus{outline:none;border-color:var(--gold)}
+.lead-modal-box .lm-btn{width:100%;padding:14px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:var(--display);font-size:14px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s}
+.lead-modal-box .lm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.2)}
+.lead-modal-box .lm-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.lead-modal-box .lm-msg{font-size:12px;margin-top:10px;display:none}
+.lead-modal-box .lm-msg.success{display:block;color:#34C77B}
+.lead-modal-box .lm-msg.error{display:block;color:#EF4444}
+.lead-modal-box .lm-footer{font-size:11px;color:var(--text-muted);margin-top:14px}
+
 /* apply form */
 .apply-wrap{max-width:640px;margin:0 auto}
 .apply-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px}
@@ -200,19 +220,19 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
         <div class="r-icon">📝</div>
         <h4>CV & Cover Letter Guide</h4>
         <p>How to craft a compelling CV and cover letter that stands out to Ghanaian employers. Includes templates and examples.</p>
-        <a href="#">Download Guide →</a>
+        <a href="#" onclick="return openResourceModal('cv-guide', 'CV & Cover Letter Guide')">Download Guide →</a>
       </div>
       <div class="resource-card">
         <div class="r-icon">🎤</div>
         <h4>Interview Preparation</h4>
         <p>Common interview questions, preparation strategies, and how to make a lasting impression in your next interview.</p>
-        <a href="#">Read More →</a>
+        <a href="#" onclick="return openResourceModal('interview-guide', 'Interview Preparation')">Read More →</a>
       </div>
       <div class="resource-card">
         <div class="r-icon">💼</div>
         <h4>Freelance &amp; Gig Economy</h4>
         <p>How to build a thriving freelance career in Ghana's growing digital economy. Platforms, pricing, and client management.</p>
-        <a href="#">Explore →</a>
+        <a href="#" onclick="return openResourceModal('freelance-guide', 'Freelance & Gig Economy')">Explore →</a>
       </div>
       <div class="resource-card">
         <div class="r-icon">📚</div>
@@ -224,13 +244,13 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
         <div class="r-icon">🤝</div>
         <h4>Networking Guide</h4>
         <p>How to build a professional network in Ghana. Conferences, online communities, mentorship, and professional associations.</p>
-        <a href="#">Learn More →</a>
+        <a href="#" onclick="return openResourceModal('networking-guide', 'Networking Guide')">Learn More →</a>
       </div>
       <div class="resource-card">
         <div class="r-icon">🌍</div>
         <h4>Remote Work</h4>
         <p>How to land and succeed in remote jobs with international companies. Tools, platforms, and tips for Ghanaian professionals.</p>
-        <a href="#">Get Started →</a>
+        <a href="#" onclick="return openResourceModal('remote-guide', 'Remote Work Guide')">Get Started →</a>
       </div>
     </div>
   </div>
@@ -280,7 +300,100 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 
 <div id="footer-placeholder"></div>
 <script src="/nav.js"></script>
+
+<div class="lead-modal" id="leadModal">
+  <div class="lead-modal-box">
+    <button class="close-btn" onclick="closeResourceModal()">&times;</button>
+    <div class="lm-icon">📖</div>
+    <h3>Unlock This Resource</h3>
+    <p>Enter your name and email to access <strong id="lmTitle">this guide</strong>. We'll also keep you updated on new career opportunities.</p>
+    <div class="lm-msg" id="lmMsg"></div>
+    <form onsubmit="return submitResourceLead(event)">
+      <input type="hidden" id="lmSlug">
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="lmName" required placeholder="Your name">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="lmEmail" required placeholder="you@example.com">
+      </div>
+      <button type="submit" class="lm-btn" id="lmBtn">Get Access</button>
+    </form>
+    <div class="lm-footer">We respect your privacy. Unsubscribe anytime.</div>
+  </div>
+</div>
+
 <script>
+function openResourceModal(slug, title) {
+  document.getElementById('lmSlug').value = slug;
+  document.getElementById('lmTitle').textContent = title;
+  document.getElementById('lmMsg').className = 'lm-msg';
+  document.getElementById('lmMsg').style.display = 'none';
+  document.getElementById('lmName').value = '';
+  document.getElementById('lmEmail').value = '';
+  document.getElementById('lmBtn').disabled = false;
+  document.getElementById('lmBtn').textContent = 'Get Access';
+  document.getElementById('leadModal').classList.add('open');
+  return false;
+}
+
+function closeResourceModal() {
+  document.getElementById('leadModal').classList.remove('open');
+}
+
+function submitResourceLead(e) {
+  e.preventDefault();
+  var btn = document.getElementById('lmBtn');
+  var msg = document.getElementById('lmMsg');
+  btn.disabled = true;
+  btn.textContent = 'Unlocking...';
+
+  var slug = document.getElementById('lmSlug').value;
+  var name = document.getElementById('lmName').value.trim();
+  var email = document.getElementById('lmEmail').value.trim();
+
+  if (!name || !email) {
+    msg.textContent = 'Please fill in all fields.';
+    msg.className = 'lm-msg error';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Get Access';
+    return;
+  }
+
+  fetch('/api/career-resources', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, email: email, resource_slug: slug })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.status === 'ok') {
+      closeResourceModal();
+      window.open('/careers/resources/#' + slug, '_blank');
+    } else {
+      msg.textContent = res.error || 'Something went wrong.';
+      msg.className = 'lm-msg error';
+      msg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Get Access';
+    }
+  }).catch(function() {
+    msg.textContent = 'Network error. Please try again.';
+    msg.className = 'lm-msg error';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Get Access';
+  });
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeResourceModal();
+});
+
+document.getElementById('leadModal').addEventListener('click', function(e) {
+  if (e.target === this) closeResourceModal();
+});
+
 function loadJobs() {
   var container = document.getElementById('jobList');
   fetch('/api/classifieds?category=jobs&status=approved&limit=20')
