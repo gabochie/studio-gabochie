@@ -25,12 +25,14 @@
         { href: 'content.html',     icon: '\uD83D\uDCC4', label: 'Content' },
         { href: 'programs.html',    icon: '\uD83D\uDCD6', label: 'Programs' },
         { href: 'newsletter.html',  icon: '\uD83D\uDCEB', label: 'Newsletter' },
-        { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' }
+        { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' },
+        { href: 'content-ai.html',  icon: '\u2728',       label: 'AI Content' }
       ]
     },
     {
       label: 'Finance',
       items: [
+        { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' },
         { href: 'donations.html',   icon: '\uD83D\uDCB5', label: 'Donations' },
         { href: 'bookings.html',    icon: '\uD83C\uDFE8', label: 'Bookings' },
         { href: 'sponsors.html',    icon: '\uD83E\uDD1D', label: 'Sponsors' }
@@ -52,6 +54,7 @@
         { href: 'email.html',       icon: '\u2709\uFE0F',  label: 'Email' },
         { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
         { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
+        { href: 'outreach.html',    icon: '\uD83D\uDCE2', label: 'Outreach' },
         { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },
         { href: 'quiz.html',       icon: '\uD83D\uDCDD', label: 'Quiz' },
         { href: 'quality.html',    icon: '\u2705',        label: 'Quality' },
