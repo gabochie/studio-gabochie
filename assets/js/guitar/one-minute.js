@@ -80,9 +80,13 @@ const OneMinuteHistory = {
 
   addRecord(pair, score) {
     const history = this.load();
+    const best = history[pair] ? Math.max(...history[pair].map(r => r.score)) : 0;
+    const isNewPB = score >= best;
+    const improvement = history[pair]?.length ? score - history[pair][0].score : 0;
     if (!history[pair]) history[pair] = [];
     history[pair].push({ score, date: new Date().toISOString(), timestamp: Date.now() });
     this.save(history);
+    return { isNewPB, improvement };
   },
 
   getBest(pair) {

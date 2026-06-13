@@ -1,3 +1,5 @@
+import { getUser, json } from '../_utils.js';
+
 export async function onRequest(context) {
   const db = context.env.DB;
   const user = await getUser(context);
@@ -12,26 +14,12 @@ export async function onRequest(context) {
   if (user) {
     const ids = lessons.map(l => l.id);
     if (ids.length) {
+      const placeholders = ids.map(() => '?').join(',');
       const {results: prog} = await db.prepare(
-        `SELECT lesson_id, completed, xp FROM guitar_progress WHERE user_id = ? AND lesson_id IN (${ids.join(',')})`
-      ).bind(user.id).all();
+        `SELECT lesson_id, completed, xp FROM guitar_progress WHERE user_id = ? AND lesson_id IN (${placeholders})`
+      ).bind(user.id, ...ids).all();
       prog.forEach(p => progress[p.lesson_id] = p);
     }
   }
   return json({module: mod, lessons, progress});
-}
-
-async function getUser(ctx) {
-  const auth = ctx.request.headers.get('Authorization');
-  if (!auth?.startsWith('Bearer ')) return null;
-  const token = auth.slice(7);
-  const session = await ctx.env.DB.prepare(
-    'SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime("now")'
-  ).bind(token).first();
-  if (!session) return null;
-  return await ctx.env.DB.prepare('SELECT id, email, name FROM users WHERE id = ?').bind(session.user_id).first();
-}
-
-function json(data, status=200) {
-  return new Response(JSON.stringify(data), {status, headers:{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}});
 }

@@ -4,6 +4,7 @@
 const Guitar = {
   /* ----- Config ----- */
   API_ROOT: '/api/guitar',
+  PAYSTACK_PUBLIC_KEY: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2', // REPLACE with live key before production
   user: null, token: null,
 
   /* ----- Auth ----- */
@@ -50,7 +51,7 @@ const Guitar = {
   enroll()                { return this.fetch('/enroll', { method:'POST' }); },
   register(d)             { return this.fetch('/register', { method:'POST', body: JSON.stringify(d) }); },
   trackEvent(type, metadata = {}) {
-    try { fetch('/api/guitar/events', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({event_type:type, metadata}) }).catch(()=>{}); } catch(e) {}
+    fetch('/api/guitar/events', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({event_type:type, metadata}) }).catch(e => console.warn('trackEvent failed:', e));
   },
   completeLesson(id)      { return this.fetch('/progress', { method:'POST', body: JSON.stringify({lesson_id:id, action:'complete'}) }); },
   logPractice(d)          { return this.fetch('/practice', { method:'POST', body: JSON.stringify(d) }); },
@@ -186,7 +187,7 @@ const Guitar = {
           <input class="form-input" name="phone" type="tel" placeholder="Phone (optional)" style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
           <select name="skill_level" style="margin-bottom:12px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text2);appearance:none">
             <option value="beginner">Beginner — never played</option>
-            <option value="beginner">Starter — know a few chords</option>
+            <option value="starter">Starter — know a few chords</option>
             <option value="intermediate">Intermediate — can play songs</option>
           </select>
           <button type="submit" class="btn btn-primary btn-block" id="reg-submit" style="padding:14px;font-size:15px">Start Free <i class="ti ti-arrow-right"></i></button>
@@ -220,7 +221,7 @@ const Guitar = {
         localStorage.setItem('ga_student', JSON.stringify(res.user));
         this.hideSheet();
         this.showToast('Welcome to Gideon Guitar Method!', 'success');
-        this.trackEvent('registration_complete', { name: data.user?.name, email: data.user?.email });
+        this.trackEvent('registration_complete', { name: data.name, email: data.email });
         if (opts.onSuccess) { opts.onSuccess(res); }
         else { setTimeout(() => { window.location.href = redirect; }, 500); }
       } catch (err) {

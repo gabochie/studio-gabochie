@@ -32,8 +32,8 @@ export async function onRequest(context) {
     if (auth.startsWith('Bearer ')) {
       const token = auth.slice(7);
       try {
-        const user = await db.prepare('SELECT id FROM users WHERE session_token = ?').first(token);
-        if (user) userId = user.id;
+        const session = await db.prepare('SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime("now")').first(token);
+        if (session) userId = session.user_id;
       } catch(_) {}
     }
 

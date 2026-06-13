@@ -1,3 +1,5 @@
+import { json } from '../_utils.js';
+
 export async function onRequest(context) {
   if (context.request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
   const db = context.env.DB;
@@ -38,4 +40,3 @@ export async function onRequest(context) {
 
   return json({ ok: true });
 }
-function json(d, s = 200) { return new Response(JSON.stringify(d), { status: s, headers: { 'Content-Type': 'application/json' } }); }

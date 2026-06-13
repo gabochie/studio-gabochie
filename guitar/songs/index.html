@@ -201,7 +201,7 @@ document.getElementById('buy-btn').onclick = function() {
         } else if (data.tx_ref) {
           Guitar.hideSheet();
           const handler = PaystackPop.setup({
-            key: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
+            key: Guitar.PAYSTACK_PUBLIC_KEY,
             email: currentUserEmail,
             amount: 9900,
             currency: 'GHS',

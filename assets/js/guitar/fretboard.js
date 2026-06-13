@@ -52,7 +52,16 @@ class FretboardRenderer {
     // Background
     ctx.fillStyle = this.colors.bg;
     ctx.beginPath();
-    ctx.roundRect(0, 0, w, h, 12);
+    ctx.moveTo(12, 0);
+    ctx.lineTo(w - 12, 0);
+    ctx.quadraticCurveTo(w, 0, w, 12);
+    ctx.lineTo(w, h - 12);
+    ctx.quadraticCurveTo(w, h, w - 12, h);
+    ctx.lineTo(12, h);
+    ctx.quadraticCurveTo(0, h, 0, h - 12);
+    ctx.lineTo(0, 12);
+    ctx.quadraticCurveTo(0, 0, 12, 0);
+    ctx.closePath();
     ctx.fill();
 
     // Draw frets
