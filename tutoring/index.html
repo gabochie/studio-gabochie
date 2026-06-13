@@ -12,14 +12,15 @@
 <style>
 :root{--display:'Barlow Condensed',sans-serif;--body:'Libre Baskerville',Georgia,serif;--sans:'Barlow',sans-serif;--mono:'Courier Prime',monospace;--navy:#0A1628;--gold:#C9A84C;--card-bg:#0F1E38;--text-light:#E8EEF7;--text-muted:#8A9BB5;--text-dim:#4A5F7A;--border:#1E3250}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--navy);color:var(--text-light);font-family:var(--body);overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-height:1.2;color:#E8EEF7}
+body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* hero */
-.hero{position:relative;padding:120px 24px 80px;text-align:center;overflow:hidden}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;text-align:center;overflow:hidden;padding-top:64px}
 .hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0A1628 0%,#152240 40%,#1A2D4A 70%,#0A1628 100%);z-index:0}
 .hero-grid{position:absolute;inset:0;z-index:0;opacity:.05;background-image:radial-gradient(circle at 1px 1px,rgba(201,168,76,.6) 1px,transparent 0);background-size:32px 32px}
 .hero-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.08) 0%,transparent 70%);z-index:0;pointer-events:none}
-.hero-content{position:relative;z-index:1;max-width:700px;margin:0 auto}
+.hero-content{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:40px 24px}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border:1px solid rgba(201,168,76,.3);border-radius:20px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
 .hero-tag .dot{width:6px;height:6px;border-radius:50%;background:#34C77B;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -40,8 +41,8 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .btn-outline:hover{background:#C9A84C;color:#0A1628}
 
 /* sections */
-.section{padding:72px 24px}
-.section-alt{background:#0C1A30}
+.section{padding:100px 0}
+.section-alt{background:#0F1E38}
 
 .section-header{text-align:center;margin-bottom:48px}
 .section-header h2{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);color:#E8EEF7;margin-bottom:8px}
@@ -50,9 +51,9 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .section-header .accent{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:16px auto 0}
 
 /* what we're building */
-.build-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-.build-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;transition:border-color .2s,transform .2s}
-.build-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-2px)}
+.build-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.build-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px 24px;text-align:center;transition:all 0.3s}
+.build-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
 .build-card .b-icon{font-size:36px;margin-bottom:12px}
 .build-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7;margin-bottom:6px}
 .build-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.6}
@@ -61,8 +62,8 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .build-card .b-badge.live{background:rgba(52,199,123,.15);color:#34C77B}
 
 /* benefits */
-.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.benefit-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px}
+.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;transition:all 0.3s}
+.benefit-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px;transition:all 0.3s}
 .benefit-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .benefit-card ul{list-style:none;padding:0}
 .benefit-card ul li{font-family:var(--sans);padding:8px 0;font-size:14px;color:var(--text-muted);line-height:1.6;display:flex;align-items:flex-start;gap:10px}
@@ -70,7 +71,7 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 
 /* waitlist form */
 .waitlist-wrap{max-width:640px;margin:0 auto}
-.waitlist-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px}
+.waitlist-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:40px 32px}
 .waitlist-card .form-title{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:4px}
 .waitlist-card .form-subtitle{font-family:var(--sans);font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .field{margin-bottom:16px}
@@ -118,15 +119,14 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 
 @media(max-width:768px){
   .hero h1{font-size:34px}
-  .hero{padding:100px 20px 60px}
   .benefits-grid{grid-template-columns:1fr}
   .row-2{grid-template-columns:1fr}
-  .section{padding:48px 20px}
+  .section{padding:60px 0}
   .section-header h2{font-size:26px}
   .count-bar{gap:16px}
   .count-item .num{font-size:28px}
 }
-@media(max-width:480px){
+@media(max-width:640px){
   .hero h1{font-size:28px}
   .subject-grid{grid-template-columns:1fr 1fr}
 }
