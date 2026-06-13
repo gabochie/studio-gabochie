@@ -2,161 +2,143 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Start free."><meta property="og:title" content="Gideon Guitar Method — Learn Guitar Online"><meta property="og:description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Start free."><meta property="og:type" content="website"><meta property="og:url" content="https://gideonabochie.org/guitar/"><title>Gideon Guitar Method — Learn Guitar Online</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.onboard-wrap{max-width:520px;margin:0 auto;padding:24px 20px 48px;text-align:center}
+.onboard-logo{font-size:56px;margin-bottom:8px}
+.onboard-h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,40px);font-weight:800;line-height:1.1;color:var(--gld);margin-bottom:8px}
+.onboard-h1 em{font-style:normal;color:var(--text)}
+.onboard-sub{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto}
+.onboard-proof{display:flex;gap:16px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.onboard-proof-item{text-align:center;padding:12px 16px;background:rgba(255,255,255,.03);border-radius:10px;min-width:80px}
+.onboard-proof-num{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--gld);line-height:1}
+.onboard-proof-label{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+.onboard-form{text-align:left;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px}
+.onboard-form .form-input{margin-bottom:10px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)}
+.onboard-form .form-input:focus{outline:none;border-color:var(--gld)}
+.onboard-form select.form-input{color:var(--text2);appearance:none}
+.onboard-form label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px}
+.onboard-error{color:var(--red-light);font-size:12px;display:none;text-align:center;margin-top:8px}
+.onboard-footer{font-size:11px;color:var(--text3);text-align:center;margin-top:14px;line-height:1.5}
+.user-home{text-align:center;padding:48px 20px}
+.user-home h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:700;color:var(--gld);margin-bottom:8px}
+.user-home p{font-size:14px;color:var(--text2);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto}
+.user-home .quick-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px;margin:0 auto}
+.user-home .quick-link{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;text-decoration:none;color:var(--text);transition:all .2s}
+.user-home .quick-link:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.2)}
+.user-home .quick-link-icon{font-size:28px}
+.user-home .quick-link-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:600}
+.user-home .quick-link-desc{font-size:10px;color:var(--text3)}
+</style>
 </head>
 <body class="guitar-app">
 <div class="screen active">
-  <div class="hero" id="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-particles" id="particles"></div>
-    <div class="hero-content">
-      <span class="hero-icon">🎸</span>
-      <h1>Gideon Guitar Method</h1>
-      <p>The fastest path from zero to your first Ghanaian song. Deliberate practice, real-time pitch feedback, and a curriculum built on peer-reviewed learning science.</p>
-      <div class="hero-cta">
-        <a href="/guitar/learn/" class="btn btn-primary btn-lg">Start Free <i class="ti ti-arrow-right"></i></a>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-num" data-count="16">0</div><div class="hero-stat-label">Modules</div></div>
-        <div class="hero-stat"><div class="hero-stat-num" data-count="64">0</div><div class="hero-stat-label">Lessons</div></div>
-        <div class="hero-stat"><div class="hero-stat-num" data-count="15">0</div><div class="hero-stat-label">Ghanaian Songs</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">🎤</div><div class="hero-stat-label">Pitch Detection</div></div>
-      </div>
-    </div>
-  </div>
-
   <div class="scrollable" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
-    <!-- Science Section -->
-    <div class="section fade-up">
-      <div class="section-title">🧠 The Science</div>
-      <div class="section-sub">Built on peer-reviewed research — deliberate practice (Ericsson '93), spaced repetition (Cepeda '06), interleaving (Shea & Morgan '79)</div>
-      <div class="method-grid stagger">
-        <div class="method-card"><div class="method-icon">🎯</div><div class="method-title">Deliberate Practice</div><div class="method-desc">Focus on your weakest link, not what you already know</div></div>
-        <div class="method-card"><div class="method-icon">🔄</div><div class="method-title">Spaced Repetition</div><div class="method-desc">15 min/day beats 3 hr/weekend — retention triples</div></div>
-        <div class="method-card"><div class="method-icon">🔀</div><div class="method-title">Interleaving</div><div class="method-desc">Mix skills randomly, build robust neural pathways</div></div>
-        <div class="method-card"><div class="method-icon">⚡</div><div class="method-title">One-Minute Changes</div><div class="method-desc">The single most effective beginner chord drill</div></div>
+
+    <!-- Logged-in home -->
+    <div id="logged-in-home" style="display:none">
+      <div class="user-home">
+        <div style="font-size:56px;margin-bottom:8px">🎸</div>
+        <h2>Welcome back!</h2>
+        <p>Pick up where you left off.</p>
+        <div class="quick-links">
+          <a class="quick-link" href="/guitar/learn/"><span class="quick-link-icon">📚</span><span class="quick-link-label">Learn</span><span class="quick-link-desc">Continue your lessons</span></a>
+          <a class="quick-link" href="/guitar/practice/"><span class="quick-link-icon">⚡</span><span class="quick-link-label">Practice</span><span class="quick-link-desc">Drills & warmups</span></a>
+          <a class="quick-link" href="/guitar/dashboard/"><span class="quick-link-icon">📊</span><span class="quick-link-label">Progress</span><span class="quick-link-desc">XP, streaks & stats</span></a>
+          <a class="quick-link" href="/guitar/songs/"><span class="quick-link-icon">🎵</span><span class="quick-link-label">Songs</span><span class="quick-link-desc">Buy full access</span></a>
+          <a class="quick-link" href="/guitar/tuner/"><span class="quick-link-icon">🎤</span><span class="quick-link-label">Tuner</span><span class="quick-link-desc">Tune your guitar</span></a>
+          <a class="quick-link" href="#" onclick="Guitar.logout();return false" style="color:var(--text3)"><span class="quick-link-icon">🚪</span><span class="quick-link-label">Sign Out</span><span class="quick-link-desc">Switch account</span></a>
+        </div>
       </div>
     </div>
 
-    <div class="divider"></div>
+    <!-- Onboarding -->
+    <div id="onboard-home">
+      <div class="onboard-wrap">
+        <div class="onboard-logo">🎸</div>
+        <div class="onboard-h1">Learn <em>Your Favorite Songs</em> on Guitar</div>
+        <div class="onboard-sub">16 modules · 64 lessons · Real-time pitch detection · Deliberate practice system</div>
 
-    <!-- Songs Section -->
-    <div class="section fade-up">
-      <div class="section-title">🇬🇭 Ghanaian Song Library</div>
-      <div class="section-sub">Learn with songs you already love — Sarkodie, King Promise, Joe Mettle, Kofi Kinaata & more</div>
-      <div class="h-scroll stagger">
-        <div class="pillar-card"><div class="icon">🎤</div><div class="method-title">Sarkodie</div><div class="method-desc">Ayayi, Wish Me Well</div></div>
-        <div class="pillar-card"><div class="icon">🎵</div><div class="method-title">King Promise</div><div class="method-desc">Ewe, Sore</div></div>
-        <div class="pillar-card"><div class="icon">🙏</div><div class="method-title">Joe Mettle</div><div class="method-desc">Grace, Adonai, Amen</div></div>
-        <div class="pillar-card"><div class="icon">🎶</div><div class="method-title">Ebo Taylor</div><div class="method-desc">Highlife master</div></div>
-        <div class="pillar-card"><div class="icon">🎤</div><div class="method-title">Kofi Kinaata</div><div class="method-desc">Things Fall Apart</div></div>
-        <div class="pillar-card"><div class="icon">🎸</div><div class="method-title">Bisa Kdei</div><div class="method-desc">Mon Bébé</div></div>
+        <div class="onboard-proof">
+          <div class="onboard-proof-item"><div class="onboard-proof-num" id="stat-modules">16</div><div class="onboard-proof-label">Modules</div></div>
+          <div class="onboard-proof-item"><div class="onboard-proof-num" id="stat-lessons">64</div><div class="onboard-proof-label">Lessons</div></div>
+          <div class="onboard-proof-item"><div class="onboard-proof-num">🎤</div><div class="onboard-proof-label">Pitch Detection</div></div>
+        </div>
+
+        <form class="onboard-form" id="onboard-form">
+          <label for="o-name">Your Name</label>
+          <input class="form-input" id="o-name" name="name" placeholder="e.g. Emmanuel" required>
+
+          <label for="o-email">Email Address</label>
+          <input class="form-input" id="o-email" name="email" type="email" placeholder="your@email.com" required>
+
+          <label for="o-phone">Phone (optional)</label>
+          <input class="form-input" id="o-phone" name="phone" type="tel" placeholder="+233 55 123 4567">
+
+          <label for="o-level">Your Level</label>
+          <select class="form-input" id="o-level" name="skill_level">
+            <option value="beginner">Beginner — never played</option>
+            <option value="starter">Starter — know a few chords</option>
+            <option value="intermediate">Intermediate — can play songs</option>
+          </select>
+
+          <button type="submit" class="btn btn-primary btn-block" id="onboard-submit" style="padding:14px;font-size:15px;margin-top:4px">Start Learning Free <i class="ti ti-arrow-right"></i></button>
+          <div class="onboard-error" id="onboard-error"></div>
+          <div class="onboard-footer">No credit card needed. Modules 1-<span data-g-free>3</span> are free — unlock full access anytime.</div>
+        </form>
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- Curriculum Section -->
-    <div class="section fade-up">
-      <div class="section-title">📚 Curriculum</div>
-      <div class="section-sub">16 modules across 3 tiers — zero to performance-ready in 20 days</div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥉</span><div><div class="tier-title">Bronze — Foundation</div><div class="tier-sub">Days 1-5: Your first chords and changes</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=1'"><div class="module-num">1</div><div class="module-info"><div class="module-name">Meet Your Guitar</div><div class="module-desc">Parts, tuning & posture</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=2'"><div class="module-num">2</div><div class="module-info"><div class="module-name">The Fretboard</div><div class="module-desc">Strings, notes & finger independence</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=3'"><div class="module-num">3</div><div class="module-info"><div class="module-name">The Power 5</div><div class="module-desc">Em • Am • G • C • D</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=4'"><div class="module-num">4</div><div class="module-info"><div class="module-name">Rhythm Foundation</div><div class="module-desc">Strumming, metronome & time-keeping</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=5'"><div class="module-num">5</div><div class="module-info"><div class="module-name">One-Minute Changes</div><div class="module-desc">Speed & accuracy drill</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥈</span><div><div class="tier-title">Silver — Songcraft</div><div class="tier-sub">Days 6-14: Play real songs</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=6'"><div class="module-num">6</div><div class="module-info"><div class="module-name">Your First Song</div><div class="module-desc">2-chord Ghanaian hit — Wish Me Well</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=7'"><div class="module-num">7</div><div class="module-info"><div class="module-name">Strumming Patterns</div><div class="module-desc">Down-up, syncopation, highlife feel</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=8'"><div class="module-num">8</div><div class="module-info"><div class="module-name">More Chords</div><div class="module-desc">A • E • Dm • B7 • F</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=9'"><div class="module-num">9</div><div class="module-info"><div class="module-name">Ghanaian Songcraft</div><div class="module-desc">Ayayi, Ewe, Adom & more</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=10'"><div class="module-num">10</div><div class="module-info"><div class="module-name">Reading Tablature</div><div class="module-desc">Tabs, notation, finding notes</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=11'"><div class="module-num">11</div><div class="module-info"><div class="module-name">Pentatonic Foundation</div><div class="module-desc">First 5 notes of lead guitar</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥇</span><div><div class="tier-title">Gold — Expression</div><div class="tier-sub">Days 15-20: Master the guitar</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=12'"><div class="module-num">12</div><div class="module-info"><div class="module-name">Fingerpicking</div><div class="module-desc">Thumb-lead & folk melodies</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=13'"><div class="module-num">13</div><div class="module-info"><div class="module-name">The Barre Wall</div><div class="module-desc">F & Bm — the #1 quit point</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=14'"><div class="module-num">14</div><div class="module-info"><div class="module-name">Ghanaian Lead Guitar</div><div class="module-desc">Highlife phrasing & chops</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=15'"><div class="module-num">15</div><div class="module-info"><div class="module-name">Song Mastery Project</div><div class="module-desc">Learn, practice & record one song</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/guitar/learn/?module=16'"><div class="module-num">16</div><div class="module-info"><div class="module-name">Performance Mode</div><div class="module-desc">Play-along with real-time scoring</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- CTA Section -->
-    <div class="cta-section fade-up">
-      <h2>🎸 Start Your Journey</h2>
-      <p>Free trial — no credit card. First <span data-g-free>3</span> modules are completely free. Unlock all 16 modules + full song library for <span data-g-symbol-amount>GH₵ 99</span>.</p>
-      <button class="btn btn-primary btn-lg" id="cta-register">Start Free <i class="ti ti-arrow-right"></i></button>
-    </div>
-
-    <div style="height:20px"></div>
   </div>
-
-  <div id="user-area" style="justify-content:center;padding:8px 20px 0"></div>
-  <nav class="bottom-nav">
-    <a class="nav-item active" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
-    <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
-    <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
-    <a class="nav-item" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
-    <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
-    <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script>
-// Particles
-(function() {
-  const c = document.getElementById('particles');
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement('div');
-    p.className = 'hero-particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDelay = Math.random() * 6 + 's';
-    p.style.animationDuration = (4 + Math.random() * 4) + 's';
-    p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-    c.appendChild(p);
-  }
-})();
-
-// Animate stats on scroll
-(function() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        const count = parseInt(entry.target.dataset.count);
-        if (count) Guitar.countUp(entry.target, count);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: .5 });
-  document.querySelectorAll('.hero-stat-num[data-count]').forEach(el => observer.observe(el));
-})();
-
-// Fade-up on scroll
-(function() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.style.animationPlayState = 'running'; observer.unobserve(entry.target); }
-    });
-  }, { threshold: .1 });
-  document.querySelectorAll('.fade-up').forEach(el => { el.style.animationPlayState = 'paused'; observer.observe(el); });
-})();
-
 (async function() {
-  await Guitar.init();
+  const user = await Guitar.init();
   Guitar.applyConfig();
+
+  const loggedIn = document.getElementById('logged-in-home');
+  const onboard = document.getElementById('onboard-home');
+
+  if (user) {
+    onboard.style.display = 'none';
+    loggedIn.style.display = 'block';
+    return;
+  }
+
+  // Onboarding form
+  const form = document.getElementById('onboard-form');
+  const submit = document.getElementById('onboard-submit');
+  const errEl = document.getElementById('onboard-error');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    submit.disabled = true;
+    submit.textContent = 'Creating account...';
+    errEl.style.display = 'none';
+
+    const data = {
+      name: document.getElementById('o-name').value.trim(),
+      email: document.getElementById('o-email').value.trim(),
+      phone: document.getElementById('o-phone').value.trim(),
+      skill_level: document.getElementById('o-level').value
+    };
+
+    try {
+      const res = await Guitar.register(data);
+      Guitar.token = res.token;
+      Guitar.user = res.user;
+      localStorage.setItem('ga_token', res.token);
+      localStorage.setItem('ga_student', JSON.stringify(res.user));
+      localStorage.setItem('ga_session_token', res.token);
+      window.location.href = '/guitar/learn/';
+    } catch (err) {
+      errEl.textContent = err.message || 'Something went wrong. Try again.';
+      errEl.style.display = 'block';
+      submit.disabled = false;
+      submit.textContent = 'Start Learning Free';
+    }
+  });
 })();
-document.getElementById('cta-register')?.addEventListener('click', () => Guitar.showRegisterModal());
 </script>
 </body></html>
