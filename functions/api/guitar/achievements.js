@@ -1,4 +1,4 @@
-import { getUser, json } from '../_utils.js';
+import { getUser, json } from './_utils.js';
 
 export async function onRequest(context) {
   const db = context.env.DB;

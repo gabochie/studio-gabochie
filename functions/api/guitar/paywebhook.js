@@ -1,4 +1,4 @@
-import { json } from '../_utils.js';
+import { json } from './_utils.js';
 
 export async function onRequest(context) {
   if (context.request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
