@@ -32,6 +32,7 @@ class FretboardRenderer {
   }
 
   resize() {
+    if (!this.canvas || !this.canvas.parentElement) return;
     const rect = this.canvas.parentElement.getBoundingClientRect();
     this.canvas.width = rect.width - 24;
     this.canvas.height = 180;

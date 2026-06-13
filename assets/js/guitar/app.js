@@ -174,7 +174,7 @@ const Guitar = {
     const path = window.location.pathname;
     document.querySelectorAll('.nav-item').forEach(a => {
       const href = a.getAttribute('href');
-      a.classList.toggle('active', href === path || (href !== '/school/guitar/' && path.startsWith(href)));
+      a.classList.toggle('active', href === path || (path.startsWith(href) && path.length > href.length && path[href.length] === '/'));
     });
   },
 
@@ -253,6 +253,7 @@ const Guitar = {
         this.user = res.user;
         localStorage.setItem('ga_token', res.token);
         localStorage.setItem('ga_student', JSON.stringify(res.user));
+        localStorage.setItem('ga_session_token', res.token);
         this.hideSheet();
         this.showToast('Welcome to Gideon Guitar Method!', 'success');
         this.trackEvent('registration_complete', { name: data.name, email: data.email });

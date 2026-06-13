@@ -27,7 +27,7 @@ class GuitarTuner {
   async start(audioContext) {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-      this.ctx = audioContext || new AudioContext();
+      this.ctx = audioContext || new (window.AudioContext || window.webkitAudioContext)();
       this.microphone = this.ctx.createMediaStreamSource(this.stream);
       this.analyser = this.ctx.createAnalyser();
       this.analyser.fftSize = 2048;

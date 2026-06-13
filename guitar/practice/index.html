@@ -185,25 +185,25 @@ function showSection(id) { document.getElementById('p-landing').style.display='n
 
   // One-Minute Drill
   omDrill = new OneMinuteDrill({
-    onTick: function(remaining, changes) {
-      document.getElementById('om-score').textContent = changes + ' changes';
-      document.getElementById('om-timer').textContent = remaining;
-      const offset = CIRC * (remaining / 60);
+    onTick: function({timeLeft, score}) {
+      document.getElementById('om-score').textContent = score + ' changes';
+      document.getElementById('om-timer').textContent = timeLeft;
+      const offset = CIRC * (timeLeft / 60);
       document.getElementById('om-ring-prog').style.strokeDashoffset = offset;
     },
-    onComplete: function(changes) {
+    onComplete: function({score, pair}) {
       document.getElementById('om-timer').textContent = '0';
       document.getElementById('om-ring-prog').style.strokeDashoffset = CIRC;
       document.getElementById('om-start-btn').innerHTML = 'Start <i class="ti ti-player-play"></i>';
       document.getElementById('om-change-btn').disabled = true;
       document.getElementById('om-result').style.display = 'block';
-      document.getElementById('om-final').textContent = changes;
+      document.getElementById('om-final').textContent = score;
       const from = document.getElementById('om-from').value, to = document.getElementById('om-to').value;
-      const h = new OneMinuteHistory();
-      const pb = h.addRecord({from, to, changes});
+      const pairKey = `${from}→${to}`;
+      const pb = OneMinuteHistory.addRecord(pairKey, score);
       document.getElementById('om-pb').textContent = pb.improvement ? `Personal Best! Was ${pb.improvement}` : (pb.isNewPB ? '🔥 Personal Best!' : '');
       renderOmHistory();
-      if (user) Guitar.saveOneMinute(`${from}→${to}`, changes).catch(()=>{});
+      if (user) Guitar.saveOneMinute(pairKey, score).catch(()=>{});
     }
   });
 
@@ -219,19 +219,32 @@ function showSection(id) { document.getElementById('p-landing').style.display='n
   document.getElementById('om-change-btn').onclick = function() { omDrill.countChange(); };
 
   function renderOmHistory() {
-    const h = new OneMinuteHistory();
-    const r = h.getAll();
+    const pairs = OneMinuteHistory.getAllPairs();
     const el = document.getElementById('om-history');
-    if (!r.length) { el.innerHTML = ''; return; }
+    if (!pairs.length) { el.innerHTML = ''; return; }
     el.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600">Recent Records</div>';
-    r.slice(-10).reverse().forEach(x => {
-      el.innerHTML += `<div class="flex justify-between" style="font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span>${x.from} → ${x.to}</span><span style="color:var(--gld);font-weight:600">${x.changes}</span></div>`;
+    const all = [];
+    pairs.forEach(p => {
+      OneMinuteHistory.getHistory(p).forEach(r => all.push({ pair: p, score: r.score, date: r.date }));
+    });
+    all.sort((a, b) => new Date(b.date) - new Date(a.date));
+    all.slice(0, 10).forEach(x => {
+      el.innerHTML += `<div class="flex justify-between" style="font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span>${x.pair}</span><span style="color:var(--gld);font-weight:600">${x.score}</span></div>`;
     });
   }
   renderOmHistory();
 
   // Metronome
   metronome = new GuitarMetronome();
+  metronome.onBeat = function(beat, total) {
+    const v = document.getElementById('metro-visual');
+    v.innerHTML = '';
+    for (let i = 1; i <= total; i++) {
+      const d = document.createElement('div');
+      d.className = `metro-beat${i===1?' accent':''}${i===beat?' active':''}`;
+      v.appendChild(d);
+    }
+  };
   document.getElementById('bpm-slider').oninput = function() {
     document.getElementById('metro-bpm').textContent = this.value;
     if (metronome.running) metronome.setBpm(parseInt(this.value));
@@ -239,15 +252,7 @@ function showSection(id) { document.getElementById('p-landing').style.display='n
   document.getElementById('metro-toggle').onclick = function() {
     if (metronome.running) { metronome.stop(); this.innerHTML='Start <i class="ti ti-player-play"></i>'; return; }
     const bpm = parseInt(document.getElementById('bpm-slider').value);
-    metronome.start(bpm, function(beat, total) {
-      const v = document.getElementById('metro-visual');
-      v.innerHTML = '';
-      for (let i = 1; i <= total; i++) {
-        const d = document.createElement('div');
-        d.className = `metro-beat${i===1?' accent':''}${i===beat?' active':''}`;
-        v.appendChild(d);
-      }
-    });
+    metronome.start(bpm);
     this.innerHTML = 'Stop <i class="ti ti-player-play"></i>';
   };
 

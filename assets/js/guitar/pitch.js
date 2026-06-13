@@ -26,7 +26,7 @@ class PitchDetector {
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
       });
-      this.ctx = audioCtx || new AudioContext();
+      this.ctx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       this.sampleRate = this.ctx.sampleRate;
       this.mic = this.ctx.createMediaStreamSource(this.stream);
       this.analyser = this.ctx.createAnalyser();

@@ -159,7 +159,7 @@ window.showSongDetail = function(id) {
 };
 
 window.handleSongsSignIn = async function(user) {
-  currentUserEmail = user.email;
+  currentUserEmail = user.email || '';
   document.getElementById('songs-auth').style.display='none';
   document.getElementById('songs-content').style.display='block';
   renderSongs('all');

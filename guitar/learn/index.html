@@ -44,13 +44,15 @@ const MODULES = [
 ];
 
 (async function() {
-  const user = await Guitar.init();
+  let user, enrollStatus = null;
+  try {
+    user = await Guitar.init();
+  } catch(e) { user = null; }
   Guitar.applyConfig();
   const c = document.getElementById('learn-content');
   const p = new URLSearchParams(location.search);
   const modId = p.get('module') ? parseInt(p.get('module')) : null;
   const lesId = p.get('lesson') ? parseInt(p.get('lesson')) : null;
-  let enrollStatus = null;
   try { enrollStatus = await Guitar.getEnrollStatus(); } catch(e) {}
 
   function isModuleAccessible(m) {

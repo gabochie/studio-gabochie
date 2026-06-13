@@ -17,7 +17,7 @@ class GuitarMetronome {
 
   start(bpm) {
     if (bpm) this.bpm = bpm;
-    if (!this.ctx) this.ctx = new AudioContext();
+    if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (this.ctx.state === 'suspended') this.ctx.resume();
     this.running = true;
     this.currentBeat = 0;
@@ -35,7 +35,7 @@ class GuitarMetronome {
 
     while (this.nextNoteTime < this.ctx.currentTime + this.scheduleAhead) {
       this.playClick(this.nextNoteTime, this.currentBeat);
-      if (this.onBeat) this.onBeat(this.currentBeat);
+      if (this.onBeat) this.onBeat(this.currentBeat + 1, this.beatsPerBar);
       this.currentBeat = (this.currentBeat + 1) % this.beatsPerBar;
       this.nextNoteTime += 60.0 / this.bpm;
     }
