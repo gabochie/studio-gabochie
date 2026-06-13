@@ -6,10 +6,11 @@
 <title>Careers · GideonAbochie Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/style.css">
 <style>
-:root{--display:'Barlow Condensed',sans-serif;--body:'DM Sans',sans-serif;--serif:'Libre Baskerville',serif;--navy:#0A1628;--gold:#C9A84C;--card-bg:#0F1F35;--text-light:#CDD5E0;--text-muted:#6B7F9A;--border:#1E3456}
+:root{--display:'Barlow Condensed',sans-serif;--body:'Libre Baskerville',Georgia,serif;--sans:'Barlow',sans-serif;--mono:'Courier Prime',monospace;--navy:#0A1628;--gold:#C9A84C;--card-bg:#0F1E38;--text-light:#E8EEF7;--text-muted:#8A9BB5;--border:#1E3250}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--navy);color:var(--text-light);font-family:var(--body);overflow-x:hidden}
 
@@ -22,21 +23,30 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .hero-tag{display:inline-block;padding:6px 16px;border:1px solid rgba(201,168,76,.3);border-radius:20px;font-family:var(--display);font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px}
 .hero h1{font-family:var(--display);font-size:56px;font-weight:900;color:#fff;line-height:1.05;margin-bottom:16px}
 .hero h1 span{color:var(--gold)}
-.hero p{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:560px;margin:0 auto 32px}
+.hero p{font-family:var(--sans);font-size:16px;color:var(--text-muted);line-height:1.7;max-width:560px;margin:0 auto 32px}
 .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.hero-actions .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:8px;font-family:var(--display);font-size:14px;font-weight:700;text-decoration:none;transition:all .2s;text-transform:uppercase;letter-spacing:.06em}
-.hero-actions .btn-primary{background:var(--gold);color:var(--navy)}
-.hero-actions .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.25)}
-.hero-actions .btn-secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff}
-.hero-actions .btn-secondary:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.hero-actions .btn{padding:14px 32px;font-size:14px;letter-spacing:.2em}
+
+/* standard section pattern (homepage style) */
+.section-label{display:inline-flex;align-items:center;gap:6px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
+.section-heading{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);margin-bottom:16px;color:#E8EEF7}
+.section-heading span{color:#C9A84C}
+.section-sub{font-family:'Barlow',sans-serif;font-size:17px;color:#8A9BB5;max-width:640px;line-height:1.7;margin-bottom:40px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;text-decoration:none;line-height:1}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
+.btn-gold{background:#C9A84C;color:#0A1628}
+.btn-gold:hover{background:#D9B85C;color:#0A1628}
+.btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
+.btn-outline:hover{background:#C9A84C;color:#0A1628}
 
 /* sections */
 .section{padding:72px 24px}
 .section-alt{background:#0C1A30}
 .section-inner{max-width:1100px;margin:0 auto}
 .section-header{text-align:center;margin-bottom:48px}
-.section-header h2{font-family:var(--display);font-size:36px;font-weight:900;color:#fff;margin-bottom:8px}
-.section-header p{color:var(--text-muted);font-size:15px;max-width:540px;margin:0 auto}
+.section-header h2{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);color:#E8EEF7;margin-bottom:8px}
+.section-header h2 span{color:#C9A84C}
+.section-header p{color:var(--text-muted);font-size:15px;max-width:540px;margin:0 auto;font-family:var(--sans);line-height:1.7}
 .section-header .accent{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:16px auto 0}
 
 /* job cards */
@@ -52,7 +62,7 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .job-card .badge.internship{background:rgba(168,85,247,.15);color:#C084FC}
 .job-card .meta{display:flex;gap:8px;flex-wrap:wrap}
 .job-card .meta span{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted);background:rgba(255,255,255,.04);padding:4px 10px;border-radius:6px}
-.job-card .desc{font-size:14px;color:#94A3B8;line-height:1.7}
+.job-card .desc{font-family:var(--sans);font-size:14px;color:var(--text-muted);line-height:1.7}
 .job-card .actions{display:flex;gap:10px;margin-top:4px}
 .job-card .apply-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;background:var(--gold);color:var(--navy);border-radius:6px;font-family:var(--display);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.06em;transition:all .2s}
 .job-card .apply-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.2)}
@@ -71,7 +81,7 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .resource-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-2px)}
 .resource-card .r-icon{font-size:32px}
 .resource-card h4{font-family:var(--display);font-size:17px;font-weight:700;color:#fff}
-.resource-card p{font-size:13px;color:#94A3B8;line-height:1.7}
+.resource-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.7}
 .resource-card a{color:var(--gold);font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px}
 .resource-card a:hover{color:#D9B85C}
 
@@ -121,7 +131,7 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 .value-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-2px)}
 .value-card .v-icon{font-size:36px;margin-bottom:12px}
 .value-card h4{font-family:var(--display);font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
-.value-card p{font-size:13px;color:#94A3B8;line-height:1.6}
+.value-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.6}
 
 /* loading spinner */
 .sp{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
@@ -157,8 +167,8 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
     <h1>Build Your<span> Career</span> Build <span>Ghana</span></h1>
     <p>Join GideonAbochie Studio and help us equip a generation with creativity, love, and wisdom. We're looking for passionate people who want to make a difference.</p>
     <div class="hero-actions">
-      <a href="#apply" class="btn btn-primary">View Open Positions</a>
-      <a href="#resources" class="btn btn-secondary">Explore Resources</a>
+      <a href="#apply" class="btn btn-gold">View Open Positions</a>
+      <a href="#resources" class="btn btn-outline">Explore Resources</a>
     </div>
   </div>
 </div>
@@ -166,9 +176,9 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 <div class="section section-alt" id="positions">
   <div class="section-inner">
     <div class="section-header">
-      <h2>Open Positions</h2>
-      <p>Current opportunities at GideonAbochie Studio and partner organizations.</p>
-      <div class="accent"></div>
+      <div class="section-label"><i class="ti ti-briefcase"></i> Opportunities</div>
+      <h2>Open <span>Positions</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Current opportunities at GideonAbochie Studio and partner organizations.</p>
     </div>
     <div class="job-list" id="jobList">
       <div class="empty-jobs"><div class="sp"></div></div>
@@ -179,9 +189,9 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 <div class="section">
   <div class="section-inner">
     <div class="section-header">
-      <h2>Why Join Us</h2>
-      <p>What makes working at GideonAbochie Studio different.</p>
-      <div class="accent"></div>
+      <div class="section-label"><i class="ti ti-star"></i> Culture</div>
+      <h2>Why <span>Join Us</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">What makes working at GideonAbochie Studio different.</p>
     </div>
     <div class="values-grid">
       <div class="value-card">
@@ -211,9 +221,9 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 <div class="section section-alt" id="resources">
   <div class="section-inner">
     <div class="section-header">
-      <h2>Career Resources</h2>
-      <p>Tools and guides to help you build a career that matters.</p>
-      <div class="accent"></div>
+      <div class="section-label"><i class="ti ti-tools"></i> Resources</div>
+      <h2>Career <span>Resources</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Tools and guides to help you build a career that matters.</p>
     </div>
     <div class="resources-grid">
       <div class="resource-card">
@@ -259,9 +269,9 @@ body{background:var(--navy);color:var(--text-light);font-family:var(--body);over
 <div class="section" id="apply">
   <div class="section-inner">
     <div class="section-header">
-      <h2>Apply Now</h2>
-      <p>Submit a general application or apply for a specific position.</p>
-      <div class="accent"></div>
+      <div class="section-label"><i class="ti ti-send"></i> Apply</div>
+      <h2>Apply <span>Now</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Submit a general application or apply for a specific position.</p>
     </div>
     <div class="apply-wrap">
       <div id="appMsg" class="msg"></div>
