@@ -97,6 +97,37 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
     </div>
     <p style="font-size:11px;color:#3A5278;margin-top:6px" id="flwKeyStatus">Loaded from settings</p>
   </div>
+  <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
+    <label style="font-size:12px;color:#5A7A9F;display:block;margin-bottom:12px;font-weight:600">Pricing</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Price (GHS)</label>
+        <input id="cfgPrice" type="number" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="99" />
+      </div>
+      <div>
+        <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Compare-at Price (strikethrough)</label>
+        <input id="cfgComparePrice" type="number" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="500" />
+      </div>
+      <div>
+        <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Currency Symbol</label>
+        <input id="cfgCurrencySymbol" type="text" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="GH₵" />
+      </div>
+      <div>
+        <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Free Modules Count</label>
+        <input id="cfgFreeModules" type="number" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="3" />
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Urgency Text</label>
+      <input id="cfgUrgency" type="text" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="⚡ Launch price — lock it in now" />
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;color:#5A7A9F;display:block;margin-bottom:4px">Pricing Tagline</label>
+      <input id="cfgTagline" type="text" style="width:100%;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;color:#CBD5E1;font-size:13px" placeholder="One-time payment — lifetime access — no hidden fees" />
+    </div>
+    <button type="button" class="btn-sm" onclick="savePricing()">Save All Pricing</button>
+    <span style="font-size:11px;color:#3A5278;margin-left:8px" id="pricingStatus">Loaded</span>
+  </div>
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
 <script src="admin-ui.js"></script>
@@ -216,6 +247,7 @@ function loadPaystackKey() {
 }
 
 loadFlwKey();
+loadPricing();
 
 function loadFlwKey() {
   adminFetch('/api/admin/preferences').then(r => r.json()).then(data => {
@@ -246,6 +278,48 @@ function saveFlwKey() {
     }
   }).catch(e => {
     document.getElementById('flwKeyStatus').textContent = 'Error: ' + e.message;
+  });
+}
+
+var PRICING_KEYS = {
+  cfgPrice: 'guitar_price',
+  cfgComparePrice: 'guitar_compare_price',
+  cfgCurrencySymbol: 'guitar_currency_symbol',
+  cfgFreeModules: 'guitar_free_modules',
+  cfgUrgency: 'guitar_urgency_text',
+  cfgTagline: 'guitar_pricing_tagline'
+};
+
+function loadPricing() {
+  adminFetch('/api/admin/preferences').then(r => r.json()).then(data => {
+    if (data.status !== 'ok') return;
+    var p = data.preferences || {};
+    Object.keys(PRICING_KEYS).forEach(function(id) {
+      var val = p[PRICING_KEYS[id]];
+      if (val !== undefined) document.getElementById(id).value = val;
+    });
+    document.getElementById('pricingStatus').textContent = 'Loaded';
+  }).catch(function() {
+    document.getElementById('pricingStatus').textContent = 'Could not load';
+  });
+}
+
+function savePricing() {
+  var status = document.getElementById('pricingStatus');
+  status.textContent = 'Saving...';
+  var promises = Object.keys(PRICING_KEYS).map(function(id) {
+    var val = document.getElementById(id).value.trim();
+    return adminFetch('/api/admin/preferences', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: PRICING_KEYS[id], value: val })
+    }).then(function(r) { return r.json(); });
+  });
+  Promise.all(promises).then(function(results) {
+    var ok = results.every(function(r) { return r.status === 'ok'; });
+    status.textContent = ok ? 'Saved!' : 'Some fields failed';
+  }).catch(function(e) {
+    status.textContent = 'Error: ' + e.message;
   });
 }
 

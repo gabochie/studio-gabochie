@@ -6,6 +6,12 @@ const Guitar = {
   API_ROOT: '/api/guitar',
   PAYSTACK_PUBLIC_KEY: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
   FLUTTERWAVE_PUBLIC_KEY: 'FLWPUBK_TEST-6f4a7e5d8c9b0a1d2e3f4a5b6c7d8e9f-X',
+  PRICE: '99',
+  COMPARE_PRICE: '500',
+  CURRENCY_SYMBOL: 'GH₵',
+  FREE_MODULES: 3,
+  URGENCY_TEXT: '',
+  PRICING_TAGLINE: 'One-time payment — lifetime access — no hidden fees',
   user: null, token: null,
 
   /* ----- Auth ----- */
@@ -23,6 +29,12 @@ const Guitar = {
       const config = await (await fetch('/api/guitar/config')).json();
       if (config.paystackPublicKey) this.PAYSTACK_PUBLIC_KEY = config.paystackPublicKey;
       if (config.flutterwavePublicKey) this.FLUTTERWAVE_PUBLIC_KEY = config.flutterwavePublicKey;
+      if (config.price) this.PRICE = config.price;
+      if (config.comparePrice) this.COMPARE_PRICE = config.comparePrice;
+      if (config.currencySymbol) this.CURRENCY_SYMBOL = config.currencySymbol;
+      if (config.freeModules) this.FREE_MODULES = parseInt(config.freeModules) || 3;
+      if (config.urgencyText) this.URGENCY_TEXT = config.urgencyText;
+      if (config.pricingTagline) this.PRICING_TAGLINE = config.pricingTagline;
     } catch (e) {
       /* keep defaults */
     }
@@ -191,7 +203,7 @@ const Guitar = {
         <div style="text-align:center;margin-bottom:16px">
           <div style="font-size:40px;margin-bottom:4px">🎸</div>
           <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)">Start Free Trial</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-3 free • Full course GH¢ 250</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-${this.FREE_MODULES} free • Full course ${this.CURRENCY_SYMBOL} ${this.PRICE}</div>
         </div>
         <form id="register-form">
           <input class="form-input" name="name" placeholder="Your name" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
