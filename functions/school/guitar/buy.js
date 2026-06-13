@@ -16,6 +16,15 @@ export async function onRequest(context) {
     return '<div class="faq-item"><button class="faq-q" onclick="toggleFaq(' + i + ')" aria-expanded="false">' + esc(f.q) + '<span class="faq-arrow">+</span></button><div class="faq-a" id="faq' + i + '">' + esc(f.a) + '</div></div>';
   }).join('');
 
+  var flwPublicKey = context.env.FLW_PUBLIC_KEY;
+  if (!flwPublicKey && context.env.DB) {
+    try {
+      var setting = await context.env.DB.prepare("SELECT value FROM settings WHERE key = 'guitar_flutterwave_key'").first();
+      if (setting?.value) flwPublicKey = setting.value;
+    } catch(_) {}
+  }
+  flwPublicKey = flwPublicKey || 'FLWPUBK_TEST-6f4a7e5d8c9b0a1d2e3f4a5b6c7d8e9f-X';
+
   var html = '<!DOCTYPE html><html lang="en"><head>' +
     '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<title>Gideon Guitar Method — Learn Ghanaian Songs on Guitar</title>' +
@@ -224,7 +233,7 @@ export async function onRequest(context) {
     '  var tx_ref = "guitar_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8);' +
     '  try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"purchase_started",tx_ref:tx_ref,amount:COURSE_PRICE,email:email,name:name,campaign:SLUG})})}catch(e){}' +
     '  FlutterwaveCheckout({' +
-    '    public_key: "' + (context.env.FLW_PUBLIC_KEY || 'FLWPUBK_TEST-6f4a7e5d8c9b0a1d2e3f4a5b6c7d8e9f-X') + '",' +
+    '    public_key: "' + flwPublicKey + '",' +
     '    tx_ref: tx_ref,' +
     '    amount: COURSE_PRICE,' +
     '    currency: "GHS",' +
