@@ -1,8 +1,8 @@
 # Root is served automatically by Cloudflare Pages
 
-# Guitar → School/guitar (permanent 301)
-/guitar/* /school/guitar/:splat 301
-/guitar /school/guitar/ 301
+# School/guitar → Guitar standalone (permanent 301)
+/school/guitar/* /guitar/:splat 301
+/school/guitar /guitar/ 301
 
 # Donate
 /donate /donate/ 200

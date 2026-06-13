@@ -221,7 +221,14 @@ function toggleFAQ(el) {
 (async function() {
   if (typeof Guitar === 'undefined') return;
   const user = await Guitar.init();
+  if (!document.getElementById('user-area')) {
+    const uaDiv = document.createElement('div');
+    uaDiv.id = 'user-area';
+    document.querySelector('.screen')?.prepend(uaDiv);
+  }
   Guitar.applyConfig();
+  const ua = document.getElementById('user-area');
+  if (ua && user) { ua.style.display='flex'; ua.style.justifyContent='center'; ua.style.padding='12px 20px 0'; ua.innerHTML=`<span style="font-size:13px;color:var(--text3)">${user.name}</span> <a href="#" onclick="Guitar.logout();return false" style="font-size:12px;color:var(--gld);text-decoration:none;font-weight:600;margin-left:10px">Sign Out</a>`; }
 
   // Load waitlist count
   const wlCount = document.getElementById('wl-count');

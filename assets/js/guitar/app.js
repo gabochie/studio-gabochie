@@ -21,7 +21,19 @@ const Guitar = {
       this.user = JSON.parse(localStorage.getItem('ga_student') || 'null');
     }
     this.fetchConfig();
+    this.renderUserArea();
     return this.user;
+  },
+
+  renderUserArea() {
+    const el = document.getElementById('user-area');
+    if (!el) return;
+    if (this.user) {
+      el.style.display = 'flex';
+      el.innerHTML = `<span style="font-size:12px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${this.user.name}</span><a href="#" onclick="Guitar.logout();return false" style="font-size:11px;color:var(--gld);text-decoration:none;font-weight:600;margin-left:8px;white-space:nowrap">Sign Out</a>`;
+    } else {
+      el.style.display = 'none';
+    }
   },
 
   applyConfig() {
@@ -69,7 +81,7 @@ const Guitar = {
   logout() {
     localStorage.removeItem('ga_token'); localStorage.removeItem('ga_student');
     this.user = null; this.token = null;
-    window.location.href = '/school/guitar/';
+    window.location.href = '/guitar/';
   },
 
   /* ----- API Methods ----- */
@@ -204,7 +216,7 @@ const Guitar = {
 
   /* ----- Register Modal (one-click) ----- */
   showRegisterModal(opts = {}) {
-    const redirect = opts.redirect || '/school/guitar/waitlist/?registered=1';
+    const redirect = opts.redirect || '/guitar/waitlist/?registered=1';
     const existing = document.querySelector('.sheet-overlay');
     if (existing) existing.remove();
     const html = `<div class="sheet" style="border-radius:24px 24px 0 0;max-width:400px;margin:auto auto 0">
