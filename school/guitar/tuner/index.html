@@ -67,33 +67,33 @@ window.playRef = function(n) {
 };
 
 document.getElementById('request-mic-btn').onclick = async function() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, echoCancellation: false, noiseSuppression: false });
-    document.getElementById('tuner-mic').style.display = 'none';
-    document.getElementById('tuner-active').style.display = 'flex';
-    tuner = new GuitarTuner();
-    tuner.start(stream, function(r) {
-      if (!r) { document.getElementById('tuner-note').textContent = '--'; document.getElementById('tuner-freq').textContent = '--- Hz'; document.getElementById('tuner-status').textContent = 'No note detected'; return; }
-      document.getElementById('tuner-note').textContent = r.note + r.octave;
-      document.getElementById('tuner-freq').textContent = r.frequency.toFixed(1) + ' Hz';
-      const cents = Math.min(Math.max(r.centsOffset + 50, 0), 100);
-      const fill = document.getElementById('tuner-cents-fill');
-      fill.style.width = cents + '%';
-      const inTune = Math.abs(r.centsOffset) < 5;
-      fill.style.background = inTune ? 'var(--green-light)' : Math.abs(r.centsOffset) < 15 ? 'var(--gld)' : 'var(--red-light)';
-      document.getElementById('tuner-status').textContent = inTune ? '✓ In Tune' : (r.centsOffset < 0 ? '♭ Flat — tighten' : '♯ Sharp — loosen');
-      document.getElementById('tuner-status').className = inTune ? 'tuner-status in-tune' : 'tuner-status';
-      // Canvas needle
-      const cv = document.getElementById('tuner-canvas'), cx = cv.getContext('2d');
-      const w=160,h=160,cx2=80,cy2=80,rad=70;
-      cx.clearRect(0,0,w,h);
-      cx.beginPath(); cx.arc(cx2,cy2,rad,-Math.PI*.75,Math.PI*.25); cx.strokeStyle='rgba(255,255,255,.06)'; cx.lineWidth=6; cx.stroke();
-      const a = -Math.PI*.75 + (Math.PI*(cents/100));
-      cx.beginPath(); cx.moveTo(cx2,cy2); cx.lineTo(cx2+Math.cos(a)*rad*.65, cy2+Math.sin(a)*rad*.65);
-      cx.strokeStyle = inTune ? 'var(--green-light)' : 'var(--gld)'; cx.lineWidth=4; cx.stroke();
-      cx.beginPath(); cx.arc(cx2,cy2,4,0,Math.PI*2); cx.fillStyle='var(--gld)'; cx.fill();
-    });
-  } catch(e) {
+  document.getElementById('tuner-mic').style.display = 'none';
+  document.getElementById('tuner-active').style.display = 'flex';
+  tuner = new GuitarTuner();
+  tuner.onUpdate = function(note, cents, freq) {
+    if (!note) { document.getElementById('tuner-note').textContent = '--'; document.getElementById('tuner-freq').textContent = '--- Hz'; document.getElementById('tuner-status').textContent = 'No note detected'; return; }
+    document.getElementById('tuner-note').textContent = note.name + note.octave;
+    document.getElementById('tuner-freq').textContent = freq.toFixed(1) + ' Hz';
+    const pct = Math.min(Math.max(cents + 50, 0), 100);
+    const fill = document.getElementById('tuner-cents-fill');
+    fill.style.width = pct + '%';
+    const inTune = Math.abs(cents) < 5;
+    fill.style.background = inTune ? 'var(--green-light)' : Math.abs(cents) < 15 ? 'var(--gld)' : 'var(--red-light)';
+    document.getElementById('tuner-status').textContent = inTune ? '✓ In Tune' : (cents < 0 ? '♭ Flat — tighten' : '♯ Sharp — loosen');
+    document.getElementById('tuner-status').className = inTune ? 'tuner-status in-tune' : 'tuner-status';
+    const cv = document.getElementById('tuner-canvas'), cx = cv.getContext('2d');
+    const w=160,h=160,cx2=80,cy2=80,rad=70;
+    cx.clearRect(0,0,w,h);
+    cx.beginPath(); cx.arc(cx2,cy2,rad,-Math.PI*.75,Math.PI*.25); cx.strokeStyle='rgba(255,255,255,.06)'; cx.lineWidth=6; cx.stroke();
+    const a = -Math.PI*.75 + (Math.PI*(pct/100));
+    cx.beginPath(); cx.moveTo(cx2,cy2); cx.lineTo(cx2+Math.cos(a)*rad*.65, cy2+Math.sin(a)*rad*.65);
+    cx.strokeStyle = inTune ? 'var(--green-light)' : 'var(--gld)'; cx.lineWidth=4; cx.stroke();
+    cx.beginPath(); cx.arc(cx2,cy2,4,0,Math.PI*2); cx.fillStyle='var(--gld)'; cx.fill();
+  };
+  const ok = await tuner.start();
+  if (!ok) {
+    document.getElementById('tuner-mic').style.display = 'block';
+    document.getElementById('tuner-active').style.display = 'none';
     document.getElementById('mic-error').textContent = 'Microphone access denied. Allow microphone in your browser settings.';
     document.getElementById('mic-error').style.display = 'block';
   }
