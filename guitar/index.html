@@ -152,7 +152,10 @@
   document.querySelectorAll('.fade-up').forEach(el => { el.style.animationPlayState = 'paused'; observer.observe(el); });
 })();
 
-Guitar.init();
+(async function() {
+  await Guitar.init();
+  Guitar.applyConfig();
+})();
 document.getElementById('cta-register')?.addEventListener('click', () => Guitar.showRegisterModal());
 </script>
 </body></html>
