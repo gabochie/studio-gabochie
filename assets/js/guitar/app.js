@@ -4,7 +4,7 @@
 const Guitar = {
   /* ----- Config ----- */
   API_ROOT: '/api/guitar',
-  PAYSTACK_PUBLIC_KEY: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2', // REPLACE with live key before production
+  PAYSTACK_PUBLIC_KEY: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
   user: null, token: null,
 
   /* ----- Auth ----- */
@@ -13,7 +13,17 @@ const Guitar = {
     if (this.token) {
       this.user = JSON.parse(localStorage.getItem('ga_student') || 'null');
     }
+    this.fetchConfig();
     return this.user;
+  },
+
+  async fetchConfig() {
+    try {
+      const config = await (await fetch('/api/guitar/config')).json();
+      if (config.paystackPublicKey) this.PAYSTACK_PUBLIC_KEY = config.paystackPublicKey;
+    } catch (e) {
+      /* keep default key */
+    }
   },
 
   isLoggedIn() { return !!this.token; },
