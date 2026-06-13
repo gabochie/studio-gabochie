@@ -35,12 +35,12 @@
 <script src="/assets/js/guitar/app.js"></script>
 <script>
 const MODULES = [
-  {id:1,tier:'bronze',title:'Meet Your Guitar',lessons:[{id:1,title:'Parts of the Guitar',video:'https://www.youtube.com/embed/4WUlLx6a9BU',duration:5},{id:2,title:'How to Hold the Guitar',video:'https://www.youtube.com/embed/6YNWkR7mh4Y',duration:5},{id:3,title:'How to Tune Your Guitar',video:'https://www.youtube.com/embed/xcmUReUJhpM',duration:8},{id:4,title:'Posture & Ergonomics Check',video:'https://www.youtube.com/embed/01gRTiVyBQ0',duration:4}]},
-  {id:2,tier:'bronze',title:'The Fretboard',lessons:[{id:5,title:'Open String Names',video:'https://www.youtube.com/embed/9Z6UkC3ebFc',duration:5},{id:6,title:'Finger Independence Exercises',video:'https://www.youtube.com/embed/fZ9uHWoP2r8',duration:8},{id:7,title:'Natural Notes on the Fretboard',video:'https://www.youtube.com/embed/xl5Mcd0xCPQ',duration:8},{id:8,title:'Fretboard Quiz',video:'https://www.youtube.com/embed/UKjRwDapGhs',duration:5}]},
-  {id:3,tier:'bronze',title:'The Power 5 Chords',lessons:[{id:9,title:'Em — The Easiest Chord',video:'https://www.youtube.com/embed/PKB-p8UpC9I',duration:6},{id:10,title:'Am — Your Second Chord',video:'https://www.youtube.com/embed/IQrbbnn8EHM',duration:6},{id:11,title:'G + C + D — The Big Three',video:'https://www.youtube.com/embed/gL6uG79dRG4',duration:10},{id:12,title:'Chord Change Bootcamp',video:'https://www.youtube.com/embed/IaBmhFy1E6U',duration:10}]},
-  {id:4,tier:'bronze',title:'Rhythm Foundation',lessons:[{id:13,title:'Understanding Rhythm',video:'https://www.youtube.com/embed/I_7JwjiKF3c',duration:6},{id:14,title:'Down-Only Strumming',video:'https://www.youtube.com/embed/Ko52hf-eBNc',duration:8},{id:15,title:'The Metronome Challenge',video:'https://www.youtube.com/embed/KYgphdFxw9Q',duration:8},{id:16,title:'Practice Session Structure',video:'https://www.youtube.com/embed/mMpF50G9wME',duration:4}]},
-  {id:5,tier:'bronze',title:'One-Minute Changes',lessons:[{id:17,title:'Em ↔ Am Speed Drill',video:'https://www.youtube.com/embed/pH5nw0FQ30A',duration:8},{id:18,title:'Am ↔ G Speed Drill',video:'https://www.youtube.com/embed/qwQvPSvdxb8',duration:8},{id:19,title:'G ↔ C ↔ D Circuit',video:'https://www.youtube.com/embed/WI63eA0S3a4',duration:10},{id:20,title:'One-Minute Championship',video:'https://www.youtube.com/embed/lkfFbr9XeLY',duration:12}]},
-  {id:6,tier:'silver',title:'Your First Song',lessons:[{id:21,title:'2-Chord Songs Overview',video:'https://www.youtube.com/embed/vErm6lJg8pQ',duration:10},{id:22,title:'Wish Me Well — Sarkodie',video:'https://www.youtube.com/embed/HnXo2LsYbMg',duration:15},{id:23,title:'Playing with the Recording',video:'https://www.youtube.com/embed/KxGSDsxG_JE',duration:10},{id:24,title:'Song Learning Method',video:'https://www.youtube.com/embed/ywJzvobXrx8',duration:5}]}
+  {id:1,tier:'bronze',title:'Meet Your Guitar',lessons:[{id:1,title:'Parts of the Guitar',video:'',duration:5},{id:2,title:'How to Hold the Guitar',video:'',duration:5},{id:3,title:'How to Tune Your Guitar',video:'',duration:8},{id:4,title:'Posture & Ergonomics Check',video:'',duration:4}]},
+  {id:2,tier:'bronze',title:'The Fretboard',lessons:[{id:5,title:'Open String Names',video:'',duration:5},{id:6,title:'Finger Independence Exercises',video:'',duration:8},{id:7,title:'Natural Notes on the Fretboard',video:'',duration:8},{id:8,title:'Fretboard Quiz',video:'',duration:5}]},
+  {id:3,tier:'bronze',title:'The Power 5 Chords',lessons:[{id:9,title:'Em — The Easiest Chord',video:'',duration:6},{id:10,title:'Am — Your Second Chord',video:'',duration:6},{id:11,title:'G + C + D — The Big Three',video:'',duration:10},{id:12,title:'Chord Change Bootcamp',video:'',duration:10}]},
+  {id:4,tier:'bronze',title:'Rhythm Foundation',lessons:[{id:13,title:'Understanding Rhythm',video:'',duration:6},{id:14,title:'Down-Only Strumming',video:'',duration:8},{id:15,title:'The Metronome Challenge',video:'',duration:8},{id:16,title:'Practice Session Structure',video:'',duration:4}]},
+  {id:5,tier:'bronze',title:'One-Minute Changes',lessons:[{id:17,title:'Em ↔ Am Speed Drill',video:'',duration:8},{id:18,title:'Am ↔ G Speed Drill',video:'',duration:8},{id:19,title:'G ↔ C ↔ D Circuit',video:'',duration:10},{id:20,title:'One-Minute Championship',video:'',duration:12}]},
+  {id:6,tier:'silver',title:'Your First Song',lessons:[{id:21,title:'2-Chord Songs Overview',video:'',duration:10},{id:22,title:'Wish Me Well — Sarkodie',video:'',duration:15},{id:23,title:'Playing with the Recording',video:'',duration:10},{id:24,title:'Song Learning Method',video:'',duration:5}]}
 ];
 
 (async function() {
@@ -129,6 +129,12 @@ const MODULES = [
     if (lesson.video) {
       c.innerHTML += `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg);margin-bottom:16px;background:rgba(0,0,0,.3)">
         <iframe src="${lesson.video}" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allowfullscreen></iframe>
+      </div>`;
+    } else {
+      c.innerHTML += `<div style="border-radius:var(--radius-lg);margin-bottom:16px;background:rgba(201,168,76,.06);border:1px dashed rgba(201,168,76,.25);padding:32px 20px;text-align:center">
+        <div style="font-size:40px;margin-bottom:8px">🎥</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:600;color:var(--gld);font-size:14px">Video lesson coming soon</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">Follow the written guide below for now</div>
       </div>`;
     }
 
