@@ -71,6 +71,7 @@ Guitar.init();
 document.getElementById('request-mic-btn').onclick = async function() {
   document.getElementById('tuner-mic').style.display = 'none';
   document.getElementById('tuner-active').style.display = 'flex';
+  var tunerCtx = new (window.AudioContext || window.webkitAudioContext)();
   tuner = new GuitarTuner();
   tuner.onUpdate = function(note, cents, freq) {
     if (!note) { document.getElementById('tuner-note').textContent = '--'; document.getElementById('tuner-freq').textContent = '--- Hz'; document.getElementById('tuner-status').textContent = 'No note detected'; return; }
@@ -92,11 +93,14 @@ document.getElementById('request-mic-btn').onclick = async function() {
     cx.strokeStyle = inTune ? 'var(--green-light)' : 'var(--gld)'; cx.lineWidth=4; cx.stroke();
     cx.beginPath(); cx.arc(cx2,cy2,4,0,Math.PI*2); cx.fillStyle='var(--gld)'; cx.fill();
   };
-  const ok = await tuner.start();
+  var ok = false;
+  try {
+    ok = await tuner.start(tunerCtx);
+  } catch(e) { console.warn('Tuner start error:', e); }
   if (!ok) {
     document.getElementById('tuner-mic').style.display = 'block';
     document.getElementById('tuner-active').style.display = 'none';
-    document.getElementById('mic-error').textContent = 'Microphone access denied. Allow microphone in your browser settings.';
+    document.getElementById('mic-error').textContent = 'Microphone access denied. Click the lock/info icon in your browser address bar and enable microphone for this site, then try again.';
     document.getElementById('mic-error').style.display = 'block';
   }
 };
