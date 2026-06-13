@@ -24,6 +24,16 @@ const Guitar = {
     return this.user;
   },
 
+  applyConfig() {
+    document.querySelectorAll('[data-g-symbol-amount]').forEach(el => { el.textContent = `${this.CURRENCY_SYMBOL} ${this.PRICE}`; });
+    document.querySelectorAll('[data-g-compare]').forEach(el => { el.textContent = `${this.CURRENCY_SYMBOL} ${this.COMPARE_PRICE}`; });
+    document.querySelectorAll('[data-g-symbol]').forEach(el => { el.textContent = this.CURRENCY_SYMBOL; });
+    document.querySelectorAll('[data-g-amount]').forEach(el => { el.textContent = this.PRICE; });
+    document.querySelectorAll('[data-g-free]').forEach(el => { el.textContent = this.FREE_MODULES; });
+    document.querySelectorAll('[data-g-urgency]').forEach(el => { el.textContent = this.URGENCY_TEXT; });
+    document.querySelectorAll('[data-g-tagline]').forEach(el => { el.textContent = this.PRICING_TAGLINE; });
+  },
+
   async fetchConfig() {
     try {
       const config = await (await fetch('/api/guitar/config')).json();
