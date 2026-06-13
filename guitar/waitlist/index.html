@@ -1,17 +1,17 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Learn to play your favorite Ghanaian songs on guitar. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system. Lifetime access for GH₵ 99.">
-<meta property="og:title" content="Gideon Guitar Method — Presale">
-<meta property="og:description" content="Learn to play your favorite Ghanaian songs on guitar. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system. Lifetime access for GH₵ 99.">
+<meta name="description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
+<meta property="og:title" content="Gideon Guitar Method — Learn Guitar Online">
+<meta property="og:description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gideonabochie.org/guitar/waitlist/">
 <meta property="og:image" content="https://gideonabochie.org/assets/img/guitar-og.jpg">
-<title>Gideon Guitar Method — Presale</title>
+<title>Gideon Guitar Method — Learn Guitar Online</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
-.presell-wrap{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.presell-wrap{max-width:680px;margin:0 auto;padding:16px 20px 80px}
 .presell-section{margin-bottom:40px}
 .presell-h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,6vw,52px);font-weight:800;line-height:1.05;color:var(--gld);letter-spacing:-.02em;margin-bottom:12px}
 .presell-h1 em{font-style:normal;color:var(--text)}
@@ -65,6 +65,7 @@
 </head>
 <body class="guitar-app">
 <div class="screen active">
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Gideon Guitar Method</div><div id="user-area"></div></div>
   <div class="scrollable" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <div class="presell-wrap" id="presell-wrap">
 
@@ -128,9 +129,9 @@
       <div class="presell-section">
         <div class="presell-h1 presell-h1--sm"><em>16 Modules</em> — From Zero to Performance-Ready</div>
         <div class="curriculum-short">
-          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥉 Bronze — Foundation (Free)</div><div class="tier-modules">Module 1: Meet Your Guitar · 2: The Fretboard · 3: The Power 5 Chords · 4: Rhythm Foundation · 5: One-Minute Changes</div></div>
-          <div class="tier-group"><div class="tier-label" style="color:var(--text2)">🥈 Silver — Songcraft</div><div class="tier-modules">6: Your First Song (Wish Me Well) · 7: Strumming Patterns · 8: More Chords · 9: Ghanaian Songcraft · 10: Reading Tablature · 11: Pentatonic Foundation</div></div>
-          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥇 Gold — Expression</div><div class="tier-modules">12: Fingerpicking · 13: The Barre Wall · 14: Ghanaian Lead Guitar · 15: Song Mastery Project · 16: Performance Mode</div></div>
+          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥉 Bronze — Foundation (Free)</div><div class="tier-modules">1: Meet Your Guitar · 2: The Fretboard · 3: The Power 5 Chords · 4: Rhythm Foundation · 5: One-Minute Changes</div></div>
+          <div class="tier-group"><div class="tier-label" style="color:var(--text2)">🥈 Silver — Songcraft</div><div class="tier-modules">6: Your First Song · 7: New Chords · 8: Strumming Patterns · 9: Scales & Melody · 10: Barre Chords</div></div>
+          <div class="tier-group"><div class="tier-label" style="color:var(--gld)">🥇 Gold — Expression</div><div class="tier-modules">11: Fingerpicking · 12: Advanced Rhythm · 13: Pentatonic & Soloing · 14: Chord Theory · 15: Performance & Expression · 16: Next Steps</div></div>
         </div>
         <div class="presell-p"><strong>Every module includes:</strong> YouTube video tutorial + interactive practice + chord diagrams + fretboard visualization + progress tracking + spaced repetition review.</div>
       </div>
@@ -198,14 +199,21 @@
       <!-- Final CTA -->
           <div class="presell-section presell-h1--center">
         <div class="presell-h1 presell-h1--sm"><em>Your guitar is waiting.</em> Let's play.</div>
-        <div class="presell-p presell-p--center">Join 47+ students who are finally learning the songs they love. Full access, lifetime updates, one payment.</div>
+        <div class="presell-p presell-p--center">Join <strong id="total-students" class="skeleton" style="display:inline-block;min-width:30px">—</strong> students who are finally learning the songs they love. Full access, lifetime updates, one payment.</div>
         <button class="btn btn-primary btn-lg" onclick="openPayment()">Buy Full Access — <span data-g-symbol-amount>GH₵ 99</span> <i class="ti ti-arrow-right"></i></button>
         <div style="margin-top:12px;font-size:12px;color:var(--text3)"><a href="/guitar/learn/" style="color:var(--gld)">Start free</a> — Modules 1-<span data-g-free>3</span>, no credit card</div>
       </div>
 
-      <div style="height:60px"></div>
     </div>
   </div>
+  <nav class="bottom-nav">
+    <a class="nav-item active" href="/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
+    <a class="nav-item" href="/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
+    <a class="nav-item" href="/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
+    <a class="nav-item" href="/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
+    <a class="nav-item" href="/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
+    <a class="nav-item" href="/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
+  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
@@ -221,18 +229,12 @@ function toggleFAQ(el) {
 (async function() {
   if (typeof Guitar === 'undefined') return;
   const user = await Guitar.init();
-  if (!document.getElementById('user-area')) {
-    const uaDiv = document.createElement('div');
-    uaDiv.id = 'user-area';
-    document.querySelector('.screen')?.prepend(uaDiv);
-  }
   Guitar.applyConfig();
-  const ua = document.getElementById('user-area');
-  if (ua && user) { ua.style.display='flex'; ua.style.justifyContent='center'; ua.style.padding='12px 20px 0'; ua.innerHTML=`<span style="font-size:13px;color:var(--text3)">${user.name}</span> <a href="#" onclick="Guitar.logout();return false" style="font-size:12px;color:var(--gld);text-decoration:none;font-weight:600;margin-left:10px">Sign Out</a>`; }
 
   // Load waitlist count
   const wlCount = document.getElementById('wl-count');
   const wlToday = document.getElementById('wl-today');
+  const totalStudents = document.getElementById('total-students');
   try {
     const r = await fetch('/api/guitar/waitlist');
     const d = await r.json();
@@ -240,10 +242,12 @@ function toggleFAQ(el) {
       wlCount.textContent = d.total;
       wlCount.classList.remove('skeleton');
       wlToday.textContent = d.today > 0 ? (d.today + ' joined today') : '';
+      if (totalStudents) { totalStudents.textContent = d.total; totalStudents.classList.remove('skeleton'); }
     }
   } catch(e) {
     wlCount.textContent = '—';
     wlCount.classList.remove('skeleton');
+    if (totalStudents) { totalStudents.textContent = '—'; totalStudents.classList.remove('skeleton'); }
   }
 
   // If user just registered (param in URL or logged in), show confirmation
