@@ -201,7 +201,7 @@ function showSection(id) { document.getElementById('p-landing').style.display='n
       const from = document.getElementById('om-from').value, to = document.getElementById('om-to').value;
       const pairKey = `${from}→${to}`;
       const pb = OneMinuteHistory.addRecord(pairKey, score);
-      document.getElementById('om-pb').textContent = pb.improvement ? `Personal Best! Was ${pb.improvement}` : (pb.isNewPB ? '🔥 Personal Best!' : '');
+      document.getElementById('om-pb').textContent = pb.isNewPB && pb.previousBest ? `Personal Best! Was ${pb.previousBest}` : (pb.isNewPB ? '🔥 Personal Best!' : '');
       renderOmHistory();
       if (user) Guitar.saveOneMinute(pairKey, score).catch(()=>{});
     }

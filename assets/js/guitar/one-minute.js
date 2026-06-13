@@ -7,9 +7,9 @@ class OneMinuteDrill {
     this.score = 0;
     this.running = false;
     this.timeLeft = this.duration;
-    this.onTick = null;
-    this.onComplete = null;
-    this.onScoreChange = null;
+    this.onTick = options.onTick || null;
+    this.onComplete = options.onComplete || null;
+    this.onScoreChange = options.onScoreChange || null;
     this.timerId = null;
     this.history = [];
     this.startTime = 0;
@@ -81,12 +81,12 @@ const OneMinuteHistory = {
   addRecord(pair, score) {
     const history = this.load();
     const best = history[pair] ? Math.max(...history[pair].map(r => r.score)) : 0;
-    const isNewPB = score >= best;
-    const improvement = history[pair]?.length ? score - history[pair][0].score : 0;
+    const isNewPB = score > best;
+    const previousBest = best > 0 ? best : null;
     if (!history[pair]) history[pair] = [];
     history[pair].push({ score, date: new Date().toISOString(), timestamp: Date.now() });
     this.save(history);
-    return { isNewPB, improvement };
+    return { isNewPB, previousBest };
   },
 
   getBest(pair) {

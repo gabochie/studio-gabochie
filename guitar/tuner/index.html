@@ -68,7 +68,8 @@ window.playRef = function(n) {
 
 Guitar.init();
 
-document.getElementById('request-mic-btn').onclick = async function() {
+async function tryStartTuner() {
+  document.getElementById('mic-error').style.display = 'none';
   document.getElementById('tuner-mic').style.display = 'none';
   document.getElementById('tuner-active').style.display = 'flex';
   var tunerCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -100,10 +101,29 @@ document.getElementById('request-mic-btn').onclick = async function() {
   if (!ok) {
     document.getElementById('tuner-mic').style.display = 'block';
     document.getElementById('tuner-active').style.display = 'none';
-    document.getElementById('mic-error').textContent = 'Microphone access denied. Click the lock/info icon in your browser address bar and enable microphone for this site, then try again.';
+    document.getElementById('mic-error').textContent = 'Microphone access was denied. Please allow microphone access in your device settings, then click "Enable Microphone" again.';
     document.getElementById('mic-error').style.display = 'block';
   }
+}
+
+document.getElementById('request-mic-btn').onclick = async function() {
+  tryStartTuner();
 };
+
+// Pre-check permission and listen for changes
+if (navigator.permissions && navigator.permissions.query) {
+  navigator.permissions.query({name:'microphone'}).then(function(status) {
+    if (status.state === 'denied') {
+      document.getElementById('mic-error').textContent = 'Microphone is blocked in your browser settings. Please allow microphone access for this site, then try again.';
+      document.getElementById('mic-error').style.display = 'block';
+    }
+    status.onchange = function() {
+      if (this.state === 'granted') {
+        tryStartTuner();
+      }
+    };
+  }).catch(function(){});
+}
 
 document.getElementById('tuner-stop-btn').onclick = function() {
   if (tuner) tuner.stop();

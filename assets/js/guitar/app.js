@@ -32,7 +32,8 @@ const Guitar = {
       el.style.display = 'flex';
       el.innerHTML = `<span style="font-size:12px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${this.user.name}</span><a href="#" onclick="Guitar.logout();return false" style="font-size:11px;color:var(--gld);text-decoration:none;font-weight:600;margin-left:8px;white-space:nowrap">Sign Out</a>`;
     } else {
-      el.style.display = 'none';
+      el.style.display = 'flex';
+      el.innerHTML = `<a href="#" onclick="Guitar.showLoginModal();return false" style="font-size:11px;color:var(--gld);text-decoration:none;font-weight:600;white-space:nowrap">Sign In</a>`;
     }
   },
 
@@ -279,6 +280,62 @@ const Guitar = {
       }
     });
     setTimeout(() => { const inp = o.querySelector('input'); if (inp) inp.focus(); }, 300);
+    return o;
+  },
+
+  /* ----- Login Modal ----- */
+  showLoginModal() {
+    const existing = document.querySelector('.sheet-overlay');
+    if (existing) existing.remove();
+    const html = `<div class="sheet" style="border-radius:24px 24px 0 0;max-width:380px;margin:auto auto 0">
+      <div class="sheet-handle"></div>
+      <div style="padding:20px 24px 32px">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:40px;margin-bottom:4px">🎸</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)">Welcome Back</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Enter your email to sign in</div>
+        </div>
+        <form id="login-form">
+          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <button type="submit" class="btn btn-primary btn-block" id="login-submit" style="padding:14px;font-size:15px">Sign In <i class="ti ti-arrow-right"></i></button>
+          <p id="login-err" style="color:var(--red-light);font-size:12px;display:none;text-align:center;margin-top:8px"></p>
+          <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:12px">New here? <a href="#" onclick="Guitar.hideSheet();Guitar.showRegisterModal();return false" style="color:var(--gld)">Create account</a></p>
+        </form>
+      </div>
+    </div>`;
+    const o = document.createElement('div');
+    o.className = 'sheet-overlay';
+    o.innerHTML = html;
+    document.body.appendChild(o);
+    requestAnimationFrame(() => o.classList.add('open'));
+    o.addEventListener('click', e => { if (e.target === o) this.hideSheet(); });
+
+    const form = o.querySelector('#login-form');
+    const submit = o.querySelector('#login-submit');
+    const errEl = o.querySelector('#login-err');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      submit.disabled = true;
+      submit.textContent = 'Signing in...';
+      errEl.style.display = 'none';
+      const email = form.email.value.trim();
+      try {
+        const res = await this.register({ name: email.split('@')[0], email, phone: '', skill_level: 'beginner' });
+        this.token = res.token;
+        this.user = res.user;
+        localStorage.setItem('ga_token', res.token);
+        localStorage.setItem('ga_student', JSON.stringify(res.user));
+        localStorage.setItem('ga_session_token', res.token);
+        this.hideSheet();
+        this.showToast('Welcome back!', 'success');
+        setTimeout(() => { window.location.reload(); }, 500);
+      } catch (err) {
+        errEl.textContent = err.message || 'Sign in failed. Try again.';
+        errEl.style.display = 'block';
+        submit.disabled = false;
+        submit.textContent = 'Sign In';
+      }
+    });
     return o;
   }
 };

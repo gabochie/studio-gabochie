@@ -5,7 +5,7 @@
 </head>
 <body class="guitar-app">
 <div class="screen active">
-  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Tuner</div></div>
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Tuner</div><div id="user-area"></div></div>
   <div class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
     <!-- Mic Request -->
     <div id="tuner-mic" class="text-center" style="padding:60px 0">
@@ -66,7 +66,10 @@ window.playRef = function(n) {
   } catch(e) {}
 };
 
-document.getElementById('request-mic-btn').onclick = async function() {
+Guitar.init();
+
+async function tryStartTuner() {
+  document.getElementById('mic-error').style.display = 'none';
   document.getElementById('tuner-mic').style.display = 'none';
   document.getElementById('tuner-active').style.display = 'flex';
   var tunerCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -98,9 +101,13 @@ document.getElementById('request-mic-btn').onclick = async function() {
   if (!ok) {
     document.getElementById('tuner-mic').style.display = 'block';
     document.getElementById('tuner-active').style.display = 'none';
-    document.getElementById('mic-error').textContent = 'Microphone access denied. Click the lock/info icon in your browser address bar and enable microphone for this site, then try again.';
+    document.getElementById('mic-error').textContent = 'Microphone access was denied. Please allow microphone access in your device settings, then click "Enable Microphone" again.';
     document.getElementById('mic-error').style.display = 'block';
   }
+}
+
+document.getElementById('request-mic-btn').onclick = function() {
+  tryStartTuner();
 };
 
 document.getElementById('tuner-stop-btn').onclick = function() {
@@ -108,5 +115,19 @@ document.getElementById('tuner-stop-btn').onclick = function() {
   document.getElementById('tuner-mic').style.display = 'block';
   document.getElementById('tuner-active').style.display = 'none';
 };
+
+if (navigator.permissions && navigator.permissions.query) {
+  navigator.permissions.query({name:'microphone'}).then(function(status) {
+    if (status.state === 'denied') {
+      document.getElementById('mic-error').textContent = 'Microphone is blocked in your browser settings. Please allow microphone access for this site, then try again.';
+      document.getElementById('mic-error').style.display = 'block';
+    }
+    status.onchange = function() {
+      if (this.state === 'granted') {
+        tryStartTuner();
+      }
+    };
+  }).catch(function(){});
+}
 </script>
 </body></html>
