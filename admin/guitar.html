@@ -80,25 +80,14 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
     </table>
   </div>
 
-  <div class="section-title">&#9989; Launch Checklist</div>
+  <div class="section-title">&#127916; Video Content</div>
   <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
-        <div style="font-size:18px;flex-shrink:0">🔑</div>
-        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set live payment keys</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Enter live Paystack + Flutterwave public keys in Settings below</div></div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
-        <div style="font-size:18px;flex-shrink:0">💰</div>
-        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set final pricing</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Set price, compare price, currency, and free module count in Settings below</div></div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
-        <div style="font-size:18px;flex-shrink:0">🎬</div>
-        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Record 24 video lessons</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Modules 1-6 need videos. Add YouTube links to <code>guitar/learn/index.html</code></div></div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
-        <div style="font-size:18px;flex-shrink:0">💳</div>
-        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Test real payment flow</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Buy the course with your own card, verify webhook fires + enrollment unlocks</div></div>
-      </div>
+    <p style="font-size:12px;color:#5A7A9F;margin:0 0 12px">Set YouTube video IDs for each lesson. Modules are collapsed below. Open a module to edit its lessons, then click <strong>Save Video IDs</strong>.</p>
+    <div id="videoContentContainer"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button type="button" class="btn-sm" onclick="loadVideoEditor()" style="white-space:nowrap">Refresh Modules</button>
+      <button type="button" class="btn-sm btn-primary" onclick="saveVideoIds()" style="white-space:nowrap">Save Video IDs</button>
+      <span style="font-size:11px;color:#3A5278;margin-left:8px;line-height:32px" id="videoStatus"></span>
     </div>
   </div>
 
@@ -150,6 +139,41 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
     <button type="button" class="btn-sm" onclick="savePricing()">Save All Pricing</button>
     <span style="font-size:11px;color:#3A5278;margin-left:8px" id="pricingStatus">Loaded</span>
   </div>
+
+  <div class="section-title">&#9989; Launch Checklist</div>
+  <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
+        <div style="font-size:18px;flex-shrink:0">🔑</div>
+        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set live payment keys</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Enter live Paystack + Flutterwave public keys in Settings above</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
+        <div style="font-size:18px;flex-shrink:0">💰</div>
+        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set final pricing</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Set price, compare price, currency, and free module count in Settings above</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
+        <div style="font-size:18px;flex-shrink:0">🎬</div>
+        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Record 24 video lessons</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Add YouTube IDs in Video Content section above, or add directly to learn index files</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
+        <div style="font-size:18px;flex-shrink:0">💳</div>
+        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Test real payment flow</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Buy the course with your own card, verify webhook fires + enrollment unlocks</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="color:var(--red-light)">&#9888;&#65039; Danger Zone</div>
+  <div style="background:rgba(255,50,50,.05);border:1px solid rgba(255,50,50,.15);border-radius:10px;padding:20px;margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-weight:600;font-size:13px;color:var(--red-light)">Reset all guitar user data</div>
+        <div style="font-size:11px;color:#5A7A9F;margin-top:4px">Deletes waitlist signups, payments, practice records, progress, and user accounts. Schema and curriculum preserved.</div>
+      </div>
+      <button type="button" class="btn-sm" style="border-color:var(--red-light);color:var(--red-light)" onclick="confirmReset()">Reset Data</button>
+    </div>
+    <p style="font-size:11px;color:#5A7A9F;margin:12px 0 0;display:none" id="resetResult"></p>
+  </div>
+
 </div>
 <div class="footer"><a href="index.html">&larr; Dashboard</a></div>
 <script src="admin-ui.js"></script>
@@ -173,7 +197,7 @@ async function loadGuitarData() {
     document.getElementById('statWaitlist').textContent = wl.total || 0;
     document.getElementById('statWaitlistToday').textContent = (wl.today || 0) + ' today';
     document.getElementById('statPayments').textContent = pay.total || 0;
-    document.getElementById('statPaymentSum').textContent = 'GH₵ ' + (pay.sum || 0);
+    document.getElementById('statPaymentSum').textContent = _guitarCurrencySymbol + ' ' + (pay.sum || 0);
     document.getElementById('statPending').textContent = pay.pending || 0;
     document.getElementById('statStudents').textContent = stu.total || 0;
     document.getElementById('statSessions').textContent = (stu.total_sessions || 0) + ' sessions';
@@ -270,6 +294,7 @@ function loadPaystackKey() {
 
 loadFlwKey();
 loadPricing();
+loadVideoEditor();
 
 function loadFlwKey() {
   adminFetch('/api/admin/preferences').then(r => r.json()).then(data => {
@@ -303,6 +328,8 @@ function saveFlwKey() {
   });
 }
 
+var _guitarCurrencySymbol = 'GH₵';
+
 var PRICING_KEYS = {
   cfgPrice: 'guitar_price',
   cfgComparePrice: 'guitar_compare_price',
@@ -320,6 +347,11 @@ function loadPricing() {
       var val = p[PRICING_KEYS[id]];
       if (val !== undefined) document.getElementById(id).value = val;
     });
+    if (p.guitar_currency_symbol) _guitarCurrencySymbol = p.guitar_currency_symbol;
+    var sumEl = document.getElementById('statPaymentSum');
+    if (sumEl && sumEl.textContent !== '—') {
+      sumEl.textContent = _guitarCurrencySymbol + ' ' + (parseFloat(sumEl.textContent.replace(/[^\d.]/g,'')) || 0);
+    }
     document.getElementById('pricingStatus').textContent = 'Loaded';
   }).catch(function() {
     document.getElementById('pricingStatus').textContent = 'Could not load';
@@ -342,6 +374,106 @@ function savePricing() {
     status.textContent = ok ? 'Saved!' : 'Some fields failed';
   }).catch(function(e) {
     status.textContent = 'Error: ' + e.message;
+  });
+}
+
+var MODULES_DATA = [
+  {id:1,tier:'bronze',title:'Meet Your Guitar',lessons:[{id:1,title:'Parts of the Guitar'},{id:2,title:'How to Hold the Guitar'},{id:3,title:'How to Tune Your Guitar'},{id:4,title:'Posture & Ergonomics Check'}]},
+  {id:2,tier:'bronze',title:'The Fretboard',lessons:[{id:5,title:'Open String Names'},{id:6,title:'Finger Independence Exercises'},{id:7,title:'Natural Notes on the Fretboard'},{id:8,title:'Fretboard Quiz'}]},
+  {id:3,tier:'bronze',title:'The Power 5 Chords',lessons:[{id:9,title:'Em — The Easiest Chord'},{id:10,title:'Am — Your Second Chord'},{id:11,title:'G + C + D — The Big Three'},{id:12,title:'Chord Change Bootcamp'}]},
+  {id:4,tier:'bronze',title:'Rhythm Foundation',lessons:[{id:13,title:'Understanding Rhythm'},{id:14,title:'Down-Only Strumming'},{id:15,title:'The Metronome Challenge'},{id:16,title:'Practice Session Structure'}]},
+  {id:5,tier:'bronze',title:'One-Minute Changes',lessons:[{id:17,title:'Em ↔ Am Speed Drill'},{id:18,title:'Am ↔ G Speed Drill'},{id:19,title:'G ↔ C ↔ D Circuit'},{id:20,title:'One-Minute Championship'}]},
+  {id:6,tier:'silver',title:'Your First Song',lessons:[{id:21,title:'2-Chord Songs Overview'},{id:22,title:'Wish Me Well — Sarkodie'},{id:23,title:'Playing with the Recording'},{id:24,title:'Song Learning Method'}]},
+  {id:7,tier:'silver',title:'New Chords',lessons:[{id:25,title:'Dm — The Sad Chord'},{id:26,title:'A — Full Major Sound'},{id:27,title:'E — Big Open Chord'},{id:28,title:'B7 — Blues Essential'}]},
+  {id:8,tier:'silver',title:'Strumming Patterns',lessons:[{id:29,title:'Down-Up Strumming'},{id:30,title:'Muting & Accents'},{id:31,title:'Dynamics & Feel'},{id:32,title:'Strumming Pattern Challenge'}]},
+  {id:9,tier:'silver',title:'Scales & Melody',lessons:[{id:33,title:'C Major Scale — Open Position'},{id:34,title:'Playing Simple Melodies'},{id:35,title:'Ear Training Basics'},{id:36,title:'Two-Note Power Chords'}]},
+  {id:10,tier:'silver',title:'Barre Chords',lessons:[{id:37,title:'The F Chord Challenge'},{id:38,title:'Bm — Barre Shape Mastery'},{id:39,title:'Movable Major Shapes'},{id:40,title:'Barre Chord Progressions'}]},
+  {id:11,tier:'gold',title:'Fingerpicking',lessons:[{id:41,title:'Thumb-Index Pattern'},{id:42,title:'Travis Picking'},{id:43,title:'Fingerstyle Arpeggios'},{id:44,title:'Fingerstyle Song Study'}]},
+  {id:12,tier:'gold',title:'Advanced Rhythm',lessons:[{id:45,title:'16th Note Strumming'},{id:46,title:'Syncopation'},{id:47,title:'Swing & Shuffle Feel'},{id:48,title:'Odd Time Signatures'}]},
+  {id:13,tier:'gold',title:'Pentatonic & Soloing',lessons:[{id:49,title:'A Minor Pentatonic Shape'},{id:50,title:'String Bends & Slides'},{id:51,title:'Blues Licks & Phrasing'},{id:52,title:'Solo Over a Backing Track'}]},
+  {id:14,tier:'gold',title:'Chord Theory',lessons:[{id:53,title:'How Chords Are Built'},{id:54,title:'Major & Minor Explained'},{id:55,title:'Chord Inversions'},{id:56,title:'Common Progression Analysis'}]},
+  {id:15,tier:'gold',title:'Performance & Expression',lessons:[{id:57,title:'Playing with Dynamics'},{id:58,title:'Stage Presence Basics'},{id:59,title:'Playing with Other Musicians'},{id:60,title:'Building a Setlist'}]},
+  {id:16,tier:'gold',title:'Next Steps',lessons:[{id:61,title:'Building a Practice Routine'},{id:62,title:'Introduction to Recording'},{id:63,title:'Guitar Gear Guide'},{id:64,title:'Your Guitar Journey Ahead'}]}
+];
+
+function loadVideoEditor() {
+  var container = document.getElementById('videoContentContainer');
+  if (!container) return;
+  loadVideoIdsFromApi(function(videoMap) {
+    var html = '';
+    MODULES_DATA.forEach(function(mod) {
+      var tierColor = mod.tier === 'bronze' ? '#CD7F32' : (mod.tier === 'silver' ? '#94A3B8' : '#C9A84C');
+      html += '<details style="margin-bottom:6px;border:1px solid rgba(255,255,255,.06);border-radius:8px;overflow:hidden">';
+      html += '<summary style="padding:10px 14px;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,255,255,.02)"><span style="color:' + tierColor + '">' + mod.title + '</span> <span style="color:#5A7A9F;font-weight:400;font-size:11px">(Module ' + mod.id + ')</span></summary>';
+      html += '<div style="padding:8px 14px 14px">';
+      mod.lessons.forEach(function(lesson) {
+        var vid = videoMap[lesson.id] || '';
+        html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+        html += '<span style="font-size:12px;color:#CBD5E1;min-width:24px">' + lesson.id + '.</span>';
+        html += '<span style="font-size:12px;color:#94A3B8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(lesson.title) + '</span>';
+        html += '<input type="text" class="video-id-input" data-lesson="' + lesson.id + '" value="' + escapeHtml(vid) + '" style="width:180px;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:5px 8px;color:#CBD5E1;font-size:12px;font-family:monospace" placeholder="YouTube ID" />';
+        html += '</div>';
+      });
+      html += '</div></details>';
+    });
+    container.innerHTML = html;
+    document.getElementById('videoStatus').textContent = 'Loaded ' + MODULES_DATA.length + ' modules';
+  });
+}
+
+function loadVideoIdsFromApi(callback) {
+  fetch('/api/guitar/lessons/videos').then(function(r) { return r.json(); }).then(function(data) {
+    callback(data.videos || {});
+  }).catch(function() {
+    callback({});
+  });
+}
+
+function saveVideoIds() {
+  var inputs = document.querySelectorAll('.video-id-input');
+  var updates = [];
+  inputs.forEach(function(inp) {
+    var lessonId = parseInt(inp.getAttribute('data-lesson'));
+    var youtubeId = inp.value.trim();
+    updates.push({ lesson_id: lessonId, youtube_id: youtubeId });
+  });
+  var status = document.getElementById('videoStatus');
+  status.textContent = 'Saving ' + updates.length + ' videos...';
+  adminFetch('/api/admin/guitar/lessons/videos', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates)
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    status.textContent = 'Saved ' + (data.updated || 0) + ' video IDs!';
+    Toast.success('Video IDs saved');
+  }).catch(function(e) {
+    status.textContent = 'Error: ' + e.message;
+    Toast.error('Save failed');
+  });
+}
+
+function confirmReset() {
+  var resultEl = document.getElementById('resetResult');
+  if (!confirm('Are you sure you want to reset ALL guitar user data? This cannot be undone.')) return;
+  if (!confirm('REALLY sure? All students, payments, progress, and user accounts will be deleted.')) return;
+  resultEl.style.display = 'block';
+  resultEl.textContent = 'Resetting...';
+  adminFetch('/admin/api/guitar/reset', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ confirm: true, secret: 'reset-all-guitar-users' })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status === 'ok') {
+      resultEl.style.color = '#4ADE80';
+      resultEl.textContent = 'Reset complete. ' + Object.values(data.deleted || {}).reduce(function(a,b){return a+b},0) + ' records deleted across ' + Object.keys(data.deleted || {}).length + ' tables.';
+      loadGuitarData();
+    } else {
+      resultEl.style.color = 'var(--red-light)';
+      resultEl.textContent = 'Error: ' + (data.message || 'unknown');
+    }
+  }).catch(function(e) {
+    resultEl.style.color = 'var(--red-light)';
+    resultEl.textContent = 'Error: ' + e.message;
   });
 }
 

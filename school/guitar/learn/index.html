@@ -59,6 +59,12 @@ const MODULES = [
     user = await Guitar.init();
   } catch(e) { user = null; }
   Guitar.applyConfig();
+  try {
+    var vidData = await (await fetch('/api/guitar/lessons/videos')).json();
+    if (vidData.videos) {
+      MODULES.forEach(function(m) { m.lessons.forEach(function(l) { if (vidData.videos[l.id]) l.video = vidData.videos[l.id]; }); });
+    }
+  } catch(e) { /* keep hardcoded video IDs */ }
   const c = document.getElementById('learn-content');
   const p = new URLSearchParams(location.search);
   const modId = p.get('module') ? parseInt(p.get('module')) : null;
