@@ -396,6 +396,15 @@ var MODULES_DATA = [
   {id:16,tier:'gold',title:'Next Steps',lessons:[{id:61,title:'Building a Practice Routine'},{id:62,title:'Introduction to Recording'},{id:63,title:'Guitar Gear Guide'},{id:64,title:'Your Guitar Journey Ahead'}]}
 ];
 
+function extractYoutubeId(val) {
+  val = val.trim();
+  if (!val) return '';
+  var m = val.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{11}$/.test(val)) return val;
+  return '';
+}
+
 function loadVideoEditor() {
   var container = document.getElementById('videoContentContainer');
   if (!container) return;
@@ -408,10 +417,12 @@ function loadVideoEditor() {
       html += '<div style="padding:8px 14px 14px">';
       mod.lessons.forEach(function(lesson) {
         var vid = videoMap[lesson.id] || '';
+        var thumb = vid ? 'https://img.youtube.com/vi/' + vid + '/default.jpg' : '';
         html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+        if (thumb) html += '<img src="' + thumb + '" style="width:40px;height:30px;border-radius:3px;object-fit:cover;flex-shrink:0" alt="" onerror="this.style.display=\'none\'" />';
         html += '<span style="font-size:12px;color:#CBD5E1;min-width:24px">' + lesson.id + '.</span>';
-        html += '<span style="font-size:12px;color:#94A3B8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(lesson.title) + '</span>';
-        html += '<input type="text" class="video-id-input" data-lesson="' + lesson.id + '" value="' + escapeHtml(vid) + '" style="width:180px;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:5px 8px;color:#CBD5E1;font-size:12px;font-family:monospace" placeholder="YouTube ID" />';
+        html += '<span style="font-size:12px;color:#94A3B8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHtml(lesson.title) + '">' + escapeHtml(lesson.title) + '</span>';
+        html += '<input type="text" class="video-id-input" data-lesson="' + lesson.id + '" value="' + escapeHtml(vid) + '" style="width:260px;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:5px 8px;color:#CBD5E1;font-size:12px;font-family:monospace" placeholder="YouTube URL or ID" />';
         html += '</div>';
       });
       html += '</div></details>';
@@ -434,7 +445,9 @@ function saveVideoIds() {
   var updates = [];
   inputs.forEach(function(inp) {
     var lessonId = parseInt(inp.getAttribute('data-lesson'));
-    var youtubeId = inp.value.trim();
+    var raw = inp.value.trim();
+    var youtubeId = extractYoutubeId(raw);
+    inp.value = youtubeId;
     updates.push({ lesson_id: lessonId, youtube_id: youtubeId });
   });
   var status = document.getElementById('videoStatus');
@@ -445,6 +458,7 @@ function saveVideoIds() {
     body: JSON.stringify(updates)
   }).then(function(r) { return r.json(); }).then(function(data) {
     status.textContent = 'Saved ' + (data.updated || 0) + ' video IDs!';
+    loadVideoEditor();
     Toast.success('Video IDs saved');
   }).catch(function(e) {
     status.textContent = 'Error: ' + e.message;
