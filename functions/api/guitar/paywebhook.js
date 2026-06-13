@@ -8,7 +8,7 @@ export async function onRequest(context) {
 
   const body = await context.request.text();
   const signature = context.request.headers.get('x-paystack-signature');
-  const expectedSig = await crypto.subtle.importKey('raw', new TextEncoder().encode(secretKey), { name: 'HMAC', hash: 'SHA-512' }, false, ['sign'])
+  const expectedSig = await crypto.subtle.importKey('raw', new TextEncoder().encode(secretKey), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
     .then(key => crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body)))
     .then(sig => Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join(''));
 

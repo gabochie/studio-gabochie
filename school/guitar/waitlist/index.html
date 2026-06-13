@@ -4,8 +4,8 @@
 <meta property="og:title" content="Gideon Guitar Method — Presale">
 <meta property="og:description" content="Learn to play your favorite Ghanaian songs on guitar. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system. Lifetime access for GH¢ 299.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://gideonabochie.org/school/guitar/waitlist/">
-<meta property="og:image" content="https://gideonabochie.org/assets/img/guitar-og.jpg">
+<meta property="og:url" content="https://gideonabochie.org/guitar/">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/guitar-og.jpg">
 <title>Gideon Guitar Method — Presale</title>
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
@@ -251,7 +251,7 @@ function toggleFAQ(el) {
   window.openPayment = function() {
     if (typeof Guitar === 'undefined') return;
     Guitar.trackEvent('buy_click', { page: 'waitlist' });
-    if (!user) { Guitar.showRegisterModal({redirect:'/school/guitar/waitlist/?registered=1'}); return; }
+    if (!user) { Guitar.showRegisterModal({redirect:'/guitar/waitlist/?registered=1'}); return; }
     Guitar.showSheet(`
       <div style="text-align:center;padding-top:8px">
         <div style="font-size:48px;margin-bottom:8px">🎸</div>
