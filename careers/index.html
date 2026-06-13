@@ -138,6 +138,24 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .sp{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── Nav override to match homepage ── */
+nav .container{max-width:1440px;padding:0 24px}
+.nav-brand-title{font-size:1.563rem;font-weight:700;line-height:1.15}
+.nav-brand-tagline{font-size:0.688rem;letter-spacing:0.3px;font-weight:500}
+.nav-links a{font-size:0.813rem;font-weight:500}
+.nav-donate{font-size:0.875rem!important;font-weight:600!important}
+.nav-auth a{font-size:0.813rem}
+.nav-auth-btn{font-size:0.813rem!important}
+@media(max-width:640px){
+  .nav-toggle{display:flex}
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.06);z-index:99;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .nav-links.open{display:flex}
+  .nav-links a{display:block;padding:12px 16px;font-size:0.875rem;border-radius:6px;width:100%}
+  .nav-donate{text-align:center;margin-top:4px}
+  .nav-auth{display:flex;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;width:100%}
+  .nav-auth a{text-align:center}
+}
+
 @media(max-width:768px){
   .hero h1{font-size:34px}
   .row-2{grid-template-columns:1fr}
@@ -155,8 +173,24 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 </style>
 </head>
 <body>
-<div id="nav-placeholder"></div>
-<script src="/nav.js"></script>
+<nav>
+  <div class="container">
+    <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
+    <div class="nav-links">
+      <a href="/about/">About</a>
+      <a href="/school/">School</a>
+      <a href="/books/">Books</a>
+      <a href="/membership/">Membership</a>
+      <a href="/campaigns/1-million-systems-thinkers/">Fundraising</a>
+      <a href="/tutoring/">Tutoring</a>
+      <a href="/careers/">Careers</a>
+      <a href="/support/" class="nav-donate"><i class="ti ti-heart"></i> Support</a>
+      <span id="navAuth" class="nav-auth"></span>
+    </div>
+    <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
 
 <div class="hero">
   <div class="hero-bg"></div>
