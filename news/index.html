@@ -964,7 +964,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <span>Ghana's #1 Youth<br>Development Newsletter</span><br>
       <form id="subForm" class="masthead-form" onsubmit="return subSubmit(event)">
         <input type="email" id="subEmail" placeholder="Your email" required style="padding:8px 12px;border:none;border-radius:4px;font-size:12px;width:170px;background:rgba(255,255,255,.12);color:#fff;outline:none">
-        <input type="tel" id="subPhone" placeholder="WhatsApp (e.g. 233501234567)" style="width:170px;padding:8px 12px;border:none;border-radius:4px;font-size:12px;background:rgba(255,255,255,.12);color:#fff;outline:none">
+        <input type="tel" id="subPhone" placeholder="Phone (e.g. 233501234567)" aria-label="Phone number for WhatsApp notifications" style="width:170px;padding:8px 12px;border:none;border-radius:4px;font-size:12px;background:rgba(255,255,255,.12);color:#fff;outline:none">
         <button type="submit" id="subBtn" style="padding:8px 14px;border:none;border-radius:4px;background:var(--gold);color:var(--navy);font-weight:700;font-size:12px;cursor:pointer;font-family:Inter,sans-serif">Subscribe Free</button>
       </form>
       <div id="subMsg" style="font-size:10px;margin-top:6px;min-height:15px"></div>
@@ -2237,41 +2237,6 @@ window.addEventListener('hashchange', routeFromHash);
 // ========================
 // CROSSWORD
 // ========================
-const CW_SIZE = 10;
-const crosswordLayout = [
-  // [row, col, black=true]
-  // We'll define which cells are black
-];
-
-// Simple crossword grid definition
-// 0=black, letter=answer, ' '=empty input cell
-const cwGrid = [
-  ['A','C','C','R','A',0,0,0,0,0],
-  [0,0,'E',0,'N',0,0,0,0,0],
-  [0,0,'D',0,'T',0,0,0,0,0],
-  ['C','E','I',0,'E',0,'G','O','L','D'],
-  [0,0,' ',0,'N',0,'O',0,0,0],
-  [0,'N','K','R','U','M','A','H',0,0],
-  [0,0,' ',0,' ',0,'L',0,0,0],
-  [0,0,' ',0,' ',0,' ',0,0,0],
-  [0,0,' ',0,' ',0,' ',0,0,0],
-  [0,0,0,0,'C','H','O','C','O','L','A','T','E'],
-];
-
-// Simplified crossword - just a visual grid
-const simpleGrid = [
-  ['A','C','C','R','A',0,0,0,0,0],
-  [0,0,0,'E',0,0,0,0,0,0],
-  [0,'N','K','R','U','M','A','H',0,0],
-  [0,0,0,'I',0,0,0,0,0,0],
-  ['C','E','D','I',0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,'G','O','L','D',0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-];
-
 function buildCrossword() {
   const grid = document.getElementById('crossword');
   if (!grid) return;
