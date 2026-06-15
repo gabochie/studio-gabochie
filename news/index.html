@@ -2145,7 +2145,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </div>
 
-  </div>
 </main>
 
 <!-- =====================
@@ -2210,8 +2209,10 @@ function setActiveNav(id) {
   document.querySelectorAll('#nav-bar a').forEach(function(a) {
     a.classList.remove('active');
     var href = a.getAttribute('href');
-    var revKey = REVERSE_HASH[id] || '';
-    if (href === '#' + id || href === '#classifieds/' + revKey) a.classList.add('active');
+    var expected = ['#' + id];
+    var hashKey = REVERSE_HASH[id];
+    if (hashKey) expected.push('#' + hashKey);
+    if (expected.indexOf(href) !== -1) a.classList.add('active');
   });
 }
 
@@ -2226,7 +2227,7 @@ function showPage(id, link, pushHash) {
   var toggle = document.getElementById('nav-toggle');
   if (toggle) toggle.setAttribute('aria-expanded', 'false');
   if (pushHash !== false) {
-    var hash = REVERSE_HASH[id] ? '#classifieds/' + REVERSE_HASH[id] : '#' + id;
+    var hash = REVERSE_HASH[id] ? '#' + REVERSE_HASH[id] : '#' + id;
     if (window.location.hash !== hash) history.pushState(null, '', hash);
   }
   return false;
