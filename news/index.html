@@ -1023,7 +1023,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <h1>How to Live With More<br>Creativity, Love & Wisdom</h1>
     <p class="subtitle">Ghana is sitting on the greatest untapped treasure in human history — and that treasure is <em>YOU</em>. This edition explores what's holding Ghana back, what's possible, and the exact steps to unlock your full potential.</p>
     <a href="https://gideonabochie.org" class="cta-btn" target="_blank">🚀 Unlock Your Potential</a>
-    <a href="#creativity" class="sec-btn" onclick="return showPage('creativity',null)">Read This Issue →</a>
+    <a href="#creativity" class="sec-btn">Read This Issue →</a>
     <div class="cover-tags">
       <span>🎨 Creativity</span><span>❤️ Love</span><span>📖 Wisdom</span><span>🇬🇭 Nation Building</span><span>💡 Youth Power</span><span>🌍 Diaspora</span>
     </div>
@@ -2206,17 +2206,25 @@ var HASH_MAP = {
 var REVERSE_HASH = {};
 for (var k in HASH_MAP) REVERSE_HASH[HASH_MAP[k]] = k;
 
+function setActiveNav(id) {
+  document.querySelectorAll('#nav-bar a').forEach(function(a) {
+    a.classList.remove('active');
+    var href = a.getAttribute('href');
+    var revKey = REVERSE_HASH[id] || '';
+    if (href === '#' + id || href === '#classifieds/' + revKey) a.classList.add('active');
+  });
+}
+
 function showPage(id, link, pushHash) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll('#nav-bar a').forEach(a => a.classList.remove('active'));
-  if (link) link.classList.add('active');
-  else {
-    var hashKey = REVERSE_HASH[id];
-    if (hashKey) document.querySelectorAll('#nav-bar a[href*="' + hashKey + '"]').forEach(a => a.classList.add('active'));
-  }
-  window.scrollTo({top:0, behavior:'smooth'});
-  document.getElementById('navInner').classList.remove('open');
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  setActiveNav(id);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  var nav = document.getElementById('navInner');
+  if (nav) nav.classList.remove('open');
+  var toggle = document.getElementById('nav-toggle');
+  if (toggle) toggle.setAttribute('aria-expanded', 'false');
   if (pushHash !== false) {
     var hash = REVERSE_HASH[id] ? '#classifieds/' + REVERSE_HASH[id] : '#' + id;
     if (window.location.hash !== hash) history.pushState(null, '', hash);
@@ -2226,13 +2234,25 @@ function showPage(id, link, pushHash) {
 
 function routeFromHash() {
   var hash = window.location.hash.replace(/^#/, '');
-  if (!hash) return;
+  if (!hash) { showPage('cover', null, false); return; }
   var pageId = HASH_MAP[hash];
   if (pageId) { showPage(pageId, null, false); return; }
   if (document.getElementById('page-' + hash)) showPage(hash, null, false);
 }
 
 window.addEventListener('hashchange', routeFromHash);
+
+function toggleNav(btn) {
+  var nav = document.getElementById('navInner');
+  if (!nav) return;
+  var opening = !nav.classList.contains('open');
+  nav.classList.toggle('open');
+  if (btn) {
+    btn.classList.toggle('active', opening);
+    btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+  }
+  document.body.style.overflow = opening ? 'hidden' : '';
+}
 
 // ========================
 // CROSSWORD
@@ -2820,6 +2840,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadClassifieds();
 });
 </script>
-<script src="/nav.js"></script>
 </body>
 </html>
