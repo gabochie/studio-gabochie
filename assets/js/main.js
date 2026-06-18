@@ -208,6 +208,17 @@ if (document.readyState === 'loading') {
 }
 
 /* ── Store Modal (auth-aware) ── */
+var GHANA_REGIONS = ['Greater Accra','Ashanti','Western','Eastern','Central','Volta','Northern','Upper East','Upper West','Bono','Bono East','Ahafo','Savannah','North East','Oti','Western North'];
+var __storeConfig = null;
+
+function fetchStoreConfig() {
+  if (__storeConfig) return Promise.resolve(__storeConfig);
+  return fetch('/api/store/config').then(function(r){return r.json()}).then(function(d){
+    __storeConfig = { local: d.delivery_fee_local || 20, upcountry: d.delivery_fee_upcountry || 50, freeThreshold: d.delivery_free_threshold || 0 };
+    return __storeConfig;
+  }).catch(function(){ __storeConfig = { local: 20, upcountry: 50, freeThreshold: 0 }; return __storeConfig; });
+}
+
 function showStoreModal(callback) {
   checkSession(function(user) {
     if (user) {
@@ -386,67 +397,130 @@ function showNewUserName(user, callback) {
 }
 
 function showCheckoutStep(user, callback) {
-  var overlay = buildOverlay();
-  var modal = buildModal();
-  modal.innerHTML =
-    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
-    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Complete Your Purchase</h3>' +
-    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 16px">You are signed in as <strong style="color:#E8EEF7">' + (user.name || user.email) + '</strong>.</p>' +
-    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
-    '<input id="storeModalName" type="text" placeholder="Your full name" value="' + (user.name || '') + '" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
-    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
-    '<input id="storeModalEmail" type="email" value="' + user.email + '" readonly style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#5A7A9F;font-size:14px;font-family:inherit;outline:none;margin-bottom:20px;box-sizing:border-box;opacity:0.7">' +
-    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
-    '<button id="storeModalSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  document.getElementById('storeModalName').focus();
-  var closeFn = function() { overlay.remove(); };
-  document.getElementById('storeModalClose').addEventListener('click', closeFn);
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
-  document.getElementById('storeModalSubmit').addEventListener('click', function() {
-    var n = document.getElementById('storeModalName').value.trim() || user.name;
-    var e = document.getElementById('storeModalEmail').value.trim();
-    var errEl = document.getElementById('storeModalError');
-    if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
-    errEl.style.display = 'none';
-    callback({ name: n, email: e, user_id: user.id, session_token: getSessionToken() });
-    closeFn();
+  fetchStoreConfig().then(function(cfg) {
+    var overlay = buildOverlay();
+    var modal = buildModal();
+    var regionOpts = GHANA_REGIONS.map(function(r){ return '<option value="' + r + '">' + r + '</option>'; }).join('');
+    modal.innerHTML =
+      '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+      '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Delivery Details</h3>' +
+      '<p style="color:#5A7A9F;font-size:13px;margin:0 0 16px">You are signed in as <strong style="color:#E8EEF7">' + (user.name || user.email) + '</strong>.</p>' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
+      '<input id="storeModalName" type="text" placeholder="Your full name" value="' + (user.name || '') + '" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
+      '<input id="storeModalEmail" type="email" value="' + user.email + '" readonly style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#5A7A9F;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box;opacity:0.7">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Phone Number</label>' +
+      '<input id="storeModalPhone" type="tel" placeholder="0244 000 000" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">City / Town</label>' +
+      '<input id="storeModalCity" type="text" placeholder="e.g. Accra, Kumasi" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Region</label>' +
+      '<select id="storeModalRegion" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+        '<option value="">Select your region</option>' + regionOpts +
+      '</select>' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Landmark or Digital Address</label>' +
+      '<input id="storeModalAddr" type="text" placeholder="e.g. GhanaPostGPS code or landmark" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
+      '<div id="storeDeliveryFee" style="font-size:13px;color:#94A3B8;margin-bottom:4px;display:none"></div>' +
+      '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+      '<button id="storeModalSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.getElementById('storeModalName').focus();
+    var closeFn = function() { overlay.remove(); };
+    document.getElementById('storeModalClose').addEventListener('click', closeFn);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+    function calcFee() {
+      var region = document.getElementById('storeModalRegion').value;
+      var feeEl = document.getElementById('storeDeliveryFee');
+      if (!region) { feeEl.style.display = 'none'; return; }
+      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      feeEl.textContent = 'Delivery fee: GH\u00a2 ' + fee + (region === 'Greater Accra' ? ' (Accra/Tema rate)' : ' (upcountry rate)');
+      feeEl.style.display = 'block';
+    }
+    document.getElementById('storeModalRegion').addEventListener('change', calcFee);
+    document.getElementById('storeModalSubmit').addEventListener('click', function() {
+      var n = document.getElementById('storeModalName').value.trim() || user.name;
+      var e = document.getElementById('storeModalEmail').value.trim();
+      var p = document.getElementById('storeModalPhone').value.trim();
+      var city = document.getElementById('storeModalCity').value.trim();
+      var region = document.getElementById('storeModalRegion').value;
+      var addr = document.getElementById('storeModalAddr').value.trim();
+      var errEl = document.getElementById('storeModalError');
+      if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
+      if (!p) { errEl.textContent = 'Please enter your phone number for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalPhone').focus(); return; }
+      if (!city) { errEl.textContent = 'Please enter your city/town.'; errEl.style.display = 'block'; document.getElementById('storeModalCity').focus(); return; }
+      if (!region) { errEl.textContent = 'Please select your region.'; errEl.style.display = 'block'; document.getElementById('storeModalRegion').focus(); return; }
+      if (!addr) { errEl.textContent = 'Please enter a landmark or digital address for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalAddr').focus(); return; }
+      errEl.style.display = 'none';
+      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      callback({ name: n, email: e, phone: p, shipping_city: city, shipping_region: region, shipping_digital_address: addr, delivery_fee: fee, user_id: user.id, session_token: getSessionToken() });
+      closeFn();
+    });
+    document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalPhone').focus(); });
   });
-  document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalSubmit').click(); });
 }
 
 function showGuestForm(callback) {
-  var overlay = buildOverlay();
-  var modal = buildModal();
-  modal.innerHTML =
-    '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
-    '<h3 style="font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Complete Your Purchase</h3>' +
-    '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">Enter your details to continue.</p>' +
-    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
-    '<input id="storeModalName" type="text" placeholder="Your full name" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
-    '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
-    '<input id="storeModalEmail" type="email" placeholder="your@email.com" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:20px;box-sizing:border-box">' +
-    '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
-    '<button id="storeModalSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  document.getElementById('storeModalName').focus();
-  var closeFn = function() { overlay.remove(); };
-  document.getElementById('storeModalClose').addEventListener('click', closeFn);
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
-  document.getElementById('storeModalSubmit').addEventListener('click', function() {
-    var n = document.getElementById('storeModalName').value.trim();
-    var e = document.getElementById('storeModalEmail').value.trim();
-    var errEl = document.getElementById('storeModalError');
-    if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
-    if (!e || !e.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; document.getElementById('storeModalEmail').focus(); return; }
-    errEl.style.display = 'none';
-    callback({ name: n, email: e, is_guest: true });
-    closeFn();
+  fetchStoreConfig().then(function(cfg) {
+    var overlay = buildOverlay();
+    var modal = buildModal();
+    var regionOpts = GHANA_REGIONS.map(function(r){ return '<option value="' + r + '">' + r + '</option>'; }).join('');
+    modal.innerHTML =
+      '<button id="storeModalClose" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;padding:4px">&times;</button>' +
+      '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:700;color:#F1F5F9;margin:0 0 4px">Delivery Details</h3>' +
+      '<p style="color:#5A7A9F;font-size:13px;margin:0 0 20px">Enter your details to continue.</p>' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Full Name</label>' +
+      '<input id="storeModalName" type="text" placeholder="Your full name" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Email</label>' +
+      '<input id="storeModalEmail" type="email" placeholder="your@email.com" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Phone Number</label>' +
+      '<input id="storeModalPhone" type="tel" placeholder="0244 000 000" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">City / Town</label>' +
+      '<input id="storeModalCity" type="text" placeholder="e.g. Accra, Kumasi" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Region</label>' +
+      '<select id="storeModalRegion" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;box-sizing:border-box">' +
+        '<option value="">Select your region</option>' + regionOpts +
+      '</select>' +
+      '<label style="display:block;font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Landmark or Digital Address</label>' +
+      '<input id="storeModalAddr" type="text" placeholder="e.g. GhanaPostGPS code or landmark" style="width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:10px 14px;color:#E8EEF7;font-size:14px;font-family:inherit;outline:none;margin-bottom:16px;box-sizing:border-box">' +
+      '<div id="storeDeliveryFee" style="font-size:13px;color:#94A3B8;margin-bottom:4px;display:none"></div>' +
+      '<p id="storeModalError" style="color:#E8637A;font-size:12px;margin:0 0 12px;display:none"></p>' +
+      '<button id="storeModalSubmit" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Continue to Payment</button>';
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.getElementById('storeModalName').focus();
+    var closeFn = function() { overlay.remove(); };
+    document.getElementById('storeModalClose').addEventListener('click', closeFn);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+    function calcFee() {
+      var region = document.getElementById('storeModalRegion').value;
+      var feeEl = document.getElementById('storeDeliveryFee');
+      if (!region) { feeEl.style.display = 'none'; return; }
+      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      feeEl.textContent = 'Delivery fee: GH\u00a2 ' + fee + (region === 'Greater Accra' ? ' (Accra/Tema rate)' : ' (upcountry rate)');
+      feeEl.style.display = 'block';
+    }
+    document.getElementById('storeModalRegion').addEventListener('change', calcFee);
+    document.getElementById('storeModalSubmit').addEventListener('click', function() {
+      var n = document.getElementById('storeModalName').value.trim();
+      var e = document.getElementById('storeModalEmail').value.trim();
+      var p = document.getElementById('storeModalPhone').value.trim();
+      var city = document.getElementById('storeModalCity').value.trim();
+      var region = document.getElementById('storeModalRegion').value;
+      var addr = document.getElementById('storeModalAddr').value.trim();
+      var errEl = document.getElementById('storeModalError');
+      if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
+      if (!e || !e.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; document.getElementById('storeModalEmail').focus(); return; }
+      if (!p) { errEl.textContent = 'Please enter your phone number for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalPhone').focus(); return; }
+      if (!city) { errEl.textContent = 'Please enter your city/town.'; errEl.style.display = 'block'; document.getElementById('storeModalCity').focus(); return; }
+      if (!region) { errEl.textContent = 'Please select your region.'; errEl.style.display = 'block'; document.getElementById('storeModalRegion').focus(); return; }
+      if (!addr) { errEl.textContent = 'Please enter a landmark or digital address for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalAddr').focus(); return; }
+      errEl.style.display = 'none';
+      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      callback({ name: n, email: e, phone: p, shipping_city: city, shipping_region: region, shipping_digital_address: addr, delivery_fee: fee, is_guest: true });
+      closeFn();
+    });
+    document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalEmail').focus(); });
   });
-  document.getElementById('storeModalName').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalEmail').focus(); });
-  document.getElementById('storeModalEmail').addEventListener('keydown', function(ev) { if (ev.key === 'Enter') document.getElementById('storeModalSubmit').click(); });
 }
 
 function buildOverlay() {

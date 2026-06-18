@@ -134,6 +134,19 @@
       )`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_tx_ref ON store_orders(tx_ref)`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(status)`,
+      `CREATE TABLE IF NOT EXISTS inventory (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_slug TEXT NOT NULL,
+        size TEXT NOT NULL DEFAULT '',
+        quantity INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+        UNIQUE(product_slug, size)
+      )`,
+      `INSERT OR IGNORE INTO inventory (product_slug, size, quantity) VALUES
+        ('soc-tshirt', 'S', 10), ('soc-tshirt', 'M', 20), ('soc-tshirt', 'L', 20), ('soc-tshirt', 'XL', 10),
+        ('nation-builder-tee', 'S', 10), ('nation-builder-tee', 'M', 20), ('nation-builder-tee', 'L', 20), ('nation-builder-tee', 'XL', 10),
+        ('studio-hoodie', 'S', 8), ('studio-hoodie', 'M', 15), ('studio-hoodie', 'L', 15), ('studio-hoodie', 'XL', 8),
+        ('wisdom-cap', 'One Size', 25)`,
       `CREATE TABLE IF NOT EXISTS nationbuilding_registrations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -146,6 +159,9 @@
       `CREATE INDEX IF NOT EXISTS idx_nr_email ON nationbuilding_registrations(email)`,
       `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')`,
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('merch_delivery_fee_local', '20')`,
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('merch_delivery_fee_upcountry', '50')`,
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('merch_delivery_free_threshold', '0')`,
       // ── Cleanup duplicate rows from repeated seed runs ──
       `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`,
       `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`,
@@ -503,6 +519,14 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
         ('founding', 'Founding Partner', 'Top-tier partnership with recognition and exclusive community.', 0, 5000, '["All Patron features","Name featured on website","Private Founding Partner community","Co-branded content opportunities","Priority feature requests","Exclusive event invitations"]', 'Flagship', 4)
       `,
       `ALTER TABLE store_orders ADD COLUMN user_id INTEGER DEFAULT 0`,
+      `ALTER TABLE store_orders ADD COLUMN shipping_address TEXT DEFAULT ''`,
+      `ALTER TABLE store_orders ADD COLUMN shipping_city TEXT DEFAULT ''`,
+      `ALTER TABLE store_orders ADD COLUMN shipping_region TEXT DEFAULT ''`,
+      `ALTER TABLE store_orders ADD COLUMN shipping_digital_address TEXT DEFAULT ''`,
+      `ALTER TABLE store_orders ADD COLUMN delivery_fee REAL DEFAULT 0`,
+      `ALTER TABLE store_orders ADD COLUMN delivery_status TEXT DEFAULT 'pending'`,
+      `ALTER TABLE store_orders ADD COLUMN courier_name TEXT DEFAULT ''`,
+      `ALTER TABLE store_orders ADD COLUMN tracking_info TEXT DEFAULT ''`,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

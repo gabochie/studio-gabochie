@@ -40,6 +40,8 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .size-chip{padding:6px 14px;border:1px solid #1E3250;border-radius:6px;background:transparent;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
 .size-chip:hover{border-color:#C9A84C;color:#C9A84C}
 .size-chip.active{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+.size-chip.out{opacity:.35;cursor:not-allowed;border-color:#3A5278;color:#5A7A9F}
+.size-chip.out:hover{border-color:#3A5278;color:#5A7A9F}
 .merch-card .btn-buy{width:100%;padding:10px;background:transparent;border:1px solid #C9A84C;color:#C9A84C;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .merch-card .btn-buy:hover{background:#C9A84C;color:#0A1628}
 .merch-card .btn-buy:disabled{opacity:.4;cursor:not-allowed;border-color:#3A5278;color:#3A5278;background:transparent}
@@ -114,13 +116,14 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <script src="../assets/js/main.js"></script>
 <script>
 var merchInventory = [
-  { name: 'School of Creativity T-Shirt', variant: 'Classic Fit — Unisex', price: 99 },
-  { name: 'Nation Builder Tee', variant: 'Premium Cotton — Unisex', price: 99 },
-  { name: 'Studio Logo Hoodie', variant: 'Heavyweight Fleece — Unisex', price: 199 },
-  { name: 'Wisdom Collection Cap', variant: 'Adjustable Snapback — One Size', price: 79, sizes: ['One Size'] }
+  { slug: 'soc-tshirt', name: 'School of Creativity T-Shirt', variant: 'Classic Fit — Unisex', price: 99, img: 'tshirt' },
+  { slug: 'nation-builder-tee', name: 'Nation Builder Tee', variant: 'Premium Cotton — Unisex', price: 99, img: 'tshirt' },
+  { slug: 'studio-hoodie', name: 'Studio Logo Hoodie', variant: 'Heavyweight Fleece — Unisex', price: 199, img: 'hoodie' },
+  { slug: 'wisdom-cap', name: 'Wisdom Collection Cap', variant: 'Adjustable Snapback — One Size', price: 79, sizes: ['One Size'], img: 'cap' }
 ];
 
 var selectedSizes = {};
+var __inventory = {};
 
 function selectSize(itemIdx, size) {
   selectedSizes[itemIdx] = size;
@@ -129,7 +132,12 @@ function selectSize(itemIdx, size) {
     c.classList.toggle('active', c.dataset.size === size);
   });
   var btn = document.getElementById('buyBtn_' + itemIdx);
-  if (btn) btn.disabled = false;
+  if (btn) {
+    var item = merchInventory[itemIdx];
+    var inv = __inventory[item.slug] || {};
+    var qty = inv[size] || 0;
+    btn.disabled = qty < 1;
+  }
 }
 
 function renderMerch() {
@@ -137,10 +145,15 @@ function renderMerch() {
   grid.innerHTML = merchInventory.map(function(m, i) {
     var sizes = m.sizes || ['S', 'M', 'L', 'XL'];
     var sizeHtml = '<div class="size-selector">' + sizes.map(function(s) {
-      return '<button class="size-chip" data-idx="' + i + '" data-size="' + s + '" onclick="selectSize(' + i + ', \'' + s + '\')">' + s + '</button>';
+      var inv = __inventory[m.slug] || {};
+      var qty = inv[s] || 0;
+      var cls = 'size-chip' + (qty < 1 ? ' out' : '');
+      return '<button class="' + cls + '" data-idx="' + i + '" data-size="' + s + '" onclick="selectSize(' + i + ', \'' + s + '\')">' + s + (qty < 1 ? ' — Out of Stock' : qty <= 3 ? ' — only ' + qty : '') + '</button>';
     }).join('') + '</div>';
+    var imgColors = { tshirt: '#1E3A5F,#0F1E38', hoodie: '#2A1F3D,#0F1E38', cap: '#1E3250,#0A1628' };
+    var gradient = imgColors[m.img] || imgColors.tshirt;
     return '<div class="merch-card">' +
-      '<div class="img-placeholder"><i class="ti ti-shirt"></i></div>' +
+      '<div class="img-placeholder" style="background:linear-gradient(135deg,' + gradient + ')"><i class="ti ti-' + m.img + '"></i></div>' +
       '<div class="info">' +
       '<h3>' + m.name + '</h3>' +
       '<div class="variant">' + m.variant + '</div>' +
@@ -156,22 +169,67 @@ function buyMerchItem(idx) {
   var size = selectedSizes[idx];
   if (!size) return;
   showStoreModal(function(user) {
-    var txRef = 'merch_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-    FlutterwaveCheckout({
-      public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-      tx_ref: txRef,
-      amount: item.price,
-      currency: 'GHS',
-      payment_options: 'card, mobilemoneyghana, ussd',
-      customer: { email: user.email, name: user.name },
-      meta: { item_type: 'merch', item_name: item.name, item_variant: size, item_price: String(item.price), user_id: user.user_id || '' },
-      callback: function(r) { window.location.href = '/store/download?tx_ref=' + txRef + '&status=' + r.status; },
-      onclose: function() {}
-    });
+    var totalAmount = item.price + (user.delivery_fee || 0);
+    fetch('/api/store/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_type: 'merch', item_name: item.name, item_variant: size, product_slug: item.slug,
+        amount: item.price, currency: 'GHS', customer_name: user.name, customer_email: user.email,
+        user_id: user.user_id || 0, phone: user.phone || '',
+        shipping_address: user.shipping_digital_address || '',
+        shipping_city: user.shipping_city || '', shipping_region: user.shipping_region || '',
+        shipping_digital_address: user.shipping_digital_address || '', delivery_fee: user.delivery_fee || 0
+      })
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.status !== 'ok') { alert('Failed to create order. Please try again.'); return; }
+      FlutterwaveCheckout({
+        public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+        tx_ref: d.tx_ref,
+        amount: totalAmount,
+        currency: 'GHS',
+        payment_options: 'card, mobilemoneyghana, ussd',
+        customer: { email: user.email, name: user.name },
+        meta: { item_type: 'merch', item_name: item.name, item_variant: size, item_price: String(item.price), delivery_fee: String(user.delivery_fee || 0), user_id: user.user_id || '' },
+        callback: function(r) { window.location.href = '/merch/?order=' + d.tx_ref + '&status=' + r.status; },
+        onclose: function() {}
+      });
+    }).catch(function(){ alert('Network error. Please try again.'); });
   });
 }
 
-renderMerch();
+function updateStockDisplay() {
+  var chips = document.querySelectorAll('.size-chip');
+  chips.forEach(function(chip) {
+    var idx = parseInt(chip.dataset.idx);
+    var size = chip.dataset.size;
+    var item = merchInventory[idx];
+    if (!item) return;
+    var inv = __inventory[item.slug] || {};
+    var qty = inv[size] || 0;
+    chip.textContent = size + (qty < 1 ? ' — Out of Stock' : qty <= 3 ? ' — only ' + qty : '');
+    chip.classList.toggle('out', qty < 1);
+    var btn = document.getElementById('buyBtn_' + idx);
+    if (btn && selectedSizes[idx] === size && qty < 1) btn.disabled = true;
+  });
+}
+
+fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(function(d){
+  if (d.items) {
+    d.items.forEach(function(i){ if (!__inventory[i.product_slug]) __inventory[i.product_slug] = {}; __inventory[i.product_slug][i.size] = i.quantity; });
+  }
+}).catch(function(){}).then(function(){ renderMerch(); });
+
+// Poll inventory every 60 seconds
+setInterval(function(){
+  fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(function(d){
+    if (d.items) {
+      __inventory = {};
+      d.items.forEach(function(i){ if (!__inventory[i.product_slug]) __inventory[i.product_slug] = {}; __inventory[i.product_slug][i.size] = i.quantity; });
+      updateStockDisplay();
+    }
+  }).catch(function(){});
+}, 60000);
 </script>
 </body>
 </html>
