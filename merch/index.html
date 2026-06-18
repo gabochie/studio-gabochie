@@ -116,10 +116,10 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <script src="../assets/js/main.js"></script>
 <script>
 var merchInventory = [
-  { slug: 'soc-tshirt', name: 'School of Creativity T-Shirt', variant: 'Classic Fit — Unisex', price: 99, img: 'tshirt' },
-  { slug: 'nation-builder-tee', name: 'Nation Builder Tee', variant: 'Premium Cotton — Unisex', price: 99, img: 'tshirt' },
-  { slug: 'studio-hoodie', name: 'Studio Logo Hoodie', variant: 'Heavyweight Fleece — Unisex', price: 199, img: 'hoodie' },
-  { slug: 'wisdom-cap', name: 'Wisdom Collection Cap', variant: 'Adjustable Snapback — One Size', price: 79, sizes: ['One Size'], img: 'cap' }
+  { slug: 'soc-tshirt', name: 'School of Creativity T-Shirt', variant: 'Classic Fit — Unisex', price: 99, img: 'hanger' },
+  { slug: 'nation-builder-tee', name: 'Nation Builder Tee', variant: 'Premium Cotton — Unisex', price: 99, img: 'hanger' },
+  { slug: 'studio-hoodie', name: 'Studio Logo Hoodie', variant: 'Heavyweight Fleece — Unisex', price: 199, img: 'hanger' },
+  { slug: 'wisdom-cap', name: 'Wisdom Collection Cap', variant: 'Adjustable Snapback — One Size', price: 79, sizes: ['One Size'], img: 'crown' }
 ];
 
 var selectedSizes = {};
@@ -150,7 +150,7 @@ function renderMerch() {
       var cls = 'size-chip' + (qty < 1 ? ' out' : '');
       return '<button class="' + cls + '" data-idx="' + i + '" data-size="' + s + '" onclick="selectSize(' + i + ', \'' + s + '\')">' + s + (qty < 1 ? ' — Out of Stock' : qty <= 3 ? ' — only ' + qty : '') + '</button>';
     }).join('') + '</div>';
-    var imgColors = { tshirt: '#1E3A5F,#0F1E38', hoodie: '#2A1F3D,#0F1E38', cap: '#1E3250,#0A1628' };
+    var imgColors = { hanger: '#1E3A5F,#0F1E38', crown: '#1E3250,#0A1628' };
     var gradient = imgColors[m.img] || imgColors.tshirt;
     return '<div class="merch-card">' +
       '<div class="img-placeholder" style="background:linear-gradient(135deg,' + gradient + ')"><i class="ti ti-' + m.img + '"></i></div>' +
