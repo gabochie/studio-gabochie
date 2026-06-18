@@ -446,12 +446,8 @@ function showCheckoutStep(user, callback) {
       var addr = document.getElementById('storeModalAddr').value.trim();
       var errEl = document.getElementById('storeModalError');
       if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
-      if (!p) { errEl.textContent = 'Please enter your phone number for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalPhone').focus(); return; }
-      if (!city) { errEl.textContent = 'Please enter your city/town.'; errEl.style.display = 'block'; document.getElementById('storeModalCity').focus(); return; }
-      if (!region) { errEl.textContent = 'Please select your region.'; errEl.style.display = 'block'; document.getElementById('storeModalRegion').focus(); return; }
-      if (!addr) { errEl.textContent = 'Please enter a landmark or digital address for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalAddr').focus(); return; }
       errEl.style.display = 'none';
-      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      var fee = region === 'Greater Accra' ? cfg.local : (region ? cfg.upcountry : 0);
       callback({ name: n, email: e, phone: p, shipping_city: city, shipping_region: region, shipping_digital_address: addr, delivery_fee: fee, user_id: user.id, session_token: getSessionToken() });
       closeFn();
     });
@@ -510,12 +506,8 @@ function showGuestForm(callback) {
       var errEl = document.getElementById('storeModalError');
       if (!n) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; document.getElementById('storeModalName').focus(); return; }
       if (!e || !e.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; document.getElementById('storeModalEmail').focus(); return; }
-      if (!p) { errEl.textContent = 'Please enter your phone number for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalPhone').focus(); return; }
-      if (!city) { errEl.textContent = 'Please enter your city/town.'; errEl.style.display = 'block'; document.getElementById('storeModalCity').focus(); return; }
-      if (!region) { errEl.textContent = 'Please select your region.'; errEl.style.display = 'block'; document.getElementById('storeModalRegion').focus(); return; }
-      if (!addr) { errEl.textContent = 'Please enter a landmark or digital address for delivery.'; errEl.style.display = 'block'; document.getElementById('storeModalAddr').focus(); return; }
       errEl.style.display = 'none';
-      var fee = region === 'Greater Accra' ? cfg.local : cfg.upcountry;
+      var fee = region === 'Greater Accra' ? cfg.local : (region ? cfg.upcountry : 0);
       callback({ name: n, email: e, phone: p, shipping_city: city, shipping_region: region, shipping_digital_address: addr, delivery_fee: fee, is_guest: true });
       closeFn();
     });

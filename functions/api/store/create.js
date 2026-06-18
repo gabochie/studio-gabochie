@@ -28,14 +28,6 @@ export async function onRequest(context) {
     await db.prepare(
       `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, user_id, status, customer_phone, shipping_address, shipping_city, shipping_region, shipping_digital_address, delivery_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)`
     ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email, uid, phone || '', shipAddr, shipping_city || '', shipping_region || '', shipping_digital_address || '', df).run();
-    if (item_variant && item_type === 'merch') {
-      try {
-        const slug = body.product_slug || '';
-        if (slug) {
-          await db.prepare(`UPDATE inventory SET quantity = MAX(quantity - 1, 0), updated_at = datetime('now') WHERE product_slug = ? AND size = ? AND quantity > 0`).bind(slug, item_variant).run();
-        }
-      } catch (_e) {}
-    }
     return new Response(JSON.stringify({ status: 'ok', tx_ref, amount: parseFloat(amount) + df, currency }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });

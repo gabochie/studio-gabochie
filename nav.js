@@ -6,6 +6,7 @@
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
     '<a href="/school/">School</a>' +
+    '<a href="/merch/">Merch</a>' +
     '<a href="/books/">Books</a>' +
     '<a href="/membership/">Membership</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Fundraising</a>' +
@@ -39,6 +40,7 @@
     '<a href="/newsletter/">The Studio Weekly</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Flagship Campaign</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
+    '<a href="/merch/">Merchandise</a>' +
     '<a href="/tutoring/">Tutoring Marketplace</a>' +
     '<a href="/careers/">Careers</a>' +
     '</div>' +

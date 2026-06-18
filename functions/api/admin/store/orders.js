@@ -13,12 +13,13 @@ export async function onRequest(context) {
     try {
       const url = new URL(request.url);
       const status = url.searchParams.get('status') || '';
+      const deliveryStatus = url.searchParams.get('delivery_status') || '';
       let sql = 'SELECT * FROM store_orders';
+      const conditions = [];
       const params = [];
-      if (status) {
-        sql += ' WHERE status = ?';
-        params.push(status);
-      }
+      if (status) { conditions.push('status = ?'); params.push(status); }
+      if (deliveryStatus) { conditions.push('delivery_status = ?'); params.push(deliveryStatus); }
+      if (conditions.length) sql += ' WHERE ' + conditions.join(' AND ');
       sql += ' ORDER BY created_at DESC LIMIT 200';
       const rows = await db.prepare(sql).bind(...params).all();
       return new Response(JSON.stringify({ orders: rows.results || [] }), { headers: { 'Content-Type': 'application/json' } });

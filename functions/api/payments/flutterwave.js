@@ -370,6 +370,19 @@ export async function onRequest(context) {
           `INSERT INTO store_orders (tx_ref, item_type, item_name, amount, currency, customer_name, customer_email, status, flw_id) VALUES (?, ?, ?, ?, ?, ?, ?, 'completed', ?)`
         ).bind(tx_ref, storeItemType, storeItemName, verifiedAmount, verifiedCurrency, donor_name, donor_email, flw_id).run();
       }
+      // Decrement inventory for confirmed merch purchases
+      try {
+        var invItemType = orderRec ? orderRec.item_type : storeItemType;
+        var invVariant = orderRec ? orderRec.item_variant : '';
+        var invItemName = orderRec ? orderRec.item_name : storeItemName;
+        if (invItemType === 'merch' && invVariant) {
+          var slugMap = { 'School of Creativity T-Shirt': 'soc-tshirt', 'Nation Builder Tee': 'nation-builder-tee', 'Studio Logo Hoodie': 'studio-hoodie', 'Wisdom Collection Cap': 'wisdom-cap' };
+          var invSlug = slugMap[invItemName] || '';
+          if (invSlug) {
+            await db.prepare("UPDATE inventory SET quantity = MAX(quantity - 1, 0), updated_at = datetime('now') WHERE product_slug = ? AND size = ? AND quantity > 0").bind(invSlug, invVariant).run();
+          }
+        }
+      } catch (_e) {}
       if (donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
         try {
           var sName = orderRec ? orderRec.item_name : storeItemName;
@@ -377,8 +390,14 @@ export async function onRequest(context) {
           var sVariant = orderRec ? orderRec.item_variant : '';
           var displayName = sName || 'Item';
           if (sVariant) { displayName = displayName + ' (' + sVariant + ')'; }
-          var deliverySection = '<a href="https://gideonabochie.org/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
-            '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">Your download link is unique to this purchase. Do not share it.</p>';
+          var shipCity = orderRec ? orderRec.shipping_city : '';
+          var shipRegion = orderRec ? orderRec.shipping_region : '';
+          var isPhysical = shipCity || shipRegion;
+          var deliverySection = isPhysical
+            ? '<p style="color:#1E293B;font-size:14px;line-height:1.6;margin:0 0 8px">We\'ll ship your order to <strong style="color:#C9A84C">' + shipCity + ', ' + shipRegion + '</strong>.</p>' +
+              '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">You\'ll receive a tracking update once dispatched. Delivery typically takes 1-3 business days within Accra, 3-7 days upcountry.</p>'
+            : '<a href="https://gideonabochie.org/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
+              '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">Your download link is unique to this purchase. Do not share it.</p>';
           var receiptHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
             '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
             '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +

@@ -37,6 +37,14 @@
     </div>
     <div class="stat-card"><span class="stat-num gold" id="statMembPremium">—</span><span class="stat-label">Premium</span><span class="stat-sub" id="statMembPremiumSub">Members</span></div>
     <div class="stat-card"><span class="stat-num" id="statMembVip">—</span><span class="stat-label">VIP</span><span class="stat-sub" id="statMembVipSub">Expiring soon: —</span></div>
+    <div class="stat-card" id="statStoreCard" style="cursor:pointer" onclick="window.location.href='store.html'">
+      <div style="display:flex;gap:12px;align-items:baseline">
+        <span class="stat-num gold" id="statStoreOrders">—</span>
+        <span class="stat-num green" style="font-size:clamp(18px,2vw,26px)" id="statStorePending">—</span>
+      </div>
+      <span class="stat-label">Orders <span style="color:#EAB308;font-size:10px">total</span> <span style="color:#22C55E;font-size:10px">pending delivery</span></span>
+      <span class="stat-sub" id="statStoreSub">Click to manage</span>
+    </div>
   </div>
 
   <!-- Coming Soon Toggle -->
@@ -801,6 +809,21 @@ loadCI();
 setInterval(loadSummary, 30000);
 setInterval(loadAudience, 60000);
 setInterval(loadCI, 60000);
+
+// Store orders summary
+function loadStoreSummary() {
+  adminFetch('/admin/api/store/orders').then(function(r){return r.json()}).then(function(d){
+    var orders = d.orders || [];
+    var total = orders.length;
+    var pendingDelivery = orders.filter(function(o){ var s = (o.delivery_status || 'pending'); return s === 'pending' || s === 'confirmed'; }).length;
+    $('statStoreOrders').textContent = fmtNum(total);
+    $('statStoreOrders').className = 'num gold';
+    $('statStorePending').textContent = fmtNum(pendingDelivery);
+    $('statStorePending').className = pendingDelivery > 0 ? 'num green' : 'num';
+  }).catch(function(){});
+}
+setTimeout(loadStoreSummary, 2000);
+setInterval(loadStoreSummary, 60000);
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
