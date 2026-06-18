@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Survey — Admin</title>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.counts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.count-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px;text-align:center}
+.count-card .num{font-size:28px;font-weight:700;color:#C9A84C;font-family:'Syne',sans-serif}
+.count-card .label{font-size:11px;color:#5A7A9F;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.filters{margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap}
+.filters input{padding:8px 12px;border:1px solid #1E3250;border-radius:6px;background:#0A1628;color:#CBD5E1;font-family:'Inter',sans-serif;font-size:13px;min-width:200px}
+.filters button{padding:8px 16px;border:none;border-radius:6px;background:#C9A84C;color:#0A1628;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+.resp-table{width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:12px}
+.resp-table th{padding:10px 8px;text-align:left;color:#5A7A9F;border-bottom:1px solid #1E3250;font-weight:600;white-space:nowrap}
+.resp-table td{padding:10px 8px;border-bottom:1px solid rgba(30,50,80,.4);color:#CBD5E1;vertical-align:top}
+.resp-table tr:hover td{background:rgba(255,255,255,.02)}
+.resp-table .interests-tag{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(201,168,76,.1);color:#C9A84C;font-size:10px;margin:1px}
+.other-text{color:#8A9BB5;font-style:italic;max-width:200px;word-break:break-word}
+.pagination{display:flex;gap:8px;align-items:center;margin-top:16px;font-family:'Inter',sans-serif;font-size:12px;color:#5A7A9F}
+.pagination button{padding:6px 14px;border:1px solid #1E3250;border-radius:6px;background:#0A1628;color:#CBD5E1;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.pagination .page-num{color:#C9A84C;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" style="display:none">
+  <h1 class="page-title">Course Interest <span>Survey</span></h1>
+  <p class="page-desc" style="margin-bottom:24px">
+    <span id="totalCount">—</span> total responses
+    <span style="color:#3A5278">|</span>
+    <a href="#" onclick="exportCSV(event)" style="color:#C9A84C">Export CSV</a>
+  </p>
+  <h2 class="page-title" style="font-size:16px;margin-bottom:12px">Interest <span>Counts</span></h2>
+  <div class="counts-grid" id="countsGrid"></div>
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Search by name, email, or phone..." oninput="filterResponses()">
+    <button onclick="refresh()">Refresh</button>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="resp-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Interests</th>
+          <th>Other</th>
+        </tr>
+      </thead>
+      <tbody id="respBody"></tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pagination"></div>
+</div>
+<div class="loading" id="loadingView">Loading survey data...</div>
+<div class="error" id="errorView" style="display:none;text-align:center;padding:60px 24px">
+  <h2 style="color:#EF4444;margin-bottom:8px">Error</h2>
+  <p id="errorMsg" style="color:#8A9BB5"></p>
+</div>
+<script src="admin.js"></script>
+<script>
+var allResponses = [];
+var filtered = [];
+var page = 0;
+var PAGE_SIZE = 50;
+
+function api(path) {
+  return fetch(path, { headers: { 'X-Admin-Auth': '1' } });
+}
+
+function load() {
+  document.getElementById('loadingView').style.display = 'block';
+  document.getElementById('errorView').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+  api('/api/survey/results?all=1&limit=500').then(function(r) { return r.json(); }).then(function(d) {
+    if (d.status !== 'ok') throw new Error(d.error);
+    allResponses = d.responses || [];
+    document.getElementById('totalCount').textContent = d.total;
+    renderCounts(d.counts || {});
+    filterResponses();
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }).catch(function(e) {
+    document.getElementById('loadingView').style.display = 'none';
+    document.getElementById('errorView').style.display = 'block';
+    document.getElementById('errorMsg').textContent = e.message;
+  });
+}
+
+function renderCounts(counts) {
+  var grid = document.getElementById('countsGrid');
+  var sorted = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+  grid.innerHTML = sorted.map(function(k) {
+    return '<div class="count-card"><div class="num">' + counts[k] + '</div><div class="label">' + esc(k) + '</div></div>';
+  }).join('');
+}
+
+function filterResponses() {
+  var q = document.getElementById('searchInput').value.toLowerCase().trim();
+  filtered = allResponses.filter(function(r) {
+    if (!q) return true;
+    return (r.name && r.name.toLowerCase().includes(q)) ||
+           (r.email && r.email.toLowerCase().includes(q)) ||
+           (r.phone && r.phone.toLowerCase().includes(q));
+  });
+  page = 0;
+  renderPage();
+}
+
+function renderPage() {
+  var start = page * PAGE_SIZE;
+  var end = start + PAGE_SIZE;
+  var slice = filtered.slice(start, end);
+  var tbody = document.getElementById('respBody');
+  tbody.innerHTML = slice.map(function(r) {
+    var interests = Array.isArray(r.interests) ? r.interests : [];
+    var tags = interests.map(function(i) { return '<span class="interests-tag">' + esc(i) + '</span>'; }).join(' ');
+    return '<tr>' +
+      '<td style="white-space:nowrap">' + esc(r.created_at ? r.created_at.slice(0, 10) : '') + '</td>' +
+      '<td>' + esc(r.name) + '</td>' +
+      '<td>' + esc(r.email) + '</td>' +
+      '<td>' + esc(r.phone) + '</td>' +
+      '<td>' + tags + '</td>' +
+      '<td class="other-text">' + esc(r.other_text) + '</td>' +
+      '</tr>';
+  }).join('');
+  var totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  document.getElementById('pagination').innerHTML =
+    '<button onclick="prevPage()" ' + (page <= 0 ? 'disabled' : '') + '>← Prev</button>' +
+    '<span>Page <span class="page-num">' + (page + 1) + '</span> of ' + totalPages + '</span>' +
+    '<button onclick="nextPage()" ' + (page >= totalPages - 1 ? 'disabled' : '') + '>Next →</button>';
+}
+
+function prevPage() { if (page > 0) { page--; renderPage(); } }
+function nextPage() { if (page < Math.ceil(filtered.length / PAGE_SIZE) - 1) { page++; renderPage(); } }
+function refresh() { load(); }
+
+function exportCSV(e) {
+  e.preventDefault();
+  var headers = ['Date', 'Name', 'Email', 'Phone', 'Interests', 'Other'];
+  var rows = allResponses.map(function(r) {
+    return [
+      r.created_at ? r.created_at.slice(0, 10) : '',
+      r.name || '',
+      r.email || '',
+      r.phone || '',
+      (Array.isArray(r.interests) ? r.interests.join('; ') : '') || '',
+      (r.other_text || '').replace(/"/g, '""')
+    ];
+  });
+  var csv = headers.join(',') + '\n' + rows.map(function(row) {
+    return row.map(function(cell) { return '"' + String(cell).replace(/"/g, '""') + '"'; }).join(',');
+  }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'course-survey-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+}
+
+function esc(s) {
+  if (!s) return '';
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1079,6 +1079,9 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       )`,
       `CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)`,
       `CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic)`,
+      `ALTER TABLE survey_responses ADD COLUMN email TEXT DEFAULT ''`,
+      `ALTER TABLE survey_responses ADD COLUMN interests TEXT DEFAULT '[]'`,
+      `ALTER TABLE survey_responses ADD COLUMN other_text TEXT DEFAULT ''`,
       // Set Bible-based programs to coming_soon, focus on nation building
       `UPDATE programs SET status = 'coming_soon' WHERE slug IN ('systems-thinking-genesis','revelation-study','psalms-worship-word')`,
       // Activate Sketching &amp; Drawing for Vision Builders with full content

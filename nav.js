@@ -7,6 +7,7 @@
     '<a href="/#story">About</a>' +
     '<a href="/school/">School</a>' +
     '<a href="/guitar/">Guitar</a>' +
+    '<a href="/survey/">Survey</a>' +
     '<a href="/merch/">Merch</a>' +
     '<a href="/books/">Books</a>' +
     '<a href="/membership/">Membership</a>' +
