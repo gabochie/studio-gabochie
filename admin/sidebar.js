@@ -42,7 +42,8 @@
         { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' },
         { href: 'donations.html',   icon: '\uD83D\uDCB5', label: 'Donations' },
         { href: 'bookings.html',    icon: '\uD83C\uDFE8', label: 'Bookings' },
-        { href: 'sponsors.html',    icon: '\uD83E\uDD1D', label: 'Sponsors' }
+        { href: 'sponsors.html',    icon: '\uD83E\uDD1D', label: 'Sponsors' },
+        { href: 'services.html',    icon: '\uD83D\uDCD0', label: 'Services' }
       ]
     },
     {

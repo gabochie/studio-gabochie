@@ -31,7 +31,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .hero h1 span{color:#C9A84C}
 .hero p{font-size:16px;color:#8A9BB5;max-width:640px;margin:0 auto 40px;line-height:1.7}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:var(--content-max);margin:0 auto;padding:0 24px 60px}
-.service-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;transition:all .3s;display:flex;flex-direction:column}
+.service-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;transition:all .3s;display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer}
 .service-card:hover{border-color:#C9A84C;transform:translateY(-4px)}
 .service-icon{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;color:#C9A84C;flex-shrink:0}
 .service-card h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
@@ -63,54 +63,54 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 </div>
 
 <div class="services-grid">
-  <div class="service-card">
+  <a href="/services/architectural-design/" class="service-card">
     <div class="service-icon"><i class="ti ti-building-arch"></i></div>
     <h3>Architectural Design &amp; Visualization</h3>
     <p>Custom architectural design for residential and commercial projects. Services include schematic design, 3D modeling, photorealistic rendering, space planning, and construction documentation tailored to the African context.</p>
-    <span class="price-tag">Project-based pricing</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Project-based pricing &rarr;</span>
+  </a>
+  <a href="/services/systems-thinking/" class="service-card">
     <div class="service-icon"><i class="ti ti-hierarchy-2"></i></div>
     <h3>Systems Thinking Consulting</h3>
     <p>Strategic analysis and systems mapping for organizations, ministries, and institutions. We help you see the whole picture, identify leverage points, and design interventions that create lasting change.</p>
-    <span class="price-tag">Hourly &amp; project rates</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Hourly &amp; project rates &rarr;</span>
+  </a>
+  <a href="/services/curriculum-design/" class="service-card">
     <div class="service-icon"><i class="ti ti-book-2"></i></div>
     <h3>Curriculum &amp; Course Design</h3>
     <p>Design of tailored learning experiences and training materials for schools, churches, and organizations. From scope and sequence to lesson plans and assessment frameworks — built for real-world impact.</p>
-    <span class="price-tag">Project-based pricing</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Project-based pricing &rarr;</span>
+  </a>
+  <a href="/services/speaking/" class="service-card">
     <div class="service-icon"><i class="ti ti-microphone"></i></div>
     <h3>Speaking &amp; Keynotes</h3>
     <p>Conference keynotes, seminars, panel discussions, and guest lectures on leadership, design, systems thinking, creative excellence, and nation building. Available for in-person and virtual events.</p>
-    <span class="price-tag">Custom quote</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Custom quote &rarr;</span>
+  </a>
+  <a href="/services/writing-editorial/" class="service-card">
     <div class="service-icon"><i class="ti ti-edit"></i></div>
     <h3>Writing &amp; Editorial Services</h3>
     <p>Ghostwriting, editing, book development, content strategy, and long-form editorial work. We help leaders and organizations clarify their message and publish work that resonates.</p>
-    <span class="price-tag">Hourly &amp; project rates</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Hourly &amp; project rates &rarr;</span>
+  </a>
+  <a href="/services/mentorship-coaching/" class="service-card">
     <div class="service-icon"><i class="ti ti-users"></i></div>
     <h3>Mentorship &amp; Coaching</h3>
     <p>One-on-one and group coaching in design thinking, creative excellence, personal development, and professional growth. Structured programs tailored to your goals and context.</p>
-    <span class="price-tag">Session &amp; program rates</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Session &amp; program rates &rarr;</span>
+  </a>
+  <a href="/services/brand-creative/" class="service-card">
     <div class="service-icon"><i class="ti ti-palette"></i></div>
     <h3>Brand &amp; Creative Direction</h3>
     <p>Brand identity development, visual strategy, creative campaigns, and design direction for businesses, ministries, and nonprofits. From logo design to full brand systems.</p>
-    <span class="price-tag">Project-based pricing</span>
-  </div>
-  <div class="service-card">
+    <span class="price-tag">Project-based pricing &rarr;</span>
+  </a>
+  <a href="/services/digital-skills/" class="service-card">
     <div class="service-icon"><i class="ti ti-device-laptop"></i></div>
     <h3>Digital Skills Training</h3>
     <p>Workshops and intensive training in web development, AI tools, design software, and digital literacy. Practical, hands-on learning designed to build marketable skills quickly.</p>
-    <span class="price-tag">Workshop &amp; course rates</span>
-  </div>
+    <span class="price-tag">Workshop &amp; course rates &rarr;</span>
+  </a>
 </div>
 
 <div class="process-section">
@@ -154,5 +154,6 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div id="footer-placeholder"></div>
 
 <script src="../nav.js"></script>
+<script src="inquiry.js"></script>
 </body>
 </html>

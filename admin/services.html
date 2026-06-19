@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Inquiries — Admin · GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.status-pill.new{background:rgba(201,168,76,.12);color:#C9A84C;border:1px solid rgba(201,168,76,.2)}
+.status-pill.contacted{background:rgba(52,199,123,.15);color:#34C77B;border:1px solid rgba(52,199,123,.2)}
+.status-pill.qualified{background:rgba(90,122,159,.15);color:#5A7A9F;border:1px solid rgba(90,122,159,.2)}
+.status-pill.proposal_sent{background:rgba(64,136,214,.15);color:#4A88E0;border:1px solid rgba(64,136,214,.2)}
+.status-pill.closed{background:rgba(232,99,122,.12);color:#E8637A;border:1px solid rgba(232,99,122,.2)}
+.status-pill.closed_won{background:rgba(52,199,123,.15);color:#34C77B;border:1px solid rgba(52,199,123,.2)}
+.inquiry-info{display:flex;flex-direction:column;gap:2px}
+.inquiry-info .name{color:#E8EEF7;font-weight:500;font-size:13px}
+.inquiry-info .email{color:#5A7A9F;font-size:11px}
+.detail-row{font-size:12px;color:#8A9BB5;padding:2px 0}
+.detail-row strong{color:#E8EEF7}
+.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.filter-bar select{padding:6px 10px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:12px;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 class="page-title">Service <span>Inquiries</span></h1>
+  <p class="page-desc">Leads from service pages. Click status to cycle: new &rarr; contacted &rarr; qualified &rarr; proposal_sent &rarr; closed_won / closed.</p>
+
+  <div class="stats" id="stats">
+    <div class="stat-card"><span class="stat-num zero" id="totalInquiries">—</span><span class="stat-label">Total</span><span class="stat-note">All time</span></div>
+    <div class="stat-card"><span class="stat-num gold" id="newCount">—</span><span class="stat-label">New</span><span class="stat-note">Needs review</span></div>
+    <div class="stat-card"><span class="stat-num zero" id="contactedCount">—</span><span class="stat-label">Contacted</span><span class="stat-note">In conversation</span></div>
+    <div class="stat-card"><span class="stat-num green" id="proposalCount">—</span><span class="stat-label">Proposal Sent</span><span class="stat-note">Waiting on decision</span></div>
+  </div>
+
+  <div class="section-title">&#10003; Inquiry Records</div>
+  <div class="filter-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search name, email, company, description..." oninput="filterInquiries()" style="flex:1;min-width:200px">
+    <select id="serviceFilter" onchange="filterInquiries()">
+      <option value="">All Services</option>
+      <option value="Architectural Design">Architectural Design</option>
+      <option value="Systems Thinking Consulting">Systems Thinking</option>
+      <option value="Curriculum & Course Design">Curriculum Design</option>
+      <option value="Speaking & Keynotes">Speaking</option>
+      <option value="Writing & Editorial">Writing</option>
+      <option value="Mentorship & Coaching">Mentorship</option>
+      <option value="Brand & Creative Direction">Brand & Creative</option>
+      <option value="Digital Skills Training">Digital Skills</option>
+    </select>
+    <button class="btn-sm" onclick="loadInquiries()">&#8635; Refresh</button>
+    <button class="btn-sm" onclick="exportCSV()">&#8595; Export CSV</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Contact</th><th>Service</th><th>Details</th><th>Budget</th><th>Timeline</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody id="inquiriesBody"></tbody>
+    </table>
+  </div>
+</div>
+<div class="footer"><a href="index.html">&larr; Dashboard</a></div>
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+var allInquiries = [];
+
+async function loadInquiries() {
+  document.getElementById('inquiriesBody').innerHTML = '<tr><td colspan="7" class="table-empty">Loading...</td></tr>';
+  try {
+    var res = await adminFetch('/admin/api/services', {headers:{'Referer':'/admin/services.html'}});
+    if (!res.ok) throw new Error('Failed');
+    var data = await res.json();
+    allInquiries = data.items || [];
+    renderInquiries(allInquiries);
+    updateStats(allInquiries);
+  } catch(e) {
+    document.getElementById('inquiriesBody').innerHTML = '<tr><td colspan="7" class="table-empty">Error loading. D1 not bound yet?</td></tr>';
+  }
+}
+
+function updateStats(items) {
+  var total = items.length;
+  var newCount = items.filter(function(i){return i.status === 'new'}).length;
+  var contacted = items.filter(function(i){return i.status === 'contacted'}).length;
+  var proposal = items.filter(function(i){return i.status === 'proposal_sent'}).length;
+  document.getElementById('totalInquiries').textContent = total;
+  document.getElementById('totalInquiries').className = 'stat-num ' + (total > 0 ? '' : 'zero');
+  document.getElementById('newCount').textContent = newCount;
+  document.getElementById('newCount').className = 'stat-num ' + (newCount > 0 ? 'gold' : 'zero');
+  document.getElementById('contactedCount').textContent = contacted;
+  document.getElementById('contactedCount').className = 'stat-num ' + (contacted > 0 ? '' : 'zero');
+  document.getElementById('proposalCount').textContent = proposal;
+  document.getElementById('proposalCount').className = 'stat-num ' + (proposal > 0 ? 'green' : 'zero');
+}
+
+var STATUS_CYCLE = ['new','contacted','qualified','proposal_sent','closed_won','closed'];
+
+function nextStatus(current) {
+  var idx = STATUS_CYCLE.indexOf(current);
+  return idx < STATUS_CYCLE.length - 1 ? STATUS_CYCLE[idx + 1] : STATUS_CYCLE[0];
+}
+
+function renderInquiries(items) {
+  var html = '';
+  if (items.length === 0) {
+    html = '<tr><td colspan="7" class="table-empty">No inquiries yet. They will appear here when people submit the service intake forms.</td></tr>';
+  } else {
+    items.forEach(function(i) {
+      var date = i.created_at ? new Date(i.created_at).toLocaleDateString() : '—';
+      var sc = i.status || 'new';
+      var ns = nextStatus(sc);
+      html += '<tr>' +
+        '<td><div class="inquiry-info"><span class="name">' + escapeHtml(i.name || '—') + '</span><span class="email">' + escapeHtml(i.email || '') + '</span>' + (i.phone ? '<span class="email">' + escapeHtml(i.phone) + '</span>' : '') + '</div></td>' +
+        '<td><span style="font-size:12px;color:#C9A84C">' + escapeHtml(i.service || '—') + '</span></td>' +
+        '<td style="max-width:200px;font-size:12px;color:#8A9BB5">' +
+          (i.company ? '<div class="detail-row"><strong>Company:</strong> ' + escapeHtml(i.company) + '</div>' : '') +
+          (i.description ? '<div class="detail-row"><strong>Notes:</strong> ' + escapeHtml(i.description.slice(0, 100)) + (i.description.length > 100 ? '...' : '') + '</div>' : '') +
+          (i.referral ? '<div class="detail-row"><strong>Referral:</strong> ' + escapeHtml(i.referral) + '</div>' : '') +
+        '</td>' +
+        '<td style="font-size:12px;color:#8A9BB5">' + escapeHtml(i.budget || '—') + '</td>' +
+        '<td style="font-size:12px;color:#8A9BB5">' + escapeHtml(i.timeline || '—') + '</td>' +
+        '<td style="font-size:12px;color:#5A7A9F">' + date + '</td>' +
+        '<td><span class="status-pill ' + sc + '" onclick="toggleStatus(' + i.id + ')" title="Click to cycle status">' + sc.replace('_', ' ') + '</span></td>' +
+        '</tr>';
+    });
+  }
+  document.getElementById('inquiriesBody').innerHTML = html;
+}
+
+function filterInquiries() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var svc = document.getElementById('serviceFilter').value;
+  var filtered = allInquiries.filter(function(i) {
+    if (svc && i.service !== svc) return false;
+    if (q) {
+      var haystack = (i.name||'') + ' ' + (i.email||'') + ' ' + (i.company||'') + ' ' + (i.description||'');
+      return haystack.toLowerCase().indexOf(q) !== -1;
+    }
+    return true;
+  });
+  renderInquiries(filtered);
+}
+
+async function toggleStatus(id) {
+  var item = allInquiries.find(function(i) { return i.id === id; });
+  if (!item) return;
+  var ns = nextStatus(item.status);
+  try {
+    await adminFetch('/admin/api/services?id=' + id, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json','Referer':'/admin/services.html'},
+      body: JSON.stringify({status: ns})
+    });
+    loadInquiries();
+  } catch(e) {
+    Toast.error('Failed to update status');
+  }
+}
+
+function exportCSV() {
+  if (!allInquiries.length) { Toast.error('No data to export.'); return; }
+  var rows = [['Service','Name','Email','Phone','Company','Budget','Timeline','Description','Referral','Status','Date']];
+  allInquiries.forEach(function(i) {
+    rows.push([i.service||'', i.name||'', i.email||'', i.phone||'', i.company||'', i.budget||'', i.timeline||'', (i.description||'').replace(/"/g,'""'), i.referral||'', i.status||'', i.created_at||'']);
+  });
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'service-inquiries-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+loadInquiries();
+</script>
+</body>
+</html>

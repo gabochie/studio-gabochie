@@ -210,3 +210,23 @@ CREATE TABLE IF NOT EXISTS survey_responses (
 );
 CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at);
 CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic);
+
+CREATE TABLE IF NOT EXISTS service_inquiries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  service TEXT NOT NULL,
+  name TEXT NOT NULL DEFAULT '',
+  email TEXT NOT NULL DEFAULT '',
+  phone TEXT DEFAULT '',
+  company TEXT DEFAULT '',
+  budget TEXT DEFAULT '',
+  timeline TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  referral TEXT DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'new',
+  notes TEXT DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_service_inquiries_service ON service_inquiries(service);
+CREATE INDEX IF NOT EXISTS idx_service_inquiries_status ON service_inquiries(status);
+CREATE INDEX IF NOT EXISTS idx_service_inquiries_created ON service_inquiries(created_at);

@@ -1445,6 +1445,26 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) SELECT id, 'Content Creation with AI', 'ai-module-2', 'Use AI to write posts, design graphics, and create content for clients.', 1 FROM programs WHERE slug = 'freelancing-ai'`,
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) SELECT id, 'Automation & Productivity with AI', 'ai-module-3', 'Automate repetitive tasks and serve more clients.', 2 FROM programs WHERE slug = 'freelancing-ai'`,
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) SELECT id, 'Building Your Freelance Business', 'ai-module-4', 'Package your services, find clients, and start earning with AI.', 3 FROM programs WHERE slug = 'freelancing-ai'`,
+      // Service inquiries table
+      `CREATE TABLE IF NOT EXISTS service_inquiries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        service TEXT NOT NULL,
+        name TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL DEFAULT '',
+        phone TEXT DEFAULT '',
+        company TEXT DEFAULT '',
+        budget TEXT DEFAULT '',
+        timeline TEXT DEFAULT '',
+        description TEXT DEFAULT '',
+        referral TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'new',
+        notes TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_service_inquiries_service ON service_inquiries(service)`,
+      `CREATE INDEX IF NOT EXISTS idx_service_inquiries_status ON service_inquiries(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_service_inquiries_created ON service_inquiries(created_at)`,
     ];
     const results = [];
     for (const sql of statements) {
