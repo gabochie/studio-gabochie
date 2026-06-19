@@ -2,14 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
-<title>Careers · GideonAbochie Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Careers — GideonAbochie Studio">
+<meta property="og:description" content="Join GideonAbochie Studio and help us equip a generation with creativity, love, and wisdom. View open positions and career resources.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gideonabochie.org/careers/">
+<meta property="og:image" content="https://gideonabochie.org/assets/images/og-image.jpg">
+<link rel="canonical" href="https://gideonabochie.org/careers/">
+<title>Careers — GideonAbochie Studio</title>
+<meta name="description" content="Join GideonAbochie Studio and help us equip a generation with creativity, love, and wisdom. View open positions and career resources.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css" rel="stylesheet">
+<link href="../assets/css/main.css" rel="stylesheet">
 <style>
 :root{--display:'Barlow Condensed',sans-serif;--body:'Libre Baskerville',Georgia,serif;--sans:'Barlow',sans-serif;--mono:'Courier Prime',monospace;--navy:#0A1628;--gold:#C9A84C;--card-bg:#0F1E38;--text-light:#E8EEF7;--text-muted:#8A9BB5;--border:#1E3250}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -53,7 +60,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 
 /* job cards */
 .job-list{display:grid;gap:20px}
-.job-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px;display:flex;flex-direction:column;gap:12px;transition:all 0.3s}
+.job-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;flex-direction:column;gap:12px;transition:all 0.3s}
 .job-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
 .job-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .job-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:20px;font-weight:700;color:#E8EEF7}
@@ -66,20 +73,19 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .job-card .meta span{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted);background:rgba(255,255,255,.04);padding:4px 10px;border-radius:6px}
 .job-card .desc{font-family:var(--sans);font-size:14px;color:var(--text-muted);line-height:1.7}
 .job-card .actions{display:flex;gap:10px;margin-top:4px}
-.job-card .apply-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;background:#C9A84C;color:#0A1628;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.2em;transition:all .2s;border:none;cursor:pointer}
-.job-card .apply-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.2)}
+.btn-sm{padding:10px 22px;font-size:12px;border-radius:6px}
 .job-card .save-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:16px;transition:all .2s}
 .job-card .save-btn:hover{border-color:var(--gold);color:var(--gold)}
 
 /* empty state */
-.empty-jobs{text-align:center;padding:80px 24px;background:var(--card-bg);border:1px dashed var(--border);border-radius:14px}
+.empty-jobs{text-align:center;padding:80px 24px;background:var(--card-bg);border:1px dashed var(--border);border-radius:12px}
 .empty-jobs .icon{font-size:48px;margin-bottom:12px;opacity:.4}
 .empty-jobs h3{font-family:'Libre Baskerville',Georgia,serif;font-size:20px;color:#E8EEF7;margin-bottom:6px}
 .empty-jobs p{font-size:13px;color:var(--text-muted)}
 
 /* resources */
 .resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-.resource-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px;display:flex;flex-direction:column;gap:10px;transition:all 0.3s}
+.resource-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;flex-direction:column;gap:10px;transition:all 0.3s}
 .resource-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
 .resource-card .r-icon{font-size:32px}
 .resource-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7}
@@ -90,7 +96,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 /* lead modal */
 .lead-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
 .lead-modal.open{opacity:1;pointer-events:auto}
-.lead-modal-box{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:440px;width:90%;text-align:center;position:relative}
+.lead-modal-box{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;max-width:440px;width:90%;text-align:center;position:relative}
 .lead-modal-box .close-btn{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer}
 .lead-modal-box .close-btn:hover{color:var(--text-light)}
 .lead-modal-box .lm-icon{font-size:48px;margin-bottom:8px}
@@ -99,9 +105,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .lead-modal-box .field{margin-bottom:12px;text-align:left}
 .lead-modal-box .field input{width:100%;padding:12px 14px;background:#0A1628;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#E8EEF7;font-family:'DM Sans',sans-serif}
 .lead-modal-box .field input:focus{outline:none;border-color:var(--gold)}
-.lead-modal-box .lm-btn{width:100%;padding:14px;background:#C9A84C;color:#0A1628;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.2em;transition:all .2s}
-.lead-modal-box .lm-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);background:#D9B85C}
-.lead-modal-box .lm-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
 .lead-modal-box .lm-msg{font-size:12px;margin-top:10px;display:none}
 .lead-modal-box .lm-msg.success{display:block;color:#34C77B}
 .lead-modal-box .lm-msg.error{display:block;color:#EF4444}
@@ -109,7 +113,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 
 /* apply form */
 .apply-wrap{max-width:640px;margin:0 auto}
-.apply-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:40px 32px}
+.apply-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px 32px}
 .apply-card .form-title{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:4px}
 .apply-card .form-subtitle{font-family:var(--sans);font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .field{margin-bottom:16px}
@@ -120,16 +124,14 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .field textarea{min-height:100px;resize:vertical}
 .field .hint{font-size:11px;color:var(--text-muted);margin-top:4px}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.submit-btn{width:100%;padding:14px;background:#C9A84C;color:#0A1628;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.2em;transition:all .2s}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);background:#D9B85C}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .msg{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
 .msg.success{display:block;background:rgba(52,199,123,.12);border:1px solid rgba(52,199,123,.3);color:#34C77B}
 .msg.error{display:block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444}
 
 /* value props */
 .values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.value-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px 24px;text-align:center;transition:all 0.3s}
+.value-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px 24px;text-align:center;transition:all 0.3s}
 .value-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
 .value-card .v-icon{font-size:36px;margin-bottom:12px}
 .value-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7;margin-bottom:6px}
@@ -139,23 +141,6 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .sp{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── Nav override to match homepage ── */
-nav .container{max-width:1440px;padding:0 24px}
-.nav-brand-title{font-size:1.563rem;font-weight:700;line-height:1.15}
-.nav-brand-tagline{font-size:0.688rem;letter-spacing:0.3px;font-weight:500}
-.nav-links a{font-size:0.813rem;font-weight:500}
-.nav-donate{font-size:0.875rem!important;font-weight:600!important}
-.nav-auth a{font-size:0.813rem}
-.nav-auth-btn{font-size:0.813rem!important}
-@media(max-width:640px){
-  .nav-toggle{display:flex}
-  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.06);z-index:99;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-  .nav-links.open{display:flex}
-  .nav-links a{display:block;padding:12px 16px;font-size:0.875rem;border-radius:6px;width:100%}
-  .nav-donate{text-align:center;margin-top:4px}
-  .nav-auth{display:flex;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;width:100%}
-  .nav-auth a{text-align:center}
-}
 
 @media(max-width:768px){
   .hero h1{font-size:34px}
@@ -174,19 +159,7 @@ nav .container{max-width:1440px;padding:0 24px}
 </style>
 </head>
 <body>
-<nav>
-  <div class="container">
-    <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>
-    <div class="nav-links">
-      <a href="/#story">About</a>
-      <a href="/school/">Courses</a>
-      <a href="/membership/">Membership</a>
-      <span id="navAuth" class="nav-auth"></span>
-    </div>
-    <button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>
-  </div>
-</nav>
-<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector('.nav-toggle'))"></div>
+<div id="nav-placeholder"></div>
 
 <div class="hero">
   <div class="hero-bg"></div>
@@ -225,22 +198,22 @@ nav .container{max-width:1440px;padding:0 24px}
     </div>
     <div class="values-grid">
       <div class="value-card">
-        <div class="v-icon">🎯</div>
+        <div class="v-icon"><i class="ti ti-bullseye"></i></div>
         <h4>Mission-Driven</h4>
         <p>Every role contributes to raising a generation of systems thinkers, creative leaders, and nation builders.</p>
       </div>
       <div class="value-card">
-        <div class="v-icon">🌍</div>
+        <div class="v-icon"><i class="ti ti-world"></i></div>
         <h4>Remote-First</h4>
         <p>Work from anywhere in Ghana. We believe great talent isn't limited by geography.</p>
       </div>
       <div class="value-card">
-        <div class="v-icon">📈</div>
+        <div class="v-icon"><i class="ti ti-trending-up"></i></div>
         <h4>Growth Culture</h4>
         <p>Access to courses, mentorship, and resources to develop your skills while you work.</p>
       </div>
       <div class="value-card">
-        <div class="v-icon">🤝</div>
+        <div class="v-icon"><i class="ti ti-handshake"></i></div>
         <h4>Collaborative</h4>
         <p>Work alongside a passionate team committed to excellence and positive impact.</p>
       </div>
@@ -257,37 +230,37 @@ nav .container{max-width:1440px;padding:0 24px}
     </div>
     <div class="resources-grid">
       <div class="resource-card">
-        <div class="r-icon">📝</div>
+        <div class="r-icon"><i class="ti ti-file-text"></i></div>
         <h4>CV & Cover Letter Guide</h4>
         <p>How to craft a compelling CV and cover letter that stands out to Ghanaian employers. Includes templates and examples.</p>
         <a href="#" onclick="return openResourceModal('cv-guide', 'CV & Cover Letter Guide')">Download Guide →</a>
       </div>
       <div class="resource-card">
-        <div class="r-icon">🎤</div>
+        <div class="r-icon"><i class="ti ti-microphone"></i></div>
         <h4>Interview Preparation</h4>
         <p>Common interview questions, preparation strategies, and how to make a lasting impression in your next interview.</p>
         <a href="#" onclick="return openResourceModal('interview-guide', 'Interview Preparation')">Read More →</a>
       </div>
       <div class="resource-card">
-        <div class="r-icon">💼</div>
+        <div class="r-icon"><i class="ti ti-briefcase"></i></div>
         <h4>Freelance &amp; Gig Economy</h4>
         <p>How to build a thriving freelance career in Ghana's growing digital economy. Platforms, pricing, and client management.</p>
         <a href="#" onclick="return openResourceModal('freelance-guide', 'Freelance & Gig Economy')">Explore →</a>
       </div>
       <div class="resource-card">
-        <div class="r-icon">📚</div>
+        <div class="r-icon"><i class="ti ti-books"></i></div>
         <h4>Skills Development</h4>
         <p>Free and low-cost courses to build in-demand skills: digital marketing, web development, creative arts, and more.</p>
         <a href="/school/">Browse Courses →</a>
       </div>
       <div class="resource-card">
-        <div class="r-icon">🤝</div>
+        <div class="r-icon"><i class="ti ti-handshake"></i></div>
         <h4>Networking Guide</h4>
         <p>How to build a professional network in Ghana. Conferences, online communities, mentorship, and professional associations.</p>
         <a href="#" onclick="return openResourceModal('networking-guide', 'Networking Guide')">Learn More →</a>
       </div>
       <div class="resource-card">
-        <div class="r-icon">🌍</div>
+        <div class="r-icon"><i class="ti ti-world"></i></div>
         <h4>Remote Work</h4>
         <p>How to land and succeed in remote jobs with international companies. Tools, platforms, and tips for Ghanaian professionals.</p>
         <a href="#" onclick="return openResourceModal('remote-guide', 'Remote Work Guide')">Get Started →</a>
@@ -331,7 +304,7 @@ nav .container{max-width:1440px;padding:0 24px}
             <label>Cover Letter / Why You?</label>
             <textarea id="cover_letter" placeholder="Tell us about yourself, your skills, and why you want to join the mission..."></textarea>
           </div>
-          <button type="submit" class="submit-btn" id="appBtn">Submit Application</button>
+          <button type="submit" class="btn btn-gold" id="appBtn" style="width:100%">Submit Application</button>
         </form>
       </div>
     </div>
@@ -344,7 +317,7 @@ nav .container{max-width:1440px;padding:0 24px}
 <div class="lead-modal" id="leadModal">
   <div class="lead-modal-box">
     <button class="close-btn" onclick="closeResourceModal()">&times;</button>
-    <div class="lm-icon">📖</div>
+    <div class="lm-icon"><i class="ti ti-book"></i></div>
     <h3>Unlock This Resource</h3>
     <p>Enter your name and email to access <strong id="lmTitle">this guide</strong>. We'll also keep you updated on new career opportunities.</p>
     <div class="lm-msg" id="lmMsg"></div>
@@ -358,7 +331,7 @@ nav .container{max-width:1440px;padding:0 24px}
         <label>Email</label>
         <input type="email" id="lmEmail" required placeholder="you@example.com">
       </div>
-      <button type="submit" class="lm-btn" id="lmBtn">Get Access</button>
+      <button type="submit" class="btn btn-gold" id="lmBtn" style="width:100%">Get Access</button>
     </form>
     <div class="lm-footer">We respect your privacy. Unsubscribe anytime.</div>
   </div>
@@ -440,7 +413,7 @@ function loadJobs() {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.status !== 'ok' || !data.items || !data.items.length) {
-        container.innerHTML = '<div class="empty-jobs"><div class="icon">📌</div><h3>No open positions right now</h3><p>Check back soon or submit a general application below.</p></div>';
+        container.innerHTML = '<div class="empty-jobs"><div class="icon"><i class="ti ti-pin"></i></div><h3>No open positions right now</h3><p>Check back soon or submit a general application below.</p></div>';
         return;
       }
       var html = '';
@@ -457,13 +430,13 @@ function loadJobs() {
         html += '</div>';
         if (job.description) html += '<div class="desc">' + escapeHtml(job.description.substring(0,300)) + '</div>';
         html += '<div class="actions">';
-        html += '<a class="apply-btn" href="#apply" data-job="' + escapeHtml(job.title) + '">Apply Now →</a>';
+        html += '<a class="btn btn-gold btn-sm" href="#apply" data-job="' + escapeHtml(job.title) + '">Apply Now →</a>';
         html += '</div></div>';
       });
       container.innerHTML = html;
     })
     .catch(function() {
-      container.innerHTML = '<div class="empty-jobs"><div class="icon">⚠️</div><h3>Could not load positions</h3><p>Please refresh the page or try again later.</p></div>';
+      container.innerHTML = '<div class="empty-jobs"><div class="icon"><i class="ti ti-alert-triangle"></i></div><h3>Could not load positions</h3><p>Please refresh the page or try again later.</p></div>';
     });
 }
 
