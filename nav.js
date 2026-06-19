@@ -5,7 +5,7 @@
     '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
-    '<a href="/school/">School</a>' +
+    '<a href="/school/">Courses</a>' +
     '<a href="/guitar/">Guitar</a>' +
     '<a href="/survey/">Survey</a>' +
     '<a href="/merch/">Merch</a>' +
@@ -34,7 +34,7 @@
     '<div>' +
     '<h4>Content</h4>' +
     '<a href="/manifesto/">Read the Manifesto</a>' +
-    '<a href="/school/">School Programs</a>' +
+    '<a href="/school/">Courses</a>' +
     '<a href="/newsletter/">The Studio Weekly</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Flagship Campaign</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
