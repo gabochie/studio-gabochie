@@ -6,10 +6,6 @@
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
     '<a href="/school/">Courses</a>' +
-    '<a href="/guitar/">Guitar</a>' +
-    '<a href="/survey/">Survey</a>' +
-    '<a href="/merch/">Merch</a>' +
-    '<a href="/books/">Books</a>' +
     '<a href="/membership/">Membership</a>' +
     '<span id="navAuth" class="nav-auth"></span>' +
     '</div>' +
@@ -35,6 +31,8 @@
     '<h4>Content</h4>' +
     '<a href="/manifesto/">Read the Manifesto</a>' +
     '<a href="/school/">Courses</a>' +
+    '<a href="/guitar/">Guitar</a>' +
+    '<a href="/survey/">Course Interest Survey</a>' +
     '<a href="/newsletter/">The Studio Weekly</a>' +
     '<a href="/campaigns/1-million-systems-thinkers/">Flagship Campaign</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
