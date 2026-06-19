@@ -615,7 +615,7 @@ var DATA = {
       "steps": [
         {
           "id": "6.1",
-          "task": "School programs paywall & enrollment system",
+          "task": "Course paywall & enrollment system",
           "status": "done",
           "launch": [{"label":"School page","url":"../school/index.html","local":true},{"label":"Dashboard","url":"../dashboard/index.html","local":true}],
           "items": [
@@ -1919,7 +1919,7 @@ var CHECKS = {
     {i:0, label:"Content library page exists", check:function(){return checkPageExists("../content/index.html")}},
     {i:1, label:"Sitemap.xml exists", check:function(){return checkPageExists("../sitemap.xml")}},
     {i:2, label:"JSON-LD on homepage", check:function(){return checkPageContains("../index.html","application/ld+json")}},
-    {i:3, label:"JSON-LD on school page", check:function(){return checkPageContains("../school/index.html","application/ld+json")}},
+    {i:3, label:"JSON-LD on courses page", check:function(){return checkPageContains("../school/index.html","application/ld+json")}},
     {i:4, label:"JSON-LD on support page", check:function(){return checkPageContains("../support/index.html","application/ld+json")}},
     {i:5, label:"JSON-LD on books page", check:function(){return checkPageContains("../books/index.html","application/ld+json")}}
   ],

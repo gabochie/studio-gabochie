@@ -134,7 +134,7 @@ h1 span{color:#C9A84C}
       <div class="login-msg" id="loginMsg"></div>
     </div>
     <div style="margin-top:20px">
-      <a href="../school/" class="btn btn-primary">Browse Programs</a>
+      <a href="../school/" class="btn btn-primary">Browse Courses</a>
       <a href="../index.html" class="btn btn-secondary">Back to Home</a>
     </div>
   </div>
@@ -187,7 +187,7 @@ h1 span{color:#C9A84C}
   <!-- Upgrade card (shown only for sample access) -->
   <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
-    <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete program with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
+    <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete course with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
     <button class="btn btn-primary" id="upgradeBtn">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via Flutterwave</p>
   </div>
@@ -889,7 +889,7 @@ function handleLogin() {
         if (enrollments.length === 1) {
           window.location.href = '/dashboard/?token=' + encodeURIComponent(enrollments[0].access_token);
         } else {
-          var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">Your programs:</p>';
+          var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">Your courses:</p>';
           enrollments.forEach(function(e) {
             listHtml += '<button class="login-btn" style="margin-bottom:8px" onclick="window.location.href=\'/dashboard/?token=' + encodeURIComponent(e.access_token) + '\'">' + e.program_title + ' <span style="opacity:.6;font-size:11px">(' + e.status + ')</span></button>';
           });
@@ -917,7 +917,7 @@ function emailOnlyLogin(email, btn, msg) {
   .then(function(r){ return r.json(); })
   .then(function(d){
     if (d.status === 'ok' && d.multiple && d.enrollments && d.enrollments.length > 1) {
-      var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">You are enrolled in multiple programs. Choose one:</p>';
+      var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">You are enrolled in multiple courses. Choose one:</p>';
       d.enrollments.forEach(function(e) {
         listHtml += '<button class="login-btn" style="margin-bottom:8px" onclick="window.location.href=\'/dashboard/?token=' + encodeURIComponent(e.token) + '\'">' + e.program_title + ' <span style="opacity:.6;font-size:11px">(' + e.status + ')</span></button>';
       });
