@@ -572,13 +572,13 @@ function submitEnroll() {
   });
 }
 
-// ——— Programs ———
+// ——— Courses ———
 function loadPrograms() {
   var grid = document.getElementById('programGrid');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">Loading programs...</div>';
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">Loading courses...</div>';
   fetch('/api/programs', { cache: 'no-store' }).then(function(r){return r.json()}).then(function(d){
     if (d.status !== 'ok' || !d.programs || !d.programs.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F">No programs available yet.</div>';
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F">No courses available yet.</div>';
       return;
     }
     grid.innerHTML = '';
