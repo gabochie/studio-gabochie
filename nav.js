@@ -18,7 +18,7 @@
     '<footer>' +
     '<div class="container">' +
     '<div>' +
-    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"><span class="brand-footer-wrapper"><span class="brand-footer-title">GideonAbochie Studio</span><span class="brand-tagline">School of Creativity, Love & Wisdom</span></span></div>' +
+    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"><span class="brand-footer-wrapper"><span class="brand-footer-title">GideonAbochie Studio</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
     '<p class="footer-about">A Bible-based ministry teaching a generation to create with excellence, love with devotion, and walk in the wisdom of God\'s Word. Rooted in Scripture, expressed through creativity, shared freely with the world.</p>' +
     '<div class="footer-social">' +
     '<a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>' +
@@ -68,15 +68,15 @@
     '<a href="/legal/disclaimer.html">Disclaimer</a>' +
     '</div>' +
     '<div class="footer-sponsors">' +
-    '<span class="footer-sponsors-label">Sponsors & Affiliations</span>' +
+    '<span class="footer-sponsors-label">Sponsors &amp; Affiliations</span>' +
     '<div class="footer-sponsors-logos">' +
     '<a href="https://www.tiktok.com/@neoghglobal" target="_blank" rel="noopener" class="footer-sponsor-item"><img src="/assets/images/neogh-logo.png" alt="NEOGH - Spirit of Nation Building"><span>NEOGH<small>Spirit of Nation Building</small></span></a>' +
     '<div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>' +
     '<div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>' +
     '</div>' +
     '</div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' GideonAbochie Studio &mdash; School of Creativity, Love &amp; Wisdom. Rooted in Scripture, shared in love.</div>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' GideonAbochie Studio &mdash; School of Creativity, Love & Wisdom. Rooted in Scripture, shared in love.</div>' +
     '</footer>';
 
   var phNav = document.getElementById('nav-placeholder');
