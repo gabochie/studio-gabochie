@@ -2,7 +2,7 @@
   var navHtml =
     '<nav>' +
     '<div class="container">' +
-    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love & Wisdom</span></span></a>' +
+    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
     '<a href="/school/">Courses</a>' +
