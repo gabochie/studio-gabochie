@@ -60,7 +60,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 
 /* what we're building */
 .build-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
-.build-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px 24px;text-align:center;transition:all 0.3s}
+.build-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px 24px;text-align:center;transition:all 0.3s}
 .build-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
 .build-card .b-icon{font-size:36px;margin-bottom:12px}
 .build-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7;margin-bottom:6px}
@@ -71,7 +71,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 
 /* benefits */
 .benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;transition:all 0.3s}
-.benefit-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:32px;transition:all 0.3s}
+.benefit-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;transition:all 0.3s}
 .benefit-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .benefit-card ul{list-style:none;padding:0}
 .benefit-card ul li{font-family:var(--sans);padding:8px 0;font-size:14px;color:var(--text-muted);line-height:1.6;display:flex;align-items:flex-start;gap:10px}
@@ -79,7 +79,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 
 /* waitlist form */
 .waitlist-wrap{max-width:640px;margin:0 auto}
-.waitlist-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:40px 32px}
+.waitlist-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px 32px}
 .waitlist-card .form-title{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:4px}
 .waitlist-card .form-subtitle{font-family:var(--sans);font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .field{margin-bottom:16px}
@@ -313,7 +313,7 @@ function loadSubjects() {
 
 function renderSubjectCheckboxes() {
   var grid = document.getElementById('subjectGrid');
-  var cats = {academic:'📚 Academic',creative:'🎨 Creative',bible:'📖 Bible Studies',professional:'💼 Professional'};
+  var cats = {academic:'Academic',creative:'Creative',bible:'Bible Studies',professional:'Professional'};
   var html = '';
   Object.keys(cats).forEach(function(cat) {
     var items = allSubjects.filter(function(s){return s.category===cat});
