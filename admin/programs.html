@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programs — Admin · GideonAbochie Studio</title>
+<title>Courses — Admin · GideonAbochie Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -44,7 +44,7 @@
     <div class="stat-card"><span class="stat-num zero" id="paidCount">—</span><span class="stat-label">Paid Courses</span><span class="stat-note">Revenue-generating</span></div>
   </div>
 
-  <div class="section-title" id="formTitle">&#43; Add Program</div>
+    <div class="section-title" id="formTitle">&#43; Add Course</div>
   <form class="edit-form" id="programForm" onsubmit="return saveProgram(event)">
     <input type="hidden" id="editId" value="">
     <div class="form-grid">
@@ -62,7 +62,7 @@
     </div>
     <div class="actions">
       <button type="button" class="btn-sm danger" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel</button>
-      <button type="submit" class="btn-sm" id="saveBtn">&#43; Add Program</button>
+      <button type="submit" class="btn-sm" id="saveBtn">&#43; Add Course</button>
     </div>
   </form>
 
@@ -73,7 +73,7 @@
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Program</th><th>Price</th><th>Status</th><th>Sort</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Course</th><th>Price</th><th>Status</th><th>Sort</th><th>Actions</th></tr></thead>
       <tbody id="programsBody"></tbody>
     </table>
   </div>
@@ -95,7 +95,7 @@ async function loadPrograms() {
     document.getElementById('activeCount').textContent = items.filter(function(p) { return p.status === 'active'; }).length;
     document.getElementById('comingCount').textContent = items.filter(function(p) { return p.status === 'coming_soon'; }).length;
     document.getElementById('paidCount').textContent = items.filter(function(p) { return p.price > 0; }).length;
-    document.getElementById('listNote').textContent = items.length + ' program(s)';
+    document.getElementById('listNote').textContent = items.length + ' course(s)';
 
     var html = '';
     items.forEach(function(p) {
@@ -111,7 +111,7 @@ async function loadPrograms() {
           '<button class="btn-sm danger" onclick="deleteProgram(' + p.id + ')">Delete</button>' +
         '</td></tr>';
     });
-    document.getElementById('programsBody').innerHTML = html || '<tr><td colspan="5" class="table-empty">No programs yet.</td></tr>';
+    document.getElementById('programsBody').innerHTML = html || '<tr><td colspan="5" class="table-empty">No courses yet.</td></tr>';
   } catch(e) {
     document.getElementById('programsBody').innerHTML = '<tr><td colspan="5" class="table-empty">Error loading. D1 not bound?</td></tr>';
     document.getElementById('listNote').textContent = 'Error loading';
@@ -123,7 +123,7 @@ function editProgram(id) {
     .then(function(r) { return r.json(); })
     .then(function(p) {
       if (!p) return;
-      document.getElementById('formTitle').innerHTML = '&#9998; Edit Program';
+      document.getElementById('formTitle').innerHTML = '&#9998; Edit Course';
       document.getElementById('saveBtn').textContent = 'Save Changes';
       document.getElementById('cancelBtn').style.display = '';
       document.getElementById('editId').value = p.id;
@@ -143,8 +143,8 @@ function editProgram(id) {
 }
 
 function cancelEdit() {
-  document.getElementById('formTitle').innerHTML = '&#43; Add Program';
-  document.getElementById('saveBtn').textContent = '+ Add Program';
+  document.getElementById('formTitle').innerHTML = '&#43; Add Course';
+  document.getElementById('saveBtn').textContent = '+ Add Course';
   document.getElementById('cancelBtn').style.display = 'none';
   document.getElementById('editId').value = '';
   document.getElementById('programForm').reset();
@@ -187,19 +187,19 @@ function saveProgram(e) {
       Toast.error(data.message || data.error || 'Failed to save');
     }
     btn.disabled = false;
-    btn.textContent = id ? 'Save Changes' : '+ Add Program';
+    btn.textContent = id ? 'Save Changes' : '+ Add Course';
   }).catch(function(e) {
     Toast.error('Network error: ' + (e.message || 'Could not reach server'));
     btn.disabled = false;
-    btn.textContent = id ? 'Save Changes' : '+ Add Program';
+    btn.textContent = id ? 'Save Changes' : '+ Add Course';
   });
   return false;
 }
 
 function deleteProgram(id, force) {
   var msg = force
-    ? 'Force delete this program? All enrollments and modules will be permanently removed.'
-    : 'Delete this program permanently?';
+    ? 'Force delete this course? All enrollments and modules will be permanently removed.'
+    : 'Delete this course permanently?';
   if (!confirm(msg)) return;
   var url = '/admin/api/programs?id=' + id + (force ? '&cascade=true' : '');
   adminFetch(url, {
@@ -212,7 +212,7 @@ function deleteProgram(id, force) {
       var details = [];
       if (data.enrollment_count) details.push(data.enrollment_count + ' enrollment(s)');
       if (data.module_count) details.push(data.module_count + ' module(s)');
-      var msg2 = 'This program has ' + details.join(', ') + '.\nClick OK to force delete (removes everything), or Cancel to keep the program.';
+      var msg2 = 'This course has ' + details.join(', ') + '.\nClick OK to force delete (removes everything), or Cancel to keep the course.';
       if (confirm(msg2)) deleteProgram(id, true);
     } else {
       Toast.error(data.message || data.error || 'Delete failed');
