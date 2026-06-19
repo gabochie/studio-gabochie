@@ -439,7 +439,7 @@ function showLoggedIn(name) {
   document.getElementById('loginForm').classList.remove('active');
   document.getElementById('loggedIn').classList.add('active');
   document.getElementById('greeting').textContent = 'Welcome, ' + name + '!';
-  // Reload programs so buttons switch to 'Start Free Sample'
+  // Reload courses so buttons switch to 'Start Free Sample'
   loadPrograms();
   if (selectedSlug) { startEnrollFlow(selectedSlug); }
 }
@@ -515,6 +515,17 @@ function nextStep() {
     'web-development': 'Learn HTML, CSS, and JavaScript — then build a portfolio and start freelancing.',
     'digital-marketing': 'Master social media, content creation, and SEO to grow brands and earn income.',
     'freelancing-ai': 'Use AI tools to create content, automate workflows, and land freelance clients.',
+    'civic-intelligence': 'Understand Ghana\'s governance and learn how to hold leaders accountable. Start with the free sample!',
+    'ai-fundamentals': 'Explore how AI can solve real problems in Ghana — agriculture, health, education, and more.',
+    'essential-values': 'Build character and integrity as foundations for national development.',
+    'digital-entrepreneurship': 'Turn ideas into digital ventures that create value and jobs across Ghana.',
+    'youth-leadership': 'Learn to organize, advocate, and lead change in your community.',
+    'revelation-study': 'A deep dive into the Book of Revelation — worship, judgment, and the new creation.',
+    'psalms-worship-word': 'Explore the Psalms as a school of worship, wisdom, and the Word.',
+    'systems-thinking-genesis': 'See Genesis through the lenses of creativity, wisdom, and love. Start with the free sample!',
+    'pattern-recognition-vision-builders': 'Learn to see patterns in nature, data, Scripture, and markets.',
+    'intro-design-thinking': 'Solve problems like the ultimate Designer — empathize, define, ideate, prototype, test.',
+    'sketching-vision-builders': 'Drawing is thinking. Learn to see and sketch like a visionary.',
     'default': 'Complete your details below to get started with the free sample module.'
   };
   rec.textContent = '\u2b50 ' + (recTexts[selectedSlug] || recTexts['default']);
