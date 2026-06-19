@@ -62,14 +62,14 @@ async function loadPrograms() {
   try {
     var res = await adminFetch('/admin/api/programs', {headers:{'Referer':'/admin/quiz.html'}});
     var data = await res.json();
-    sel.innerHTML = '<option value="">— Select a program —</option>';
+    sel.innerHTML = '<option value="">— Select a course —</option>';
     (data.items || data.programs || []).forEach(function(p) {
       var id = p.id || p.program_id;
       var title = p.title || p.name;
       sel.innerHTML += '<option value="' + id + '">' + title + '</option>';
     });
   } catch(e) {
-    sel.innerHTML = '<option value="">Error loading programs</option>';
+    sel.innerHTML = '<option value="">Error loading courses</option>';
   }
 }
 
