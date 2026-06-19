@@ -100,30 +100,11 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .subject-grid input{display:none}
 .subject-grid input:checked + span{color:var(--gold);font-weight:600}
 .subject-grid span{color:#94A3B8}
-.submit-btn{width:100%;padding:14px;background:#C9A84C;color:#0A1628;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.2em;transition:all .2s}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);background:#D9B85C}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .msg{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
 .msg.success{display:block;background:rgba(52,199,123,.12);border:1px solid rgba(52,199,123,.3);color:#34C77B}
 .msg.error{display:block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444}
 
-/* ── Nav override to match homepage (from assets/css/main.css) ── */
-nav .container{max-width:1440px;padding:0 24px}
-.nav-brand-title{font-size:1.563rem;font-weight:700;line-height:1.15}
-.nav-brand-tagline{font-size:0.688rem;letter-spacing:0.3px;font-weight:500}
-.nav-links a{font-size:0.813rem;font-weight:500}
-.nav-donate{font-size:0.875rem!important;font-weight:600!important}
-.nav-auth a{font-size:0.813rem}
-.nav-auth-btn{font-size:0.813rem!important}
-@media(max-width:640px){
-  .nav-toggle{display:flex}
-  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.06);z-index:99;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-  .nav-links.open{display:flex}
-  .nav-links a{display:block;padding:12px 16px;font-size:0.875rem;border-radius:6px;width:100%}
-  .nav-donate{text-align:center;margin-top:4px}
-  .nav-auth{display:flex;margin-top:8px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;width:100%}
-  .nav-auth a{text-align:center}
-}
 
 /* social proof */
 .social-proof{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;padding:16px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
@@ -182,37 +163,37 @@ nav .container{max-width:1440px;padding:0 24px}
     </div>
     <div class="build-grid">
       <div class="build-card">
-        <div class="b-icon">🔍</div>
+        <div class="b-icon"><i class="ti ti-search"></i></div>
         <h4>Find the Right Tutor</h4>
         <p>Search by subject, price, or availability. Read reviews and compare tutors before you book.</p>
         <span class="b-badge coming">Coming Soon</span>
       </div>
       <div class="build-card">
-        <div class="b-icon">💳</div>
+        <div class="b-icon"><i class="ti ti-credit-card"></i></div>
         <h4>Easy Booking &amp; Payment</h4>
         <p>Book sessions online and pay securely via mobile money or card. No hassle.</p>
         <span class="b-badge coming">Coming Soon</span>
       </div>
       <div class="build-card">
-        <div class="b-icon">📅</div>
+        <div class="b-icon"><i class="ti ti-calendar"></i></div>
         <h4>Flexible Scheduling</h4>
         <p>View tutor availability in real-time and pick a time that works for you.</p>
         <span class="b-badge coming">Coming Soon</span>
       </div>
       <div class="build-card">
-        <div class="b-icon">📖</div>
+        <div class="b-icon"><i class="ti ti-books"></i></div>
         <h4>15+ Subjects</h4>
         <p>From Mathematics and Science to Guitar, Bible Studies, and Web Development.</p>
         <span class="b-badge live">Subjects Ready</span>
       </div>
       <div class="build-card">
-        <div class="b-icon">⭐</div>
+        <div class="b-icon"><i class="ti ti-star"></i></div>
         <h4>Ratings &amp; Reviews</h4>
         <p>See what other students say. Rate your sessions and help others find great tutors.</p>
         <span class="b-badge coming">Coming Soon</span>
       </div>
       <div class="build-card">
-        <div class="b-icon">🎥</div>
+        <div class="b-icon"><i class="ti ti-video"></i></div>
         <h4>Online or In-Person</h4>
         <p>Connect via video call or meet in person. Choose what works best for your learning style.</p>
         <span class="b-badge coming">Coming Soon</span>
