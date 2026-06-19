@@ -69,6 +69,17 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .btn-secondary{background:rgba(255,255,255,.06);border:1px solid #1E3250;color:#CBD5E1}
 .btn-secondary:hover{background:rgba(255,255,255,.1)}
 
+/* Guitar CTA */
+.guitar-cta{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1a2d4a,#0F1E38);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 28px;margin:24px 0;transition:border-color .2s}
+.guitar-cta:hover{border-color:#C9A84C}
+.guitar-cta-icon{font-size:40px;flex-shrink:0}
+.guitar-cta-body{flex:1;min-width:0}
+.guitar-cta-body h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0 0 4px}
+.guitar-cta-body p{font-size:13px;color:#8A9BB5;margin:0;line-height:1.5}
+.guitar-cta-btn{flex-shrink:0;background:#C9A84C;color:#0A1628;text-decoration:none;padding:12px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;transition:background .2s}
+.guitar-cta-btn:hover{background:#D9B85C}
+@media(max-width:640px){.guitar-cta{flex-direction:column;text-align:center;padding:20px}.guitar-cta-btn{width:100%}}
+
 /* Auth banner */
 .auth-banner{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;margin:0 auto 40px;max-width:600px;text-align:center}
 .auth-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;margin-bottom:8px}
