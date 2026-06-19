@@ -34,7 +34,12 @@
     '<a href="/guitar/">Guitar</a>' +
     '<a href="/survey/">Survey</a>' +
     '<a href="https://news.gideonabochie.org/">The Studio Weekly</a>' +
-    '<a href="https://news.gideonabochie.org/">Sponsor the Newsletter</a>' +
+    '<a href="/support/">Sponsor the Newsletter</a>' +
+    '<a href="/press/">Press</a>' +
+    '<a href="/art/">Art</a>' +
+    '<a href="/music/">Music</a>' +
+    '<a href="/content/">Content</a>' +
+    '<a href="/partners/">Partners</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
     '<a href="/merch/">Merchandise</a>' +
     '<a href="/tutoring/">Tutoring Marketplace</a>' +
@@ -46,7 +51,9 @@
     '<a href="/login/">Log In</a>' +
     '<a href="/donate/">One-Time Donation</a>' +
     '<a href="/support/">Recurring Support</a>' +
+    '<a href="/membership/">Membership</a>' +
     '<a href="/books/">Buy Books</a>' +
+    '<a href="/store/library">Digital Library</a>' +
     '</div>' +
     '<div>' +
     '<h4>Social</h4>' +
