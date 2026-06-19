@@ -5,6 +5,7 @@
     '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="GideonAbochie Studio"> <span class="nav-brand-wrapper"><span class="nav-brand-title">GideonAbochie Studio</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
+    '<a href="/services/">Services</a>' +
     '<a href="/school/">Courses</a>' +
     '<a href="/membership/">Membership</a>' +
     '<span id="navAuth" class="nav-auth"></span>' +
@@ -38,6 +39,7 @@
     '<a href="https://news.gideonabochie.org/">The Studio Weekly</a>' +
     '<a href="/support/">Sponsor the Newsletter</a>' +
     '<a href="/partners/">Partners</a>' +
+    '<a href="/services/">Services</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
     '<a href="/merch/">Merchandise</a>' +
     '<a href="/tutoring/">Tutoring Marketplace</a>' +
