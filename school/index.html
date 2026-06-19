@@ -143,6 +143,23 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .faq-a.open{display:block}
 
 @media(max-width:640px){.program-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:10px 14px 10px 36px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A7A9F' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;background-size:16px}
+.search-bar input:focus{border-color:#C9A84C}
+.search-bar input::placeholder{color:#3A5278}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.filter-chip{padding:6px 14px;border-radius:20px;border:1px solid #1E3250;background:transparent;color:#5A7A9F;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;user-select:none}
+.filter-chip:hover{border-color:#C9A84C;color:#C9A84C}
+.filter-chip.active{background:#C9A84C;color:#0A1628;border-color:#C9A84C;font-weight:600}
+.filter-chip[data-track="digital"]{border-color:rgba(201,168,76,.3);color:#C9A84C}
+.filter-chip[data-track="digital"].active{background:#C9A84C;color:#0A1628}
+.filter-chip[data-track="nation"]{border-color:rgba(34,197,94,.3);color:#22C55E}
+.filter-chip[data-track="nation"].active{background:#22C55E;color:#0A1628}
+.filter-chip[data-track="thinking"]{border-color:rgba(59,130,246,.3);color:#60A5FA}
+.filter-chip[data-track="thinking"].active{background:#60A5FA;color:#0A1628}
+.filter-chip[data-track="creative"]{border-color:rgba(232,99,122,.3);color:#E8637A}
+.filter-chip[data-track="creative"].active{background:#E8637A;color:#0A1628}
+.card.hidden{display:none}
 </style>
 </head>
 <body>
@@ -233,11 +250,15 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="programs" id="programs">
   <div class="section-label">Programs</div>
   <h2 class="section-title">Pick Your <span style="color:#C9A84C">Path</span></h2>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
-    <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:6px;font-size:11px;background:rgba(201,168,76,.1);color:#C9A84C;font-family:'Courier Prime',monospace">🔧 Digital Skills</span>
-    <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:6px;font-size:11px;background:rgba(34,197,94,.1);color:#22C55E;font-family:'Courier Prime',monospace">🇬🇭 Nation-Building</span>
-    <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:6px;font-size:11px;background:rgba(59,130,246,.1);color:#60A5FA;font-family:'Courier Prime',monospace">🧠 Thinking Frameworks</span>
-    <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:6px;font-size:11px;background:rgba(232,99,122,.1);color:#E8637A;font-family:'Courier Prime',monospace">🎵 Creative Arts</span>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search courses by title, skill, or keyword..." oninput="filterPrograms()">
+  </div>
+  <div class="filter-chips">
+    <span class="filter-chip active" data-track="all" onclick="setFilter('all', this)">All</span>
+    <span class="filter-chip" data-track="digital" onclick="setFilter('digital', this)">🔧 Digital Skills</span>
+    <span class="filter-chip" data-track="nation" onclick="setFilter('nation', this)">🇬🇭 Nation-Building</span>
+    <span class="filter-chip" data-track="thinking" onclick="setFilter('thinking', this)">🧠 Thinking Frameworks</span>
+    <span class="filter-chip" data-track="creative" onclick="setFilter('creative', this)">🎵 Creative Arts</span>
   </div>
   <div class="program-grid" id="programGrid"></div>
 </div>
@@ -288,19 +309,19 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   <div class="section-label">Questions</div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do I need any experience?</div>
-    <div class="faq-a">None. These programs are designed for beginners and experienced practitioners alike. The concepts are accessible, the exercises make them stick.</div>
+    <div class="faq-a">None. Every course starts from the basics and builds up. Whether you're a complete beginner or already have some experience, the practical exercises will push you forward.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I switch programs later?</div>
-    <div class="faq-a">Yes. You can enroll in both programs at any time. Each has its own dashboard and progress tracking.</div>
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can I take multiple courses at once?</div>
+    <div class="faq-a">Yes. You can enroll in as many courses as you want. Each has its own dashboard and progress tracking so you can learn at your own pace.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What happens after I enroll?</div>
-    <div class="faq-a">You get immediate access to the free sample module and a private dashboard. A welcome email with your dashboard link is sent to your inbox. Upgrade anytime to unlock the full curriculum.</div>
+    <div class="faq-a">You get immediate access to the free sample module and a private dashboard. A welcome email with your dashboard link is sent to your inbox. Paid courses let you upgrade anytime to unlock the full curriculum.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I get back to my dashboard?</div>
-    <div class="faq-a">Visit <a href="../dashboard/" style="color:#C9A84C">gideonabochie.org/dashboard/</a> and enter the email you used to enroll. We'll look up your dashboard automatically.</div>
+    <div class="faq-a">Visit <a href="../dashboard/" style="color:#C9A84C">gideonabochie.org/dashboard/</a> and log in with your email and access code. Your progress is saved automatically.</div>
   </div>
 </div>
 
@@ -456,7 +477,7 @@ function startEnrollFlow(slug) {
     'digital-marketing': 'Digital Marketing & Social Media — grow brands and earn from anywhere.',
     'freelancing-ai': 'Freelancing with AI Tools — use AI to land clients and deliver faster.'
   };
-  document.getElementById('stepDesc').textContent = 'You picked ' + (descMap[slug] || 'a great course') + ' One quick question:';
+  document.getElementById('stepDesc').textContent = 'You picked ' + (descMap[slug] || 'a great course.') + ' One quick question:';
   document.getElementById('enrollFlow').scrollIntoView({behavior:'smooth'});
 }
 
@@ -562,6 +583,7 @@ function loadPrograms() {
       var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access ' + window.formatPrice(p.price) : 'Free for all';
       var card = document.createElement('div');
       card.className = isComing ? 'card card-coming' : (isActive && i === 0 ? 'card card-active' : 'card');
+      card.setAttribute('data-slug', p.slug);
       var isPaid = p.price > 0;
       var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : (isPaid ? '<span class="badge badge-paid">Free Sample</span>' : '<span class="badge badge-free">Free for All</span>');
       var btnHtml;
@@ -582,6 +604,33 @@ function loadPrograms() {
   });
 }
 
+// ——— Search & Filter ———
+var _activeTrack = 'all';
+function setFilter(track, el) {
+  _activeTrack = track;
+  document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  filterPrograms();
+}
+function filterPrograms() {
+  var q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  var trackMap = {
+    'web-development':'digital', 'digital-marketing':'digital', 'freelancing-ai':'digital',
+    'civic-intelligence':'nation', 'ai-fundamentals':'nation', 'essential-values':'nation',
+    'digital-entrepreneurship':'nation', 'youth-leadership':'nation',
+    'systems-thinking':'thinking', 'systems-thinking-genesis':'thinking',
+    'intro-design-thinking':'thinking', 'pattern-recognition-vision-builders':'thinking',
+    'architectural-thinking':'thinking',
+    'guitar-method':'creative', 'sketching-vision-builders':'creative'
+  };
+  document.querySelectorAll('#programGrid .card').forEach(function(card){
+    var slug = card.getAttribute('data-slug');
+    var track = trackMap[slug] || '';
+    var matchTrack = _activeTrack === 'all' || _activeTrack === track;
+    var matchSearch = !q || card.textContent.toLowerCase().indexOf(q) !== -1;
+    card.classList.toggle('hidden', !(matchTrack && matchSearch));
+  });
+}
 // ——— Waitlist ———
 function openWaitlist(slug) {
   var el = document.getElementById('waitlistModal');
