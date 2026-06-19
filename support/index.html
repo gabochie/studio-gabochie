@@ -47,10 +47,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 
 /* Tiers */
 .tier-section{padding:0 0 80px}
-.section-label{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.35em;color:var(--ink-lt);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:12px}
 .section-label::after{content:'';flex:1;height:1px;background:var(--gold);opacity:.2;max-width:60px}
 .section-title{font-family:'Libre Baskerville',serif;font-size:clamp(32px,4vw,54px);font-weight:700;line-height:1.1;color:var(--ink);margin-bottom:16px}
-.section-sub{font-size:15px;color:var(--ink-lt);max-width:600px;margin-bottom:40px}
+.section-sub{font-size:15px;color:var(--ink-lt);max-width:600px;margin:0 auto 40px;text-align:center}
 .tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:40px}
 .tier-card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:36px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;position:relative}
 .tier-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
@@ -93,10 +93,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 /* FAQ */
 .faq-section{padding:0 0 80px;max-width:720px;margin:0 auto}
 .faq-item{border-bottom:1px solid var(--rule);padding:16px 0}
-.faq-q{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px;user-select:none}
 .faq-q::after{content:'+';font-size:18px;color:var(--gold);transition:transform .25s}
 .faq-q.open::after{content:'\2212'}
-.faq-a{padding-top:12px;font-size:14px;color:var(--ink-lt);line-height:1.7;display:none}
+.faq-a{padding-top:12px;font-size:14px;color:var(--ink-lt);line-height:1.7;display:none;text-align:center}
 .faq-a.open{display:block}
 
 /* Form */
