@@ -32,9 +32,9 @@
     '<a href="/manifesto/">Read the Manifesto</a>' +
     '<a href="/school/">Courses</a>' +
     '<a href="/guitar/">Guitar</a>' +
-    '<a href="/survey/">Course Interest Survey</a>' +
-    '<a href="/newsletter/">The Studio Weekly</a>' +
-    '<a href="/campaigns/1-million-systems-thinkers/">Flagship Campaign</a>' +
+    '<a href="/survey/">Survey</a>' +
+    '<a href="https://news.gideonabochie.org/">The Studio Weekly</a>' +
+    '<a href="https://news.gideonabochie.org/">Sponsor the Newsletter</a>' +
     '<a href="/nationbuilding/">Nationbuilding</a>' +
     '<a href="/merch/">Merchandise</a>' +
     '<a href="/tutoring/">Tutoring Marketplace</a>' +
@@ -45,7 +45,7 @@
     '<a href="/register/">Create Account</a>' +
     '<a href="/login/">Log In</a>' +
     '<a href="/donate/">One-Time Donation</a>' +
-    '<a href="/membership/">Membership</a>' +
+    '<a href="/support/">Recurring Support</a>' +
     '<a href="/books/">Buy Books</a>' +
     '</div>' +
     '<div>' +
@@ -76,7 +76,7 @@
     '</div>' +
     '</div>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' GideonAbochie Studio</div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' GideonAbochie Studio &mdash; School of Creativity, Love & Wisdom. Rooted in Scripture, shared in love.</div>' +
     '</footer>';
 
   var phNav = document.getElementById('nav-placeholder');
