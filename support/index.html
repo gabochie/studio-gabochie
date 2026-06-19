@@ -214,6 +214,32 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 
 </div>
 
+<section id="sponsor" class="page-wrap" style="padding-bottom:80px;margin-top:40px">
+  <div class="section-label">Sponsor Registration</div>
+  <h2 class="section-title">Become a Sponsor</h2>
+  <p class="section-sub">Get instant access with an auto-generated code. No manual approval needed.</p>
+  <form id="sponsorForm" style="max-width:440px;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:32px">
+    <div style="margin-bottom:16px">
+      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Name</label>
+      <input type="text" id="spName" required style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Email</label>
+      <input type="email" id="spEmail" required style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Company (optional)</label>
+      <input type="text" id="spCompany" style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
+    </div>
+    <button type="submit" style="width:100%;background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:12px;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">Get My Sponsor Code</button>
+    <div id="spResult" style="display:none;margin-top:16px;padding:16px;border-radius:8px;background:var(--gold-soft);text-align:center">
+      <div style="font:700 24px/1 'Barlow Condensed',sans-serif;color:var(--gold);letter-spacing:.15em;margin-bottom:6px" id="spCodeDisplay"></div>
+      <p style="font:12px/1.4 'DM Sans',sans-serif;color:var(--ink-lt);margin:0">Save this code. You will use it with your email to log in.</p>
+    </div>
+    <div id="spError" style="display:none;margin-top:16px;padding:12px;border-radius:8px;background:#FEE2E2;color:#8C2020;font:13px/1.4 'DM Sans',sans-serif;text-align:center"></div>
+  </form>
+</section>
+
 <footer>
   <div class="container">
     <div>
@@ -289,32 +315,6 @@ function trackEvent(type, data) {
   }
 }
 </script>
-
-<section id="sponsor" class="page-wrap" style="padding-bottom:80px;margin-top:40px">
-  <div class="section-label">Sponsor Registration</div>
-  <h2 class="section-title">Become a Sponsor</h2>
-  <p class="section-sub">Get instant access with an auto-generated code. No manual approval needed.</p>
-  <form id="sponsorForm" style="max-width:440px;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:32px">
-    <div style="margin-bottom:16px">
-      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Name</label>
-      <input type="text" id="spName" required style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
-    </div>
-    <div style="margin-bottom:16px">
-      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Email</label>
-      <input type="email" id="spEmail" required style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
-    </div>
-    <div style="margin-bottom:20px">
-      <label style="font:600 13px/1 'Barlow',sans-serif;display:block;margin-bottom:6px;color:var(--ink-mid)">Company (optional)</label>
-      <input type="text" id="spCompany" style="width:100%;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font:14px/1.4 'DM Sans',sans-serif">
-    </div>
-    <button type="submit" style="width:100%;background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:12px;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">Get My Sponsor Code</button>
-    <div id="spResult" style="display:none;margin-top:16px;padding:16px;border-radius:8px;background:var(--gold-soft);text-align:center">
-      <div style="font:700 24px/1 'Barlow Condensed',sans-serif;color:var(--gold);letter-spacing:.15em;margin-bottom:6px" id="spCodeDisplay"></div>
-      <p style="font:12px/1.4 'DM Sans',sans-serif;color:var(--ink-lt);margin:0">Save this code. You will use it with your email to log in.</p>
-    </div>
-    <div id="spError" style="display:none;margin-top:16px;padding:12px;border-radius:8px;background:#FEE2E2;color:#8C2020;font:13px/1.4 'DM Sans',sans-serif;text-align:center"></div>
-  </form>
-</section>
 
 <script>
 document.getElementById('sponsorForm').addEventListener('submit', function(e) {
