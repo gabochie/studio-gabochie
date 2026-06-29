@@ -1178,6 +1178,8 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `CREATE INDEX IF NOT EXISTS idx_campaigns_slug ON campaigns(slug)`,
       `ALTER TABLE donations ADD COLUMN campaign_id INTEGER DEFAULT 0`,
       `CREATE INDEX IF NOT EXISTS idx_donations_campaign ON donations(campaign_id)`,
+      // ── Seed: first fundraising campaign ──
+      `INSERT OR IGNORE INTO campaigns (name, slug, description, goal_amount, currency, type, status, start_date, end_date) VALUES ('Train 1 Million Ghanaian Youth in Systems Thinking', '1-million-systems-thinkers', 'A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Your GH¢100 sponsors one youth for a full semester of training in systems thinking, digital literacy, and creative problem-solving.', 1000000, 'GHS', 'crowdfunding', 'active', datetime('now'), datetime('now', '+90 days'))`,
       // ── Classifieds ──
       `CREATE TABLE IF NOT EXISTS classifieds (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

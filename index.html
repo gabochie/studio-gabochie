@@ -287,6 +287,54 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
   </div>
 </section>
 
+<!-- ═══ CAMPAIGN STRIP ═══ -->
+<div id="campaignStrip" style="display:none;background:#0F1E38;border-top:1px solid rgba(201,168,76,0.15);border-bottom:1px solid rgba(201,168,76,0.15);padding:32px 0">
+  <div class="container">
+    <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div style="font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#C9A84C;margin-bottom:4px">Active Campaign</div>
+        <h3 id="campName" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0 0 4px"></h3>
+        <p id="campDesc" style="font-size:13px;color:#8A9BB5;line-height:1.5;margin:0"></p>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+          <span id="campRaised" style="color:#C9A84C;font-weight:700"></span>
+          <span id="campPct" style="color:#5A7A9F"></span>
+          <span id="campGoal" style="color:#5A7A9F"></span>
+        </div>
+        <div style="height:8px;background:#0A1628;border-radius:4px;overflow:hidden;margin-bottom:12px">
+          <div id="campBar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#C9A84C,#D9B85C);width:0%;transition:width 1s"></div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a id="campBtn" href="/campaigns/" class="btn btn-gold" style="padding:12px 28px;font-size:13px">Donate to This Campaign</a>
+          <a href="/campaigns/" style="color:rgba(255,255,255,0.4);font-size:12px;display:inline-flex;align-items:center;gap:4px;text-decoration:none">All Campaigns <span>&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(async function(){
+  try {
+    var r = await fetch('/api/campaigns');
+    var d = await r.json();
+    var items = d.items || [];
+    if (!items.length) return;
+    var active = items[0];
+    var strip = document.getElementById('campaignStrip');
+    document.getElementById('campName').textContent = active.name;
+    document.getElementById('campDesc').textContent = (active.description||'').substring(0,200);
+    var pct = Math.min(active.progress_pct || 0, 100);
+    document.getElementById('campRaised').textContent = 'GH\u00a2 ' + ((active.raised_amount||0).toLocaleString());
+    document.getElementById('campPct').textContent = pct + '%';
+    document.getElementById('campGoal').textContent = 'of GH\u00a2 ' + ((active.goal_amount||0).toLocaleString());
+    document.getElementById('campBar').style.width = pct + '%';
+    document.getElementById('campBtn').href = '/campaigns/' + active.slug;
+    strip.style.display = '';
+  } catch(e) {}
+})();
+</script>
+
 <!-- ═══ STORY ═══ -->
 <section class="section story" id="story">
   <div class="container story-grid">
