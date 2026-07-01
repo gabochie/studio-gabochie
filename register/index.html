@@ -57,11 +57,17 @@ h1 span{color:#C9A84C}
       </div>
       <div class="input-group">
         <label>Password</label>
-        <input type="password" id="password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password">
+        <div style="position:relative">
+          <input type="password" id="password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password" style="padding-right:40px;width:100%;padding:12px 40px 12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif">
+          <span id="pwToggle" onclick="togglePw()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#5A7A9F;font-size:18px;line-height:1" title="Show password">&#128065;</span>
+        </div>
       </div>
       <div class="input-group">
         <label>Confirm Password</label>
-        <input type="password" id="confirm" placeholder="Repeat your password" required minlength="6" autocomplete="new-password">
+        <div style="position:relative">
+          <input type="password" id="confirm" placeholder="Repeat your password" required minlength="6" autocomplete="new-password" style="padding-right:40px;width:100%;padding:12px 40px 12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif">
+          <span id="confirmToggle" onclick="toggleConfirm()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#5A7A9F;font-size:18px;line-height:1" title="Show password">&#128065;</span>
+        </div>
       </div>
       <button type="submit" class="submit-btn" id="registerBtn">Create Account</button>
       <div class="form-msg" id="registerMsg"></div>
@@ -69,6 +75,26 @@ h1 span{color:#C9A84C}
     <div class="alt-link">
       Already have an account? <a href="/login/">Log In</a>
     </div>
+  </div>
+  <!-- Success screen (shown after registration) -->
+  <div id="successCard" class="card" style="display:none;text-align:center">
+    <div style="font-size:48px;color:#22C55E;margin-bottom:12px">&#10003;</div>
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#F1F5F9;margin-bottom:4px">Account Created</h2>
+    <p style="font-size:14px;color:#8A9BB5;margin-bottom:20px">Save your credentials. You'll need them to log in.</p>
+    <div style="background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:16px;margin-bottom:20px;text-align:left">
+      <div style="margin-bottom:10px">
+        <div style="font-size:10px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Email</div>
+        <div id="successEmail" style="font-size:14px;color:#CBD5E1;word-break:break-all"></div>
+      </div>
+      <div style="margin-bottom:4px">
+        <div style="font-size:10px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Password</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <code id="successPw" style="flex:1;font-size:13px;color:#C9A84C;font-family:'Courier Prime',monospace;word-break:break-all"></code>
+          <button onclick="copyPw()" id="copyBtn" style="flex-shrink:0;background:rgba(201,168,76,.12);border:none;color:#C9A84C;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif">Copy</button>
+        </div>
+      </div>
+    </div>
+    <button onclick="window.location.href='/dashboard/'" class="submit-btn">Go to Dashboard</button>
   </div>
 </div>
 <script src="../assets/js/main.js"></script>
@@ -90,9 +116,14 @@ function doRegister(e) {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.status === 'ok') {
-        msg.className = 'form-msg success'; msg.textContent = 'Account created! Redirecting\u2026';
         document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gideonabochie.org; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
-        setTimeout(function() { window.location.href = '/dashboard/'; }, 500);
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('successCard').style.display = 'block';
+        document.querySelector('.alt-link').style.display = 'none';
+        var emailStore = document.getElementById('email').value;
+        var pwStore = document.getElementById('password').value;
+        document.getElementById('successEmail').textContent = emailStore;
+        document.getElementById('successPw').textContent = pwStore;
       } else {
         msg.className = 'form-msg error'; msg.textContent = d.message || 'Registration failed.';
         btn.disabled = false; btn.textContent = 'Create Account';
@@ -103,6 +134,35 @@ function doRegister(e) {
       btn.disabled = false; btn.textContent = 'Create Account';
     });
   return false;
+}
+function togglePw() {
+  var el = document.getElementById('password');
+  var eye = document.getElementById('pwToggle');
+  if (el.type === 'password') { el.type = 'text'; eye.innerHTML = '&#128064;'; eye.title = 'Hide password'; }
+  else { el.type = 'password'; eye.innerHTML = '&#128065;'; eye.title = 'Show password'; }
+}
+function toggleConfirm() {
+  var el = document.getElementById('confirm');
+  var eye = document.getElementById('confirmToggle');
+  if (el.type === 'password') { el.type = 'text'; eye.innerHTML = '&#128064;'; eye.title = 'Hide password'; }
+  else { el.type = 'password'; eye.innerHTML = '&#128065;'; eye.title = 'Show password'; }
+}
+function copyPw() {
+  var pw = document.getElementById('successPw').textContent;
+  var btn = document.getElementById('copyBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(pw).then(function() {
+      btn.textContent = 'Copied!'; btn.style.background = 'rgba(34,197,94,.15)'; btn.style.color = '#22C55E';
+      setTimeout(function() { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; }, 2000);
+    }).catch(function() { fallbackCopy(pw, btn); });
+  } else { fallbackCopy(pw, btn); }
+}
+function fallbackCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); btn.textContent = 'Copied!'; btn.style.background = 'rgba(34,197,94,.15)'; btn.style.color = '#22C55E'; setTimeout(function() { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; }, 2000); } catch(e) {}
+  document.body.removeChild(ta);
 }
 </script>
 </body>
