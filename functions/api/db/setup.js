@@ -206,6 +206,8 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `ALTER TABLE students ADD COLUMN salt TEXT DEFAULT ''`,
       `ALTER TABLE students ADD COLUMN reset_token TEXT DEFAULT ''`,
       `ALTER TABLE students ADD COLUMN reset_token_expires_at TEXT DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN reset_token TEXT DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN reset_token_expires_at TEXT DEFAULT ''`,
       `CREATE TABLE IF NOT EXISTS referrals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         referrer_code TEXT NOT NULL,

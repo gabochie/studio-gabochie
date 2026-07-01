@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="description" content="Reset your GideonAbochie Studio password.">
+<title>Forgot Password — GideonAbochie Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{width:100%;max-width:420px}
+h1{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#F1F5F9;text-align:center;margin-bottom:6px;letter-spacing:-.01em}
+h1 span{color:#C9A84C}
+.sub{font-size:14px;color:#6B7F9A;text-align:center;margin-bottom:32px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:11px;color:#5A7A9F;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.input-group input{width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif}
+.input-group input:focus{border-color:#C9A84C}
+.submit-btn{width:100%;padding:14px;border:none;border-radius:10px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:8px}
+.submit-btn:hover{background:#D9B85C}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.form-msg{font-size:13px;padding:10px 14px;border-radius:8px;margin-top:12px;display:none}
+.form-msg.error{display:block;background:rgba(232,99,122,.1);color:#E8637A;border:1px solid rgba(232,99,122,.2)}
+.form-msg.success{display:block;background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
+.alt-link{text-align:center;margin-top:20px;font-size:13px;color:#6B7F9A}
+.alt-link a{color:#C9A84C;text-decoration:none}
+.alt-link a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Forgot <span>Password</span></h1>
+  <p class="sub">Enter your email and we'll send a reset link.</p>
+  <div class="card">
+    <form id="forgotForm" onsubmit="return doForgot(event)">
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
+      </div>
+      <button type="submit" class="submit-btn" id="forgotBtn">Send Reset Link</button>
+      <div class="form-msg" id="forgotMsg"></div>
+    </form>
+    <div class="alt-link">
+      <a href="/login/">Back to Login</a>
+    </div>
+  </div>
+</div>
+<script>
+function doForgot(e) {
+  e.preventDefault();
+  var btn = document.getElementById('forgotBtn');
+  var msg = document.getElementById('forgotMsg');
+  var email = document.getElementById('email').value.trim();
+  if (!email) { msg.className = 'form-msg error'; msg.textContent = 'Please enter your email.'; return false; }
+  btn.disabled = true; btn.textContent = 'Sending...';
+  fetch('/api/membership/forgot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status === 'ok') {
+        msg.className = 'form-msg success'; msg.textContent = d.message || 'Reset link sent! Check your email.';
+        btn.textContent = 'Sent';
+      } else {
+        msg.className = 'form-msg error'; msg.textContent = d.message || 'Something went wrong.';
+        btn.disabled = false; btn.textContent = 'Send Reset Link';
+      }
+    })
+    .catch(function() {
+      msg.className = 'form-msg error'; msg.textContent = 'Connection error. Please try again.';
+      btn.disabled = false; btn.textContent = 'Send Reset Link';
+    });
+  return false;
+}
+</script>
+</body>
+</html>

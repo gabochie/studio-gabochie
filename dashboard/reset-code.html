@@ -33,19 +33,25 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
 </head>
 <body>
 <div class="card">
-  <h1>Reset <span>Access Code</span></h1>
-  <p>Enter your email and a new access code. Use the link from your email to verify.</p>
+  <h1>Reset <span>Password</span></h1>
+  <p>Enter your email and a new password. Use the link from your email to verify.</p>
   <form id="resetForm" onsubmit="handleReset();return false">
     <label for="email">Email address</label>
     <input id="email" type="email" placeholder="you@example.com" required>
-    <label for="newCode">New access code</label>
-    <input id="newCode" type="password" placeholder="At least 4 characters" minlength="4" required>
-    <label for="confirmCode">Confirm new code</label>
-    <input id="confirmCode" type="password" placeholder="Repeat your new code" minlength="4" required>
-    <button class="btn" id="resetBtn">Reset Access Code</button>
+    <label for="newCode">New password</label>
+    <div style="position:relative">
+      <input id="newCode" type="password" placeholder="At least 6 characters" minlength="6" required style="padding-right:40px;width:100%;padding:12px 40px 12px 16px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:16px;box-sizing:border-box">
+      <span id="pwToggle" onclick="togglePw()" style="position:absolute;right:16px;top:14px;cursor:pointer;color:#5A7A9F;font-size:18px;line-height:1" title="Show password">&#128065;</span>
+    </div>
+    <label for="confirmCode">Confirm new password</label>
+    <div style="position:relative">
+      <input id="confirmCode" type="password" placeholder="Repeat your new password" minlength="6" required style="padding-right:40px;width:100%;padding:12px 40px 12px 16px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:16px;box-sizing:border-box">
+      <span id="confirmToggle" onclick="toggleConfirm()" style="position:absolute;right:16px;top:14px;cursor:pointer;color:#5A7A9F;font-size:18px;line-height:1" title="Show password">&#128065;</span>
+    </div>
+    <button class="btn" id="resetBtn">Reset Password</button>
     <div class="msg" id="msg"></div>
   </form>
-  <p style="margin-top:16px;text-align:center"><a href="/dashboard/" style="color:#C9A84C;font-size:12px;text-decoration:none">Back to Login</a></p>
+  <p style="margin-top:16px;text-align:center"><a href="/login/" style="color:#C9A84C;font-size:12px;text-decoration:none">Back to Login</a></p>
 </div>
 <script>
 (function() {
@@ -53,6 +59,19 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
   var token = params.get('token') || '';
   var email = params.get('email') || '';
   if (token) document.getElementById('email').value = decodeURIComponent(email);
+
+  window.togglePw = function() {
+    var el = document.getElementById('newCode');
+    var eye = document.getElementById('pwToggle');
+    if (el.type === 'password') { el.type = 'text'; eye.innerHTML = '&#128064;'; eye.title = 'Hide password'; }
+    else { el.type = 'password'; eye.innerHTML = '&#128065;'; eye.title = 'Show password'; }
+  };
+  window.toggleConfirm = function() {
+    var el = document.getElementById('confirmCode');
+    var eye = document.getElementById('confirmToggle');
+    if (el.type === 'password') { el.type = 'text'; eye.innerHTML = '&#128064;'; eye.title = 'Hide password'; }
+    else { el.type = 'password'; eye.innerHTML = '&#128065;'; eye.title = 'Show password'; }
+  };
 
   window.handleReset = function() {
     var emailVal = document.getElementById('email').value.trim().toLowerCase();
@@ -63,39 +82,38 @@ body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:#0A1628
     if (!emailVal || !newCode || !confirmCode) {
       msg.className = 'msg error'; msg.textContent = 'Please fill in all fields.'; return;
     }
-    if (newCode.length < 4) {
-      msg.className = 'msg error'; msg.textContent = 'Access code must be at least 4 characters.'; return;
+    if (newCode.length < 6) {
+      msg.className = 'msg error'; msg.textContent = 'Password must be at least 6 characters.'; return;
     }
     if (newCode !== confirmCode) {
-      msg.className = 'msg error'; msg.textContent = 'Codes do not match.'; return;
+      msg.className = 'msg error'; msg.textContent = 'Passwords do not match.'; return;
     }
     if (!token) {
       msg.className = 'msg error'; msg.textContent = 'Invalid reset link. Please request a new one.'; return;
     }
-    tagOnboard(emailVal, '', 'dashboard');
     btn.disabled = true;
     btn.textContent = 'Resetting...';
     msg.className = 'msg';
-    fetch('/api/auth/reset-code', {
+    fetch('/api/membership/reset', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: token, email: emailVal, new_code: newCode })
+      body: JSON.stringify({ token: token, email: emailVal, new_password: newCode })
     }).then(function(r) { return r.json(); }).then(function(data) {
       if (data.status === 'ok') {
         msg.className = 'msg success';
-        msg.textContent = 'Access code reset successfully! Redirecting to login...';
-        setTimeout(function() { window.location.href = '/dashboard/'; }, 2000);
+        msg.textContent = 'Password reset successfully! Redirecting to login...';
+        setTimeout(function() { window.location.href = '/login/'; }, 2000);
       } else {
         msg.className = 'msg error';
-        msg.textContent = data.message || 'Could not reset access code.';
+        msg.textContent = data.message || 'Could not reset password.';
         btn.disabled = false;
-        btn.textContent = 'Reset Access Code';
+        btn.textContent = 'Reset Password';
       }
     }).catch(function() {
       msg.className = 'msg error';
       msg.textContent = 'Network error. Try again.';
       btn.disabled = false;
-      btn.textContent = 'Reset Access Code';
+      btn.textContent = 'Reset Password';
     });
   };
 })();
