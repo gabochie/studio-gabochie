@@ -5,7 +5,7 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
-  const authErr = requireAdminAuth(request, env);
+  const authErr = await requireAdminAuth(request, env);
   if (authErr) return authErr;
   const db = env.DB;
   if (!db) {

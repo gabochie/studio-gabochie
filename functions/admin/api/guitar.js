@@ -8,7 +8,7 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  const authErr = requireAdmin(request, env);
+  const authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
   try {
     // Waitlist stats

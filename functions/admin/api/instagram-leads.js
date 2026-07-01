@@ -5,7 +5,7 @@ var CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods':
 export async function onRequest(context) {
   var { request, env } = context;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
-  var authError = requireAdmin(request, env);
+  var authError = await requireAdmin(request, env);
   if (authError) return authError;
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json', ...CORS } });
 

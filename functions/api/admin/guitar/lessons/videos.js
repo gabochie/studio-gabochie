@@ -4,7 +4,7 @@ export async function onRequest(context) {
   const { request, env } = context;
   const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'PUT, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
-  const authErr = requireAdminAuth(request, env);
+  const authErr = await requireAdminAuth(request, env);
   if (authErr) return authErr;
   if (request.method !== 'PUT') return new Response(JSON.stringify({ error: 'PUT required' }), { status: 405, headers: { ...cors, 'Content-Type': 'application/json' } });
   const db = env.DB;

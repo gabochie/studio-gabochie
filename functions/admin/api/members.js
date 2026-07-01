@@ -8,7 +8,7 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  var authErr = requireAdmin(request, env);
+  var authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
 
   var url = new URL(request.url);

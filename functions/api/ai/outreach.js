@@ -21,7 +21,7 @@ export async function onRequest(context) {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  var authError = requireAdminAuth(request, env);
+  var authError = await requireAdminAuth(request, env);
   if (authError) return authError;
 
   if (!env.DB) {

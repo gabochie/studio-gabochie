@@ -8,7 +8,7 @@ const REWARD_TIERS = [
 
 export async function onRequest(context) {
   const { request, env } = context;
-  const authErr = requireAdmin(request, env);
+  const authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
   if (!env.DB) {
     return new Response(JSON.stringify({ status: 'error', message: 'D1 not bound' }), {

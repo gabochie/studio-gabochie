@@ -17,7 +17,7 @@ export async function onRequest(context) {
 
   // GET — admin subscriber listing (protected by admin key)
   if (request.method === 'GET') {
-    var authError = requireAdminAuth(request, env);
+    var authError = await requireAdminAuth(request, env);
     if (authError) return authError;
     const db = env.DB;
     if (!db) {

@@ -121,8 +121,20 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
+/* ── Cloudflare Access detection ── */
+function isCloudflareAccess() {
+  return document.cookie.indexOf('CF_Authorization=') !== -1;
+}
+
+function getAccessUserEmail() {
+  // Cf-Access-Authenticated-User-Email meta tag set by middleware
+  var m = document.querySelector('meta[name="cf-access-user"]');
+  return m ? m.getAttribute('content') : '';
+}
+
 /* ── Admin API helpers ── */
 function getAdminKey() {
+  if (isCloudflareAccess()) return '__CF_ACCESS__';
   try { return sessionStorage.getItem('ga_admin_key') || ''; } catch(e) { return ''; }
 }
 
@@ -133,12 +145,14 @@ function storeAdminKey(key) {
 function adminFetch(url, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
-  opts.headers['X-Admin-Key'] = getAdminKey();
+  var key = getAdminKey();
+  if (key && key !== '__CF_ACCESS__') opts.headers['X-Admin-Key'] = key;
   return fetch(url, opts);
 }
 
 /* Show modal to set admin key instead of prompt() */
 function ensureAdminKey() {
+  if (isCloudflareAccess()) return '__CF_ACCESS__';
   var key = getAdminKey();
   if (!key) {
     var m = Modal.create('adminKeyModal');
@@ -167,6 +181,17 @@ function ensureAdminKey() {
   return key;
 }
 
+/* ── Admin header ── */
+function renderAdminHeader() {
+  var el = document.querySelector('.page-title');
+  if (!el || !isCloudflareAccess()) return;
+  var email = getAccessUserEmail();
+  var badge = document.createElement('span');
+  badge.style.cssText = 'display:inline-flex;align-items:center;gap:6px;margin-left:12px;padding:3px 10px;border-radius:12px;background:rgba(201,168,76,.12);color:#C9A84C;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;vertical-align:middle';
+  badge.innerHTML = '<span style="font-size:14px">&#128274;</span> ' + (email ? email : 'Cloudflare Access');
+  el.appendChild(badge);
+}
+
 /* ── Logout ── */
 function adminLogout() {
   try {
@@ -181,3 +206,6 @@ if (document.getElementById('healthContainer')) {
   checkSiteHealth();
   renderDashboard();
 }
+document.addEventListener('DOMContentLoaded', function() {
+  renderAdminHeader();
+});

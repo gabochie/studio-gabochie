@@ -78,7 +78,7 @@ export async function onRequest(context) {
   var isNews = host === 'news.gideonabochie.org' || host.startsWith('news.');
 
   // Only gate these paths (require login)
-  var gatedPaths = ['/dashboard/'];
+  var gatedPaths = ['/dashboard/', '/admin/'];
   var isGated = false;
   for (var i = 0; i < gatedPaths.length; i++) {
     if (path === gatedPaths[i] || path.startsWith(gatedPaths[i])) {
@@ -91,18 +91,33 @@ export async function onRequest(context) {
   var sessionValid = false;
   if (env.DB && isGated) {
     var cookie = request.headers.get('Cookie') || '';
-    var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
-    if (m) {
-      try {
-        var row = await env.DB.prepare(
-          "SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime('now')"
-        ).bind(m[1]).first();
-        if (row) sessionValid = true;
-      } catch (e) {}
+
+    // Cloudflare Access check first (for admin paths)
+    if (path.startsWith('/admin/')) {
+      if (cookie.indexOf('CF_Authorization=') !== -1) {
+        sessionValid = true;
+      }
+    }
+
+    // Fall back to session token
+    if (!sessionValid) {
+      var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
+      if (m) {
+        try {
+          var row = await env.DB.prepare(
+            "SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime('now')"
+          ).bind(m[1]).first();
+          if (row) sessionValid = true;
+        } catch (e) {}
+      }
     }
   }
 
   if (isGated && !sessionValid) {
+    if (path.startsWith('/admin/')) {
+      // For admin paths, let Cloudflare Access or the API auth handle it
+      return context.next();
+    }
     var loginUrl = '/login/?redirect=' + encodeURIComponent(path);
     return new Response(null, {
       status: 302,

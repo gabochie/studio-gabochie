@@ -16,7 +16,7 @@ var API = (function() {
     var at = getToken();
     var ak = getAdminKey();
     if (at) h['X-Agent-Auth'] = at;
-    if (ak) h['X-Admin-Key'] = ak;
+    if (ak && ak !== '__CF_ACCESS__') h['X-Admin-Key'] = ak;
     if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k]; } }
     return h;
   }

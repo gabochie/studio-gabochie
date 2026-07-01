@@ -9,7 +9,7 @@ export async function onRequest(context) {
   // Dual auth: admin key (manual) or CI secret (automated)
   var ciAuth = request.headers.get('X-CI-Secret');
   if (!ciAuth || ciAuth !== env.CI_WEBHOOK_SECRET) {
-    var authErr = requireAdminAuth(request, env);
+    var authErr = await requireAdminAuth(request, env);
     if (authErr) return authErr;
   }
 

@@ -9,7 +9,7 @@ function json(r, status) {
 export async function onRequest(context) {
   const { request, env } = context;
   if (!env.DB) return json({ error: 'D1 not bound' }, 501);
-  const authErr = requireAdmin(request, env);
+  const authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
 
   const url = new URL(request.url);

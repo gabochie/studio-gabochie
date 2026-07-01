@@ -9,7 +9,7 @@ export async function onRequest(context) {
   var cors = corsHeaders();
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  var authErr = requireAdminAuth(request, env);
+  var authErr = await requireAdminAuth(request, env);
   if (authErr) return authErr;
 
   try {

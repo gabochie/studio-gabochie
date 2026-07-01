@@ -6,7 +6,7 @@ export async function onRequest(context) {
   if (!db) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
   }
-  const authErr = requireAdminAuth(request, env);
+  const authErr = await requireAdminAuth(request, env);
   if (authErr) return authErr;
 
   if (request.method === 'GET') {

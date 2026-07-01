@@ -8,7 +8,7 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
   if (request.method !== 'POST') return new Response(JSON.stringify({ error: 'POST required' }), { status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
 
-  var authError = requireAdminAuth(request, env);
+  var authError = await requireAdminAuth(request, env);
   if (authError) return authError;
 
   try {

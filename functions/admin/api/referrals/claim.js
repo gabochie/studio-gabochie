@@ -2,7 +2,7 @@ import { requireAdmin } from '../../_auth.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
-  const authErr = requireAdmin(request, env);
+  const authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), {

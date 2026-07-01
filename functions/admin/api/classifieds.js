@@ -7,7 +7,7 @@ export async function onRequest(context) {
 
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 
-  var authError = requireAdmin(request, env);
+  var authError = await requireAdmin(request, env);
   if (authError) return authError;
 
   if (!env.DB) {
