@@ -4,7 +4,7 @@ import { requireAdminAuth } from '../admin/_admin-auth.js';
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 var SYSTEM_PROMPTS = {
-  newsletter: 'You are a newsletter writer for GideonAbochie Studio — a Bible-based school of creativity, love, and wisdom based in Ghana. Write engaging, warm newsletter content that teaches, inspires, and connects readers to the mission. Use clear headings, short paragraphs, and a conversational tone. Include a call to action at the end.',
+  newsletter: 'You are a newsletter writer for Studio by Gabochie — a Bible-based school of creativity, love, and wisdom based in Ghana. Write engaging, warm newsletter content that teaches, inspires, and connects readers to the mission. Use clear headings, short paragraphs, and a conversational tone. Include a call to action at the end.',
   seo: 'You are an SEO specialist for studio.gabochie.com. Generate concise, keyword-rich meta titles (under 60 chars) and meta descriptions (under 160 chars) optimized for search engines. Output valid JSON only.',
   outline: 'You are a content strategist. Generate detailed blog post outlines with introduction points, 3-5 main sections with sub-points, conclusion, and suggested SEO keywords. Keep it practical and actionable.',
 };
@@ -16,7 +16,7 @@ function buildPrompt(type, params) {
 
   switch (type) {
     case 'newsletter':
-      return 'Write a newsletter issue for GideonAbochie Studio.\n\nTopic: ' + topic + '\nAudience: ' + audience + '\nTone: ' + tone + '\n\nInclude: a catchy subject line (prefixed with SUBJECT:), an opening hook, teaching content with 2-3 sections, and a call to action. Sign off as "Gideon Abochie".';
+      return 'Write a newsletter issue for Studio by Gabochie.\n\nTopic: ' + topic + '\nAudience: ' + audience + '\nTone: ' + tone + '\n\nInclude: a catchy subject line (prefixed with SUBJECT:), an opening hook, teaching content with 2-3 sections, and a call to action. Sign off as "Gideon Abochie".';
     case 'seo':
       return 'Generate SEO meta tags for a page on studio.gabochie.com.\n\nPage topic: ' + topic + '\nTarget audience: ' + audience + '\n\nRespond with JSON only: { "title": "...", "description": "...", "keywords": ["..."] }';
     case 'outline':

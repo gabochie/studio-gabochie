@@ -106,7 +106,7 @@ describe('GET /api/invoices/[id]', function () {
   it('shows brand name in the invoice header', async function () {
     var res = await onRequest(ctx);
     var text = await res.text();
-    expect(text).toContain('GideonAbochie Studio');
+    expect(text).toContain('Studio by Gabochie');
   });
 
   it('shows the brand logo in the invoice header', async function () {

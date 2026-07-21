@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAHQ — GideonAbochie Studio ToDo List</title>
+<title>GAHQ — Studio by Gabochie ToDo List</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -834,7 +834,7 @@ var DATA = {
           "items": [
             "Monitor Google Search Console weekly: crawl errors, indexing status, manual actions",
             "Request re-indexing via URL Inspection tool after each content update",
-            "Set up Google Alerts for brand mentions (gideonabochie, Gideon Abochie)",
+            "Set up Google Alerts for brand mentions (Studio by Gabochie, Gideon Abochie)",
             "Track backlink profile monthly — new links, lost links, disavow spam",
             "Review search performance quarterly: impressions, clicks, CTR, avg position",
             "Bi-annual content audit: refresh outdated content, update stats, improve internal links"
@@ -1819,7 +1819,7 @@ var CHECKS = {
   ],
   "1.4": [ // Deploy to Cloudflare Pages
     {i:0, label:"Site deployed and reachable", check:function(){return checkPageExists("../index.html")}},
-    {i:1, label:"HTTPS working", check:function(){return checkPageExists("https://gideonabochie-org.pages.dev/")}},
+    {i:1, label:"HTTPS working", check:function(){return checkPageExists("https://studio.gabochie.com/")}},
     {i:2, label:"Nav links work on all pages", check:function(){return checkPageExists("../manifesto/index.html") && checkPageExists("../newsletter/index.html")}},
     {i:3, label:"Donation buttons present", check:function(){return checkPageContains("../index.html","flutterwave")}},
     {i:4, label:"Books downloadable", check:function(){return checkBookFilenames()}},
@@ -1943,7 +1943,7 @@ var CHECKS = {
     {i:7, label:"Press 200", check:function(){return checkPageExists("../press/index.html")}},
     {i:8, label:"Nationbuilding 200", check:function(){return checkPageExists("../nationbuilding/index.html")}},
     {i:9, label:"Newsletter subdomain", check:function(){return checkPageExists("https://news.gabochie.com/")}},
-    {i:10, label:"404 custom page", check:function(){return checkPageContains("../404.html","gideonabochie")}}
+    {i:10, label:"404 custom page", check:function(){return checkPageContains("../404.html","Studio by Gabochie")}}
   ],
   "10.2": [
     {i:0, label:"send-otp file exists", check:function(){return checkFileExists("../functions/api/auth/send-otp.js")}},

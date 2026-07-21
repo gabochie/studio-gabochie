@@ -36,7 +36,7 @@ export async function onRequest(context) {
           '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
           '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
           '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-          '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">GideonAbochie Studio</h1>' +
+          '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
           '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Nationbuilding Program Registration</p></td></tr>' +
           '<tr><td style="padding:32px">' +
           '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + name.replace(/</g, '&lt;') + ',</p>' +
@@ -49,15 +49,15 @@ export async function onRequest(context) {
           '</table>' +
           '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0 0 20px">We will keep you informed about program updates, workshops, and civic engagement opportunities. Together we are building a better Ghana.</p>' +
           '<p style="color:#64748B;font-size:13px;line-height:1.6;margin:0 0 20px">"An empowered youth contributing positively to national development." — Ghana National Youth Policy</p>' +
-          '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
+          '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">Studio by Gabochie &mdash; Accra, Ghana</p>' +
           '</td></tr></table></td></tr></table></body></html>';
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
+            sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
             to: [{ email: email, name: name }],
-            subject: 'Welcome to the Nationbuilding Program — GideonAbochie Studio',
+            subject: 'Welcome to the Nationbuilding Program — Studio by Gabochie',
             htmlContent: emailHtml
           })
         });

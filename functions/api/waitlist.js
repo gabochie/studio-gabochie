@@ -31,7 +31,7 @@ export async function onRequest(context) {
       if (prog && prog.title) programTitle = prog.title;
     } catch (_) {}
     try {
-      await queueEmail(env, email, name, 'You Are on the List — GideonAbochie Studio', waitlistConfirmation(name, programTitle), 'waitlist_confirmation');
+      await queueEmail(env, email, name, 'You Are on the List — Studio by Gabochie', waitlistConfirmation(name, programTitle), 'waitlist_confirmation');
     } catch (_) {}
 
     return new Response(JSON.stringify({ status: 'ok', message: 'You\'re on the list!' }), { headers: { 'Content-Type': 'application/json' } });

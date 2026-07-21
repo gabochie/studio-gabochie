@@ -42,7 +42,7 @@ export async function onRequest(context) {
     var recentRevenue = revenue.slice(-3);
 
     var summary = [
-      'GideonAbochie Studio — 12-Month Analytics Summary\n',
+      'Studio by Gabochie — 12-Month Analytics Summary\n',
       'Monthly Revenue (GHS): ' + JSON.stringify(revenue),
       'Monthly New Subscribers: ' + JSON.stringify(subscribers),
       'Monthly Page Views: ' + JSON.stringify(pageviews),
@@ -57,7 +57,7 @@ export async function onRequest(context) {
     ].join('\n');
 
     // Generate AI-powered predictions
-    var systemPrompt = 'You are a predictive analytics AI for GideonAbochie Studio. Analyze the historical data and provide concise, data-driven insights. Output valid JSON only.';
+    var systemPrompt = 'You are a predictive analytics AI for Studio by Gabochie. Analyze the historical data and provide concise, data-driven insights. Output valid JSON only.';
     var userPrompt = 'Analyze this 12-month data and respond with JSON only:\n' + summary + '\n\nRespond with: { "revenue_forecast": { "next_month": number, "next_quarter": number, "confidence": "high/medium/low", "trend": "up/down/stable" }, "subscriber_forecast": { "next_month": number, "next_quarter": number, "trend": "up/down/stable" }, "insights": ["insight1", "insight2", "insight3"], "anomalies": ["anomaly1"] || [], "recommendations": ["rec1", "rec2"] }';
 
     var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 1500 });

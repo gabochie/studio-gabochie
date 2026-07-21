@@ -10,7 +10,7 @@ async function sendViaBrevo(env, to, subject, htmlContent) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
     body: JSON.stringify({
-      sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
+      sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
       to: Array.isArray(to) ? to : [to],
       subject: subject,
       htmlContent: htmlContent

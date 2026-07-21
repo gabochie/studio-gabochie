@@ -34,5 +34,5 @@ User-agent: *
 Crawl-delay: 2
 
 # Sitemaps
-Sitemap: https://gideonabochie.org/sitemap.xml
-Sitemap: https://news.gideonabochie.org/sitemap.xml
+Sitemap: https://studio.gabochie.com/sitemap.xml
+Sitemap: https://news.gabochie.com/sitemap.xml

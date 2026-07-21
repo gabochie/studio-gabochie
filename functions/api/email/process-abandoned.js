@@ -21,7 +21,7 @@ export async function onRequest(context) {
     for (const row of results) {
       let name = '';
       try { const d = JSON.parse(row.event_data); name = d.name || ''; } catch (_) {}
-      await queueEmail(env, row.email, name, 'You Were About to Make a Difference — GideonAbochie Studio', abandonedDonationReminder(name), 'abandoned_donation', daysFromNow(0));
+      await queueEmail(env, row.email, name, 'You Were About to Make a Difference — Studio by Gabochie', abandonedDonationReminder(name), 'abandoned_donation', daysFromNow(0));
       queued++;
     }
 
