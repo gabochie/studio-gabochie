@@ -860,7 +860,7 @@ ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
         /* ── Post-Launch Search Engine & SEO Monitoring ── */
         ('Monitor Google Search Console weekly for crawl errors', 'Review index coverage, crawl errors, and manual actions in GSC every 7 days for first 2 months', 7, 'pending', 'manual', 'high'),
         ('Request indexing for new and changed pages via GSC', 'After each content update, use URL Inspection tool in GSC to request re-indexing', 7, 'pending', 'manual', 'medium'),
-        ('Set up Google Alerts for brand mentions', 'Create alerts for gideonabochie, Gideon Abochie, and key brand terms to track mentions', 7, 'pending', 'manual', 'low'),
+        ('Set up Google Alerts for brand mentions', 'Create alerts for Studio by Gabochie, Gideon Abochie, and key brand terms to track mentions', 7, 'pending', 'manual', 'low'),
         ('Publish new content on content library monthly', 'Write and publish at least 1 article per month on content page to maintain crawl activity', 7, 'pending', 'manual', 'medium'),
         ('Monitor backlink profile monthly', 'Use Ahrefs, Moz, or free tools to track new backlinks, lost links, and disavow spam', 7, 'pending', 'manual', 'medium'),
         ('Review search performance quarterly', 'Analyze impressions, clicks, CTR, average position by page and query in GSC; identify opportunities', 7, 'pending', 'manual', 'medium'),

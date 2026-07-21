@@ -27,7 +27,7 @@ describe('Preferences - GET', function() {
   });
 
   it('returns preferences as key-value map', async function() {
-    var db = mockDb({ settings: [{ key: 'site_name', value: 'GideonAbochie' }, { key: 'theme', value: 'dark' }] });
+    var db = mockDb({ settings: [{ key: 'site_name', value: 'Studio by Gabochie' }, { key: 'theme', value: 'dark' }] });
     var c = makeCtx('http://localhost/api/admin/preferences', { db: db, request: new Request('http://localhost/api/admin/preferences') });
     var res = await prefsOnRequest(c);
     expect(res.status).toBe(200);
