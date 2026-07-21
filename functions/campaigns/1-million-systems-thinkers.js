@@ -39,7 +39,7 @@ export async function onRequest(context) {
       return '<tr><td>' + esc(d.donor_name || 'Anonymous') + '</td><td>' + fmt(d.amount) + '</td><td>' + fmtDate(d.created_at) + '</td></tr>';
     }).join('') || '<tr><td colspan="3" style="color:#4A5F7A;text-align:center;padding:20px;font-size:13px">No donations yet. Be the first!</td></tr>';
 
-    var pageUrl = 'https://gideonabochie.org/campaigns/1-million-systems-thinkers';
+    var pageUrl = 'https://studio.gabochie.com/campaigns/1-million-systems-thinkers';
 
     // Impact tier data
     var tiers = [
@@ -65,7 +65,7 @@ export async function onRequest(context) {
       { q: 'Is this a government program?', a: 'No, this is a citizen-led initiative by GideonAbochie Studio. We collaborate with schools, churches, mosques, district assemblies, and CSOs to reach youth where they already gather.' },
       { q: 'How do I know my donation was received?', a: 'You will receive an email receipt immediately after payment. A formal tax-deductible invoice is also available on request.' },
       { q: 'Can I donate anonymously?', a: 'Yes. Leave the name field blank during checkout and you will appear as "Anonymous" on the donor wall.' },
-      { q: 'Can I donate in USD or other currencies?', a: 'Flutterwave accepts Visa, Mastercard, Mobile Money (Ghana), and bank transfers in GHS. For USD or international wire transfers, email partnerships@gideonabochie.org.' },
+      { q: 'Can I donate in USD or other currencies?', a: 'Flutterwave accepts Visa, Mastercard, Mobile Money (Ghana), and bank transfers in GHS. For USD or international wire transfers, email partnerships@gabochie.com.' },
     ];
 
     var faqHtml = faqs.map(function(f, i) {
@@ -78,11 +78,11 @@ export async function onRequest(context) {
       '<meta name="description" content="A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.">' +
       '<meta property="og:title" content="Train 1 Million Youth in Systems Thinking">' +
       '<meta property="og:description" content="Join the movement to equip 1,000,000 Ghanaian youth with the skills to shape Ghana\u2019s future. Every GH\u00a2100 trains one youth for a semester.">' +
-      '<meta property="og:image" content="https://gideonabochie.org/assets/images/og-image.png">' +
+      '<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.png">' +
       '<meta property="og:url" content="' + pageUrl + '">' +
       '<meta property="og:type" content="website">' +
       '<meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="' + pageUrl + '">' +
-      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://gideonabochie.org/assets/images/og-image.png","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"GideonAbochie Studio","url":"https://gideonabochie.org/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://studio.gabochie.com/assets/images/og-image.png","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"GideonAbochie Studio","url":"https://studio.gabochie.com/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
       '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">' +
       '<script src="https://checkout.flutterwave.com/v3.js"></script>' +

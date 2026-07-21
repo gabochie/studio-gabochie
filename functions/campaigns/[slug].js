@@ -47,8 +47,8 @@ export async function onRequest(context) {
     var currency = campaign.currency || 'GHS';
     var pageTitle = esc(campaign.name) + ' — GideonAbochie Studio Fundraising';
     var pageDesc = esc((campaign.description || '').substring(0, 200));
-    var pageUrl = 'https://gideonabochie.org/campaigns/' + esc(slug);
-    var imgUrl = campaign.cover_image || 'https://gideonabochie.org/assets/images/og-image.png';
+    var pageUrl = 'https://studio.gabochie.com/campaigns/' + esc(slug);
+    var imgUrl = campaign.cover_image || 'https://studio.gabochie.com/assets/images/og-image.png';
 
     var barClass = isComplete ? 'complete' : (isActive ? '' : 'inactive');
     var statusLabel = isComplete ? 'Goal Reached' : (isActive ? 'Active' : campaign.status);

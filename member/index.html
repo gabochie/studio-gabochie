@@ -89,7 +89,7 @@ function doLogout() {
   if (token) {
     fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } }).catch(function(){});
   }
-  document.cookie = 'ga_session=; path=/; domain=.gideonabochie.org; max-age=0; SameSite=Lax; Secure';
+  document.cookie = 'ga_session=; path=/; domain=.gabochie.com; max-age=0; SameSite=Lax; Secure';
   window.location.href = '/';
 }
 

@@ -27,7 +27,7 @@ export async function onRequest(context) {
     const admin = await env.DB.prepare(
       "SELECT email, name FROM subscribers ORDER BY id ASC LIMIT 1"
     ).first();
-    const toEmail = admin ? admin.email : 'info@gideonabochie.com';
+    const toEmail = admin ? admin.email : 'studio@gabochie.com';
     const toName = admin ? (admin.name || 'Gideon') : 'Gideon';
 
     const htmlContent = body
@@ -42,7 +42,7 @@ export async function onRequest(context) {
         'api-key': env.BREVO_API_KEY
       },
       body: JSON.stringify({
-        sender: { name: 'Gideon Abochie', email: 'newsletter@gideonabochie.org' },
+        sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
         to: [{ email: toEmail, name: toName }],
         subject: '[TEST] ' + subject,
         htmlContent: htmlContent

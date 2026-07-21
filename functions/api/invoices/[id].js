@@ -63,7 +63,7 @@ export async function onRequest(context) {
       '</style></head><body>' +
       '<div class="no-print" style="margin-bottom:12px"><button onclick="window.print()">Download / Print PDF</button></div>' +
       '<div class="inv">' +
-      '<div class="inv-hdr"><img src="https://gideonabochie.org/assets/images/logo.png" alt="GideonAbochie Studio" style="height:40px;margin-bottom:8px"><h1>GideonAbochie Studio</h1><p>Official Invoice</p></div>' +
+      '<div class="inv-hdr"><img src="https://studio.gabochie.com/assets/images/logo.png" alt="GideonAbochie Studio" style="height:40px;margin-bottom:8px"><h1>GideonAbochie Studio</h1><p>Official Invoice</p></div>' +
       '<div class="inv-body">' +
       '<div class="inv-meta">' +
       '<div><div class="lbl">Invoice #</div><div class="val num">' + invoice.invoice_number + '</div></div>' +
@@ -89,7 +89,7 @@ export async function onRequest(context) {
       (paidStr ? '<p style="margin:0"><strong style="color:#1E293B">Paid On:</strong> ' + paidStr + '</p>' : '') +
       '</div>' +
       '</div>' +
-      '<div class="inv-ftr">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a><br>Thank you for your support.</div>' +
+      '<div class="inv-ftr">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com">studio@gabochie.com</a><br>Thank you for your support.</div>' +
       '</div></body></html>';
 
     return new Response(html, { headers: { 'Content-Type': 'text/html;charset=utf-8' } });

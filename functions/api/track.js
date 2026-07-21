@@ -9,7 +9,7 @@ function detectDevice(ua) {
 function categorizeSource(referrer, hostname) {
   if (!referrer) return 'Direct';
   var lower = referrer.toLowerCase();
-  if (lower.includes(hostname ? hostname.toLowerCase() : 'gideonabochie.org')) return 'Direct';
+  if (lower.includes(hostname ? hostname.toLowerCase() : 'studio.gabochie.com')) return 'Direct';
   var organic = [/google\./, /bing\./, /duckduckgo\./, /yahoo\./, /ecosia\./, /yandex\./, /baidu\./, /ask\./];
   for (var i = 0; i < organic.length; i++) { if (organic[i].test(lower)) return 'Organic'; }
   var social = [/facebook\./, /twitter\./, /x\.com/, /instagram\./, /linkedin\./, /tiktok\./, /youtube\./, /pinterest\./, /reddit\./, /whatsapp\./, /telegram\./, /discord\./];

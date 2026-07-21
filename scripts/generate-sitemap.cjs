@@ -11,8 +11,8 @@ var http = require('http');
 
 var ROOT = path.resolve(__dirname, '..');
 var SITEMAP = path.join(ROOT, 'sitemap.xml');
-var SITE_URL = 'https://gideonabochie.org';
-var NEWS_SITE_URL = 'https://news.gideonabochie.org';
+var SITE_URL = 'https://studio.gabochie.com';
+var NEWS_SITE_URL = 'https://news.gabochie.com';
 var VALIDATE = process.argv.includes('--validate');
 
 // Patterns to exclude from sitemap

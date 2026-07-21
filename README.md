@@ -4,7 +4,7 @@ Full-stack platform for the School of Creativity, Love & Wisdom — education,
 payments, email automation, digital products, content management,
 subscriptions, student tracking, certificates, and gamified learning.
 
-**Domain**: https://gideonabochie.org
+**Domain**: https://studio.gabochie.com
 
 ## Deploy
 

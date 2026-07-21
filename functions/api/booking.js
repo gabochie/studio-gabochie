@@ -10,7 +10,7 @@ const notifyHtml = (name, email, phone, company, slot, msg) => `<!DOCTYPE html><
     <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Slot:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${slot}</td></tr>
     ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${msg}</td></tr>` : ''}
   </table>
-  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://gideonabochie.org/admin/agents.html">Go to Command Center</a></p></body></html>`;
+  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://studio.gabochie.com/admin/agents.html">Go to Command Center</a></p></body></html>`;
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -36,7 +36,7 @@ export async function onRequest(context) {
     const tx_ref = formData.get('tx_ref') || '';
     const amount = parseFloat(formData.get('amount')) || 0;
     const db = env.DB;
-    const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
+    const notify = env.NOTIFY_EMAIL || 'gid@gabochie.com';
     if (db && email) {
       await db.prepare(
         `INSERT INTO bookings (name, email, company, ad_type, message, status, payment_tx_ref, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`

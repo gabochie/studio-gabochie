@@ -75,8 +75,8 @@ export async function onRequest(context) {
         ? 'You are an outreach specialist for GideonAbochie Studio. Write warm, personal WhatsApp messages. Keep it under 300 characters. No HTML. No formatting.'
         : 'You are an outreach specialist for GideonAbochie Studio — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
       var userPrompt = isWhatsApp
-        ? 'Write a WhatsApp re-engagement message for segment: ' + segmentLabel + '. The message should sound personal, remind them of our mission (creativity, love, wisdom), and include a CTA to visit gideonabochie.org. Wrap subject in SUBJECT: and body in BODY:.'
-        : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — GideonAbochie Studio') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit gideonabochie.org/school/. Wrap subject in SUBJECT: and body in BODY:.';
+        ? 'Write a WhatsApp re-engagement message for segment: ' + segmentLabel + '. The message should sound personal, remind them of our mission (creativity, love, wisdom), and include a CTA to visit studio.gabochie.com. Wrap subject in SUBJECT: and body in BODY:.'
+        : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — GideonAbochie Studio') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit studio.gabochie.com/school/. Wrap subject in SUBJECT: and body in BODY:.';
 
       var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.7, max_tokens: 800 });
 
@@ -150,7 +150,7 @@ export async function onRequest(context) {
         recentDonations: (donations.results || []).map(function(d) { return 'GHS ' + (d.amount || 0) + ' on ' + (d.created_at || ''); }),
       };
 
-      var systemPrompt = 'You are a content recommendation engine. Recommend 3 specific pages from gideonabochie.org based on user activity. Output JSON only.';
+      var systemPrompt = 'You are a content recommendation engine. Recommend 3 specific pages from studio.gabochie.com based on user activity. Output JSON only.';
       var userPrompt = 'User profile: ' + JSON.stringify(profile) + '\n\nAvailable content: /school/ (programs), /books/ (books), /campaigns/1-million-systems-thinkers (campaign), /membership/ (membership), /support/ (support), /content/ (articles), /school/guitar/ (guitar course), /manifesto/ (manifesto)\n\nRespond with: { "recommendations": [{"page": "url", "reason": "why this fits"}] }';
 
       var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 800 });

@@ -101,7 +101,7 @@ export async function onRequest(context) {
     // Mark guitar course enrollment
     if (event === 'charge.completed' && tx_ref.startsWith('guitar_')) {
       try {
-        await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://gideonabochie.org/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">GideonAbochie Studio — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
+        await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">GideonAbochie Studio — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
       } catch (_) {}
     }
 
@@ -137,14 +137,14 @@ export async function onRequest(context) {
           <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Transaction</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${tx_ref}</td></tr>
           <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">GHS ${verifiedAmount.toFixed(2)}</td></tr>
           </table>
-          <a href="https://gideonabochie.org/books/download?tx_ref=${tx_ref}" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Download Your Books</a>
+          <a href="https://studio.gabochie.com/books/download?tx_ref=${tx_ref}" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Download Your Books</a>
           <p style="color:#64748B;font-size:12px;line-height:1.6;margin:24px 0 0">This download link is unique to your purchase. Do not share it.</p>
           </td></tr></table></td></tr></table></body></html>`;
           await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
               to: [{ email: bEmail, name: bName }],
               subject: 'Your Books Are Ready — GideonAbochie Studio',
               htmlContent: downloadHtml
@@ -180,14 +180,14 @@ export async function onRequest(context) {
               '<tr><td style="padding:32px">' +
               '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + upgEnrollment.student_name + ',</p>' +
               '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your full access to <strong style="color:#C9A84C">' + upgEnrollment.title + '</strong> is now active. Start learning at your own pace.</p>' +
-              '<a href="https://gideonabochie.org/dashboard/?token=' + upgEnrollment.access_token + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
+              '<a href="https://studio.gabochie.com/dashboard/?token=' + upgEnrollment.access_token + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
               '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
               '</td></tr></table></td></tr></table></body></html>';
             await fetch('https://api.brevo.com/v3/smtp/email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
               body: JSON.stringify({
-                sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+                sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
                 to: [{ email: donor_email, name: upgEnrollment.student_name }],
                 subject: 'Full Access Activated — ' + upgEnrollment.title,
                 htmlContent: upgHtml
@@ -222,14 +222,14 @@ export async function onRequest(context) {
                 '<tr><td style="padding:32px">' +
                 '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (membUser.name || donor_name) + ',</p>' +
                 '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + (membTier === 'vip' ? 'VIP' : 'Premium') + '</strong> membership is now active. Enjoy full access to all courses, resources, and features.</p>' +
-                '<a href="https://gideonabochie.org/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
+                '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
                 '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
                 '</td></tr></table></td></tr></table></body></html>';
               await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
                 body: JSON.stringify({
-                  sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+                  sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
                   to: [{ email: donor_email, name: membUser.name || donor_name }],
                   subject: 'Welcome to ' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership',
                   htmlContent: membHtml
@@ -278,13 +278,13 @@ export async function onRequest(context) {
           <li>Your recurring payment will be processed automatically each period</li>
           <li>You can cancel or change your plan anytime by replying to this email</li>
           </ul>
-          <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a></p>
+          <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
           </td></tr></table></td></tr></table></body></html>`;
           await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
               to: [{ email: donor_email, name: donor_name }],
               subject: 'Welcome to the ' + tierName + ' Tier — GideonAbochie Studio',
               htmlContent: welcomeHtml
@@ -321,14 +321,14 @@ export async function onRequest(context) {
               '<tr><td style="padding:32px">' +
               '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (tierUser ? tierUser.name : (tierSub.name || donor_name)) + ',</p>' +
               '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + displayName + '</strong> tier is now active. Thank you for supporting the mission.</p>' +
-              '<a href="https://gideonabochie.org/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
+              '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
               '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">GideonAbochie Studio &mdash; Accra, Ghana</p>' +
               '</td></tr></table></td></tr></table></body></html>';
             await fetch('https://api.brevo.com/v3/smtp/email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
               body: JSON.stringify({
-                sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+                sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
                 to: [{ email: donor_email, name: tierUser ? tierUser.name : (tierSub.name || donor_name) }],
                 subject: 'Welcome to the ' + displayName + ' Tier — GideonAbochie Studio',
                 htmlContent: tierHtml
@@ -396,7 +396,7 @@ export async function onRequest(context) {
           var deliverySection = isPhysical
             ? '<p style="color:#1E293B;font-size:14px;line-height:1.6;margin:0 0 8px">We\'ll ship your order to <strong style="color:#C9A84C">' + shipCity + ', ' + shipRegion + '</strong>.</p>' +
               '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">You\'ll receive a tracking update once dispatched. Delivery typically takes 1-3 business days within Accra, 3-7 days upcountry.</p>'
-            : '<a href="https://gideonabochie.org/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
+            : '<a href="https://studio.gabochie.com/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
               '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">Your download link is unique to this purchase. Do not share it.</p>';
           var receiptHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
             '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
@@ -418,7 +418,7 @@ export async function onRequest(context) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+              sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
               to: [{ email: donor_email, name: donor_name }],
               subject: 'Purchase Confirmed — GideonAbochie Studio',
               htmlContent: receiptHtml
@@ -437,7 +437,7 @@ export async function onRequest(context) {
       }
       try {
         const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-        const invLink = invNum ? '<p style="margin:12px 0 0"><a href="https://gideonabochie.org/api/invoices/' + invNum + '?token=' + invNum + '" style="color:#C9A84C;text-decoration:underline;font-size:13px">View Invoice &rsaquo;</a></p>' : '';
+        const invLink = invNum ? '<p style="margin:12px 0 0"><a href="https://studio.gabochie.com/api/invoices/' + invNum + '?token=' + invNum + '" style="color:#C9A84C;text-decoration:underline;font-size:13px">View Invoice &rsaquo;</a></p>' : '';
         const receiptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
         <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
         <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -457,14 +457,14 @@ export async function onRequest(context) {
         </table>
         <p style="color:#64748B;font-size:12px;line-height:1.6;margin:0 0 6px">This receipt was issued automatically. Keep it for your records.</p>
         ${invLink}
-        <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:info@gideonabochie.com" style="color:#C9A84C">info@gideonabochie.com</a></p>
+        <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">GideonAbochie Studio &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
         </td></tr></table></td></tr></table></body></html>`;
 
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
             to: [{ email: donor_email, name: donor_name }],
             subject: 'Your Donation Receipt — GideonAbochie Studio',
             htmlContent: receiptHtml

@@ -83,7 +83,7 @@ function doLogin(e) {
     .then(function(d) {
       if (d.status === 'ok') {
         msg.className = 'form-msg success'; msg.textContent = 'Logged in! Redirecting\u2026';
-        document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gideonabochie.org; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+        document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
         var redirect = getParam('redirect') || '/member/';
         setTimeout(function() { window.location.href = redirect; }, 500);
       } else {

@@ -5,7 +5,7 @@ export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent)
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
       body: JSON.stringify({
-        sender: { name: 'Gideon Abochie', email: 'newsletter@gideonabochie.org' },
+        sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
         to: [{ email: toEmail, name: toName || '' }],
         subject,
         htmlContent
@@ -48,7 +48,7 @@ export const welcomeImmediate = (name, code) => `<!DOCTYPE html><html><body styl
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">Every week, you will receive essays on creativity, love, wisdom, and the future of learning — plus curated news from Ghana and the diaspora.</p>
       <div style="background:#0A1628;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px">
         <p style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#C9A84C;margin:0 0 8px;text-transform:uppercase;letter-spacing:.15em">Your Referral Link</p>
-        <p style="font-family:'Courier Prime',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://news.gideonabochie.org/?ref=${code}</p>
+        <p style="font-family:'Courier Prime',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://news.gabochie.com/?ref=${code}</p>
       </div>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Share your referral link to earn free ad space. Refer 3 friends → Footer Banner ad. Refer 10 → Leaderboard ad. Refer 50 → Premium Package. Full details in your dashboard.</p>
     </td></tr>
@@ -68,9 +68,9 @@ export const welcomeFollowup = (name) => `<!DOCTYPE html><html><body style="font
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">By now you have received your first issue of The Studio Weekly. I hope it blessed you as much as it blessed me to write it.</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">I want to personally invite you to explore the <strong>GideonAbochie School</strong> — a growing library of courses designed to help you think in systems, design with purpose, and lead with wisdom.</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/school/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Explore the School</a>
+        <a href="https://studio.gabochie.com/school/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Explore the School</a>
       </div>
-      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">P.S. You can also support this mission by <a href="https://gideonabochie.org/#give" style="color:#C9A84C">making a donation</a> or <a href="https://gideonabochie.org/newsletter/advertise.html" style="color:#C9A84C">sponsoring the newsletter</a>.</p>
+      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">P.S. You can also support this mission by <a href="https://studio.gabochie.com/#give" style="color:#C9A84C">making a donation</a> or <a href="https://studio.gabochie.com/newsletter/advertise.html" style="color:#C9A84C">sponsoring the newsletter</a>.</p>
     </td></tr>
     <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
       <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">GideonAbochie Studio &mdash; Accra, Ghana</p>
@@ -88,7 +88,7 @@ export const manifestoFollowup = (name, book, email, slug) => `<!DOCTYPE html><h
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">A few days ago you downloaded <strong>${book || 'one of my books'}</strong>. I hope it is already reshaping how you see your work, your faith, and your world.</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">If you have not had a chance to read it yet, here is the download link again:</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/api/books/serve?slug=${slug || 'the-bible-as-kingdom-os'}&email=${encodeURIComponent(email || '')}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Download Again</a>
+        <a href="https://studio.gabochie.com/api/books/serve?slug=${slug || 'the-bible-as-kingdom-os'}&email=${encodeURIComponent(email || '')}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Download Again</a>
       </div>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">And if you enjoy it, would you consider leaving a review or sharing it with a friend? Word of mouth is how this mission grows.</p>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Warmly,<br>Gideon Abochie</p>
@@ -135,7 +135,7 @@ export const donationImpactFollowup = (name) => `<!DOCTYPE html><html><body styl
       </ul>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">You are not just a donor. You are a co-laborer in this mission. Thank you.</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/#impact" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:12px 28px;border-radius:6px">See Our Impact</a>
+        <a href="https://studio.gabochie.com/#impact" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:12px 28px;border-radius:6px">See Our Impact</a>
       </div>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Gideon Abochie</p>
     </td></tr>
@@ -180,7 +180,7 @@ export const abandonedDonationReminder = (name) => `<!DOCTYPE html><html><body s
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">I noticed you started a donation to GideonAbochie Studio but didn't complete it. No pressure — but if you felt a nudge to give, it might be worth revisiting.</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Your support helps us create free books, courses, and resources that reach thousands across Ghana and beyond. Every gift, no matter the size, makes a real difference.</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/#give" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Complete Your Donation</a>
+        <a href="https://studio.gabochie.com/#give" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Complete Your Donation</a>
       </div>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Warmly,<br>Gideon Abochie</p>
     </td></tr>
@@ -224,7 +224,7 @@ export const waitlistConfirmation = (name, programTitle) => `<!DOCTYPE html><htm
         <li>Early waitlist members get priority access and any launch discounts</li>
         <li>You will receive occasional updates on the programs progress</li>
       </ul>
-      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">In the meantime, feel free to explore the <a href="https://gideonabochie.org/school/" style="color:#C9A84C">GideonAbochie School</a> for existing courses and resources.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">In the meantime, feel free to explore the <a href="https://studio.gabochie.com/school/" style="color:#C9A84C">GideonAbochie School</a> for existing courses and resources.</p>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Warmly,<br>Gideon Abochie</p>
     </td></tr>
     <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
@@ -243,9 +243,9 @@ export const bookUpsell = (name) => `<!DOCTYPE html><html><body style="font-fami
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Thank you for your recent book purchase. I hope the content is already reshaping how you see your work and your world.</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Did you know you can get the <strong>complete premium bundle</strong> — all my published works — for just <strong>GH¢300</strong>? That is the most affordable way to build your library.</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="https://gideonabochie.org/books/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Explore the Bundle</a>
+        <a href="https://studio.gabochie.com/books/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Explore the Bundle</a>
       </div>
-      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">You can also support the mission by <a href="https://gideonabochie.org/support/" style="color:#C9A84C">becoming a monthly supporter</a>.</p>
+      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">You can also support the mission by <a href="https://studio.gabochie.com/support/" style="color:#C9A84C">becoming a monthly supporter</a>.</p>
     </td></tr>
     <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
       <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">GideonAbochie Studio &mdash; Accra, Ghana</p>

@@ -235,7 +235,7 @@ jobs:
           FAILED=$(echo "$TOTAL" | node -e "let d=[];process.stdin.on('data',c=>d.push(c));process.stdin.on('end',()=>{try{console.log(JSON.parse(d.join('')).tests_failed||0)}catch(e){console.log(0)}})")
           STATUS="${{ needs.test-unit.result }}"
           if [ "$STATUS" = "success" ]; then STATUS="success"; else STATUS="failure"; fi
-          curl -s -X POST 'https://gideonabochie.org/api/admin/ci/status' \
+          curl -s -X POST 'https://studio.gabochie.com/api/admin/ci/status' \
             -H 'Content-Type: application/json' \
             -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
             -d "$(cat <<EOF
@@ -274,7 +274,7 @@ jobs:
       - name: Trigger QA scan
         run: |
           sleep 10
-          curl -s -X POST 'https://gideonabochie.org/admin/api/qa/scan' \
+          curl -s -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
             -H 'Content-Type: application/json' \
             -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
             -d '{"trigger":"deploy"}' || echo "QA scan trigger failed (non-fatal)"
@@ -286,7 +286,7 @@ jobs:
     steps:
       - name: Trigger QA scan
         run: |
-          curl -s -X POST 'https://gideonabochie.org/admin/api/qa/scan' \
+          curl -s -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
             -H 'Content-Type: application/json' \
             -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
             -d '{"trigger":"cron"}'

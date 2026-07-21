@@ -16,7 +16,7 @@ export async function onRequest(context) {
       await env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run();
     }
     return new Response(JSON.stringify({ status: 'ok' }), {
-      headers: Object.assign({ 'Content-Type': 'application/json', 'Set-Cookie': 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org; HttpOnly; Secure; SameSite=Lax' }, cors)
+      headers: Object.assign({ 'Content-Type': 'application/json', 'Set-Cookie': 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gabochie.com; HttpOnly; Secure; SameSite=Lax' }, cors)
     });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'ok' }), {

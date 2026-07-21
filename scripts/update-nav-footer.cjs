@@ -79,7 +79,7 @@ function updateFooter(html) {
   var contactCol =
     '    <div>\n' +
     '      <h4>Contact</h4>\n' +
-    '      <a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a>\n' +
+    '      <a href="mailto:studio@gabochie.com">studio@gabochie.com</a>\n' +
     '      <a href="tel:+233243262019">+233 243 262 019</a>\n' +
     '    </div>';
 

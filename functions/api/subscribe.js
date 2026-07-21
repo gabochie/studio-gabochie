@@ -90,14 +90,14 @@ export async function onRequest(context) {
         if (phone) {
           await env.DB.prepare("UPDATE subscribers SET phone = ? WHERE email = ?").bind(phone, email).run();
         }
-        confirmUrl = 'https://gideonabochie.org/api/subscribe/confirm?token=' + existing.confirm_token;
+        confirmUrl = 'https://studio.gabochie.com/api/subscribe/confirm?token=' + existing.confirm_token;
         if (env.BREVO_API_KEY) {
           try {
             await fetch('https://api.brevo.com/v3/smtp/email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
               body: JSON.stringify({
-                sender: { name: 'Gideon Abochie', email: 'newsletter@gideonabochie.org' },
+                sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
                 to: [{ email: email, name: name || existing.name || '' }],
                 subject: 'Please confirm your subscription',
                 htmlContent: confirmSubscription(name || existing.name, confirmUrl)
@@ -167,14 +167,14 @@ export async function onRequest(context) {
     }
 
     // Send confirmation email
-    confirmUrl = 'https://gideonabochie.org/api/subscribe/confirm?token=' + confirmToken;
+    confirmUrl = 'https://studio.gabochie.com/api/subscribe/confirm?token=' + confirmToken;
     if (env.BREVO_API_KEY) {
       try {
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'Gideon Abochie', email: 'newsletter@gideonabochie.org' },
+            sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
             to: [{ email: email, name: name || '' }],
             subject: 'Please confirm your subscription',
             htmlContent: confirmSubscription(name, confirmUrl)

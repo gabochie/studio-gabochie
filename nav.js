@@ -36,7 +36,7 @@
     '<a href="/school/">Courses</a>' +
     '<a href="/guitar/">Guitar</a>' +
     '<a href="/survey/">Survey</a>' +
-    '<a href="https://news.gideonabochie.org/">The Studio Weekly</a>' +
+    '<a href="https://news.gabochie.com/">The Studio Weekly</a>' +
     '<a href="/support/">Sponsor the Newsletter</a>' +
     '<a href="/partners/">Partners</a>' +
     '<a href="/services/">Services</a>' +
@@ -65,7 +65,7 @@
     '<div>' +
     '<h4>Contact</h4>' +
     '<a href="/contact/">Contact Us</a>' +
-    '<a href="mailto:info@gideonabochie.com">info@gideonabochie.com</a>' +
+    '<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>' +
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
     '<h4 style="margin-top:16px">Legal</h4>' +
     '<a href="/legal/privacy.html">Privacy Policy</a>' +
@@ -149,7 +149,7 @@
       navigator.sendBeacon('/api/auth/logout', JSON.stringify({ token: token }));
     }
     clearSession();
-    document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org';
+    document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gabochie.com';
     window.location.href = '/';
   };
   if (document.readyState === 'loading') {

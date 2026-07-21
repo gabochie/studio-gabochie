@@ -47,8 +47,8 @@ textarea{resize:vertical;min-height:80px}
 <body>
 
 <div class="brand-header">
-  <a href="https://gideonabochie.org">
-    <img src="https://gideonabochie.org/assets/images/logo.png" alt="GideonAbochie Studio">
+  <a href="https://studio.gabochie.com">
+    <img src="https://studio.gabochie.com/assets/images/logo.png" alt="GideonAbochie Studio">
     <span class="brand-name">GideonAbochie <em>Studio</em></span>
   </a>
   <span class="brand-tag">The Studio Weekly</span>
@@ -161,7 +161,7 @@ function submitListing(e) {
     return;
   }
 
-  fetch('https://gideonabochie.org/api/classifieds', {
+  fetch('https://studio.gabochie.com/api/classifieds', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title: title, description: description, category: category, price: price, contact_name: contact_name, contact_email: contact_email, contact_phone: contact_phone, location: location, website: website })

@@ -1,4 +1,4 @@
-# Deploy to gideonabochie.org
+# Deploy to studio.gabochie.com
 
 This project requires **Cloudflare Pages with Functions and D1** — it is NOT a static site.
 Netlify and GitHub Pages will NOT work (they don't support D1 or Cloudflare Functions).
@@ -120,7 +120,7 @@ To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 ## Step 7: Custom Domain
 
 1. In Cloudflare Pages → your project → **Custom domains**
-2. Click **Set up a custom domain** → enter `gideonabochie.org`
+2. Click **Set up a custom domain** → enter `studio.gabochie.com`
 3. Follow DNS instructions (add CNAME or update nameservers)
 4. Cloudflare auto-provisions SSL — site is served over HTTPS
 

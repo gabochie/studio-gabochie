@@ -13,7 +13,7 @@ export async function onRequest(context) {
     if (authErr) return authErr;
   }
 
-  var SITE_URL = 'https://gideonabochie.org';
+  var SITE_URL = 'https://studio.gabochie.com';
   var MAX_PAGES = 50;
 
   try {

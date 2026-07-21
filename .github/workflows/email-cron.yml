@@ -12,12 +12,12 @@ jobs:
     steps:
       - name: Run email cron endpoint
         run: |
-          curl -s -X GET 'https://gideonabochie.org/api/email/cron?secret=${{ secrets.CRON_SECRET }}' \
+          curl -s -X GET 'https://studio.gabochie.com/api/email/cron?secret=${{ secrets.CRON_SECRET }}' \
             -H 'Accept: application/json' || echo "Email cron call failed"
 
       - name: Process agent queue (cold outreach, analytics, fulfillment)
         run: |
-          curl -s -X POST 'https://gideonabochie.org/api/agents/orchestrate' \
+          curl -s -X POST 'https://studio.gabochie.com/api/agents/orchestrate' \
             -H 'Content-Type: application/json' \
             -H 'X-Agent-Auth: ${{ secrets.AGENT_AUTH_KEY }}' \
             -d '{"max_items":3}' || echo "Orchestrator call failed"

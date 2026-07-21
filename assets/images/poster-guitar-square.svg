@@ -32,7 +32,7 @@
   <rect x="0" y="0" width="1080" height="170" fill="rgba(201,168,76,0.04)"/>
 
   <!-- Logo (large and bold) -->
-  <image x="315" y="30" width="450" height="120" xlink:href="https://gideonabochie.org/assets/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
+  <image x="315" y="30" width="450" height="120" xlink:href="https://studio.gabochie.com/assets/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
 
   <!-- Brand name -->
   <text x="540" y="160" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="16" font-weight="700" fill="#C9A84C" text-anchor="middle" letter-spacing="8" text-transform="uppercase">GIDEONABOCHIE STUDIO</text>
@@ -82,7 +82,7 @@
   <text x="540" y="929" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="30" font-weight="700" fill="#0A1628" text-anchor="middle" letter-spacing="4">ENROLL NOW — LIMITED SPOTS</text>
 
   <!-- URL -->
-  <text x="540" y="992" font-family="'Courier New',monospace" font-size="16" fill="#6B7F9A" text-anchor="middle">gideonabochie.org/school/guitar/buy</text>
+  <text x="540" y="992" font-family="'Courier New',monospace" font-size="16" fill="#6B7F9A" text-anchor="middle">studio.gabochie.com/school/guitar/buy</text>
 
   <!-- Payment icons text -->
   <text x="540" y="1035" font-family="'DM Sans',sans-serif" font-size="14" fill="#4A5F7A" text-anchor="middle">Pay via Mobile Money  &middot;  Card  &middot;  Flutterwave</text>

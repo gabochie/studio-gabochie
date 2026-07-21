@@ -39,7 +39,7 @@ export async function onRequest(context) {
       'UPDATE students SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?'
     ).bind(resetToken, expiresAt, student.id).run();
     if (env.BREVO_API_KEY) {
-      var resetUrl = 'https://gideonabochie.org/dashboard/reset-code.html?token=' + resetToken + '&email=' + encodeURIComponent(email);
+      var resetUrl = 'https://studio.gabochie.com/dashboard/reset-code.html?token=' + resetToken + '&email=' + encodeURIComponent(email);
       var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
         '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
         '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
@@ -63,7 +63,7 @@ export async function onRequest(context) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
             to: [{ email: email, name: student.name || '' }],
             subject: 'Reset Your Access Code — GideonAbochie Studio',
             htmlContent: html

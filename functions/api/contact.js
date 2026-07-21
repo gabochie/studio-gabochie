@@ -10,7 +10,7 @@ const notifyHtml = (name, email, msg, source) => `<!DOCTYPE html><html><body sty
     <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Source:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${source}</td></tr>
     ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${msg}</td></tr>` : ''}
   </table>
-  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://gideonabochie.org/admin/agents.html">Go to Command Center</a></p></body></html>`;
+  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://studio.gabochie.com/admin/agents.html">Go to Command Center</a></p></body></html>`;
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -65,7 +65,7 @@ export async function onRequest(context) {
       });
     }
     const db = env.DB;
-    const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
+    const notify = env.NOTIFY_EMAIL || 'gid@gabochie.com';
     if (db && email) {
       await db.prepare(
         `INSERT OR IGNORE INTO subscribers (name, email, source, book, phone) VALUES (?, ?, ?, ?, ?)`

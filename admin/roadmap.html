@@ -174,7 +174,7 @@
 
 <!-- HEADER -->
 <h1 class="page-title">Strategic <span>ToDo List</span></h1>
-<p class="page-desc">School of Creativity, Love &amp; Wisdom — gideonabochie.org &middot; <strong style="color:var(--text-muted)">Infrastructure:</strong> Cloudflare Pages → Workers + D1 (free tier) → VPS (when revenue scales)</p>
+<p class="page-desc">School of Creativity, Love &amp; Wisdom — studio.gabochie.com &middot; <strong style="color:var(--text-muted)">Infrastructure:</strong> Cloudflare Pages → Workers + D1 (free tier) → VPS (when revenue scales)</p>
 
 <!-- OVERVIEW -->
 <div class="overview" id="overview"></div>
@@ -306,7 +306,7 @@ var DATA = {
           "launch": [{"label":"Cloudflare Dashboard","url":"https://dash.cloudflare.com"},{"label":"DEPLOY.md","url":"../DEPLOY.md","local":true}],
           "items": [
             "Upload gideonabochie-org/ folder to Cloudflare Pages ✓",
-            "Set custom domain: gideonabochie.org ✓",
+            "Set custom domain: studio.gabochie.com ✓",
             "Add CNAME DNS record to Cloudflare ✓",
             "Verify HTTPS + test all pages ✓"
           ]
@@ -315,9 +315,9 @@ var DATA = {
           "id": "1.5",
           "task": "Custom domain & HTTPS",
           "status": "verified",
-          "launch": [{"label":"Live site","url":"https://gideonabochie.org"},{"label":"Cloudflare DNS","url":"https://dash.cloudflare.com"}],
+          "launch": [{"label":"Live site","url":"https://studio.gabochie.com"},{"label":"Cloudflare DNS","url":"https://dash.cloudflare.com"}],
           "items": [
-            "gideonabochie.org resolves with valid HTTPS ✓",
+            "studio.gabochie.com resolves with valid HTTPS ✓",
             "Root domain redirects to www (or apex preferred) ✓"
           ]
         },
@@ -371,7 +371,7 @@ var DATA = {
         }
       ],
       "acceptance_criteria": [
-        "All pages load via https://gideonabochie.org",
+        "All pages load via https://studio.gabochie.com",
         "Nav links work on all pages",
         "Donation buttons open correct payment pages",
         "Social links resolve correctly",
@@ -771,7 +771,7 @@ var DATA = {
             "&#10003; _headers and _redirects configured for SEO",
             "Submit sitemap to Google Search Console and verify domain ownership",
             "Submit sitemap to Bing Webmaster Tools",
-            "Register gideonabochie.org in Yandex Webmaster",
+            "Register studio.gabochie.com in Yandex Webmaster",
             "Validate all JSON-LD with Google Rich Results Test (no errors)",
             "Run technical SEO crawl and fix broken links, redirects, duplicate content",
             "Check page speed / Core Web Vitals on every page template (Lighthouse)",
@@ -1193,7 +1193,7 @@ var DATA = {
           "id": "10.8",
           "task": "Redirects & URL routing work",
           "status": "pending",
-          "launch": [{"label":"_redirects","url":"../_redirects","local":true},{"label":"Redirect check","url":"https://gideonabochie.org/privacy","local":true}],
+          "launch": [{"label":"_redirects","url":"../_redirects","local":true},{"label":"Redirect check","url":"https://studio.gabochie.com/privacy","local":true}],
           "items": [
             "/privacy redirects to /legal/privacy/",
             "/terms redirects to /legal/terms/",
@@ -1827,8 +1827,8 @@ var CHECKS = {
     {i:6, label:"Lead form submits (Formspree)", check:function(){return checkPageContains("../index.html","xgoplkoe")}}
   ],
   "1.5": [ // Custom domain
-    {i:0, label:"gideonabochie.org resolves", check:function(){return checkPageExists("https://gideonabochie.org/")}},
-    {i:1, label:"HTTPS cert active", check:function(){return checkSecure("https://gideonabochie.org/")}}
+    {i:0, label:"studio.gabochie.com resolves", check:function(){return checkPageExists("https://studio.gabochie.com/")}},
+    {i:1, label:"HTTPS cert active", check:function(){return checkSecure("https://studio.gabochie.com/")}}
   ],
   "1.6": [ // Cloudflare Access
     {i:0, label:"Admin redirects to Access login", check:function(){return checkAccessGate("../admin/")}},
@@ -1942,7 +1942,7 @@ var CHECKS = {
     {i:6, label:"Partners 200", check:function(){return checkPageExists("../partners/index.html")}},
     {i:7, label:"Press 200", check:function(){return checkPageExists("../press/index.html")}},
     {i:8, label:"Nationbuilding 200", check:function(){return checkPageExists("../nationbuilding/index.html")}},
-    {i:9, label:"Newsletter subdomain", check:function(){return checkPageExists("https://news.gideonabochie.org/")}},
+    {i:9, label:"Newsletter subdomain", check:function(){return checkPageExists("https://news.gabochie.com/")}},
     {i:10, label:"404 custom page", check:function(){return checkPageContains("../404.html","gideonabochie")}}
   ],
   "10.2": [

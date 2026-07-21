@@ -1,7 +1,7 @@
 {
-  "project": "GideonAbochie Studio — gideonabochie.org",
+  "project": "GideonAbochie Studio — studio.gabochie.com",
   "tagline": "School of Creativity, Love & Wisdom",
-  "domain": "https://gideonabochie.org",
+  "domain": "https://studio.gabochie.com",
   "infrastructure_plan": "Cloudflare Pages (static) → Cloudflare Workers + D1 (serverless backend, free tier) → VPS (scale when revenue justifies)",
   "phases": [
     {
@@ -192,7 +192,7 @@
         {"id": 9.2, "task": "Fix nationbuilding resource links", "status": "done", "items": ["Replace fake Google Drive links with real official URLs", "Link 2 now points to MoYS policies page", "Link 3 now points to NCCE official site"]},
         {"id": 9.3, "task": "Make Systems Thinking program enrollable", "status": "done", "items": ["Changed status from coming_soon to active in D1", "Enrollment flow works end-to-end", "Sample and full content renders correctly"]},
         {"id": 9.4, "task": "Replace prompt() dialogs with proper modals", "status": "done", "items": ["Shared modal component (showStoreModal) created in main.js", "showStoreModal used on art/index.html (showStoreModal+buyArtItem)", "showStoreModal used on merch/index.html (showStoreModal+buyMerchItem)", "showStoreModal used on music/index.html (via download callback)"]},
-        {"id": 9.5, "task": "Add newsletter public archive", "status": "done", "items": ["Created /news/archive.html for public archive", "Archive page renders on news.gideonabochie.org/archive", "Shows placeholder until issues published"]},
+        {"id": 9.5, "task": "Add newsletter public archive", "status": "done", "items": ["Created /news/archive.html for public archive", "Archive page renders on news.gabochie.com/archive", "Shows placeholder until issues published"]},
         {"id": 9.6, "task": "Create music store page with streaming links", "status": "done", "items": ["Created music/index.html with album catalog", "Streaming links for Spotify/Apple/YouTube per album", "Download option with placeholder (ready for real files)"]},
         {"id": 9.7, "task": "Create art store page with real inventory", "status": "done", "items": ["Created art/index.html with artwork catalog", "Real titles, mediums, and prices", "Buy button triggers showStoreModal + FlutterwaveCheckout"]},
         {"id": 9.8, "task": "Add merch size selection logic", "status": "done", "items": ["Created merch/index.html with size selector (S/M/L/XL)", "Selected size tracked in JS and passed to Flutterwave metadata", "Active chip highlighted with gold background"]},

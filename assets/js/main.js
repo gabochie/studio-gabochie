@@ -197,7 +197,7 @@ function logoutUser(e) {
     navigator.sendBeacon('/api/auth/logout', JSON.stringify({ token: token }));
   }
   clearSession();
-  document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gideonabochie.org';
+  document.cookie = 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gabochie.com';
   window.location.href = '/';
 }
 

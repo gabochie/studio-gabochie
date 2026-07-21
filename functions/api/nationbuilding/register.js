@@ -55,7 +55,7 @@ export async function onRequest(context) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gideonabochie.org' },
+            sender: { name: 'GideonAbochie Studio', email: 'newsletter@gabochie.com' },
             to: [{ email: email, name: name }],
             subject: 'Welcome to the Nationbuilding Program — GideonAbochie Studio',
             htmlContent: emailHtml

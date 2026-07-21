@@ -13,7 +13,7 @@ const notifyHtml = (service, name, email, phone, company, budget, timeline, desc
     <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Referral:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${referral || '—'}</td></tr>
     ${description ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Description:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${description}</td></tr>` : ''}
   </table>
-  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://gideonabochie.org/admin/services.html">Manage Inquiries</a></p></body></html>`;
+  <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://studio.gabochie.com/admin/services.html">Manage Inquiries</a></p></body></html>`;
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -45,7 +45,7 @@ export async function onRequest(context) {
       });
     }
     const db = env.DB;
-    const notify = env.NOTIFY_EMAIL || 'gid@gideonabochie.com';
+    const notify = env.NOTIFY_EMAIL || 'gid@gabochie.com';
     if (db) {
       await db.prepare(
         `INSERT INTO service_inquiries (service, name, email, phone, company, budget, timeline, description, referral, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')`

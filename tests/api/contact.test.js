@@ -31,9 +31,9 @@ describe('POST /api/contact', function () {
           contacts: [],
         }),
         BREVO_SMTP_KEY: 'smtp-key',
-        BREVO_SMTP_SENDER: 'info@gideonabochie.com',
+        BREVO_SMTP_SENDER: 'studio@gabochie.com',
         BREVO_SMTP_LOGIN: 'login',
-        CONTACT_TO: 'info@gideonabochie.com',
+        CONTACT_TO: 'studio@gabochie.com',
       },
     });
   });

@@ -116,7 +116,7 @@ function doRegister(e) {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.status === 'ok') {
-        document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gideonabochie.org; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+        document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('successCard').style.display = 'block';
         document.querySelector('.alt-link').style.display = 'none';

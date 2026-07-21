@@ -75,7 +75,7 @@ export async function onRequest(context) {
   const path = url.pathname;
   const host = request.headers.get('Host') || '';
 
-  var isNews = host === 'news.gideonabochie.org' || host.startsWith('news.');
+  var isNews = host === 'news.gabochie.com' || host.startsWith('news.');
 
   // Only gate these paths (require login)
   var gatedPaths = ['/dashboard/', '/admin/'];
@@ -151,7 +151,7 @@ export async function onRequest(context) {
 
   // CSRF protection: reject cross-origin mutating requests
   var origin = request.headers.get('Origin') || '';
-  if (origin && !origin.includes(url.hostname) && !origin.includes('gideonabochie.org')) {
+  if (origin && !origin.includes(url.hostname) && !origin.includes('studio.gabochie.com')) {
     var method = request.method;
     if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
       return new Response(JSON.stringify({ error: 'Forbidden' }), {
