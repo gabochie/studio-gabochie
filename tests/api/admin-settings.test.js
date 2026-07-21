@@ -32,7 +32,7 @@ describe('Preferences - GET', function() {
     var res = await prefsOnRequest(c);
     expect(res.status).toBe(200);
     var data = await res.json();
-    expect(data.preferences.site_name).toBe('GideonAbochie');
+    expect(data.preferences.site_name).toBe('Studio by Gabochie');
     expect(data.preferences.theme).toBe('dark');
   });
 });
