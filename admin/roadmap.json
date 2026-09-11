@@ -302,11 +302,12 @@
           "Standardize GHS+USD dual pricing display on all tiers",
           "Delete dead code paths only after redirects tested"
         ]},
-        {"id": 13.2, "task": "Add international payment rails", "status": "pending", "items": [
-          "Stripe payment intents for books, merch, membership (global cards)",
-          "PayPal Smart Buttons on donate + store",
-          "Fallback to Flutterwave for GHS/Mobile Money — dual-currency checkout",
-          "Webhook parity — one handler normalizes all providers"
+        {"id": 13.2, "task": "Add international payment rails — Moolre + Crypto", "status": "in_progress", "items": [
+          "Moolre hosted payment link (GHS Mobile Money / bank) via /api/gateways/moolre/create",
+          "Crypto via NOWPayments hosted invoice with manual BTC/USDT fallback",
+          "Manual MoMo to 0243 262 019 — admin confirms donations",
+          "Payment-method selector on /donate/ — Flutterwave / Moolre / Crypto / MoMo Pin",
+          "Admin confirm action on /admin/donations for pending manual gifts"
         ]},
         {"id": 13.3, "task": "High-ticket offers", "status": "pending", "items": [
           "Founding Partner tier at $500/yr (currently ~$170 max)",
