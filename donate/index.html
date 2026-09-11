@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="../assets/css/main.css">
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Studio Gabochie Donations","url":"https://studio.gabochie.com/donate/","description":"Support the mission of Studio Gabochie with a donation. Every contribution builds leaders and transforms lives."}
+{"@context":"https://schema.org","@type":"Organization","name":"Studio Gabochie Donations","url":"https://studio.gabochie.com/donate/","description":"Support the mission of Studio Gabochie with a donation. Every contribution builds leaders and transforms lives.","potentialAction":{"@type":"DonateAction","target":{"@type":"EntryPoint","urlTemplate":"https://studio.gabochie.com/donate/","actionPlatform":["http://schema.org/OnlineOnly"]}}}
 </script>
 <style>
 :root{--content-max:1440px}
@@ -333,28 +333,24 @@ function startMonthlySubscription() {
     navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_started', event_data: 'monthly', page: location.pathname, email: email}));
   }
 
-  var tier = { id: 'monthly', name: 'Monthly Supporter', amount: 50, currency: 'GHS', per: '/mo', plan_id: '' };
-
-  fetch('/api/subscription/create', {
+  fetch('/api/tiers/subscribe', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      tier: tier.id,
+      tier: 'supporter',
       name: name,
       email: email,
       phone: phone,
-      amount: tier.amount,
-      currency: tier.currency || 'GHS',
-      plan_id: ''
+      interval: 'monthly'
     })
   }).then(function(r){return r.json()}).then(function(data){
-    if (data.status !== 'ok') throw new Error(data.error || 'Failed to create');
+    if (data.status !== 'ok') throw new Error(data.message || 'Failed to create');
     FlutterwaveCheckout({
       public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
       tx_ref: data.tx_ref,
       amount: data.amount,
       currency: data.currency || 'GHS',
-      payment_plan: undefined,
+      payment_plan: data.is_recurring && data.plan_id ? parseInt(data.plan_id) : undefined,
       payment_options: 'card, mobilemoneyghana, ussd',
       customer: { email: email, name: name, phone: phone },
       customizations: {
@@ -366,7 +362,7 @@ function startMonthlySubscription() {
         if (navigator.sendBeacon) {
           navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_success', event_data: data.tx_ref}));
         }
-        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&tier=monthly';
+        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&tier=supporter';
       },
       onclose: function() {
         if (navigator.sendBeacon) {

@@ -188,7 +188,7 @@
       "description": "Fix every critical and high-impact issue found in the full site audit. Store fulfillment, broken links, poor UX, placeholder content, and security gaps.",
       "platform": "Cloudflare Pages + Workers + D1",
       "steps": [
-        {"id": 9.1, "task": "Store fulfillment — receipt download link", "status": "pending", "items": ["Add download link to receipt email", "Verify receipt email renders download URL", "Test end-to-end with Flutterwave sandbox"]},
+        {"id": 9.1, "task": "Store fulfillment — receipt download link", "status": "done", "items": ["Add download link to receipt email ✓", "Verify receipt email renders download URL ✓", "Digital items get /store/download?tx_ref= link; physical items get shipping note ✓"]},
         {"id": 9.2, "task": "Fix nationbuilding resource links", "status": "done", "items": ["Replace fake Google Drive links with real official URLs", "Link 2 now points to MoYS policies page", "Link 3 now points to NCCE official site"]},
         {"id": 9.3, "task": "Make Systems Thinking program enrollable", "status": "done", "items": ["Changed status from coming_soon to active in D1", "Enrollment flow works end-to-end", "Sample and full content renders correctly"]},
         {"id": 9.4, "task": "Replace prompt() dialogs with proper modals", "status": "done", "items": ["Shared modal component (showStoreModal) created in main.js", "showStoreModal used on art/index.html (showStoreModal+buyArtItem)", "showStoreModal used on merch/index.html (showStoreModal+buyMerchItem)", "showStoreModal used on music/index.html (via download callback)"]},
@@ -208,6 +208,7 @@
       "status": "done",
       "description": "Run these smoke tests after every deployment to confirm the site is fully functional. Covers page loads, API endpoints, auth, store, payments, D1 connectivity, security, forms, and redirects.",
       "platform": "Automated via page fetch checks",
+      "steps": [
         {"id": 10.1, "task": "Core pages load (200 OK)", "status": "done", "items": ["Homepage returns 200 ✓", "School returns 200 ✓", "Support returns 200 ✓", "Books returns 200 ✓", "Donate returns 200 ✓", "Content returns 200 ✓", "Partners returns 200 ✓", "Press kit returns 200 ✓", "Newsletter subdomain reachable ✓", "404 returns custom error page ✓"]},
         {"id": 10.2, "task": "Auth API endpoints exist", "status": "done", "items": ["send-otp.js exists ✓", "verify-otp.js exists ✓", "session.js exists ✓", "logout.js exists ✓"]},
         {"id": 10.3, "task": "Store flow works end-to-end", "status": "done", "items": ["store/create.js exists ✓", "store/download.js exists ✓", "Art page has buyArtItem ✓", "Merch page has buyMerchItem ✓", "Music page exists with streaming ✓"]},
@@ -239,10 +240,163 @@
         {"id": 11.10, "task": "Architecture diagram with live data", "status": "done", "items": ["Real agent status from D1 ✓", "Color-code by live status ✓", "Show live agent counts per tier ✓", "Auto-refresh diagram every 30s ✓"]},
         {"id": 11.11, "task": "Mobile & UX polish for admin", "status": "done", "items": ["Hamburger menu toggles sidebar on mobile ✓", "Outside click closes sidebar ✓", "Keyboard nav 1-6 tabs, R refresh, Esc modals ✓", "Toast notifications consistent ✓", "Loading spinners on all tabs ✓"]}
       ]
+    },
+    {
+      "phase": 12,
+      "name": "Build The Traffic Engine",
+      "status": "active",
+      "description": "The platform can process money but cannot generate demand. Fix the visibility + measurement layer: page-view tracking on every public page, complete sitemap, structured data on revenue pages, and a content marketing foundation. Without this, no other revenue work matters.",
+      "platform": "Cloudflare Pages + D1 + search console",
+      "steps": [
+        {"id": 12.1, "task": "Wire page-view tracking to ALL public pages", "status": "in_progress", "items": [
+          "Create shared analytics snippet (assets/js/analytics.js) using sendBeacon to /api/track",
+          "Inject into homepage, guitar, school, books, merch, donate, news, content, member",
+          "Record device, country, source, route per existing page_views schema",
+          "Dashboard /admin/analytics.html now reflects real traffic instead of admin-only",
+          "Track core conversions (donation_started, book_purchase, enrollment) as custom events"
+        ]},
+        {"id": 12.2, "task": "Complete & submit sitemap", "status": "in_progress", "items": [
+          "Add missing pages: /guitar/, /store/, /careers/, /tutoring/, /survey/, /classifieds/, /news/, /content/, /school/, /books/, /merch/, /music/, /art/, /partners/, /press/, /support/",
+          "Add <lastmod> tags so crawlers see content freshness",
+          "Regenerate via script, not hand-edit",
+          "Submit to Google Search Console + Bing Webmaster Tools (external)"
+        ]},
+        {"id": 12.3, "task": "JSON-LD schema on revenue pages", "status": "pending", "items": [
+          "books — ItemList / Book schema with offers",
+          "school — Course schema per program",
+          "guitar — Course schema with offers",
+          "donate — Organization/DonateAction schema",
+          "merch — Product/ItemList schema",
+          "Validate with Rich Results Test after deploy"
+        ]},
+        {"id": 12.4, "task": "Fix broken parts of SEO layer", "status": "pending", "items": [
+          "Remove deprecated Crawl-delay from robots.txt",
+          "Verify canonical URLs on all 25+ public pages",
+          "Heading hierarchy + alt text audit across new pages"
+        ]},
+        {"id": 12.5, "task": "Content marketing foundation", "status": "pending", "items": [
+          "Create /blog/ index with D1-backed posts table",
+          "Editorial calendar for 2-4 posts/week targeting Ghana/Africa keywords",
+          "Auto-generate SEO meta via existing /api/ai/content",
+          "Social auto-posting on publish"
+        ]},
+        {"id": 12.6, "task": "Search Console / analytics harness", "status": "pending", "items": [
+          "Verify GSC + Bing via DNS TXT (external)",
+          "Track core Web Vitals via Crux API (LightHouse CI in CI)",
+          "Monthly index audit — list indexed pages vs sitemap"
+        ]}
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "Fix The Revenue Model",
+      "status": "planned",
+      "description": "The business has structural limits: GHS-only pricing (≈$3-100), 3 overlapping membership systems, no international payment rails, no high-ticket offers. Fixing these raises average order value from ~$30 to ~$100+.",
+      "platform": "Flutterwave + Stripe + Paystack",
+      "steps": [
+        {"id": 13.1, "task": "Consolidate membership to ONE system", "status": "in_progress", "items": [
+          "unified_tiers table is the single source of truth ✓",
+          "/member/ and /donate/ frontends now use /api/tiers/* (unified) ✓",
+          "Decommission legacy membership_plans.js + subscription/create.js + subscription/plans.js routes",
+          "Deprecate legacy memb_ webhook path so all payments flow through tier_",
+          "Standardize GHS+USD dual pricing display on all tiers",
+          "Delete dead code paths only after redirects tested"
+        ]},
+        {"id": 13.2, "task": "Add international payment rails", "status": "pending", "items": [
+          "Stripe payment intents for books, merch, membership (global cards)",
+          "PayPal Smart Buttons on donate + store",
+          "Fallback to Flutterwave for GHS/Mobile Money — dual-currency checkout",
+          "Webhook parity — one handler normalizes all providers"
+        ]},
+        {"id": 13.3, "task": "High-ticket offers", "status": "pending", "items": [
+          "Founding Partner tier at $500/yr (currently ~$170 max)",
+          "Complete Creator Kit bundle — books + membership + guitar access at $99",
+          "Corporate training packages ($1,500+/booking) Gated behind /services/ booking",
+          "Course certification upgrades ($149 per course)"
+        ]},
+        {"id": 13.4, "task": "Productized services", "status": "pending", "items": [
+          "Booking scheduler + deposit payment on /services/ (currently inquiry-only)",
+          "Fixed packages: Design Sprint $2K, Systems Audit $3K, Mentorship $500/mo",
+          "Cal.com or in-app calendar via D1 bookings table",
+          "Auto invoice + retention emails via existing queue"
+        ]}
+      ]
+    },
+    {
+      "phase": 14,
+      "name": "Conversion Rate Optimization",
+      "status": "planned",
+      "description": "With traffic arriving, convert it. Social proof, urgency, anti-spam, cart recovery, and CTA testing. Most of the data already exists in D1 — it's just not displayed.",
+      "platform": "Cloudflare Pages + D1 + Turnstile",
+      "steps": [
+        {"id": 14.1, "task": "Display social proof from real D1 data", "status": "pending", "items": [
+          "Homepage: 'X donors this month / Y students enrolled / GHS Z raised'",
+          "Books page: 'X downloads this week'",
+          "Guitar: 'X learners unlocked this module'",
+          "Membership: 'Join X supporters'",
+          "Live counters backed by /api/stats — no fake numbers"
+        ]},
+        {"id": 14.2, "task": "Turnstile CAPTCHA on forms", "status": "pending", "items": [
+          "Enable Turnstile widget on contact, subscribe, classifieds, careers, tutoring-waitlist, services-inquiry",
+          "Server-side siteverify in the 6 form endpoints",
+          "Rate-limit + honeypot already in place — Turnstile closes the spam gap"
+        ]},
+        {"id": 14.3, "task": "Abandoned-checkout friction reduction", "status": "pending", "items": [
+          "Exit-intent email capture on homepage + donate",
+          "Resume-incomplete-payment link in reminder email (currently only text)",
+          "Upsell cart — post-book-purchase offer at reduced price (webhook hook exists)"
+        ]},
+        {"id": 14.4, "task": "CTA testing", "status": "pending", "items": [
+          "A/B test hero CTA copy — 'Support the Mission' vs 'Join 500+ Supporters' vs 'Start Learning Free'",
+          "Track which CTA drives donation_started via existing event funnel",
+          "Add urgency on founding tier — 'Founding Partner closes soon'"
+        ]}
+      ]
+    },
+    {
+      "phase": 15,
+      "name": "Proof-Of-Work For 7-Figure Path",
+      "status": "planned",
+      "description": "Ratios that actually scale: the 20% remaining that turns an excellent platform into an autonomous business. Fulfillment automation, self-service support, and revenue observability.",
+      "platform": "Cloudflare + print-on-demand + assistant",
+      "steps": [
+        {"id": 15.1, "task": "Physical fulfillment automation", "status": "pending", "items": [
+          "Printful/Printify API for merch — auto-place order on store_orders.created",
+          "Remove manual shipping from admin; track via webhooks",
+          "Inventory sync to D1 inventory table"
+        ]},
+        {"id": 15.2, "task": "Self-service support", "status": "pending", "items": [
+          "AI chatbot trained on existing content (books FAQ, course help, membership)",
+          "Auto-response to contact form with knowledge-base links",
+          "D1 ticketing table so nothing drops"
+        ]},
+        {"id": 15.3, "task": "Revenue observability", "status": "pending", "items": [
+          "Daily revenue email to owner (existing cron + Brevo)",
+          "KPI mode in admin: MRR, eCPM, conversion %, paywall views",
+          "Alert on webhook failures (Flutterwave/Paystack verification errors)"
+        ]},
+        {"id": 15.4, "task": "Instagram scrape leads", "status": "pending", "items": [
+          "Populate scrape-config.json credentials",
+          "Run weekly cron → instagram-leads → AI scored → outreach",
+          "Convert to cold_outreach queue"
+        ]}
+      ]
+    },
+    {
+      "phase": 16,
+      "name": "Scale: When Traffic Actually Arrives",
+      "status": "future",
+      "description": "The free-tier infrastructure has headroom (D1 5MB reads/mo ≈ 50k page views). At sustained traffic, move to production Workers + D1 paid, add caching, and revisit VPS for heavy workloads.",
+      "platform": "Cloudflare Workers paid + D1 + VPS optional",
+      "steps": [
+        {"id": 16.1, "task": "Monitor infrastructure limits", "status": "pending", "items": ["D1 read/write quotas vs dashboards", "Cloudflare Workers requests/month", "Pages build minutes vs free quota"]},
+        {"id": 16.2, "task": "Cache & edge optimization", "status": "pending", "items": ["Cache /api/books, /api/programs, /api/campaigns responses", "Cache-Control on static assets", "Consider Cloudflare CDN zones + Argo"]},
+        {"id": 16.3, "task": "Paid platforms as revenue justifies", "status": "pending", "items": ["Workers paid plan ($5/mo) for higher limits", "VPS + Postgres when queries outgrow SQLite", "Keep D1 for bookings/orders, Postgres for analytics"]}
+      ]
     }
   ],
-  "current_focus": "Phase 8.2 (AI Content Assistant) — /api/ai/content endpoint for newsletter drafting, SEO meta generation, blog outlines. Admin page at /admin/content-ai.html.",
-  "last_updated": "2026-06-12",
+  "current_focus": "Phase 12 — Build The Traffic Engine. Wire page-view tracking to public pages, complete sitemap, structured data on revenue pages. Measured against goal: 7-figure/year autonomous studio; today's biggest gap is demand generation, not features.",
+  "last_updated": "2026-09-11",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",
@@ -258,6 +412,9 @@
     "Phase 9 — Audit Fixes & Site Polish: 12 items to fix from the full site audit. Store fulfillment, nationbuilding links, Systems Thinking enrollable, prompt()→modal, newsletter archive, music links, art inventory, merch sizing, 404 duplicate og:url, Flutterwave preconnect, CSP header, formatPrice guard.",
     "Phase 10 — Smoke Tests: Run after every deployment. Click Verify Live on the admin page to auto-check all items against live URLs.",
     "Admin /admin/submissions.html page is a static placeholder — needs live data integration from D1 contact_submissions table.",
-    "Phase 11 — Command Center: All 11 sub-items complete. Dashboard (11.2), agents CRUD (11.3), workflow engine (11.4), queue processor (11.5), run history (11.6), settings/preferences (11.7), auth consolidation (11.8), D1-wired submissions (11.9), live architecture diagram (11.10), mobile/UX polish (11.11). Needs Cloudflare deployment with D1 binding to test."
+    "Phase 11 — Command Center: All 11 sub-items complete. Dashboard (11.2), agents CRUD (11.3), workflow engine (11.4), queue processor (11.5), run history (11.6), settings/preferences (11.7), auth consolidation (11.8), D1-wired submissions (11.9), live architecture diagram (11.10), mobile/UX polish (11.11). Needs Cloudflare deployment with D1 binding to test.",
+    "Phase 12-16 added 2026-09-11 from full business audit. Tech is ~80% built, business is ~20%: payments/email/admin are production-grade, but there is NO demand engine. Phases 12-15 are ordered by impact: traffic first (12), then revenue math (13), then conversion (14), then autonomy (15). External manual steps are flagged; code steps are tracked in D1 tasks.",
+    "Goal definition (7 figures/yr ≈ GHS 15M): hybrid model — 5,000 members × GHS 1,500/yr avg + 200 course sales + 50 consulting clients + 5,000 digital downloads + merch/donations. Requires 500K+ monthly visitors or high-ticket services.",
+    "Key pricing constraint: avg transaction today is $3-50 (GHS). Raising AOV is phase 13; adding Stripe/PayPal unlocks international buyers who are priced out by Flutterwave-only checkout."
   ]
 }

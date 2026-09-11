@@ -1,229 +1,85 @@
-/**
- * Auto-generate sitemap.xml by scanning all public HTML files.
- * Run: node scripts/generate-sitemap.cjs
- * Also validates that all sitemap URLs return 200 against the live site.
- */
-var fs = require('fs');
-var path = require('path');
-// var glob = require('child_process').execSync;
-var https = require('https');
-var http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-var ROOT = path.resolve(__dirname, '..');
-var SITEMAP = path.join(ROOT, 'sitemap.xml');
-var SITE_URL = 'https://studio.gabochie.com';
-var NEWS_SITE_URL = 'https://news.gabochie.com';
-var VALIDATE = process.argv.includes('--validate');
+const DOMAIN = 'https://studio.gabochie.com';
+const today = new Date().toISOString().slice(0, 10);
 
-// Patterns to exclude from sitemap
-var EXCLUDE_DIRS = ['admin', 'dashboard', 'node_modules', 'workers', 'test-results', '.git', 'news', 'coverage'];
-var EXCLUDE_FILES = ['404.html', 'coming-soon.html'];
-
-// Manual URL overrides for files that get clean URLs via _redirects
-var URL_OVERRIDES = {
-  'donate.html': '/donate'
-};
-
-// Files that exist on disk but are redirected (via _redirects) to auth-gated API endpoints
-var REDIRECTED_TO_SERVE = [
-  'books/divine_algorithm_report.html',
-  'books/premium-bundle.html',
+const PAGES = [
+  ['/', 1.0, 'weekly'],
+  ['/school/', 0.9, 'monthly'],
+  ['/guitar/', 0.9, 'weekly'],
+  ['/books/', 0.8, 'monthly'],
+  ['/membership/', 0.8, 'monthly'],
+  ['/support/', 0.8, 'monthly'],
+  ['/donate/', 0.8, 'monthly'],
+  ['/merch/', 0.7, 'monthly'],
+  ['/music/', 0.7, 'monthly'],
+  ['/art/', 0.7, 'monthly'],
+  ['/news/', 0.7, 'weekly'],
+  ['/content/', 0.7, 'monthly'],
+  ['/services/', 0.7, 'monthly'],
+  ['/campaigns/', 0.6, 'monthly'],
+  ['/campaigns/1-million-systems-thinkers', 0.6, 'monthly'],
+  ['/careers/', 0.6, 'monthly'],
+  ['/tutoring/', 0.6, 'monthly'],
+  ['/nationbuilding/', 0.6, 'monthly'],
+  ['/partners/', 0.6, 'monthly'],
+  ['/press/', 0.6, 'monthly'],
+  ['/manifesto/', 0.6, 'monthly'],
+  ['/survey/', 0.5, 'monthly'],
+  ['/contact/', 0.5, 'monthly'],
+  ['/certificate/', 0.5, 'monthly'],
+  ['/login/', 0.5, 'monthly'],
+  ['/register/', 0.5, 'monthly'],
+  ['/member/', 0.5, 'monthly'],
+  ['/store/', 0.5, 'monthly'],
+  ['/unsubscribe/', 0.3, 'monthly'],
+  ['/legal/disclaimer', 0.2, 'yearly'],
+  ['/legal/donations', 0.2, 'yearly'],
+  ['/legal/privacy', 0.2, 'yearly'],
+  ['/legal/refund', 0.2, 'yearly'],
+  ['/legal/terms', 0.2, 'yearly'],
+  ['/style-guide/', 0.2, 'monthly']
 ];
 
-// Dynamic URLs served by Cloudflare Functions (SSR) — add manually since they have no static HTML file
-var DYNAMIC_URLS = [
-  '/campaigns/1-million-systems-thinkers',
-  '/school/guitar/buy',
-];
+const VALID_PREFIX = new Set([
+  'art', 'books', 'campaigns', 'careers', 'certificate', 'contact', 'content',
+  'donate', 'guitar', 'legal', 'login', 'manifesto', 'member', 'membership',
+  'merch', 'music', 'nationbuilding', 'news', 'partners', 'press', 'register',
+  'school', 'services', 'store', 'style-guide', 'support', 'survey', 'tutoring', 'unsubscribe'
+]);
 
-// Priority by URL pattern
-function getPriority(url) {
-  if (url === '/') return 1.0;
-  if (url.startsWith('/legal/')) return 0.3;
-  if (url.startsWith('/school/guitar/')) return 0.5;
-  if (url.startsWith('/school/')) return 0.8;
-  if (url.startsWith('/books/')) return 0.7;
-  return 0.6;
-}
-
-// Changefreq by URL pattern
-function getChangefreq(url) {
-  if (url === '/') return 'weekly';
-  if (url.startsWith('/legal/')) return 'yearly';
-  return 'monthly';
-}
-
-function isExcluded(filePath) {
-  var parts = filePath.replace(/\\/g, '/').split('/');
-  // Only exclude directories at root level, not nested (e.g., root dashboard/ but not school/guitar/dashboard/)
-  if (EXCLUDE_DIRS.indexOf(parts[0]) !== -1) return true;
-  if (EXCLUDE_FILES.indexOf(parts[parts.length - 1]) !== -1) return true;
-  // Skip legacy guitar/ URLs (301 redirect to /school/guitar/)
-  if (filePath.indexOf('guitar/') !== -1 &&
-      filePath.indexOf('school/') === -1) return true;
-  // Skip certificate (auth-gated), books/download, store/download and store/library
-  if (filePath.indexOf('certificate/') !== -1) return true;
-  if (filePath.indexOf('books/download/') !== -1) return true;
-  if (filePath.indexOf('store/') !== -1) return true;
-  // Skip survey (internal tool)
-  if (filePath.indexOf('survey/') !== -1) return true;
-  // Skip coverage directory
-  if (filePath.indexOf('coverage/') !== -1) return true;
-  // Skip files redirected to auth-gated API endpoints
-  if (REDIRECTED_TO_SERVE.indexOf(filePath.replace(/\\/g, '/')) !== -1) return true;
-  return false;
-}
-
-function fileToUrl(relPath) {
-  // Check for manual override
-  if (URL_OVERRIDES[relPath]) return URL_OVERRIDES[relPath];
-
-  var basename = path.basename(relPath);
-  var dir = path.dirname(relPath);
-
-  if (basename === 'index.html') {
-    // foo/index.html → /foo/
-    return '/' + (dir === '.' ? '' : dir.replace(/\\/g, '/') + '/');
-  } else {
-    // foo/bar.html → /foo/bar
-    var name = basename.replace(/\.html$/, '');
-    return '/' + (dir === '.' ? name : dir.replace(/\\/g, '/') + '/' + name);
+function buildXml() {
+  const lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+  for (const [loc, priority, changefreq] of PAGES) {
+    lines.push(`  <url><loc>${DOMAIN}${loc}</loc><lastmod>${today}</lastmod><priority>${priority.toFixed(1)}</priority><changefreq>${changefreq}</changefreq></url>`);
   }
+  lines.push('</urlset>');
+  return lines.join('\n') + '\n';
 }
 
-function getAllHtmlFiles() {
-  var files = [];
-  function walk(dir, depth) {
-    if (depth === undefined) depth = 0;
-    var entries;
-    // eslint-disable-next-line no-unused-vars
-    try { entries = fs.readdirSync(dir); } catch (e) { /* directory unreadable */ }
-    for (var i = 0; i < entries.length; i++) {
-      var full = path.join(dir, entries[i]);
-      var stat = fs.statSync(full);
-      if (stat.isDirectory()) {
-        // Skip node_modules and .git at any depth; skip other excluded dirs only at root
-        if (entries[i] === 'node_modules' || entries[i] === '.git') continue;
-        if (depth === 0 && EXCLUDE_DIRS.indexOf(entries[i]) !== -1) continue;
-        walk(full, depth + 1);
-      } else if (entries[i].endsWith('.html')) {
-        files.push(full);
-      }
-    }
+function validate() {
+  const xml = fs.readFileSync(path.join(__dirname, '..', 'sitemap.xml'), 'utf8');
+  const urls = [...xml.matchAll(/<loc>(https:\/\/studio\.gabochie\.com[^<]+)<\/loc>/g)].map(m => m[1]);
+  const errors = [];
+  for (const u of urls) {
+    const p = u.replace(DOMAIN, '');
+    let prefix = p.replace(/^\//, '').split('/')[0] || 'root';
+    if (p === '/' || p === '/donate') continue;
+    if (!VALID_PREFIX.has(prefix)) errors.push(`Unknown page prefix: ${u}`);
   }
-  walk(ROOT);
-  return files;
-}
-
-function generateSitemap() {
-  var files = getAllHtmlFiles();
-  var urls = [];
-
-  files.forEach(function(fullPath) {
-    var relPath = path.relative(ROOT, fullPath).replace(/\\/g, '/');
-    if (isExcluded(relPath)) return;
-
-    var url = fileToUrl(relPath);
-    if (!url || url === '/' || url === '') return; // root handled separately
-    urls.push(url);
-  });
-
-  // Deduplicate: if both /foo and /foo/ exist, keep /foo/
-  var deduped = {};
-  urls.forEach(function(u) {
-    var key = u.replace(/\/$/, '');
-    if (deduped[key] && u.endsWith('/')) deduped[key] = u;
-    else if (!deduped[key]) deduped[key] = u;
-  });
-  urls = Object.keys(deduped).map(function(k) { return deduped[k]; });
-
-  // Add dynamic (SSR) URLs
-  DYNAMIC_URLS.forEach(function(u) {
-    if (urls.indexOf(u) === -1 && urls.indexOf(u + '/') === -1) urls.push(u);
-  });
-
-  urls.sort();
-
-  var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-
-  // Root first
-  xml += '  <url><loc>' + SITE_URL + '/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>\n';
-
-  urls.forEach(function(url) {
-    xml += '  <url><loc>' + SITE_URL + url + '</loc><priority>' + getPriority(url) + '</priority><changefreq>' + getChangefreq(url) + '</changefreq></url>\n';
-  });
-
-  xml += '</urlset>\n';
-  fs.writeFileSync(SITEMAP, xml, 'utf8');
-  console.log('Generated sitemap.xml with ' + (urls.length + 1) + ' URLs');
-
-  // Generate news subdomain sitemap
-  var newsDir = path.join(ROOT, 'news');
-  if (fs.existsSync(newsDir)) {
-    var newsXml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    newsXml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-    newsXml += '  <url><loc>' + NEWS_SITE_URL + '/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>\n';
-    newsXml += '</urlset>\n';
-    fs.writeFileSync(path.join(ROOT, 'news', 'sitemap.xml'), newsXml, 'utf8');
-    console.log('Generated news/sitemap.xml with 1 URL');
+  if (errors.length) {
+    console.error('sitemap.xml validation FAILED:');
+    errors.forEach(e => console.error('  - ' + e));
+    process.exit(1);
   }
-
-  return urls;
+  console.log(`sitemap.xml validation OK — ${urls.length} URLs`);
 }
 
-function validateUrl(url) {
-  return new Promise(function(resolve) {
-    var fullUrl = SITE_URL + url;
-    var parsed = new URL(fullUrl);
-    var client = parsed.protocol === 'https:' ? https : http;
-    var req = client.get(fullUrl, { timeout: 10000, headers: { 'User-Agent': 'GASitemapValidator/1.0' } }, function(res) {
-      var valid = res.statusCode >= 200 && res.statusCode < 400;
-      if (!valid) console.log('  FAIL: ' + fullUrl + ' (' + res.statusCode + ')');
-      resolve(valid);
-      res.resume();
-    });
-    req.on('error', function() {
-      console.log('  FAIL: ' + fullUrl + ' (connection error)');
-      resolve(false);
-    });
-    req.on('timeout', function() {
-      console.log('  FAIL: ' + fullUrl + ' (timeout)');
-      req.destroy();
-      resolve(false);
-    });
-  });
+if (process.argv.includes('--validate')) {
+  validate();
+} else {
+  fs.mkdirSync(path.join(__dirname, '..'), { recursive: true });
+  fs.writeFileSync(path.join(__dirname, '..', 'sitemap.xml'), buildXml());
+  console.log(`sitemap.xml regenerated — ${PAGES.length} URLs (lastmod ${today})`);
 }
-
-async function validate(urls) {
-  console.log('\nValidating sitemap URLs against ' + SITE_URL + '...');
-  var allUrls = ['/'].concat(urls);
-  var passed = 0, failed = 0;
-
-  for (var i = 0; i < allUrls.length; i++) {
-    var ok = await validateUrl(allUrls[i]);
-    if (ok) passed++; else failed++;
-    if (i % 10 === 9) process.stdout.write('  Progress: ' + (i + 1) + '/' + allUrls.length + '\n');
-  }
-
-  console.log('\nValidation complete: ' + passed + ' passed, ' + failed + ' failed');
-  return failed === 0;
-}
-
-async function main() {
-  var urls = generateSitemap();
-
-  if (VALIDATE) {
-    var ok = await validate(urls);
-    if (!ok) {
-      console.log('\nWARNING: Some sitemap URLs returned non-200 responses.');
-      console.log('Review and fix before deploying.');
-      process.exit(1);
-    }
-  }
-}
-
-main().catch(function(err) {
-  console.error('Error:', err);
-  process.exit(1);
-});

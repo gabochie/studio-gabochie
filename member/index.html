@@ -27,7 +27,7 @@ h1 span{color:#C9A84C}
 .badge-premium{background:rgba(201,168,76,.15);color:#C9A84C}
 .badge-vip{background:rgba(201,168,76,.25);color:#F1F5F9}
 .tier-info{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.plan-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:24px}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:24px}
 .plan-card{background:#0A1628;border:1px solid #1E3250;border-radius:12px;padding:24px;text-align:center}
 .plan-card h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#F1F5F9;margin-bottom:4px}
 .plan-card .price{font-size:28px;font-weight:700;color:#C9A84C;margin-bottom:4px}
@@ -96,12 +96,18 @@ function doLogout() {
 var currentTier = 'free';
 var sessionToken = getCookie('ga_session');
 
+var TIER_SLUG_TO_LEGACY = { free:'free', supporter:'supporter', scholar:'premium', patron:'vip', founding:'founding' };
+var LEGACY_TO_TIER_SLUG = { free:'free', premium:'scholar', vip:'patron', supporter:'supporter', founding:'founding' };
+
 function renderPlans(plans, currentTier) {
   var container = document.getElementById('plans');
+  var activeSlug = LEGACY_TO_TIER_SLUG[currentTier] || currentTier;
   var html = '';
   for (var i = 0; i < plans.length; i++) {
     var p = plans[i];
-    var isCurrent = p.tier === currentTier;
+    var isCurrent = p.slug === activeSlug;
+    var price = p.slug === 'founding' ? (p.yearly_price_ghs || 0) : (p.monthly_price_ghs || 0);
+    var periodLabel = p.slug === 'founding' ? '/yr' : (price > 0 ? '/mo' : '');
     var features = (typeof p.features === 'string' ? JSON.parse(p.features) : p.features) || [];
     var featureLis = '';
     for (var j = 0; j < features.length; j++) {
@@ -109,44 +115,51 @@ function renderPlans(plans, currentTier) {
     }
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
-      : '<button class="btn btn-primary" onclick="upgrade(\'' + p.tier + '\',' + p.price_ghs + ')">' + (p.price_ghs > 0 ? 'Upgrade &mdash; GHS ' + p.price_ghs + '/mo' : 'Free') + '</button>';
-    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (p.price_ghs > 0 ? 'GHS ' + p.price_ghs : 'Free') + '<small>' + (p.price_ghs > 0 ? '/mo' : '') + '</small></div><ul>' + featureLis + '</ul>' + btnHtml + '</div>';
+      : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
+    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div><ul>' + featureLis + '</ul>' + btnHtml + '</div>';
   }
   container.innerHTML = html;
 }
-
-function upgrade(tier, price) {
-  if (price === 0 || !sessionToken) return;
+function upgrade(slug) {
+  if (!sessionToken) return;
   var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
   btn.disabled = true; btn.textContent = 'Processing\u2026';
-  fetch('/api/membership/subscribe', {
+  fetch('/api/tiers/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
-    body: JSON.stringify({ tier: tier })
+    body: JSON.stringify({ tier: slug, interval: 'monthly' })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
     if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed to start checkout'); return; }
-    FlutterwaveCheckout({
+    var opts = {
       public_key: FLW_PUBLIC_KEY,
       tx_ref: d.tx_ref,
       amount: d.amount,
-      currency: d.currency,
+      currency: d.currency || 'GHS',
       payment_options: 'card, mobilemoneyghana, ussd',
       customer: d.customer,
+      customizations: {
+        title: 'Studio Gabochie',
+        description: (d.tier_slug || slug).charAt(0).toUpperCase() + (d.tier_slug || slug).slice(1) + ' Tier',
+        logo: window.location.origin + '/assets/images/logo.png'
+      },
       callback: function(payload) {
         if (payload.status === 'successful' || payload.transaction_id) {
-          document.cookie = 'ga_upgrade=' + d.tier + '; path=/; max-age=60';
-          window.location.href = '/member/?success=' + d.tier;
+          document.cookie = 'ga_upgrade=' + d.tier_slug + '; path=/; max-age=60';
+          window.location.href = '/member/?success=' + d.tier_slug;
         }
       },
       onclose: function() {
         btn.disabled = false; btn.textContent = 'Upgrade';
       }
-    });
+    };
+    if (d.is_recurring && d.plan_id) opts.payment_plan = parseInt(d.plan_id);
+    FlutterwaveCheckout(opts);
   })
   .catch(function() {
-    btn.disabled = false; btn.textContent = 'Upgrade';
+    btn.disabled = false;
+    btn.textContent = 'Upgrade';
     alert('Connection error. Please try again.');
   });
 }
@@ -173,11 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
       badge.textContent = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
       badge.className = 'badge badge-' + currentTier;
       document.getElementById('tierStatus').textContent = 'You\'re on the ' + currentTier + ' plan.';
-      return fetch('/api/membership/plans');
+      return fetch('/api/tiers');
     })
     .then(function(r) { if (r) return r.json(); })
     .then(function(d) {
-      if (d && d.status === 'ok') renderPlans(d.plans, currentTier);
+      if (d && d.status === 'ok') renderPlans(d.tiers, currentTier);
     })
     .catch(function() { document.getElementById('loading').textContent = 'Something went wrong. Please refresh.'; });
 });

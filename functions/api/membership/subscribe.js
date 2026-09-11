@@ -1,3 +1,5 @@
+// Deprecated: kept for backward-compat with any legacy/memb_ clients.
+// New checkouts must use /api/tiers/subscribe (unified_tiers).
 import { getToken, getSessionUser } from '../enroll/_token.js';
 
 export async function onRequest(context) {
