@@ -266,7 +266,7 @@ jobs:
       - name: Predeploy checks (non-blocking)
         run: npm run predeploy || echo "Predeploy checks had warnings (non-blocking)"
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy . --project-name gabochie-studio
+        run: npx wrangler pages deploy . --project-name studio-gabochie
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       - name: Run DB setup (non-blocking)
