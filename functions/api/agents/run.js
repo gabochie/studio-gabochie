@@ -98,7 +98,7 @@ export async function onRequest(context) {
     }
 
     return new Response(JSON.stringify({ status: 'error', message: 'Unknown action: ' + action }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   }
 }

@@ -31,7 +31,7 @@ export async function onRequest(context) {
   // POST — login with email + access code (or logout)
   if (context.request.method === 'POST') {
     let body;
-    try { body = await context.request.json(); } catch (e) {
+    try { body = await context.request.json(); } catch (_e) {
       return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 

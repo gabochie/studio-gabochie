@@ -12,7 +12,7 @@ export async function onRequest(context) {
     if (ct.includes('application/json')) {
       const raw = await request.text();
       let body;
-      try { body = JSON.parse(raw); } catch (e) {
+      try { body = JSON.parse(raw); } catch (_e) {
         return new Response(JSON.stringify({ status:'error', message:'Invalid JSON body' }), { status:400, headers:{'Content-Type':'application/json'} });
       }
       event_type = body.event_type || '';
@@ -33,7 +33,7 @@ export async function onRequest(context) {
       'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
     ).bind(event_type, event_data, page, email).run();
     return new Response(JSON.stringify({ status: 'ok' }), { headers: { 'Content-Type': 'application/json' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

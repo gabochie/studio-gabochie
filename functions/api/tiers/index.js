@@ -12,7 +12,7 @@ export async function onRequest(context) {
       status: 'ok',
       tiers: (tiers.results || []).map(function(t) {
         var parsed;
-        try { parsed = JSON.parse(t.features); } catch(e) { parsed = []; }
+        try { parsed = JSON.parse(t.features); } catch (_e) { parsed = []; }
         return {
           slug: t.slug,
           name: t.name,

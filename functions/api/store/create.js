@@ -29,7 +29,7 @@ export async function onRequest(context) {
       `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, user_id, status, customer_phone, shipping_address, shipping_city, shipping_region, shipping_digital_address, delivery_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)`
     ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email, uid, phone || '', shipAddr, shipping_city || '', shipping_region || '', shipping_digital_address || '', df).run();
     return new Response(JSON.stringify({ status: 'ok', tx_ref, amount: parseFloat(amount) + df, currency }), { headers: { 'Content-Type': 'application/json' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

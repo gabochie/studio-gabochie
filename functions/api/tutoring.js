@@ -1,6 +1,5 @@
 import { checkRateLimit } from './_rate-limit.js';
 
-var CATEGORIES = ['academic', 'creative', 'bible', 'professional'];
 var CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 
 export async function onRequest(context) {
@@ -27,7 +26,7 @@ export async function onRequest(context) {
       var result = await env.DB.prepare("SELECT id, name, slug, bio, subjects, qualifications, hourly_rate, currency, availability, email, phone, photo_url, video_url, featured, created_at FROM tutors WHERE " + conds.join(' AND ') + " ORDER BY featured DESC, created_at DESC LIMIT ?").bind(...params, limit).all();
       var subjectsList = await env.DB.prepare("SELECT * FROM tutoring_subjects ORDER BY category, name").all();
       return new Response(JSON.stringify({ status: 'ok', tutors: result.results || [], subjects: subjectsList.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
-    } catch (e) {
+    } catch (_e) {
       return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
     }
   }
@@ -74,7 +73,7 @@ export async function onRequest(context) {
       var student_name = (body.student_name || '').trim();
       var student_email = (body.student_email || '').trim();
       var student_phone = (body.student_phone || '').trim();
-      var subject = (body.subject || '').trim();
+      let subject = (body.subject || '').trim();
       var preferred_date = (body.preferred_date || '').trim();
       var preferred_time = (body.preferred_time || '').trim();
       var message = (body.message || '').trim();
@@ -90,7 +89,7 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({ error: 'Invalid action' }), { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
 
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
   }
 }

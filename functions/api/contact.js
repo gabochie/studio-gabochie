@@ -32,7 +32,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'X-Admin-Key' }
       });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: { 'Content-Type': 'application/json' }
       });
@@ -92,7 +92,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok' }), {
       status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

@@ -1,6 +1,14 @@
 import js from '@eslint/js';
 import globals from 'globals';
 
+const unusedVarsWarn = {
+  'no-unused-vars': ['warn', {
+    argsIgnorePattern: '^_',
+    varsIgnorePattern: '^_',
+    caughtErrorsIgnorePattern: '^_',
+  }],
+};
+
 export default [
   js.configs.recommended,
   {
@@ -24,8 +32,23 @@ export default [
       },
     },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      'no-empty': 'warn',
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
+    },
+  },
+  // Root-level browser files (nav, service-inquiry widgets)
+  {
+    files: ['nav.js', 'services/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'script',
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
     },
   },
   // Admin JS (browser globals)
@@ -48,8 +71,8 @@ export default [
       },
     },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      'no-empty': 'warn',
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
       'no-redeclare': 'off',
     },
   },
@@ -72,8 +95,8 @@ export default [
       },
     },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      'no-empty': 'warn',
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
     },
   },
   // Workers (cron)
@@ -91,10 +114,11 @@ export default [
       },
     },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
     },
   },
-  // Config + script files (node)
+  // Config + script files (node; browser globals allowed inside page.evaluate callbacks)
   {
     files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js', 'scripts/**/*.cjs'],
     languageOptions: {
@@ -102,8 +126,13 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.node,
+        ...globals.browser,
         process: 'readonly',
       },
+    },
+    rules: {
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
     },
   },
   // Tests

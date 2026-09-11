@@ -48,7 +48,7 @@ var AdminState = (function() {
 
   function emit(event) {
     var args = Array.prototype.slice.call(arguments, 1);
-    (listeners[event] || []).forEach(function(fn) { try { fn.apply(null, args); } catch(e) {} });
+    (listeners[event] || []).forEach(function(fn) { try { fn.apply(null, args); } catch (_e) {} });
   }
 
   return {
@@ -75,5 +75,5 @@ var AdminState = (function() {
   try {
     var ak = sessionStorage.getItem('ga_ak');
     if (ak) AdminState.set('adminKey', ak);
-  } catch(e) {}
+  } catch (_e) {}
 })();

@@ -1,6 +1,5 @@
 export async function onRequest(context) {
   var { request, env } = context;
-  var url = new URL(request.url);
 
   if (request.method === 'POST') {
     var auth = request.headers.get('X-CI-Secret');
@@ -27,7 +26,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok' }), {
         headers: { 'Content-Type': 'application/json' }
       });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: { 'Content-Type': 'application/json' }
       });
@@ -42,7 +41,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok', report: report || null }), {
       headers: { 'Content-Type': 'application/json' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

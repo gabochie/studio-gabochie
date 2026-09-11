@@ -115,7 +115,7 @@ export async function onRequest(context) {
           try {
             await queueEmail(env, email, name || 'Friend', subjectLine, personalizedHtml, 'outreach_' + segment, daysFromNow(0));
             sent++;
-          } catch (e) {}
+          } catch (_e) {}
         }
 
         if (channel === 'whatsapp' || channel === 'both') {
@@ -124,7 +124,7 @@ export async function onRequest(context) {
           try {
             await queueWhatsApp(env, phone, personalizedMsg, 'outreach_' + segment, daysFromNow(0));
             sent++;
-          } catch (e) {}
+          } catch (_e) {}
         }
       }
 
@@ -150,13 +150,13 @@ export async function onRequest(context) {
         recentDonations: (donations.results || []).map(function(d) { return 'GHS ' + (d.amount || 0) + ' on ' + (d.created_at || ''); }),
       };
 
-      var systemPrompt = 'You are a content recommendation engine. Recommend 3 specific pages from studio.gabochie.com based on user activity. Output JSON only.';
-      var userPrompt = 'User profile: ' + JSON.stringify(profile) + '\n\nAvailable content: /school/ (programs), /books/ (books), /campaigns/1-million-systems-thinkers (campaign), /membership/ (membership), /support/ (support), /content/ (articles), /school/guitar/ (guitar course), /manifesto/ (manifesto)\n\nRespond with: { "recommendations": [{"page": "url", "reason": "why this fits"}] }';
+      let systemPrompt = 'You are a content recommendation engine. Recommend 3 specific pages from studio.gabochie.com based on user activity. Output JSON only.';
+      let userPrompt = 'User profile: ' + JSON.stringify(profile) + '\n\nAvailable content: /school/ (programs), /books/ (books), /campaigns/1-million-systems-thinkers (campaign), /membership/ (membership), /support/ (support), /content/ (articles), /school/guitar/ (guitar course), /manifesto/ (manifesto)\n\nRespond with: { "recommendations": [{"page": "url", "reason": "why this fits"}] }';
 
-      var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 800 });
+      let result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 800 });
 
       var recs = {};
-      try { recs = JSON.parse(result.content); } catch (e) { recs = { recommendations: [] }; }
+      try { recs = JSON.parse(result.content); } catch (_e) { recs = { recommendations: [] }; }
 
       return new Response(JSON.stringify({ status: 'ok', profile: profile, recommendations: recs.recommendations || [] }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }

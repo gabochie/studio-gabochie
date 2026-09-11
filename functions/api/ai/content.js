@@ -67,7 +67,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok', type: type, content: result.content }), {
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   }
 }

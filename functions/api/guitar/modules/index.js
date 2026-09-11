@@ -1,8 +1,7 @@
-import { getUser, json } from '../_utils.js';
+import { json } from '../_utils.js';
 
 export async function onRequest(context) {
   const db = context.env.DB;
-  const user = await getUser(context);
 
   const tiers = ['bronze','silver','gold'];
   const modules = [];

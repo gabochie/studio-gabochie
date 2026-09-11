@@ -34,7 +34,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', items: result.results || [] }), {
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
-    } catch (e) {
+    } catch (_e) {
       return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
   }
@@ -53,7 +53,7 @@ export async function onRequest(context) {
     var body = await request.json();
     var title = (body.title || '').trim();
     var description = (body.description || '').trim();
-    var category = body.category || 'jobs';
+    let category = body.category || 'jobs';
     var price = (body.price || '').trim();
     var contact_name = (body.contact_name || '').trim();
     var contact_email = (body.contact_email || '').trim();
@@ -73,7 +73,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ error: 'Invalid category. Use: ' + CATEGORIES.join(', ') }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
 
-    var result = await env.DB.prepare(
+    let result = await env.DB.prepare(
       "INSERT INTO classifieds (title, description, category, price, contact_name, contact_email, contact_phone, location, website, status, listing_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'free')"
     ).bind(title, description, category, price, contact_name, contact_email, contact_phone, location, website).run();
 
@@ -81,7 +81,7 @@ export async function onRequest(context) {
       status: 201, headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
 
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   }
 }

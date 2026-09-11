@@ -35,7 +35,7 @@ export async function onRequest(context) {
     } catch (_) {}
 
     return new Response(JSON.stringify({ status: 'ok', message: 'You\'re on the list!' }), { headers: { 'Content-Type': 'application/json' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Server error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

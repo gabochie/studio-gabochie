@@ -66,7 +66,7 @@ export async function onRequest(context) {
     headers.set('X-Robots-Tag', 'noindex');
 
     return new Response(assetResponse.body, { status: 200, headers });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

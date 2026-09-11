@@ -58,7 +58,7 @@ export async function onRequest(context) {
       passed: passed === 1,
       pass_threshold: Math.round(PASS_THRESHOLD * 100)
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   }
 }

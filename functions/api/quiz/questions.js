@@ -35,7 +35,7 @@ export async function onRequest(context) {
       'SELECT id, question, options, sort_order FROM quiz_questions WHERE program_id = ? ORDER BY sort_order ASC, id ASC'
     ).bind(enrollment.program_id).all()).results || [];
     return new Response(JSON.stringify({ status: 'ok', questions: rows }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   }
 }

@@ -58,7 +58,7 @@ export async function onRequest(context) {
     }
 
     return new Response(JSON.stringify({ status: 'ok', message: 'If this email is registered, you will receive a reset link.' }), { headers: { 'Content-Type': 'application/json', ...cors } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...cors } });
   }
 }

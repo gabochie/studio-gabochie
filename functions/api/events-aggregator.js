@@ -23,7 +23,6 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 
   var url = new URL(request.url);
-  var daysAhead = parseInt(url.searchParams.get('days')) || 60;
   var maxEvents = parseInt(url.searchParams.get('limit')) || 50;
 
   var results = [];

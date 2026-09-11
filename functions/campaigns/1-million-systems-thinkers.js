@@ -277,7 +277,7 @@ export async function onRequest(context) {
       '</body></html>';
 
     return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html;charset=utf-8' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response('Internal error', { status: 500, headers: { 'Content-Type': 'text/plain' } });
   }
 }

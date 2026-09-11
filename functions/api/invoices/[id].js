@@ -93,7 +93,7 @@ export async function onRequest(context) {
       '</div></body></html>';
 
     return new Response(html, { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response('Error loading invoice', { status: 500 });
   }
 }

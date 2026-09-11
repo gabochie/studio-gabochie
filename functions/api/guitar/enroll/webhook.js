@@ -12,8 +12,6 @@ export async function onRequest(context) {
 
   if (body.event === 'charge.completed' && body.data?.tx_ref?.startsWith('GUITAR_')) {
     const txRef = body.data.tx_ref;
-    const email = body.data?.customer?.email;
-    const name = body.data?.customer?.name || email?.split('@')[0] || 'Student';
 
     await db.prepare("UPDATE guitar_payments SET status = 'completed' WHERE flw_tx_ref = ?").bind(txRef).run();
 

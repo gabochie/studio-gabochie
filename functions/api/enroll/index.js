@@ -111,7 +111,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify(response), {
         headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
       });
@@ -172,7 +172,7 @@ export async function onRequest(context) {
     var sessionUser = null;
     var sessToken = getToken(request);
     if (sessToken) {
-      try { sessionUser = await getSessionUser(db, sessToken); } catch (e) {}
+      try { sessionUser = await getSessionUser(db, sessToken); } catch (_e) {}
     }
     var userId = sessionUser ? sessionUser.user_id : null;
     var enrollmentStatus = program.price > 0 ? 'sample' : 'active';
@@ -242,7 +242,7 @@ export async function onRequest(context) {
         sample_content: program.sample_content
       }
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });

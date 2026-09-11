@@ -1,3 +1,4 @@
+/* eslint-disable-next-line no-unused-vars */
 var API = (function() {
 
   var BASE = '/api/agents';
@@ -21,7 +22,7 @@ var API = (function() {
     return h;
   }
 
-  function handleResponse(res, url) {
+  function handleResponse(res, _url) {
     if (res.status === 403) {
       AdminState.setError('api', 'Authentication failed. Set your Agent Auth token in Settings.');
     }

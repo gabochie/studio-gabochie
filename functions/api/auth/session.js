@@ -52,7 +52,7 @@ export async function onRequest(context) {
       status: 'ok',
       user: { id: session.user_id, name: session.name, email: session.email, email_verified: session.email_verified, created_at: session.created_at }
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });

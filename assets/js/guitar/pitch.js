@@ -181,7 +181,7 @@ class PitchDetector {
     return data;
   }
 
-  detectChord(frequencies, tolerance = 10) {
+  detectChord(frequencies) {
     if (!frequencies || frequencies.length < 2) return null;
     const sorted = [...frequencies].sort((a, b) => b.rms - a.rms);
     const notes = sorted.map(f => this.freqToNote(f.freq));

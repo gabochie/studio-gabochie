@@ -16,7 +16,7 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ status: 'ok', active: row?.value === 'true' }), {
           headers: { 'Content-Type': 'application/json' }
         });
-      } catch (e) {
+      } catch (_e) {
         // Settings table doesn't exist yet — create it
         await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL DEFAULT (datetime('now')))").run();
         await env.DB.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('coming_soon', 'false')").run();
@@ -41,7 +41,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405, headers: { 'Content-Type': 'application/json' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

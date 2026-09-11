@@ -7,7 +7,7 @@ export async function onRequest(context) {
   try {
     const { total, today } = await db.prepare('SELECT (SELECT COUNT(*) FROM guitar_waitlist) AS total, (SELECT COUNT(*) FROM guitar_waitlist WHERE date(registered_at) = date(\'now\')) AS today').first();
     return new Response(JSON.stringify({ status: 'ok', total: total || 0, today: today || 0 }), { headers: { ...cors, 'Content-Type': 'application/json' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } });
   }
 }

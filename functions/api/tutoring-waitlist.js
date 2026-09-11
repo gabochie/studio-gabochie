@@ -45,7 +45,7 @@ export async function onRequest(context) {
     await env.DB.prepare("INSERT INTO tutoring_waitlist (name, email, phone, role, subjects) VALUES (?, ?, ?, ?, ?)").bind(name, email, phone, role, JSON.stringify(subjects)).run();
 
     return new Response(JSON.stringify({ status: 'ok', message: "You're on the waitlist! We'll keep you posted on our launch." }), { status: 201, headers: { 'Content-Type': 'application/json', ...CORS } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
   }
 }

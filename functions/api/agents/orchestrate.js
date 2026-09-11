@@ -53,7 +53,6 @@ async function processQueueItem(db, env, item) {
     ).bind(item.agent_type).first();
 
     var aiResult = null;
-    var tools = (await db.prepare("SELECT * FROM agent_tools WHERE agent_type_id = ? AND enabled = 1").bind(agentType.id).all()).results || [];
 
     if (item.agent_type === 'content' && payload.prompt) {
       var systemMsg = (prompt && prompt.system_prompt) || 'You are a content creator for Studio Gabochie.';
@@ -245,7 +244,7 @@ export async function onRequest(context) {
       total_pending: (await env.DB.prepare("SELECT COUNT(*) as c FROM agent_queue WHERE status = 'pending'").first()).c,
       results: results
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   }
 }

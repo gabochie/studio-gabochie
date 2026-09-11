@@ -18,7 +18,7 @@ export async function onRequest(context) {
     ).bind(limit, offset).all();
     var total = await db.prepare('SELECT COUNT(*) as count FROM survey_responses').first();
     var parsed = rows.results.map(function(r) {
-      try { r.interests = JSON.parse(r.interests); } catch(e) { r.interests = []; }
+      try { r.interests = JSON.parse(r.interests); } catch (_e) { r.interests = []; }
       return r;
     });
     var counts = {};
@@ -35,7 +35,7 @@ export async function onRequest(context) {
       var allRows = await db.prepare('SELECT interests FROM survey_responses').all();
       for (var k = 0; k < allRows.results.length; k++) {
         var allList;
-        try { allList = JSON.parse(allRows.results[k].interests); } catch(e) { allList = []; }
+        try { allList = JSON.parse(allRows.results[k].interests); } catch (_e) { allList = []; }
         if (Array.isArray(allList)) {
           for (var m = 0; m < allList.length; m++) {
             totalCounts[allList[m]] = (totalCounts[allList[m]] || 0) + 1;

@@ -108,7 +108,7 @@ export async function onRequest(context) {
             "SELECT user_id FROM sessions WHERE token = ? AND expires_at > datetime('now')"
           ).bind(m[1]).first();
           if (row) sessionValid = true;
-        } catch (e) {}
+        } catch (_e) {}
       }
     }
   }
@@ -146,7 +146,7 @@ export async function onRequest(context) {
           headers: { 'Content-Type': 'text/html;charset=utf-8' }
         });
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   // CSRF protection: reject cross-origin mutating requests

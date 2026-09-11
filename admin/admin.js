@@ -11,10 +11,10 @@
 (function() {
   var KEY = 'ga_admin_visits';
   var visits;
-  try { visits = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { visits = {}; }
+  try { visits = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_e) { visits = {}; }
   var page = window.location.pathname.split('/').pop() || 'index';
   visits[page] = (visits[page] || 0) + 1;
-  try { localStorage.setItem(KEY, JSON.stringify(visits)); } catch(e) {}
+  try { localStorage.setItem(KEY, JSON.stringify(visits)); } catch (_e) {}
   window.__visits = visits;
 })();
 
@@ -44,10 +44,8 @@ function checkSiteHealth() {
       return { name: p.name, path: p.path, ok: false };
     });
   })).then(function(results) {
-    var ok = results.filter(function(r) { return r.ok; }).length;
     var html = results.map(function(r) {
       var cls = r.ok ? 'ok' : 'fail';
-      var label = r.ok ? 'Online' : 'Offline';
       return '<a href="' + r.path + '" target="_blank" class="health-badge ' + cls + '"><span>' + (r.ok ? '&#10003;' : '&#10007;') + '</span> ' + r.name + '</a>';
     }).join('');
     container.innerHTML = html;
@@ -88,7 +86,7 @@ function renderDashboard() {
     try {
       var dayData = JSON.parse(localStorage.getItem('ga_admin_days')) || {};
       dayCounts = dayData;
-    } catch(e) {}
+    } catch (_e) {}
     var max = 1;
     days.forEach(function(d) { if ((dayCounts[d] || 0) > max) max = dayCounts[d] || 1; });
     var bars = days.map(function(d) {
@@ -112,10 +110,11 @@ function renderDashboard() {
     var today = new Date().toLocaleDateString('en-CA');
     dayData[today] = (dayData[today] || 0) + 1;
     localStorage.setItem('ga_admin_days', JSON.stringify(dayData));
-  } catch(e) {}
+  } catch (_e) {}
 })();
 
 /* ── Escape HTML (XSS prevention) ── */
+/* eslint-disable-next-line no-unused-vars */
 function escapeHtml(str) {
   if (typeof str !== 'string') return str;
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
@@ -135,13 +134,14 @@ function getAccessUserEmail() {
 /* ── Admin API helpers ── */
 function getAdminKey() {
   if (isCloudflareAccess()) return '__CF_ACCESS__';
-  try { return sessionStorage.getItem('ga_admin_key') || ''; } catch(e) { return ''; }
+  try { return sessionStorage.getItem('ga_admin_key') || ''; } catch (_e) { return ''; }
 }
 
 function storeAdminKey(key) {
-  try { if (key) sessionStorage.setItem('ga_admin_key', key); } catch(e) {}
+  try { if (key) sessionStorage.setItem('ga_admin_key', key); } catch (_e) {}
 }
 
+/* eslint-disable-next-line no-unused-vars */
 function adminFetch(url, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
@@ -150,7 +150,8 @@ function adminFetch(url, opts) {
   return fetch(url, opts);
 }
 
-/* Show modal to set admin key instead of prompt() */
+/* ── Show modal to set admin key instead of prompt() ── */
+/* eslint-disable-next-line no-unused-vars */
 function ensureAdminKey() {
   if (isCloudflareAccess()) return '__CF_ACCESS__';
   var key = getAdminKey();
@@ -193,11 +194,12 @@ function renderAdminHeader() {
 }
 
 /* ── Logout ── */
+/* eslint-disable-next-line no-unused-vars */
 function adminLogout() {
   try {
     sessionStorage.removeItem('ga_admin_key');
     localStorage.removeItem('ga_ak');
-  } catch(e) {}
+  } catch (_e) {}
   window.location.href = '../functions/admin/api/logout';
 }
 

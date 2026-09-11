@@ -31,7 +31,7 @@ export async function onRequest(context) {
     await db.prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE id = ?").bind(pwHash, user.id).run();
 
     return new Response(JSON.stringify({ status: 'ok', message: 'Password reset successfully' }), { headers: { 'Content-Type': 'application/json', ...cors } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...cors } });
   }
 }

@@ -6,7 +6,6 @@ export async function onRequest(context) {
     });
   }
   var { request } = context;
-  var url = new URL(request.url);
 
   if (request.method === 'GET') {
     try {
@@ -31,7 +30,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', phases: merged }), {
         headers: { 'Content-Type': 'application/json' }
       });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: { 'Content-Type': 'application/json' }
       });
@@ -52,7 +51,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', phase: phase, verified: true }), {
         headers: { 'Content-Type': 'application/json' }
       });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: { 'Content-Type': 'application/json' }
       });

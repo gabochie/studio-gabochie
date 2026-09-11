@@ -19,7 +19,7 @@ export async function generateInvoice(env, type, ref, data) {
     ).bind(invNum, data.name || '', data.email || '', data.phone || '', data.company || '', type, ref, data.ref_id || 0, data.tx_ref || '', JSON.stringify(items), subtotal, tax, total, data.currency || 'GHS').run();
 
     return invNum;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 }

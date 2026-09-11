@@ -37,7 +37,6 @@ export async function onRequest(context) {
       } catch(_) {}
     }
 
-    const cf = request.cf || {};
     const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || '';
     const ua = request.headers.get('User-Agent') || '';
     const pageUrl = request.headers.get('Referer') || '';
@@ -51,7 +50,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });

@@ -133,7 +133,7 @@ async function scrapeInstagram(config) {
         var saveBtn = await page.$('button:has-text("Not Now")');
         if (saveBtn) await saveBtn.click();
         await delay(2000);
-      } catch (e) { /* ignore */ }
+      } catch (_e) { /* ignore */ }
 
       console.log('Login complete.');
     } catch (e) {
@@ -173,7 +173,7 @@ async function scrapeInstagram(config) {
       console.log('Scraping hashtag: #' + tag);
       try {
         var tagResults = await scrapeHashtag(page, tag, config.max_leads_per_source);
-        for (var r of tagResults) {
+        for (let r of tagResults) {
           if (!seen.has(r.instagram_username)) {
             r.scrape_source = 'hashtag:' + tag;
             if (!r.region) r.region = extractLocation(r.bio);
@@ -195,7 +195,7 @@ async function scrapeInstagram(config) {
       console.log('Scraping followers of: ' + account);
       try {
         var folResults = await scrapeFollowers(page, account, config.max_leads_per_source);
-        for (var r of folResults) {
+        for (let r of folResults) {
           if (!seen.has(r.instagram_username)) {
             r.scrape_source = 'followers:' + account;
             if (!r.region) r.region = extractLocation(r.bio);
@@ -281,7 +281,7 @@ async function scrapeLocation(page, locationName, maxLeads) {
           profileSet.add(profileData.instagram_username);
           leads.push(profileData);
         }
-      } catch (e) { /* skip */ }
+      } catch (_e) { /* skip */ }
       if (leads.length >= maxLeads) break;
       await delay(2000 + Math.random() * 1500);
     }
@@ -319,7 +319,7 @@ async function scrapeHashtag(page, tag, maxLeads) {
           leads.push(profileData);
           if (leads.length % 10 === 0) process.stdout.write('.');
         }
-      } catch (e) { /* skip */ }
+      } catch (_e) { /* skip */ }
       if (leads.length >= maxLeads) break;
       await delay(1500 + Math.random() * 1500);
     }
@@ -346,7 +346,7 @@ async function scrapePostProfile(page, postUrl) {
 
     // Go to profile page for more details
     return await scrapeProfile(page, username);
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 }
@@ -391,7 +391,7 @@ async function scrapeProfile(page, username) {
         if (user.is_verified !== undefined) data.is_verified = user.is_verified;
         if (user.external_url) data.website = user.external_url;
       }
-    } catch (e) { /* structured data not available */ }
+    } catch (_e) { /* structured data not available */ }
 
     // Fallback: parse from visible page elements
     if (!data.name || !data.bio) {
@@ -403,11 +403,10 @@ async function scrapeProfile(page, username) {
         if (metaContent) {
           // Instagram format: "N followers, M following, X posts - See Instagram photos and videos from NAME"
           var parts = metaContent.split(' - ');
-          var statsPart = parts[0] || '';
           var namePart = parts[1] || '';
           data.name = namePart.replace('See Instagram photos and videos from ', '').trim();
         }
-      } catch (e) { /* fallback failed */ }
+      } catch (_e) { /* fallback failed */ }
     }
 
     // Try reading visible bio element
@@ -415,14 +414,14 @@ async function scrapeProfile(page, username) {
       try {
         var bioText = await page.$eval('span[dir="auto"]', function(el) { return el.textContent; }).catch(function() { return ''; });
         if (bioText && bioText.length < 500) data.bio = bioText;
-      } catch (e) { /* no bio element */ }
+      } catch (_e) { /* no bio element */ }
     }
 
     // Also try reading the full name from h2/span on profile
     if (!data.name) {
       try {
         data.name = await page.$eval('section h2', function(el) { return el.textContent; }).catch(function() { return ''; });
-      } catch (e) { /* no h2 */ }
+      } catch (_e) { /* no h2 */ }
     }
 
     // Fallback follower count from visible text
@@ -431,7 +430,7 @@ async function scrapeProfile(page, username) {
         var pageText = await page.evaluate(function() { return document.body.innerText; });
         var flwMatch = pageText.match(/([\d,.]+)\s*followers?/i);
         if (flwMatch) data.follower_count = parseInt(flwMatch[1].replace(/,/g, '')) || 0;
-      } catch (e) { /* */ }
+      } catch (_e) { /* */ }
     }
 
     // Parse email and phone from bio
@@ -440,7 +439,7 @@ async function scrapeProfile(page, username) {
     if (!data.region) data.region = extractLocation(data.bio);
 
     return data;
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 }
@@ -491,7 +490,7 @@ async function scrapeFollowers(page, account, maxLeads) {
               if (leads.length % 5 === 0) process.stdout.write('.');
             }
           }
-        } catch (e) { /* skip */ }
+        } catch (_e) { /* skip */ }
         if (leads.length >= maxLeads) break;
         await delay(1000 + Math.random() * 1000);
       }
@@ -503,7 +502,7 @@ async function scrapeFollowers(page, account, maxLeads) {
           var el = document.querySelector(sel);
           if (el) el.scrollTop = el.scrollHeight;
         }, 'div[role="dialog"]');
-      } catch (e) { /* */ }
+      } catch (_e) { /* */ }
       await delay(2000);
     }
   } catch (e) {

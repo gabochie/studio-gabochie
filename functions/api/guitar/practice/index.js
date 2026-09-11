@@ -18,6 +18,7 @@ export async function onRequest(context) {
 
     let newStreak = prevStreak;
     if (prevLastDate === today) {
+      // streak unchanged today
     } else if (prevLastDate === yesterday) {
       newStreak = prevStreak + 1;
     } else {

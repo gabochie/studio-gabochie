@@ -3,19 +3,19 @@
   var SCOPE_KEY = 'ga_admin_scope';
 
   function getCollapsed() {
-    try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch(e) { return false; }
+    try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch (_e) { return false; }
   }
 
   function setCollapsed(v) {
-    try { localStorage.setItem(SIDEBAR_KEY, v ? 'true' : 'false'); } catch(e) {}
+    try { localStorage.setItem(SIDEBAR_KEY, v ? 'true' : 'false'); } catch (_e) {}
   }
 
   function getScope() {
-    try { return localStorage.getItem(SCOPE_KEY) || 'main'; } catch(e) { return 'main'; }
+    try { return localStorage.getItem(SCOPE_KEY) || 'main'; } catch (_e) { return 'main'; }
   }
 
   function setScope(v) {
-    try { localStorage.setItem(SCOPE_KEY, v); } catch(e) {}
+    try { localStorage.setItem(SCOPE_KEY, v); } catch (_e) {}
   }
 
   var GROUPS = [

@@ -81,7 +81,7 @@ export async function onRequest(context) {
       session_token: token,
       user: { id: user.id, name: user.name, email: user.email, email_verified: user.email_verified, is_new: isNew }
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });

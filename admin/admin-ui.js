@@ -21,15 +21,8 @@ function el(tag, attrs) {
   return elem;
 }
 
-function frag() {
-  var f = document.createDocumentFragment();
-  for (var i = 0; i < arguments.length; i++) {
-    if (arguments[i] != null) f.appendChild(typeof arguments[i] === 'string' ? document.createTextNode(arguments[i]) : arguments[i]);
-  }
-  return f;
-}
-
 /* ── Toast ── */
+/* eslint-disable-next-line no-unused-vars */
 var Toast = (function() {
   var container;
   function ensure() {
@@ -60,9 +53,10 @@ var Toast = (function() {
 })();
 
 /* ── Modal ── */
+/* eslint-disable-next-line no-unused-vars */
 var Modal = (function() {
   var stack = [];
-  function create(id, contentFn) {
+  function create(id, _contentFn) {
     var overlay = el('div', { className: 'modal-overlay', id: id, role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': id + '-title' });
     var modal = el('div', { className: 'modal' });
     overlay.appendChild(modal);
@@ -104,6 +98,7 @@ var Modal = (function() {
 })();
 
 /* ── Tabs ── */
+/* eslint-disable-next-line no-unused-vars */
 var Tabs = (function() {
   var instances = {};
   function create(opts) {
@@ -136,6 +131,7 @@ var Tabs = (function() {
 })();
 
 /* ── Skeleton ── */
+/* eslint-disable-next-line no-unused-vars */
 var Skeleton = {
   stat: function() { return '<div class="skeleton skeleton-stat"></div>'; },
   line: function(width) { return '<div class="skeleton skeleton-line' + (width ? ' w' + width : '') + '"></div>'; },
@@ -152,33 +148,3 @@ var Skeleton = {
     return h;
   }
 };
-
-/* ── Time formatting ── */
-function formatTime(iso) {
-  if (!iso) return '-';
-  try {
-    var d = new Date(iso.replace(' ', 'T') + 'Z');
-    var now = new Date();
-    var diff = Math.round((now - d) / 60000);
-    if (diff < 1) return 'just now';
-    if (diff < 60) return diff + 'm ago';
-    var hrs = Math.round(diff / 60);
-    if (hrs < 24) return hrs + 'h ago';
-    if (hrs < 48) return 'yesterday';
-    return d.toLocaleDateString();
-  } catch(e) { return iso; }
-}
-
-/* ── Status badge helper ── */
-function statusBadge(s) {
-  if (!s) return '<span class="tag tag-dim">-</span>';
-  var m = { idle: 'tag-gold', busy: 'tag-blue', online: 'tag-green', offline: 'tag-dim', error: 'tag-red', completed: 'tag-green', pending: 'tag-purple', in_progress: 'tag-blue', active: 'tag-green' };
-  var cls = m[s.toLowerCase()] || 'tag-dim';
-  return '<span class="tag ' + cls + '">' + s + '</span>';
-}
-
-function statusDot(s) {
-  if (!s) return '<span class="activity-dot"></span>';
-  var cls = s.toLowerCase();
-  return '<span class="activity-dot ' + cls + '"></span>';
-}

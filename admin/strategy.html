@@ -121,7 +121,7 @@
     <li><strong>Cloudflare Web Analytics</strong> — auto-injected by Cloudflare Pages when enabled in dashboard ✓</li>
     <li><strong>/api/track endpoint</strong> — logs page views + custom events (donation_started) to D1 events table, with device type, country, traffic source</li>
     <li><strong>Donation funnel tracking</strong> — donation_started event fires on checkout open, enabling abandoned-donation recovery</li>
-    <li><strong>Abandoned donation recovery cron</strong> — runs hourly, checks for donation_started events >24h old with no completed donation, queues reminder email</li>
+    <li><strong>Abandoned donation recovery cron</strong> — runs hourly, checks for donation_started events older than 24h with no completed donation, queues reminder email</li>
     <li><strong>Flutterwave dashboard</strong> — shows donation amounts, frequency, currency</li>
   </ul>
 

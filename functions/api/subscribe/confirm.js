@@ -73,7 +73,7 @@ export async function onRequest(context) {
     }
 
     return new Response(htmlResponse('Your subscription is confirmed! Welcome to The Studio Weekly.', true, refCode), { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(htmlResponse('Something went wrong. Please try again.', false), { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
   }
 }

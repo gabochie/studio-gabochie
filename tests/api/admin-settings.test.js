@@ -7,9 +7,13 @@ import { onRequest as submissionsOnRequest } from '../../functions/api/admin/sub
 function makeCtx(url, opts) {
   opts = opts || {};
   var db = opts.db || mockDb({});
+  var req = opts.request || new Request(url);
+  var headers = new Headers(req.headers);
+  if (!headers.has('X-Admin-Key')) headers.set('X-Admin-Key', 'test-admin-key');
+  var authed = new Request(req, { headers: headers });
   return buildContext(url, {
-    env: Object.assign({ DB: db }, opts.env || {}),
-    request: opts.request || undefined
+    env: Object.assign({ DB: db, ADMIN_API_KEY: 'test-admin-key' }, opts.env || {}),
+    request: authed
   });
 }
 

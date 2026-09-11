@@ -88,7 +88,7 @@ export async function onRequest(context) {
           return new Response(JSON.stringify({ status: 'error', message: 'Provide ids[] or all=true' }), { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });
         }
 
-        var scored = [];
+        let scored = [];
         for (var r of rows) {
           if (!r.bio) { scored.push({ id: r.id, score: 0, reason: 'No bio to score' }); continue; }
           try {

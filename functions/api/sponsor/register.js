@@ -15,7 +15,7 @@ export async function onRequest(context) {
   }
 
   let body;
-  try { body = await request.json(); } catch (e) {
+  try { body = await request.json(); } catch (_e) {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400, headers: { 'Content-Type': 'application/json' }
     });

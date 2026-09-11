@@ -52,7 +52,6 @@ export async function onRequest(context) {
 
     var barClass = isComplete ? 'complete' : (isActive ? '' : 'inactive');
     var statusLabel = isComplete ? 'Goal Reached' : (isActive ? 'Active' : campaign.status);
-    var donateRef = 'camp_' + slug;
 
     var donationRows = donations.slice(0, 10).map(function(d) {
       return '<tr><td>' + esc(d.donor_name || 'Anonymous') + '</td><td>' + fmtAmount(d.amount, d.currency || currency) + '</td><td>' + formatDate(d.created_at) + '</td></tr>';
@@ -207,7 +206,7 @@ export async function onRequest(context) {
       '</body></html>';
 
     return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html;charset=utf-8' } });
-  } catch (err) {
+  } catch (_err) {
     var errHtml = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Error — Studio Gabochie</title><style>body{font-family:Inter,sans-serif;background:#0A1628;color:#CDD5E0;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;text-align:center}.card{background:#0F1F35;border:1px solid #1E3456;border-radius:12px;padding:48px;max-width:400px}h1{font-family:Barlow Condensed,sans-serif;color:#fff;margin:0 0 8px}p{color:#6B7F9A;margin:0 0 24px}a{color:#C9A84C;text-decoration:none}</style></head><body><div class="card"><h1>Something Went Wrong</h1><p>Please try again later.</p><a href="/campaigns/">&larr; View All Campaigns</a></div></body></html>';
     return new Response(errHtml, { status: 500, headers: { 'Content-Type': 'text/html;charset=utf-8' } });
   }

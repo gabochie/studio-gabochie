@@ -36,7 +36,7 @@ export async function onRequest(context) {
     ).bind(enrollment.id).all()).results || [];
     var latestPassed = rows.length > 0 ? rows.some(function(r) { return r.passed === 1; }) : false;
     return new Response(JSON.stringify({ status: 'ok', attempts: rows, latest_passed: latestPassed }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   }
 }

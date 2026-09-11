@@ -34,7 +34,7 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({ status: 'ok', message: 'Application received. We will review and get back to you.' }), { status: 201, headers: { 'Content-Type': 'application/json', ...CORS } });
 
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...CORS } });
   }
 }

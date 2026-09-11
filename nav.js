@@ -96,7 +96,7 @@
     phFooter.outerHTML = footerHtml;
   }
 
-  window.toggleNav = function(el) {
+  window.toggleNav = function(_el) {
     var nav = document.querySelector('.nav-links');
     var overlay = document.querySelector('.nav-mobile-overlay');
     var btn = document.querySelector('.nav-toggle');
@@ -111,10 +111,10 @@
   /* ── Session-aware Nav (Login/Signup) ── */
   var GA_SESSION_KEY = 'ga_session_token';
   function getSessionToken() {
-    try { return localStorage.getItem(GA_SESSION_KEY); } catch(e) { return null; }
+    try { return localStorage.getItem(GA_SESSION_KEY); } catch (_e) { return null; }
   }
   function clearSession() {
-    try { localStorage.removeItem(GA_SESSION_KEY); } catch(e) {}
+    try { localStorage.removeItem(GA_SESSION_KEY); } catch (_e) {}
   }
   function checkSession(callback) {
     var token = getSessionToken();

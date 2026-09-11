@@ -11,7 +11,6 @@ export async function onRequest(context) {
       status: 501, headers: { 'Content-Type': 'application/json' }
     });
   }
-  var url = new URL(request.url);
 
   if (request.method === 'GET') {
     var token = getToken(request);
@@ -65,7 +64,7 @@ export async function onRequest(context) {
         level: enrollment.xp_level || 1,
         streak: enrollment.streak || 0
       }), { headers: { 'Content-Type': 'application/json' } });
-    } catch (err) {
+    } catch (_err) {
       return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
         status: 500, headers: { 'Content-Type': 'application/json' }
       });
@@ -213,7 +212,7 @@ export async function onRequest(context) {
       streak: enrollment.streak || 0,
       new_achievements: []
     }), { headers: { 'Content-Type': 'application/json' } });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

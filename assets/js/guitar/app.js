@@ -1,6 +1,7 @@
 /* Gideon Guitar Method — Engine v2 */
 /* SPA Navigation · Shared Components · State Management */
 
+/* eslint-disable-next-line no-unused-vars */
 const Guitar = {
   /* ----- Config ----- */
   API_ROOT: '/api/guitar',
@@ -58,7 +59,7 @@ const Guitar = {
       if (config.freeModules) this.FREE_MODULES = parseInt(config.freeModules) || 3;
       if (config.urgencyText) this.URGENCY_TEXT = config.urgencyText;
       if (config.pricingTagline) this.PRICING_TAGLINE = config.pricingTagline;
-    } catch (e) {
+    } catch (_e) {
       /* keep defaults */
     }
   },

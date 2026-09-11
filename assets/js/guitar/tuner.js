@@ -77,7 +77,6 @@ class GuitarTuner {
     rms = Math.sqrt(rms / size);
     if (rms < 0.01) return -1;
 
-    let found = false;
     for (let offset = 2; offset < maxSamples; offset++) {
       let correlation = 0;
       for (let i = 0; i < maxSamples; i++) correlation += buffer[i] * buffer[i + offset];

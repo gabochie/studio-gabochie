@@ -1,7 +1,7 @@
 import { queueEmail, abandonedDonationReminder, daysFromNow } from './_send.js';
 
 export async function onRequest(context) {
-  const { request, env } = context;
+  const { env } = context;
   if (!env.DB) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
   }
@@ -28,7 +28,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok', checked: results.length, queued }), {
       headers: { 'Content-Type': 'application/json' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

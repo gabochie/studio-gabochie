@@ -9,7 +9,6 @@ export async function onRequest(context) {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  var url = new URL(request.url);
   var cronSecret = request.headers.get('X-Cron-Secret') || '';
 
   if (!env.CRON_SECRET || cronSecret !== env.CRON_SECRET) {

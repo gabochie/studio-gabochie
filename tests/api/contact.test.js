@@ -34,23 +34,23 @@ describe('POST /api/contact', function () {
         BREVO_SMTP_SENDER: 'studio@gabochie.com',
         BREVO_SMTP_LOGIN: 'login',
         CONTACT_TO: 'studio@gabochie.com',
+        ADMIN_API_KEY: 'test-admin-key',
       },
     });
   });
 
-  it('returns 405 for GET without admin referer', async function () {
+  it('returns 403 for GET without admin key', async function () {
     ctx.request = new Request('http://localhost/api/contact', { method: 'GET' });
     var res = await onRequest(ctx);
     expect(res.status).toBe(403);
     var body = await res.json();
-    expect(body.status).toBe('error');
-    expect(body.message).toContain('Unauthorized');
+    expect(body.error).toContain('Unauthorized');
   });
 
-  it('returns 200 for GET with admin referer', async function () {
+  it('returns 200 for GET with admin key', async function () {
     ctx.request = new Request('http://localhost/api/contact', {
       method: 'GET',
-      headers: { 'Referer': '/admin/' },
+      headers: { 'X-Admin-Key': 'test-admin-key' },
     });
     var res = await onRequest(ctx);
     expect(res.status).toBe(200);

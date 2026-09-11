@@ -256,7 +256,6 @@ export async function onRequest(context) {
       const tierName = tierMap[tier] || 'Supporter';
       if (donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
         try {
-          const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
           const welcomeHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
           <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -386,9 +385,8 @@ export async function onRequest(context) {
       if (donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
         try {
           var sName = orderRec ? orderRec.item_name : storeItemName;
-          var sType = orderRec ? orderRec.item_type : storeItemType;
           var sVariant = orderRec ? orderRec.item_variant : '';
-          var displayName = sName || 'Item';
+          let displayName = sName || 'Item';
           if (sVariant) { displayName = displayName + ' (' + sVariant + ')'; }
           var shipCity = orderRec ? orderRec.shipping_city : '';
           var shipRegion = orderRec ? orderRec.shipping_region : '';
@@ -484,7 +482,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok', event, canonicalStatus }), {
       headers: { 'Content-Type': 'application/json' }
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });

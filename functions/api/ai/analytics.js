@@ -63,7 +63,7 @@ export async function onRequest(context) {
     var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 1500 });
 
     var forecast = {};
-    try { forecast = JSON.parse(result.content); } catch (e) { forecast = { error: 'Failed to parse forecast' }; }
+    try { forecast = JSON.parse(result.content); } catch (_e) { forecast = { error: 'Failed to parse forecast' }; }
 
     return new Response(JSON.stringify({
       status: 'ok',

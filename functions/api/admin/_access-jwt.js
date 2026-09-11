@@ -1,9 +1,6 @@
 // Cloudflare Access JWT verification
 // Requires env.CF_ACCESS_TEAM (e.g. "gideonabochie") and env.CF_ACCESS_AUD (Access app AUD tag)
 
-var keyCache = null;
-var keyCacheTime = 0;
-
 function base64UrlDecode(s) {
   s = s.replace(/-/g, '+').replace(/_/g, '/');
   while (s.length % 4) s += '=';
@@ -18,7 +15,7 @@ function base64UrlToString(s) {
 
 function parseJwtPayload(payload) {
   try { return JSON.parse(base64UrlToString(payload)); }
-  catch (e) { return null; }
+  catch (_e) { return null; }
 }
 
 async function fetchPublicKeys(team, env) {
@@ -28,7 +25,7 @@ async function fetchPublicKeys(team, env) {
     try {
       var cached = await env.GA_KV.get('cf_access_jwks', { type: 'text' });
       if (cached) return JSON.parse(cached).keys;
-    } catch (e) {}
+    } catch (_e) {}
   }
   var res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch Access public keys: ' + res.status);
@@ -37,7 +34,7 @@ async function fetchPublicKeys(team, env) {
   // Cache in KV if available
   if (env.GA_KV && keys.length) {
     try { await env.GA_KV.put('cf_access_jwks', JSON.stringify({ keys: keys }), { expirationTtl: 300 }); }
-    catch (e) {}
+    catch (_e) {}
   }
   return keys;
 }
@@ -81,7 +78,7 @@ export async function verifyAccessJwt(request, env) {
   // Fetch and cache public keys
   var keys;
   try { keys = await fetchPublicKeys(team, env); }
-  catch (e) { return null; }
+  catch (_e) { return null; }
 
   var jwk = findKey(keys, header.kid);
   if (!jwk) return null;
@@ -91,11 +88,11 @@ export async function verifyAccessJwt(request, env) {
   var data = new TextEncoder().encode(parts[0] + '.' + parts[1]);
   var key;
   try { key = await importJwk(jwk); }
-  catch (e) { return null; }
+  catch (_e) { return null; }
 
   var valid;
   try { valid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, signature, data); }
-  catch (e) { return null; }
+  catch (_e) { return null; }
   if (!valid) return null;
 
   // Parse and validate payload claims

@@ -55,7 +55,7 @@ export async function onRequest(context) {
     var body = await request.json();
     var { status: newStatus, featured } = body;
 
-    var fields = []; var params = [];
+    let fields = []; let params = [];
     if (newStatus) { fields.push("status = ?"); params.push(newStatus); }
     if (featured !== undefined) { fields.push("featured = ?"); params.push(featured); }
     if (!fields.length) return new Response(JSON.stringify({ error: 'No fields to update' }), { status: 400, headers: { 'Content-Type': 'application/json', ...CORS } });

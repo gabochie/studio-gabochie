@@ -23,7 +23,7 @@ export async function ensureAgentTables(db) {
     `CREATE TABLE IF NOT EXISTS agent_prompts (id INTEGER PRIMARY KEY AUTOINCREMENT, agent_type TEXT NOT NULL, prompt_key TEXT NOT NULL, system_prompt TEXT NOT NULL DEFAULT '', user_template TEXT NOT NULL DEFAULT '', model TEXT DEFAULT 'gpt-4o-mini', temperature REAL DEFAULT 0.7, max_tokens INTEGER DEFAULT 1024, created_at TEXT NOT NULL DEFAULT (datetime('now')), UNIQUE(agent_type, prompt_key))`,
   ];
   for (var s of stmts) {
-    try { await db.prepare(s).run(); } catch (e) {
+    try { await db.prepare(s).run(); } catch (_e) {
       // Ignore errors from indexes that already exist or minor conflicts
     }
   }
@@ -44,6 +44,6 @@ export async function ensureAdminTables(db) {
     `CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number)`,
   ];
   for (var s of stmts) {
-    try { await db.prepare(s).run(); } catch (e) {}
+    try { await db.prepare(s).run(); } catch (_e) {}
   }
 }

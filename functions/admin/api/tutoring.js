@@ -20,19 +20,19 @@ export async function onRequest(context) {
   if (request.method === 'GET') {
     if (type === 'bookings') {
       var status = url.searchParams.get('status') || '';
-      var conds = []; var params = [];
+      let conds = []; let params = [];
       if (status) { conds.push('b.status = ?'); params.push(status); }
-      var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
-      var items = await env.DB.prepare("SELECT b.*, t.name as tutor_name, t.slug as tutor_slug FROM tutoring_bookings b LEFT JOIN tutors t ON b.tutor_id = t.id" + where + " ORDER BY b.created_at DESC LIMIT 100").bind(...params).all();
+      let where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
+      let items = await env.DB.prepare("SELECT b.*, t.name as tutor_name, t.slug as tutor_slug FROM tutoring_bookings b LEFT JOIN tutors t ON b.tutor_id = t.id" + where + " ORDER BY b.created_at DESC LIMIT 100").bind(...params).all();
       return new Response(JSON.stringify({ status: 'ok', items: items.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
     }
 
     if (type === 'waitlist') {
       var role = url.searchParams.get('role') || '';
-      var conds = []; var params = [];
+      let conds = []; let params = [];
       if (role) { conds.push('role = ?'); params.push(role); }
-      var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
-      var items = await env.DB.prepare("SELECT * FROM tutoring_waitlist" + where + " ORDER BY created_at DESC LIMIT 200").bind(...params).all();
+      let where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
+      let items = await env.DB.prepare("SELECT * FROM tutoring_waitlist" + where + " ORDER BY created_at DESC LIMIT 200").bind(...params).all();
       return new Response(JSON.stringify({ status: 'ok', items: items.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
     }
 
@@ -43,10 +43,10 @@ export async function onRequest(context) {
     }
 
     var s = url.searchParams.get('status') || '';
-    var conds = []; var params = [];
+    let conds = []; let params = [];
     if (s) { conds.push('status = ?'); params.push(s); }
-    var where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
-    var items = await env.DB.prepare("SELECT * FROM tutors" + where + " ORDER BY created_at DESC LIMIT 100").bind(...params).all();
+    let where = conds.length ? ' WHERE ' + conds.join(' AND ') : '';
+    let items = await env.DB.prepare("SELECT * FROM tutors" + where + " ORDER BY created_at DESC LIMIT 100").bind(...params).all();
     return new Response(JSON.stringify({ status: 'ok', items: items.results || [] }), { headers: { 'Content-Type': 'application/json', ...CORS } });
   }
 
@@ -56,7 +56,7 @@ export async function onRequest(context) {
     var body = await request.json();
     var { status: newStatus, featured, hourly_rate } = body;
 
-    var fields = []; var params = [];
+    var fields = []; let params = [];
     if (newStatus) { fields.push("status = ?"); params.push(newStatus); }
     if (featured !== undefined) { fields.push("featured = ?"); params.push(featured); }
     if (hourly_rate !== undefined) { fields.push("hourly_rate = ?"); params.push(hourly_rate); }

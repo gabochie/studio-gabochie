@@ -18,7 +18,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: Object.assign({ 'Content-Type': 'application/json', 'Set-Cookie': 'ga_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.gabochie.com; HttpOnly; Secure; SameSite=Lax' }, cors)
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
     });
