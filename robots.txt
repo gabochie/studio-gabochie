@@ -29,10 +29,6 @@ Disallow: /
 User-agent: PerplexityBot
 Disallow: /
 
-# Crawl delay for polite crawlers
-User-agent: *
-Crawl-delay: 2
-
 # Sitemaps
 Sitemap: https://studio.gabochie.com/sitemap.xml
 Sitemap: https://news.gabochie.com/sitemap.xml

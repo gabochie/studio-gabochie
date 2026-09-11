@@ -11,6 +11,25 @@
 <meta property="og:url" content="https://studio.gabochie.com/merch/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/banner.jpg">
 <link rel="canonical" href="https://studio.gabochie.com/merch/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Studio Gabochie Merch",
+  "description": "Official Studio Gabochie merchandise — t-shirts, hoodies, and apparel featuring original designs.",
+  "url": "https://studio.gabochie.com/merch/",
+  "isPartOf": { "@type": "WebSite", "name": "Studio Gabochie", "url": "https://studio.gabochie.com" },
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "item": { "@type": "Product", "name": "Soc T-Shirt", "offers": { "@type": "Offer", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" } } },
+      { "@type": "ListItem", "position": 2, "item": { "@type": "Product", "name": "Nation Builder Tee", "offers": { "@type": "Offer", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" } } },
+      { "@type": "ListItem", "position": 3, "item": { "@type": "Product", "name": "Studio Hoodie", "offers": { "@type": "Offer", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" } } },
+      { "@type": "ListItem", "position": 4, "item": { "@type": "Product", "name": "Wisdom Cap", "offers": { "@type": "Offer", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" } } }
+    ]
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://checkout.flutterwave.com">
@@ -275,5 +294,6 @@ fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(functio
   }).catch(function(){});
 }, 60000);
 </script>
+<script src="/assets/js/analytics.js" defer></script>
 </body>
 </html>

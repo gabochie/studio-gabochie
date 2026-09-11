@@ -289,4 +289,5 @@ function extractText(a){var b=a.cloneNode(!0),c=b.querySelectorAll('.readaloud-b
 function showReadAloud(a){var b=document.getElementById('readAloudBar'+a),c=document.getElementById('lessonBody');b&&c&&c.textContent.trim()&&(b.style.display='flex',populateVoices('voiceSelect'+a))}
 if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){populateVoices('voiceSelect1')};document.addEventListener('visibilitychange',function(){document.hidden&&window.speechSynthesis.speaking&&(window.speechSynthesis.pause(),readAloud.paused=!0)})}
 </script>
+<script src="/assets/js/analytics.js" defer></script>
 </body></html>

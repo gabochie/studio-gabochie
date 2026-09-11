@@ -1273,18 +1273,30 @@ function loadHomepageContent() {
     if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.testimonials;
   });
 
-  // Stats
-  fetch('/api/stats').then(function(r){return r.json()}).then(function(d){
+  // Stats — live D1 impact counts with curated stats as fallback
+  fetch('/api/impact').then(function(r){return r.json()}).then(function(d){
     var grid = document.getElementById('statsGrid');
-    if (d.status !== 'ok' || !d.items || !d.items.length) {
-      grid.innerHTML = FALLBACKS.stats;
+    if (d.status === 'ok' && d.items && d.items.length && !d.fallback) {
+      grid.innerHTML = '';
+      d.items.forEach(function(s){
+        grid.innerHTML += '<div class="stat-card"><span class="stat-number" data-target="' + s.value + '">0</span><span class="stat-label">' + s.label + '</span></div>';
+      });
+      if (window.animateCounters) { animateCounters(); }
       return;
     }
-    grid.innerHTML = '';
-    d.items.forEach(function(s){
-      grid.innerHTML += '<div class="stat-card"><span class="stat-number" data-target="' + s.value + '">0</span><span class="stat-label">' + s.label + '</span></div>';
+    fetch('/api/stats').then(function(r2){return r2.json()}).then(function(d2){
+      if (d2.status !== 'ok' || !d2.items || !d2.items.length) {
+        grid.innerHTML = FALLBACKS.stats;
+        return;
+      }
+      grid.innerHTML = '';
+      d2.items.forEach(function(s){
+        grid.innerHTML += '<div class="stat-card"><span class="stat-number" data-target="' + s.value + '">0</span><span class="stat-label">' + s.label + '</span></div>';
+      });
+      if (window.animateCounters) { animateCounters(); }
+    }).catch(function(){
+      if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.stats;
     });
-    if (window.animateCounters) { animateCounters(); }
   }).catch(function(){
     var grid = document.getElementById('statsGrid');
     if(grid && !grid.children.length) grid.innerHTML = FALLBACKS.stats;
