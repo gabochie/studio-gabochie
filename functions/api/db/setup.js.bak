@@ -430,7 +430,7 @@ export async function onRequest(context) {
 
         /* ── Pre-Launch Search Engine & SEO Checklist ── */
         ('Submit sitemap to Bing Webmaster Tools', 'Verify domain ownership in Bing Webmaster Tools, submit sitemap.xml, monitor crawl status', 7, 'pending', 'manual', 'high'),
-        ('Submit website to Yandex Webmaster', 'Register gideonabochie.org in Yandex.Webmaster, add sitemap, verify domain via meta tag or DNS', 7, 'pending', 'manual', 'medium'),
+        ('Submit website to Yandex Webmaster', 'Register studio.gabochie.com in Yandex.Webmaster, add sitemap, verify domain via meta tag or DNS', 7, 'pending', 'manual', 'medium'),
         ('Register on Google Business Profile', 'Create or claim Google Business Profile listing for offline presence and local SEO', 7, 'pending', 'manual', 'medium'),
         ('Run technical SEO audit with Screaming Frog or Sitebulb', 'Crawl all pages, check for broken links, duplicate content, missing meta tags, redirect chains', 7, 'pending', 'manual', 'high'),
         ('Fix all broken internal links from SEO audit', 'Review crawl report and fix 404s, redirect chains, and broken anchors found in technical audit', 7, 'pending', 'manual', 'high'),

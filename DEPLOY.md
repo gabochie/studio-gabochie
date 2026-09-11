@@ -9,7 +9,7 @@ Netlify and GitHub Pages will NOT work (they don't support D1 or Cloudflare Func
 
 1. Go to https://dash.cloudflare.com → **Workers & Pages** → **Pages**
 2. Click **Create** → **Connect to Git**
-3. Select the `gideonabochie-org` repository
+3. Select the `gabochie-studio` repository
 4. Build settings (leave defaults — no build command, output dir = root):
    - **Build command**: (leave empty)
    - **Build output directory**: (leave as `/`)
@@ -25,11 +25,11 @@ Netlify and GitHub Pages will NOT work (they don't support D1 or Cloudflare Func
 ## Step 2: D1 Database
 
 1. In Cloudflare dashboard, go to **Workers & Pages** → **D1**
-2. Click **Create database** → name it `gideonabochie-db` → **Create**
+2. Click **Create database** → name it `gabochie-studio-db` → **Create**
 3. Go back to **Pages** → your project → **Settings** → **Functions**
 4. Under **D1 database bindings**, click **Add binding**:
    - **Variable name**: `DB`
-   - **D1 database**: select `gideonabochie-db`
+   - **D1 database**: select `gabochie-studio-db`
 5. **Redeploy** the project
 6. Visit `https://<project>.pages.dev/api/db/setup` to initialize all tables
    - This creates: `subscribers`, `tasks`, `enrollments`, `contact_submissions`,

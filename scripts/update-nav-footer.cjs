@@ -37,7 +37,7 @@ var navOnlyFiles = [
   '404.html'
 ];
 
-var root = 'C:\\Users\\user\\Documents\\GitHub\\gideonabochie-org\\gideonabochie-org';
+var root = path.join(__dirname, '..');
 
 function readFile(p) {
   return fs.readFileSync(path.join(root, p), 'utf8');

@@ -1,5 +1,5 @@
 {
-  "name": "gideonabochie-studio",
+  "name": "gabochie-studio",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,7 +20,7 @@
     "db:setup": "node scripts/db-setup.js",
     "db:backup": "node scripts/db-backup.js",
     "scrape:instagram": "node scripts/scrape-instagram.js",
-    "deploy": "npm run predeploy; wrangler pages deploy . --project-name gideonabochie-org; npm run db:setup"
+    "deploy": "npm run predeploy; wrangler pages deploy . --project-name gabochie-studio; npm run db:setup"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
