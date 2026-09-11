@@ -1,5 +1,5 @@
 {
-  "project": "Studio by Gabochie — studio.gabochie.com",
+  "project": "Studio Gabochie — studio.gabochie.com",
   "tagline": "School of Creativity, Love & Wisdom",
   "domain": "https://studio.gabochie.com",
   "infrastructure_plan": "Cloudflare Pages (static) → Cloudflare Workers + D1 (serverless backend, free tier) → VPS (scale when revenue justifies)",

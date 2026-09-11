@@ -101,7 +101,7 @@ export async function onRequest(context) {
     // Mark guitar course enrollment
     if (event === 'charge.completed' && tx_ref.startsWith('guitar_')) {
       try {
-        await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio by Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
+        await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
       } catch (_) {}
     }
 
@@ -127,7 +127,7 @@ export async function onRequest(context) {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
           <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
           <tr><td style="background:#0A1628;padding:32px;text-align:center">
-          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>
+          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>
           <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Your Books Are Ready</p>
           </td></tr>
           <tr><td style="padding:32px">
@@ -144,9 +144,9 @@ export async function onRequest(context) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+              sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
               to: [{ email: bEmail, name: bName }],
-              subject: 'Your Books Are Ready — Studio by Gabochie',
+              subject: 'Your Books Are Ready — Studio Gabochie',
               htmlContent: downloadHtml
             })
           });
@@ -154,7 +154,7 @@ export async function onRequest(context) {
 
         // Queue day-3 book upsell
         try {
-          await queueEmail(env, bEmail, bName, 'Go Deeper with the Premium Bundle — Studio by Gabochie', bookUpsell(bName), 'book_upsell', daysFromNow(3));
+          await queueEmail(env, bEmail, bName, 'Go Deeper with the Premium Bundle — Studio Gabochie', bookUpsell(bName), 'book_upsell', daysFromNow(3));
         } catch (_e) {}
       }
       try { await generateInvoice(env, 'books', 'book_purchases', { name: bName, email: bEmail, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Book Purchase', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
@@ -175,19 +175,19 @@ export async function onRequest(context) {
               '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
               '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
               '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-              '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
+              '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
               '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Full Access Activated</p></td></tr>' +
               '<tr><td style="padding:32px">' +
               '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + upgEnrollment.student_name + ',</p>' +
               '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your full access to <strong style="color:#C9A84C">' + upgEnrollment.title + '</strong> is now active. Start learning at your own pace.</p>' +
               '<a href="https://studio.gabochie.com/dashboard/?token=' + upgEnrollment.access_token + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
-              '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio by Gabochie &mdash; Accra, Ghana</p>' +
+              '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
               '</td></tr></table></td></tr></table></body></html>';
             await fetch('https://api.brevo.com/v3/smtp/email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
               body: JSON.stringify({
-                sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+                sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
                 to: [{ email: donor_email, name: upgEnrollment.student_name }],
                 subject: 'Full Access Activated — ' + upgEnrollment.title,
                 htmlContent: upgHtml
@@ -217,19 +217,19 @@ export async function onRequest(context) {
                 '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
                 '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
                 '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-                '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
+                '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
                 '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership Active</p></td></tr>' +
                 '<tr><td style="padding:32px">' +
                 '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (membUser.name || donor_name) + ',</p>' +
                 '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + (membTier === 'vip' ? 'VIP' : 'Premium') + '</strong> membership is now active. Enjoy full access to all courses, resources, and features.</p>' +
                 '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
-                '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio by Gabochie &mdash; Accra, Ghana</p>' +
+                '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
                 '</td></tr></table></td></tr></table></body></html>';
               await fetch('https://api.brevo.com/v3/smtp/email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
                 body: JSON.stringify({
-                  sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+                  sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
                   to: [{ email: donor_email, name: membUser.name || donor_name }],
                   subject: 'Welcome to ' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership',
                   htmlContent: membHtml
@@ -261,7 +261,7 @@ export async function onRequest(context) {
           <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
           <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
           <tr><td style="background:#0A1628;padding:32px;text-align:center">
-          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>
+          <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>
           <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Welcome, ${tierName}!</p>
           </td></tr>
           <tr><td style="padding:32px">
@@ -278,15 +278,15 @@ export async function onRequest(context) {
           <li>Your recurring payment will be processed automatically each period</li>
           <li>You can cancel or change your plan anytime by replying to this email</li>
           </ul>
-          <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">Studio by Gabochie &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
+          <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">Studio Gabochie &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
           </td></tr></table></td></tr></table></body></html>`;
           await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+              sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
               to: [{ email: donor_email, name: donor_name }],
-              subject: 'Welcome to the ' + tierName + ' Tier — Studio by Gabochie',
+              subject: 'Welcome to the ' + tierName + ' Tier — Studio Gabochie',
               htmlContent: welcomeHtml
             })
           });
@@ -316,21 +316,21 @@ export async function onRequest(context) {
               '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
               '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
               '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-              '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
+              '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
               '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + displayName + ' Tier Active</p></td></tr>' +
               '<tr><td style="padding:32px">' +
               '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (tierUser ? tierUser.name : (tierSub.name || donor_name)) + ',</p>' +
               '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + displayName + '</strong> tier is now active. Thank you for supporting the mission.</p>' +
               '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
-              '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio by Gabochie &mdash; Accra, Ghana</p>' +
+              '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
               '</td></tr></table></td></tr></table></body></html>';
             await fetch('https://api.brevo.com/v3/smtp/email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
               body: JSON.stringify({
-                sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+                sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
                 to: [{ email: donor_email, name: tierUser ? tierUser.name : (tierSub.name || donor_name) }],
-                subject: 'Welcome to the ' + displayName + ' Tier — Studio by Gabochie',
+                subject: 'Welcome to the ' + displayName + ' Tier — Studio Gabochie',
                 htmlContent: tierHtml
               })
             });
@@ -402,7 +402,7 @@ export async function onRequest(context) {
             '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
             '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
             '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-            '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
+            '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
             '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Thank You for Your Purchase</p></td></tr>' +
             '<tr><td style="padding:32px">' +
             '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + donor_name + ',</p>' +
@@ -418,9 +418,9 @@ export async function onRequest(context) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
             body: JSON.stringify({
-              sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+              sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
               to: [{ email: donor_email, name: donor_name }],
-              subject: 'Purchase Confirmed — Studio by Gabochie',
+              subject: 'Purchase Confirmed — Studio Gabochie',
               htmlContent: receiptHtml
             })
           });
@@ -442,7 +442,7 @@ export async function onRequest(context) {
         <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
         <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
         <tr><td style="background:#0A1628;padding:32px;text-align:center">
-        <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>
+        <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>
         <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Donation Receipt</p>
         </td></tr>
         <tr><td style="padding:32px">
@@ -457,16 +457,16 @@ export async function onRequest(context) {
         </table>
         <p style="color:#64748B;font-size:12px;line-height:1.6;margin:0 0 6px">This receipt was issued automatically. Keep it for your records.</p>
         ${invLink}
-        <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">Studio by Gabochie &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
+        <p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:0">Studio Gabochie &mdash; Accra, Ghana &bull; <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>
         </td></tr></table></td></tr></table></body></html>`;
 
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+            sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
             to: [{ email: donor_email, name: donor_name }],
-            subject: 'Your Donation Receipt — Studio by Gabochie',
+            subject: 'Your Donation Receipt — Studio Gabochie',
             htmlContent: receiptHtml
           })
         });

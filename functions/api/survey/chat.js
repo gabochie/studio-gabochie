@@ -50,13 +50,13 @@ var PROGRAM_MAP = {
 };
 
 var SYSTEM_PROMPT = [
-  'You are a youth development advisor for Studio by Gabochie, a Ghanaian school aligned with the National Youth Policy (2022-2032).',
+  'You are a youth development advisor for Studio Gabochie, a Ghanaian school aligned with the National Youth Policy (2022-2032).',
   'Your mission: help young Ghanaians (ages 15-35) find the right program that matches their interests and national development goals.',
   '',
   'The National Youth Policy vision: "An empowered youth contributing positively to national development."',
   'The policy focuses on: skills development, job creation, civic participation, leadership, and national identity.',
   '',
-  'Available programs at Studio by Gabochie:',
+  'Available programs at Studio Gabochie:',
   '- Gideon Guitar Method (guitar-method): Play guitar, learn Ghanaian songs. Best for creative arts, music, cultural identity.',
   '- Systems Thinking for Vision Builders (systems-thinking): Biblical wisdom for seeing the whole picture. Best for business, strategy, governance, leadership, civic education.',
   '- The Spirit of God in Genesis (systems-thinking-genesis): Deep Bible study through creativity, wisdom & love. Best for faith, community leadership, biblical wisdom.',
@@ -139,7 +139,7 @@ export async function onRequest(context) {
         '- Desired skill: ' + learningStyle,
         '- Time commitment: ' + timeCommitment,
         '',
-        'Recommend ONE program from Studio by Gabochie that best fits this young Ghanaian.',
+        'Recommend ONE program from Studio Gabochie that best fits this young Ghanaian.',
         'Explain why it helps both their personal growth and Ghana\'s national development.'
       ].join('\n');
 

@@ -1,4 +1,4 @@
-# Studio by Gabochie — Style Guide
+# Studio Gabochie — Style Guide
 
 ## Design Tokens (CSS Custom Properties)
 

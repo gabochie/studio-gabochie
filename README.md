@@ -1,4 +1,4 @@
-# Studio by Gabochie
+# Studio Gabochie
 
 Full-stack platform for the School of Creativity, Love & Wisdom — education,
 payments, email automation, digital products, content management,

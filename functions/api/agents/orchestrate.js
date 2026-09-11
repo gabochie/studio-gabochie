@@ -11,14 +11,14 @@ function wrapEmailBody(name, content) {
   return '<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">' +
     '<table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">' +
     '<tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">' +
-    '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio by Gabochie</span>' +
+    '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>' +
     '</td></tr>' +
     '<tr><td style="padding:32px 0 24px">' +
     '<p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">' + (name ? 'Hi ' + name.replace(/</g,'&lt;') + ',' : 'Hello,') + '</p>' +
     '<div style="font-family:Georgia,serif;font-size:16px;color:#475569;line-height:1.8">' + htmlContent + '</div>' +
     '</td></tr>' +
     '<tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">' +
-    '<p style="font-family:\'Courier Prime\',monospace;font-size:10px;color:#94A3B8;margin:0">Studio by Gabochie &mdash; Accra, Ghana</p>' +
+    '<p style="font-family:\'Courier Prime\',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>' +
     '</td></tr></table></body></html>';
 }
 
@@ -56,7 +56,7 @@ async function processQueueItem(db, env, item) {
     var tools = (await db.prepare("SELECT * FROM agent_tools WHERE agent_type_id = ? AND enabled = 1").bind(agentType.id).all()).results || [];
 
     if (item.agent_type === 'content' && payload.prompt) {
-      var systemMsg = (prompt && prompt.system_prompt) || 'You are a content creator for Studio by Gabochie.';
+      var systemMsg = (prompt && prompt.system_prompt) || 'You are a content creator for Studio Gabochie.';
       aiResult = await callAI(env, systemMsg, payload.prompt, { model: prompt && prompt.model, temperature: prompt && prompt.temperature, max_tokens: prompt && prompt.max_tokens });
       if (aiResult && aiResult.content) {
         result = aiResult.content;
@@ -95,7 +95,7 @@ async function processQueueItem(db, env, item) {
             var toName = c.name || '';
             if (toEmail) {
               try {
-                await queueEmail(env, toEmail, toName, 'Discover Studio by Gabochie', wrapEmailBody(toName, aiRes.content), 'agent');
+                await queueEmail(env, toEmail, toName, 'Discover Studio Gabochie', wrapEmailBody(toName, aiRes.content), 'agent');
               } catch (_qe) { failCount++; continue; }
             }
             await db.prepare(
@@ -120,7 +120,7 @@ async function processQueueItem(db, env, item) {
       if (subData && subData.length > 0) {
         for (var s of subData.slice(0, 10)) {
           try {
-            await queueEmail(env, s.email || '', s.name || '', 'Re-engagement from Studio by Gabochie', wrapEmailBody(s.name, (aiResult && aiResult.content) || ''), 'agent');
+            await queueEmail(env, s.email || '', s.name || '', 'Re-engagement from Studio Gabochie', wrapEmailBody(s.name, (aiResult && aiResult.content) || ''), 'agent');
           } catch (_qe) {}
         }
       }
@@ -152,7 +152,7 @@ async function processQueueItem(db, env, item) {
       for (var order of pendingOrders) {
         await db.prepare("UPDATE store_orders SET status = 'completed' WHERE id = ?").bind(order.id).run();
         try {
-          await queueEmail(env, order.customer_email || '', order.customer_name || '', 'Your order from Studio by Gabochie is complete', wrapEmailBody(order.customer_name, 'Thank you for your purchase! Your order is now complete.'), 'agent');
+          await queueEmail(env, order.customer_email || '', order.customer_name || '', 'Your order from Studio Gabochie is complete', wrapEmailBody(order.customer_name, 'Thank you for your purchase! Your order is now complete.'), 'agent');
         } catch (_qe) {}
       }
       result = 'Processed ' + pendingOrders.length + ' pending orders';

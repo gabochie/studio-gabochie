@@ -72,11 +72,11 @@ export async function onRequest(context) {
       // Generate content via AI (different prompts per channel)
       var isWhatsApp = channel === 'whatsapp' || channel === 'both';
       var systemPrompt = isWhatsApp
-        ? 'You are an outreach specialist for Studio by Gabochie. Write warm, personal WhatsApp messages. Keep it under 300 characters. No HTML. No formatting.'
-        : 'You are an outreach specialist for Studio by Gabochie — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
+        ? 'You are an outreach specialist for Studio Gabochie. Write warm, personal WhatsApp messages. Keep it under 300 characters. No HTML. No formatting.'
+        : 'You are an outreach specialist for Studio Gabochie — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
       var userPrompt = isWhatsApp
         ? 'Write a WhatsApp re-engagement message for segment: ' + segmentLabel + '. The message should sound personal, remind them of our mission (creativity, love, wisdom), and include a CTA to visit studio.gabochie.com. Wrap subject in SUBJECT: and body in BODY:.'
-        : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — Studio by Gabochie') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit studio.gabochie.com/school/. Wrap subject in SUBJECT: and body in BODY:.';
+        : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — Studio Gabochie') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit studio.gabochie.com/school/. Wrap subject in SUBJECT: and body in BODY:.';
 
       var result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.7, max_tokens: 800 });
 
@@ -85,7 +85,7 @@ export async function onRequest(context) {
       }
 
       var content = result.content || '';
-      var subjectLine = subject || 'We miss you — Studio by Gabochie';
+      var subjectLine = subject || 'We miss you — Studio Gabochie';
       var bodyLines = content.split('BODY:');
       var messageBody = bodyLines.length > 1 ? bodyLines[1].trim() : content;
 

@@ -2,7 +2,7 @@
   var navHtml =
     '<nav>' +
     '<div class="container">' +
-    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio by Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio by Gabochie</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
+    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/#story">About</a>' +
     '<a href="/services/">Services</a>' +
@@ -19,7 +19,7 @@
     '<footer>' +
     '<div class="container">' +
     '<div>' +
-    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio by Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio by Gabochie</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
+    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
     '<p class="footer-about">A Bible-based ministry teaching a generation to create with excellence, love with devotion, and walk in the wisdom of God\'s Word. Rooted in Scripture, expressed through creativity, shared freely with the world.</p>' +
     '<div class="footer-social">' +
     '<a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>' +
@@ -82,7 +82,7 @@
     '<div class="footer-sponsor-item placeholder"><div class="placeholder-icon">+</div><span>Your Brand<small>Sponsor this spot</small></span></div>' +
     '</div>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio by Gabochie &mdash; School of Creativity, Love &amp; Wisdom. Rooted in Scripture, shared in love.</div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; School of Creativity, Love &amp; Wisdom. Rooted in Scripture, shared in love.</div>' +
     '</div>' +
     '</footer>';
 

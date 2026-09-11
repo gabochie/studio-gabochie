@@ -29,7 +29,7 @@ export async function onRequest(context) {
         '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
         '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
         '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
-        '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio by Gabochie</h1>' +
+        '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
         '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Reset Your Password</p></td></tr>' +
         '<tr><td style="padding:32px">' +
         '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 16px">Dear ' + (user.name || 'Student') + ',</p>' +
@@ -41,16 +41,16 @@ export async function onRequest(context) {
         '<p style="color:#C9A84C;font-size:12px;font-family:monospace;word-break:break-all;margin:8px 0 0">' + resetUrl + '</p>' +
         '</td></tr>' +
         '<tr><td style="padding:16px 32px;border-top:1px solid #E2E8F0">' +
-        '<p style="color:#94A3B8;font-size:10px;margin:0">Studio by Gabochie &mdash; Accra, Ghana</p></td></tr>' +
+        '<p style="color:#94A3B8;font-size:10px;margin:0">Studio Gabochie &mdash; Accra, Ghana</p></td></tr>' +
         '</table></td></tr></table></body></html>';
       try {
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
-            sender: { name: 'Studio by Gabochie', email: 'newsletter@gabochie.com' },
+            sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
             to: [{ email: emailClean, name: user.name || '' }],
-            subject: 'Reset Your Password — Studio by Gabochie',
+            subject: 'Reset Your Password — Studio Gabochie',
             htmlContent: html
           })
         });

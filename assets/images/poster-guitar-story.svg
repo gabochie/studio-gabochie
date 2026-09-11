@@ -39,7 +39,7 @@
   <image x="315" y="28" width="450" height="120" xlink:href="https://studio.gabochie.com/assets/images/logo.png" preserveAspectRatio="xMidYMid meet"/>
 
   <!-- Brand name text -->
-  <text x="540" y="160" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="18" font-weight="700" fill="#C9A84C" text-anchor="middle" letter-spacing="10" text-transform="uppercase">Studio by Gabochie</text>
+  <text x="540" y="160" font-family="'Barlow Condensed','Arial Black',sans-serif" font-size="18" font-weight="700" fill="#C9A84C" text-anchor="middle" letter-spacing="10" text-transform="uppercase">Studio Gabochie</text>
 
   <!-- Gold divider -->
   <line x1="200" y1="185" x2="880" y2="185" stroke="#C9A84C" stroke-width="1.5" opacity="0.5"/>
@@ -112,7 +112,7 @@
   <rect x="0" y="1914" width="1080" height="6" fill="#C9A84C"/>
 
   <!-- Footer -->
-  <text x="540" y="1720" font-family="'Barlow Condensed','Arial',sans-serif" font-size="16" font-weight="700" fill="#4A5F7A" text-anchor="middle" letter-spacing="4">Studio by Gabochie</text>
+  <text x="540" y="1720" font-family="'Barlow Condensed','Arial',sans-serif" font-size="16" font-weight="700" fill="#4A5F7A" text-anchor="middle" letter-spacing="4">Studio Gabochie</text>
   <text x="540" y="1750" font-family="'Libre Baskerville',Georgia,serif" font-size="13" font-style="italic" fill="#3A5278" text-anchor="middle">School of Creativity, Love &amp; Wisdom</text>
 
   <!-- Logo mark -->

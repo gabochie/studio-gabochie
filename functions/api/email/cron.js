@@ -40,7 +40,7 @@ export async function onRequest(context) {
       for (var row of abandonedResults) {
         var name = '';
         try { var d = JSON.parse(row.event_data); name = d.name || ''; } catch (_) {}
-        await queueEmail(env, row.email, name, 'You Were About to Make a Difference — Studio by Gabochie', abandonedDonationReminder(name), 'abandoned_donation', daysFromNow(0));
+        await queueEmail(env, row.email, name, 'You Were About to Make a Difference — Studio Gabochie', abandonedDonationReminder(name), 'abandoned_donation', daysFromNow(0));
         result.abandoned.queued++;
       }
     } catch (err) {

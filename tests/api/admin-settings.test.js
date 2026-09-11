@@ -27,12 +27,12 @@ describe('Preferences - GET', function() {
   });
 
   it('returns preferences as key-value map', async function() {
-    var db = mockDb({ settings: [{ key: 'site_name', value: 'Studio by Gabochie' }, { key: 'theme', value: 'dark' }] });
+    var db = mockDb({ settings: [{ key: 'site_name', value: 'Studio Gabochie' }, { key: 'theme', value: 'dark' }] });
     var c = makeCtx('http://localhost/api/admin/preferences', { db: db, request: new Request('http://localhost/api/admin/preferences') });
     var res = await prefsOnRequest(c);
     expect(res.status).toBe(200);
     var data = await res.json();
-    expect(data.preferences.site_name).toBe('Studio by Gabochie');
+    expect(data.preferences.site_name).toBe('Studio Gabochie');
     expect(data.preferences.theme).toBe('dark');
   });
 });
