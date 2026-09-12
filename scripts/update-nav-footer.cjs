@@ -33,7 +33,6 @@ var footerFiles = [
 // Also update nav on these pages (have nav-donate but not the main footer)
 var navOnlyFiles = [
   'store/download.html',
-  'store/library.html',
   '404.html'
 ];
 

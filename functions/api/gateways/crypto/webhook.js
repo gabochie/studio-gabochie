@@ -39,11 +39,6 @@ export async function onRequest(context) {
   if (env.DB) {
     const row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(tx_ref).first().catch(() => null);
     if (row && row.status !== 'successful') {
-      const meta = {
-        id: payload.payment_id || '',
-        currency: payload.pay_currency || '',
-        amount: payload.pay_amount || ''
-      };
       await finalizeDonation(env, {
         tx_ref,
         amount: row.amount,

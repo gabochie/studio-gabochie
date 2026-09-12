@@ -51,7 +51,7 @@ export async function verifyMoolre(env, opts) {
       }
     }
     return { success: false, error: 'not_verified' };
-  } catch (e) {
+  } catch (_e) {
     return { success: false, error: 'exception' };
   }
 }

@@ -1,4 +1,4 @@
-import { json, readBody, newRef, ghsToUsd } from '../_shared.js';
+import { json, readBody, ghsToUsd } from '../_shared.js';
 
 export async function onRequest(context) {
   const { request, env } = context;

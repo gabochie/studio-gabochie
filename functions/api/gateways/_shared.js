@@ -44,22 +44,23 @@ export async function ghsToUsd(amountGhs, env) {
 
 // Mark a pending donation successful: update row, send receipt email, schedule impact followup.
 export async function finalizeDonation(env, opts) {
-  const { tx_ref, amount, currency, donor_name, donor_email, donor_phone, gateway, gateway_txid, metadata } = opts;
+  const { tx_ref, amount, currency, donor_name, donor_email, donor_phone, gateway, gateway_txid } = opts;
   const db = env.DB;
   if (!db) return { status: 'ok', message: 'DB not bound; donation not recorded' };
 
   await db.prepare(
-    `UPDATE donations SET status = 'successful',
-       amount = COALESCE(?, amount),
-       currency = COALESCE(NULLIF(?, ''), currency),
-       donor_name = COALESCE(NULLIF(?, ''), donor_name),
-       donor_email = COALESCE(NULLIF(?, ''), donor_email),
-       donor_phone = COALESCE(NULLIF(?, ''), donor_phone),
+    `UPDATE donations SET
+       status = 'successful',
        provider = ?,
        flw_id = ?,
-       metadata = json_set(COALESCE(NULLIF(metadata,''), '{}'), '$.gateway', ?, '$.gateway_txid', ?)
+       metadata = ?
      WHERE tx_ref = ?`
-  ).bind(amount, currency, donor_name, donor_email, donor_phone, gateway || '', gateway_txid || '', gateway || '', gateway_txid || '', tx_ref).run();
+  ).bind(
+    gateway || '',
+    gateway_txid || '',
+    JSON.stringify({ gateway: gateway || '', gateway_txid: gateway_txid || '' }),
+    tx_ref
+  ).run();
 
   const invNum = await generateInvoice(env, 'donation', 'donations', {
     name: donor_name, email: donor_email, phone: donor_phone,
