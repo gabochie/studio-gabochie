@@ -24,21 +24,17 @@ test.describe('Support page', function () {
     await expect(link).toBeVisible();
   });
 
-  test('global payment section is visible with payment options', async function ({ page }) {
+  test('other ways section is visible with payment options', async function ({ page }) {
     var globalSection = page.locator('.global-section');
     await expect(globalSection).toBeVisible();
-    await expect(globalSection).toContainText('Ko-fi');
-    await expect(globalSection).toContainText('Buy Me a Coffee');
+    await expect(globalSection).toContainText('Donation Page');
     await expect(globalSection).toContainText('Wise');
   });
 
-  test('payment buttons link to the external platforms', async function ({ page }) {
-    var kofi = page.locator('.global-btn.kofi');
-    await expect(kofi).toBeVisible();
-    expect(await kofi.getAttribute('href')).toContain('ko-fi.com');
-    var bmac = page.locator('.global-btn.bmac');
-    await expect(bmac).toBeVisible();
-    expect(await bmac.getAttribute('href')).toContain('buymeacoffee.com');
+  test('other payment button links to the donation page', async function ({ page }) {
+    var donation = page.locator('.global-section a[href="/donate/"]');
+    await expect(donation).toBeVisible();
+    await expect(donation).toContainText('Donate Another Way');
   });
 
   test('FAQ section lists common questions', async function ({ page }) {
