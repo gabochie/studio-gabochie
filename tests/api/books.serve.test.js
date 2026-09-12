@@ -19,6 +19,7 @@ var premiumBundle = {
 };
 
 var subscriber = { email: 'reader@test.com' };
+var member = { email: 'member@test.com', membership_tier: 'free' };
 var completedPurchase = { tx_ref: 'tx-valid', email: 'buyer@test.com', status: 'completed' };
 var pendingPurchase = { tx_ref: 'tx-pending', email: 'buyer@test.com', status: 'pending' };
 
@@ -31,6 +32,7 @@ describe('GET /api/books/serve', function () {
         DB: mockDb({
           books: [freeBook, premiumBundle],
           subscribers: [subscriber],
+          users: [member],
           book_purchases: [completedPurchase, pendingPurchase],
         }),
         ASSETS: mockAssets(new Response('pdf content here', {
@@ -91,6 +93,26 @@ describe('GET /api/books/serve', function () {
       expect(res.status).toBe(200);
       var body = await res.text();
       expect(body).toBe('pdf content here');
+    });
+
+    it('returns 200 with file when email is a registered member (users table)', async function () {
+      ctx.request = new Request('http://localhost/api/books/serve?slug=the-bible-as-kingdom-os&email=member@test.com');
+      var res = await onRequest(ctx);
+      expect(res.status).toBe(200);
+      var body = await res.text();
+      expect(body).toBe('pdf content here');
+    });
+
+    it('returns 403 when email is in neither subscribers nor users', async function () {
+      ctx.request = new Request('http://localhost/api/books/serve?slug=the-bible-as-kingdom-os&email=nobody@test.com');
+      var res = await onRequest(ctx);
+      expect(res.status).toBe(403);
+    });
+
+    it('does not grant members access to premium books without a valid purchase', async function () {
+      ctx.request = new Request('http://localhost/api/books/serve?slug=premium-bundle&email=member@test.com');
+      var res = await onRequest(ctx);
+      expect(res.status).toBe(403);
     });
 
     it('sets correct Content-Type for PDF', async function () {
