@@ -56,16 +56,25 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .submit-btn{width:100%;padding:16px;border:none;border-radius:10px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:8px}
 .submit-btn:hover{background:#D9B85C;transform:translateY(-1px)}
 .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.alternatives{margin-top:24px;text-align:center}
-.alternatives p{font-size:12px;color:#3A5278;margin-bottom:12px}
-.alt-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.alt-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif}
-.alt-btn.ko-fi{background:#13AA5E;color:#fff}
-.alt-btn.ko-fi:hover{background:#15C06A}
-.alt-btn.bmac{background:#FFDD00;color:#333}
-.alt-btn.bmac:hover{background:#FFE44D}
-.alt-btn.paypal{background:#0070BA;color:#fff}
-.alt-btn.paypal:hover{background:#0085D9}
+.gateway-label{font-size:12px;color:#5A7A9F;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin:4px 0 8px;display:block}
+.gateway-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.gateway-btn{padding:10px 6px;border:2px solid #1E3250;border-radius:10px;background:transparent;color:#8A9BB5;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;font-family:'DM Sans',sans-serif;line-height:1.3}
+.gateway-btn:hover{border-color:#3A5278;color:#CBD5E1}
+.gateway-btn.selected{border-color:#C9A84C;background:rgba(201,168,76,.1);color:#C9A84C}
+.gateway-btn .gw-icon{font-size:18px;display:block;margin-bottom:4px}
+.gateway-panel{background:#0A1628;border:1px solid #1E3250;border-radius:12px;padding:20px;margin-bottom:20px;display:none}
+.gateway-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:#F1F5F9;margin-bottom:12px}
+.gateway-panel p{font-size:13px;color:#8A9BB5;line-height:1.6;margin-bottom:10px}
+.gw-address{display:flex;align-items:center;gap:8px;background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:'Courier Prime',monospace;font-size:12px;color:#CBD5E1;word-break:break-all}
+.gw-address button{flex-shrink:0;background:transparent;border:1px solid #C9A84C;color:#C9A84C;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.gw-address button:hover{background:rgba(201,168,76,.12)}
+.gw-amount{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#C9A84C;margin:0 0 4px}
+.gw-momo{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:#F1F5F9;letter-spacing:.04em;text-align:center;margin:12px 0}
+.gw-note{font-size:12px;color:#6B7F9A;line-height:1.6;text-align:center;margin-bottom:12px}
+.gw-close{display:block;width:100%;background:#0F1E38;border:1px solid #1E3250;color:#8A9BB5;border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.gw-close:hover{color:#CBD5E1}
+.gateway-grid.disabled{opacity:.4;pointer-events:none}
+@media(max-width:500px){.gateway-grid{grid-template-columns:repeat(2,1fr)}}
 .footer{text-align:center;padding:16px 0;font-size:11px;color:#3A5278}
 .footer a{color:#5A7A9F;text-decoration:none}
 .footer a:hover{color:#C9A84C}
@@ -139,19 +148,19 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <input type="tel" id="donorPhone" placeholder="+233 XX XXX XXXX">
     </div>
 
+    <span class="gateway-label">Pay with</span>
+    <div class="gateway-grid" id="gatewayGrid">
+      <button type="button" class="gateway-btn selected" data-gateway="flutterwave" onclick="selectGateway('flutterwave')"><span class="gw-icon">&#128179;</span>Card / MoMo</button>
+      <button type="button" class="gateway-btn" data-gateway="moolre" onclick="selectGateway('moolre')"><span class="gw-icon">&#128188;</span>Moolre</button>
+      <button type="button" class="gateway-btn" data-gateway="crypto" onclick="selectGateway('crypto')"><span class="gw-icon">&#8383;</span>Crypto</button>
+      <button type="button" class="gateway-btn" data-gateway="manual" onclick="selectGateway('manual')"><span class="gw-icon">&#128176;</span>MoMo Pin</button>
+    </div>
+
+    <div class="gateway-panel" id="gatewayPanel"></div>
+
     <button class="submit-btn" id="payBtn" onclick="startPayment()">Donate Now</button>
 
-    <div class="secure-badge">&#128274; Secured by Flutterwave</div>
-  </div>
-
-  <div class="alternatives">
-    <p>or donate using</p>
-    <div class="alt-grid">
-      <a class="alt-btn ko-fi" href="https://ko-fi.com/gideonabochie" target="_blank">&#9749; Ko-fi</a>
-      <a class="alt-btn bmac" href="https://buymeacoffee.com/gideonabochie" target="_blank">&#9749; Buy Me a Coffee</a>
-      <a class="alt-btn paypal" href="https://paypal.me/gideonabochie" target="_blank">&#8364; PayPal</a>
-    </div>
-    <p style="margin-top:16px;font-size:12px;color:#5A7A9F">Looking for the full membership ladder? <a href="/membership/" style="color:#C9A84C;text-decoration:none">View Supporter, Scholar, Patron &amp; Founding Partner tiers &rarr;</a></p>
+    <div class="secure-badge">&#128274; Secured payments — Flutterwave, Moolre, Crypto</div>
   </div>
 
 </div>
@@ -232,6 +241,19 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 var selectedAmount = 100;
 var custSelected = false;
 var isMonthly = false;
+var selectedGateway = 'flutterwave';
+
+function selectGateway(gw) {
+  selectedGateway = gw;
+  document.querySelectorAll('.gateway-btn').forEach(function(b) {
+    b.classList.remove('selected');
+    if (b.dataset.gateway === gw) b.classList.add('selected');
+  });
+  if (gw !== 'flutterwave') {
+    document.getElementById('gatewayPanel').innerHTML = '';
+    document.getElementById('gatewayPanel').style.display = 'none';
+  }
+}
 
 function setFrequency(freq) {
   isMonthly = freq === 'monthly';
@@ -243,6 +265,8 @@ function setFrequency(freq) {
   document.getElementById('customAmountGroup').style.display = 'none';
   document.getElementById('patronCard').style.display = isMonthly ? 'block' : 'none';
   document.getElementById('payBtn').textContent = isMonthly ? 'Become a Monthly Patron' : 'Donate Now';
+  document.getElementById('gatewayGrid').classList.toggle('disabled', isMonthly);
+  if (isMonthly) selectGateway('flutterwave');
 }
 
 function selectAmount(amt) {
@@ -288,6 +312,11 @@ function startPayment() {
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
+  if (selectedGateway !== 'flutterwave') {
+    startAlternativeGateway(amount, name, email, phone, btn);
+    return;
+  }
+
   var tx_ref = 'donate_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   var redirectUrl = window.location.origin + '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) + '&status=successful&amount=' + amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
 
@@ -316,6 +345,105 @@ function startPayment() {
       btn.textContent = 'Donate Now';
     }
   });
+}
+
+function sharedRedirect(tx_ref, amount, name, email, phone) {
+  return window.location.origin + '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) + '&status=successful&amount=' + amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
+}
+
+function showGatewayPanel(html) {
+  var panel = document.getElementById('gatewayPanel');
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+function startAlternativeGateway(amount, name, email, phone, btn) {
+  var endpoint = selectedGateway === 'moolre' ? '/api/gateways/moolre/create'
+    : selectedGateway === 'crypto' ? '/api/gateways/crypto/create'
+    : selectedGateway === 'manual' ? '/api/gateways/manual/create' : '';
+  var payload = { amount: amount, name: name, email: email, phone: phone };
+
+  fetch(endpoint, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r) {
+    return r.json().then(function(d) { return { ok: r.ok, data: d }; });
+  }).then(function(res) {
+    if (!res.ok || res.data.status !== 'ok') throw new Error((res.data && res.data.message) || 'Failed to create payment');
+    var d = res.data;
+
+    if (selectedGateway === 'moolre' && d.authorization_url) {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'moolre'}), page: location.pathname, email: email}));
+      }
+      window.location.href = d.authorization_url;
+      return;
+    }
+    if (selectedGateway === 'crypto') {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'crypto'}), page: location.pathname, email: email}));
+      }
+      if (d.mode === 'invoice' && d.invoice_url) {
+        window.location.href = d.invoice_url;
+        return;
+      }
+      // Manual send — show the addresses.
+      var addrHtml = '';
+      var hasAddr = false;
+      if (d.addresses && d.addresses.btc) {
+        hasAddr = true;
+        addrHtml += '<h3>Pay with Bitcoin (BTC)</h3><div class="gw-address"><span>' + d.addresses.btc + '</span><button onclick="copyText(\'' + d.addresses.btc + '\')">Copy</button></div>';
+      }
+      if (d.addresses && d.addresses.usdt_trc20) {
+        hasAddr = true;
+        addrHtml += '<h3>Pay with USDT (TRC-20)</h3><div class="gw-address"><span>' + d.addresses.usdt_trc20 + '</span><button onclick="copyText(\'' + d.addresses.usdt_trc20 + '\')">Copy</button></div>';
+      }
+      addrHtml += '<p class="gw-amount">$ ' + Number(d.amount_usd || 0).toFixed(2) + ' <small style="font-size:13px;color:#6B7F9A">(' + Number(d.amount_ghs || amount).toFixed(2) + ' GHS)</small></p>';
+      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Use this memo when sending so we can match you: <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong></p>';
+      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Send to a brand-new address from your wallet. We confirm crypto gifts manually within 24 hours and email your receipt.</p>';
+      if (!hasAddr) {
+        addrHtml = '<h3>Crypto donation</h3><p>Crypto checkout is being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send any crypto amount with memo <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong> and we will reach out.</p>';
+      }
+      addrHtml +='<button class="gw-close" onclick="closeGatewayPanel()">Done — I have sent it</button>';
+      showGatewayPanel(addrHtml);
+      btn.disabled = false;
+      btn.textContent = 'Donate Again';
+      return;
+    }
+    if (selectedGateway === 'manual') {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'manual'}), page: location.pathname, email: email}));
+      }
+      var m = 'Send <strong class="gw-amount">GH\u00a2 ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> via MoMo to:';
+      var panelHtml = '<h3>Pay with Mobile Money</h3><div class="gw-momo">' + d.payout_display + '</div><div class="gw-note">Gideon Abochie — ' + d.momo_number + '<br>Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + d.tx_ref + '</strong></div><div class="gw-note">' + d.note + '</div><button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
+      showGatewayPanel(panelHtml);
+      btn.disabled = false;
+      btn.textContent = 'Donate Again';
+      return;
+    }
+    throw new Error('Unexpected gateway response');
+  }).catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+    alert(err.message || 'Something went wrong. Please try again or email studio@gabochie.com');
+  });
+}
+
+function copyText(txt) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(txt); }
+  else { alert(txt); }
+}
+
+function copyRef() {
+  var el = document.getElementById('gwRef');
+  copyText(el ? el.textContent : '');
+}
+
+function closeGatewayPanel() {
+  document.getElementById('gatewayPanel').innerHTML = '';
+  document.getElementById('gatewayPanel').style.display = 'none';
+  window.location.href = window.location.origin + '/donate.html?status=pending';
 }
 
 function startMonthlySubscription() {

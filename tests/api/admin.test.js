@@ -457,11 +457,32 @@ describe('Donations - GET', function () {
     expect(data.totals.count).toBe(2);
   });
 
-  it('returns 405 for POST', async function () {
+  it('confirms a pending donation via POST', async function () {
     var db = mockDb({ donations: sampleDonations });
     var ctx = makeCtx('http://localhost/admin/api/donations', { method: 'POST', db: db });
+    ctx.request = new Request('http://localhost/admin/api/donations', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': 'test-admin-key', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'confirm', tx_ref: 'tx-002' })
+    });
     var res = await donationsOnRequest(ctx);
-    expect(res.status).toBe(405);
+    expect(res.status).toBe(200);
+    var data = await res.json();
+    expect(data.status).toBe('ok');
+    var updated = db._tables.donations.filter(function (r) { return r.tx_ref === 'tx-002'; })[0];
+    expect(updated.status).toBe('successful');
+  });
+
+  it('returns 404 for POST confirm with unknown tx_ref', async function () {
+    var db = mockDb({ donations: sampleDonations });
+    var ctx = makeCtx('http://localhost/admin/api/donations', { method: 'POST', db: db });
+    ctx.request = new Request('http://localhost/admin/api/donations', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': 'test-admin-key', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'confirm', tx_ref: 'nope-000' })
+    });
+    var res = await donationsOnRequest(ctx);
+    expect(res.status).toBe(404);
   });
 });
 

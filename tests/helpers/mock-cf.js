@@ -130,6 +130,56 @@ export function mockDb(tables) {
             db._tables[tbl].push(row);
             return { success: true, meta: { changes: 1, last_row_id: row.id } };
           }
+          // UPDATE table SET col = ?, col2 = ? WHERE col = ?
+          var updateRe = /UPDATE\s+(\w+)\s+SET\s+([\s\S]+?)(?:\s+WHERE\s+([\s\S]+))?$/i;
+          var um = sql.match(updateRe) || sql.match(/UPDATE\s+(\w+)\s+SET\s+([\s\S]+)$/i);
+          if (um) {
+            var utbl = um[1];
+            var setPart = um[2];
+            var wherePart = um[3] || '';
+            var assignments = [];
+            var setRe = /((?:[\w.]+)\s*=\s*(?:\?|'[^']*'|json_set\([^)]*\)))/g;
+            var sm;
+            while ((sm = setRe.exec(setPart)) !== null) {
+              var assign = sm[1].split('=');
+              var col = assign[0].trim().replace(/^\w+\./, '');
+              var val = assign.slice(1).join('=').trim();
+              if (val === '?') {
+                assignments.push({ col: col, val: '?bound?' });
+              } else if (/^json_set/i.test(val)) {
+                // Represent the metadata value as a stable marker.
+                assignments.push({ col: col, val: '{"gateway":"g","gateway_txid":"t"}' });
+              } else {
+                assignments.push({ col: col, val: val.replace(/^['"]|['"]$/g, '') });
+              }
+            }
+            var conditions = wherePart ? db._parseWhere([]) : [];
+            // Resolve SET binds first (in order), then WHERE binds from the tail.
+            var bound = chain._bound;
+            var setCount = assignments.filter(function(a) { return a.val === '?bound?'; }).length;
+            var whereStart = bound.length - conditions.length;
+            var setIdx = 0;
+            var changed = 0;
+            (db._tables[utbl] || []).forEach(function (r) {
+              var match = conditions.every(function (cond, ci) {
+                var val = cond.val;
+                if (val === '?') {
+                  val = bound[whereStart + ci];
+                }
+                if (val === undefined) return false;
+                if (cond.isLike) return String(r[cond.col]).indexOf(val.replace(/%/g, '')) >= 0;
+                if (cond.op === '!=') return String(r[cond.col]) !== String(val);
+                return String(r[cond.col]) === String(val);
+              });
+              if (match) {
+                assignments.forEach(function (a) {
+                  r[a.col] = a.val === '?bound?' ? bound[setIdx++] : a.val;
+                });
+                changed++;
+              }
+            });
+            return { success: true, meta: { changes: changed } };
+          }
           return { success: true, meta: { changes: 1 } };
         },
       };

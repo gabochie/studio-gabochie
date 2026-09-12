@@ -21,6 +21,33 @@ export async function onRequest(context) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+    if (request.method === 'POST') {
+      const body = await request.json().catch(() => ({}));
+      const tx_ref = (body.tx_ref || '').toString();
+      const action = (body.action || 'confirm').toString();
+      if (!tx_ref) {
+        return new Response(JSON.stringify({ status: 'error', message: 'tx_ref is required' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      const row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(tx_ref).first();
+      if (!row) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Donation not found' }), {
+          status: 404, headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      if (action === 'confirm') {
+        await env.DB.prepare(
+          "UPDATE donations SET status = 'successful' WHERE tx_ref = ?"
+        ).bind(tx_ref).run();
+        return new Response(JSON.stringify({ status: 'ok', message: 'Donation confirmed' }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      return new Response(JSON.stringify({ status: 'error', message: 'Unknown action' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
+    }
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405, headers: { 'Content-Type': 'application/json' }
     });
