@@ -408,7 +408,7 @@ const counters=document.querySelectorAll('.counter');
 const counterObs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){animateCounter(e.target,parseInt(e.target.dataset.target));counterObs.unobserve(e.target)}})},{threshold:0.5});
 counters.forEach(el=>counterObs.observe(el));
 </script>
-<script src="../assets/js/main.js"></script>
+<script defer src="../assets/js/main.js"></script>
 <script src="/nav.js"></script>
 </body>
 </html>
