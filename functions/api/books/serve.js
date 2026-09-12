@@ -55,7 +55,20 @@ export async function onRequest(context) {
 
     const assetUrl = new URL(request.url);
     assetUrl.pathname = book.file_url;
-    const assetResponse = await env.ASSETS.fetch(new Request(assetUrl));
+    let assetResponse = null;
+    // Prefer the R2 book storage when bound; fall back to the static ASSETS binding.
+    if (env.BOOKS && env.BOOKS.get) {
+      const obj = await env.BOOKS.get(book.file_url.replace(/^\//, ''));
+      if (obj) {
+        assetResponse = new Response(obj.body, {
+          status: 200,
+          headers: { 'Content-Type': obj.httpMetadata && obj.httpMetadata.contentType || 'application/octet-stream', 'Content-Length': obj.size },
+        });
+      }
+    }
+    if (!assetResponse) {
+      assetResponse = await env.ASSETS.fetch(new Request(assetUrl));
+    }
 
     if (!assetResponse.ok) {
       return new Response(JSON.stringify({ status: 'error', message: 'File not found on server' }), {

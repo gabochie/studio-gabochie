@@ -196,6 +196,34 @@ describe('GET /api/books/serve', function () {
     });
   });
 
+  describe('R2 book storage', function () {
+    it('serves from the R2 binding when bound', async function () {
+      ctx.env.BOOKS = {
+        async get(key) {
+          expect(key).toBe('books/the-bible-as-kingdom-os.pdf');
+          return { body: 'r2 pdf content', size: 14, httpMetadata: { contentType: 'application/pdf' } };
+        },
+      };
+      ctx.request = new Request('http://localhost/api/books/serve?slug=the-bible-as-kingdom-os&email=reader@test.com');
+      var res = await onRequest(ctx);
+      expect(res.status).toBe(200);
+      var text = await res.text();
+      expect(text).toBe('r2 pdf content');
+      expect(res.headers.get('Content-Type')).toBe('application/pdf');
+    });
+
+    it('falls back to ASSETS when the R2 object is missing', async function () {
+      ctx.env.BOOKS = {
+        async get() { return null; },
+      };
+      ctx.request = new Request('http://localhost/api/books/serve?slug=the-bible-as-kingdom-os&email=reader@test.com');
+      var res = await onRequest(ctx);
+      expect(res.status).toBe(200);
+      var text = await res.text();
+      expect(text).toBe('pdf content here');
+    });
+  });
+
   describe('D1 binding missing', function () {
     it('returns 501 when env.DB is not bound', async function () {
       ctx.env.DB = undefined;
