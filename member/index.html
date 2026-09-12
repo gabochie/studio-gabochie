@@ -43,6 +43,11 @@ h1 span{color:#C9A84C}
 .hidden{display:none}
 .btn-logout{background:none;border:1px solid #1E3250;color:#6B7F9A;padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
 .btn-logout:hover{border-color:#E8637A;color:#E8637A}
+.free-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.free-item{display:flex;gap:16px;align-items:flex-start;background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:10px;padding:16px 18px}
+.free-icon{width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,.12);color:#C9A84C;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.free-item strong{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:#E8EEF7}
+.free-item .btn{padding:8px 18px;font-size:12px}
 </style>
 </head>
 <body>
@@ -57,19 +62,44 @@ h1 span{color:#C9A84C}
 <div class="wrap" id="app">
   <div class="loading" id="loading">Checking your session\u2026</div>
   <div id="content" class="hidden">
-    <h1>My <span>Membership</span></h1>
+    <h1>My <span>Workspace</span></h1>
     <p class="greeting" id="greeting"></p>
     <div class="form-msg" id="successMsg" style="display:none;margin-bottom:20px;font-size:14px;padding:14px 18px;border-radius:10px;background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2);text-align:center"></div>
     <div class="card">
-      <h2>Current Plan</h2>
-      <div class="tier-info">
-        <span class="badge" id="tierBadge"></span>
-        <span style="font-size:14px;color:#8A9BB5" id="tierStatus"></span>
+      <h2>Start Here — Your Free Content</h2>
+      <div id="freeContent" class="free-grid">
+        <div class="free-item">
+          <div class="free-icon"><i class="ti ti-book"></i></div>
+          <div>
+            <strong>Download Your Free Book</strong>
+            <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">The Bible as Kingdom OS — the full lead book, free to members.</p>
+            <a href="/api/books/serve?slug=the-bible-as-kingdom-os&email=__EMAIL__" class="btn btn-primary" id="freeBookLink"><i class="ti ti-download"></i> Open Book</a>
+          </div>
+        </div>
+        <div class="free-item">
+          <div class="free-icon"><i class="ti ti-school"></i></div>
+          <div>
+            <strong>Start a Program's First Module</strong>
+            <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Full first module of every program — free, no upgrade needed.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <a href="/school/guitar/" class="btn btn-secondary">Guitar Method</a>
+              <a href="/school/" class="btn btn-secondary">All Programs</a>
+            </div>
+          </div>
+        </div>
+        <div class="free-item">
+          <div class="free-icon"><i class="ti ti-volume"></i></div>
+          <div>
+            <strong>Audio &amp; Devotional Samples</strong>
+            <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Listen in your workspace while you work, rest, or commute.</p>
+            <a href="/school/" class="btn btn-secondary">Browse Audio</a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card">
-      <h2>Available Plans</h2>
-      <p style="margin-bottom:16px">Choose a plan to unlock more content and features.</p>
+      <h2>Go Deeper <span style="color:#5A7A9F;font-size:13px;font-weight:400">— only when it serves you</span></h2>
+      <p style="margin-bottom:16px">Unlock every program in full, the entire book library, mentorship, and more.</p>
       <div class="plan-grid" id="plans"></div>
     </div>
   </div>
@@ -182,6 +212,10 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('content').classList.remove('hidden');
       document.getElementById('greeting').textContent = 'Welcome back, ' + (d.user.name || d.user.email) + '!';
       currentTier = d.user.membership_tier || 'free';
+      var freeBookLink = document.getElementById('freeBookLink');
+      if (freeBookLink && d.user.email) {
+        freeBookLink.href = '/api/books/serve?slug=the-bible-as-kingdom-os&email=' + encodeURIComponent(d.user.email);
+      }
       var badge = document.getElementById('tierBadge');
       badge.textContent = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
       badge.className = 'badge badge-' + currentTier;
