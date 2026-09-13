@@ -41,19 +41,14 @@
 /books /books/ 200
 /books/download /books/download/ 200
 
-# Books — every route goes through the email/tx_ref-gated serve endpoint.
-# Files live in R2 (gahq-books) and serve fetches them from the R2 binding, so
-# these rewrites do NOT recurse (unlike the old ASSETS-based fetch).
-/books/the-bible-as-kingdom-os /api/books/serve?slug=the-bible-as-kingdom-os 200
-/books/the-bible-as-kingdom-os.pdf /api/books/serve?slug=the-bible-as-kingdom-os 200
-/books/manifesto /api/books/serve?slug=1-million-coders-manifesto 200
-/books/Ghana_Does_Not_Need_1_Million_Coders_Manifesto_v2.pdf /api/books/serve?slug=1-million-coders-manifesto 200
-/books/divine-algorithm /api/books/serve?slug=divine-algorithm 200
-/books/divine_algorithm_report /api/books/serve?slug=divine-algorithm 200
-/books/divine_algorithm_report.html /api/books/serve?slug=divine-algorithm 200
-/books/ai-national-development /api/books/serve?slug=ai-national-development 200
-/books/ai-powered-strategic-national-development-ghana.docx /api/books/serve?slug=ai-national-development 200
-/books/premium-bundle.html /api/books/serve?slug=premium-bundle 200
+# Downloads are served exclusively by the email/tx_ref-gated /api/books/serve
+# function (files live in R2); these legacy pretty URLs resolve to the catalog.
+/books/the-bible-as-kingdom-os /books/ 301
+/books/manifesto /books/ 301
+/books/divine-algorithm /books/ 301
+/books/divine_algorithm_report /books/ 301
+/books/ai-national-development /books/ 301
+/books/premium-bundle /books/ 301
 
 # Referral tracking
 /ref /content/ 200
