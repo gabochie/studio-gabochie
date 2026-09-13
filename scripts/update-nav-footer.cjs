@@ -10,7 +10,6 @@ var footerFiles = [
   'index.html',
   'dashboard/index.html',
   'nationbuilding/index.html',
-  'books/premium-bundle.html',
   'books/index.html',
   'books/download/index.html',
   'donate/index.html',
