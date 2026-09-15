@@ -1270,6 +1270,62 @@ document.addEventListener('submit', function(e){
   </div>
 </div>
 
+<!-- ═══ NEWSLETTER STICKY BAR (dismissible) ═══ -->
+<div id="newsBar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9000;background:rgba(10,22,40,.97);border-top:1px solid rgba(201,168,76,.25);backdrop-filter:blur(6px)">
+  <div style="max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.06em;color:#F1F5F9;flex:1;min-width:180px">GET THE STUDIO WEEKLY — FREE, EVERY WEEK</span>
+    <form id="newsBarForm" style="display:flex;gap:8px;flex:2;min-width:220px">
+      <input type="email" id="newsBarEmail" placeholder="Your email address" required autocomplete="email" style="flex:1;min-width:0;padding:10px 12px;border:1px solid #1E3250;border-radius:8px;background:#0F1E38;color:#E8EEF7;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+      <button type="submit" id="newsBarBtn" style="padding:10px 20px;border:none;border-radius:8px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap">JOIN</button>
+    </form>
+    <button onclick="dismissNewsBar()" aria-label="Dismiss" style="background:none;border:none;color:#5A7A9F;font-size:20px;cursor:pointer;line-height:1">&times;</button>
+  </div>
+  <div id="newsBarMsg" style="display:none;max-width:900px;margin:0 auto;padding:0 16px 10px;font-size:12px"></div>
+</div>
+<script>
+(function(){
+  try { if (localStorage.getItem('ga_newsbar_dismissed') === '1') return; } catch(_){}
+  var bar = document.getElementById('newsBar');
+  var shown = false;
+  function show(){ if (!shown) { shown = true; bar.style.display = 'block'; } }
+  window.addEventListener('scroll', function(){ if (window.scrollY > 600) show(); }, {passive:true});
+  setTimeout(show, 25000);
+})();
+function dismissNewsBar(){
+  document.getElementById('newsBar').style.display = 'none';
+  try { localStorage.setItem('ga_newsbar_dismissed', '1'); } catch(_){}
+}
+document.addEventListener('submit', function(e){
+  if (e.target.id !== 'newsBarForm') return;
+  e.preventDefault();
+  var email = document.getElementById('newsBarEmail').value.trim();
+  var msg = document.getElementById('newsBarMsg');
+  var btn = document.getElementById('newsBarBtn');
+  if (!email || email.indexOf('@') === -1) {
+    msg.style.display = 'block'; msg.style.color = '#FCA5A5'; msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'JOINING…';
+  fetch('/api/subscribe', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email:email, source:'homepage-bar'})})
+  .then(function(r){ return r.json(); }).then(function(d){
+    btn.disabled = false; btn.textContent = 'JOIN';
+    msg.style.display = 'block';
+    if (d && d.status === 'ok') {
+      msg.style.color = '#6EE7B7';
+      msg.textContent = (d.existing && d.confirmed) ? 'You are already on the list — welcome back!' : 'You are in! Check your inbox to confirm.';
+      document.getElementById('newsBarEmail').value = '';
+    } else {
+      msg.style.color = '#FCA5A5';
+      msg.textContent = (d && (d.message || d.error)) || 'Something went wrong. Please try again.';
+    }
+  }).catch(function(){
+    btn.disabled = false; btn.textContent = 'JOIN';
+    msg.style.display = 'block'; msg.style.color = '#FCA5A5'; msg.textContent = 'Connection error. Please try again.';
+  });
+});
+</script>
+
 <script src="/nav.js"></script>
 </body>
 </html>
