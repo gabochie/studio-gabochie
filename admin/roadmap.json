@@ -396,8 +396,8 @@
       ]
     }
   ],
-  "current_focus": "Phase 12 — Build The Traffic Engine. Wire page-view tracking to public pages, complete sitemap, structured data on revenue pages. Measured against goal: 7-figure/year autonomous studio; today's biggest gap is demand generation, not features.",
-  "last_updated": "2026-09-11",
+  "current_focus": "Course-Focused Redesign — the site now leads with one course (Systems Thinking for Vision Builders) with an extensible courses/ platform. Next: drop in real course content, hook full-access payment via Flutterwave upgrade flow, and drive targeted traffic to /courses/systems-thinking/. Old marketing pages are 301-redirected to the course front door.",
+  "last_updated": "2026-09-15",
   "notes": [
     "Cloudflare Pages is the right starting point — free, fast global CDN, easy HTTPS.",
     "Phases 2-4 build on the same Cloudflare infrastructure using Workers and a backend.",

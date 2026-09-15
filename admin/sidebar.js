@@ -20,51 +20,36 @@
 
   var GROUPS = [
     {
-      label: 'Content',
+      label: 'Courses',
       items: [
-        { href: 'content.html',     icon: '\uD83D\uDCC4', label: 'Content' },
         { href: 'programs.html',    icon: '\uD83D\uDCD6', label: 'Programs' },
-        { href: 'newsletter.html',  icon: '\uD83D\uDCEB', label: 'Newsletter' },
-        { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' },
-        { href: 'content-ai.html',  icon: '\u2728',       label: 'AI Content' },
-        { href: 'classifieds.html',  icon: '\uD83D\uDCE3', label: 'Classifieds' },
-        { href: 'store.html',       icon: '\uD83D\uDED2', label: 'Store' },
+        { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
         { href: 'survey.html',      icon: '\uD83D\uDCCA', label: 'Course Survey' },
-        { href: 'tutoring.html',    icon: '\uD83C\uDF93', label: 'Tutoring' },
-        { href: '/careers/',        icon: '\uD83D\uDCBC', label: 'Careers' },
-        { href: 'tutor-roadmap.html', icon: '\uD83D\uDDFA', label: 'Tutor Roadmap' },
+        { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
+        { href: 'calendar.html',    icon: '\uD83D\uDCC5', label: 'Calendar' }
+      ]
+    },
+    {
+      label: 'Audience',
+      items: [
+        { href: 'members.html',     icon: '\uD83D\uDC65', label: 'Members' },
+        { href: 'subscribers.html', icon: '\uD83D\uDCEB', label: 'Subscribers' },
+        { href: 'newsletter.html',  icon: '\uD83D\uDCEB', label: 'Newsletter' },
+        { href: 'email.html',       icon: '\u2709\uFE0F',  label: 'Email' },
+        { href: 'outreach.html',    icon: '\uD83D\uDCE2', label: 'Outreach' },
         { href: 'instagram-leads.html', icon: '\uD83D\uDCF7', label: 'Instagram Leads' }
       ]
     },
     {
       label: 'Finance',
       items: [
-        { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' },
-        { href: 'donations.html',   icon: '\uD83D\uDCB5', label: 'Donations' },
-        { href: 'bookings.html',    icon: '\uD83C\uDFE8', label: 'Bookings' },
-        { href: 'sponsors.html',    icon: '\uD83E\uDD1D', label: 'Sponsors' },
-        { href: 'services.html',    icon: '\uD83D\uDCD0', label: 'Services' }
-      ]
-    },
-    {
-      label: 'Nation Building',
-      items: [
-        { href: 'surveys.html',     icon: '\uD83D\uDCCA', label: 'Survey' },
-        { href: 'programs.html', icon: '\uD83C\uDFDB', label: 'Programs' }
+        { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' }
       ]
     },
     {
       label: 'System',
       items: [
         { href: 'index.html',       icon: '\uD83D\uDCCA', label: 'Dashboard' },
-        { href: 'members.html',     icon: '\uD83D\uDC65', label: 'Members' },
-        { href: 'subscribers.html', icon: '\uD83D\uDCEB', label: 'Subscribers' },
-        { href: 'email.html',       icon: '\u2709\uFE0F',  label: 'Email' },
-        { href: 'enrollments.html', icon: '\uD83D\uDCDD', label: 'Enrollments' },
-        { href: 'submissions.html', icon: '\uD83D\uDCE9', label: 'Submissions' },
-        { href: 'outreach.html',    icon: '\uD83D\uDCE2', label: 'Outreach' },
-        { href: 'guitar.html',      icon: '\uD83C\uDFB8', label: 'Guitar' },
-        { href: 'quiz.html',       icon: '\uD83D\uDCDD', label: 'Quiz' },
         { href: 'quality.html',    icon: '\u2705',        label: 'Quality' },
         { href: 'agents.html',      icon: '\u26A1',        label: 'Command Center' },
         { href: 'strategy.html',    icon: '\uD83C\uDFAF', label: 'Strategy' },
