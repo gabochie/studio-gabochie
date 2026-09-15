@@ -36,6 +36,7 @@ export async function onRequest(context) {
   try {
     var ct = request.headers.get('Content-Type') || '';
     var name = '', email = '', source = 'newsletter', ref = '', phone = '';
+    var utmSource = '', utmMedium = '', utmCampaign = '';
     if (ct.includes('application/json')) {
       var body = await request.json();
       name = body.name || '';
@@ -43,6 +44,9 @@ export async function onRequest(context) {
       source = body.source || 'newsletter';
       ref = body.ref || '';
       phone = body.phone || '';
+      utmSource = body.utm_source || '';
+      utmMedium = body.utm_medium || '';
+      utmCampaign = body.utm_campaign || '';
     } else {
       var fd = await request.formData();
       name = fd.get('name') || '';
@@ -50,7 +54,14 @@ export async function onRequest(context) {
       source = fd.get('source') || 'newsletter';
       ref = fd.get('ref') || '';
       phone = fd.get('phone') || '';
+      utmSource = fd.get('utm_source') || '';
+      utmMedium = fd.get('utm_medium') || '';
+      utmCampaign = fd.get('utm_campaign') || '';
     }
+    var meta = { country: '' };
+    if (utmSource) meta.utm_source = String(utmSource).slice(0, 80);
+    if (utmMedium) meta.utm_medium = String(utmMedium).slice(0, 80);
+    if (utmCampaign) meta.utm_campaign = String(utmCampaign).slice(0, 120);
     if (!email || !email.includes('@')) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
@@ -58,6 +69,7 @@ export async function onRequest(context) {
     var country = cf.country || '';
     var edition = detectEdition(country);
     var confirmUrl = '';
+    meta.country = country;
 
   if (!env.DB) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
@@ -144,7 +156,7 @@ export async function onRequest(context) {
 
     await env.DB.prepare(
       "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)"
-    ).bind(name, email, source, refCode, edition, JSON.stringify({ country }), confirmToken, phone).run();
+    ).bind(name, email, source, refCode, edition, JSON.stringify(meta), confirmToken, phone).run();
 
     // Handle referral if provided
     var referralCount = 0;
