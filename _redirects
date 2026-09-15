@@ -1,65 +1,68 @@
 # Root is served automatically by Cloudflare Pages
 
-# School/guitar → Guitar standalone (permanent 301)
-/school/guitar/* /guitar/:splat 301
-/school/guitar /guitar/ 301
+# ─── Courses (core) ───
+/school* /courses/ 301
+/courses /courses/ 200
+/courses/systems-thinking /courses/systems-thinking/ 200
 
-# Donate
-/donate /donate/ 200
-
-# Newsletter → subdomain
-/newsletter/* https://news.gabochie.com/:splat 301
-/newsletter https://news.gabochie.com/ 301
-/newsletter/ https://news.gabochie.com/ 301
-/advertise https://news.gabochie.com/ 301
-
-# School
-/school /school/ 200
+# ─── Core infrastructure (kept) ───
+/login /login/ 200
+/register /register/ 200
 /dashboard /dashboard/ 200
+/start /start/ 200
+/certificate /certificate/ 200
+/unsubscribe /unsubscribe/ 200
 
-# Manifesto
-/manifesto /manifesto/ 200
-
-# Legal pages
+# ─── Legal (kept) ───
 /privacy /legal/privacy 200
 /terms /legal/terms 200
-/donations /legal/donations 200
+/refund /legal/refund 200
 /disclaimer /legal/disclaimer 200
+/donations /legal/donations 200
 
-# Certificate
-/certificate /certificate/ 200
+# ─── Legacy marketing paths → course front door ───
+/donate / 301
+/donate/* / 301
+/support / 301
+/support/* / 301
+/campaigns / 301
+/campaigns/* / 301
+/membership / 301
+/membership/* / 301
+/books / 301
+/books/* / 301
+/store / 301
+/store/* / 301
+/merch / 301
+/merch/* / 301
+/services / 301
+/services/* / 301
+/careers / 301
+/careers/* / 301
+/tutoring / 301
+/tutoring/* / 301
+/guitar / 301
+/guitar/* / 301
+/art / 301
+/art/* / 301
+/music / 301
+/music/* / 301
+/press / 301
+/press/* / 301
+/content / 301
+/content/* / 301
+/manifesto / 301
+/manifesto/* / 301
+/partners / 301
+/partners/* / 301
+/nationbuilding / 301
+/nationbuilding/* / 301
+/survey / 301
+/survey/* / 301
+/news* / 301
+/contact* / 301
+/ref* / 301
 
-# Partners
-/partners /partners/ 200
-/press /press/ 200
-/content /content/ 200
-
-# Support / Subscriptions
-/support /support/ 200
-
-# Books
-/books /books/ 200
-/books/download /books/download/ 200
-
-# Downloads are served exclusively by the email/tx_ref-gated /api/books/serve
-# function (files live in R2); these legacy pretty URLs resolve to the catalog.
-/books/the-bible-as-kingdom-os /books/ 301
-/books/manifesto /books/ 301
-/books/divine-algorithm /books/ 301
-/books/divine_algorithm_report /books/ 301
-/books/ai-national-development /books/ 301
-/books/premium-bundle /books/ 301
-
-# Referral tracking
-/ref /content/ 200
-
-/campaigns /campaigns/ 200
-
-/nationbuilding /nationbuilding/ 200
-
-/careers /careers/ 200
-/tutoring /tutoring/ 200
-
-/store /store/ 200
-/store/download /store/download/ 200
-/store/library /store/library/ 200
+# ─── Newsletter → subdomain (still live) ───
+/newsletter* https://news.gabochie.com/ 301
+/advertise https://news.gabochie.com/ 301

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses — Studio Gabochie</title>
+<meta name="description" content="Practical courses for vision builders. Systems Thinking and more — start free with Module 1, no card required.">
+<link rel="canonical" href="https://studio.gabochie.com/courses/">
+<meta property="og:title" content="Courses — Studio Gabochie">
+<meta property="og:description" content="Practical courses for vision builders. Start free with Module 1, no card required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studio.gabochie.com/courses/">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/banner.jpg">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+<style>
+.hero{max-width:var(--content-max);margin:0 auto;padding:56px 24px 32px;text-align:center}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,6vw,68px);font-weight:700;color:#fff;line-height:.95;letter-spacing:-.02em;margin-bottom:16px}
+.hero h1 span{color:#C9A84C}
+.hero p{font-size:16px;color:#8A9BB5;max-width:600px;margin:0 auto;line-height:1.7}
+.programs{max-width:var(--content-max);margin:0 auto;padding:40px 24px 80px}
+.program-grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+.card{background:linear-gradient(135deg,#0F1E38,#132644);border:1px solid #1E3250;border-radius:16px;padding:36px 32px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
+.card:hover{border-color:#C9A84C;transform:translateY(-2px)}
+.card .badge{display:inline-block;align-self:flex-start;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.badge-active{background:rgba(201,168,76,.12);color:#C9A84C}
+.badge-soon{background:rgba(90,122,159,.12);color:#5A7A9F}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#fff;margin:0 0 4px}
+.card .slugline{font-style:italic;color:#C9A84C;font-size:13px;margin-bottom:12px}
+.card .desc{color:#8A9BB5;font-size:14px;line-height:1.7;margin-bottom:16px;flex:1}
+.card .meta{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.card .meta span{font-size:12px;color:#5A7A9F}
+.card .meta strong{color:#CBD5E1;font-weight:500}
+.card .btn{width:100%}
+.card-coming{opacity:.65}
+.card-coming .btn-wait{background:rgba(90,122,159,.12);color:#5A7A9F;border:1px solid rgba(90,122,159,.2);cursor:not-allowed}
+.section-label{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:#5A7A9F;margin-bottom:20px}
+.faq-section{max-width:720px;margin:0 auto;padding:0 24px 80px}
+.faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
+.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q::after{content:'+';font-size:16px;color:#C9A84C}
+.faq-q.open::after{content:'\2212'}
+.faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
+.faq-a.open{display:block}
+@media(max-width:640px){.program-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Courses for Vision Builders</div>
+  <h1>Learn the Thinking That <span>Builds What Lasts</span></h1>
+  <p>Practical, self-paced courses. Each one starts free with Module 1 — no card required. Pick a course and start today.</p>
+</div>
+
+<div class="programs">
+  <div class="section-label">Available Courses</div>
+  <div class="program-grid" id="courseGrid"></div>
+</div>
+
+<div class="faq-section">
+  <div class="section-label">Questions</div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do I need any experience?</div>
+    <div class="faq-a">None. Every course starts from the basics and builds up. The exercises are practical, not academic.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How much does it cost?</div>
+    <div class="faq-a">Module 1 of every course is free — no card required. Full access is a one-time payment you make only when you choose to.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I access my course?</div>
+    <div class="faq-a">Your personal dashboard at <a href="/dashboard/" style="color:#C9A84C">studio.gabochie.com/dashboard/</a>. Log in with your email and access code.</div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="../courses/courses-data.js"></script>
+<script defer src="../assets/js/main.js"></script>
+<script>
+(function(){
+  var data = window.COURSE_DATA || { courses: [] };
+  var grid = document.getElementById('courseGrid');
+  var courses = data.courses || [];
+  var active = courses.filter(function(c){ return c.status === 'active'; });
+  var soon = courses.filter(function(c){ return c.status === 'coming_soon'; });
+  function card(c, coming){
+    var price = coming ? '' : (c.price > 0 ? '<span>Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(c.price, 'GHS') : 'GH¢ ' + c.price) + '</strong></span>' : '<span>Free</span>');
+    var badge = coming
+      ? '<span class="badge badge-soon">Coming Soon</span>'
+      : '<span class="badge badge-active">Available Now</span>';
+    var btn = coming
+      ? '<a href="#" class="btn btn-secondary btn-wait">Coming Soon</a>'
+      : '<a href="/courses/' + c.slug + '/" class="btn btn-primary">Start Free — Module 1</a>';
+    return '<div class="card' + (coming ? ' card-coming' : '') + '">' + badge + '<h2>' + c.title + '</h2><div class="slugline">' + c.tagline + '</div><div class="desc">' + c.description + '</div><div class="meta"><span>Duration: <strong>' + c.duration + '</strong></span><span>Level: <strong>' + c.level + '</strong></span>' + price + '</div>' + btn + '</div>';
+  }
+  var html = active.map(function(c){ return card(c, false); }).join('');
+  html += soon.map(function(c){ return card(c, true); }).join('');
+  if (!active.length) {
+    html = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">New courses are on the way. Check back soon.</div>';
+  }
+  grid.innerHTML = html;
+})();
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

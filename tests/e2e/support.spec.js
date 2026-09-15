@@ -1,61 +1,62 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-test.describe('Support page', function () {
-  test.beforeEach(async function ({ page }) {
-    await page.goto('/support/');
+test.describe('/start/ landing page', function () {
+  test('loads and shows the start page content', async function ({ page }) {
+    await page.goto('/start/');
+    var heading = page.locator('h1, h2, [class*=title], [class*=heading]');
+    await expect(heading.first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('shows the membership ladder section', async function ({ page }) {
-    var title = page.locator('.tier-section .section-title');
-    await expect(title).toBeVisible({ timeout: 10000 });
-    await expect(title).toContainText('Membership Ladder');
+  test('has the email capture form', async function ({ page }) {
+    await page.goto('/start/');
+    var form = page.locator('form');
+    await expect(form).toBeVisible({ timeout: 5000 });
+    var emailInput = page.locator('input[type="email"]');
+    await expect(emailInput).toBeVisible();
+  });
+});
+
+test.describe('Courses catalog page', function () {
+  test('loads and shows the courses heading', async function ({ page }) {
+    await page.goto('/courses/');
+    var heading = page.locator('h1, h2');
+    await expect(heading.first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('subscribe button links to the membership page', async function ({ page }) {
-    var btn = page.locator('.subscribe-btn');
-    await expect(btn).toBeVisible();
-    var href = await btn.getAttribute('href');
-    expect(href).toBe('/membership/');
+  test('has a link to the Systems Thinking course', async function ({ page }) {
+    await page.goto('/courses/');
+    var link = page.locator('a[href*="/courses/systems-thinking"]').first();
+    await expect(link).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe('Systems Thinking course page', function () {
+  test('loads with hero heading', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var heading = page.locator('h1');
+    await expect(heading).toBeVisible({ timeout: 10000 });
+    await expect(heading).toContainText('Systems Thinking');
   });
 
-  test('donate link points to the donation page', async function ({ page }) {
-    var link = page.locator('a[href="/donate/"]').first();
-    await expect(link).toBeVisible();
+  test('shows price card', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var price = page.locator('#priceValue, .price');
+    await expect(price.first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('other ways section is visible with payment options', async function ({ page }) {
-    var globalSection = page.locator('.global-section');
-    await expect(globalSection).toBeVisible();
-    await expect(globalSection).toContainText('Donation Page');
-    await expect(globalSection).toContainText('Wise');
+  test('enroll button opens the enroll modal', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var btn = page.locator('button:has-text("Enroll Now"), button:has-text("Start Free")').first();
+    await expect(btn).toBeVisible({ timeout: 10000 });
+    await btn.click();
+    var modal = page.locator('#enrollModal');
+    await expect(modal).toBeVisible({ timeout: 5000 });
   });
 
-  test('other payment button links to the donation page', async function ({ page }) {
-    var donation = page.locator('.global-section a[href="/donate/"]');
-    await expect(donation).toBeVisible();
-    await expect(donation).toContainText('Donate Another Way');
-  });
-
-  test('FAQ section lists common questions', async function ({ page }) {
-    var faq = page.locator('.faq-section');
-    await expect(faq).toBeVisible();
-    var items = page.locator('.faq-item');
-    var count = await items.count();
-    expect(count).toBeGreaterThanOrEqual(3);
-  });
-
-  test('sponsor registration form is present', async function ({ page }) {
-    var sponsor = page.locator('#sponsor');
-    await expect(sponsor).toBeVisible();
-    await expect(page.locator('#sponsorForm')).toBeVisible();
-  });
-
-  test('sponsor form has required fields and submit button', async function ({ page }) {
-    await expect(page.locator('#spName')).toBeVisible();
-    await expect(page.locator('#spEmail')).toBeVisible();
-    var submit = page.locator('#sponsorForm button[type="submit"]');
-    await expect(submit).toBeVisible();
-    await expect(submit).toContainText('Sponsor Code');
+  test('curriculum section is visible', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var section = page.locator('#curriculum');
+    await expect(section).toBeVisible({ timeout: 10000 });
   });
 });
