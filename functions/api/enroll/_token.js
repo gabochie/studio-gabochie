@@ -16,5 +16,5 @@ export function getSessionUser(db, token) {
   if (!token || !db) return null;
   return db.prepare(
     "SELECT s.user_id, u.email, u.name, u.membership_tier FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ? AND s.expires_at > datetime('now')"
-  ).first();
+  ).bind(token).first();
 }
