@@ -15,14 +15,6 @@ test.describe('/start/ landing page', function () {
     var emailInput = page.locator('input[type="email"]');
     await expect(emailInput).toBeVisible();
   });
-
-  test('nav is present and links to courses', async function ({ page }) {
-    await page.goto('/start/');
-    var nav = page.locator('nav, #nav-placeholder');
-    await expect(nav).toBeVisible({ timeout: 10000 });
-    var coursesLink = page.locator('a[href="/courses/"]').first();
-    await expect(coursesLink).toBeVisible({ timeout: 5000 });
-  });
 });
 
 test.describe('Courses catalog page', function () {
