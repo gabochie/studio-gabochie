@@ -199,8 +199,8 @@ export async function onRequest(context) {
       `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
       `ALTER TABLE subscribers ADD COLUMN phone TEXT DEFAULT ''`,
       `ALTER TABLE subscribers ADD COLUMN whatsapp_opt_in INTEGER DEFAULT 0`,
-      `ALTER TABLE subscribers ADD COLUMN onboarding_tag TEXT DEFAULT ''
-ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN onboarding_tag TEXT DEFAULT ''`,
+      `ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
       `ALTER TABLE donations ADD COLUMN provider TEXT DEFAULT ''`,
       `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
