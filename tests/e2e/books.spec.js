@@ -1,86 +1,69 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-var mockBooks = {
-  status: 'ok',
-  items: [
-    { id: 1, title: 'The Bible as Kingdom OS', slug: 'the-bible-as-kingdom-os', description: 'Understanding Scripture as your operating system.', is_premium: 0, cover_url: '', price: 0, sort_order: 1 },
-    { id: 2, title: 'The Divine Algorithm', slug: 'divine-algorithm', description: 'Seeing God\u2019s patterns in creation.', is_premium: 0, cover_url: '', price: 0, sort_order: 2 },
-    { id: 3, title: 'Premium Bundle', slug: 'premium-bundle', description: 'All books plus exclusive content.', is_premium: 1, cover_url: '', price: 300, sort_order: 3 },
-  ],
-};
-
-test.describe('Books page', function () {
+test.describe('Courses page', function () {
   test.beforeEach(async function ({ page }) {
-    await page.route('**/api/books', async function (route) {
+    await page.route('**/api/courses', async function (route) {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(mockBooks),
+        body: JSON.stringify({
+          status: 'ok',
+          items: [
+            { id: 1, title: 'Systems Thinking for Vision Builders', slug: 'systems-thinking', tagline: 'Understand how things really work - then change them.', description: 'A practical, self-paced course for vision builders.', price: 250, is_active: 1 },
+          ],
+        }),
       });
     });
-    await page.route('**/api/contact', async function (route) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ status: 'ok' }),
-      });
-    });
-    await page.goto('/books/');
+    await page.goto('/courses/');
   });
 
-  test('loads book cards from mocked API', async function ({ page }) {
-    var cards = page.locator('.book-card');
+  test('loads course cards from mocked API', async function ({ page }) {
+    var cards = page.locator('.course-card, [class*=course] a[href*="/courses/"]');
     await expect(cards.first()).toBeVisible({ timeout: 10000 });
     var count = await cards.count();
-    expect(count).toBe(2); // only free books (premium-bundle excluded from free list)
+    expect(count).toBeGreaterThanOrEqual(1);
   });
 
-  test('each book card has a title', async function ({ page }) {
-    var cards = page.locator('.book-card');
+  test('each course card has a title', async function ({ page }) {
+    var cards = page.locator('.course-card, [class*=course] a[href*="/courses/"]');
     var count = await cards.count();
     expect(count).toBeGreaterThanOrEqual(1);
-    for (var i = 0; i < count; i++) {
-      var title = cards.nth(i).locator('h3');
-      await expect(title).toBeVisible();
+    for (var i = 0; i < Math.min(count, 3); i++) {
+      var title = cards.nth(i).locator('h2, h3, [class*=title]');
+      await expect(title.first()).toBeVisible();
     }
-  });
-
-  test('download button opens email modal', async function ({ page }) {
-    var btn = page.locator('.book-card .btn').first();
-    await btn.click();
-    var modal = page.locator('#leadModal');
-    await expect(modal).toBeVisible({ timeout: 5000 });
-    await expect(modal).toHaveClass(/open/);
-  });
-
-  test('email modal shows book name', async function ({ page }) {
-    var btn = page.locator('.book-card .btn').first();
-    await btn.click();
-    var bookName = page.locator('#leadBookName');
-    await expect(bookName).toBeVisible();
-    await expect(bookName).not.toBeEmpty();
-  });
-
-  test('premium bundle section loads with buy button', async function ({ page }) {
-    var bundle = page.locator('#bundleSection, .bundle-card, [class*=bundle]');
-    await expect(bundle).toBeVisible();
   });
 });
 
-test.describe('Homepage lead capture', function () {
-  test('loads with book call-to-action buttons', async function ({ page }) {
+test.describe('Homepage course promotion', function () {
+  test('loads with course call-to-action buttons', async function ({ page }) {
     await page.goto('/');
-    var btns = page.locator('button:has-text("Get Free Copy"), a:has-text("Get Free Copy")');
+    var btns = page.locator('button:has-text("Start Free"), a:has-text("Start Free"), a:has-text("Enroll Now")');
     var count = await btns.count();
     expect(count).toBeGreaterThanOrEqual(1);
   });
 
-  test('lead button click opens email modal', async function ({ page }) {
+  test('links to the Systems Thinking course page', async function ({ page }) {
     await page.goto('/');
-    var btn = page.locator('button:has-text("Get Free Copy")').first();
+    var link = page.locator('a[href="/courses/systems-thinking/"]').first();
+    await expect(link).toBeVisible({ timeout: 10000 });
+  });
+
+  test('enroll button opens email modal', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var btn = page.locator('button:has-text("Enroll Now"), button:has-text("Start Free")').first();
     await btn.click();
-    var modal = page.locator('#leadModal, .lead-overlay, [class*=lead]').first();
+    var modal = page.locator('#enrollModal, .enroll-overlay, [class*=enroll]').first();
     await expect(modal).toBeVisible({ timeout: 5000 });
+  });
+
+  test('enroll modal requires email', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    await page.locator('button:has-text("Enroll Now")').first().click();
+    var modal = page.locator('#enrollModal, .enroll-overlay').first();
+    await expect(modal).toBeVisible({ timeout: 5000 });
+    await expect(modal.locator('input[type="email"]')).toBeVisible();
+    await expect(modal.locator('input[type="text"]').first()).toBeVisible();
   });
 });
