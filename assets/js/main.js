@@ -30,13 +30,37 @@ function toggleNav(_el) {
   document.body.style.overflow = opening ? 'hidden' : '';
 }
 
+/* ── UTM Attribution ── */
+function gaGetUtm() {
+  var stored = {};
+  try { stored = JSON.parse(localStorage.getItem('ga_utm') || '{}'); } catch (_e) {}
+  var fromUrl = {};
+  try {
+    var params = new URLSearchParams(window.location.search);
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+      var v = params.get(k);
+      if (v) fromUrl[k] = String(v).slice(0, 120);
+    });
+  } catch (_e) {}
+  var merged = {};
+  Object.keys(fromUrl).length ? Object.assign(merged, stored, fromUrl) : (merged = stored);
+  if (fromUrl.utm_source) {
+    try { localStorage.setItem('ga_utm', JSON.stringify(fromUrl)); } catch (_e) {}
+    return fromUrl;
+  }
+  return merged;
+}
+
 /* ── Page View Tracking ── */
 (function(){
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
   var page = window.location.pathname;
   try {
     var ref = document.referrer || '';
-    navigator.sendBeacon('/api/track', JSON.stringify({page:page, referrer:ref}));
+    var payload = {page:page, referrer:ref};
+    var utm = gaGetUtm();
+    if (utm && utm.utm_source) payload.utm = utm;
+    navigator.sendBeacon('/api/track', JSON.stringify(payload));
   } catch(e) { console.log(e); }
 })();
 

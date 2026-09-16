@@ -30,7 +30,7 @@
     '<h4>Courses</h4>' +
     '<a href="/courses/">All Courses</a>' +
     '<a href="/courses/systems-thinking/">Systems Thinking</a>' +
-    '<a href="/courses/">More Courses Coming Soon</a>' +
+    '<a href="/courses/">Design, AI & More</a>' +
     '</div>' +
     '<div>' +
     '<h4>Your Learning</h4>' +

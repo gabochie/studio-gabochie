@@ -33,7 +33,7 @@ export async function onRequest(context) {
   }
   try {
     const body = await request.json();
-    const { page, referrer, event, tx_ref, amount, email, name, campaign } = body;
+    const { page, referrer, event, tx_ref, amount, email, name, campaign, utm } = body;
     const cf = request.cf || {};
     const ip = request.headers.get('CF-Connecting-IP') || '';
     const ua = request.headers.get('User-Agent') || '';
@@ -47,7 +47,7 @@ export async function onRequest(context) {
       await env.DB.prepare(
         'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, datetime(\'now\'))'
       ).bind(
-        event, JSON.stringify({ tx_ref, amount, name, campaign }),
+        event, JSON.stringify({ tx_ref, amount, name, campaign, utm }),
         page || '/', email || ''
       ).run();
     } else {
@@ -62,6 +62,16 @@ export async function onRequest(context) {
         cf.country || '', cf.city || '', ip,
         device, ua.slice(0,500), source
       ).run();
+
+      // UTM attribution captured alongside the page view
+      if (utm && typeof utm === 'object' && utm.utm_source) {
+        await env.DB.prepare(
+          'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, datetime(\'now\'))'
+        ).bind(
+          'utm_page_view', JSON.stringify(Object.assign({}, utm, { source: source })),
+          page || '/', email || ''
+        ).run();
+      }
     }
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: { 'Content-Type': 'application/json' }

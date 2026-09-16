@@ -161,7 +161,8 @@ document.getElementById('contentSubForm').addEventListener('submit', async funct
   btn.textContent = 'Subscribing...';
   msg.className = 'msg';
   try {
-    const r = await fetch('/api/subscribe', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email, phone, source:'content-page'})});
+    const _u = (() => { try { const v = JSON.parse(localStorage.getItem('ga_utm') || '{}'); return v && v.utm_source ? v : {}; } catch(e) { return {}; } })();
+    const r = await fetch('/api/subscribe', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email, phone, source:'content-page', utm_source: _u.utm_source || '', utm_medium: _u.utm_medium || '', utm_campaign: _u.utm_campaign || '', utm_content: _u.utm_content || '', utm_term: _u.utm_term || ''})});
     const j = await r.json();
     if (j.ok) {
       msg.className = 'msg msg-success';

@@ -2411,6 +2411,15 @@ function subSubmit(e) {
   fd.append('source', 'newsletter_subdomain');
   var ref = new URLSearchParams(window.location.search).get('ref') || '';
   if (ref) fd.append('ref', ref);
+  var _u = {};
+  try { _u = JSON.parse(localStorage.getItem('ga_utm') || '{}'); } catch (e) {}
+  if (_u && _u.utm_source) {
+    fd.append('utm_source', _u.utm_source);
+    fd.append('utm_medium', _u.utm_medium || '');
+    fd.append('utm_campaign', _u.utm_campaign || '');
+    fd.append('utm_content', _u.utm_content || '');
+    fd.append('utm_term', _u.utm_term || '');
+  }
   fetch('https://studio.gabochie.com/api/subscribe', {
     method: 'POST',
     body: fd
