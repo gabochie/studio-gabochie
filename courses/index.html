@@ -229,7 +229,62 @@ function renderPrograms(staticData, apiPrograms) {
   if (!courses.length) {
     html = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">New courses are on the way. Check back soon.</div>';
   }
-  grid.innerHTML = html;
+
+  var schoolMeta = ((data.homepage && data.homepage.schools) || []);
+  var schoolOrder = [];
+  schoolMeta.forEach(function (sm) { schoolOrder.push(sm.slug); });
+  var schoolLookup = {};
+  schoolMeta.forEach(function (sm) { schoolLookup[sm.slug] = sm; });
+
+  var bySchool = {};
+  courses.forEach(function (c) {
+    var k = c.school || 'mind';
+    (bySchool[k] = bySchool[k] || []).push(c);
+  });
+
+  var sectionHTML = '';
+  var seen = {};
+  Object.keys(bySchool).sort(function (a, b) {
+    var ia = schoolOrder.indexOf(a), ib = schoolOrder.indexOf(b);
+    if (ia === -1 && ib === -1) return a < b ? -1 : 1;
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  }).forEach(function (slug) {
+    seen[slug] = true;
+    var meta = schoolLookup[slug] || {};
+    var cards = bySchool[slug].sort(function (a, b) {
+      if (a.slug === starred) return -1;
+      if (b.slug === starred) return 1;
+      var ra = statusRank(a), rb = statusRank(b);
+      if (ra !== rb) return ra - rb;
+      return 0;
+    });
+    var isLayer = !!meta.isLayer;
+    var note = isLayer
+      ? '<div class="wisdom-note"><strong>Wisdom Layer</strong><br>Wisdom is not a school — it is the lens that runs through every course. These studies keep everything here anchored in Scripture and truth.</div>'
+      : '';
+    sectionHTML += '<div class="school-section">' +
+      '<div class="school-header"><div class="school-icon"><i class="ti ' + (meta.icon || 'ti-school') + '"></i></div><h2>' + (meta.label || 'Courses') + '</h2></div>' +
+      '<p class="school-blurb">' + (meta.blurb || '') + '</p>' + note +
+      '<div class="program-grid">' + cards.map(function (c) { return card(c); }).join('') +
+      (!cards.length ? '<div class="school-empty">Courses coming soon.</div>' : '') +
+      '</div></div>';
+  });
+
+  // Schools with no courses yet (e.g. Creative Love)
+  schoolOrder.forEach(function (slug) {
+    if (seen[slug]) return;
+    var meta = schoolLookup[slug] || {};
+    var isLayer = !!meta.isLayer;
+    var note = isLayer ? '<div class="wisdom-note"><strong>Wisdom Layer</strong><br>These studies will keep everything here anchored in Scripture and truth.</div>' : '';
+    sectionHTML += '<div class="school-section">' +
+      '<div class="school-header"><div class="school-icon"><i class="ti ' + (meta.icon || 'ti-school') + '"></i></div><h2>' + (meta.label || 'Courses') + '</h2></div>' +
+      '<p class="school-blurb">' + (meta.blurb || '') + '</p>' + note +
+      '<div class="school-empty">Courses coming soon.</div></div>';
+  });
+
+  grid.innerHTML = sectionHTML || html;
 
   // Delegate enroll clicks for inline cards
   grid.addEventListener('click', function (e) {
