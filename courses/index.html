@@ -4,13 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Courses — Studio Gabochie</title>
-<meta name="description" content="Practical courses for vision builders. Systems Thinking and more — start free with Module 1, no card required.">
+<meta name="description" content="Practical courses for vision builders. Systems Thinking, Design Thinking, AI, Civic Intelligence and more — start free with Module 1, no card required.">
 <link rel="canonical" href="https://studio.gabochie.com/courses/">
 <meta property="og:title" content="Courses — Studio Gabochie">
 <meta property="og:description" content="Practical courses for vision builders. Start free with Module 1, no card required.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/courses/">
-<meta property="og:image" content="https://studio.gabochie.com/assets/images/banner.jpg">
+<meta property="og:site_name" content="Studio Gabochie">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Courses — Studio Gabochie">
+<meta name="twitter:description" content="Practical courses for vision builders. Start free with Module 1, no card required.">
+<meta name="theme-color" content="#0A1628">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +53,22 @@
 .faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
 .faq-a.open{display:block}
 @media(max-width:640px){.program-grid{grid-template-columns:1fr}}
+/* Enroll modal */
+.enroll-overlay{position:fixed;inset:0;background:rgba(10,22,40,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+.enroll-overlay.open{display:flex}
+.enroll-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px 32px;max-width:420px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.enroll-modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:28px;cursor:pointer;line-height:1;padding:4px;font-family:serif}
+.enroll-modal .close:hover{color:#E8637A}
+.enroll-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#fff;margin:0 0 6px}
+.enroll-modal .sub{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;margin-bottom:20px}
+.enroll-modal input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#E8EEF7;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s;margin-bottom:10px}
+.enroll-modal input:focus{border-color:#C9A84C}
+.enroll-modal input::placeholder{color:#3A5278}
+.enroll-modal .msg{font-size:13px;line-height:1.6;margin:12px 0 0;display:none;padding:12px;border-radius:8px;font-family:'Barlow',sans-serif}
+.enroll-modal .msg.ok{display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
+.enroll-modal .msg.err{display:block;background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
+.enroll-modal .msg a{color:#C9A84C;text-decoration:underline}
+.signup-note{font-family:'Barlow',sans-serif;font-size:11px;color:#3A5278;margin-top:16px;text-align:center}
 </style>
 </head>
 <body>
@@ -83,32 +104,193 @@
 
 <div id="footer-placeholder"></div>
 
+<!-- ENROLL MODAL -->
+<div class="enroll-overlay" id="enrollModal">
+  <div class="enroll-modal" style="position:relative">
+    <button class="close" onclick="closeEnroll()">&times;</button>
+    <h3 id="enrollTitle">Start Learning Free</h3>
+    <div class="sub" id="enrollSub"></div>
+    <form id="enrollForm">
+      <input type="text" id="enrollName" placeholder="Your name" autocomplete="name" required>
+      <input type="email" id="enrollEmail" placeholder="Your email" autocomplete="email" required>
+      <input type="tel" id="enrollPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
+      <button type="submit" class="btn btn-gold" style="width:100%;margin-top:6px" id="enrollBtn"><i class="ti ti-bolt"></i> Start Free</button>
+    </form>
+    <div class="msg" id="enrollMsg"></div>
+    <div class="signup-note">Free Module 1 - no card required. Your progress is saved to your dashboard.</div>
+  </div>
+</div>
+
 <script src="../courses/courses-data.js"></script>
 <script defer src="../assets/js/main.js"></script>
 <script>
-(function(){
-  var data = window.COURSE_DATA || { courses: [] };
+/* eslint-disable no-unused-vars */
+var COURSE_SLUG = null;
+
+function truncateText(s, n) {
+  if (!s) return '';
+  var text = String(s).replace(/<[^>]*>/g, '');
+  return text.length > n ? text.slice(0, n - 1).trim() + '\u2026' : text;
+}
+
+function formatPriceEl(price) {
+  if (price > 0) {
+    return '<span>Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(price, 'GHS') : 'GH\u00a2 ' + price) + '</strong></span>';
+  }
+  return '<span><strong class="free-tag" style="color:#34C77B">Free</strong></span>';
+}
+
+function openEnroll(slug, title, tagline) {
+  COURSE_SLUG = slug;
+  document.getElementById('enrollTitle').textContent = title || 'Start Learning Free';
+  document.getElementById('enrollSub').textContent = tagline || 'Free Module 1 - no card required.';
+  var msg = document.getElementById('enrollMsg');
+  msg.className = 'msg';
+  msg.innerHTML = '';
+  document.getElementById('enrollModal').classList.add('open');
+  document.getElementById('enrollName').focus();
+}
+
+function closeEnroll() {
+  document.getElementById('enrollModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderPrograms(staticData, apiPrograms) {
+  var data = staticData || { courses: [], homepage: {} };
+  var staticCourses = (data.courses || []).slice();
+  var bySlug = {};
+  staticCourses.forEach(function (c) {
+    bySlug[c.slug] = c;
+  });
+  var featured = (data.homepage && data.homepage.featured) || 'systems-thinking';
+
   var grid = document.getElementById('courseGrid');
-  var courses = data.courses || [];
-  var active = courses.filter(function(c){ return c.status === 'active'; });
-  var soon = courses.filter(function(c){ return c.status === 'coming_soon'; });
-  function card(c, coming){
-    var price = coming ? '' : (c.price > 0 ? '<span>Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(c.price, 'GHS') : 'GH¢ ' + c.price) + '</strong></span>' : '<span>Free</span>');
+  if (!grid) return;
+
+  var starred = featured;
+  var source = apiPrograms && apiPrograms.length ? apiPrograms : staticCourses;
+
+  var courses = source.map(function (p) {
+    var s = bySlug[p.slug] || {};
+    return {
+      slug: p.slug,
+      title: p.title || s.title || '',
+      tagline: p.tagline || s.tagline || '',
+      description: truncateText(p.description || s.description || '', 220),
+      duration: p.duration || s.duration || 'Self-paced',
+      level: s.level || 'Beginner friendly',
+      price: p.price !== undefined && p.price !== null ? p.price : (s.price || 0),
+      status: p.status || s.status || 'active',
+      hasLanding: !!s.hasLandingPage
+    };
+  });
+
+  function statusRank(c) { return c.status === 'active' ? 0 : 1; }
+
+  // Flagship first, then active by original order, then coming soon
+  courses.sort(function (a, b) {
+    if (a.slug === starred) return -1;
+    if (b.slug === starred) return 1;
+    var ra = statusRank(a), rb = statusRank(b);
+    if (ra !== rb) return ra - rb;
+    return 0;
+  });
+
+  function card(c) {
+    var coming = c.status !== 'active';
     var badge = coming
       ? '<span class="badge badge-soon">Coming Soon</span>'
       : '<span class="badge badge-active">Available Now</span>';
-    var btn = coming
-      ? '<a href="#" class="btn btn-secondary btn-wait">Coming Soon</a>'
-      : '<a href="/courses/' + c.slug + '/" class="btn btn-primary">Start Free — Module 1</a>';
+    var btn;
+    if (coming) {
+      btn = '<a href="#" class="btn btn-secondary btn-wait">Coming Soon</a>';
+    } else if (c.hasLanding) {
+      btn = '<a href="/courses/' + encodeURIComponent(c.slug) + '/" class="btn btn-primary">Start Free \u2014 Module 1</a>';
+    } else {
+      btn = '<button class="btn btn-primary" data-enroll-slug="' + encodeURIComponent(c.slug) + '" data-enroll-title="' + String(c.title).replace(/"/g, '&quot;') + '" data-enroll-tagline="' + String(c.tagline).replace(/"/g, '&quot;') + '">Start Free \u2014 Module 1</button>';
+    }
+    var price = coming ? '' : formatPriceEl(c.price);
     return '<div class="card' + (coming ? ' card-coming' : '') + '">' + badge + '<h2>' + c.title + '</h2><div class="slugline">' + c.tagline + '</div><div class="desc">' + c.description + '</div><div class="meta"><span>Duration: <strong>' + c.duration + '</strong></span><span>Level: <strong>' + c.level + '</strong></span>' + price + '</div>' + btn + '</div>';
   }
-  var html = active.map(function(c){ return card(c, false); }).join('');
-  html += soon.map(function(c){ return card(c, true); }).join('');
-  if (!active.length) {
+
+  var html = courses.map(function (c) { return card(c); }).join('');
+  if (!courses.length) {
     html = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#5A7A9F;font-size:14px">New courses are on the way. Check back soon.</div>';
   }
   grid.innerHTML = html;
+
+  // Delegate enroll clicks for inline cards
+  grid.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('[data-enroll-slug]') : null;
+    if (!btn) return;
+    e.preventDefault();
+    openEnroll(
+      decodeURIComponent(btn.getAttribute('data-enroll-slug')),
+      btn.getAttribute('data-enroll-title') || '',
+      btn.getAttribute('data-enroll-tagline') || ''
+    );
+  });
+}
+
+(function () {
+  var staticData = window.COURSE_DATA || { courses: [] };
+
+  // Live programs from the DB — fall back to static data off-network
+  if (typeof fetch === 'function') {
+    fetch('/api/programs')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (d) { renderPrograms(staticData, (d && d.programs) || []); })
+      .catch(function () { renderPrograms(staticData, null); });
+  } else {
+    renderPrograms(staticData, null);
+  }
 })();
+
+document.getElementById('enrollModal').addEventListener('click', function (e) {
+  if (e.target === this) closeEnroll();
+});
+document.getElementById('enrollForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var name = document.getElementById('enrollName').value.trim();
+  var email = document.getElementById('enrollEmail').value.trim();
+  var phone = document.getElementById('enrollPhone').value.trim();
+  var btn = document.getElementById('enrollBtn');
+  var msg = document.getElementById('enrollMsg');
+  if (!name || !email || !email.includes('@')) {
+    msg.className = 'msg err';
+    msg.innerHTML = 'Please enter your name and a valid email.';
+    return;
+  }
+  if (typeof window.tagOnboard === 'function') tagOnboard(email, name, 'course:' + COURSE_SLUG);
+  btn.disabled = true;
+  btn.innerHTML = 'Enrolling...';
+  msg.className = 'msg';
+  var _utm = {};
+  try { var _u = JSON.parse(localStorage.getItem('ga_utm') || '{}'); if (_u && _u.utm_source) _utm = _u; } catch (_e) {}
+  fetch('/api/enroll', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ program_slug: COURSE_SLUG, name: name, email: email, phone: phone, utm: _utm })
+  }).then(function (r) { return r.json(); }).then(function (d) {
+    if (d.status === 'ok') {
+      msg.className = 'msg ok';
+      msg.innerHTML = "<strong>You're in!</strong> Check your email for dashboard access. <a href='/dashboard/?token=" + (d.enrollment ? d.enrollment.access_token : '') + "'>Go to your dashboard &rarr;</a>";
+      btn.style.display = 'none';
+      if (typeof window.tagOnboard === 'function') tagOnboard(email, name, 'enrolled:' + COURSE_SLUG);
+    } else {
+      msg.className = 'msg err';
+      msg.innerHTML = d.message || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.innerHTML = 'Start Free';
+    }
+  }).catch(function () {
+    msg.className = 'msg err';
+    msg.innerHTML = 'Network error. Please check your connection and try again.';
+    btn.disabled = false;
+    btn.innerHTML = 'Start Free';
+  });
+});
 </script>
 <script src="../nav.js"></script>
 </body>

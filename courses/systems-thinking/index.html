@@ -10,16 +10,23 @@
 <meta property="og:description" content="Understand how things really work - then change them. Start free with Module 1.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/courses/systems-thinking/">
-<meta property="og:image" content="https://studio.gabochie.com/assets/images/banner.jpg">
+<meta property="og:site_name" content="Studio Gabochie">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Systems Thinking for Vision Builders">
+<meta name="twitter:description" content="Understand how things really work - then change them. Start free with Module 1.">
+<meta name="theme-color" content="#0A1628">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Course",
   "name": "Systems Thinking for Vision Builders",
   "description": "Understand how things really work - then change them. A practical course for vision builders.",
-  "provider": { "@type": "Organization", "name": "Studio Gabochie", "url": "https://studio.gabochie.com" },
-  "offers": { "@type": "Offer", "category": "Paid", "price": "250", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" },
-  "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT10H" }
+  "provider": { "@type": "Organization", "name": "Studio Gabochie", "url": "https://studio.gabochie.com", "sameAs": ["https://x.com/GideonAbochie", "https://www.youtube.com/@GideonAbochie"] },
+  "offers": { "@type": "Offer", "price": "250", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" },
+  "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT10H" },
+  "inLanguage": "en",
+  "educationalLevel": "Beginner"
 }
 </script>
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
@@ -283,10 +290,12 @@ document.getElementById('enrollForm').addEventListener('submit', function(e){
   btn.disabled = true;
   btn.innerHTML = 'Enrolling...';
   msg.className = 'msg';
+  var utm = {};
+  try { var u = JSON.parse(localStorage.getItem('ga_utm') || '{}'); if (u && u.utm_source) utm = u; } catch (_e) {}
   fetch('/api/enroll', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ program_slug: COURSE_SLUG, name: name, email: email, phone: phone })
+    body: JSON.stringify({ program_slug: COURSE_SLUG, name: name, email: email, phone: phone, utm: utm })
   }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       msg.className = 'msg ok';

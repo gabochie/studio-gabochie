@@ -138,6 +138,7 @@ export async function onRequest(context) {
     var studentName = sanitize(body.name);
     var studentEmail = (body.email || '').trim().toLowerCase();
     var studentPhone = sanitize(body.phone);
+    var utm = body.utm;
     if (!programSlug || !studentName || !studentEmail) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing required fields' }), {
         status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
@@ -192,6 +193,19 @@ export async function onRequest(context) {
     await db.prepare(
       'INSERT INTO enrollments (program_id, student_name, student_email, student_phone, access_token, status, token_expires_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     ).bind(program.id, studentName, studentEmail, studentPhone, token, enrollmentStatus, expiresAt, userId).run();
+
+    // UTM attribution for this enrollment (campaign → signup)
+    if (utm && typeof utm === 'object' && utm.utm_source) {
+      try {
+        await db.prepare(
+          'INSERT INTO events (event_type, event_data, page, email, created_at) VALUES (?, ?, ?, ?, datetime(\'now\'))'
+        ).bind(
+          'utm_enroll',
+          JSON.stringify(Object.assign({}, utm, { program_slug: programSlug })),
+          '/courses/' + programSlug + '/', studentEmail
+        ).run();
+      } catch (_err) {}
+    }
 
     // Guitar-specific setup: create user_stats and waitlist entry
     if (programSlug === 'guitar-method') {
