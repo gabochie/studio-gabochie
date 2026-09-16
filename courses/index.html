@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Courses — Studio Gabochie</title>
-<meta name="description" content="Practical courses for vision builders. Systems Thinking, Design Thinking, AI, Civic Intelligence and more — start free with Module 1, no card required.">
+<title>Courses — Studio Gabochie · School of Creativity, Love &amp; Wisdom</title>
+<meta name="description" content="Studio Gabochie — the School of Creativity, Love & Wisdom. Practical, self-paced courses across five schools: Creative Mind, Love, Work, Expression and Impact. Start free with Module 1, no card required.">
 <link rel="canonical" href="https://studio.gabochie.com/courses/">
-<meta property="og:title" content="Courses — Studio Gabochie">
-<meta property="og:description" content="Practical courses for vision builders. Start free with Module 1, no card required.">
+<meta property="og:title" content="Courses — School of Creativity, Love &amp; Wisdom">
+<meta property="og:description" content="Practical, self-paced courses across five schools. Start free with Module 1, no card required.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/courses/">
 <meta property="og:site_name" content="Studio Gabochie">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Courses — Studio Gabochie">
-<meta name="twitter:description" content="Practical courses for vision builders. Start free with Module 1, no card required.">
+<meta name="twitter:title" content="Courses — School of Creativity, Love &amp; Wisdom">
+<meta name="twitter:description" content="Practical, self-paced courses across five schools. Start free with Module 1, no card required.">
 <meta name="theme-color" content="#0A1628">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,6 +69,16 @@
 .enroll-modal .msg.err{display:block;background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
 .enroll-modal .msg a{color:#C9A84C;text-decoration:underline}
 .signup-note{font-family:'Barlow',sans-serif;font-size:11px;color:#3A5278;margin-top:16px;text-align:center}
+/* School sections */
+.school-section{margin-bottom:56px}
+.school-header{display:flex;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+.school-header .school-icon{width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:22px;flex-shrink:0}
+.school-header h2{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#fff;margin:0}
+.school-blurb{color:#8A9BB5;font-size:14px;line-height:1.6;margin:0 0 20px;max-width:640px}
+.school-sect{background:rgba(255,255,255,.02);border:1px solid #1E3250;border-radius:12px;margin-bottom:28px}
+.school-empty{padding:28px;border:1px dashed #1E3250;border-radius:12px;color:#5A7A9F;font-size:13px;font-style:italic}
+.wisdom-note{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:20px 24px;margin-bottom:28px;font-size:13px;color:#A8B8CD;line-height:1.6}
+.wisdom-note strong{color:#C9A84C;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -76,9 +86,9 @@
 <div id="nav-placeholder"></div>
 
 <div class="hero">
-  <div class="hero-eyebrow">Courses for Vision Builders</div>
-  <h1>Learn the Thinking That <span>Builds What Lasts</span></h1>
-  <p>Practical, self-paced courses. Each one starts free with Module 1 — no card required. Pick a course and start today.</p>
+  <div class="hero-eyebrow">Studio Gabochie · School of Creativity, Love &amp; Wisdom</div>
+  <h1>Five Schools. <span>One Way of Seeing.</span></h1>
+  <p>Everything here teaches you to create — with your mind, with people, at work, through art, and for your country. Each course starts free with Module 1, no card required.</p>
 </div>
 
 <div class="programs">
@@ -175,6 +185,7 @@ function renderPrograms(staticData, apiPrograms) {
     var s = bySlug[p.slug] || {};
     return {
       slug: p.slug,
+      school: s.school || 'mind',
       title: p.title || s.title || '',
       tagline: p.tagline || s.tagline || '',
       description: truncateText(p.description || s.description || '', 220),
