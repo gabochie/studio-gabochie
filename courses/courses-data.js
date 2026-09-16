@@ -11,11 +11,26 @@
 window.COURSE_DATA = {
   homepage: {
     // What the homepage hero promotes (the featured course slug)
-    featured: 'systems-thinking'
+    featured: 'systems-thinking',
+    mission: 'You are not just here to live. You are here to create.',
+    pillars: {
+      creativity: 'What possibilities can I create?',
+      love: 'Who and what am I creating for?',
+      wisdom: 'What is worth creating?'
+    },
+    schools: [
+      { slug: 'mind', label: 'Creative Mind', icon: 'ti-brain', blurb: 'How to think, imagine, solve problems and design ideas that work.' },
+      { slug: 'love', label: 'Creative Love', icon: 'ti-heart-filled', blurb: 'How to create with others — relationships, communication, family and community.' },
+      { slug: 'work', label: 'Creative Work', icon: 'ti-briefcase', blurb: 'How to create value, build skills and turn ideas into income.' },
+      { slug: 'expression', label: 'Creative Expression', icon: 'ti-palette', blurb: 'How to make music, art, stories and things that move people.' },
+      { slug: 'impact', label: 'Creative Impact', icon: 'ti-world', blurb: 'How to lead, build community and shape your country.' },
+      { slug: 'wisdom', label: 'Wisdom Layer', icon: 'ti-bible', blurb: 'How to create with discernment — rooted in Scripture and truth.', isLayer: true }
+    ]
   },
   courses: [
     {
       slug: 'systems-thinking',
+      school: 'mind',
       title: 'Systems Thinking for Vision Builders',
       tagline: 'Understand how things really work — then change them.',
       hasLandingPage: true,
@@ -55,6 +70,7 @@ window.COURSE_DATA = {
     // ── Additional courses (catalog fallback) — full content in /api/programs ──
     {
       slug: 'guitar-method',
+      school: 'expression',
       title: 'Gideon Guitar Method',
       tagline: 'Learn guitar in weeks, not years.',
       status: 'active',
@@ -65,6 +81,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-design-thinking',
+      school: 'mind',
       title: 'Design Thinking for Vision Builders',
       tagline: 'A practical toolkit for solving real problems.',
       status: 'active',
@@ -75,6 +92,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'pattern-recognition-vision-builders',
+      school: 'mind',
       title: 'Pattern Recognition for Vision Builders',
       tagline: 'See the patterns others miss.',
       status: 'active',
@@ -85,6 +103,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'architectural-thinking',
+      school: 'mind',
       title: 'Architectural Thinking for Vision Builders',
       tagline: 'Build ideas that stand.',
       status: 'active',
@@ -95,6 +114,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'web-development',
+      school: 'work',
       title: 'Web Development for Ghanaians',
       tagline: 'Build websites for the world from Accra.',
       status: 'active',
@@ -105,6 +125,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'digital-marketing',
+      school: 'work',
       title: 'Digital Marketing & Social Media',
       tagline: 'Grow an audience that pays.',
       status: 'active',
@@ -115,6 +136,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'civic-intelligence',
+      school: 'impact',
       title: 'Civic Intelligence Certificate',
       tagline: 'Understand your rights. Shape your country.',
       status: 'active',
@@ -125,6 +147,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'freelancing-ai',
+      school: 'work',
       title: 'Freelancing with AI Tools',
       tagline: 'Earn online with AI-powered skills.',
       status: 'active',
@@ -135,6 +158,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'ai-fundamentals',
+      school: 'mind',
       title: 'AI Fundamentals for Ghanaians',
       tagline: 'AI literacy with an African lens.',
       status: 'active',
@@ -145,6 +169,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'essential-values',
+      school: 'impact',
       title: 'Essential Values for National Development',
       tagline: 'Values that build a nation.',
       status: 'active',
@@ -155,6 +180,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'digital-entrepreneurship',
+      school: 'work',
       title: 'Digital Entrepreneurship & the Creative Economy',
       tagline: 'Build a business that scales.',
       status: 'active',
@@ -165,6 +191,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'youth-leadership',
+      school: 'impact',
       title: 'Youth Leadership & Community Organizing',
       tagline: 'Lead change where you are.',
       status: 'active',
@@ -175,6 +202,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'sketching-vision-builders',
+      school: 'expression',
       title: 'Sketching & Drawing for Vision Builders',
       tagline: 'Draw the future you imagine.',
       status: 'active',
@@ -185,6 +213,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'systems-thinking-genesis',
+      school: 'wisdom',
       title: 'The Spirit of God in Genesis: Creativity, Wisdom & Love',
       tagline: 'Systems thinking through the lens of Genesis.',
       status: 'coming_soon',
@@ -195,6 +224,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'revelation-study',
+      school: 'wisdom',
       title: 'The Spirit of God in Revelation: The Unveiling of Jesus Christ',
       tagline: 'Wisdom, love, and creativity in the last book.',
       status: 'coming_soon',
@@ -205,6 +235,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'psalms-worship-word',
+      school: 'wisdom',
       title: 'The Spirit of God in the Psalms: Worship, Wisdom & the Word',
       tagline: 'The Psalms through four lenses.',
       status: 'coming_soon',
@@ -215,6 +246,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'design-thinking-genesis',
+      school: 'wisdom',
       title: 'Design Thinking in Genesis – The Creation',
       tagline: 'God as the original designer.',
       status: 'coming_soon',
@@ -225,6 +257,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-biomimicry',
+      school: 'mind',
       title: 'Introduction to Biomimicry',
       tagline: 'Nature as mentor.',
       status: 'coming_soon',
@@ -235,6 +268,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-geometry',
+      school: 'mind',
       title: 'Introduction to Geometry',
       tagline: 'The shapes behind everything.',
       status: 'coming_soon',
@@ -245,6 +279,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-computing',
+      school: 'mind',
       title: 'Introduction to Computing',
       tagline: 'Understand the machine.',
       status: 'coming_soon',
@@ -255,6 +290,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-storytelling',
+      school: 'expression',
       title: 'Introduction to Storytelling & Narrative Design',
       tagline: 'Stories that stick.',
       status: 'coming_soon',

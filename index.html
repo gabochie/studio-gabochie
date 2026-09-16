@@ -3,29 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Systems Thinking for Vision Builders — Studio Gabochie</title>
-<meta name="description" content="Understand how things really work — then change them. A practical Systems Thinking course for vision builders. Start free with Module 1.">
+<title>Studio Gabochie — School of Creativity, Love &amp; Wisdom</title>
+<meta name="description" content="Studio Gabochie is a school teaching vision builders to imagine with creativity, create with love, and live with wisdom — anchored in Scripture. Start free with Module 1, no card required.">
 <link rel="canonical" href="https://studio.gabochie.com/">
-<meta property="og:title" content="Systems Thinking for Vision Builders — Studio Gabochie">
-<meta property="og:description" content="Understand how things really work — then change them. Start free with Module 1.">
+<meta property="og:title" content="Studio Gabochie — School of Creativity, Love &amp; Wisdom">
+<meta property="og:description" content="Imagine with Creativity. Create with Love. Live with Wisdom. Practical, self-paced courses — start free with Module 1.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/">
 <meta property="og:site_name" content="Studio Gabochie">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0A1628">
-<meta name="twitter:title" content="Systems Thinking for Vision Builders">
-<meta name="twitter:description" content="Understand how things really work — then change them. Start free with Module 1.">
+<meta name="twitter:title" content="Studio Gabochie — School of Creativity, Love &amp; Wisdom">
+<meta name="twitter:description" content="Imagine with Creativity. Create with Love. Live with Wisdom. Start free with Module 1.">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LearnAction",
-  "name": "Systems Thinking for Vision Builders",
-  "description": "A practical course teaching vision builders to see systems, solve problems at the root, and build solutions that last.",
-  "provider": { "@type": "Organization", "name": "Studio Gabochie", "url": "https://studio.gabochie.com" },
-  "url": "https://studio.gabochie.com/courses/systems-thinking/",
-  "offers": { "@type": "Offer", "price": "250", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" }
+  "@type": "EducationalOrganization",
+  "name": "Studio Gabochie",
+  "alternateName": "School of Creativity, Love & Wisdom",
+  "description": "A school teaching vision builders to imagine with creativity, create with love, and live with wisdom — anchored in Scripture.",
+  "url": "https://studio.gabochie.com",
+  "sameAs": [],
+  "department": [
+    {
+      "@type": "EducationalOrganization",
+      "name": "Systems Thinking for Vision Builders",
+      "url": "https://studio.gabochie.com/courses/systems-thinking/",
+      "offers": { "@type": "Offer", "price": "250", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" }
+    }
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,12 +59,31 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 .hero-card li{display:flex;align-items:flex-start;gap:10px;font-family:'Barlow',sans-serif;font-size:14px;color:#CBD5E1;line-height:1.5;margin-bottom:12px}
 .hero-card li i{color:#C9A84C;margin-top:2px}
 .hero-card .cta-row{display:flex;gap:10px;flex-wrap:wrap}
-@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.hero-actions,.hero-proof{justify-content:center}.hero-card{text-align:left}}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;position:relative;z-index:1}
+.pillar{background:rgba(15,30,56,0.85);border:1px solid #1E3250;border-radius:16px;padding:24px;text-align:center;transition:border-color .2s}
+.pillar:hover{border-color:#C9A84C}
+.pillar i{font-size:26px;color:#C9A84C;margin-bottom:12px;display:block}
+.pillar h3{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:#E8EEF7;letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px}
+.pillar .q{font-family:'Barlow',sans-serif;font-size:13px;color:#5A7A9F;font-style:italic;margin:0;line-height:1.5}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:24px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.hero-actions,.hero-proof{justify-content:center}.hero-card{text-align:left}.pillars{grid-template-columns:1fr}}
 .section{padding:90px 0}
 .section-label{display:inline-flex;align-items:center;gap:6px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
 .section-heading{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);margin-bottom:16px;color:#E8EEF7}
 .section-heading span{color:#C9A84C}
 .section-sub{font-family:'Barlow',sans-serif;font-size:17px;color:#8A9BB5;max-width:640px;line-height:1.7;margin-bottom:40px}
+.schools{background:#0F1E38}
+.schools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.school-card{background:#162540;border:1px solid #1E3250;border-radius:12px;padding:28px 24px;transition:all .3s;text-decoration:none;display:block}
+.school-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);border-color:#C9A84C}
+.school-card .sicon{width:46px;height:46px;border-radius:12px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;color:#C9A84C;margin-bottom:14px}
+.school-card.wisdom .sicon{background:rgba(90,122,159,0.1);border-color:rgba(90,122,159,0.25)}
+.school-card i.ti{font-size:22px}
+.school-card h3{font-family:'Barlow Condensed',sans-serif;font-size:17px;color:#E8EEF7;margin-bottom:6px}
+.school-card .slayer{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:#5A7A9F;margin-bottom:6px}
+.school-card p{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;line-height:1.6;margin:0 0 12px}
+.school-card .count{font-family:'Barlow',sans-serif;font-size:12px;color:#C9A84C;font-weight:600}
+.school-card .count i{font-size:14px;vertical-align:-2px}
+@media(max-width:860px){.schools-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.section{padding:60px 0}.section-heading{font-size:28px}}
 .learn{background:#0A1628}
 .learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
@@ -95,71 +122,88 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 <section class="hero">
   <div class="container hero-grid">
     <div>
-      <div class="hero-badge"><i class="ti ti-sparkles"></i> Featured Course</div>
-      <h1>Systems Thinking<br>for <span>Vision Builders</span></h1>
-      <p>Most people fix symptoms. A few people change systems. This course teaches you to see the system behind every situation — and solve problems where they actually start.</p>
+      <div class="hero-badge"><i class="ti ti-sparkles"></i> School of Creativity, Love &amp; Wisdom</div>
+      <h1>Imagine with Creativity.<br>Create with <span>Love.</span><br>Live with Wisdom.</h1>
+      <p>You are not just here to live — you are here to create. Studio Gabochie is a ministry-backed school teaching vision builders to see the world as it is, and build what it could be.</p>
       <div class="hero-actions">
-        <a href="/courses/systems-thinking/" class="btn btn-gold btn-lg"><i class="ti ti-player-play"></i> Start Free — Module 1</a>
-        <a href="/courses/systems-thinking/" class="btn btn-outline btn-lg">See the Full Course</a>
+        <a href="/courses/" class="btn btn-gold btn-lg"><i class="ti ti-player-play"></i> Explore the Courses</a>
+        <a href="/courses/systems-thinking/" class="btn btn-outline btn-lg">Start the Flagship — Free</a>
       </div>
       <div class="hero-proof"><i class="ti ti-circle-check"></i> Free Module 1 · No card required · Your progress is saved</div>
     </div>
-    <div class="hero-card">
-      <div class="label">You will learn to</div>
-      <ul id="heroOutcomes">
-        <li><i class="ti ti-check"></i><span>Describe any situation as a system</span></li>
-        <li><i class="ti ti-check"></i><span>Find the root cause, not the symptom</span></li>
-        <li><i class="ti ti-check"></i><span>Predict ripple effects before they happen</span></li>
-        <li><i class="ti ti-check"></i><span>Use leverage points for lasting change</span></li>
-      </ul>
-      <div class="cta-row">
-        <a href="/courses/systems-thinking/" class="btn btn-gold btn-lg" style="flex:1"><i class="ti ti-bolt"></i> Enroll Now</a>
+    <div>
+      <div class="hero-card">
+        <div class="label">The Flagship · Creative Mind</div>
+        <ul id="heroOutcomes">
+          <li><i class="ti ti-check"></i><span>Systems Thinking — see the whole, not the parts</span></li>
+          <li><i class="ti ti-check"></i><span>Design &amp; Architecture — shape what you build</span></li>
+          <li><i class="ti ti-check"></i><span>AI &amp; Computing — create with the tools of today</span></li>
+          <li><i class="ti ti-check"></i><span>Rooted in Scripture — build what lasts</span></li>
+        </ul>
+        <div class="cta-row">
+          <a href="/courses/systems-thinking/" class="btn btn-gold btn-lg" style="flex:1"><i class="ti ti-bolt"></i> Start Module 1 — Free</a>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><i class="ti ti-bulb"></i><h3>Creativity</h3><p class="q">"What possibilities can I create?"</p></div>
+        <div class="pillar"><i class="ti ti-heart"></i><h3>Love</h3><p class="q">"Who and what am I creating for?"</p></div>
+        <div class="pillar"><i class="ti ti-scale"></i><h3>Wisdom</h3><p class="q">"What is worth creating?"</p></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ═══ SCHOOLS ═══ -->
+<section class="section schools" id="schools">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> Five Schools · One Vision</div>
+    <h2 class="section-heading">A School for <span>Vision Builders</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Five schools of creative work — and a wisdom layer beneath them all, because what you build is only as strong as the truth it stands on.</p>
+    <div class="schools-grid" id="schoolsGrid"></div>
   </div>
 </section>
 
 <!-- ═══ WHY ═══ -->
 <section class="section why">
   <div class="container text-center">
-    <div class="section-label" style="justify-content:center"><i class="ti ti-focus-2"></i> Why This Course</div>
-    <h2 class="section-heading">You Are Already a <span>Vision Builder</span></h2>
-    <p class="section-sub" style="margin-left:auto;margin-right:auto">If you build, lead, create, or serve — the difference between surviving and thriving is whether you can see the system you are working in. This course gives you that lens.</p>
+    <div class="section-label" style="justify-content:center"><i class="ti ti-focus-2"></i> Why This School</div>
+    <h2 class="section-heading">Built to Help You <span>Create What Lasts</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Everything here is practical, self-paced, and starts free. Whether you build, lead, create, or serve — the goal is the same: build what lasts.</p>
     <div class="why-grid">
       <div class="why-card">
         <i class="ti ti-telescope"></i>
-        <h3>Stop Treating Symptoms</h3>
-        <p>Recurring problems are recurring for a reason. When you see the system, you stop fighting the same fire over and over.</p>
+        <h3>Understand Systems</h3>
+        <p>Stop treating symptoms. Learn to see the system behind every situation — from your family to your career to your nation.</p>
       </div>
       <div class="why-card">
         <i class="ti ti-route-2"></i>
-        <h3>Make Better Decisions</h3>
-        <p>From family to business to national development — systems maps reveal where a small, well-placed change does more than a huge one elsewhere.</p>
+        <h3>Create with Purpose</h3>
+        <p>Tools without a why don't last. Every school keeps the question in front of you: who and what are you creating for?</p>
       </div>
       <div class="why-card">
         <i class="ti ti-building-factory-2"></i>
-        <h3>Build What Lasts</h3>
-        <p>Vision builders don't just make things — they make structures that keep working. That is exactly what systems thinking teaches.</p>
+        <h3>Stand on Wisdom</h3>
+        <p>Creativity and love need a foundation. Our wisdom studies keep every course anchored in Scripture and truth.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ LEARN ═══ -->
+<!-- ═══ LEARN (FLAGSHIP) ═══ -->
 <section class="section learn" id="learn">
   <div class="container text-center">
-    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> What's Inside</div>
-    <h2 class="section-heading">Six Modules. <span>One New Lens.</span></h2>
-    <p class="section-sub" style="margin-left:auto;margin-right:auto">A short, practical course you can finish around real life — each module builds on the last.</p>
+    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> The Flagship · Creative Mind</div>
+    <h2 class="section-heading">Start With <span>Systems Thinking.</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">A short, practical flagship course you can finish around real life — each module builds on the last. See how a course works before you explore the rest.</p>
     <div class="learn-grid" id="modulesGrid"></div>
   </div>
 </section>
 
 <!-- ═══ CTA BAND ═══ -->
 <section class="cta-band">
-  <h2>Start Free. <span>Go as Deep as You Want.</span></h2>
-  <p>Module 1 is free — no card, no commitment. If the course serves you, unlock full access from your dashboard whenever you're ready.</p>
-  <a href="/courses/systems-thinking/" class="btn btn-gold btn-lg"><i class="ti ti-player-play"></i> Start Module 1 — Free</a>
+  <h2>Your Vision Is a <span>Built Thing.</span></h2>
+  <p>Start free in any school — no card, no commitment. If the course serves you, unlock full access from your dashboard whenever you're ready.</p>
+  <a href="/courses/" class="btn btn-gold btn-lg"><i class="ti ti-player-play"></i> Explore All Courses — Free</a>
 </section>
 
 <!-- ═══ FAQ ═══ -->
@@ -171,11 +215,15 @@ body{font-family:'Libre Baskerville',Georgia,serif}
     </div>
     <div class="faq-list" id="faqList">
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">Do I need any experience? <i class="ti ti-chevron-down"></i></button>
-        <div class="faq-answer">None. Module 1 starts from first principles and builds up. The exercises are practical, not academic.</div>
+        <button class="faq-question" onclick="toggleFaq(this)">What kind of school is this? <i class="ti ti-chevron-down"></i></button>
+        <div class="faq-answer">A ministry-backed school of practical creative skills — organized into five schools (Mind, Love, Work, Expression, Impact) with a wisdom layer rooted in Scripture. Students are vision builders.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">How is the course delivered? <i class="ti ti-chevron-down"></i></button>
+        <button class="faq-question" onclick="toggleFaq(this)">Do I need any experience? <i class="ti ti-chevron-down"></i></button>
+        <div class="faq-answer">None. Every course starts from first principles and builds up. The exercises are practical, not academic.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">How is each course delivered? <i class="ti ti-chevron-down"></i></button>
         <div class="faq-answer">Self-paced modules in your personal dashboard, with checkpoints and a certificate of completion when you finish.</div>
       </div>
       <div class="faq-item">
@@ -194,13 +242,30 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 <script>
 function animateCounters(){return}
 (function(){
-  var data = window.COURSE_DATA || { courses: [] };
+  var data = window.COURSE_DATA || { courses: [], homepage: {} };
   var course = data.courses && data.courses[0];
   if (!course) return;
   var modGrid = document.getElementById('modulesGrid');
   if (modGrid && course.modules) {
     modGrid.innerHTML = course.modules.map(function(m, i){
       return '<div class="learn-item"><div class="icon">' + (i + 1) + '</div><div><h3>' + m.title + '</h3><p>' + m.summary + '</p></div></div>';
+    }).join('');
+  }
+  var schools = (data.homepage && data.homepage.schools) || [];
+  var schoolsGrid = document.getElementById('schoolsGrid');
+  if (schoolsGrid && schools.length) {
+    var countBySchool = {};
+    (data.courses || []).forEach(function(c){ if (c.school) countBySchool[c.school] = (countBySchool[c.school] || 0) + 1; });
+    schoolsGrid.innerHTML = schools.map(function(s){
+      var isLayer = !!s.isLayer;
+      var count = countBySchool[s.slug] || 0;
+      var countHtml = isLayer
+        ? '<span class="count" style="color:#5A7A9F"><i class="ti ti-layer-3"></i> The foundation</span>'
+        : '<span class="count"><i class="ti ti-folder"></i> ' + count + ' course' + (count === 1 ? '' : 's') + '</span>';
+      return '<a href="/courses/#school-' + s.slug + '" class="school-card' + (isLayer ? ' wisdom' : '') + '">' +
+        '<div class="sicon"><i class="ti ' + (s.icon || 'ti-school') + '"></i></div>' +
+        (isLayer ? '<div class="slayer">Wisdom Layer</div>' : '') +
+        '<h3>' + s.label + '</h3><p>' + (s.blurb || '') + '</p>' + countHtml + '</a>';
     }).join('');
   }
 })();
