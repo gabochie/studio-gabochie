@@ -59,10 +59,11 @@
 /nationbuilding/* / 301
 /survey / 301
 /survey/* / 301
+# ─── Newsletter → subdomain (still live) — MUST precede /news* ───
+/newsletter* https://news.gabochie.com/ 301
 /news* / 301
 /contact* / 301
 /ref* / 301
 
-# ─── Newsletter → subdomain (still live) ───
-/newsletter* https://news.gabochie.com/ 301
+# ─── Newsletter related ───
 /advertise https://news.gabochie.com/ 301
