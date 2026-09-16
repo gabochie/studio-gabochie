@@ -421,23 +421,79 @@ window.COURSE_DATA = {
       slug: 'sketching-vision-builders',
       school: 'expression',
       title: 'Sketching & Drawing for Vision Builders',
-      tagline: 'Draw the future you imagine.',
+      tagline: 'Drawing is thinking made visible.',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'Practical sketching and drawing skills to help you visualize and share big ideas.'
+      certification: 'Certificate of completion',
+      description: 'Every great building, business, and movement begins with a sketch. This practical program teaches you to use drawing as a thinking tool — observation, perspective, composition, and visual storytelling — not to become a fine artist, but to become a clearer thinker and a more effective visionary. From a seven-day warm-up to a hand-drawn capstone Vision Board, every exercise is built for daily practice and real projects.',
+      outcomes: [
+        'Keep a daily sketchbook practice that makes your thinking concrete',
+        'See like an artist — contours, negative space, gesture, and proportion',
+        'Draw what you see with line, shape, perspective, and shading',
+        'Compose drawings and storyboards that explain ideas in seconds',
+        'Draw from imagination using your internal visual library',
+        'Create a hand-drawn Vision Board that communicates a real project or dream'
+      ],
+      modules: [
+        { title: 'Module 1 — The Visionary\'s Sketchbook', summary: 'Set up a daily 10-minute sketchbook practice and complete a seven-day observation warm-up.' },
+        { title: 'Module 2 — Seeing Like an Artist', summary: 'Five seeing exercises — contour, negative space, gesture, and more — that retrain your eye.' },
+        { title: 'Module 3 — Line, Shape & Form', summary: 'The visual vocabulary of drawing: line quality, basic shapes, perspective, and shading.' },
+        { title: 'Module 4 — Composition & Visual Storytelling', summary: 'Arrange what you draw to communicate — focal point, thumbnails, and storyboarding.' },
+        { title: 'Module 5 — Drawing from Imagination', summary: 'Build a visual library and draw what does not yet exist — the essential visionary skill.' },
+        { title: 'Module 6 — Capstone: Vision Board Project', summary: 'Design and present a hand-drawn Vision Board for a real project, idea, or dream.' }
+      ],
+      whoItsFor: 'Vision builders — founders, creators, students, and leaders — who want to think visually, communicate big ideas, and bring dreams from imagination onto paper.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need to be able to draw?', a: 'No. The program starts from the very beginning — Module 1 is a seven-day warm-up designed for complete beginners.' },
+        { q: 'Is this about becoming an artist?', a: 'No. Drawing here is a thinking tool — clarity, planning, and communication — not gallery art.' },
+        { q: 'What materials do I need?', a: 'Just a sketchbook and a pen. Module 1 tells you exactly what to get and how to start today.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' }
+      ]
     },
     {
       slug: 'systems-thinking-genesis',
       school: 'wisdom',
       title: 'The Spirit of God in Genesis: Creativity, Wisdom & Love',
-      tagline: 'Systems thinking through the lens of Genesis.',
+      tagline: 'Journey through all 50 chapters of Genesis through the Spirit\'s creativity, wisdom, and love.',
+      hasLandingPage: true,
       status: 'active',
       price: 250,
+      priceNote: 'Full access, one-time payment. Or start free with Module 1.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'Explore creation, wisdom, and divine order through systems, design, and pattern-recognition lenses.'
+      certification: 'Certificate of completion',
+      description: 'Genesis is not simply a book of beginnings — it is the revelation of God\'s nature as Creator, Wisdom, and Love. This six-module program reads Genesis 1–50 through three lenses drawn from the text itself: Divine Creativity (the Spirit hovering over creation), Divine Wisdom (God\'s ordering of all things), and Divine Love (covenant faithfulness). Each module pairs Scripture with practical thinking frameworks — systems thinking, design thinking, creative thinking, and pattern recognition — so the book shapes how you see, design, and build.',
+      outcomes: [
+        'Read all 50 chapters of Genesis through the Spirit\'s creativity, wisdom, and love',
+        'See the six days of creation as an ordered process — and a template for your own creative work',
+        'Apply systems thinking to the flood, Babel, the covenant, and Joseph\'s governance',
+        'Map the Abrahamic covenant as a designed system with feedback loops',
+        'Trace God\'s redemptive patterns through Isaac, Jacob, and Joseph',
+        'Complete each module with a Scripture-first application exercise for your own life'
+      ],
+      modules: [
+        { title: 'Module 1 — The Spirit Hovering: Divine Creativity in Creation', summary: 'Genesis 1–2. The Spirit\'s creative process — separation, formation, filling — as the template for all creativity.' },
+        { title: 'Module 2 — The God Who Restores: Wisdom in the Fall & Flood', summary: 'Genesis 3–9. Judgment and redemption as a wise, systemic reset that preserves a remnant.' },
+        { title: 'Module 3 — Noah to Babel: Divine Love Preserving and Scattering', summary: 'Genesis 6–11. Grace, covenant, and the table of nations — love that preserves and redirects.' },
+        { title: 'Module 4 — Abraham: The Covenant as a Divine Design System', summary: 'Genesis 12–22. A masterclass in design thinking — purpose, boundaries, testing, and feedback loops.' },
+        { title: 'Module 5 — Isaac & Jacob: Patterns of Grace, Struggle & Transformation', summary: 'Genesis 25–35. Family systems reveal God\'s redemptive patterns of struggle and renewal.' },
+        { title: 'Module 6 — Joseph: Divine Sovereignty as the Ultimate System', summary: 'Genesis 37–50. Stocks, flows, and sovereignty — how God orchestrates all systems for good.' }
+      ],
+      whoItsFor: 'Students of Scripture, vision builders, and curious readers who want to read Genesis with fresh eyes — pairing the biblical text with systems, design, and pattern-recognition lenses.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need theological training?', a: 'No. Every module starts from the biblical text and builds up — Scripture first, thinking frameworks second.' },
+        { q: 'Is this a Bible study or a thinking course?', a: 'Both. The lens always comes from the passage itself — divine creativity, wisdom, or love — so the two reinforce each other.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access.' },
+        { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' }
+      ]
     },
     {
       slug: 'revelation-study',
