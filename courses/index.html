@@ -243,18 +243,15 @@ function renderPrograms(staticData, apiPrograms) {
     (bySchool[k] = bySchool[k] || []).push(c);
   });
 
+  // Render each school in canonical order (from data), falling back to any
+  // non-empties not declared in the meta (e.g. offline static mismatch).
+  var declared = {};
+  schoolOrder.forEach(function (slug) { declared[slug] = true; });
+
   var sectionHTML = '';
-  var seen = {};
-  Object.keys(bySchool).sort(function (a, b) {
-    var ia = schoolOrder.indexOf(a), ib = schoolOrder.indexOf(b);
-    if (ia === -1 && ib === -1) return a < b ? -1 : 1;
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
-  }).forEach(function (slug) {
-    seen[slug] = true;
+  schoolOrder.forEach(function (slug) {
     var meta = schoolLookup[slug] || {};
-    var cards = bySchool[slug].sort(function (a, b) {
+    var cards = (bySchool[slug] || []).slice().sort(function (a, b) {
       if (a.slug === starred) return -1;
       if (b.slug === starred) return 1;
       var ra = statusRank(a), rb = statusRank(b);
@@ -265,7 +262,7 @@ function renderPrograms(staticData, apiPrograms) {
     var note = isLayer
       ? '<div class="wisdom-note"><strong>Wisdom Layer</strong><br>Wisdom is not a school — it is the lens that runs through every course. These studies keep everything here anchored in Scripture and truth.</div>'
       : '';
-    sectionHTML += '<div class="school-section">' +
+    sectionHTML += '<div class="school-section" id="school-' + slug + '">' +
       '<div class="school-header"><div class="school-icon"><i class="ti ' + (meta.icon || 'ti-school') + '"></i></div><h2>' + (meta.label || 'Courses') + '</h2></div>' +
       '<p class="school-blurb">' + (meta.blurb || '') + '</p>' + note +
       '<div class="program-grid">' + cards.map(function (c) { return card(c); }).join('') +
@@ -273,16 +270,16 @@ function renderPrograms(staticData, apiPrograms) {
       '</div></div>';
   });
 
-  // Schools with no courses yet (e.g. Creative Love)
-  schoolOrder.forEach(function (slug) {
-    if (seen[slug]) return;
+  // Any schools with courses not declared above (defensive)
+  Object.keys(bySchool).forEach(function (slug) {
+    if (declared[slug]) return;
     var meta = schoolLookup[slug] || {};
     var isLayer = !!meta.isLayer;
     var note = isLayer ? '<div class="wisdom-note"><strong>Wisdom Layer</strong><br>These studies will keep everything here anchored in Scripture and truth.</div>' : '';
-    sectionHTML += '<div class="school-section">' +
+    sectionHTML += '<div class="school-section" id="school-' + slug + '">' +
       '<div class="school-header"><div class="school-icon"><i class="ti ' + (meta.icon || 'ti-school') + '"></i></div><h2>' + (meta.label || 'Courses') + '</h2></div>' +
       '<p class="school-blurb">' + (meta.blurb || '') + '</p>' + note +
-      '<div class="school-empty">Courses coming soon.</div></div>';
+      '<div class="program-grid">' + bySchool[slug].map(function (c) { return card(c); }).join('') + '</div></div>';
   });
 
   grid.innerHTML = sectionHTML || html;

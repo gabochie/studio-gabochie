@@ -2,7 +2,7 @@
   var navHtml =
     '<nav>' +
     '<div class="container">' +
-    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">Courses for Vision Builders</span></span></a>' +
+    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/courses/" class="nav-active-link">Courses</a>' +
     '<span id="navAuth" class="nav-auth"></span>' +
@@ -16,8 +16,8 @@
     '<footer>' +
     '<div class="container">' +
     '<div>' +
-    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">Courses for Vision Builders</span></span></div>' +
-    '<p class="footer-about">Practical, self-paced courses that teach vision builders to see systems, solve problems at the root, and build what lasts.</p>' +
+    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
+    '<p class="footer-about">A ministry-backed school teaching vision builders to imagine with creativity, create with love, and live with wisdom. Every course is practical, self-paced, and starts free.</p>' +
     '<div class="footer-social">' +
     '<a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>' +
     '<a href="https://web.facebook.com/GideonAbochie/" target="_blank" title="Facebook"><i class="ti ti-brand-facebook"></i></a>' +
@@ -27,10 +27,11 @@
     '</div>' +
     '</div>' +
     '<div>' +
-    '<h4>Courses</h4>' +
+    '<h4>The School</h4>' +
+    '<a href="/">Home</a>' +
+    '<a href="/#schools">The Five Schools</a>' +
     '<a href="/courses/">All Courses</a>' +
-    '<a href="/courses/systems-thinking/">Systems Thinking</a>' +
-    '<a href="/courses/">Design, AI & More</a>' +
+    '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
     '</div>' +
     '<div>' +
     '<h4>Your Learning</h4>' +
@@ -47,7 +48,7 @@
     '<a href="/legal/terms.html">Terms of Use</a>' +
     '<a href="/legal/refund.html">Refund Policy</a>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; Courses for Vision Builders.</div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; School of Creativity, Love &amp; Wisdom.</div>' +
     '</div>' +
     '</footer>';
 
