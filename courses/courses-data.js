@@ -1,4 +1,3 @@
-/* global window */
 /* ─────────────────────────────────────────────────────────────
    COURSE DATA — the single source of truth for course content.
    Add a new course by appending an object to the `courses` array.
@@ -72,19 +71,24 @@ window.COURSE_DATA = {
       slug: 'guitar-method',
       school: 'expression',
       title: 'Gideon Guitar Method',
-      tagline: 'Learn guitar in weeks, not years.',
+      tagline: 'Learn to play your favorite Ghanaian songs on guitar.',
+      hasLandingPage: true,
+      landingUrl: '/guitar/',
       status: 'active',
       price: 250,
+      priceNote: 'Free bronze modules to start. Unlock silver and gold for full access.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'A practical guitar method built for African learners — play real songs from day one.'
+      certification: 'Song mastery portfolio',
+      description: 'The fastest path from zero to your first Ghanaian song. 16 modules, 64 video lessons, real-time pitch detection, and a deliberate practice system built on peer-reviewed learning science.'
     },
     {
       slug: 'intro-design-thinking',
       school: 'mind',
       title: 'Design Thinking for Vision Builders',
       tagline: 'A practical toolkit for solving real problems.',
-      status: 'active',
+      status: 'coming_soon',
       price: 0,
       duration: 'Self-paced',
       level: 'Beginner friendly',
@@ -95,7 +99,7 @@ window.COURSE_DATA = {
       school: 'mind',
       title: 'Pattern Recognition for Vision Builders',
       tagline: 'See the patterns others miss.',
-      status: 'active',
+      status: 'coming_soon',
       price: 0,
       duration: 'Self-paced',
       level: 'Beginner friendly',
@@ -106,7 +110,7 @@ window.COURSE_DATA = {
       school: 'mind',
       title: 'Architectural Thinking for Vision Builders',
       tagline: 'Build ideas that stand.',
-      status: 'active',
+      status: 'coming_soon',
       price: 0,
       duration: 'Self-paced',
       level: 'Beginner friendly',
@@ -116,89 +120,302 @@ window.COURSE_DATA = {
       slug: 'web-development',
       school: 'work',
       title: 'Web Development for Ghanaians',
-      tagline: 'Build websites for the world from Accra.',
+      tagline: 'Build websites and start freelancing',
+      hasLandingPage: true,
       status: 'active',
       price: 150,
+      priceNote: 'Full access, one-time payment. Or start free with Module 1.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'Learn to build and launch real websites — HTML, CSS, JavaScript and beyond.'
+      certification: 'Certificate of completion',
+      description: 'Learn HTML, CSS, and JavaScript from scratch. Build real projects — a personal portfolio, a business website, and a landing page — and learn how to start freelancing as a web developer.',
+      outcomes: [
+        'Explain how the web works and write your first HTML page by hand',
+        'Style pages with CSS — colors, fonts, and responsive layouts',
+        'Add interactivity with JavaScript — buttons, forms, and dynamic content',
+        'Build and launch two real projects: a business website and a portfolio',
+        'Publish online for free and market yourself as a freelancer'
+      ],
+      modules: [
+        { title: 'Module 1 — How the Web Works & Your First HTML Page', summary: 'How the internet works and writing your first HTML page.' },
+        { title: 'Module 2 — Styling with CSS', summary: 'Add colors, fonts, and layout to your pages with CSS.' },
+        { title: 'Module 3 — JavaScript: Making Pages Interactive', summary: 'Add interactivity with buttons, forms, and dynamic content.' },
+        { title: 'Module 4 — Project 1: Business Website', summary: 'Build a complete landing page for a Ghanaian business.' },
+        { title: 'Module 5 — Project 2: Portfolio & Publishing Online', summary: 'Build your portfolio and publish it for free on Netlify.' },
+        { title: 'Module 6 — Freelancing as a Web Developer', summary: 'Find clients, set prices, and start earning as a freelance web developer.' }
+      ],
+      whoItsFor: 'Beginners with no coding experience who want to build real websites, launch their own projects, and start earning online.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access.' },
+        { q: 'What will I be able to build?', a: 'A business website and your own portfolio, published online for free.' }
+      ]
     },
     {
       slug: 'digital-marketing',
       school: 'work',
       title: 'Digital Marketing & Social Media',
-      tagline: 'Grow an audience that pays.',
+      tagline: 'Grow brands and earn from anywhere',
+      hasLandingPage: true,
       status: 'active',
       price: 150,
+      priceNote: 'Full access, one-time payment. Or start free with Module 1.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'Practical marketing for the Ghanaian market — content, ads, and community that convert.'
+      certification: 'Certificate of completion',
+      description: 'Learn to market businesses on social media, create content that sells, run ads, and build a career as a digital marketer. Practical, Ghana-focused, and results-driven.',
+      outcomes: [
+        'Understand the Ghanaian digital marketing landscape and where the opportunities are',
+        'Build a content strategy and create posts that get attention',
+        'Write captions, ads, and messages that convert',
+        'Set up and optimize Facebook & Instagram ads for Ghanaian audiences',
+        'Measure what works, grow followers organically, and turn it into a career'
+      ],
+      modules: [
+        { title: 'Module 1 — The Ghana Digital Marketing Landscape', summary: 'Why digital marketing is booming in Ghana and where the opportunities are.' },
+        { title: 'Module 2 — Social Media Strategy & Content Creation', summary: 'Build a content strategy and create posts that get attention.' },
+        { title: 'Module 3 — Copywriting: Words That Sell', summary: 'Write captions, ads, and messages that convert.' },
+        { title: 'Module 4 — Running Facebook & Instagram Ads', summary: 'Set up and optimize paid ad campaigns for Ghanaian audiences.' },
+        { title: 'Module 5 — Analytics & Growing Your Audience', summary: 'Measure what works and grow followers organically.' },
+        { title: 'Module 6 — Freelancing as a Digital Marketer', summary: 'Find clients, set prices, and build a marketing career.' }
+      ],
+      whoItsFor: 'Aspiring marketers, small business owners, and content creators who want to grow audiences and earn from digital marketing.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access.' },
+        { q: 'Will these methods work in Ghana?', a: 'Yes — the whole course is built around the Ghanaian market, from content to ad targeting.' }
+      ]
     },
     {
       slug: 'civic-intelligence',
       school: 'impact',
       title: 'Civic Intelligence Certificate',
-      tagline: 'Understand your rights. Shape your country.',
+      tagline: 'Build the tools and habits of engaged citizenship for Ghana\'s future',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
-      duration: 'Self-paced',
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
+      duration: '12 weeks',
       level: 'Beginner friendly',
-      description: 'The Constitution, civic tech, and how citizens can participate in governance and hold power to account.'
+      certification: 'Certificate of completion',
+      description: 'Learn how Ghana\'s democracy works, how to use civic technology to hold leaders accountable, and how to design and lead community action projects rooted in Ghana\'s national development frameworks — the 1992 Constitution, Vision 2057, the National Youth Policy, the Ghana AI Strategy, and the Ghana Infrastructure Plan.',
+      outcomes: [
+        'Explain how Ghana\'s 1992 Constitution, the three branches of government, and the 261 MMDAs shape civic life',
+        'Use civic technology — manifesto meters, service delivery dashboards, and whistleblower tools — to hold power to account',
+        'Apply the Data Protection Act and Ghana\'s AI Strategy to data sovereignty and public good',
+        'Participate in governance through budgeting, Civic Education Clubs, and community organizing',
+        'Read and influence national development plans, from the district level to Vision 2057'
+      ],
+      modules: [
+        { title: 'Module 1 — The Citizen & the Constitution', summary: 'The 1992 Constitution, the three branches of government, the 261 MMDAs, and everyday citizen rights and responsibilities.' },
+        { title: 'Module 2 — Civic Technology & Digital Accountability', summary: 'Manifesto meters, geotagged service delivery dashboards, and anonymous whistleblower tools that hold leaders to account.' },
+        { title: 'Module 3 — Data Sovereignty & AI for Public Good', summary: 'The Data Protection Act, ethical AI aligned with the Ghana AI Strategy, and localized datasets in Ghanaian languages.' },
+        { title: 'Module 4 — Participatory Governance & Community Organizing', summary: 'District assemblies, participatory budgeting, Civic Education Clubs, and CSO partnerships like CDD-Ghana and IMANI Africa.' },
+        { title: 'Module 5 — National Development Planning Literacy', summary: 'Reading and influencing Vision 2057, the Ghana Infrastructure Plan, and district medium-term development plans.' },
+        { title: 'Module 6 — Capstone: Civic Action Project', summary: 'Design and execute a real civic project — a manifesto meter pilot, infrastructure audit, club launch, or budgeting workshop.' }
+      ],
+      whoItsFor: 'Citizens, students, civil society leaders, and youth organizers who want to understand their rights and shape the future of their country.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'Is this connected to a government body?', a: 'No. It is an independent, citizen-focused program built on official public frameworks like the Constitution and national policies.' }
+      ]
     },
     {
       slug: 'freelancing-ai',
       school: 'work',
       title: 'Freelancing with AI Tools',
-      tagline: 'Earn online with AI-powered skills.',
+      tagline: 'Use AI to land clients and deliver faster',
+      hasLandingPage: true,
       status: 'active',
       price: 150,
+      priceNote: 'Full access, one-time payment. Or start free with Module 1.',
+      currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
-      description: 'Combine AI tools with freelance skills to deliver services to clients anywhere in the world.'
+      certification: 'Certificate of completion',
+      description: 'Learn to use ChatGPT, Claude, Canva AI, and other free tools to create content, automate work, and start freelancing. No technical experience required.',
+      outcomes: [
+        'Set up a free AI toolkit that works for freelancing',
+        'Use AI to write posts, design graphics, and create client-ready content',
+        'Automate repetitive tasks and serve more clients with less effort',
+        'Package your services, find clients, and start earning with AI'
+      ],
+      modules: [
+        { title: 'Module 1 — Your AI Toolkit', summary: 'Set up ChatGPT, Canva AI, and other free tools for freelancing.' },
+        { title: 'Module 2 — Content Creation with AI', summary: 'Use AI to write posts, design graphics, and create content for clients.' },
+        { title: 'Module 3 — Automation & Productivity with AI', summary: 'Automate repetitive tasks and serve more clients with less effort.' },
+        { title: 'Module 4 — Building Your Freelance Business', summary: 'Package your services, find clients, and start earning with AI.' }
+      ],
+      whoItsFor: 'Beginners who want to earn online — no technical background required, just a willingness to learn fast.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'Do I need expensive tools?', a: 'No. The course is built around free tools you can start with today.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access.' },
+        { q: 'Who can use AI freelancing?', a: 'Students, creatives, and career changers — near anytime, anywhere with an internet connection.' }
+      ]
     },
     {
       slug: 'ai-fundamentals',
       school: 'mind',
       title: 'AI Fundamentals for Ghanaians',
-      tagline: 'AI literacy with an African lens.',
+      tagline: 'Understand AI, apply it to Ghanaian sectors, and build ethically',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
-      duration: 'Self-paced',
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
+      duration: '6 weeks',
       level: 'Beginner friendly',
-      description: 'What AI is, how it works, and how it applies to agriculture, health, education, and governance in Ghana.'
+      certification: 'Certificate of completion',
+      description: 'Ghana\'s National AI Strategy envisions an AI-powered society by 2035. This program introduces what AI is, how it works, and how it applies to Ghana\'s key sectors — agriculture, health, education, and governance — through real Ghanaian use cases, while covering the ethics of the Responsible AI Authority and the UNESCO AI Ethics recommendations.',
+      outcomes: [
+        'Explain what AI is and how machine learning, natural language processing, and computer vision work',
+        'Spot real AI applications across Ghanaian agriculture, health, education, and governance',
+        'Work with Ghanaian language AI and localized datasets',
+        'Apply ethical frameworks — the Responsible AI Authority, the Data Protection Act, and UNESCO recommendations',
+        'Design an AI opportunity map for a problem in your community or sector'
+      ],
+      modules: [
+        { title: 'Module 1 — What Is AI and Why Does It Matter for Ghana?', summary: 'Definitions of AI, a brief history, and the Ghana AI Strategy vision of an AI-powered society by 2035.' },
+        { title: 'Module 2 — AI for Ghanaian Agriculture & Environment', summary: 'Crop disease detection, weather prediction, soil monitoring, and supply chain optimization.' },
+        { title: 'Module 3 — AI for Health, Education & Governance', summary: 'AI diagnostics for healthcare, personalized learning tools, and predictive analytics for public services.' },
+        { title: 'Module 4 — Ghanaian Language AI & Localized Datasets', summary: 'Natural language processing for Twi, Ewe, Dagbani, and tools like Khaya and Mozilla Common Voice.' },
+        { title: 'Module 5 — AI Ethics, the Responsible AI Authority & the Data Protection Act', summary: 'Algorithmic bias, data privacy, UNESCO AI Ethics recommendations, and building AI that serves all Ghanaians.' },
+        { title: 'Module 6 — Capstone: AI Opportunity Map', summary: 'Identify a problem in your community and design an AI-powered solution concept.' }
+      ],
+      whoItsFor: 'Students, professionals, and curious citizens who want to understand AI well enough to apply it — ethically — in Ghana.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'Do I need to be technical?', a: 'No. The focus is on understanding and applying AI, not heavy coding.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'Will I learn to build AI?', a: 'You will learn to design AI solutions and map opportunities — the foundation for building with AI.' }
+      ]
     },
     {
       slug: 'essential-values',
       school: 'impact',
       title: 'Essential Values for National Development',
-      tagline: 'Values that build a nation.',
+      tagline: 'Character formation for engaged citizenship and nation building',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
-      duration: 'Self-paced',
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
+      duration: '6 weeks',
       level: 'Beginner friendly',
-      description: 'Honesty, integrity, discipline, and citizenship — grounded in Ghanaian culture and Adinkra symbols.'
+      certification: 'Certificate of completion',
+      description: 'Based on the Essential Values for Ghanaian Youth Handbook, this program covers the core values that sustain democracy and development: responsible citizenship, honesty, integrity, diversity, equity, discipline, and self-directed learning — each grounded in Adinkra symbols and cultural wisdom.',
+      outcomes: [
+        'Live out responsible citizenship grounded in rights, duties, and the common good',
+        'Detect and resist misinformation with honesty and verified information',
+        'Practise integrity in public and private life',
+        'Turn Ghana\'s diversity into national strength through equity',
+        'Build discipline and self-directed learning — and teach it to others'
+      ],
+      modules: [
+        { title: 'Module 1 — Responsible Citizenship', summary: 'What it means to be a citizen of Ghana — rights, responsibilities, and the common good.' },
+        { title: 'Module 2 — Honesty & Combating Misinformation', summary: 'Truthfulness in public and private life. How misinformation spreads and how to verify information.' },
+        { title: 'Module 3 — Integrity in Public & Private Life', summary: 'Consistency between word and action, with case studies from Ghanaian public life.' },
+        { title: 'Module 4 — Diversity & Equity as National Strength', summary: 'Ghana\'s ethnic, linguistic, and religious diversity as a source of strength. Understanding equity vs. equality.' },
+        { title: 'Module 5 — Discipline & Self-Directed Learning', summary: 'Discipline as the foundation of excellence. Self-directed learning for lifelong growth.' },
+        { title: 'Module 6 — Capstone: Values in Action Project', summary: 'Design a community workshop, club session, or public awareness campaign based on the essential values.' }
+      ],
+      whoItsFor: 'Students, educators, and community leaders who want to build the personal values that sustain democracy and national development.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'Is this course religious?', a: 'No. It draws on Ghanaian cultural wisdom — including Adinkra symbols — alongside civic and democratic principles.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' }
+      ]
     },
     {
       slug: 'digital-entrepreneurship',
       school: 'work',
       title: 'Digital Entrepreneurship & the Creative Economy',
-      tagline: 'Build a business that scales.',
+      tagline: 'Build digital products and creative businesses for Ghanaian and global markets',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
-      duration: 'Self-paced',
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
+      duration: '8 weeks',
       level: 'Beginner friendly',
-      description: 'From idea to revenue — digital products, validation, and growth in the creative economy.'
+      certification: 'Certificate of completion',
+      description: 'Ghana\'s digital economy is growing rapidly. This program teaches practical skills for building digital products and creative businesses: identifying market opportunities, building a minimum viable product, leveraging mobile money and USSD, digital marketing for Ghanaian audiences, and navigating the creative economy — music, content creation, and cultural products.',
+      outcomes: [
+        'Map opportunities in Ghana\'s digital economy and growing creative industries',
+        'Validate demand with customer interviews and market research before you build',
+        'Ship a minimum viable product with no-code tools, mobile money APIs, USSD, and WhatsApp',
+        'Reach urban and rural audiences with affordable digital marketing',
+        'Complete a business model canvas and 60-second pitch for your venture'
+      ],
+      modules: [
+        { title: 'Module 1 — Ghana\'s Digital Economy Landscape', summary: 'The state of Ghana\'s digital economy: mobile money, tech hubs, creative industries, and growing startup ecosystem.' },
+        { title: 'Module 2 — Identifying Problems & Validating Ideas', summary: 'How to find problems worth solving, conduct customer interviews, and validate demand before building.' },
+        { title: 'Module 3 — Building a Minimum Viable Product', summary: 'No-code and low-code tools, mobile money APIs, USSD, and WhatsApp for distribution.' },
+        { title: 'Module 4 — Digital Marketing for Ghanaian Audiences', summary: 'Social media marketing, influencer partnerships, SMS and WhatsApp campaigns, and community-driven growth.' },
+        { title: 'Module 5 — The Creative Economy: Music, Content & Cultural Products', summary: 'Building a career in digital music distribution, content creation, monetization, and intellectual property.' },
+        { title: 'Module 6 — Capstone: Business Model Canvas & Pitch', summary: 'Complete a business model canvas and a 60-second pitch for your digital or creative venture.' }
+      ],
+      whoItsFor: 'Aspiring entrepreneurs, creatives, and side-hustlers who want to build digital products and creative businesses for Ghanaian and global markets.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'Do I need to invest capital to start?', a: 'No. The course is built around low-cost and no-code tools you can start with today.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'Can I use this outside Ghana?', a: 'Yes — the frameworks are universal, with Ghana-specific examples that translate across markets.' }
+      ]
     },
     {
       slug: 'youth-leadership',
       school: 'impact',
       title: 'Youth Leadership & Community Organizing',
-      tagline: 'Lead change where you are.',
+      tagline: 'Lead community change through civic clubs, projects, and advocacy',
+      hasLandingPage: true,
       status: 'active',
       price: 0,
-      duration: 'Self-paced',
+      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      currency: 'GHS',
+      duration: '6 weeks',
       level: 'Beginner friendly',
-      description: 'Organizing skills, communication, and project execution for young leaders.'
+      certification: 'Certificate of completion',
+      description: 'Ghana\'s National Youth Policy envisions an empowered youth contributing positively to national development. This program teaches practical leadership skills: how to start a Civic Education Club, organize community projects, advocate at the district assembly level, build coalitions with CSOs, and communicate effectively across media.',
+      outcomes: [
+        'Understand the National Youth Policy and your role in Ghana\'s development',
+        'Start and sustain a Civic Education Club at your school, church, or community center',
+        'Design and execute community projects with clear plans and impact measurement',
+        'Engage district assemblies and advocate for policy change',
+        'Build coalitions with CSOs and communicate across media'
+      ],
+      modules: [
+        { title: 'Module 1 — The National Youth Policy & Your Role', summary: 'Ghana\'s National Youth Policy vision and your role in it as a young leader.' },
+        { title: 'Module 2 — Starting & Running a Civic Education Club', summary: 'How to start a club, recruit members, plan activities, and sustain engagement.' },
+        { title: 'Module 3 — Community Project Design & Execution', summary: 'Needs assessment, stakeholder mapping, resource planning, timelines, and impact measurement.' },
+        { title: 'Module 4 — Engaging District Assemblies & Advocating for Change', summary: 'How MMDAs work, how to submit proposals, join budget hearings, and advocate for change.' },
+        { title: 'Module 5 — Coalition Building & CSO Partnerships', summary: 'Partnering with CSOs like CDD-Ghana, IMANI Africa, and the Ghana Integrity Initiative.' },
+        { title: 'Module 6 — Capstone: Community Organizing Project', summary: 'Launch a real organizing initiative with a project charter, budget, and success metrics.' }
+      ],
+      whoItsFor: 'Young people — students, church and community volunteers, and first-time organizers — who want to lead change where they are.',
+      sampleIncludes: 'Module 1 free · no card required · progress saved to your dashboard',
+      faqs: [
+        { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
+        { q: 'Do I need a club or position first?', a: 'No. The course teaches you how to start one from scratch — even in Module 1.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'Is this only for students?', a: 'No. It is for any young person ready to organize — in schools, churches, and communities.' }
+      ]
     },
     {
       slug: 'sketching-vision-builders',
@@ -216,7 +433,7 @@ window.COURSE_DATA = {
       school: 'wisdom',
       title: 'The Spirit of God in Genesis: Creativity, Wisdom & Love',
       tagline: 'Systems thinking through the lens of Genesis.',
-      status: 'coming_soon',
+      status: 'active',
       price: 250,
       duration: 'Self-paced',
       level: 'Beginner friendly',

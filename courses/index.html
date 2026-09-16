@@ -194,7 +194,8 @@ function renderPrograms(staticData, apiPrograms) {
       level: s.level || 'Beginner friendly',
       price: p.price !== undefined && p.price !== null ? p.price : (s.price || 0),
       status: p.status || s.status || 'active',
-      hasLanding: !!s.hasLandingPage
+      hasLanding: !!s.hasLandingPage,
+      landingUrl: s.landingUrl || ''
     };
   });
 
@@ -218,7 +219,7 @@ function renderPrograms(staticData, apiPrograms) {
     if (coming) {
       btn = '<a href="#" class="btn btn-secondary btn-wait">Coming Soon</a>';
     } else if (c.hasLanding) {
-      btn = '<a href="/courses/' + encodeURIComponent(c.slug) + '/" class="btn btn-primary">Start Free \u2014 Module 1</a>';
+      btn = '<a href="' + (c.landingUrl || '/courses/' + encodeURIComponent(c.slug) + '/') + '" class="btn btn-primary">Start Free \u2014 Module 1</a>';
     } else {
       btn = '<button class="btn btn-primary" data-enroll-slug="' + encodeURIComponent(c.slug) + '" data-enroll-title="' + String(c.title).replace(/"/g, '&quot;') + '" data-enroll-tagline="' + String(c.tagline).replace(/"/g, '&quot;') + '">Start Free \u2014 Module 1</button>';
     }
