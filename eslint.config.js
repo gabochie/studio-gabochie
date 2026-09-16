@@ -23,7 +23,7 @@ export default [
   },
   // Frontend JS (browser context)
   {
-    files: ['assets/js/**/*.js'],
+    files: ['assets/js/**/*.js', 'courses/*.js'],
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'script',

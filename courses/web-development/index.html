@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Development for Ghanaians — Studio Gabochie</title>
+<meta name="description" content="Learn HTML, CSS, and JavaScript from scratch. Build a business website and your own portfolio, publish online for free, and start freelancing. Start free with Module 1.">
+<link rel="canonical" href="https://studio.gabochie.com/courses/web-development/">
+<meta property="og:title" content="Web Development for Ghanaians">
+<meta property="og:description" content="Build websites and start freelancing. Free Module 1, no card required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studio.gabochie.com/courses/web-development/">
+<meta property="og:site_name" content="Studio Gabochie">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Web Development for Ghanaians">
+<meta name="twitter:description" content="Build websites and start freelancing. Free Module 1, no card required.">
+<meta name="theme-color" content="#0A1628">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Web Development for Ghanaians",
+  "description": "Learn HTML, CSS, and JavaScript from scratch. Build real projects and start freelancing as a web developer.",
+  "provider": { "@type": "Organization", "name": "Studio Gabochie", "url": "https://studio.gabochie.com", "sameAs": ["https://x.com/GideonAbochie", "https://www.youtube.com/@GideonAbochie"] },
+  "offers": { "@type": "Offer", "price": "150", "priceCurrency": "GHS", "availability": "https://schema.org/InStock" },
+  "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT12H" },
+  "inLanguage": "en",
+  "educationalLevel": "Beginner"
+}
+</script>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/courses/course-landing.css">
+</head>
+<body>
+
+<!-- NAV -->
+<div id="nav-placeholder"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-badge"><i class="ti ti-code"></i> Course</div>
+      <h1>Web Development <span>for Ghanaians</span></h1>
+      <div class="slugline" id="heroTagline"></div>
+      <div class="desc" id="heroDesc"></div>
+      <div class="hero-actions">
+        <button class="btn btn-gold btn-lg" onclick="openEnroll()"><i class="ti ti-player-play"></i> Start Free - Module 1</button>
+        <a href="#curriculum" class="btn btn-outline btn-lg">See Curriculum</a>
+      </div>
+      <div class="hero-proof"><i class="ti ti-circle-check"></i> <span id="heroSample"></span></div>
+    </div>
+    <div class="price-card" id="priceCard">
+      <div class="price-label">Full Access</div>
+      <div class="price" id="priceValue"></div>
+      <div class="price-note" id="priceNote"></div>
+      <div class="meta-row" id="priceMeta"></div>
+      <button class="btn btn-gold btn-lg" onclick="openEnroll()"><i class="ti ti-bolt"></i> Enroll Now</button>
+      <button class="btn btn-outline btn-lg" onclick="openEnroll()">Start Free First</button>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section class="section" id="outcomes" style="background:#0A1628">
+  <div class="container">
+    <div class="section-label"><i class="ti ti-target"></i> What You'll Learn</div>
+    <h2 class="section-heading">Walk Away with <span>a Real Portfolio</span></h2>
+    <p class="section-sub">These are not theories. Each outcome is a skill you can apply the day you learn it.</p>
+    <div class="outcome-grid" id="outcomesGrid"></div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="section curriculum" id="curriculum">
+  <div class="container">
+    <div class="section-label"><i class="ti ti-school"></i> Curriculum</div>
+    <h2 class="section-heading">Six Modules. <span>Two Real Projects.</span></h2>
+    <p class="section-sub" id="curriculumSub"></p>
+    <div class="module-list" id="moduleList"></div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section" style="background:#0A1628">
+  <div class="container">
+    <div class="section-label"><i class="ti ti-users"></i> Who It's For</div>
+    <h2 class="section-heading">Built for <span>Future Builders</span></h2>
+    <div class="who-card"><p id="whoItsFor"></p></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <h2>Your First Module Is <span>Free</span></h2>
+  <p id="ctaBandSub"></p>
+  <button class="btn btn-gold btn-lg" onclick="openEnroll()"><i class="ti ti-player-play"></i> Start Free Now</button>
+</section>
+
+<!-- FAQ -->
+<section class="section faq" id="faq">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-question-mark"></i> Questions</div>
+      <h2 class="section-heading">Frequently <span>Asked</span></h2>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+
+<!-- ENROLL MODAL -->
+<div class="enroll-overlay" id="enrollModal">
+  <div class="enroll-modal" style="position:relative">
+    <button class="close" onclick="closeEnroll()">&times;</button>
+    <h3>Start Learning Free</h3>
+    <div class="sub" id="enrollSub"></div>
+    <form id="enrollForm">
+      <input type="text" id="enrollName" placeholder="Your name" autocomplete="name" required>
+      <input type="email" id="enrollEmail" placeholder="Your email" autocomplete="email" required>
+      <input type="tel" id="enrollPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
+      <button type="submit" class="btn btn-gold" style="width:100%;margin-top:6px" id="enrollBtn"><i class="ti ti-bolt"></i> Start Free</button>
+    </form>
+    <div class="msg" id="enrollMsg"></div>
+    <div class="signup-note">Free Module 1 - no card required. Your progress is saved to your dashboard.</div>
+  </div>
+</div>
+
+<script src="/courses/courses-data.js"></script>
+<script>window.COURSE_SLUG = 'web-development';</script>
+<script defer src="/assets/js/main.js"></script>
+<script src="/courses/course-landing.js"></script>
+<script src="/nav.js"></script>
+</body>
+</html>
