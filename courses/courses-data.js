@@ -200,7 +200,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: '12 weeks',
       level: 'Beginner friendly',
@@ -226,7 +226,7 @@ window.COURSE_DATA = {
       faqs: [
         { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
         { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' },
         { q: 'Is this connected to a government body?', a: 'No. It is an independent, citizen-focused program built on official public frameworks like the Constitution and national policies.' }
       ]
     },
@@ -273,7 +273,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: '6 weeks',
       level: 'Beginner friendly',
@@ -299,7 +299,7 @@ window.COURSE_DATA = {
       faqs: [
         { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
         { q: 'Do I need to be technical?', a: 'No. The focus is on understanding and applying AI, not heavy coding.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' },
         { q: 'Will I learn to build AI?', a: 'You will learn to design AI solutions and map opportunities — the foundation for building with AI.' }
       ]
     },
@@ -311,7 +311,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: '6 weeks',
       level: 'Beginner friendly',
@@ -337,7 +337,7 @@ window.COURSE_DATA = {
       faqs: [
         { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
         { q: 'Is this course religious?', a: 'No. It draws on Ghanaian cultural wisdom — including Adinkra symbols — alongside civic and democratic principles.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' },
         { q: 'How is the course delivered?', a: 'Self-paced modules in your personal dashboard, with checkpoints and a certificate when you finish.' }
       ]
     },
@@ -349,7 +349,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: '8 weeks',
       level: 'Beginner friendly',
@@ -375,7 +375,7 @@ window.COURSE_DATA = {
       faqs: [
         { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
         { q: 'Do I need to invest capital to start?', a: 'No. The course is built around low-cost and no-code tools you can start with today.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' },
         { q: 'Can I use this outside Ghana?', a: 'Yes — the frameworks are universal, with Ghana-specific examples that translate across markets.' }
       ]
     },
@@ -387,7 +387,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: '6 weeks',
       level: 'Beginner friendly',
@@ -413,7 +413,7 @@ window.COURSE_DATA = {
       faqs: [
         { q: 'Do I need any experience?', a: 'None. Module 1 starts from first principles and builds up.' },
         { q: 'Do I need a club or position first?', a: 'No. The course teaches you how to start one from scratch — even in Module 1.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' },
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' },
         { q: 'Is this only for students?', a: 'No. It is for any young person ready to organize — in schools, churches, and communities.' }
       ]
     },
@@ -425,7 +425,7 @@ window.COURSE_DATA = {
       hasLandingPage: true,
       status: 'active',
       price: 0,
-      priceNote: 'Pay what you can — from free. Start with Module 1 at no cost.',
+      priceNote: 'Free forever — start with Module 1 at no cost.',
       currency: 'GHS',
       duration: 'Self-paced',
       level: 'Beginner friendly',
@@ -453,7 +453,7 @@ window.COURSE_DATA = {
         { q: 'Do I need to be able to draw?', a: 'No. The program starts from the very beginning — Module 1 is a seven-day warm-up designed for complete beginners.' },
         { q: 'Is this about becoming an artist?', a: 'No. Drawing here is a thinking tool — clarity, planning, and communication — not gallery art.' },
         { q: 'What materials do I need?', a: 'Just a sketchbook and a pen. Module 1 tells you exactly what to get and how to start today.' },
-        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card. You pay only if you choose full access — and this course is pay-what-you-can from free.' }
+        { q: 'What does "start free" mean?', a: 'Module 1 is free with no card, and the whole course is completely free — no payment required.' }
       ]
     },
     {
