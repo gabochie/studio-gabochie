@@ -773,13 +773,16 @@ function handleUpgrade() {
           currency: 'GHS',
           customer: { email: e.student_email, name: e.student_name },
           payment_options: 'card, mobilemoneyghana, ussd',
-          callback: function(payment) {
+callback: function(payment) {
             if (payment.status === 'completed' || payment.status === 'successful') {
               note.textContent = 'Payment confirmed! Activating your access...';
   api('/api/enroll/upgrade', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
+    body: JSON.stringify({
+      tx_ref: payment.tx_ref || txRef,
+      transaction_id: payment.transaction_id
+    })
               }).then(function(r) { return r.json(); }).then(function(res) {
                 if (res.status === 'ok') {
                   btn.textContent = 'Upgrade Complete!';
@@ -787,9 +790,14 @@ function handleUpgrade() {
                 } else {
                   btn.disabled = false;
                   btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
-                  note.textContent = 'Payment received but activation delayed. Your access will be granted shortly.';
+                  note.textContent = res.code === 'PAYMENT_OPEN'
+                    ? 'Payment is still processing. Refresh after a minute — your access will appear automatically.'
+                    : (res.message && res.message !== 'Internal error')
+                      ? res.message + ' — contact us if you already paid.'
+                      : 'Payment received but activation delayed. Your access will be granted shortly.';
                 }
               }).catch(function() {
+                btn.disabled = false;
                 btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
                 note.textContent = 'Payment confirmed! Activation in progress. Refresh the page in a minute.';
               });
