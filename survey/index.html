@@ -178,9 +178,13 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   </div>
   <div id="thankYou">
     <div class="t-icon">&#10003;</div>
-    <h2>Thank You!</h2>
-    <p>Your input has been received and will directly shape the courses we build next. We'll notify you when something relevant launches.</p>
-    <a href="/" class="btn">Back to Home</a>
+    <h2 id="tyTitle">Thank You!</h2>
+    <p id="tyMsg">Your input has been received and will directly shape the courses we build next. We'll notify you when something relevant launches.</p>
+    <div id="tyCta" style="display:none;margin-bottom:16px">
+      <a href="/courses/systems-thinking/" class="btn" id="tyStartBtn" style="background:#C9A84C;color:#0A1628;border-color:#C9A84C;margin-right:8px">Start Module 1 — Free</a>
+      <a href="/" class="btn">Back to Home</a>
+    </div>
+    <div id="tyHome"><a href="/" class="btn">Back to Home</a></div>
   </div>
 </div>
 <div id="footer-placeholder"></div>
@@ -212,6 +216,17 @@ function submitSurvey(e) {
     if (d.status === 'ok') {
       document.getElementById('surveyForm').style.display = 'none';
       document.getElementById('thankYou').style.display = 'block';
+      if (d.enrollment && d.enrollment.dashboard_url) {
+        document.getElementById('tyTitle').textContent = 'Your Free Module 1 Is Ready!';
+        document.getElementById('tyMsg').textContent = 'Based on your interests, we saved you a free seat in Systems Thinking for Vision Builders. Your dashboard link was also emailed to you.';
+        document.getElementById('tyStartBtn').href = d.enrollment.dashboard_url;
+        document.getElementById('tyCta').style.display = 'block';
+        document.getElementById('tyHome').style.display = 'none';
+      } else if (!email) {
+        document.getElementById('tyMsg').textContent = 'Tip: add your email next time and we will unlock a free Module 1 instantly. Explore the flagship now:';
+        document.getElementById('tyCta').style.display = 'block';
+        document.getElementById('tyHome').style.display = 'none';
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       showMsg(d.error || 'Something went wrong. Please try again.', 'error');
