@@ -1,4 +1,4 @@
-import { sendBrevoEmail, queueEmail, abandonedDonationReminder, daysFromNow } from './_send.js';
+import { sendBrevoEmail, queueEmail, abandonedDonationReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
@@ -20,7 +20,7 @@ export async function onRequest(context) {
   }
 
   try {
-    var result = { abandoned: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
+    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
 
     // Step 1: Abandoned donation recovery
     try {
@@ -44,6 +44,29 @@ export async function onRequest(context) {
       }
     } catch (err) {
       result.errors.push('abandoned: ' + err.message);
+    }
+
+    // Step 1b: Sample -> paid upgrade nudge (7 days after free Module 1, still on sample)
+    try {
+      var { results: sampleResults } = await env.DB.prepare(
+        `SELECT e.student_name, e.student_email, e.access_token, p.title AS program_title, p.price_label AS price_label
+         FROM enrollments e JOIN programs p ON e.program_id = p.id
+         WHERE e.status = 'sample'
+           AND e.student_email != ''
+           AND e.enrolled_at <= datetime('now', '-7 days')
+           AND NOT EXISTS (SELECT 1 FROM enrollments a WHERE a.student_email = e.student_email AND a.status = 'active')
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.student_email AND q.email_type = 'sample_upgrade_7d')
+         ORDER BY e.enrolled_at ASC LIMIT 50`
+      ).all();
+
+      result.upgrade.checked = sampleResults.length;
+      for (var s of sampleResults) {
+        var dashUrl = 'https://studio.gabochie.com/dashboard/?token=' + s.access_token;
+        await queueEmail(env, s.student_email, s.student_name, 'Your free module was just the start — Studio Gabochie', sampleUpgrade7d(s.student_name, s.program_title, s.price_label, dashUrl), 'sample_upgrade_7d', daysFromNow(0));
+        result.upgrade.queued++;
+      }
+    } catch (err) {
+      result.errors.push('upgrade: ' + err.message);
     }
 
     // Step 2: Process email queue
