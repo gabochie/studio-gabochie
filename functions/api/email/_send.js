@@ -251,3 +251,23 @@ export const bookUpsell = (name) => `<!DOCTYPE html><html><body style="font-fami
       <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>
     </td></tr>
   </table></body></html>`;
+
+export const sampleUpgrade7d = (name, programTitle, priceLabel, dashboardUrl) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+  <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
+    <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>
+    </td></tr>
+    <tr><td style="padding:32px 0 24px">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">Your Free Module Was Just the <span style="color:#C9A84C">Start</span></h1>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">A week ago you started the free Module 1 of <strong>${programTitle || 'our flagship course'}</strong>. That module taught you to see the problem — the full course teaches you to solve it.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Inside the full course you get every remaining module, practical worksheets, and lifetime access — for <strong>${priceLabel || 'one small payment'}</strong>. One payment, yours forever.</p>
+      <div style="text-align:center;margin:24px 0">
+        <a href="${dashboardUrl}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Unlock Full Access</a>
+      </div>
+      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">P.S. Not ready? Your free Module 1 stays open — <a href="${dashboardUrl}" style="color:#C9A84C">continue where you left off</a>. Questions? Just reply to this email.</p>
+    </td></tr>
+    <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
+      <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>
+    </td></tr>
+  </table></body></html>`;
