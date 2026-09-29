@@ -55,8 +55,7 @@
 /partners/* / 301
 /nationbuilding / 301
 /nationbuilding/* / 301
-/survey / 301
-/survey/* / 301
+# /survey/ is the live quiz front door (lead -> free Module 1 -> GH¢250) — do NOT redirect
 # ─── Newsletter → subdomain (still live) — MUST precede /news* ───
 /newsletter* https://news.gabochie.com/ 301
 /news* / 301
