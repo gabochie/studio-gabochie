@@ -138,4 +138,18 @@
     initNavAuth();
     setActiveLink();
   }
+
+  // PWA: register the service worker for offline shell + catalog support.
+  // Skipped in local dev (localhost serves stale caches confusingly) and for
+  // the inlined-data favicon-only pages. Registered last so it never blocks nav.
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', registerServiceWorker);
+  } else {
+    registerServiceWorker();
+  }
 })();

@@ -51,6 +51,21 @@ export default [
       'no-empty': ['warn', { allowEmptyCatch: true }],
     },
   },
+  // Service worker (ServiceWorkerGlobalScope)
+  {
+    files: ['sw.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'script',
+      globals: {
+        ...globals.serviceworker,
+      },
+    },
+    rules: {
+      ...unusedVarsWarn,
+      'no-empty': ['warn', { allowEmptyCatch: true }],
+    },
+  },
   // Admin JS (browser globals)
   {
     files: ['admin/**/*.js'],
