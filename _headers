@@ -7,7 +7,8 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://js.paystack.co https://checkout.flutterwave.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; frame-src 'self' https://www.youtube.com https://www.tiktok.com https://js.paystack.co https://paystack.com https://checkout.paystack.com https://standard.paystack.com https://checkout.flutterwave.com; connect-src 'self' https://api.paystack.co https://js.paystack.co https://studio.gabochie.com https://cloudflareinsights.com https://open.er-api.com; form-action 'self' https://paystack.com https://studio.gabochie.com; base-uri 'self'; manifest-src 'self' https://studio.gabochie.com; worker-src 'self'
 
 # ─── PWA / caching ───
-
+# NOTE: assets are NOT content-hashed (main.js, main.css are fixed names), so they
+# must revalidate. A long max-age here serves stale JS to real users for days.
 /sw.js
   Cache-Control: no-cache
 
@@ -16,10 +17,10 @@
   Cache-Control: public, max-age=3600
 
 /assets/icons/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=604800, must-revalidate
 
 /assets/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=600, must-revalidate
 
 /api/*
   Cache-Control: no-store
