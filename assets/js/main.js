@@ -151,7 +151,9 @@ function gaGetUtm() {
   }
 
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    fetch('https://api.frankfurter.app/latest?from=EUR&to=GHS,USD,GBP').then(function(r){return r.json()}).then(function(d){
+    // frankfurter dropped GHS when it moved .app -> .dev/v1, so it can no longer price
+    // in Ghanaian Cedi. open.er-api.com is keyless and still serves GHS.
+    fetch('https://open.er-api.com/v6/latest/EUR').then(function(r){return r.json()}).then(function(d){
       if (d.rates) window.__currencyRates = d.rates;
       renderPrices(getCurrency());
     }).catch(function(){});
