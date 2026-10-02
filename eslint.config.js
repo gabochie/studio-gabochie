@@ -135,7 +135,7 @@ export default [
   },
   // Config + script files (node; browser globals allowed inside page.evaluate callbacks)
   {
-    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js', 'scripts/**/*.cjs'],
+    files: ['vitest.config.js', 'playwright.config.js', 'eslint.config.js', 'scripts/**/*.js', 'scripts/**/*.cjs', 'scripts/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
