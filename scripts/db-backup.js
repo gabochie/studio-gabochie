@@ -18,12 +18,15 @@ writeFileSync(listFile, listSql, 'utf8');
 let tables;
 try {
   const out = execSync(`npx wrangler d1 execute ${DB} --remote --file="${listFile}" --json`, {
-    encoding: 'utf8', timeout: 30000
+    encoding: 'utf8', timeout: 60000, stdio: ['ignore', 'pipe', 'pipe'],
   });
   const parsed = parseWranglerJson(out);
   tables = (parsed?.[0]?.results || []).map(r => r.name).filter(Boolean);
 } catch (e) {
+  // execSync hides stderr unless we read it back, so surface wrangler's real message.
   console.error('Failed to list tables:', e.message);
+  if (e.stderr) console.error('wrangler stderr:', e.stderr.toString().trim());
+  if (e.stdout) console.error('wrangler stdout:', e.stdout.toString().trim().slice(0, 500));
   process.exit(1);
 }
 
