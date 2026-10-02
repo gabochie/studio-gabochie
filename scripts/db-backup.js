@@ -17,12 +17,10 @@ writeFileSync(listFile, listSql, 'utf8');
 
 let tables;
 try {
-  const out = execSync(`npx wrangler d1 execute ${DB} --file="${listFile}" --json 2>&1`, {
+  const out = execSync(`npx wrangler d1 execute ${DB} --remote --file="${listFile}" --json`, {
     encoding: 'utf8', timeout: 30000
   });
-  const lines = out.trim().split('\n');
-  const last = lines[lines.length - 1];
-  const parsed = JSON.parse(last);
+  const parsed = parseWranglerJson(out);
   tables = (parsed?.[0]?.results || []).map(r => r.name).filter(Boolean);
 } catch (e) {
   console.error('Failed to list tables:', e.message);
@@ -42,12 +40,10 @@ for (const table of tables) {
   const sqlFile = join(tmpDir, `${table}.sql`);
   writeFileSync(sqlFile, sql, 'utf8');
   try {
-    const out = execSync(`npx wrangler d1 execute ${DB} --file="${sqlFile}" --json 2>&1`, {
+    const out = execSync(`npx wrangler d1 execute ${DB} --remote --file="${sqlFile}" --json`, {
       encoding: 'utf8', timeout: 60000
     });
-    const lines = out.trim().split('\n');
-    const last = lines[lines.length - 1];
-    const parsed = JSON.parse(last);
+    const parsed = parseWranglerJson(out);
     const rows = parsed?.[0]?.results || [];
     writeFileSync(join(OUT_DIR, `${table}.json`), JSON.stringify(rows, null, 2), 'utf8');
     exported++;
@@ -60,6 +56,40 @@ for (const table of tables) {
 
 try { unlinkSync(listFile); } catch { /* ignore */ }
 try { unlinkSync(tmpDir); } catch { /* ignore */ }
+
+// Wrangler --json output is not guaranteed to be a single trailing line:
+// newer versions pretty-print across lines and may prefix log lines.
+// Extract the first balanced [...] or {...} block and parse that.
+function parseWranglerJson(out) {
+  const text = String(out || '').trim();
+  if (!text) throw new Error('empty wrangler output');
+  try {
+    return JSON.parse(text);
+  } catch { /* fall through to extraction */ }
+  const startIdx = text.search(/[[{]/);
+  if (startIdx === -1) throw new Error('no JSON found in wrangler output: ' + text.slice(0, 120));
+  const open = text[startIdx];
+  const close = open === '[' ? ']' : '}';
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = startIdx; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === open) depth++;
+    else if (ch === close) {
+      depth--;
+      if (depth === 0) return JSON.parse(text.slice(startIdx, i + 1));
+    }
+  }
+  throw new Error('unterminated JSON in wrangler output: ' + text.slice(startIdx, startIdx + 120));
+}
 
 console.log(`\nBackup saved to ${OUT_DIR}`);
 console.log(`${exported} tables exported, ${failed} failed`);
