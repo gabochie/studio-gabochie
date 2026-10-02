@@ -3,7 +3,9 @@
 const VERSION = 'gabochie-v1';
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
-const OFFLINE_URL = '/offline.html';
+/* Cloudflare Pages serves clean URLs: /offline.html 308-redirects to /offline,
+   so the redirect target is the only reliable precache key. */
+const OFFLINE_URL = '/offline';
 
 /* Precache the app shell only. Everything here is same-origin, small, and
    version-broken by VERSION, so a new deploy never serves a stale shell. */
