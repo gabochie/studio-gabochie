@@ -496,6 +496,7 @@ export async function onRequest(context) {
         sort_order INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      `ALTER TABLE membership_plans ADD COLUMN description TEXT DEFAULT ''`,
       `INSERT OR IGNORE INTO membership_plans (tier, name, description, price_ghs, price_usd, features, sort_order) VALUES
         ('free', 'Free', 'Basic access to public content', 0, 0, '["Browse courses","Read articles","Subscribe to newsletter"]', 0),
         ('premium', 'Premium', 'Full course access + exclusive content', 99, 6, '["All courses","Download materials","Premium articles","Priority support"]', 1),
@@ -1002,8 +1003,8 @@ export async function onRequest(context) {
         ((SELECT id FROM programs WHERE slug = 'sketching-vision-builders'), 'Module 3: Line, Shape &amp; Form', 'svb-line-shape', 'Building blocks of drawing: line quality, geometric shapes, basic perspective, and shading. Translating 3D vision onto 2D paper.', 3),
         ((SELECT id FROM programs WHERE slug = 'sketching-vision-builders'), 'Module 4: Composition &amp; Visual Storytelling', 'svb-composition', 'Arranging elements to communicate ideas clearly. Composition principles, thumbnail sketches, and storyboarding for projects and presentations.', 4),
         ((SELECT id FROM programs WHERE slug = 'sketching-vision-builders'), 'Module 5: Drawing from Imagination', 'svb-imagination', 'Visualizing what does not yet exist. Drawing from memory, constructing scenes from imagination, and using reference effectively.', 5),
-        ((SELECT id FROM programs WHERE slug = 'sketching-vision-builders'), 'Module 6: Capstone — Vision Board Project', 'svb-capstone', 'Create a visual vision board for a real project, idea, or dream. Combine all skills learned into a polished presentation drawing that communicates your vision to others.', 6)
-        ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 1: What Is Pattern Recognition?', 'pr-intro', 'What patterns are, how the brain detects them, and why they matter for decision-making. Introduction to pattern types: cycles, sequences, symmetries, fractals, and networks.', 1),
+         ((SELECT id FROM programs WHERE slug = 'sketching-vision-builders'), 'Module 6: Capstone — Vision Board Project', 'svb-capstone', 'Create a visual vision board for a real project, idea, or dream. Combine all skills learned into a polished presentation drawing that communicates your vision to others.', 6),
+         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 1: What Is Pattern Recognition?', 'pr-intro', 'What patterns are, how the brain detects them, and why they matter for decision-making. Introduction to pattern types: cycles, sequences, symmetries, fractals, and networks.', 1),
         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 2: Patterns in Nature', 'pr-nature', 'The Fibonacci sequence, golden ratio, spirals, branching, and hexagonal patterns in God''s creation. How nature reveals mathematical and geometric order.', 2),
         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 3: Patterns in Data &amp; Markets', 'pr-data-markets', 'Trends, cycles, seasonality, and anomalies in data. How to read market patterns, identify opportunities, and avoid common pattern-falling traps like confirmation bias.', 3),
         ((SELECT id FROM programs WHERE slug = 'pattern-recognition-vision-builders'), 'Module 4: Patterns in Scripture', 'pr-scripture', 'Typology, prophecy-fulfillment patterns, covenant structures, and the chiastic literary structures of the Bible. Seeing how God weaves patterns through redemptive history.', 4),
