@@ -88,8 +88,8 @@ h1 span{color:#C9A84C}
             <strong>Start a Program's First Module</strong>
             <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Full first module of every program — free, no upgrade needed.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <a href="/school/guitar/" class="btn btn-secondary">Guitar Method</a>
-              <a href="/school/" class="btn btn-secondary">All Programs</a>
+              <a href="/guitar/" class="btn btn-secondary">Guitar Method</a>
+              <a href="/courses/" class="btn btn-secondary">All Programs</a>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ h1 span{color:#C9A84C}
           <div>
             <strong>Audio &amp; Devotional Samples</strong>
             <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Listen in your workspace while you work, rest, or commute.</p>
-            <a href="/school/" class="btn btn-secondary">Browse Audio</a>
+            <a href="/courses/" class="btn btn-secondary">Browse Audio</a>
           </div>
         </div>
       </div>
@@ -154,6 +154,7 @@ function renderPlans(plans, currentTier) {
       : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
     html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div><ul>' + featureLis + '</ul>' + btnHtml + '</div>';
   }
+  html += '<p style="grid-column:1/-1;font-size:11px;color:#5A7A9F;text-align:center;margin:4px 0 0">Supporter auto-renews via Flutterwave; other tiers are billed per upgrade. Founding is yearly-only.</p>';
   container.innerHTML = html;
 }
 function upgrade(slug) {
@@ -223,9 +224,12 @@ document.addEventListener('DOMContentLoaded', function() {
         freeBookLink.href = '/api/books/serve?slug=the-bible-as-kingdom-os&email=' + encodeURIComponent(d.user.email);
       }
       var badge = document.getElementById('tierBadge');
-      badge.textContent = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
-      badge.className = 'badge badge-' + currentTier;
-      document.getElementById('tierStatus').textContent = 'You\'re on the ' + currentTier + ' plan.';
+      if (badge) {
+        badge.textContent = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
+        badge.className = 'badge badge-' + currentTier;
+      }
+      var tierStatus = document.getElementById('tierStatus');
+      if (tierStatus) tierStatus.textContent = 'You\'re on the ' + currentTier + ' plan.';
       return fetch('/api/tiers');
     })
     .then(function(r) { if (r) return r.json(); })
