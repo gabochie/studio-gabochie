@@ -29,8 +29,7 @@
 /campaigns/* / 301
 /membership / 301
 /membership/* / 301
-/books / 301
-/books/* / 301
+# /books/ is live (PWYW singles + GH¢300 bundle) — do NOT redirect
 /store / 301
 /store/* / 301
 /merch / 301
