@@ -1,4 +1,5 @@
 import { getToken, getSessionUser } from '../enroll/_token.js';
+import { resolvePlanId } from './_plans.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -33,11 +34,8 @@ export async function onRequest(context) {
       if (amount <= 0) return new Response(JSON.stringify({ status: 'error', message: 'Tier has no payable price' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
-    var isRecurring = slug === 'supporter';
-    var planId = '';
-    if (isRecurring) {
-      planId = interval === 'yearly' ? (env.FLW_PLAN_PATRON || '160303') : (env.FLW_PLAN_SUPPORTER || '160302');
-    }
+    var planId = resolvePlanId(env, slug, interval, tier.flw_plan_id);
+    var isRecurring = !!planId;
 
     var tx_ref = 'tier_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
     var inter = interval === 'yearly' ? 'yearly' : 'monthly';

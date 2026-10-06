@@ -145,6 +145,8 @@ function renderPlans(plans, currentTier) {
     var isCurrent = p.slug === activeSlug;
     var price = p.slug === 'founding' ? (p.yearly_price_ghs || 0) : (p.monthly_price_ghs || 0);
     var periodLabel = p.slug === 'founding' ? '/yr' : (price > 0 ? '/mo' : '');
+    var autoRenews = p.slug === 'founding' ? !!p.yearly_recurring : !!p.monthly_recurring;
+    var billNote = price > 0 ? (autoRenews ? 'auto-renews' : 'one-time charge') : '';
     var features = (typeof p.features === 'string' ? JSON.parse(p.features) : p.features) || [];
     var featureLis = '';
     for (var j = 0; j < features.length; j++) {
@@ -153,9 +155,21 @@ function renderPlans(plans, currentTier) {
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
-    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div><ul>' + featureLis + '</ul>' + btnHtml + '</div>';
+    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '</div>';
   }
-  html += '<p style="grid-column:1/-1;font-size:11px;color:#5A7A9F;text-align:center;margin:4px 0 0">Supporter auto-renews via Flutterwave; other tiers are billed per upgrade. Founding is yearly-only.</p>';
+  var autoNames = [], manualNames = [];
+  for (var k = 0; k < plans.length; k++) {
+    var q = plans[k];
+    if (q.slug === 'free') continue;
+    var qp = q.slug === 'founding' ? (q.yearly_price_ghs || 0) : (q.monthly_price_ghs || 0);
+    if (qp <= 0) continue;
+    var qr = q.slug === 'founding' ? !!q.yearly_recurring : !!q.monthly_recurring;
+    (qr ? autoNames : manualNames).push(q.name);
+  }
+  var foot = 'Founding is yearly-only.';
+  if (autoNames.length) foot = autoNames.join(', ') + ' auto-renew' + (autoNames.length > 1 ? '' : 's') + ' via Flutterwave. ' + foot;
+  if (manualNames.length) foot += ' ' + manualNames.join(', ') + ' ' + (manualNames.length > 1 ? 'are' : 'is') + ' a one-time charge until a recurring plan is configured.';
+  html += '<p style="grid-column:1/-1;font-size:11px;color:#5A7A9F;text-align:center;margin:4px 0 0">' + foot + '</p>';
   container.innerHTML = html;
 }
 function upgrade(slug) {

@@ -1,3 +1,5 @@
+import { resolvePlanId } from './_plans.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
@@ -6,7 +8,7 @@ export async function onRequest(context) {
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
   try {
-    var tiers = await env.DB.prepare("SELECT slug, name, description, monthly_price_ghs, yearly_price_ghs, features, badge, sort_order FROM unified_tiers ORDER BY sort_order ASC").all();
+    var tiers = await env.DB.prepare("SELECT slug, name, description, monthly_price_ghs, yearly_price_ghs, features, badge, sort_order, flw_plan_id FROM unified_tiers ORDER BY sort_order ASC").all();
     var flwKey = env.FLW_PUBLIC_KEY || 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
     return new Response(JSON.stringify({
       status: 'ok',
@@ -21,7 +23,9 @@ export async function onRequest(context) {
           yearly_price_ghs: t.yearly_price_ghs,
           features: parsed,
           badge: t.badge,
-          sort_order: t.sort_order
+          sort_order: t.sort_order,
+          monthly_recurring: !!resolvePlanId(env, t.slug, 'monthly', t.flw_plan_id),
+          yearly_recurring: !!resolvePlanId(env, t.slug, 'yearly', t.flw_plan_id)
         };
       }),
       currency: 'GHS',
