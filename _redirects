@@ -32,8 +32,7 @@
 # /store/download + /store/library serve order fulfillment — do NOT redirect
 /store /merch/ 301
 /store/ /merch/ 301
-/services / 301
-/services/* / 301
+# /services/ is live (professional services + inquiry forms) — do NOT redirect
 /careers / 301
 /careers/* / 301
 /tutoring / 301
@@ -56,7 +55,7 @@
 # ─── Newsletter → subdomain (still live) — MUST precede /news* ───
 /newsletter* https://news.gabochie.com/ 301
 /news* / 301
-/contact* / 301
+# /contact/ is live (contact form + info) — do NOT redirect
 /ref* / 301
 
 # ─── Newsletter related ───
