@@ -32,6 +32,7 @@
     '<a href="/#schools">The Five Schools</a>' +
     '<a href="/courses/">All Courses</a>' +
     '<a href="/books/">Books</a>' +
+    '<a href="/merch/">Merch</a>' +
     '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
     '</div>' +
     '<div>' +
