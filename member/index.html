@@ -160,7 +160,8 @@ function renderPlans(plans, currentTier) {
     }
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
-      : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
+      : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
+        (price > 0 ? '<button class="btn" style="margin-top:8px;background:none;border:1px solid #1E3250;color:#8A9BB5" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
     html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '</div>';
   }
   var autoNames = [], manualNames = [];
@@ -178,18 +179,29 @@ function renderPlans(plans, currentTier) {
   html += '<p style="grid-column:1/-1;font-size:11px;color:#5A7A9F;text-align:center;margin:4px 0 0">' + foot + '</p>';
   container.innerHTML = html;
 }
-function upgrade(slug) {
-  if (!sessionToken) return;
-  var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
+function subscribeTier(slug, btn) {
   btn.disabled = true; btn.textContent = 'Processing\u2026';
-  fetch('/api/tiers/subscribe', {
+  return fetch('/api/tiers/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
     body: JSON.stringify({ tier: slug, interval: 'monthly' })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
-    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed to start checkout'); return; }
+    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed to start checkout'); return null; }
+    return d;
+  })
+  .catch(function() {
+    btn.disabled = false; btn.textContent = 'Upgrade';
+    alert('Connection error. Please try again.');
+    return null;
+  });
+}
+function upgrade(slug) {
+  if (!sessionToken) return;
+  var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
+  subscribeTier(slug, btn).then(function(d) {
+    if (!d) return;
     var opts = {
       public_key: FLW_PUBLIC_KEY,
       tx_ref: d.tx_ref,
@@ -219,6 +231,15 @@ function upgrade(slug) {
     btn.disabled = false;
     btn.textContent = 'Upgrade';
     alert('Connection error. Please try again.');
+  });
+}
+function upgradeCrypto(slug) {
+  if (!sessionToken) return;
+  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
+  subscribeTier(slug, btn).then(function(d) {
+    if (!d) return;
+    window.CryptoPay.start({ purpose: 'tier', tx_ref: d.tx_ref, button: btn });
   });
 }
 

@@ -1,4 +1,5 @@
 import { json, readBody, ghsToUsd, newRef } from '../_shared.js';
+import { getSessionUser } from '../../enroll/_token.js';
 
 var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch'];
 
@@ -54,9 +55,25 @@ export async function onRequest(context) {
     if (!env.DB) return json({ status: 'error', message: 'D1 not bound' }, 501);
     const enrollment_token = (body.enrollment_token || '').trim();
     if (!enrollment_token) return json({ status: 'error', message: 'enrollment_token required' }, 400);
-    const enr = await env.DB.prepare(
+    let enr = await env.DB.prepare(
       'SELECT id, program_id, student_name, student_email, status, access_token FROM enrollments WHERE access_token = ?'
     ).bind(enrollment_token).first().catch(() => null);
+    if (!enr) {
+      // Fall back to session token → latest enrollment (dashboard passes either token type).
+      try {
+        const sess = await getSessionUser(env.DB, enrollment_token);
+        if (sess) {
+          enr = await env.DB.prepare(
+            'SELECT id, program_id, student_name, student_email, status, access_token FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC LIMIT 1'
+          ).bind(sess.user_id).first().catch(() => null);
+          if (!enr) {
+            enr = await env.DB.prepare(
+              'SELECT id, program_id, student_name, student_email, status, access_token FROM enrollments WHERE student_email = ? ORDER BY enrolled_at DESC LIMIT 1'
+            ).bind(sess.email).first().catch(() => null);
+          }
+        }
+      } catch (_e) {}
+    }
     if (!enr) return json({ status: 'error', message: 'Unknown enrollment' }, 404);
     if (enr.status === 'active') return json({ status: 'ok', already: true, message: 'Already upgraded' });
     const prog = await env.DB.prepare(

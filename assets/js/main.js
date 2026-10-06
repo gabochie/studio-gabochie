@@ -558,6 +558,128 @@ function buildModal() {
   return el;
 }
 
+/* ── CryptoPay: shared crypto checkout (NOWPayments invoice or manual on-chain) ──
+   Usage: CryptoPay.start({ purpose:'donation'|'course'|'books'|'tier'|'merch',
+     tx_ref, enrollment_token, name, email, phone, button })
+   Invoice mode redirects to NOWPayments. Manual mode opens an address +
+   tx-hash verification modal, then redirects to the payment success URL. */
+window.CryptoPay = (function() {
+  var CHAINS = [
+    { id: 'bitcoin', label: 'Bitcoin (BTC)', addr: 'btc' },
+    { id: 'tron', label: 'Tron (USDT-TRC20)', addr: 'usdt_trc20' },
+    { id: 'bsc', label: 'BNB Chain (USDT/USDC/BNB)', addr: 'evm' },
+    { id: 'polygon', label: 'Polygon (USDT/USDC/MATIC)', addr: 'evm' },
+    { id: 'ethereum', label: 'Ethereum (USDT/USDC/ETH)', addr: 'evm' },
+    { id: 'solana', label: 'Solana (USDC/USDT/SOL)', addr: 'sol' }
+  ];
+
+  function copyText(t) {
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).catch(function(){}); }
+  }
+
+  function openManual(data, btn) {
+    var overlay = buildOverlay();
+    var modal = buildModal();
+    modal.style.maxWidth = '440px';
+    var usable = CHAINS.filter(function(c) { return data.addresses && data.addresses[c.addr]; });
+    if (!usable.length) { alert('Crypto payments are not configured yet. Please use another method.'); if (btn) btn.disabled = false; return; }
+    var opts = usable.map(function(c) { return '<option value="' + c.id + '">' + c.label + '</option>'; }).join('');
+    modal.innerHTML =
+      '<button onclick="this.closest(\'div\').parentElement.remove()" style="position:absolute;top:10px;right:14px;background:none;border:none;color:#5A7A9F;font-size:22px;cursor:pointer">&times;</button>' +
+      '<h3 style="color:#F1F5F9;font-size:18px;margin:0 0 4px">Pay with Crypto</h3>' +
+      '<p style="color:#8A9BB5;font-size:13px;margin:0 0 4px">Send <strong id="cpUsd" style="color:#C9A84C"></strong> to the address below, then paste the transaction hash.</p>' +
+      '<p style="color:#5A7A9F;font-size:11px;margin:0 0 12px">Reference (memo): <strong id="cpMemo" style="font-family:monospace;color:#CBD5E1"></strong></p>' +
+      '<label style="display:block;color:#5A7A9F;font-size:11px;margin-bottom:4px">NETWORK</label>' +
+      '<select id="cpChain" style="width:100%;padding:10px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;margin-bottom:10px">' + opts + '</select>' +
+      '<div id="cpAddrBox" style="background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:monospace;font-size:12px;color:#CBD5E1;word-break:break-all"></div>' +
+      '<button id="cpCopy" style="width:100%;margin-bottom:10px;padding:8px;background:transparent;border:1px solid #C9A84C;color:#C9A84C;border-radius:8px;cursor:pointer;font-size:12px">Copy Address</button>' +
+      '<label style="display:block;color:#5A7A9F;font-size:11px;margin-bottom:4px">TRANSACTION HASH</label>' +
+      '<input id="cpHash" placeholder="Paste tx hash after sending" style="width:100%;padding:10px;background:#0A1628;border:1px solid #1E3250;border-radius:8px;color:#E8EEF7;font-size:13px;margin-bottom:10px;box-sizing:border-box">' +
+      '<button id="cpVerify" style="width:100%;padding:12px;background:#C9A84C;color:#0A1628;border:none;border-radius:8px;font-weight:700;cursor:pointer">I Sent It — Verify Payment</button>' +
+      '<p id="cpMsg" style="font-size:12px;margin:10px 0 0;display:none"></p>';
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+
+    document.getElementById('cpUsd').textContent = '$' + Number(data.amount_usd || 0).toFixed(2) + ' (≈ GHS ' + Number(data.amount_ghs || 0).toFixed(2) + ')';
+    document.getElementById('cpMemo').textContent = data.memo || data.tx_ref;
+    var chainSel = document.getElementById('cpChain');
+    var addrBox = document.getElementById('cpAddrBox');
+    function renderAddr() {
+      var c = null;
+      for (var i = 0; i < usable.length; i++) { if (usable[i].id === chainSel.value) c = usable[i]; }
+      addrBox.textContent = c ? data.addresses[c.addr] : '';
+    }
+    chainSel.addEventListener('change', renderAddr);
+    renderAddr();
+    document.getElementById('cpCopy').addEventListener('click', function() { copyText(addrBox.textContent); });
+    var msg = document.getElementById('cpMsg');
+    function say(t, ok) {
+      msg.style.display = 'block';
+      msg.style.color = ok ? '#22C55E' : '#E8637A';
+      msg.textContent = t;
+    }
+    document.getElementById('cpVerify').addEventListener('click', function() {
+      var hash = document.getElementById('cpHash').value.trim();
+      if (!hash) { say('Paste the transaction hash first.'); return; }
+      var vbtn = document.getElementById('cpVerify');
+      vbtn.disabled = true; vbtn.textContent = 'Verifying on-chain…';
+      say('Checking the ' + chainSel.options[chainSel.selectedIndex].text + ' network. This can take a minute.', true);
+      fetch('/api/gateways/crypto/verify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tx_ref: data.tx_ref, chain: chainSel.value, tx_hash: hash })
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.status === 'ok') {
+          say('Payment confirmed! Redirecting…', true);
+          setTimeout(function() { window.location.href = data.success_url || '/'; }, 1200);
+        } else {
+          vbtn.disabled = false; vbtn.textContent = 'I Sent It — Verify Payment';
+          say(d.message || ('Not verified (' + (d.code || 'unknown') + '). Check the hash and try again.'));
+        }
+      }).catch(function() {
+        vbtn.disabled = false; vbtn.textContent = 'I Sent It — Verify Payment';
+        say('Network error. Your funds are safe — try verifying again.');
+      });
+    });
+    if (btn) { btn.disabled = false; }
+  }
+
+  function start(opts) {
+    opts = opts || {};
+    var btn = opts.button || null;
+    if (btn) { btn.disabled = true; }
+    var payload = { purpose: opts.purpose || 'donation' };
+    ['tx_ref', 'enrollment_token', 'name', 'email', 'phone', 'amount'].forEach(function(k) {
+      if (opts[k] !== undefined && opts[k] !== '') payload[k] = opts[k];
+    });
+    fetch('/api/gateways/crypto/create', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.status !== 'ok') {
+        if (btn) btn.disabled = false;
+        alert(d.message || 'Could not start crypto payment.');
+        return;
+      }
+      if (d.already) {
+        alert(d.message || 'Already paid.');
+        if (btn) btn.disabled = false;
+        return;
+      }
+      if (d.mode === 'invoice' && d.invoice_url) {
+        window.location.href = d.invoice_url;
+        return;
+      }
+      openManual(d, btn);
+    }).catch(function() {
+      if (btn) btn.disabled = false;
+      alert('Network error. Please try again.');
+    });
+  }
+
+  return { start: start };
+})();
+
 /* ── Cookie Notice ── */
 (function(){
   if (localStorage.getItem('ga_cookie_notice_dismissed')) return;

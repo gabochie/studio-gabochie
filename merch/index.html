@@ -107,11 +107,13 @@ function selectSize(itemIdx, size) {
     c.classList.toggle('active', c.dataset.size === size);
   });
   var btn = document.getElementById('buyBtn_' + itemIdx);
+  var cbtn = document.getElementById('cryptoBtn_' + itemIdx);
   if (btn) {
     var item = merchInventory[itemIdx];
     var inv = __inventory[item.slug] || {};
     var qty = inv[size] || 0;
     btn.disabled = qty < 1;
+    if (cbtn) cbtn.disabled = qty < 1;
   }
 }
 
@@ -135,6 +137,7 @@ function renderMerch() {
       '<div class="price">GH¢ ' + m.price + '</div>' +
       sizeHtml +
       '<button class="btn-buy" id="buyBtn_' + i + '" disabled onclick="buyMerchItem(' + i + ')"><i class="ti ti-shopping-cart"></i> Select Size &amp; Buy</button>' +
+      '<button class="btn-buy" id="cryptoBtn_' + i + '" disabled onclick="buyMerchCrypto(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with Crypto</button>' +
       '</div></div>';
   }).join('');
 }
@@ -169,6 +172,31 @@ function buyMerchItem(idx) {
         callback: function(r) { window.location.href = '/merch/?order=' + d.tx_ref + '&status=' + r.status; },
         onclose: function() {}
       });
+    }).catch(function(){ alert('Network error. Please try again.'); });
+  });
+}
+
+function buyMerchCrypto(idx) {
+  var item = merchInventory[idx];
+  var size = selectedSizes[idx];
+  if (!size) return;
+  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  var cbtn = document.getElementById('cryptoBtn_' + idx);
+  showStoreModal(function(user) {
+    fetch('/api/store/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_type: 'merch', item_name: item.name, item_variant: size, product_slug: item.slug,
+        amount: item.price, currency: 'GHS', customer_name: user.name, customer_email: user.email,
+        user_id: user.user_id || 0, phone: user.phone || '',
+        shipping_address: user.shipping_digital_address || '',
+        shipping_city: user.shipping_city || '', shipping_region: user.shipping_region || '',
+        shipping_digital_address: user.shipping_digital_address || '', delivery_fee: user.delivery_fee || 0
+      })
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.status !== 'ok') { alert('Failed to create order. Please try again.'); return; }
+      window.CryptoPay.start({ purpose: 'merch', tx_ref: d.tx_ref, button: cbtn });
     }).catch(function(){ alert('Network error. Please try again.'); });
   });
 }
