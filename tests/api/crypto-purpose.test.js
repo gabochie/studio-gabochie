@@ -108,6 +108,73 @@ describe('crypto create (purpose-aware)', function () {
   });
 });
 
+describe('crypto guitar unlocks', function () {
+  var realFetch;
+  beforeEach(function () { realFetch = globalThis.fetch; });
+  afterEach(function () { globalThis.fetch = realFetch; });
+
+  function guitarDb() {
+    return mockDb({
+      donations: [],
+      guitar_payments: [],
+      users: [{ id: 5, name: 'Ama', email: 'ama@test.com' }],
+      sessions: [{ user_id: 5, token: 'sess-abc', expires_at: '2099-01-01', email: 'ama@test.com', name: 'Ama' }],
+      settings: []
+    });
+  }
+
+  it('requires login for guitar purpose', async function () {
+    var db = guitarDb();
+    var r = await (await cryptoCreate(post('http://localhost/api/gateways/crypto/create',
+      { purpose: 'guitar' }, { DB: db }))).json();
+    expect(r.status).toBe('error');
+    var r2 = await (await cryptoCreate(post('http://localhost/api/gateways/crypto/create',
+      { purpose: 'guitar', token: 'bad-token' }, { DB: db }))).json();
+    expect(r2.status).toBe('error');
+  });
+
+  it('creates a guitar invoice at the standard price with a pending payment row', async function () {
+    globalThis.fetch = async function () { return jsonOk({ invoice_url: 'https://nowpayments.io/g' }); };
+    var db = guitarDb();
+    var ctx = post('http://localhost/api/gateways/crypto/create',
+      { purpose: 'guitar', token: 'sess-abc' },
+      { DB: db, NOWPAYMENTS_API_KEY: 'np-key', GHS_USD_RATE: '15.0' });
+    var data = await (await cryptoCreate(ctx)).json();
+    expect(data.status).toBe('ok');
+    expect(data.purpose).toBe('guitar');
+    expect(data.amount_ghs).toBe(99);
+    expect(data.success_url).toContain('/guitar/learn/');
+    expect(db._tables.guitar_payments.length).toBe(1);
+    expect(db._tables.guitar_payments[0].status).toBe('pending');
+  });
+
+  it('reports already-unlocked for paid guitar users', async function () {
+    var db = guitarDb();
+    db._tables.guitar_payments.push({ id: 1, user_id: 5, status: 'completed' });
+    var r = await (await cryptoCreate(post('http://localhost/api/gateways/crypto/create',
+      { purpose: 'guitar', token: 'sess-abc' }, { DB: db }))).json();
+    expect(r.status).toBe('ok');
+    expect(r.already).toBe(true);
+  });
+
+  it('webhook completes the guitar unlock', async function () {
+    var db = guitarDb();
+    db._tables.guitar_payments.push({ id: 1, user_id: 5, status: 'pending', flw_tx_ref: 'crypto_g1' });
+    db._tables.donations.push({
+      id: 1, tx_ref: 'crypto_g1', amount: 99, currency: 'GHS',
+      donor_name: 'Ama', donor_email: 'ama@test.com', donor_phone: '',
+      status: 'pending', provider: 'crypto',
+      metadata: JSON.stringify({ purpose: 'guitar', user_id: 5 })
+    });
+    var ctx = post('http://localhost/api/gateways/crypto/webhook',
+      { order_id: 'crypto_g1', payment_status: 'finished', payment_id: 'np-9' }, { DB: db });
+    var data = await (await cryptoWebhook(ctx)).json();
+    expect(data.status).toBe('ok');
+    expect(db._tables.guitar_payments[0].status).toBe('completed');
+    expect(db._tables.donations[0].status).toBe('successful');
+  });
+});
+
 describe('crypto webhook routing', function () {
   it('activates a course enrollment on settlement', async function () {
     var db = baseDb();

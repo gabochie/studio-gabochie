@@ -1,18 +1,27 @@
 import { json, readBody, ghsToUsd, newRef } from '../_shared.js';
 import { getSessionUser } from '../../enroll/_token.js';
 
-var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch'];
+async function guitarPrice(db) {
+  try {
+    const row = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_price'").first();
+    if (row && parseInt(row.value)) return parseInt(row.value);
+  } catch (_e) {}
+  return 99;
+}
+
+var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch', 'guitar'];
 
 var SUCCESS_URLS = {
   donation: function (site, p) { return site + '/donate/?tx_ref=' + encodeURIComponent(p.tx_ref) + '&status=successful&amount=' + p.amount + '&name=' + encodeURIComponent(p.name) + '&email=' + encodeURIComponent(p.email) + '&phone=' + encodeURIComponent(p.phone); },
   course: function (site, p) { return site + '/dashboard/' + (p.access_token ? '?token=' + encodeURIComponent(p.access_token) : ''); },
   books: function (site, p) { return site + '/books/download?tx_ref=' + encodeURIComponent(p.domain_tx) + '&email=' + encodeURIComponent(p.email) + '&name=' + encodeURIComponent(p.name); },
   tier: function (site, p) { return site + '/member/?success=' + encodeURIComponent(p.tier || 'supporter'); },
-  merch: function (site, p) { return site + '/merch/?order=' + encodeURIComponent(p.domain_tx) + '&status=successful'; }
+  merch: function (site, p) { return site + '/merch/?order=' + encodeURIComponent(p.domain_tx) + '&status=successful'; },
+  guitar: function (site, _p) { return site + '/guitar/learn/'; },
 };
 
 var CANCEL_URLS = {
-  donation: '/donate/', course: '/dashboard/', books: '/books/', tier: '/member/', merch: '/merch/'
+  donation: '/donate/', course: '/dashboard/', books: '/books/', tier: '/member/', merch: '/merch/', guitar: '/guitar/songs/'
 };
 
 var DESCRIPTIONS = {
@@ -20,7 +29,8 @@ var DESCRIPTIONS = {
   course: 'Course Full Access — Studio Gabochie',
   books: 'Book Purchase — Studio Gabochie',
   tier: 'Membership Tier — Studio Gabochie',
-  merch: 'Store Purchase — Studio Gabochie'
+  merch: 'Store Purchase — Studio Gabochie',
+  guitar: 'Guitar Full Access — Studio Gabochie'
 };
 
 export async function onRequest(context) {
@@ -85,6 +95,20 @@ export async function onRequest(context) {
     email = enr.student_email || email;
     access_token = enr.access_token;
     meta.enrollment_id = enr.id;
+  } else if (purpose === 'guitar') {
+    if (!env.DB) return json({ status: 'error', message: 'D1 not bound' }, 501);
+    const gToken = (body.token || '').trim();
+    if (!gToken) return json({ status: 'error', message: 'Login required' }, 401);
+    let gUser = null;
+    try { gUser = await getSessionUser(env.DB, gToken); } catch (_e) {}
+    if (!gUser) return json({ status: 'error', message: 'Login required' }, 401);
+    const paid = await env.DB.prepare("SELECT id FROM guitar_payments WHERE user_id = ? AND status = 'completed' ORDER BY id DESC LIMIT 1").bind(gUser.user_id).first().catch(() => null);
+    if (paid) return json({ status: 'ok', already: true, message: 'Already unlocked' });
+    amountGhs = await guitarPrice(env.DB);
+    if (!amountGhs || amountGhs <= 0) return json({ status: 'error', message: 'Nothing payable' }, 400);
+    name = gUser.name || name; email = gUser.email || email;
+    meta.user_id = gUser.user_id;
+    meta.guitar = true;
   } else {
     if (!env.DB) return json({ status: 'error', message: 'D1 not bound' }, 501);
     domain_tx = (body.tx_ref || '').trim();
@@ -136,6 +160,15 @@ export async function onRequest(context) {
         ).bind(tx_ref, amountGhs, name, email, phone).run();
       } catch (_e2) {}
     }
+  }
+
+  // Guitar unlocks track in guitar_payments (what /enroll/status checks).
+  if (purpose === 'guitar' && env.DB && meta.user_id) {
+    try {
+      await env.DB.prepare(
+        "INSERT INTO guitar_payments (user_id, email, status, flw_tx_ref, amount, plan) VALUES (?, ?, 'pending', ?, ?, 'full')"
+      ).bind(meta.user_id, email, tx_ref, amountGhs).run();
+    } catch (_e) {}
   }
 
   const cbParams = { tx_ref, amount: amountGhs, name, email, phone, access_token, domain_tx, tier };

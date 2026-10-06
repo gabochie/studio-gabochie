@@ -33,6 +33,7 @@
         <div class="section-title" style="justify-content:center">Unlock Full Song Library</div>
         <div class="section-sub">Complete Modules 1-<span data-g-free>3</span> for free or purchase full access</div>
         <button class="btn btn-primary btn-block mt-sm" id="buy-btn">Pay <span data-g-symbol-amount>GH₵ 99</span> — Full Access <i class="ti ti-lock-off"></i></button>
+        <button class="btn btn-secondary btn-block mt-sm" id="buy-crypto-btn" onclick="buyGuitarCrypto(this)">Pay with Crypto</button>
       </div>
 
       <div class="h-scroll" style="margin-bottom:16px">
@@ -73,6 +74,14 @@
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
+<script src="/assets/js/main.js" defer></script>
+<script>
+window.buyGuitarCrypto = function(btn) {
+  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  if (!window.Guitar || !Guitar.token) { alert('Please sign in first.'); return; }
+  window.CryptoPay.start({ purpose: 'guitar', token: Guitar.token, button: btn || null });
+};
+</script>
 <script>
 const SONGS = [
   {id:1,title:'Wish Me Well',artist:'Sarkodie',difficulty:'bronze',chords:['Em','Am'],video:'https://www.youtube.com/embed/HnXo2LsYbMg',progression:'Em → Am (repeat)',strum:'Down, down-down-up'},

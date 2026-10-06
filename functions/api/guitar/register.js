@@ -70,7 +70,7 @@ export async function onRequest(context) {
 
       // Send welcome email only to new users
       if (isNewUser) {
-        let price = '250', currency = 'GH₵';
+        let price = '99', currency = 'GH₵';
         try {
           const pRow = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_price'").first();
           if (pRow) price = pRow.value;
