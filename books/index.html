@@ -97,6 +97,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <input type="text" id="bundleName" placeholder="Your full name" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
     </div>
     <button class="btn btn-gold" id="buyBtn" onclick="buyBundle()">Buy Bundle — <span class="price-convert" data-ghs="300">GH&#8373;300</span></button>
+    <div style="margin-top:10px"><button class="btn btn-outline" id="buyCryptoBtn" onclick="buyBundleCrypto()">Pay with Crypto</button></div>
     <div class="secure-badge">&#128274; Secured by Flutterwave</div>
   </div>
 
@@ -116,6 +117,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
             <input type="number" id="payAmount" placeholder="Amount (GH&#8373;)" min="50" value="50" step="10" style="flex:1;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;width:0">
             <button type="button" id="payWithBtn" onclick="payWithAmount()" style="padding:12px 16px;border:2px solid #C9A84C;border-radius:8px;background:transparent;color:#C9A84C;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.1em">Pay &amp; Download</button>
           </div>
+          <button type="button" id="payCryptoBtn" onclick="payWithCrypto()" style="width:100%;padding:10px;margin-bottom:10px;border:1px solid #1E3250;border-radius:8px;background:transparent;color:#8A9BB5;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.1em">Pay with Crypto</button>
           <input type="hidden" name="book" id="leadBookInput" value="">
           <input type="hidden" name="_subject" value="Book download request">
           <button type="submit" class="submit" id="leadSubmitBtn">Free Download &rarr;</button>
@@ -219,6 +221,21 @@ function payWithAmount() {
   });
 }
 
+function payWithCrypto() {
+  var email = document.getElementById('leadEmail').value.trim();
+  var name = document.querySelector('#leadForm input[name="name"]').value.trim();
+  var amount = parseFloat(document.getElementById('payAmount').value);
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  if (!name) { alert('Please enter your name.'); return; }
+  if (amount > 0 && amount < 50) { alert('Minimum paid contribution is GH\u00a250.'); return; }
+  if (!amount || amount <= 0) { alert('Enter an amount of at least GH\u00a250 for crypto payment.'); return; }
+  tagOnboard(email, name, 'book_download_crypto');
+  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  var tx_ref = 'bookpw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  recordBookPurchase(tx_ref, email, name, amount, _leadSlug);
+  window.CryptoPay.start({ purpose: 'books', tx_ref: tx_ref, button: document.getElementById('payCryptoBtn') });
+}
+
 function loadBooks() {
   fetch('/api/books').then(function(r){return r.json()}).then(function(d){
     if(d.status !== 'ok') return;
@@ -274,6 +291,26 @@ function buyBundle() {
       btn.textContent = 'Buy Bundle — GHS 300';
     }
   });
+}
+
+function recordBookPurchase(tx_ref, email, name, amount, books) {
+  fetch('/api/books/purchase', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({tx_ref: tx_ref, email: email, name: name, amount: amount, books: books})
+  }).catch(function(){});
+}
+
+function buyBundleCrypto() {
+  var email = document.getElementById('bundleEmail').value.trim();
+  var name = document.getElementById('bundleName').value.trim();
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  if (!name) { alert('Please enter your name.'); return; }
+  tagOnboard(email, name, 'book_bundle_crypto');
+  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  var tx_ref = 'books_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+  recordBookPurchase(tx_ref, email, name, 300, 'premium-bundle');
+  window.CryptoPay.start({ purpose: 'books', tx_ref: tx_ref, button: document.getElementById('buyCryptoBtn') });
 }
 
 loadBooks();
