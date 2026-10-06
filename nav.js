@@ -15,9 +15,10 @@
   var footerHtml =
     '<footer>' +
     '<div class="container">' +
-    '<div>' +
+    '<div class="footer-brand">' +
     '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
-    '<p class="footer-about">A ministry-backed school teaching vision builders to imagine with creativity, create with love, and live with wisdom. Every course is practical, self-paced, and starts free.</p>' +
+    '<p class="footer-about">Practical, self-paced courses that start free — imagine with creativity, create with love, live with wisdom.</p>' +
+    '<a href="/register/" class="footer-cta">Start Free</a>' +
     '<div class="footer-social">' +
     '<a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><i class="ti ti-brand-x"></i></a>' +
     '<a href="https://web.facebook.com/GideonAbochie/" target="_blank" title="Facebook"><i class="ti ti-brand-facebook"></i></a>' +
@@ -27,34 +28,29 @@
     '</div>' +
     '</div>' +
     '<div>' +
-    '<h4>The School</h4>' +
-    '<a href="/">Home</a>' +
-    '<a href="/#schools">The Five Schools</a>' +
+    '<h4>Learn</h4>' +
     '<a href="/courses/">All Courses</a>' +
+    '<a href="/guitar/">Guitar Method</a>' +
+    '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
+    '<a href="/dashboard/">Dashboard</a>' +
+    '<a href="/certificate/">Certificates</a>' +
+    '</div>' +
+    '<div>' +
+    '<h4>Offerings</h4>' +
     '<a href="/books/">Books</a>' +
     '<a href="/merch/">Merch</a>' +
     '<a href="/services/">Services</a>' +
-    '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
-    '</div>' +
-    '<div>' +
-    '<h4>Your Learning</h4>' +
-    '<a href="/register/">Create Account</a>' +
-    '<a href="/login/">Log In</a>' +
-    '<a href="/dashboard/">Dashboard</a>' +
     '<a href="/membership/">Membership &amp; Pricing</a>' +
+    '<a href="/donate/">Donate</a>' +
     '</div>' +
     '<div>' +
-    '<h4>Contact</h4>' +
+    '<h4>Connect</h4>' +
+    '<a href="/contact/">Contact Form</a>' +
     '<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>' +
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
-    '<a href="/donate/">Donate</a>' +
-    '<a href="/contact/">Contact Form</a>' +
-    '<h4 style="margin-top:16px">Legal</h4>' +
-    '<a href="/legal/privacy.html">Privacy Policy</a>' +
-    '<a href="/legal/terms.html">Terms of Use</a>' +
-    '<a href="/legal/refund.html">Refund Policy</a>' +
+    '<div class="footer-legal"><a href="/legal/privacy.html">Privacy</a><span>·</span><a href="/legal/terms.html">Terms</a><span>·</span><a href="/legal/refund.html">Refunds</a></div>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; School of Creativity, Love &amp; Wisdom.</div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; Accra, Ghana.</div>' +
     '</div>' +
     '</footer>';
 
