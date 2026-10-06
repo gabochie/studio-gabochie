@@ -44,6 +44,7 @@
     '<h4>Contact</h4>' +
     '<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>' +
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
+    '<a href="/donate/">Donate</a>' +
     '<h4 style="margin-top:16px">Legal</h4>' +
     '<a href="/legal/privacy.html">Privacy Policy</a>' +
     '<a href="/legal/terms.html">Terms of Use</a>' +

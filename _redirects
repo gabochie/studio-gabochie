@@ -21,8 +21,7 @@
 /donations /legal/donations 200
 
 # ─── Legacy marketing paths → course front door ───
-/donate / 301
-/donate/* / 301
+# /donate/ is live (one-time + monthly patron + crypto/DeFi) — do NOT redirect
 /support / 301
 /support/* / 301
 /campaigns / 301

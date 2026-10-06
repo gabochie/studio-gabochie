@@ -85,7 +85,7 @@ p{color:#8A9BB5;line-height:1.7;margin-bottom:24px;font-size:15px}
   <h1>Payment <span>Failed</span></h1>
   <p>Your payment did not go through. No charges were made. You can try again or use an alternative method.</p>
   <div class="btn-group">
-    <a href="index.html#give" class="btn btn-danger">Try Again</a>
+    <a href="/donate/" class="btn btn-danger">Try Again</a>
     <a href="index.html" class="btn btn-secondary">&larr; Back to Home</a>
   </div>
 </div>
@@ -101,7 +101,15 @@ var name = params.get('name') || '';
 var email = params.get('email') || '';
 var phone = params.get('phone') || '';
 
-if (status === 'successful' || status === 'completed' || !status) {
+if (status === 'pending') {
+  document.getElementById('rTxRef').textContent = tx;
+  document.getElementById('rDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('rName').textContent = name || 'Anonymous';
+  document.getElementById('rEmail').textContent = email || '—';
+  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH¢ ' + Number(amount).toFixed(2)) : '—';
+  document.getElementById('rStatus').textContent = 'Pending confirmation';
+  document.getElementById('rStatus').style.color = '#EAB308';
+} else if (status === 'successful' || status === 'completed' || !status) {
   document.getElementById('rTxRef').textContent = tx;
   document.getElementById('rDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   document.getElementById('rName').textContent = name || 'Anonymous';
