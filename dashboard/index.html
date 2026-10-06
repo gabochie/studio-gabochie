@@ -123,7 +123,7 @@ h1 span{color:#C9A84C}
       <div class="login-msg" id="loginMsg"></div>
     </div>
     <div style="margin-top:20px">
-      <a href="../school/" class="btn btn-primary">Browse Courses</a>
+      <a href="/courses/" class="btn btn-primary">Browse Courses</a>
       <a href="../index.html" class="btn btn-secondary">Back to Home</a>
     </div>
   </div>
@@ -597,7 +597,7 @@ function logout() {
   localStorage.removeItem('ga_student');
   sessionStorage.removeItem('ga_token');
   document.cookie = 'ga_session=; path=/; domain=.gabochie.com; max-age=0; SameSite=Lax; Secure';
-  window.location.href = '/school/';
+  window.location.href = '/courses/';
 }
 
 function playSound(type) {
