@@ -250,10 +250,12 @@ function renderPlans() {
   var grid = document.getElementById('plansGrid');
   var html = '';
   allTiers.forEach(function(p,i){
-    var price = selectedInterval === 'yearly' ? p.yearly_price_ghs : p.monthly_price_ghs;
-    var periodLabel = selectedInterval === 'yearly' ? '/yr' : '/mo';
-    if (p.slug === 'founding') { price = p.yearly_price_ghs; periodLabel = '/yr'; }
+    var effInterval = p.slug === 'founding' ? 'yearly' : selectedInterval;
+    var price = effInterval === 'yearly' ? p.yearly_price_ghs : p.monthly_price_ghs;
+    var periodLabel = effInterval === 'yearly' ? '/yr' : '/mo';
     if (p.slug === 'free') { price = 0; periodLabel = ''; }
+    var autoRenews = effInterval === 'yearly' ? !!p.yearly_recurring : !!p.monthly_recurring;
+    var billNote = price > 0 ? (autoRenews ? 'auto-renews' : 'one-time charge') : '';
 
     var isCurrent = sessionToken && p.slug === currentTier;
     var isPaidTier = p.slug !== 'free';
@@ -281,6 +283,7 @@ function renderPlans() {
       '<div class="plan-icon ' + iconClass + '"><i class="ti ' + iconName + '"></i></div>' +
       '<h3>' + p.name + '</h3>' +
       '<div class="plan-price">' + displayPrice + '<span>' + periodLabel + '</span></div>' +
+      (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-6px 0 8px">' + billNote + '</div>' : '') +
       '<p class="plan-desc">' + (p.description || '') + '</p>' +
       '<ul class="plan-features">' + featureLis + '</ul>' +
       btnHtml +
