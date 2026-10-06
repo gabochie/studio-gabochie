@@ -4,7 +4,7 @@ import { getSessionUser } from '../../enroll/_token.js';
 var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch'];
 
 var SUCCESS_URLS = {
-  donation: function (site, p) { return site + '/donate.html?tx_ref=' + encodeURIComponent(p.tx_ref) + '&status=successful&amount=' + p.amount + '&name=' + encodeURIComponent(p.name) + '&email=' + encodeURIComponent(p.email) + '&phone=' + encodeURIComponent(p.phone); },
+  donation: function (site, p) { return site + '/donate/?tx_ref=' + encodeURIComponent(p.tx_ref) + '&status=successful&amount=' + p.amount + '&name=' + encodeURIComponent(p.name) + '&email=' + encodeURIComponent(p.email) + '&phone=' + encodeURIComponent(p.phone); },
   course: function (site, p) { return site + '/dashboard/' + (p.access_token ? '?token=' + encodeURIComponent(p.access_token) : ''); },
   books: function (site, p) { return site + '/books/download?tx_ref=' + encodeURIComponent(p.domain_tx) + '&email=' + encodeURIComponent(p.email) + '&name=' + encodeURIComponent(p.name); },
   tier: function (site, p) { return site + '/member/?success=' + encodeURIComponent(p.tier || 'supporter'); },
