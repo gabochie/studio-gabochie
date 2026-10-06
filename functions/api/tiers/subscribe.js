@@ -22,7 +22,14 @@ export async function onRequest(context) {
     if (!slug) return new Response(JSON.stringify({ status: 'error', message: 'tier required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     if (!email) return new Response(JSON.stringify({ status: 'error', message: 'email required' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
-    var tier = await env.DB.prepare("SELECT slug, name, monthly_price_ghs, yearly_price_ghs, flw_plan_id FROM unified_tiers WHERE slug = ?").bind(slug).first();
+    var tier = null;
+    try {
+      tier = await env.DB.prepare("SELECT slug, name, monthly_price_ghs, yearly_price_ghs, flw_plan_id FROM unified_tiers WHERE slug = ?").bind(slug).first();
+    } catch (_e) {
+      // Older DBs without the flw_plan_id column (pre-migration) — degrade gracefully.
+      tier = await env.DB.prepare("SELECT slug, name, monthly_price_ghs, yearly_price_ghs FROM unified_tiers WHERE slug = ?").bind(slug).first();
+      if (tier) tier.flw_plan_id = '';
+    }
     if (!tier) return new Response(JSON.stringify({ status: 'error', message: 'Invalid tier' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
     if (slug === 'free') return new Response(JSON.stringify({ status: 'error', message: 'Free tier cannot be subscribed' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

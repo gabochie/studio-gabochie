@@ -55,6 +55,53 @@ describe('GET /api/tiers billing flags', function () {
   });
 });
 
+describe('pre-migration DBs without flw_plan_id', function () {
+  function legacyDb() {
+    var inner = mockDb({ unified_tiers: TIERS, subscriptions: [] });
+    var realPrepare = inner.prepare.bind(inner);
+    inner.prepare = function (sql) {
+      if (/FROM unified_tiers.*flw_plan_id|flw_plan_id.*FROM unified_tiers/.test(sql)) {
+        return { bind: function () {
+          return {
+            first: async function () { throw new Error('no such column: flw_plan_id'); },
+            all: async function () { throw new Error('no such column: flw_plan_id'); },
+          };
+        } };
+      }
+      return realPrepare(sql);
+    };
+    return inner;
+  }
+
+  it('GET /api/tiers degrades gracefully without the column', async function () {
+    var ctx = buildContext('http://localhost/api/tiers', { env: { DB: legacyDb() } });
+    ctx.request = new Request('http://localhost/api/tiers', { method: 'GET' });
+    var res = await tiersIndex(ctx);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.status).toBe('ok');
+    var bySlug = {};
+    body.tiers.forEach(function (t) { bySlug[t.slug] = t; });
+    expect(bySlug.supporter.monthly_recurring).toBe(true);
+    expect(bySlug.scholar.monthly_recurring).toBe(false);
+  });
+
+  it('POST /api/tiers/subscribe degrades gracefully without the column', async function () {
+    var ctx = buildContext('http://localhost/api/tiers/subscribe', { env: { DB: legacyDb() } });
+    ctx.request = new Request('http://localhost/api/tiers/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tier: 'supporter', email: 'a@x.com', interval: 'monthly' }),
+    });
+    var res = await tiersSubscribe(ctx);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.status).toBe('ok');
+    expect(body.is_recurring).toBe(true);
+    expect(body.plan_id).toBe('160302');
+  });
+});
+
 describe('POST /api/tiers/subscribe plan wiring', function () {
   it('supporter monthly uses the supporter plan and recurs', async function () {
     var body = await (await postSubscribe(getCtx(), { tier: 'supporter', email: 'a@x.com', interval: 'monthly' })).json();
