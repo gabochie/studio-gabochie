@@ -28,10 +28,10 @@
 /campaigns/* / 301
 # /membership/ is live (public pricing for the 5-tier ladder) — do NOT redirect
 # /books/ is live (PWYW singles + GH¢300 bundle) — do NOT redirect
-/store / 301
-/store/* / 301
-/merch / 301
-/merch/* / 301
+# /merch/ is live (apparel storefront) — do NOT redirect
+# /store/download + /store/library serve order fulfillment — do NOT redirect
+/store /merch/ 301
+/store/ /merch/ 301
 /services / 301
 /services/* / 301
 /careers / 301

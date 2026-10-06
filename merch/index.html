@@ -214,6 +214,8 @@ function updateStockDisplay() {
     chip.classList.toggle('out', qty < 1);
     var btn = document.getElementById('buyBtn_' + idx);
     if (btn && selectedSizes[idx] === size && qty < 1) btn.disabled = true;
+    var cbtn = document.getElementById('cryptoBtn_' + idx);
+    if (cbtn && selectedSizes[idx] === size && qty < 1) cbtn.disabled = true;
   });
 }
 
@@ -223,9 +225,7 @@ fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(functio
   }
 }).catch(function(){}).then(function(){ renderMerch(); });
 
-// Poll inventory every 60 seconds
-setInterval(function(){
-// Show success banner if returning from payment
+// Show success banner immediately if returning from payment
 (function(){
   var params = new URLSearchParams(window.location.search);
   if (params.get('status') === 'successful' || params.get('status') === 'completed') {
@@ -236,6 +236,8 @@ setInterval(function(){
   }
 })();
 
+// Poll inventory every 60 seconds
+setInterval(function(){
 fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(function(d){
     if (d.items) {
       __inventory = {};
