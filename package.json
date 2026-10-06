@@ -65,7 +65,8 @@
     },
     "undici": "7.30.0",
     "braces": "3.0.3",
-    "compression": "1.8.2"
+    "compression": "1.8.2",
+    "sharp": "0.35.5"
   },
   "dependencies": {
     "playwright": "^1.60.0"

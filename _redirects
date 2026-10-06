@@ -26,8 +26,7 @@
 /support/* / 301
 /campaigns / 301
 /campaigns/* / 301
-/membership / 301
-/membership/* / 301
+# /membership/ is live (public pricing for the 5-tier ladder) — do NOT redirect
 # /books/ is live (PWYW singles + GH¢300 bundle) — do NOT redirect
 /store / 301
 /store/* / 301

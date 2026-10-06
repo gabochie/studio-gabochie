@@ -39,6 +39,7 @@
     '<a href="/register/">Create Account</a>' +
     '<a href="/login/">Log In</a>' +
     '<a href="/dashboard/">Dashboard</a>' +
+    '<a href="/membership/">Membership &amp; Pricing</a>' +
     '</div>' +
     '<div>' +
     '<h4>Contact</h4>' +
