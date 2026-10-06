@@ -649,7 +649,7 @@ window.CryptoPay = (function() {
     var btn = opts.button || null;
     if (btn) { btn.disabled = true; }
     var payload = { purpose: opts.purpose || 'donation' };
-    ['tx_ref', 'enrollment_token', 'name', 'email', 'phone', 'amount'].forEach(function(k) {
+    ['tx_ref', 'enrollment_token', 'name', 'email', 'phone', 'amount', 'token'].forEach(function(k) {
       if (opts[k] !== undefined && opts[k] !== '') payload[k] = opts[k];
     });
     fetch('/api/gateways/crypto/create', {

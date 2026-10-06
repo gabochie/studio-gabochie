@@ -6,7 +6,7 @@ export async function onRequest(context) {
   const user = await getUser(context);
   if (!user) return json({error:'Auth required'}, 401);
 
-  let price = 250, currency = 'GHS';
+  let price = 99, currency = 'GHS';
   try {
     const pRow = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_price'").first();
     if (pRow) price = parseInt(pRow.value) || 250;
