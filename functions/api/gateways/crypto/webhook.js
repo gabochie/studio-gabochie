@@ -1,4 +1,4 @@
-import { json, finalizeDonation } from '../_shared.js';
+import { json, finalizeCryptoPayment } from '../_shared.js';
 
 async function sha512Hex(secret, text) {
   const enc = new TextEncoder();
@@ -37,19 +37,10 @@ export async function onRequest(context) {
   if (!settled) return json({ status: 'ok' });
 
   if (env.DB) {
-    const row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(tx_ref).first().catch(() => null);
-    if (row && row.status !== 'successful') {
-      await finalizeDonation(env, {
-        tx_ref,
-        amount: row.amount,
-        currency: row.currency,
-        donor_name: row.donor_name,
-        donor_email: row.donor_email,
-        donor_phone: row.donor_phone,
-        gateway: 'crypto',
-        gateway_txid: String(payload.payment_id || '')
-      });
-    }
+    await finalizeCryptoPayment(env, {
+      tx_ref,
+      gateway_txid: String(payload.payment_id || '')
+    });
   }
 
   return json({ status: 'ok' });
