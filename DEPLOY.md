@@ -80,6 +80,61 @@ unless you want to override for different environments:
 To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
 `FLW_PLAN_FOUNDING` env vars in Cloudflare Pages.
 
+Per-tier recurring for the newer tiers is configured with (see
+`functions/api/tiers/_plans.js` — unset means one-time charge):
+
+| Variable | Purpose |
+|---|---|
+| `FLW_PLAN_SCHOLAR_MONTHLY` / `FLW_PLAN_SCHOLAR_YEARLY` | Scholar recurring plans |
+| `FLW_PLAN_PATRON_MONTHLY` / `FLW_PLAN_PATRON_YEARLY` | Patron recurring plans |
+| `FLW_PLAN_SUPPORTER_YEARLY` | Supporter yearly override |
+
+---
+
+## Step 4b: Crypto & DeFi Payments (NOWPayments + on-chain)
+
+Crypto works in two modes — no code changes needed, only env vars and
+dashboard setup:
+
+1. **NOWPayments invoices (recommended):** donor picks any of 200+ coins on a
+   hosted invoice; settlement auto-confirms via IPN webhook.
+   1. Go to https://nowpayments.io → **API Keys** → create a key → set as
+      `NOWPAYMENTS_API_KEY` in Cloudflare env vars.
+   2. Go to **Settings → IPN** (or store settings) → set the callback URL to
+      `https://studio.gabochie.com/api/gateways/crypto/webhook`.
+   3. Copy the **IPN Secret** as `NOWPAYMENTS_IPN_SECRET` (enables HMAC-SHA512
+      verification of every callback).
+   4. Set `PUBLIC_BASE_URL` to `https://studio.gabochie.com` (used for invoice
+      success/cancel URLs).
+2. **Manual on-chain (fallback):** when no NOWPayments key is set, the API
+   returns receive addresses and `POST /api/gateways/crypto/verify` confirms
+   the tx on-chain (BTC, TRON, BSC, Polygon, Ethereum, Solana). Set the
+   public receive addresses (never private keys):
+   - `CRYPTO_BTC_ADDRESS` — Bitcoin
+   - `CRYPTO_USDT_ADDRESS` — USDT-TRC20 (Tron)
+   - `CRYPTO_TRX_ADDRESS` — native TRX (optional)
+   - `CRYPTO_EVM_ADDRESS` — one address reused for BSC/Polygon/Ethereum
+     (USDT/USDC + native coins)
+   - `CRYPTO_SOL_ADDRESS` — Solana (SOL + USDC/USDT SPL)
+3. Optional: `GHS_USD_RATE` pins the GHS→USD rate (else live rate, else 0.066
+   fallback). Verification tolerates ±2% FX drift.
+
+Crypto accepts **donations, course upgrades, book purchases, tier
+subscriptions, and merch orders** — the `purpose` is recorded in the payment
+row and the matching product is activated on confirmation.
+
+| Variable | Required? | Description |
+|---|---|---|
+| `NOWPAYMENTS_API_KEY` | For invoice mode | NOWPayments API key |
+| `NOWPAYMENTS_IPN_SECRET` | Recommended | IPN callback HMAC secret |
+| `PUBLIC_BASE_URL` | For invoice mode | Canonical site URL for callbacks |
+| `CRYPTO_BTC_ADDRESS` | For manual mode | BTC receive address |
+| `CRYPTO_USDT_ADDRESS` | For manual mode | USDT-TRC20 receive address |
+| `CRYPTO_TRX_ADDRESS` | Optional | Native TRX receive address |
+| `CRYPTO_EVM_ADDRESS` | For manual mode | EVM receive address (BSC/Polygon/ETH) |
+| `CRYPTO_SOL_ADDRESS` | For manual mode | Solana receive address |
+| `GHS_USD_RATE` | Optional | Pinned GHS-per-USD rate |
+
 ---
 
 ## Step 5: Brevo SMTP (Email Automation)

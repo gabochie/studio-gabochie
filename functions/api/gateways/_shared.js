@@ -42,6 +42,123 @@ export async function ghsToUsd(amountGhs, env) {
   return { usd: round2(amount * dflt), rate: dflt };
 }
 
+// Send a short purpose-built confirmation email via Brevo (best-effort).
+async function sendCryptoMail(env, to, name, subject, lines, cta) {
+  if (!env.BREVO_API_KEY || !to || to.indexOf('@') < 0) return;
+  try {
+    var items = (lines || []).map(function (l) {
+      return '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 12px">' + l + '</p>';
+    }).join('');
+    var btn = cta ? '<a href="' + cta.url + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none">' + cta.label + '</a>' : '';
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
+      '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
+      '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden">' +
+      '<tr><td style="background:#0A1628;padding:28px;text-align:center"><h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:22px;margin:0">Studio Gabochie</h1></td></tr>' +
+      '<tr><td style="padding:28px"><p style="color:#1E293B;font-size:15px;margin:0 0 12px">Dear ' + (name || 'Friend') + ',</p>' + items +
+      (btn ? '<p style="margin:20px 0 0">' + btn + '</p>' : '') +
+      '</td></tr></table></td></tr></table></body></html>';
+    await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+      body: JSON.stringify({
+        sender: { name: 'Studio Gabochie', email: 'newsletter@gabochie.com' },
+        to: [{ email: to, name: name || '' }],
+        subject: subject,
+        htmlContent: html
+      })
+    });
+  } catch (_e) {}
+}
+
+// Finalize any crypto payment by tx_ref: read purpose from the donations
+// row metadata and run the matching activation. Idempotent.
+export async function finalizeCryptoPayment(env, opts) {
+  var db = env.DB;
+  if (!db) return { status: 'error', message: 'DB not bound' };
+  var tx_ref = opts.tx_ref || '';
+  var gateway_txid = opts.gateway_txid || '';
+  if (!tx_ref) return { status: 'error', message: 'tx_ref required' };
+  var row = await db.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(tx_ref).first().catch(function () { return null; });
+  if (!row) return { status: 'error', message: 'Unknown payment' };
+  if (row.status === 'successful') return { status: 'ok', already: true, purpose: 'donation' };
+  var meta = {};
+  try { meta = JSON.parse(row.meta || row.metadata || '{}'); } catch (_e) {}
+  var purpose = meta.purpose || 'donation';
+  var email = row.donor_email || '';
+  var name = row.donor_name || '';
+  var amount = parseFloat(row.amount) || 0;
+
+  if (purpose === 'course' && meta.enrollment_id) {
+    await db.prepare("UPDATE enrollments SET status = 'active', payment_ref = COALESCE(NULLIF(payment_ref, ''), ?) WHERE id = ?").bind(tx_ref, meta.enrollment_id).run();
+    try { await generateInvoice(env, 'course', 'enrollments', { name: name, email: email, phone: row.donor_phone, amount: amount, currency: row.currency || 'GHS', tx_ref: tx_ref, items: [{ description: 'Course Full Access', quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
+    await sendCryptoMail(env, email, name, 'Course Unlocked — Studio Gabochie',
+      ['Your crypto payment of <strong>' + (row.currency || 'GHS') + ' ' + amount.toFixed(2) + '</strong> is confirmed. Full course access is now active.'],
+      { url: 'https://studio.gabochie.com/dashboard/', label: 'Open Your Dashboard' });
+    await markDonationRow(env, tx_ref, gateway_txid);
+    return { status: 'ok', purpose: purpose };
+  }
+  if (purpose === 'books' && meta.book_tx) {
+    await db.prepare("UPDATE book_purchases SET status = 'completed' WHERE tx_ref = ?").bind(meta.book_tx).run();
+    try { await generateInvoice(env, 'books', 'book_purchases', { name: name, email: email, phone: row.donor_phone, amount: amount, currency: row.currency || 'GHS', tx_ref: meta.book_tx, items: [{ description: 'Book Purchase', quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
+    await sendCryptoMail(env, email, name, 'Your Books Are Ready — Studio Gabochie',
+      ['Your crypto payment of <strong>' + (row.currency || 'GHS') + ' ' + amount.toFixed(2) + '</strong> is confirmed. Your download link is unique to this purchase — do not share it.'],
+      { url: 'https://studio.gabochie.com/books/download?tx_ref=' + encodeURIComponent(meta.book_tx), label: 'Download Your Books' });
+    await markDonationRow(env, tx_ref, gateway_txid);
+    return { status: 'ok', purpose: purpose };
+  }
+  if (purpose === 'tier' && meta.tier_tx) {
+    var sub = await db.prepare('SELECT email, tier, name FROM subscriptions WHERE tx_ref = ?').bind(meta.tier_tx).first().catch(function () { return null; });
+    if (sub) {
+      var membershipMap = { supporter: 'supporter', scholar: 'premium', patron: 'vip', founding: 'founding' };
+      var newTier = membershipMap[sub.tier] || 'free';
+      var tierUser = await db.prepare('SELECT id FROM users WHERE email = ?').bind(sub.email).first().catch(function () { return null; });
+      var tierNames = { supporter: 'Supporter', scholar: 'Scholar', patron: 'Patron', founding: 'Founding Partner' };
+      var displayName = tierNames[sub.tier] || 'Supporter';
+      var expiresAt = (sub.tier === 'founding' || sub.tier === 'supporter') ? "datetime('now', '+1 year')" : "datetime('now', '+1 month')";
+      if (tierUser && newTier !== 'free' && newTier !== 'supporter') {
+        await db.prepare('UPDATE users SET membership_tier = ?, membership_expires_at = ' + expiresAt + ' WHERE id = ?').bind(newTier, tierUser.id).run();
+      }
+      await db.prepare("UPDATE subscriptions SET status = 'active', flw_id = ? WHERE tx_ref = ?").bind(gateway_txid, meta.tier_tx).run();
+      try { await generateInvoice(env, 'tier', 'subscriptions', { name: sub.name, email: sub.email, phone: '', amount: amount, currency: row.currency || 'GHS', tx_ref: meta.tier_tx, items: [{ description: displayName + ' Tier', quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
+      await sendCryptoMail(env, sub.email, sub.name, 'Welcome to the ' + displayName + ' Tier — Studio Gabochie',
+        ['Your crypto payment is confirmed. Your <strong>' + displayName + '</strong> tier is now active. Thank you for supporting the mission.'],
+        { url: 'https://studio.gabochie.com/member/', label: 'Go to Membership' });
+    }
+    await markDonationRow(env, tx_ref, gateway_txid);
+    return { status: 'ok', purpose: purpose };
+  }
+  if (purpose === 'merch' && meta.order_tx) {
+    await db.prepare("UPDATE store_orders SET status = 'completed' WHERE tx_ref = ?").bind(meta.order_tx).run();
+    try {
+      var ord = await db.prepare('SELECT item_name, item_variant FROM store_orders WHERE tx_ref = ?').bind(meta.order_tx).first().catch(function () { return null; });
+      var slugMap = { 'School of Creativity T-Shirt': 'soc-tshirt', 'Nation Builder Tee': 'nation-builder-tee', 'Studio Logo Hoodie': 'studio-hoodie', 'Wisdom Collection Cap': 'wisdom-cap', 'Wisdom Cap': 'wisdom-cap' };
+      if (ord && ord.item_name && slugMap[ord.item_name] && ord.item_variant) {
+        await db.prepare('UPDATE inventory SET quantity = MAX(quantity - 1, 0) WHERE product_slug = ? AND size = ? AND quantity > 0').bind(slugMap[ord.item_name], ord.item_variant).run();
+      }
+    } catch (_e) {}
+    try { await generateInvoice(env, 'store', 'store_orders', { name: name, email: email, phone: row.donor_phone, amount: amount, currency: row.currency || 'GHS', tx_ref: meta.order_tx, items: [{ description: 'Store Purchase', quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
+    await sendCryptoMail(env, email, name, 'Purchase Confirmed — Studio Gabochie',
+      ['Your crypto payment of <strong>' + (row.currency || 'GHS') + ' ' + amount.toFixed(2) + '</strong> is confirmed.'],
+      { url: 'https://studio.gabochie.com/merch/?order=' + encodeURIComponent(meta.order_tx) + '&status=successful', label: 'View Your Order' });
+    await markDonationRow(env, tx_ref, gateway_txid);
+    return { status: 'ok', purpose: purpose };
+  }
+
+  // Default: plain donation (existing behavior).
+  await finalizeDonation(env, {
+    tx_ref: tx_ref, amount: amount, currency: row.currency || 'GHS',
+    donor_name: name, donor_email: email, donor_phone: row.donor_phone || '',
+    gateway: 'crypto', gateway_txid: gateway_txid
+  });
+  return { status: 'ok', purpose: 'donation' };
+}
+
+async function markDonationRow(env, tx_ref, gateway_txid) {
+  try {
+    await env.DB.prepare("UPDATE donations SET status = 'successful', provider = 'crypto', flw_id = ? WHERE tx_ref = ?").bind(gateway_txid || '', tx_ref).run();
+  } catch (_e) {}
+}
+
 // Mark a pending donation successful: update row, send receipt email, schedule impact followup.
 export async function finalizeDonation(env, opts) {
   const { tx_ref, amount, currency, donor_name, donor_email, donor_phone, gateway, gateway_txid } = opts;
