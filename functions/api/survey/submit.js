@@ -1,3 +1,5 @@
+import { mintSessionForEmail } from '../enroll/_session.js';
+
 var FLAGSHIP_SLUG = 'systems-thinking';
 
 function genToken() {
@@ -118,7 +120,13 @@ export async function onRequest(context) {
       } catch (_) {}
     }
 
-    return json({ status: 'ok', lead: hasEmail ? { email: email, isNewSubscriber: isNewSubscriber } : null, enrollment: enrollment, next: enrollment ? enrollment.dashboard_url : null });
+    // Mint a user session so one login works everywhere (dashboard + member tiers).
+    var sessionToken = '';
+    if (hasEmail) {
+      try { sessionToken = await mintSessionForEmail(db, email, name); } catch (_) {}
+    }
+
+    return json({ status: 'ok', lead: hasEmail ? { email: email, isNewSubscriber: isNewSubscriber } : null, enrollment: enrollment, next: enrollment ? enrollment.dashboard_url : null, session_token: sessionToken });
   } catch (e) {
     return json({ error: e.message }, 500);
   }

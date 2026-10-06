@@ -883,6 +883,9 @@ function handleLogin() {
     .then(function(d){
       if (d.status === 'ok' && d.enrollments && d.enrollments.length > 0) {
         try { localStorage.setItem('ga_student', JSON.stringify(d.student)); } catch(e){}
+        try {
+          if (d.token) document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+        } catch(_e){}
         var enrollments = d.enrollments;
         if (enrollments.length === 1) {
           window.location.href = '/dashboard/?token=' + encodeURIComponent(enrollments[0].access_token);
@@ -915,12 +918,18 @@ function emailOnlyLogin(email, btn, msg) {
   .then(function(r){ return r.json(); })
   .then(function(d){
     if (d.status === 'ok' && d.multiple && d.enrollments && d.enrollments.length > 1) {
+      try {
+        if (d.session_token) document.cookie = 'ga_session=' + d.session_token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+      } catch(_e){}
       var listHtml = '<p style="color:#8A9BB5;font-size:13px;margin-bottom:12px">You are enrolled in multiple courses. Choose one:</p>';
       d.enrollments.forEach(function(e) {
         listHtml += '<button class="login-btn" style="margin-bottom:8px" onclick="window.location.href=\'/dashboard/?token=' + encodeURIComponent(e.token) + '\'">' + e.program_title + ' <span style="opacity:.6;font-size:11px">(' + e.status + ')</span></button>';
       });
       document.getElementById('loginForm').innerHTML = listHtml;
     } else if (d.status === 'ok' && d.token) {
+      try {
+        if (d.session_token) document.cookie = 'ga_session=' + d.session_token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+      } catch(_e){}
       window.location.href = '/dashboard/?token=' + encodeURIComponent(d.token);
     } else {
       msg.className = 'login-msg error';

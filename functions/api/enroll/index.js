@@ -1,6 +1,7 @@
 import { checkRateLimit } from '../_rate-limit.js';
 import { queueEmail, enrollmentFollowup, daysFromNow } from '../email/_send.js';
 import { getToken, getSessionUser } from './_token.js';
+import { mintSessionForEmail } from './_session.js';
 
 function genToken() {
   var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -243,6 +244,10 @@ export async function onRequest(context) {
       } catch (_e) {}
     }
 
+    // Mint a user session so one login works everywhere (dashboard + member tiers).
+    var sessionToken = '';
+    try { sessionToken = await mintSessionForEmail(db, studentEmail, studentName); } catch (_e) {}
+
     return new Response(JSON.stringify({
       status: 'ok',
       enrollment: {
@@ -253,7 +258,8 @@ export async function onRequest(context) {
         student_email: studentEmail,
         access_token: token,
         access_level: enrollmentStatus === 'sample' ? 'sample' : 'full',
-        sample_content: program.sample_content
+        sample_content: program.sample_content,
+        session_token: sessionToken
       }
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (_err) {
