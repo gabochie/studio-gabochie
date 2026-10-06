@@ -497,6 +497,10 @@ export async function onRequest(context) {
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       `ALTER TABLE membership_plans ADD COLUMN description TEXT DEFAULT ''`,
+      `ALTER TABLE membership_plans ADD COLUMN price_ghs REAL DEFAULT 0`,
+      `ALTER TABLE membership_plans ADD COLUMN price_usd REAL DEFAULT 0`,
+      `ALTER TABLE membership_plans ADD COLUMN features TEXT DEFAULT '[]'`,
+      `ALTER TABLE membership_plans ADD COLUMN sort_order INTEGER DEFAULT 0`,
       `INSERT OR IGNORE INTO membership_plans (tier, name, description, price_ghs, price_usd, features, sort_order) VALUES
         ('free', 'Free', 'Basic access to public content', 0, 0, '["Browse courses","Read articles","Subscribe to newsletter"]', 0),
         ('premium', 'Premium', 'Full course access + exclusive content', 99, 6, '["All courses","Download materials","Premium articles","Priority support"]', 1),
