@@ -414,7 +414,7 @@ function startMonthlySubscription() {
         if (navigator.sendBeacon) {
           navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_success', event_data: data.tx_ref}));
         }
-        window.location.href = '/support/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&tier=supporter';
+        window.location.href = '/donate.html?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&amount=' + data.amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
       },
       onclose: function() {
         if (navigator.sendBeacon) {
