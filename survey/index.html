@@ -220,6 +220,9 @@ function submitSurvey(e) {
     body: JSON.stringify({ interests: selected, other_text: other, name: name, email: email, phone: phone })
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.status === 'ok') {
+      try {
+        if (d.session_token) document.cookie = 'ga_session=' + d.session_token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+      } catch (_e) {}
       document.getElementById('surveyForm').style.display = 'none';
       document.getElementById('thankYou').style.display = 'block';
       if (d.enrollment && d.enrollment.dashboard_url) {

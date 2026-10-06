@@ -1,3 +1,5 @@
+import { mintSessionForEmail } from './_session.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
   if (request.method !== 'POST') {
@@ -31,6 +33,9 @@ export async function onRequest(context) {
         status: 404, headers: { 'Content-Type': 'application/json' }
       });
     }
+    // Mint a user session so one login works everywhere (dashboard + member tiers).
+    var sessionToken = '';
+    try { sessionToken = await mintSessionForEmail(db, email, ''); } catch (_e) {}
     // If single enrollment, return its token directly
     if (enrollments.results.length === 1) {
       return new Response(JSON.stringify({
@@ -38,13 +43,15 @@ export async function onRequest(context) {
         token: enrollments.results[0].access_token,
         program_title: enrollments.results[0].program_title,
         program_slug: enrollments.results[0].program_slug,
-        enrollment_status: enrollments.results[0].status
+        enrollment_status: enrollments.results[0].status,
+        session_token: sessionToken
       }), { headers: { 'Content-Type': 'application/json' } });
     }
     // Multiple enrollments — return list
     return new Response(JSON.stringify({
       status: 'ok',
       multiple: true,
+      session_token: sessionToken,
       enrollments: enrollments.results.map(function(e) {
         return { token: e.access_token, program_title: e.program_title, program_slug: e.program_slug, status: e.status };
       })

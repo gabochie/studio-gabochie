@@ -345,6 +345,10 @@ document.getElementById('enrollForm').addEventListener('submit', function (e) {
   }).then(function (r) { return r.json(); }).then(function (d) {
     if (d.status === 'ok') {
       msg.className = 'msg ok';
+      try {
+        var _st = d.enrollment && d.enrollment.session_token;
+        if (_st) document.cookie = 'ga_session=' + _st + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
+      } catch (_e) {}
       msg.innerHTML = "<strong>You're in!</strong> Check your email for dashboard access. <a href='/dashboard/?token=" + (d.enrollment ? d.enrollment.access_token : '') + "'>Go to your dashboard &rarr;</a>";
       btn.style.display = 'none';
       if (typeof window.tagOnboard === 'function') tagOnboard(email, name, 'enrolled:' + COURSE_SLUG);
