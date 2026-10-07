@@ -1,8 +1,8 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -136,7 +136,7 @@ body{font-family:'Libre Baskerville',Georgia,serif}
     </div>
     <div class="price-card" id="priceCard">
       <div class="price-label">Full Access</div>
-      <div class="price" id="priceValue">GHÂ¢ 250</div>
+      <div class="price" id="priceValue">GH¢ 250</div>
       <div class="price-note" id="priceNote"></div>
       <div class="meta-row" id="priceMeta"></div>
       <button class="btn btn-gold btn-lg" onclick="openEnroll()"><i class="ti ti-bolt"></i> Enroll Now</button>
@@ -232,7 +232,7 @@ function findCourse(data){
   document.getElementById('heroDesc').textContent = c.description || '';
   document.getElementById('heroSample').textContent = c.sampleIncludes || 'Module 1 free - no card required';
   document.getElementById('priceNote').textContent = c.priceNote || '';
-  document.getElementById('priceValue').innerHTML = (c.price > 0 ? 'GHÂ¢ ' + c.price : 'Free') + (c.price > 0 ? ' <small>one-time</small>' : '');
+  document.getElementById('priceValue').innerHTML = (c.price > 0 ? 'GH¢ ' + c.price : 'Free') + (c.price > 0 ? ' <small>one-time</small>' : '');
   var meta = [];
   if (c.duration) meta.push('<span><i class="ti ti-clock"></i> ' + c.duration + '</span>');
   if (c.level) meta.push('<span><i class="ti ti-chart-line"></i> ' + c.level + '</span>');
