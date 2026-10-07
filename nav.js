@@ -5,6 +5,7 @@
     '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/courses/" class="nav-active-link">Courses</a>' +
+    '<button id="pwaInstallBtn" class="pwa-install" hidden>Install App</button>' +
     '<span id="navAuth" class="nav-auth"></span>' +
     '</div>' +
     '<button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>' +
@@ -154,6 +155,42 @@
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
     navigator.serviceWorker.register('/sw.js').catch(function () {});
   }
+
+  // PWA install prompt: show an in-app Install button only when the browser
+  // fires beforeinstallprompt and the app isn't already installed.
+  var deferredInstallPrompt = null;
+  function updateInstallBtn() {
+    var btn = document.getElementById('pwaInstallBtn');
+    if (!btn) return;
+    var installed = false;
+    try {
+      installed = window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+    } catch (_e) {}
+    btn.hidden = installed || !deferredInstallPrompt;
+  }
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    updateInstallBtn();
+  });
+  window.addEventListener('appinstalled', function () {
+    deferredInstallPrompt = null;
+    updateInstallBtn();
+  });
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('#pwaInstallBtn') : null;
+    if (!btn || !deferredInstallPrompt) return;
+    e.preventDefault();
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(function () {
+      deferredInstallPrompt = null;
+      updateInstallBtn();
+    }).catch(function () {
+      deferredInstallPrompt = null;
+      updateInstallBtn();
+    });
+  });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', registerServiceWorker);
   } else {

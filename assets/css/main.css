@@ -67,6 +67,15 @@ nav .container{display:flex;align-items:center;justify-content:space-between;max
 .nav-donate:hover{background:var(--gold-hover)!important;color:var(--bg-primary)!important}
 .nav-auth{display:inline-flex;align-items:center;gap:4px;margin-left:4px}
 .nav-auth a{white-space:nowrap}
+.pwa-install{padding:6px 14px;border-radius:999px;border:1px solid rgba(201,168,76,.5);background:rgba(201,168,76,.1);color:#C9A84C;font-family:var(--font-body);font-size:var(--text-xs);font-weight:600;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+.pwa-install:hover{background:#C9A84C;color:#0A1628}
+.pwa-install[hidden]{display:none}
+/* ── Notched devices (standalone PWA): respect safe areas, zero effect elsewhere ── */
+nav{padding-top:env(safe-area-inset-top, 0px);height:calc(64px + env(safe-area-inset-top, 0px))}
+footer{padding-bottom:calc(32px + env(safe-area-inset-bottom, 0px))}
+.currency-toggle{bottom:calc(20px + env(safe-area-inset-bottom, 0px))}
+@media(max-width:860px){.nav-links{top:calc(64px + env(safe-area-inset-top, 0px))}}
+@media all and (display-mode: standalone){.pwa-install{display:none}}
 .nav-auth-logout{color:#E8637A!important}
 .nav-auth-logout:hover{background:rgba(232,99,122,0.12)!important;color:#E8637A!important}
 .nav-auth-btn{padding:8px 18px!important;background:var(--gold)!important;color:var(--bg-primary)!important;border-radius:var(--radius-sm)!important;font-weight:var(--weight-semibold)!important;font-size:var(--text-xs)!important;font-family:var(--font-body)!important}
