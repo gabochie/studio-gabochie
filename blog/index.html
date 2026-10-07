@@ -63,7 +63,11 @@
 </div>
 <div id="footer-placeholder"></div>
 <script>
-var STATIC_POSTS = [];
+var STATIC_POSTS = [
+  { slug: 'what-is-creativity-coaching', title: 'What Is Creativity Coaching? A Practical Definition', excerpt: 'Creativity coaching is structured guidance that turns imagination into finished work. Learn what it is, who it serves, and the 4-part method behind it.', tags: '["creativity-coaching", "beginners"]', published_at: '2026-09-20' },
+  { slug: 'systems-thinking-for-creatives', title: 'Systems Thinking for Creatives: See the Whole, Not the Parts', excerpt: 'Creative work fails at the root, not the surface. Learn how systems thinking helps creatives find leverage points and build work that lasts.', tags: '["systems-thinking", "creativity-coaching"]', published_at: '2026-09-27' },
+  { slug: 'creative-confidence', title: 'Creative Confidence: How to Ship Work That Scares You', excerpt: "Confidence doesn't come before the work — it comes from it. A practical 4-step method to ship creative work even when you feel like a fraud.", tags: '["creative-confidence", "creativity-coaching"]', published_at: '2026-10-04' }
+];
 function fmtDate(iso) {
   try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); }
   catch (_e) { return ''; }

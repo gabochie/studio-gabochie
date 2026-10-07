@@ -214,6 +214,17 @@ body{font-family:'Libre Baskerville',Georgia,serif}
   </div>
 </section>
 
+<!-- ═══ ARTICLES ═══ -->
+<section class="section learn" id="articles-teaser">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center"><i class="ti ti-article"></i> Articles · Think Deeper</div>
+    <h2 class="section-heading">Ideas That <span>Build Builders.</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Practical essays on creativity coaching — what it is, how systems thinking sharpens it, and how to ship work that scares you.</p>
+    <div class="learn-grid" id="homeArticles"></div>
+    <div style="margin-top:28px"><a href="/blog/" class="btn btn-outline btn-lg">All Articles</a></div>
+  </div>
+</section>
+
 <!-- ═══ CTA BAND ═══ -->
 <section class="cta-band">
   <h2>Your Vision Is a <span>Built Thing.</span></h2>
@@ -266,6 +277,17 @@ function animateCounters(){return}
   if (modGrid && course.modules) {
     modGrid.innerHTML = course.modules.map(function(m, i){
       return '<div class="learn-item"><div class="icon">' + (i + 1) + '</div><div><h3>' + m.title + '</h3><p>' + m.summary + '</p></div></div>';
+    }).join('');
+  }
+  var homeArticles = [
+    { slug: 'what-is-creativity-coaching', title: 'What Is Creativity Coaching?', desc: 'Structured guidance that turns imagination into finished work.' },
+    { slug: 'systems-thinking-for-creatives', title: 'Systems Thinking for Creatives', desc: 'Fix causes, not symptoms. Find your leverage point.' },
+    { slug: 'creative-confidence', title: 'Creative Confidence', desc: 'Ship work that scares you — confidence follows evidence.' }
+  ];
+  var homeGrid = document.getElementById('homeArticles');
+  if (homeGrid) {
+    homeGrid.innerHTML = homeArticles.map(function(a) {
+      return '<a href="/blog/' + a.slug + '/" class="learn-item" style="text-decoration:none"><div class="icon"><i class="ti ti-article"></i></div><div><h3>' + a.title + '</h3><p>' + a.desc + '</p></div></a>';
     }).join('');
   }
   var schools = (data.homepage && data.homepage.schools) || [];
