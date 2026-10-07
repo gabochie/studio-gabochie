@@ -2,10 +2,10 @@
   "name": "Studio Gabochie",
   "short_name": "Gabochie",
   "description": "School of Creativity, Love & Wisdom — practical, self-paced courses for vision builders. Start free with Module 1.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#0A1628",
   "theme_color": "#0A1628",
   "icons": [
@@ -30,5 +30,28 @@
   ],
   "categories": ["education", "productivity"],
   "lang": "en",
-  "dir": "ltr"
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "All Courses",
+      "short_name": "Courses",
+      "description": "Browse the course catalog",
+      "url": "/courses/",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Learn",
+      "description": "Continue learning",
+      "url": "/dashboard/",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Guitar Method",
+      "short_name": "Guitar",
+      "description": "Learn guitar online",
+      "url": "/guitar/",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
