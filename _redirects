@@ -41,8 +41,7 @@
 /art/* / 301
 /music / 301
 /music/* / 301
-/press / 301
-/press/* / 301
+# /press/ is live (press kit + media inquiries) — do NOT redirect
 /content / 301
 /content/* / 301
 /manifesto / 301

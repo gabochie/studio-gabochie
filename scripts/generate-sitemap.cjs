@@ -39,6 +39,7 @@ const PAGES = [
   ['/blog/what-is-creativity-coaching/', 0.8, 'monthly'],
   ['/blog/systems-thinking-for-creatives/', 0.8, 'monthly'],
   ['/blog/creative-confidence/', 0.8, 'monthly'],
+  ['/press/', 0.6, 'monthly'],
   ['/dashboard/', 0.6, 'monthly'],
   ['/certificate/', 0.5, 'monthly'],
   ['/login/', 0.5, 'monthly'],
@@ -54,7 +55,7 @@ const PAGES = [
 const VALID_PREFIX = new Set([
   'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
   'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
-  'membership', 'merch', 'services', 'contact'
+  'membership', 'merch', 'services', 'contact', 'press'
 ]);
 
 function buildXml() {
