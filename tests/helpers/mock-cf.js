@@ -180,6 +180,24 @@ export function mockDb(tables) {
             });
             return { success: true, meta: { changes: changed } };
           }
+          // DELETE FROM table WHERE col = ?
+          var delRe = /DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+([\s\S]+))?$/i;
+          var dm = sql.match(delRe);
+          if (dm) {
+            var dtbl = dm[1];
+            var dwhere = dm[2] || '';
+            var dconds = dwhere ? db._parseWhere(chain._bound) : [];
+            var before = (db._tables[dtbl] || []).length;
+            var dStart = chain._bound.length - dconds.length;
+            db._tables[dtbl] = (db._tables[dtbl] || []).filter(function (r) {
+              return !dconds.every(function (cond, ci) {
+                var val = cond.val === '?' ? chain._bound[dStart + ci] : cond.val;
+                if (val === undefined) return false;
+                return String(r[cond.col]) === String(val);
+              });
+            });
+            return { success: true, meta: { changes: before - db._tables[dtbl].length } };
+          }
           return { success: true, meta: { changes: 1 } };
         },
       };

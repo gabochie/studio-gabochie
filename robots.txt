@@ -7,26 +7,41 @@ Disallow: /api/
 Disallow: /member/
 Disallow: /coverage/
 
-# Block AI training crawlers that ignore robots.txt (good-faith request)
+# Block AI training crawlers (good-faith request) — except the public
+# articles and llms.txt, which we WANT answer engines and LLMs to cite.
 User-agent: GPTBot
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: ChatGPT-User
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: Claude-Web
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: Google-Extended
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: CCBot
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: anthropic-ai
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 User-agent: PerplexityBot
+Allow: /blog/
+Allow: /llms.txt
 Disallow: /
 
 # Sitemaps
