@@ -34,6 +34,7 @@
 /store/ /merch/ 301
 # /services/ is live (professional services + inquiry forms) — do NOT redirect
 # /careers/ is live (job board + Ghana career guides) — do NOT redirect
+# /nationbuilding/ is live (Ghana civic movement) — do NOT redirect
 /tutoring / 301
 /tutoring/* / 301
 /art / 301
@@ -46,8 +47,6 @@
 /manifesto / 301
 /manifesto/* / 301
 # /partners/ is live (B2B partnerships + sponsorships) — do NOT redirect
-/nationbuilding / 301
-/nationbuilding/* / 301
 # /survey/ is the live quiz front door (lead -> free Module 1 -> GH¢250) — do NOT redirect
 # ─── Newsletter → subdomain (still live) — MUST precede /news* ───
 /newsletter* https://news.gabochie.com/ 301

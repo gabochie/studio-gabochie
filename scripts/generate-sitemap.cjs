@@ -43,6 +43,7 @@ const PAGES = [
   ['/partners/', 0.6, 'monthly'],
   ['/careers/', 0.7, 'weekly'],
   ['/careers/resources/', 0.6, 'monthly'],
+  ['/nationbuilding/', 0.7, 'monthly'],
   ['/dashboard/', 0.6, 'monthly'],
   ['/certificate/', 0.5, 'monthly'],
   ['/login/', 0.5, 'monthly'],
@@ -58,7 +59,8 @@ const PAGES = [
 const VALID_PREFIX = new Set([
   'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
   'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
-  'membership', 'merch', 'services', 'contact', 'press', 'partners', 'careers'
+  'membership', 'merch', 'services', 'contact', 'press', 'partners', 'careers',
+  'nationbuilding'
 ]);
 
 function buildXml() {
