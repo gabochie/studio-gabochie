@@ -538,6 +538,23 @@ export async function onRequest(context) {
       `ALTER TABLE store_orders ADD COLUMN tracking_info TEXT DEFAULT ''`,
       `ALTER TABLE unified_tiers ADD COLUMN flw_plan_id TEXT DEFAULT ''`,
       `UPDATE settings SET value = '99' WHERE key = 'guitar_price'`,
+      `CREATE TABLE IF NOT EXISTS posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        excerpt TEXT DEFAULT '',
+        html TEXT DEFAULT '',
+        cover_image TEXT DEFAULT '',
+        tags TEXT DEFAULT '[]',
+        faqs TEXT DEFAULT '[]',
+        status TEXT NOT NULL DEFAULT 'draft',
+        author TEXT DEFAULT 'Gideon Abochie',
+        published_at TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug)`,
+      `CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status)`,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

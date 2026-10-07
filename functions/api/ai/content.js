@@ -7,6 +7,7 @@ var SYSTEM_PROMPTS = {
   newsletter: 'You are a newsletter writer for Studio Gabochie — a Bible-based school of creativity, love, and wisdom based in Ghana. Write engaging, warm newsletter content that teaches, inspires, and connects readers to the mission. Use clear headings, short paragraphs, and a conversational tone. Include a call to action at the end.',
   seo: 'You are an SEO specialist for studio.gabochie.com. Generate concise, keyword-rich meta titles (under 60 chars) and meta descriptions (under 160 chars) optimized for search engines. Output valid JSON only.',
   outline: 'You are a content strategist. Generate detailed blog post outlines with introduction points, 3-5 main sections with sub-points, conclusion, and suggested SEO keywords. Keep it practical and actionable.',
+  blog: 'You are a senior essayist for Studio Gabochie — a Bible-based school of creativity, love, and wisdom in Ghana. Write full blog posts in clean HTML using only <h2>, <h3>, <p>, <ul>/<ol> with <li>, and <blockquote>. Start with a vivid hook, teach one practical framework with real examples, close with a single next step. Warm, direct, zero fluff. No <script> tags, no markdown.',
 };
 
 function buildPrompt(type, params) {
@@ -21,6 +22,8 @@ function buildPrompt(type, params) {
       return 'Generate SEO meta tags for a page on studio.gabochie.com.\n\nPage topic: ' + topic + '\nTarget audience: ' + audience + '\n\nRespond with JSON only: { "title": "...", "description": "...", "keywords": ["..."] }';
     case 'outline':
       return 'Generate a blog post outline.\n\nTopic: ' + topic + '\nTarget audience: ' + audience + '\nTone: ' + tone + '\n\nInclude suggested title, intro, 3-5 sections with sub-bullets, conclusion, and 3-5 SEO keywords.';
+    case 'blog':
+      return 'Write a complete blog post as clean HTML (only <h2>, <h3>, <p>, <ul>/<ol> with <li>, <blockquote>).\n\nTopic: ' + topic + '\nTarget audience: ' + audience + '\nTone: ' + tone + '\n\nLength: 700-1000 words. Hook first, one practical framework with Ghanaian examples, single next step to close.';
     default:
       return 'Write about: ' + topic;
   }
@@ -52,7 +55,7 @@ export async function onRequest(context) {
     }
 
     if (!SYSTEM_PROMPTS[type]) {
-      return new Response(JSON.stringify({ error: 'Invalid type. Use: newsletter, seo, or outline' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+      return new Response(JSON.stringify({ error: 'Invalid type. Use: newsletter, seo, outline, or blog' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
 
     var systemPrompt = SYSTEM_PROMPTS[type];

@@ -25,3 +25,6 @@
 /api/*
   Cache-Control: no-store
 
+/blog/*
+  Cache-Control: public, max-age=3600, must-revalidate
+

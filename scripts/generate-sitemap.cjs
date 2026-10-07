@@ -20,6 +20,22 @@ const PAGES = [
   ['/courses/sketching-vision-builders/', 0.8, 'weekly'],
   ['/courses/systems-thinking-genesis/', 0.8, 'weekly'],
   ['/start/', 0.8, 'monthly'],
+  ['/survey/', 0.7, 'monthly'],
+  ['/books/', 0.8, 'monthly'],
+  ['/donate/', 0.7, 'monthly'],
+  ['/membership/', 0.8, 'monthly'],
+  ['/merch/', 0.7, 'weekly'],
+  ['/services/', 0.7, 'monthly'],
+  ['/services/architectural-design/', 0.6, 'monthly'],
+  ['/services/systems-thinking/', 0.6, 'monthly'],
+  ['/services/curriculum-design/', 0.6, 'monthly'],
+  ['/services/speaking/', 0.6, 'monthly'],
+  ['/services/writing-editorial/', 0.6, 'monthly'],
+  ['/services/mentorship-coaching/', 0.6, 'monthly'],
+  ['/services/brand-creative/', 0.6, 'monthly'],
+  ['/services/digital-skills/', 0.6, 'monthly'],
+  ['/contact/', 0.6, 'yearly'],
+  ['/blog/', 0.8, 'weekly'],
   ['/dashboard/', 0.6, 'monthly'],
   ['/certificate/', 0.5, 'monthly'],
   ['/login/', 0.5, 'monthly'],
@@ -34,7 +50,8 @@ const PAGES = [
 
 const VALID_PREFIX = new Set([
   'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
-  'register', 'start', 'unsubscribe'
+  'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
+  'membership', 'merch', 'services', 'contact'
 ]);
 
 function buildXml() {

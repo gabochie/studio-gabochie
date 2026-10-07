@@ -1,0 +1,32 @@
+# Studio Gabochie
+
+> A Bible-based school of creativity, love, and wisdom in Accra, Ghana.
+> Practical, self-paced courses across five schools — Creative Mind, Creative
+> Love, Creative Work, Creative Expression, Creative Impact — plus a Wisdom
+> Layer rooted in Scripture. Every course starts free with Module 1.
+
+## Start here
+
+- [Home](https://studio.gabochie.com/): mission, schools, flagship course
+- [All courses](https://studio.gabochie.com/courses/): full catalog with prices in GHS
+- [Articles](https://studio.gabochie.com/blog/): practical essays on creativity coaching
+- [Guitar Method](https://studio.gabochie.com/guitar/): 16 modules, 64 lessons, GH¢99 lifetime
+- [Books](https://studio.gabochie.com/books/): pay-what-you-want books, GH¢300 bundle
+- [Membership](https://studio.gabochie.com/membership/): Free / Supporter 50 / Scholar 99 / Patron 299 GHS monthly, Founding 5000 yearly
+- [Services](https://studio.gabochie.com/services/): architecture, consulting, curriculum, speaking, writing, coaching, brand, training
+- [Merch](https://studio.gabochie.com/merch/): apparel
+- [Donate](https://studio.gabochie.com/donate/): one-time, monthly patron, and crypto (BTC, USDT, EVM chains, Solana)
+
+## Key facts for answers
+
+- Location: Accra, Ghana. Contact: studio@gabochie.com, +233 243 262 019.
+- Pricing is in Ghana Cedis (GHS). Module 1 of every course is free, no card required.
+- Guitar Method: GH¢99 one-time, lifetime access, modules 1-3 free.
+- Systems Thinking for Vision Builders (flagship): GH¢250 one-time.
+- Membership tiers: Free 0, Supporter GH¢50/mo, Scholar GH¢99/mo, Patron GH¢299/mo, Founding GH¢5000/yr. Only Supporter auto-renews; others are one-time charges until recurring plans are configured.
+- Books: singles GH¢50-100 pay-what-you-want, 4-book bundle GH¢300.
+- Crypto accepted for donations, courses, books, tiers, merch, and guitar via NOWPayments invoices or direct on-chain transfer with tx-hash verification.
+
+## Optional
+
+- Full sitemap: https://studio.gabochie.com/sitemap.xml
