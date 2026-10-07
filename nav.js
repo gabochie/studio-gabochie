@@ -2,7 +2,7 @@
   var navHtml =
     '<nav>' +
     '<div class="container">' +
-    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></a>' +
+    '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/courses/" class="nav-active-link">Courses</a>' +
     '<button id="pwaInstallBtn" class="pwa-install" hidden>Install App</button>' +
@@ -24,7 +24,7 @@
     '<footer>' +
     '<div class="container">' +
     '<div class="footer-brand">' +
-    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">School of Creativity, Love &amp; Wisdom</span></span></div>' +
+    '<div class="brand-footer"><img src="/assets/images/logo.png" alt="Studio Gabochie"><span class="brand-footer-wrapper"><span class="brand-footer-title">Studio Gabochie</span><span class="brand-tagline">Creativity, Love &amp; Wisdom</span></span></div>' +
     '<p class="footer-about">Practical, self-paced courses that start free — imagine with creativity, create with love, live with wisdom.</p>' +
     '<a href="/register/" class="footer-cta">Start Free</a>' +
     '<div class="footer-social">' +

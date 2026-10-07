@@ -34,7 +34,7 @@ h1 span{color:#C9A84C}
 <div class="wrap">
   <div class="logo">GA</div>
   <h1>Coming<br><span>Soon</span></h1>
-  <div class="tagline">School of Creativity, Love &amp; Wisdom</div>
+  <div class="tagline">Creativity, Love &amp; Wisdom</div>
   <p class="desc">We're building something beautiful — a space where <strong>creativity</strong>, <strong>love</strong>, and <strong>wisdom</strong> come together. Leave your email and we'll let you know the moment we launch.</p>
   <div class="notify">
     <input type="email" id="notifyEmail" placeholder="Your email address" required>
