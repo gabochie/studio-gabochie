@@ -339,9 +339,14 @@ document.getElementById('mediaForm').addEventListener('submit', async function(e
   btn.textContent = 'Sending...';
   msg.className = 'msg';
   try {
-    const r = await fetch('/api/contact', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    var fd = new FormData();
+    fd.append('name', data.name);
+    fd.append('email', data.email);
+    fd.append('_subject', 'Media inquiry: ' + data.mediaType + ' — ' + data.outlet);
+    fd.append('message', data.message + '\n\n— Outlet: ' + data.outlet + ' (' + data.mediaType + ')');
+    const r = await fetch('/api/contact', {method:'POST',body:fd});
     const j = await r.json();
-    if (j.ok) {
+    if (j.status === 'ok') {
       msg.className = 'msg msg-success';
       msg.textContent = 'Thank you! I will respond within 48 hours.';
       this.reset();
