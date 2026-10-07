@@ -33,8 +33,7 @@
 /store /merch/ 301
 /store/ /merch/ 301
 # /services/ is live (professional services + inquiry forms) — do NOT redirect
-/careers / 301
-/careers/* / 301
+# /careers/ is live (job board + Ghana career guides) — do NOT redirect
 /tutoring / 301
 /tutoring/* / 301
 /art / 301
