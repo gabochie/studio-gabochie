@@ -48,6 +48,7 @@
     '<h4>Connect</h4>' +
     '<a href="/contact/">Contact Form</a>' +
     '<a href="/press/">For Media</a>' +
+    '<a href="/partners/">Partner With Us</a>' +
     '<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>' +
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
     '<div class="footer-legal"><a href="/legal/privacy.html">Privacy</a><span>·</span><a href="/legal/terms.html">Terms</a><span>·</span><a href="/legal/refund.html">Refunds</a></div>' +
