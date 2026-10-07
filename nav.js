@@ -33,6 +33,7 @@
     '<a href="/guitar/">Guitar Method</a>' +
     '<a href="/blog/">Articles</a>' +
     '<a href="/careers/">Careers</a>' +
+    '<a href="/nationbuilding/">Nation Building</a>' +
     '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
     '<a href="/dashboard/">Dashboard</a>' +
     '<a href="/certificate/">Certificates</a>' +
