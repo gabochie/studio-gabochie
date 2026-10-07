@@ -27,6 +27,14 @@ export async function onRequest(context) {
   ).bind(slug).first().catch(function () { return null; });
 
   if (!post) {
+    // Function routes run before static serving: fall back to a pre-rendered
+    // cornerstone file (e.g. /blog/what-is-creativity-coaching/) if present.
+    try {
+      if (env.ASSETS) {
+        var staticRes = await env.ASSETS.fetch(new URL('/blog/' + slug + '/', request.url));
+        if (staticRes && staticRes.status === 200) return staticRes;
+      }
+    } catch (_e) {}
     return new Response(
       '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Article Not Found — Studio Gabochie</title><style>body{font-family:Georgia,serif;background:#0A1628;color:#CBD5E1;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;text-align:center}h1{color:#fff}a{color:#C9A84C}</style></head><body><div><h1>Article Not Found</h1><p>This story is still being written.</p><a href="/blog/">&larr; All articles</a></div></body></html>',
       { status: 404, headers: { 'Content-Type': 'text/html;charset=utf-8' } }
