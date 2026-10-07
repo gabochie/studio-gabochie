@@ -31,6 +31,7 @@
     '<h4>Learn</h4>' +
     '<a href="/courses/">All Courses</a>' +
     '<a href="/guitar/">Guitar Method</a>' +
+    '<a href="/blog/">Articles</a>' +
     '<a href="/courses/#school-wisdom">Wisdom Layer</a>' +
     '<a href="/dashboard/">Dashboard</a>' +
     '<a href="/certificate/">Certificates</a>' +
