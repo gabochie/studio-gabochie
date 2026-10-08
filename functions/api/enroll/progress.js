@@ -158,35 +158,35 @@ export async function onRequest(context) {
       var doneMods = await db.prepare(
         'SELECT COUNT(*) AS c FROM module_completions WHERE enrollment_id = ?'
       ).bind(enrollment.id).first();
-      total = totalMods.c;
-      done = doneMods.c;
+      var totalCount = (totalMods && totalMods.c) || 0;
+      var doneCount = (doneMods && doneMods.c) || 0;
 
       var newAchievements = [];
 
       // Check first_step
-      if (done >= 1) {
+      if (doneCount >= 1) {
         await tryAward(db, enrollment, 'first_step', newAchievements);
       }
       // Check halfway
-      if (done >= Math.ceil(total / 2)) {
+      if (doneCount >= Math.ceil(totalCount / 2)) {
         await tryAward(db, enrollment, 'halfway', newAchievements);
       }
       // Check scholar
-      if (done >= total) {
+      if (doneCount >= totalCount) {
         await tryAward(db, enrollment, 'scholar', newAchievements);
       }
       // Check on_fire (2 modules on same day)
       var todayMods = await db.prepare(
         "SELECT COUNT(*) AS c FROM module_completions WHERE enrollment_id = ? AND date(completed_at) = date('now')"
       ).bind(enrollment.id).first();
-      if (todayMods.c >= 2) {
+      if (todayMods && todayMods.c >= 2) {
         await tryAward(db, enrollment, 'on_fire', newAchievements);
       }
       // Check perfect_week (5 different days in same ISO week)
       var weekDays = await db.prepare(
         "SELECT COUNT(DISTINCT date(completed_at)) AS c FROM module_completions WHERE enrollment_id = ? AND completed_at >= date('now', 'weekday 1', '-7 days') AND completed_at < date('now', 'weekday 1', '+0 days')"
       ).bind(enrollment.id).first();
-      if (weekDays.c >= 5) {
+      if (weekDays && weekDays.c >= 5) {
         await tryAward(db, enrollment, 'perfect_week', newAchievements);
       }
 
@@ -194,6 +194,7 @@ export async function onRequest(context) {
         status: 'ok',
         module_slug: moduleSlug,
         completed: true,
+        xp_earned: 100,
         xp: newXp,
         level: newLevel,
         streak: newStreak,
@@ -207,6 +208,7 @@ export async function onRequest(context) {
       module_slug: moduleSlug,
       completed: true,
       already_done: true,
+      xp_earned: 0,
       xp: enrollment.xp || 0,
       level: enrollment.xp_level || 1,
       streak: enrollment.streak || 0,

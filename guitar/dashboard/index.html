@@ -575,8 +575,14 @@ async function renderDashboard(user) {
         const modRes = await fetch('/api/guitar/modules');
         if (modRes.ok) {
           const modJson = await modRes.json();
-          buildCalendar(modJson.modules || []);
-          if (modJson.modules) buildModuleNav(modJson.modules);
+          // /api/guitar/modules returns grouped tiers; flatten to module entries
+          var flatMods = [];
+          (modJson.modules || []).forEach(function(g) {
+            if (g && Array.isArray(g.modules)) flatMods = flatMods.concat(g.modules);
+            else if (g && g.title) flatMods.push(g);
+          });
+          buildCalendar(flatMods);
+          if (flatMods.length) buildModuleNav(flatMods);
         }
       } catch(e) {}
     }

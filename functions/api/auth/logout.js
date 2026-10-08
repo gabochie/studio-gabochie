@@ -10,8 +10,16 @@ export async function onRequest(context) {
     });
   }
   try {
-    var body = await request.json();
-    var token = body.token || '';
+    var token = '';
+    var auth = request.headers.get('Authorization') || '';
+    var m = auth.match(/^Bearer\s+(.+)$/i);
+    if (m) token = m[1].trim();
+    if (!token) {
+      try {
+        var body = await request.json();
+        token = (body && body.token) || '';
+      } catch (_e) {}
+    }
     if (token && env.DB) {
       await env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run();
     }

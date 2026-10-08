@@ -14,11 +14,13 @@ export async function onRequest(context) {
       const url = new URL(request.url);
       const source = url.searchParams.get('source') || '';
       const status = url.searchParams.get('status') || '';
+      const phase = url.searchParams.get('phase') || '';
       let sql = "SELECT * FROM tasks";
       const conditions = [];
       const params = [];
       if (source) { conditions.push("source = ?"); params.push(source); }
       if (status) { conditions.push("status = ?"); params.push(status); }
+      if (phase !== '') { conditions.push("phase = ?"); params.push(parseInt(phase) || 0); }
       if (conditions.length) sql += " WHERE " + conditions.join(" AND ");
       sql += " ORDER BY phase ASC, priority DESC, created_at DESC";
       const { results } = await env.DB.prepare(sql).bind(...params).all();

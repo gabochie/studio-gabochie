@@ -9,22 +9,32 @@ export async function onRequest(context) {
   try {
     const ct = request.headers.get('Content-Type') || '';
     let event_type = '', event_data = '', page = '', email = '';
+    var parsedJson = null;
     if (ct.includes('application/json')) {
       const raw = await request.text();
-      let body;
-      try { body = JSON.parse(raw); } catch (_e) {
+      try { parsedJson = JSON.parse(raw); } catch (_e) {
         return new Response(JSON.stringify({ status:'error', message:'Invalid JSON body' }), { status:400, headers:{'Content-Type':'application/json'} });
       }
-      event_type = body.event_type || '';
-      event_data = typeof body.event_data === 'object' ? JSON.stringify(body.event_data) : String(body.event_data || '');
-      page = body.page || '';
-      email = body.email || '';
     } else {
-      const fd = await request.formData();
-      event_type = fd.get('event_type') || '';
-      event_data = fd.get('event_data') || '';
-      page = fd.get('page') || '';
-      email = fd.get('email') || '';
+      // sendBeacon posts text/plain: accept a JSON body regardless of content-type
+      var formCopy = request.clone();
+      try {
+        const rawText = await request.text();
+        if (rawText.trim().startsWith('{')) parsedJson = JSON.parse(rawText);
+      } catch (_e) {}
+      if (!parsedJson) {
+        const fd = await formCopy.formData();
+        event_type = fd.get('event_type') || '';
+        event_data = fd.get('event_data') || '';
+        page = fd.get('page') || '';
+        email = fd.get('email') || '';
+      }
+    }
+    if (parsedJson) {
+      event_type = parsedJson.event_type || '';
+      event_data = typeof parsedJson.event_data === 'object' ? JSON.stringify(parsedJson.event_data) : String(parsedJson.event_data || '');
+      page = parsedJson.page || '';
+      email = parsedJson.email || '';
     }
     if (!event_type) {
       return new Response(JSON.stringify({ error: 'event_type required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });

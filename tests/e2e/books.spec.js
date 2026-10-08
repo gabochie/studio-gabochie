@@ -3,14 +3,14 @@ import { test, expect } from '@playwright/test';
 
 var mockCourses = {
   status: 'ok',
-  items: [
-    { id: 1, title: 'Systems Thinking for Vision Builders', slug: 'systems-thinking', tagline: 'Understand how things really work - then change them.', description: 'A practical, self-paced course for vision builders.', price: 250, is_active: 1, duration: '10 hrs', level: 'Beginner-friendly' },
+  programs: [
+    { id: 1, title: 'Systems Thinking for Vision Builders', slug: 'systems-thinking', tagline: 'Understand how things really work - then change them.', description: 'A practical, self-paced course for vision builders.', price: 250, status: 'active', duration: '10 hrs' },
   ],
 };
 
 test.describe('Courses catalog page', function () {
   test.beforeEach(async function ({ page }) {
-    await page.route('**/api/courses', async function (route) {
+    await page.route('**/api/programs', async function (route) {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

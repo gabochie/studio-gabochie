@@ -34,7 +34,7 @@ export async function onRequest(context) {
       });
     }
     var session = await db.prepare(
-      'SELECT s.user_id, s.expires_at, u.id, u.name, u.email, u.email_verified, u.created_at FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ?'
+      'SELECT s.user_id, s.expires_at, u.id, u.name, u.email, u.email_verified, u.created_at, u.membership_tier FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ?'
     ).bind(token).first();
     if (!session) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid session' }), {
@@ -50,7 +50,7 @@ export async function onRequest(context) {
     }
     return new Response(JSON.stringify({
       status: 'ok',
-      user: { id: session.user_id, name: session.name, email: session.email, email_verified: session.email_verified, created_at: session.created_at }
+      user: { id: session.user_id, name: session.name, email: session.email, email_verified: session.email_verified, created_at: session.created_at, membership_tier: session.membership_tier || 'free' }
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {

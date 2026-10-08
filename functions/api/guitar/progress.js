@@ -21,7 +21,35 @@ export async function onRequest(context) {
     const {results: recentSessions} = await db.prepare(
       'SELECT * FROM guitar_practice_sessions WHERE user_id = ? ORDER BY created_at DESC LIMIT 10'
     ).bind(user.id).all();
-    return json({progress, stats, badges, allBadges, recentSessions});
+    // Flat module list with lesson titles + completion flags for the dashboard.
+    // Falls back gracefully when the guitar tables are not seeded yet.
+    let modules = [];
+    let current_module = 1;
+    try {
+      const { results: mods } = await db.prepare(
+        'SELECT id, tier, title, lesson_count FROM guitar_modules ORDER BY sort_order'
+      ).bind().all();
+      const { results: lessons } = await db.prepare(
+        'SELECT id, module_id, title FROM guitar_lessons ORDER BY module_id, sort_order'
+      ).bind().all();
+      const doneIds = {};
+      (progress || []).forEach(function (p) { if (p.completed) doneIds[p.lesson_id] = true; });
+      modules = (mods || []).map(function (m) {
+        const mls = (lessons || []).filter(function (l) { return l.module_id === m.id; });
+        return {
+          id: m.id, tier: m.tier, title: m.title,
+          lesson_count: m.lesson_count || mls.length || 4,
+          lessons: mls.map(function (l) { return { id: l.id, title: l.title }; }),
+          progress: mls.map(function (l) { return { completed: !!doneIds[l.id] }; })
+        };
+      });
+      const firstOpen = modules.find(function (m) {
+        return (m.progress || []).some(function (p) { return !p.completed; });
+      });
+      if (firstOpen) current_module = firstOpen.id;
+      else if (modules.length) current_module = modules[0].id;
+    } catch (_e) {}
+    return json({progress, stats, badges, allBadges, recentSessions, modules, current_module});
   }
 
   if (url.pathname === '/api/guitar/progress' && req.method === 'POST') {

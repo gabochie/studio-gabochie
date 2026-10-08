@@ -290,6 +290,7 @@ function loadDashboard() {
 
       var e = data.enrollment;
       document.getElementById('dashboardView').style.display = 'block';
+      window._studentEmail = e.student_email || '';
       document.getElementById('studentInfo').textContent = 'Welcome, ' + e.student_name + ' (' + e.student_email + ')';
 
       // Build program tabs
@@ -573,10 +574,17 @@ function handleChangeCode() {
   if (next.length < 4) { msg.style.color = '#E8637A'; msg.textContent = 'New code must be at least 4 characters.'; return; }
   btn.disabled = true;
   btn.textContent = 'Updating...';
+  var studentEmail = window._studentEmail || '';
+  if (!studentEmail) {
+    var infoText = document.getElementById('studentInfo').textContent || '';
+    var infoMatch = infoText.match(/\(([^)]+)\)/);
+    if (infoMatch) studentEmail = infoMatch[1];
+  }
+  if (!studentEmail) { msg.style.color = '#E8637A'; msg.textContent = 'Session expired. Please reload and log in again.'; return; }
   fetch('/api/auth/change-code', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: document.getElementById('studentInfo').textContent.match(/\(([^)]+)\)/)[1], current_code: curr, new_code: next })
+    body: JSON.stringify({ email: studentEmail, current_code: curr, new_code: next })
   }).then(function(r){return r.json()}).then(function(d){
     btn.disabled = false;
     btn.textContent = 'Update Access Code';

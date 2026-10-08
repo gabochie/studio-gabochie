@@ -376,7 +376,7 @@ export async function onRequest(context) {
         var invItemName = orderRec ? orderRec.item_name : storeItemName;
         if (invItemType === 'merch' && invVariant) {
           var slugMap = { 'School of Creativity T-Shirt': 'soc-tshirt', 'Nation Builder Tee': 'nation-builder-tee', 'Studio Logo Hoodie': 'studio-hoodie', 'Wisdom Collection Cap': 'wisdom-cap' };
-          var invSlug = slugMap[invItemName] || '';
+          var invSlug = (orderRec && orderRec.product_slug) || slugMap[invItemName] || '';
           if (invSlug) {
             await db.prepare("UPDATE inventory SET quantity = MAX(quantity - 1, 0), updated_at = datetime('now') WHERE product_slug = ? AND size = ? AND quantity > 0").bind(invSlug, invVariant).run();
           }

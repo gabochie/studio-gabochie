@@ -134,6 +134,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_tx_ref ON store_orders(tx_ref)`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(status)`,
+      `ALTER TABLE store_orders ADD COLUMN product_slug TEXT DEFAULT ''`,
       `CREATE TABLE IF NOT EXISTS inventory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_slug TEXT NOT NULL,
