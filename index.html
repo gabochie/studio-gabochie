@@ -116,6 +116,26 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 .faq-item.open .faq-question i{transform:rotate(180deg)}
 .faq-answer{font-family:'Barlow',sans-serif;font-size:14px;color:#8A9BB5;line-height:1.7;margin-top:8px;display:none;padding-right:32px}
 .faq-item.open .faq-answer{display:block}
+.ministry{background:#0F1E38}
+.ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ministry-item{border-radius:12px;overflow:hidden;border:1px solid #1E3250;position:relative;aspect-ratio:4/3;background:#0A1628}
+.ministry-item picture,.ministry-item img{width:100%;height:100%;position:absolute;inset:0}
+.ministry-item img{object-fit:cover}
+.ministry-item .ministry-label{position:absolute;bottom:0;left:0;right:0;padding:20px 14px 10px;font-family:'Barlow',sans-serif;font-size:12px;color:#E8EEF7;background:linear-gradient(transparent,rgba(10,22,40,.9))}
+@media(max-width:860px){.ministry-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.ministry-grid{grid-template-columns:1fr}}
+.tiktok-intro{text-align:center;margin-bottom:40px}
+.tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tiktok-card{background:#162540;border:1px solid #1E3250;border-radius:12px;overflow:hidden;transition:all .3s;text-decoration:none;color:inherit;display:block}
+.tiktok-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.3);border-color:#C9A84C}
+.tiktok-card .thumb{aspect-ratio:9/16;background:#0A1628;position:relative;overflow:hidden}
+.tiktok-card .thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.tiktok-card .thumb .play-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;z-index:2}
+.tiktok-card:hover .play-overlay{opacity:1}
+.tiktok-card .info{padding:12px 14px}
+.tiktok-card .info .title{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:#E8EEF7;margin-bottom:4px}
+.tiktok-card .info .views{font-family:'Barlow',sans-serif;font-size:11px;color:#5A7A9F}
+@media(max-width:860px){.tiktok-grid{grid-template-columns:1fr;max-width:360px;margin:0 auto}}
 </style>
 </head>
 <body>
@@ -258,6 +278,67 @@ body{font-family:'Libre Baskerville',Georgia,serif}
         <button class="faq-question" onclick="toggleFaq(this)">What does "start free" mean? <i class="ti ti-chevron-down"></i></button>
         <div class="faq-answer">Module 1 is free with no card required. Full access is a one-time payment you make only when you choose to.</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHILDREN MINISTRY ═══ -->
+<section class="section ministry" id="ministry">
+  <div class="container">
+    <div class="section-label" style="justify-content:center"><i class="ti ti-heart"></i> Children Ministry</div>
+    <h2 class="section-heading" style="text-align:center">Training Children the <span>Way They Should Go</span></h2>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto;text-align:center">Weekend clubs, creative workshops, and Kingdom education — raising Ghana's next generation of vision builders, starting young.</p>
+    <div class="ministry-grid">
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/community-outreach.webp" type="image/webp"><img src="/assets/images/gallery/community-outreach.jpg" alt="Children at a Studio Gabochie community outreach" loading="lazy"></picture><div class="ministry-label">Community Outreach</div></div>
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/ministry-moment.webp" type="image/webp"><img src="/assets/images/gallery/ministry-moment.jpg" alt="Children playing at a ministry outing" loading="lazy"></picture><div class="ministry-label">Ministry Outings</div></div>
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/creative-workshop.webp" type="image/webp"><img src="/assets/images/gallery/creative-workshop.jpg" alt="Children creating art at a workshop" loading="lazy"></picture><div class="ministry-label">Creative Workshops</div></div>
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/teaching-session.webp" type="image/webp"><img src="/assets/images/gallery/teaching-session.jpg" alt="Kingdom of God education with children" loading="lazy"></picture><div class="ministry-label">Kingdom Education</div></div>
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/book-launch.webp" type="image/webp"><img src="/assets/images/gallery/book-launch.jpg" alt="Book launch with young readers" loading="lazy"></picture><div class="ministry-label">Book Launches</div></div>
+      <div class="ministry-item"><picture><source srcset="/assets/images/gallery/behind-scenes.webp" type="image/webp"><img src="/assets/images/gallery/behind-scenes.jpg" alt="Behind the scenes with the ministry team" loading="lazy"></picture><div class="ministry-label">Behind the Scenes</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TIKTOK ═══ -->
+<section class="section" id="tiktok">
+  <div class="container">
+    <div class="tiktok-intro">
+      <div class="section-label" style="justify-content:center"><i class="ti ti-brand-tiktok"></i> Daily Content</div>
+      <h2 class="section-heading">Follow the Mission on <span>TikTok</span></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">Short, powerful teachings on creativity, love, and wisdom — straight from Scripture, delivered daily.</p>
+      <a href="https://www.tiktok.com/@gideonabochie" target="_blank" rel="noopener" class="btn btn-gold"><i class="ti ti-brand-tiktok"></i> @gideonabochie</a>
+    </div>
+    <div class="tiktok-grid">
+      <a href="https://www.tiktok.com/@gideonabochie/video/7610894227723078913" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7610894227723078913" title="How to Increase more Wisdom in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Wisdom in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
+      <a href="https://www.tiktok.com/@gideonabochie/video/7611357216582552848" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7611357216582552848" title="How to Increase more Creativity in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Creativity in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
+      <a href="https://www.tiktok.com/@gideonabochie/video/7610121906984963329" target="_blank" rel="noopener" class="tiktok-card">
+        <div class="thumb">
+          <iframe src="https://www.tiktok.com/embed/v2/7610121906984963329" title="How to Increase more Love in Ghana" loading="lazy"></iframe>
+          <div class="play-overlay"><i style="font-size:48px;color:#fff" class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="info">
+          <div class="title">How to Increase more Love in Ghana</div>
+          <div class="views">Tap to watch on TikTok</div>
+        </div>
+      </a>
     </div>
   </div>
 </section>
