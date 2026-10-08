@@ -31,6 +31,15 @@ describe('PWA manifest', function () {
     }
   });
 
+  it('declares screenshots that exist on disk', function () {
+    expect(Array.isArray(manifest.screenshots)).toBe(true);
+    expect(manifest.screenshots.length).toBeGreaterThan(0);
+    for (const s of manifest.screenshots) {
+      expect(s.src).toMatch(/^\/assets\/screenshots\//);
+      expect(existsSync(join(root, s.src.replace(/^\//, '')))).toBe(true);
+    }
+  });
+
   it('declares working app shortcuts', function () {
     expect(Array.isArray(manifest.shortcuts)).toBe(true);
     expect(manifest.shortcuts.length).toBeGreaterThan(0);
