@@ -137,6 +137,12 @@
 }
 .nav-item span { font-size: 9px; font-weight: 500; letter-spacing: .2px; }
 
+/* ===== Mobile: dock section nav to the bottom (app standard) ===== */
+@media(max-width:1023px){
+  .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sticky)}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px))}
+}
+
 /* ===== Glass Card ===== */
 .glass {
   background: rgba(255,255,255,.04);
