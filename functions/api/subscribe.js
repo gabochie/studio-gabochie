@@ -37,6 +37,7 @@ export async function onRequest(context) {
     var ct = request.headers.get('Content-Type') || '';
     var name = '', email = '', source = 'newsletter', ref = '', phone = '';
     var utmSource = '', utmMedium = '', utmCampaign = '';
+    var waOptIn = false;
     if (ct.includes('application/json')) {
       var body = await request.json();
       name = body.name || '';
@@ -44,6 +45,7 @@ export async function onRequest(context) {
       source = body.source || 'newsletter';
       ref = body.ref || '';
       phone = body.phone || '';
+      waOptIn = body.whatsapp_opt_in === true || body.whatsapp_opt_in === 1 || body.whatsapp_opt_in === '1';
       utmSource = body.utm_source || '';
       utmMedium = body.utm_medium || '';
       utmCampaign = body.utm_campaign || '';
@@ -54,6 +56,7 @@ export async function onRequest(context) {
       source = fd.get('source') || 'newsletter';
       ref = fd.get('ref') || '';
       phone = fd.get('phone') || '';
+      waOptIn = fd.get('whatsapp_opt_in') === '1' || fd.get('whatsapp_opt_in') === 'on';
       utmSource = fd.get('utm_source') || '';
       utmMedium = fd.get('utm_medium') || '';
       utmCampaign = fd.get('utm_campaign') || '';
@@ -101,6 +104,9 @@ export async function onRequest(context) {
         // New subscriber who hasn't confirmed — resend confirmation
         if (phone) {
           await env.DB.prepare("UPDATE subscribers SET phone = ? WHERE email = ?").bind(phone, email).run();
+        }
+        if (waOptIn) {
+          await env.DB.prepare("UPDATE subscribers SET whatsapp_opt_in = 1 WHERE email = ?").bind(email).run();
         }
         confirmUrl = 'https://studio.gabochie.com/api/subscribe/confirm?token=' + existing.confirm_token;
         if (env.BREVO_API_KEY) {
@@ -155,8 +161,8 @@ export async function onRequest(context) {
     var confirmToken = genToken();
 
     await env.DB.prepare(
-      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)"
-    ).bind(name, email, source, refCode, edition, JSON.stringify(meta), confirmToken, phone).run();
+      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone, whatsapp_opt_in) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)"
+    ).bind(name, email, source, refCode, edition, JSON.stringify(meta), confirmToken, phone, waOptIn ? 1 : 0).run();
 
     // Handle referral if provided
     var referralCount = 0;

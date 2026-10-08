@@ -20,16 +20,27 @@ export async function onRequest(context) {
   try {
     const ct = request.headers.get('Content-Type') || '';
     let email = '', name = '', tag = '';
+    var jsonBody = null;
     if (ct.includes('application/json')) {
-      const body = await request.json();
-      email = sanitize(body.email, 320);
-      name = sanitize(body.name, 255);
-      tag = sanitize(body.tag, 50);
+      jsonBody = await request.json();
     } else {
-      const fd = await request.formData();
-      email = sanitize(fd.get('email'), 320);
-      name = sanitize(fd.get('name'), 255);
-      tag = sanitize(fd.get('tag'), 50);
+      // sendBeacon posts text/plain: accept a JSON body regardless of content-type
+      var formCopy = request.clone();
+      try {
+        const rawText = await request.text();
+        if (rawText.trim().startsWith('{')) jsonBody = JSON.parse(rawText);
+      } catch (_e) {}
+      if (!jsonBody) {
+        const fd = await formCopy.formData();
+        email = sanitize(fd.get('email'), 320);
+        name = sanitize(fd.get('name'), 255);
+        tag = sanitize(fd.get('tag'), 50);
+      }
+    }
+    if (jsonBody) {
+      email = sanitize(jsonBody.email, 320);
+      name = sanitize(jsonBody.name, 255);
+      tag = sanitize(jsonBody.tag, 50);
     }
     if (!email || !email.includes('@')) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), {

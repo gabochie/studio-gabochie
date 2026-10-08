@@ -74,6 +74,31 @@ describe('POST /api/subscribe', function () {
     expect(res.status).toBe(400);
   });
 
+  it('stores phone and WhatsApp opt-in when explicitly given', async function () {
+    ctx.request = postJson('http://localhost/api/subscribe', {
+      name: 'Efua', email: 'efua@example.com', source: 'start-page',
+      phone: '+233501234567', whatsapp_opt_in: true,
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    var rows = ctx.env.DB._tables.subscribers;
+    expect(rows.length).toBe(1);
+    expect(rows[0].phone).toBe('+233501234567');
+    expect(rows[0].whatsapp_opt_in).toBe(1);
+  });
+
+  it('leaves WhatsApp opt-in off without explicit consent', async function () {
+    ctx.request = postJson('http://localhost/api/subscribe', {
+      name: 'Kofi', email: 'kofi@example.com', source: 'start-page',
+      phone: '+233551234567',
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    var rows = ctx.env.DB._tables.subscribers;
+    expect(rows[0].phone).toBe('+233551234567');
+    expect(rows[0].whatsapp_opt_in).toBe(0);
+  });
+
   it('returns existing confirmed subscriber without duplicating', async function () {
     ctx.env.DB._tables.subscribers.push({
       id: 1, name: 'Yaw', email: 'yaw@example.com',

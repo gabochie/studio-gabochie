@@ -103,7 +103,10 @@ function blogSubscribe() {
   if (!e || e.indexOf('@') < 0) { m.style.display = 'block'; m.style.color = '#E8637A'; m.textContent = 'Enter a valid email.'; return; }
   fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: e, source: 'blog-index' }) })
     .then(function(r) { return r.json(); })
-    .then(function() { m.style.display = 'block'; m.style.color = '#22C55E'; m.textContent = 'Check your inbox to confirm.'; })
+    .then(function(d) {
+      if (d && d.status === 'ok') { m.style.display = 'block'; m.style.color = '#22C55E'; m.textContent = (d.existing && d.confirmed) ? 'You are already subscribed — welcome back!' : 'Check your inbox to confirm.'; }
+      else { m.style.display = 'block'; m.style.color = '#E8637A'; m.textContent = (d && (d.message || d.error)) || 'Something went wrong.'; }
+    })
     .catch(function() { m.style.display = 'block'; m.style.color = '#E8637A'; m.textContent = 'Something went wrong.'; });
 }
 </script>

@@ -165,7 +165,8 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
   fetch('/api/contact', {
     method: 'POST',
     body: data
-  }).then(function() {
+  }).then(function(r) { return r.json().catch(function() { return {}; }); }).then(function(d) {
+    if (d.status && d.status !== 'ok') throw new Error(d.message || 'Failed');
     form.style.display = 'none';
     var email = document.getElementById('leadEmail').value;
     tagOnboard(email, form.querySelector('input[name="name"]') ? form.querySelector('input[name="name"]').value : '', 'book_download');
@@ -176,9 +177,13 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
     setTimeout(function() {
       window.location.href = '/api/books/serve?slug=' + encodeURIComponent(_leadSlug) + '&email=' + encodeURIComponent(email);
     }, 1200);
-  }).catch(function() {
+  }).catch(function(err) {
     btn.disabled = false;
     btn.textContent = 'Send Me the Book \u2192';
+    var errMsg = document.createElement('p');
+    errMsg.style.cssText = 'color:#E8637A;font-size:13px;margin:12px 0';
+    errMsg.textContent = (err && err.message) || 'Something went wrong. Please try again or email studio@gabochie.com.';
+    document.querySelector('.lead-modal').appendChild(errMsg);
   });
 });
 

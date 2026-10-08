@@ -16,7 +16,7 @@ export async function onRequest(context) {
   }
   try {
     const body = await request.json();
-    const { item_type, item_name, item_variant, amount, customer_name, customer_email, user_id, phone, shipping_city, shipping_region, shipping_digital_address, delivery_fee } = body;
+    const { item_type, item_name, item_variant, product_slug, amount, customer_name, customer_email, user_id, phone, shipping_city, shipping_region, shipping_digital_address, delivery_fee } = body;
     if (!item_type || !item_name || !amount || !customer_email) {
       return new Response(JSON.stringify({ status: 'error', message: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
@@ -25,9 +25,17 @@ export async function onRequest(context) {
     const uid = parseInt(user_id) || 0;
     const df = parseFloat(delivery_fee) || 0;
     const shipAddr = body.shipping_address || '';
-    await db.prepare(
-      `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, user_id, status, customer_phone, shipping_address, shipping_city, shipping_region, shipping_digital_address, delivery_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)`
-    ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email, uid, phone || '', shipAddr, shipping_city || '', shipping_region || '', shipping_digital_address || '', df).run();
+    var slug = String(product_slug || '').trim().slice(0, 80);
+    try {
+      await db.prepare(
+        `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, product_slug, amount, currency, customer_name, customer_email, user_id, status, customer_phone, shipping_address, shipping_city, shipping_region, shipping_digital_address, delivery_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)`
+      ).bind(tx_ref, item_type, item_name, item_variant || '', slug, amount, currency, customer_name, customer_email, uid, phone || '', shipAddr, shipping_city || '', shipping_region || '', shipping_digital_address || '', df).run();
+    } catch (_e) {
+      // Older DBs without the product_slug column (pre-migration)
+      await db.prepare(
+        `INSERT INTO store_orders (tx_ref, item_type, item_name, item_variant, amount, currency, customer_name, customer_email, user_id, status, customer_phone, shipping_address, shipping_city, shipping_region, shipping_digital_address, delivery_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)`
+      ).bind(tx_ref, item_type, item_name, item_variant || '', amount, currency, customer_name, customer_email, uid, phone || '', shipAddr, shipping_city || '', shipping_region || '', shipping_digital_address || '', df).run();
+    }
     return new Response(JSON.stringify({ status: 'ok', tx_ref, amount: parseFloat(amount) + df, currency }), { headers: { 'Content-Type': 'application/json' } });
   } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });

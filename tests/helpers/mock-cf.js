@@ -107,21 +107,59 @@ export function mockDb(tables) {
           // Track auto-increment IDs per table
           if (!db._autoId) db._autoId = {};
           // INSERT INTO table (col1, col2, ...) VALUES (?, ?, ...)
-          var insertRe = /INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i;
+          // Values are split paren-aware so datetime('now') and nested calls survive.
+          // NOTE: INSERT OR IGNORE is intentionally not executed (no constraint
+          // tracking); production relies on real D1 OR IGNORE semantics.
+          var insertRe = /INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\(/i;
           var im = sql.match(insertRe);
           if (im) {
             var tbl = im[1];
             if (!db._tables[tbl]) db._tables[tbl] = [];
             var cols = im[2].split(',').map(function(c) { return c.trim(); });
+            // Extract the VALUES list up to its matching close paren (ignores
+            // any trailing ON CONFLICT / RETURNING clause).
+            var vStart = im[0].length;
+            var vSql = sql.slice(sql.indexOf(im[0]) + vStart);
+            var vDepth = 0, vEnd = vSql.length;
+            var vStr = false, vStrCh = '';
+            for (var ski = 0; ski < vSql.length; ski++) {
+              var sch = vSql[ski];
+              if (vStr) { if (sch === vStrCh) vStr = false; continue; }
+              if (sch === "'" || sch === '"') { vStr = true; vStrCh = sch; continue; }
+              if (sch === '(') vDepth++;
+              else if (sch === ')') { vDepth--; if (vDepth < 0) { vEnd = ski; break; } }
+            }
+            im[3] = vSql.slice(0, vEnd);
             var row = {};
-            var valParts = im[3].split(',').map(function(v) { return v.trim(); });
+            var valParts = [];
+            var depth = 0, cur = '', inStr = false, strCh = '';
+            for (var vi = 0; vi < im[3].length; vi++) {
+              var ch = im[3][vi];
+              if (inStr) {
+                cur += ch;
+                if (ch === strCh) inStr = false;
+              } else if (ch === "'" || ch === '"') {
+                inStr = true; strCh = ch; cur += ch;
+              } else if (ch === '(') {
+                depth++; cur += ch;
+              } else if (ch === ')') {
+                depth--; cur += ch;
+              } else if (ch === ',' && depth === 0) {
+                valParts.push(cur.trim()); cur = '';
+              } else {
+                cur += ch;
+              }
+            }
+            if (cur.trim() !== '' || valParts.length) valParts.push(cur.trim());
             var bi = 0;
             for (var ci = 0; ci < cols.length; ci++) {
               if (valParts[ci] === '?') {
                 row[cols[ci]] = chain._bound[bi] !== undefined ? chain._bound[bi] : '';
                 bi++;
-              } else {
+              } else if (valParts[ci] !== undefined) {
                 row[cols[ci]] = valParts[ci].replace(/^['"]|['"]$/g, '');
+              } else {
+                row[cols[ci]] = '';
               }
             }
             if (!db._autoId[tbl]) db._autoId[tbl] = db._tables[tbl].length;

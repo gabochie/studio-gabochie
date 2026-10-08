@@ -1,4 +1,4 @@
-import { requireAdminAuth } from '../_admin-auth.js';
+import { requireAdmin } from '../../_auth.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -6,7 +6,7 @@ export async function onRequest(context) {
   if (!db) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
   }
-  const authErr = await requireAdminAuth(request, env);
+  const authErr = await requireAdmin(request, env);
   if (authErr) return authErr;
 
   if (request.method === 'GET') {

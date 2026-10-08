@@ -1453,30 +1453,9 @@ DATA.phases.forEach(function(p) {
 saveState();
 
 function loadVerifiedPhases() {
-  fetch('/api/roadmap/verify', {cache:'no-store'}).then(function(r){
-    if(!r.ok) throw new Error();
-    return r.json();
-  }).then(function(d){
-    if(d.status === 'ok' && d.phases) {
-      d.phases.forEach(function(p){ verifiedPhases[p.phase] = true; });
-      // Override localStorage state: verified phases are always done
-      DATA.phases.forEach(function(p) {
-        if (verifiedPhases[p.phase]) {
-          (p.steps || []).forEach(function(step) {
-            state.stepChecks[step.id] = true;
-            (step.items || []).forEach(function(item, i) {
-              state.stepItems[step.id + '-' + i] = true;
-            });
-          });
-          (p.acceptance_criteria || []).forEach(function(c, i) {
-            state.acceptance[p.phase + '-' + i] = true;
-          });
-        }
-      });
-      saveState();
-      render();
-    }
-  }).catch(function(){});
+  // No server source of phase verification exists (tracked in localStorage only).
+  // Kept as a no-op hook so future server-side verification can plug in here.
+  try { render(); } catch (_e) {}
 }
 
 function isVerified(stepId) {
@@ -1891,8 +1870,8 @@ var CHECKS = {
     {i:3, label:"Admin donation dashboard exists", check:function(){return checkFileExists("donations.html")}}
   ],
   "3.3": [ // Content Management
-    {i:0, label:"Admin CRUD for testimonials", check:function(){return checkPageContains("../index.html","/api/admin/testimonials") || checkFileExists("../functions/api/admin/testimonials.js")}},
-    {i:1, label:"Admin CRUD for gallery", check:function(){return checkFileExists("../functions/api/admin/gallery.js")}},
+    {i:0, label:"Admin CRUD for testimonials", check:function(){return checkFileExists("../functions/admin/api/testimonials.js")}},
+    {i:1, label:"Admin CRUD for gallery", check:function(){return checkFileExists("../functions/admin/api/gallery.js")}},
     {i:2, label:"Newsletter editor exists", check:function(){return checkFileExists("newsletter.html")}}
   ],
   "4.1": [
@@ -2041,7 +2020,7 @@ function checkSecure(url) {
 }
 
 function checkKVLive() {
-  return fetch("/api/contact", {method:"GET",cache:"no-store",headers:{"Referer":"/admin/"}}).then(function(r){
+  return fetch("/api/contact", {method:"GET",cache:"no-store",headers:adminHeaders({"Referer":"/admin/"})}).then(function(r){
     if (!r.ok) return false;
     return r.json().then(function(j){return j.status === "ok"});
   }).catch(function(){return false});
@@ -2055,11 +2034,11 @@ function checkD1Ping() {
 }
 
 function checkD1TasksPhaseDone(phase) {
-  return fetch('/admin/api/tasks?phase=' + phase, {cache:'no-store'}).then(function(r){
+  return fetch('/admin/api/tasks?phase=' + phase, {cache:'no-store', headers:adminHeaders()}).then(function(r){
     if(!r.ok) return false;
     return r.json().then(function(d){
-      if(d.status !== 'ok') return false;
-      return d.items.every(function(t){ return t.status === 'done'; });
+      if(d.status !== 'ok' || !d.items || !d.items.length) return false;
+      return d.items.every(function(t){ return t.status === 'completed'; });
     });
   }).catch(function(){return false});
 }
@@ -2192,6 +2171,13 @@ function renderAgentTasks(tasks) {
   list.innerHTML = html;
 }
 
+function adminHeaders(extra) {
+  var headers = Object.assign({'Content-Type':'application/json'}, extra || {});
+  var key = typeof getAdminKey === 'function' ? getAdminKey() : '';
+  if (key && key !== '__CF_ACCESS__') headers['X-Admin-Key'] = key;
+  return headers;
+}
+
 function addAgentTask() {
   var title = document.getElementById('newTaskTitle');
   var phase = document.getElementById('newTaskPhase');
@@ -2199,7 +2185,7 @@ function addAgentTask() {
   if(!title.value.trim()) return;
   fetch('/admin/api/tasks', {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:adminHeaders(),
     body:JSON.stringify({
       title:title.value.trim(),
       phase:parseInt(phase.value)||0,
@@ -2221,7 +2207,7 @@ function addAgentTask() {
 function updateTaskStatus(id, status) {
   fetch('/admin/api/tasks?id=' + id, {
     method:'PUT',
-    headers:{'Content-Type':'application/json'},
+    headers:adminHeaders(),
     body:JSON.stringify({status:status}),
     cache:'no-store'
   }).then(function(r){return r.json()}).then(function(d){

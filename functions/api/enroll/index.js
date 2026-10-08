@@ -39,8 +39,24 @@ export async function onRequest(context) {
 
       // Try lookup by enrollment access_token first
       row = await db.prepare(
-        'SELECT e.id, e.program_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
+        'SELECT e.id, e.program_id, e.user_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.access_token = ?'
       ).bind(token).first();
+
+      // Honor ?program= tab switches: resolve the same learner's other enrollment
+      if (row && programSlug && row.program_slug !== programSlug) {
+        var switched = null;
+        if (row.user_id) {
+          switched = await db.prepare(
+            'SELECT e.id, e.program_id, e.user_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.user_id = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+          ).bind(row.user_id, programSlug).first();
+        }
+        if (!switched) {
+          switched = await db.prepare(
+            'SELECT e.id, e.program_id, e.user_id, e.student_name, e.student_email, e.student_phone, e.status, e.payment_ref, e.payment_amount, e.enrolled_at, e.token_expires_at, p.title AS program_title, p.slug AS program_slug, p.tagline, p.duration, p.price, p.price_label, p.sample_content, p.full_content FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? AND p.slug = ? ORDER BY e.enrolled_at DESC LIMIT 1'
+          ).bind(row.student_email, programSlug).first();
+        }
+        if (switched) row = switched;
+      }
 
       // Fallback: look up by session → find user's enrollments
       if (!row) {
