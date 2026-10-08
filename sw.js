@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v1';
+const VERSION = 'gabochie-v2';
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 /* Cloudflare Pages serves clean URLs: /offline.html 308-redirects to /offline,
