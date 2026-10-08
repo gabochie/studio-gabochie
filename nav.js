@@ -61,7 +61,7 @@
     '<a href="/partners/">Partner With Us</a>' +
     '<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>' +
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
-    '<div class="footer-legal"><a href="/legal/privacy.html">Privacy</a><span>·</span><a href="/legal/cookies.html">Cookies</a><span>·</span><a href="/legal/terms.html">Terms</a><span>·</span><a href="/legal/refund.html">Refunds</a></div>' +
+    '<div class="footer-legal"><a href="/legal/privacy.html">Privacy</a><span>·</span><a href="/legal/cookies.html">Cookies</a><span>·</span><a href="/legal/terms.html">Terms</a><span>·</span><a href="/legal/refund.html">Refunds</a><span>·</span><a href="/legal/disclaimer.html">Disclaimer</a><span>·</span><a href="/legal/donations.html">Donations</a></div>' +
     '</div>' +
     '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; Accra, Ghana.</div>' +
     '</div>' +
