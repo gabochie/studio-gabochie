@@ -139,7 +139,7 @@
 
 /* ===== Mobile: dock section nav to the bottom (app standard) ===== */
 @media(max-width:1023px){
-  .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sticky)}
+  .bottom-nav{position:fixed;left:0;right:0;top:auto;bottom:0;z-index:var(--z-sticky)}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px))}
 }
 
