@@ -309,6 +309,7 @@ function renderPrograms(staticData, apiPrograms) {
 (function () {
   var staticData = window.COURSE_DATA || { courses: [] };
   var lastApi = null;
+  window.gaRepriceDynamic = function() { renderPrograms(staticData, lastApi); };
   window.addEventListener('ga:currencychange', function () {
     renderPrograms(staticData, lastApi);
   });

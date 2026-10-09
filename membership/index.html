@@ -370,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Something went wrong.</div>';
     });
   }
+  window.gaRepriceDynamic = function() { if (allTiers && allTiers.length) renderPlans(); };
   window.addEventListener('ga:currencychange', function() { if (allTiers && allTiers.length) renderPlans(); });
 });
 </script>
