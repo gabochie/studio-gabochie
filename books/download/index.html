@@ -72,7 +72,18 @@ if (!tx_ref) {
   document.getElementById('errorMsg').textContent = 'Missing purchase reference. Please use the download link in your receipt email.';
 } else {
   var queryStr = 'tx_ref=' + encodeURIComponent(tx_ref);
-  fetch('/api/books/download?' + queryStr).then(function(r){return r.json()}).then(function(d){
+  var attempts = 0;
+  function showPending() {
+    document.getElementById('loadingView').style.display = 'none';
+    var ev = document.getElementById('errorView');
+    ev.style.display = 'block';
+    ev.querySelector('h1').innerHTML = 'Payment <span>Processing</span>';
+    document.getElementById('errorMsg').innerHTML = 'We see your transaction but confirmation is still on its way. Your receipt email is coming — <strong>no need to repay.</strong> If nothing arrives within 30 minutes, email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> with reference ' + tx_ref + '.';
+  }
+  function lookup() {
+    attempts++;
+    if (attempts > 1) document.querySelector('#loadingView .loading').textContent = 'Still verifying... (check ' + attempts + ' of 5)';
+    fetch('/api/books/download?' + queryStr).then(function(r){return r.json()}).then(function(d){
     document.getElementById('loadingView').style.display = 'none';
     if (d.status === 'ok' && d.books && d.books.length) {
       document.getElementById('successView').style.display = 'block';
@@ -83,14 +94,17 @@ if (!tx_ref) {
       var tb = document.getElementById('thankYouBtn');
       if (tb) { tb.href = '/api/books/serve?slug=premium-bundle&tx_ref=' + encodeURIComponent(tx_ref); tb.style.display = ''; }
     } else {
-      document.getElementById('errorView').style.display = 'block';
-      document.getElementById('errorMsg').textContent = d.message || 'No valid purchase found.';
+      if (attempts < 5) { setTimeout(lookup, 8000); return; }
+      showPending();
     }
   }).catch(function(){
+    if (attempts < 5) { setTimeout(lookup, 8000); return; }
     document.getElementById('loadingView').style.display = 'none';
     document.getElementById('errorView').style.display = 'block';
     document.getElementById('errorMsg').textContent = 'Could not verify purchase. Please try again.';
   });
+  }
+  lookup();
 }
 </script>
 <script defer src="../../assets/js/main.js"></script>
