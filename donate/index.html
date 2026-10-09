@@ -315,11 +315,16 @@ function startPayment() {
       logo: window.location.origin + '/assets/images/logo.png'
     },
     callback: function(response) {
-      window.location.href = redirectUrl;
+      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
+      btn.disabled = false;
+      btn.textContent = 'Donate Now';
+      if (typeof window.payError === 'function') window.payError('Donation was not completed — <strong>no charge was made.</strong> Please try again.', 'donate');
+      else alert('Donation was not completed. Please try again or email studio@gabochie.com');
     },
     onclose: function() {
       btn.disabled = false;
       btn.textContent = 'Donate Now';
+      if (typeof window.payClosed === 'function') window.payClosed('donate');
     }
   });
 }
@@ -482,6 +487,7 @@ function startMonthlySubscription() {
         }
         btn.disabled = false;
         btn.textContent = 'Become a Monthly Patron';
+        if (typeof window.payClosed === 'function') window.payClosed('donate_monthly');
       }
     });
   }).catch(function(err) {

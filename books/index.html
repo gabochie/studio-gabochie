@@ -225,7 +225,7 @@ function payWithAmount() {
       if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
       alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
     },
-    onclose: function() {}
+    onclose: function() { if (typeof window.payClosed === 'function') window.payClosed('books_pwyw'); }
   });
 }
 
@@ -302,6 +302,7 @@ function buyBundle() {
     onclose: function() {
       btn.disabled = false;
       btn.textContent = 'Buy Bundle — GHS 300';
+      if (typeof window.payClosed === 'function') window.payClosed('books_bundle');
     }
   });
 }

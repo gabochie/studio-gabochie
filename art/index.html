@@ -97,9 +97,10 @@ function buyArtItem(name, price) {
         meta: { item_type: 'art', item_name: name, item_price: String(price), user_id: user.user_id || '' },
         callback: function(r) {
           if (r && r.status === 'successful') { window.location.href = '/store/download?tx_ref=' + d.tx_ref + '&status=' + r.status; return; }
-          alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
+          if (typeof window.payError === 'function') window.payError('Payment was not completed — <strong>no charge was made.</strong> Please try again.', 'art');
+          else alert('Payment was not completed. Please try again or email studio@gabochie.com');
         },
-        onclose: function() {}
+        onclose: function() { if (typeof window.payClosed === 'function') window.payClosed('art'); }
       });
     }).catch(function(){ alert('Network error. Please try again or email studio@gabochie.com'); });
   });

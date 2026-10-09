@@ -242,7 +242,10 @@ document.getElementById('buy-btn').onclick = function() {
                 setTimeout(() => location.href = '/guitar/learn/', 2000);
               });
             },
-            onClose: function() {}
+            onClose: function() {
+              var pe = document.getElementById('pay-error');
+              if (pe) { pe.textContent = 'Payment window closed — no charge was made. Tap Pay to try again or email studio@gabochie.com.'; pe.style.display = 'block'; }
+            }
           });
           handler.openIframe();
         } else {
