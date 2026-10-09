@@ -167,7 +167,6 @@ export async function onRequest(context) {
       '<div id="footer-placeholder"></div>' +
       '<script src="/nav.js"></script>' +
       '<script>' +
-      'var FLW_KEY = "FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X";' +
       'var CAMPAIGN_SLUG = ' + JSON.stringify(slug) + ';' +
       'function startDonate(){' +
       'var name=document.getElementById("dnName").value.trim();' +
@@ -180,28 +179,31 @@ export async function onRequest(context) {
       'var btn=document.getElementById("dnBtn");btn.disabled=true;btn.textContent="Opening...";' +
       'var tx_ref="camp_"+CAMPAIGN_SLUG+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);' +
       'try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"donation_started",tx_ref:tx_ref,amount:amt,email:email,name:name,campaign:CAMPAIGN_SLUG})})}catch(e){}' +
-      'FlutterwaveCheckout({' +
-      'public_key:FLW_KEY,tx_ref:tx_ref,amount:amt,currency:"GHS",' +
-      'payment_options:"card,mobilemoneyghana,ussd",' +
-      'customer:{email:email,name:name,phone:phone},' +
-      'meta:{campaign_slug:CAMPAIGN_SLUG},' +
-      'customizations:{title:"Studio Gabochie",description:"Support: "+CAMPAIGN_SLUG,logo:window.location.origin+"/assets/images/logo.png"},' +
-      'callback:function(payload){' +
-      'if(payload.status==="successful"||payload.transaction_id){' +
-      'window.location.href="/campaigns/"+CAMPAIGN_SLUG+"?thankyou=1";' +
-      '}' +
-      '},' +
-      'onclose:function(){btn.disabled=false;btn.textContent="Donate Now"}' +
-      '})}' +
-      'if(location.search.indexOf("thankyou=1")>=0){' +
-      'document.getElementById("donateSection").innerHTML=' +
+      'fetch("/api/gateways/expresspay/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tx_ref:tx_ref,amount:amt,name:name,email:email,phone:phone,redirect:"/campaigns/"+CAMPAIGN_SLUG+"?thankyou=pending"})})' +
+      '.then(function(r){return r.json()}).then(function(d){' +
+      'if(d.status==="ok"&&d.checkout_url){window.location.href=d.checkout_url;return}' +
+      'btn.disabled=false;btn.textContent="Donate Now";alert(d.message||"Could not start payment. No charge was made.")' +
+      '}).catch(function(){btn.disabled=false;btn.textContent="Donate Now";alert("Network error. No charge was made.")})}' +
+      'if(location.search.indexOf("thankyou=pending")>=0){' +
+      'var q=new URLSearchParams(location.search);var ptx=q.get("tx_ref")||"";' +
+      'var thanksHtml=' +
       "'<div style=\"text-align:center;padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-top:24px\">" +
       "<div style=\"font-size:48px;margin-bottom:8px\">\\u2713</div>" +
       "<h3 style=\"font-family:Barlow Condensed,sans-serif;font-size:22px;color:#34C77B;margin:0 0 4px\">Thank You!</h3>" +
       "<p style=\"font-size:14px;color:var(--text-muted);margin:0\">Your contribution has been received. You will receive a receipt by email.</p>" +
       "<a href=\"/campaigns/\" style=\"display:inline-block;margin-top:16px;color:var(--gold);font-size:13px\">&larr; Back to Campaigns</a>" +
       "</div>';" +
-      '}' +
+      'var pendHtml=' +
+      "'<div style=\"text-align:center;padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-top:24px\">" +
+      "<h3 style=\"font-family:Barlow Condensed,sans-serif;font-size:22px;color:#EAB308;margin:0 0 4px\">Confirming Payment...</h3>" +
+      "<p style=\"font-size:14px;color:var(--text-muted);margin:0\">Your receipt will confirm here once the payment clears.</p>" +
+      "</div>';" +
+      'if(location.search.indexOf("thankyou=1")>=0){document.getElementById("donateSection").innerHTML=thanksHtml}' +
+      'else if(ptx){document.getElementById("donateSection").innerHTML=pendHtml;' +
+      'var polls=0;var timer=setInterval(function(){polls++;if(polls>20){clearInterval(timer);return}' +
+      'fetch("/api/gateways/expresspay/status?tx_ref="+encodeURIComponent(ptx)).then(function(r){return r.json()}).then(function(d){' +
+      'if(d&&d.status==="ok"&&d.approved){clearInterval(timer);document.getElementById("donateSection").innerHTML=thanksHtml}' +
+      '}).catch(function(){})},8000)}' +
       '</script>' +
       '</body></html>';
 

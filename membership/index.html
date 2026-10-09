@@ -254,8 +254,7 @@ function renderPlans() {
     var price = effInterval === 'yearly' ? p.yearly_price_ghs : p.monthly_price_ghs;
     var periodLabel = effInterval === 'yearly' ? '/yr' : '/mo';
     if (p.slug === 'free') { price = 0; periodLabel = ''; }
-    var autoRenews = effInterval === 'yearly' ? !!p.yearly_recurring : !!p.monthly_recurring;
-    var billNote = price > 0 ? (autoRenews ? 'auto-renews' : 'one-time charge') : '';
+    var billNote = price > 0 ? 'one-time charge' : '';
 
     var isCurrent = sessionToken && p.slug === currentTier;
     var isPaidTier = p.slug !== 'free';

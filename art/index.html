@@ -87,21 +87,14 @@ function buyArtItem(name, price) {
       body: JSON.stringify({ item_type: 'art', item_name: name, amount: price, currency: 'GHS', customer_name: user.name, customer_email: user.email, user_id: user.user_id || 0, phone: user.phone || '' })
     }).then(function(r){ return r.json(); }).then(function(d) {
       if (d.status !== 'ok' || !d.tx_ref) { alert('Could not start checkout. Please try again or email studio@gabochie.com'); return; }
-      FlutterwaveCheckout({
-        public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-        tx_ref: d.tx_ref,
-        amount: d.amount,
-        currency: 'GHS',
-        payment_options: 'card, mobilemoneyghana, ussd',
-        customer: { email: user.email, name: user.name },
-        meta: { item_type: 'art', item_name: name, item_price: String(price), user_id: user.user_id || '' },
-        callback: function(r) {
-          if (r && r.status === 'successful') { window.location.href = '/store/download?tx_ref=' + d.tx_ref + '&status=' + r.status; return; }
-          if (typeof window.payError === 'function') window.payError('Payment was not completed — <strong>no charge was made.</strong> Please try again.', 'art');
-          else alert('Payment was not completed. Please try again or email studio@gabochie.com');
-        },
-        onclose: function() { if (typeof window.payClosed === 'function') window.payClosed('art'); }
-      });
+      if (typeof window.payWithExpressPay === 'function') {
+        window.payWithExpressPay({
+          tx_ref: d.tx_ref, name: user.name, email: user.email, phone: user.phone || '',
+          redirect: '/store/download', btn: null, btnLabel: '', context: 'art'
+        });
+        return;
+      }
+      alert('Payment system loading. Please refresh and try again.');
     }).catch(function(){ alert('Network error. Please try again or email studio@gabochie.com'); });
   });
 }

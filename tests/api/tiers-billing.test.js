@@ -97,29 +97,29 @@ describe('pre-migration DBs without flw_plan_id', function () {
     expect(res.status).toBe(200);
     var body = await res.json();
     expect(body.status).toBe('ok');
-    expect(body.is_recurring).toBe(true);
-    expect(body.plan_id).toBe('160302');
+    expect(body.is_recurring).toBe(false);
+    expect(body.plan_id).toBe('');
   });
 });
 
 describe('POST /api/tiers/subscribe plan wiring', function () {
-  it('supporter monthly uses the supporter plan and recurs', async function () {
+  it('supporter monthly is one-time (no auto-charge)', async function () {
     var body = await (await postSubscribe(getCtx(), { tier: 'supporter', email: 'a@x.com', interval: 'monthly' })).json();
     expect(body.status).toBe('ok');
-    expect(body.is_recurring).toBe(true);
-    expect(body.plan_id).toBe('160302');
+    expect(body.is_recurring).toBe(false);
+    expect(body.plan_id).toBe('');
     expect(body.amount).toBe(50);
   });
 
-  it('supporter yearly keeps the legacy annual plan', async function () {
+  it('supporter yearly is one-time', async function () {
     var body = await (await postSubscribe(getCtx(), { tier: 'supporter', email: 'a@x.com', interval: 'yearly' })).json();
     expect(body.status).toBe('ok');
-    expect(body.is_recurring).toBe(true);
-    expect(body.plan_id).toBe('160303');
+    expect(body.is_recurring).toBe(false);
+    expect(body.plan_id).toBe('');
     expect(body.amount).toBe(500);
   });
 
-  it('scholar is one-time until a plan is configured, then recurs', async function () {
+  it('scholar is one-time', async function () {
     var plain = await (await postSubscribe(getCtx(), { tier: 'scholar', email: 'a@x.com', interval: 'monthly' })).json();
     expect(plain.status).toBe('ok');
     expect(plain.is_recurring).toBe(false);
@@ -127,16 +127,16 @@ describe('POST /api/tiers/subscribe plan wiring', function () {
 
     var wired = await (await postSubscribe(getCtx({ FLW_PLAN_SCHOLAR_MONTHLY: '170001' }), { tier: 'scholar', email: 'a@x.com', interval: 'monthly' })).json();
     expect(wired.status).toBe('ok');
-    expect(wired.is_recurring).toBe(true);
-    expect(wired.plan_id).toBe('170001');
+    expect(wired.is_recurring).toBe(false);
+    expect(wired.plan_id).toBe('');
   });
 
   it('founding resolves to the founding plan (yearly-only)', async function () {
     var body = await (await postSubscribe(getCtx(), { tier: 'founding', email: 'a@x.com', interval: 'monthly' })).json();
     expect(body.status).toBe('ok');
     expect(body.interval).toBe('yearly');
-    expect(body.is_recurring).toBe(true);
-    expect(body.plan_id).toBe('160304');
+    expect(body.is_recurring).toBe(false);
+    expect(body.plan_id).toBe('');
     expect(body.amount).toBe(5000);
   });
 });

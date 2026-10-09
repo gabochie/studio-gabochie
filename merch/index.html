@@ -163,21 +163,15 @@ function buyMerchItem(idx) {
       })
     }).then(function(r){ return r.json(); }).then(function(d) {
       if (d.status !== 'ok') { if (typeof window.payError === 'function') window.payError('Failed to create order. Please try again.', 'merch'); else alert('Failed to create order. Please try again.'); return; }
-      FlutterwaveCheckout({
-        public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-        tx_ref: d.tx_ref,
-        amount: totalAmount,
-        currency: 'GHS',
-        payment_options: 'card, mobilemoneyghana, ussd',
-        customer: { email: user.email, name: user.name },
-        meta: { item_type: 'merch', item_name: item.name, item_variant: size, item_price: String(item.price), delivery_fee: String(user.delivery_fee || 0), user_id: user.user_id || '' },
-      callback: function(r) {
-        if (r && r.status === 'successful') { window.location.href = '/merch/?order=' + d.tx_ref + '&status=' + r.status; return; }
-        if (typeof window.payError === 'function') window.payError('Payment was not completed — <strong>no charge was made.</strong> Please try again.', 'merch');
-        else alert('Payment was not completed. Please try again or email studio@gabochie.com');
-      },
-      onclose: function() { if (typeof window.payClosed === 'function') window.payClosed('merch'); }
-      });
+      if (typeof window.payWithExpressPay === 'function') {
+        window.payWithExpressPay({
+          tx_ref: d.tx_ref, name: user.name, email: user.email, phone: user.phone || '',
+          redirect: '/merch/?order=' + encodeURIComponent(d.tx_ref),
+          btn: null, btnLabel: '', context: 'merch'
+        });
+        return;
+      }
+      alert('Payment system loading. Please refresh and try again.');
     }).catch(function(){ if (typeof window.payError === 'function') window.payError('Network error — <strong>no charge was made.</strong> Please try again.', 'merch'); else alert('Network error. Please try again.'); });
   });
 }
@@ -250,6 +244,21 @@ window.addEventListener('ga:currencychange', repriceMerch);
     if (el) el.style.display = 'block';
     // Clean URL
     if (history.replaceState) history.replaceState({}, '', '/merch/');
+  } else if (params.get('status') === 'pending' && params.get('order')) {
+    var mTx = params.get('order');
+    var mPolls = 0;
+    var mTimer = setInterval(function() {
+      mPolls++;
+      if (mPolls > 20) { clearInterval(mTimer); return; }
+      fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(mTx))
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d && d.status === 'ok' && d.approved) {
+            clearInterval(mTimer);
+            window.location.href = '/merch/?order=' + encodeURIComponent(mTx) + '&status=successful';
+          }
+        }).catch(function() {});
+    }, 8000);
   }
 })();
 
