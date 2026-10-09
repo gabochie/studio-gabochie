@@ -1,4 +1,5 @@
 import { json } from './_utils.js';
+import { sendGuitarReceipt, guitarBuyer } from './_receipt.js';
 
 export async function onRequest(context) {
   if (context.request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -36,6 +37,8 @@ export async function onRequest(context) {
     if (payment?.user_id) {
       await db.prepare("INSERT INTO guitar_user_stats (user_id, total_xp, level) VALUES (?, 0, 1) ON CONFLICT(user_id) DO NOTHING").bind(payment.user_id).run();
     }
+    var buyer = await guitarBuyer(db, txRef, email);
+    await sendGuitarReceipt(context.env, { email: buyer.email, name: buyer.name, phone: buyer.phone, txRef: txRef, amount: amount });
   }
 
   return json({ ok: true });

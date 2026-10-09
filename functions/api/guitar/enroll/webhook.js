@@ -1,4 +1,5 @@
 import { json } from '../_utils.js';
+import { sendGuitarReceipt, guitarBuyer } from '../_receipt.js';
 
 export async function onRequest(context) {
   if (context.request.method !== 'POST') return json({error:'Method not allowed'}, 405);
@@ -43,6 +44,9 @@ export async function onRequest(context) {
          ON CONFLICT(user_id) DO NOTHING`
       ).bind(payment.user_id).run();
     }
+    var buyer = await guitarBuyer(db, txRef, (body.data && body.data.customer && body.data.customer.email) || '');
+    var verifiedAmount = (body.data && body.data.amount) || '';
+    await sendGuitarReceipt(context.env, { email: buyer.email, name: buyer.name, phone: buyer.phone, txRef: txRef, amount: verifiedAmount });
   }
 
   return json({ok:true});
