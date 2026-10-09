@@ -189,6 +189,25 @@ export const abandonedDonationReminder = (name) => `<!DOCTYPE html><html><body s
     </td></tr>
   </table></body></html>`;
 
+export const abandonedCheckoutReminder = (name, page) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+  <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
+    <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>
+    </td></tr>
+    <tr><td style="padding:32px 0 24px">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">Still <span style="color:#C9A84C">Interested?</span></h1>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">You started checkout on Studio Gabochie but didn't finish — and just so you know, <strong>no charge was made.</strong> If it was a network hiccup or cold feet, your spot is still here.</p>
+      <div style="text-align:center;margin:24px 0">
+        <a href="https://studio.gabochie.com/${page || ''}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Pick Up Where You Left Off</a>
+      </div>
+      <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Questions? Reply to this email or write <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a>.<br>Warmly,<br>Gideon Abochie</p>
+    </td></tr>
+    <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E8F0">
+      <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>
+    </td></tr>
+  </table></body></html>`;
+
 export const tierRenewalReminder = (name, tierName, expiryDate) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
   <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
     <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
