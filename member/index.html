@@ -163,7 +163,7 @@ function renderPlans(plans, currentTier) {
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
         (price > 0 ? '<button class="btn" style="margin-top:8px;background:none;border:1px solid #1E3250;color:#8A9BB5" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
-    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '</div>';
+    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by Flutterwave</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
   }
   var autoNames = [], manualNames = [];
   for (var k = 0; k < plans.length; k++) {

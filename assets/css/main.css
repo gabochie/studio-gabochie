@@ -183,3 +183,12 @@ button,a,.btn,.nav-toggle,.gallery-item,.rate-item-cta,input,textarea,select{tou
   /* Park above the bottom tab bar (~64px) instead of fighting it */
   .currency-toggle{bottom:calc(78px + env(safe-area-inset-bottom, 0px));right:12px}
 }
+
+/* ── Trust row (reused under every pay button) ── */
+.trust-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin-top:10px;font-size:11px;color:#5A7A9F;font-family:'DM Sans',sans-serif}
+.trust-row a{color:#C9A84C;text-decoration:none}
+.trust-row a:hover{text-decoration:underline}
+.trust-sub{text-align:center;font-size:11px;color:#5A7A9F;margin-top:4px;font-family:'DM Sans',sans-serif}
+.pay-error{display:none;margin-top:10px;font-size:12px;color:#F87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif}
+.pay-error a{color:#C9A84C}
+.pay-error button{background:#C9A84C;color:#0A1628;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-right:8px}
