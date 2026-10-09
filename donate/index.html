@@ -383,6 +383,8 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
       }
       addrHtml +='<button class="gw-close" onclick="closeGatewayPanel()">Done — I have sent it</button>';
       showGatewayPanel(addrHtml);
+      window.pendingTxRef = d.tx_ref;
+      window.pendingTxAmount = d.amount_ghs || amount;
       btn.disabled = false;
       btn.textContent = 'Donate Again';
       return;
@@ -394,6 +396,8 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
       var m = 'Send <strong class="gw-amount">GH\u00a2 ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> via MoMo to:';
       var panelHtml = '<h3>Pay with Mobile Money</h3><div class="gw-momo">' + d.payout_display + '</div><div class="gw-note">Gideon Abochie — ' + d.momo_number + '<br>Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + d.tx_ref + '</strong></div><div class="gw-note">' + d.note + '</div><button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
       showGatewayPanel(panelHtml);
+      window.pendingTxRef = d.tx_ref;
+      window.pendingTxAmount = d.amount_ghs || amount;
       btn.disabled = false;
       btn.textContent = 'Donate Again';
       return;
@@ -419,7 +423,10 @@ function copyRef() {
 function closeGatewayPanel() {
   document.getElementById('gatewayPanel').innerHTML = '';
   document.getElementById('gatewayPanel').style.display = 'none';
-  window.location.href = window.location.origin + '/donate/?status=pending';
+  var dest = window.location.origin + '/donate/?status=pending';
+  if (window.pendingTxRef) dest += '&tx_ref=' + encodeURIComponent(window.pendingTxRef);
+  if (window.pendingTxAmount) dest += '&amount=' + encodeURIComponent(window.pendingTxAmount);
+  window.location.href = dest;
 }
 
 function startMonthlySubscription() {

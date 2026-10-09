@@ -113,8 +113,8 @@ export async function onRequest(context) {
       try { await generateInvoice(env, 'booking', 'bookings', { name: donor_name, email: donor_email, company: '', phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Ad Booking', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
 
-    // Mark book purchase as completed
-    if (event === 'charge.completed' && tx_ref.startsWith('books_')) {
+    // Mark book purchase as completed (bundle `books_` and pay-what-you-want `bookpw_`)
+    if (event === 'charge.completed' && (tx_ref.startsWith('books_') || tx_ref.startsWith('bookpw_'))) {
       const bName = donor_name || customer.name || data.full_name || '';
       const bEmail = donor_email || customer.email || data.email || '';
       await db.prepare(
