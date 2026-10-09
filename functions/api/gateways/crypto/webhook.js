@@ -14,12 +14,14 @@ export async function onRequest(context) {
   const raw = await request.text();
   const sigHeader = (request.headers.get('x-nowpayments-sig') || '').toLowerCase();
 
-  // Verify IPN signature when secret is configured (skip check in tests when absent).
-  if (env.NOWPAYMENTS_IPN_SECRET) {
-    const expected = await sha512Hex(env.NOWPAYMENTS_IPN_SECRET, raw);
-    if (!sigHeader || sigHeader !== expected) {
-      return json({ status: 'error', message: 'Invalid signature' }, 401);
-    }
+  // Verify IPN signature. Fail closed: without a configured secret we cannot
+  // authenticate NOWPayments, so refuse rather than unlock on forged calls.
+  if (!env.NOWPAYMENTS_IPN_SECRET) {
+    return json({ status: 'error', message: 'IPN verification unavailable' }, 503);
+  }
+  const expected = await sha512Hex(env.NOWPAYMENTS_IPN_SECRET, raw);
+  if (!sigHeader || sigHeader !== expected) {
+    return json({ status: 'error', message: 'Invalid signature' }, 401);
   }
 
   let payload;

@@ -90,6 +90,15 @@ describe('Moolre gateway', function () {
     expect(updated.flw_id || updated.metadata).toBeTruthy();
     expect(called.some(function (u) { return u.indexOf('/open/transact/status') >= 0; })).toBe(true);
   });
+
+  it('rejects callbacks without a merchant reference', async function () {
+    var db = mockDb({ donations: [], invoices: [] });
+    db._tables.donations.push({ id: 1, tx_ref: 'moolre_other', amount: 50, currency: 'GHS', donor_name: 'Zed', donor_email: 'zed@test.com', donor_phone: '', status: 'pending', provider: 'moolre', created_at: '2026-01-01' });
+    var ctx = post('http://localhost/api/gateways/moolre/callback', { status: 1, data: {} }, { DB: db });
+    var res = await moolreCallback(ctx);
+    expect(res.status).toBe(400);
+    expect(db._tables.donations[0].status).toBe('pending');
+  });
 });
 
 describe('Crypto gateway', function () {
@@ -174,6 +183,20 @@ describe('Crypto gateway', function () {
     expect(res.status).toBe(200);
     var updated = db._tables.donations.filter(function (r) { return r.tx_ref === 'crypto_xyz'; })[0];
     expect(updated.status).toBe('successful');
+  });
+
+  it('refuses to finalize when the IPN secret is not configured', async function () {
+    var db = mockDb({ donations: [] });
+    db._tables.donations.push({ id: 1, tx_ref: 'crypto_xyz', amount: 100, currency: 'GHS', donor_name: 'Ben', donor_email: 'ben@test.com', donor_phone: '', status: 'pending', provider: 'crypto', created_at: '2026-01-01' });
+    var ctx = buildContext('http://localhost/api/gateways/crypto/webhook', { method: 'POST', env: { DB: db } });
+    ctx.request = new Request('http://localhost/api/gateways/crypto/webhook', {
+      method: 'POST',
+      headers: { 'x-nowpayments-sig': 'anything' },
+      body: '{"payment_status":"finished","order_id":"crypto_xyz","payment_id":"pay1"}'
+    });
+    var res = await cryptoWebhook(ctx);
+    expect(res.status).toBe(503);
+    expect(db._tables.donations[0].status).toBe('pending');
   });
 });
 
