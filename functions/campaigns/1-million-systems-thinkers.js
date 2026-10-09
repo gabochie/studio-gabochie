@@ -85,7 +85,6 @@ export async function onRequest(context) {
       '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://studio.gabochie.com/assets/images/og-image.png","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"Studio Gabochie","url":"https://studio.gabochie.com/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
       '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">' +
-      '<script src="https://checkout.flutterwave.com/v3.js"></script>' +
       '<style>' +
       ':root{--gold:#C9A84C;--gold-dark:#A68A2E;--bg:#0A1628;--bg2:#0F1F35;--bg3:#132642;--text:#CDD5E0;--muted:#6B7F9A;--dim:#4A5F7A;--border:#1E3456;--green:#34C77B;--red:#E8637A;--radius:12px}' +
       '*,*:before,*:after{box-sizing:border-box}' +

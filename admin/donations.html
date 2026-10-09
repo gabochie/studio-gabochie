@@ -22,7 +22,7 @@
 <div class="wrap">
 
   <h1 class="page-title">Donation <span>Log</span></h1>
-  <p class="page-desc">Incoming donations tracked from Flutterwave, Ko-fi, and Buy Me a Coffee.</p>
+  <p class="page-desc">Incoming donations tracked from ExpressPay, Moolre, crypto, and manual MoMo.</p>
 
   <div class="stats" id="stats">
     <div class="stat-card"><span class="stat-num zero" id="totalReceived">—</span><span class="stat-label">Total Received</span><span class="stat-note">All time</span></div>
@@ -75,7 +75,7 @@ async function loadDonations() {
 
     var html = '';
     if (items.length === 0) {
-      html = '<tr><td colspan="7" class="table-empty">No donations yet. Set up Flutterwave webhook to start tracking.</td></tr>';
+      html = '<tr><td colspan="7" class="table-empty">No donations yet. Payments settle via the ExpressPay callback.</td></tr>';
     } else {
       items.forEach(function(d) {
         var date = d.created_at ? new Date(d.created_at).toLocaleDateString() : '—';

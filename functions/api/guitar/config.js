@@ -1,8 +1,6 @@
 import { json } from './_utils.js';
 
 const DEFAULTS = {
-  paystackPublicKey: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
-  flutterwavePublicKey: 'FLWPUBK_TEST-6f4a7e5d8c9b0a1d2e3f4a5b6c7d8e9f-X',
   price: '99',
   comparePrice: '500',
   currencySymbol: 'GH₵',
@@ -12,14 +10,11 @@ const DEFAULTS = {
 };
 
 const SETTING_KEYS = [
-  'guitar_paystack_key', 'guitar_flutterwave_key',
   'guitar_price', 'guitar_compare_price', 'guitar_currency_symbol',
   'guitar_free_modules', 'guitar_urgency_text', 'guitar_pricing_tagline'
 ];
 
 const KEY_MAP = {
-  guitar_paystack_key: 'paystackPublicKey',
-  guitar_flutterwave_key: 'flutterwavePublicKey',
   guitar_price: 'price',
   guitar_compare_price: 'comparePrice',
   guitar_currency_symbol: 'currencySymbol',

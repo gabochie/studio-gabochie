@@ -28,7 +28,7 @@ function postSubscribe(ctx, body) {
 }
 
 describe('GET /api/tiers billing flags', function () {
-  it('marks supporter recurring and scholar/patron one-time by default', async function () {
+  it('marks every tier one-time (no auto-charge)', async function () {
     var ctx = getCtx();
     ctx.request = new Request('http://localhost/api/tiers', { method: 'GET' });
     var res = await tiersIndex(ctx);
@@ -36,21 +36,21 @@ describe('GET /api/tiers billing flags', function () {
     var body = await res.json();
     var bySlug = {};
     body.tiers.forEach(function (t) { bySlug[t.slug] = t; });
-    expect(bySlug.supporter.monthly_recurring).toBe(true);
-    expect(bySlug.supporter.yearly_recurring).toBe(true);
+    expect(bySlug.supporter.monthly_recurring).toBe(false);
+    expect(bySlug.supporter.yearly_recurring).toBe(false);
     expect(bySlug.scholar.monthly_recurring).toBe(false);
     expect(bySlug.patron.monthly_recurring).toBe(false);
-    expect(bySlug.founding.yearly_recurring).toBe(true);
+    expect(bySlug.founding.yearly_recurring).toBe(false);
     expect(bySlug.free.monthly_recurring).toBe(false);
   });
 
-  it('marks scholar recurring when its plan env var is set', async function () {
+  it('ignores legacy plan env vars', async function () {
     var ctx = getCtx({ FLW_PLAN_SCHOLAR_MONTHLY: '170001' });
     ctx.request = new Request('http://localhost/api/tiers', { method: 'GET' });
     var body = await (await tiersIndex(ctx)).json();
     var bySlug = {};
     body.tiers.forEach(function (t) { bySlug[t.slug] = t; });
-    expect(bySlug.scholar.monthly_recurring).toBe(true);
+    expect(bySlug.scholar.monthly_recurring).toBe(false);
     expect(bySlug.scholar.yearly_recurring).toBe(false);
   });
 });
@@ -82,7 +82,7 @@ describe('pre-migration DBs without flw_plan_id', function () {
     expect(body.status).toBe('ok');
     var bySlug = {};
     body.tiers.forEach(function (t) { bySlug[t.slug] = t; });
-    expect(bySlug.supporter.monthly_recurring).toBe(true);
+    expect(bySlug.supporter.monthly_recurring).toBe(false);
     expect(bySlug.scholar.monthly_recurring).toBe(false);
   });
 

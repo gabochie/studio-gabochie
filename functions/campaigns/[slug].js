@@ -114,7 +114,6 @@ export async function onRequest(context) {
       '.back-link:hover{color:var(--gold)}' +
       '@media(max-width:600px){.campaign-page h1{font-size:28px}.progress-stats{grid-template-columns:1fr 1fr;gap:12px}.cover-img,.no-cover{height:160px}}' +
       '</style>' +
-      '<script src="https://checkout.flutterwave.com/v3.js"></script>' +
       '</head><body>' +
       '<div id="nav-placeholder"></div>' +
       '<div class="campaign-page">' +
