@@ -91,6 +91,8 @@ function doLogin(e) {
         msg.className = 'form-msg success'; msg.textContent = 'Logged in! Redirecting\u2026';
         document.cookie = 'ga_session=' + d.token + '; path=/; domain=.gabochie.com; max-age=' + (30 * 24 * 60 * 60) + '; SameSite=Lax; Secure';
         var redirect = getParam('redirect') || '/member/';
+        // Same-origin paths only: block open redirects (//evil, https:, javascript:).
+        if (redirect.charAt(0) !== '/' || redirect.charAt(1) === '/') redirect = '/member/';
         setTimeout(function() { window.location.href = redirect; }, 500);
       } else {
         msg.className = 'form-msg error'; msg.textContent = d.message || 'Login failed.';
