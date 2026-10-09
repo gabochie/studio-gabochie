@@ -81,6 +81,7 @@ function gaGetUtm() {
   function getCurrency() {
     try { return localStorage.getItem(CURRENCY_STORAGE_KEY) || DEFAULT_CURRENCY; } catch (_e) { return DEFAULT_CURRENCY; }
   }
+  window.getCurrency = getCurrency;
 
   function setCurrency(code) {
     try { localStorage.setItem(CURRENCY_STORAGE_KEY, code); } catch (_e) {}
@@ -132,6 +133,7 @@ function gaGetUtm() {
       var val = this.value;
       setCurrency(val);
       renderPrices(val);
+      try { window.dispatchEvent(new CustomEvent('ga:currencychange', { detail: { currency: val } })); } catch (_e) {}
     });
     div.appendChild(select);
     document.body.appendChild(div);
@@ -142,6 +144,9 @@ function gaGetUtm() {
     if (document.querySelector('.currency-btn')) return;
     showCurrencyToggle();
     renderPrices(getCurrency());
+    // Late pass: pages that render prices from JS after DOMContentLoaded
+    // (course grids, tier cards) get converted once they exist.
+    setTimeout(function() { renderPrices(getCurrency()); }, 2500);
   }
 
   if (document.readyState === 'loading') {
