@@ -59,14 +59,22 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     document.getElementById('statusMsg').className = 'error';
     return;
   }
-  fetch('/api/store/download?tx_ref=' + encodeURIComponent(tx_ref))
+  var attempts = 0;
+  function setPending() {
+    document.getElementById('statusIcon').innerHTML = '<i class="ti ti-clock"></i>';
+    document.getElementById('statusTitle').textContent = 'Payment Processing';
+    document.getElementById('statusMsg').innerHTML = 'We see your transaction <span style="font-family:monospace">' + tx_ref + '</span> but confirmation is still on its way. Your receipt email is coming — <strong>no need to repay.</strong> If nothing arrives within 30 minutes, email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> with this reference.';
+    document.getElementById('statusMsg').className = '';
+  }
+  function lookup() {
+    attempts++;
+    if (attempts > 1) document.getElementById('statusMsg').textContent = 'Still verifying... (check ' + attempts + ' of 5)';
+    fetch('/api/store/download?tx_ref=' + encodeURIComponent(tx_ref))
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.status !== 'ok' || !d.order) {
-        document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';
-        document.getElementById('statusTitle').textContent = 'Purchase Not Found';
-        document.getElementById('statusMsg').textContent = 'We could not find a completed purchase for this transaction. If you believe this is an error, please contact support.';
-        document.getElementById('statusMsg').className = 'error';
+        if (attempts < 5) { setTimeout(lookup, 8000); return; }
+        setPending();
         return;
       }
       var o = d.order;
@@ -89,11 +97,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       document.getElementById('noteText').textContent = 'Your download is unique to this purchase. Do not share this link.';
     })
     .catch(function(){
-      document.getElementById('statusIcon').innerHTML = '<i class="ti ti-alert-circle"></i>';
-      document.getElementById('statusTitle').textContent = 'Something Went Wrong';
-      document.getElementById('statusMsg').textContent = 'An error occurred while looking up your purchase. Please try again or contact support.';
-      document.getElementById('statusMsg').className = 'error';
+      if (attempts < 5) { setTimeout(lookup, 8000); return; }
+      setPending();
     });
+  }
+  lookup();
 })();
 </script>
 <div id="footer-placeholder"></div>

@@ -763,6 +763,27 @@ function cryptoUpgrade(btn) {
   window.CryptoPay.start({ purpose: 'course', enrollment_token: token, button: btn });
 }
 
+function recheckUpgrade() {
+  var note = document.getElementById('upgradeNote');
+  var btn = document.getElementById('upgradeBtn');
+  if (!window.lastUpgrade) return;
+  note.textContent = 'Checking payment status...';
+  api('/api/enroll/upgrade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tx_ref: window.lastUpgrade.tx_ref, transaction_id: window.lastUpgrade.transaction_id })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.status === 'ok') {
+      btn.textContent = 'Upgrade Complete!';
+      loadDashboard();
+    } else {
+      note.innerHTML = 'Still processing — your access will appear automatically. <button onclick="recheckUpgrade()" style="background:#C9A84C;color:#0A1628;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">Check status</button>';
+    }
+  }).catch(function() {
+    note.textContent = 'Could not reach the server. Your payment is safe — try again in a minute.';
+  });
+}
+
 function handleUpgrade() {
   var btn = document.getElementById('upgradeBtn');
   var note = document.getElementById('upgradeNote');
@@ -799,6 +820,7 @@ function handleUpgrade() {
 callback: function(payment) {
             if (payment.status === 'completed' || payment.status === 'successful') {
               note.textContent = 'Payment confirmed! Activating your access...';
+              window.lastUpgrade = { tx_ref: payment.tx_ref || txRef, transaction_id: payment.transaction_id };
   api('/api/enroll/upgrade', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -813,11 +835,12 @@ callback: function(payment) {
                 } else {
                   btn.disabled = false;
                   btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
-                  note.textContent = res.code === 'PAYMENT_OPEN'
+                  note.innerHTML = (res.code === 'PAYMENT_OPEN'
                     ? 'Payment is still processing. Refresh after a minute — your access will appear automatically.'
                     : (res.message && res.message !== 'Internal error')
                       ? res.message + ' — contact us if you already paid.'
-                      : 'Payment received but activation delayed. Your access will be granted shortly.';
+                      : 'Payment received but activation delayed. Your access will be granted shortly.') +
+                    ' <button onclick="recheckUpgrade()" style="background:#C9A84C;color:#0A1628;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">Check status</button>';
                 }
               }).catch(function() {
                 btn.disabled = false;
