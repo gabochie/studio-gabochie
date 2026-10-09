@@ -1,3 +1,5 @@
+import { sendGuitarReceipt, guitarBuyer } from './_receipt.js';
+
 export async function onRequest(context) {
   const { request, env } = context;
   const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
@@ -49,6 +51,9 @@ export async function onRequest(context) {
          ON CONFLICT(user_id) DO NOTHING`
       ).bind(payment.user_id).run();
     }
+
+    var buyer = await guitarBuyer(db, txRef, email);
+    await sendGuitarReceipt(env, { email: buyer.email, name: buyer.name, phone: buyer.phone, txRef: txRef, amount: amount });
 
     return new Response(JSON.stringify({ status: 'ok', message: 'Payment verified and modules unlocked' }), { headers: { ...cors, 'Content-Type': 'application/json' } });
   } catch (err) {

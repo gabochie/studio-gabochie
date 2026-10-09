@@ -1,4 +1,4 @@
-import { sendBrevoEmail, queueEmail, abandonedDonationReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
+import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
@@ -20,7 +20,7 @@ export async function onRequest(context) {
   }
 
   try {
-    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
+    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, checkout: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
 
     // Step 1: Abandoned donation recovery
     try {
@@ -67,6 +67,34 @@ export async function onRequest(context) {
       }
     } catch (err) {
       result.errors.push('upgrade: ' + err.message);
+    }
+
+    // Step 1c: Abandoned checkout recovery (closed/failed checkout, nothing completed since)
+    try {
+      var { results: checkoutResults } = await env.DB.prepare(
+        `SELECT DISTINCT e.email, e.page
+         FROM events e
+         WHERE e.event_type IN ('checkout_closed', 'checkout_failed', 'subscription_cancelled')
+           AND e.email != ''
+           AND e.created_at <= datetime('now', '-24 hours')
+           AND NOT EXISTS (SELECT 1 FROM donations d WHERE d.donor_email = e.email AND d.status IN ('completed', 'successful'))
+           AND NOT EXISTS (SELECT 1 FROM enrollments en WHERE en.student_email = e.email AND en.status = 'active')
+           AND NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.email = e.email AND s.status = 'active')
+           AND NOT EXISTS (SELECT 1 FROM store_orders o WHERE o.customer_email = e.email AND o.status = 'completed')
+           AND NOT EXISTS (SELECT 1 FROM book_purchases b WHERE b.email = e.email AND b.status = 'completed')
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_checkout')
+         ORDER BY e.created_at ASC LIMIT 50`
+      ).all();
+
+      result.checkout.checked = checkoutResults.length;
+      for (var c of checkoutResults) {
+        var page = '';
+        try { page = (c.page || '').replace(/^https?:\/\/[^/]+\//, '').replace(/^\//, ''); } catch (_) {}
+        await queueEmail(env, c.email, '', 'Still interested? No charge was made — Studio Gabochie', abandonedCheckoutReminder('', page), 'abandoned_checkout', daysFromNow(0));
+        result.checkout.queued++;
+      }
+    } catch (err) {
+      result.errors.push('checkout: ' + err.message);
     }
 
     // Step 2: Process email queue
