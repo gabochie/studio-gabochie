@@ -226,13 +226,15 @@ fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(functio
 }).catch(function(){}).then(function(){ renderMerch(); });
 
 // Re-price in place on currency change (keeps size selections intact)
-window.addEventListener('ga:currencychange', function() {
+function repriceMerch() {
   if (typeof window.formatPrice !== 'function') return;
   var prices = document.querySelectorAll('#merchGrid .merch-card .price');
   prices.forEach(function(el, i) {
     if (merchInventory[i]) el.textContent = window.formatPrice(merchInventory[i].price);
   });
-});
+}
+window.gaRepriceDynamic = repriceMerch;
+window.addEventListener('ga:currencychange', repriceMerch);
 
 // Show success banner immediately if returning from payment
 (function(){

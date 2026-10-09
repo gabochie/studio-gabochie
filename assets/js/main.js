@@ -146,7 +146,10 @@ function gaGetUtm() {
     renderPrices(getCurrency());
     // Late pass: pages that render prices from JS after DOMContentLoaded
     // (course grids, tier cards) get converted once they exist.
-    setTimeout(function() { renderPrices(getCurrency()); }, 2500);
+    setTimeout(function() {
+      renderPrices(getCurrency());
+      try { if (typeof window.gaRepriceDynamic === 'function') window.gaRepriceDynamic(getCurrency()); } catch (_e) {}
+    }, 2500);
   }
 
   if (document.readyState === 'loading') {
