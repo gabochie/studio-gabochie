@@ -7,18 +7,18 @@ export async function onRequest(context) {
   }
   const url = new URL(request.url);
   const tx_ref = url.searchParams.get('tx_ref') || '';
-  const email = url.searchParams.get('email') || '';
   try {
-    let purchase;
-    if (tx_ref) {
-      purchase = await env.DB.prepare(
-        "SELECT * FROM book_purchases WHERE tx_ref = ? AND status = 'completed'"
-      ).bind(tx_ref).first();
-    } else if (email) {
-      purchase = await env.DB.prepare(
-        "SELECT * FROM book_purchases WHERE email = ? AND status = 'completed' ORDER BY created_at DESC"
-      ).bind(email).first();
+    // tx_ref only: the unguessable receipt reference emailed to the buyer.
+    // Email lookup removed (purchase enumeration risk); the receipt email
+    // always contains the download link.
+    if (!tx_ref) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Provide tx_ref (see your receipt email)' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
     }
+    let purchase = await env.DB.prepare(
+      "SELECT * FROM book_purchases WHERE tx_ref = ? AND status = 'completed'"
+    ).bind(tx_ref).first();
     if (!purchase) {
       return new Response(JSON.stringify({ status: 'error', message: 'No valid purchase found' }), {
         status: 404, headers: { 'Content-Type': 'application/json' }
