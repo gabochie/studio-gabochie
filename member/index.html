@@ -163,7 +163,7 @@ function renderPlans(plans, currentTier) {
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
         (price > 0 ? '<button class="btn" style="margin-top:8px;background:none;border:1px solid #1E3250;color:#8A9BB5" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
-    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by Flutterwave</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
+    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
   }
   var autoNames = [], manualNames = [];
   for (var k = 0; k < plans.length; k++) {
@@ -203,31 +203,17 @@ function upgrade(slug) {
   var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
   subscribeTier(slug, btn).then(function(d) {
     if (!d) return;
-    var opts = {
-      public_key: FLW_PUBLIC_KEY,
+    document.cookie = 'ga_upgrade=' + d.tier_slug + '; path=/; max-age=60';
+    window.payWithExpressPay({
       tx_ref: d.tx_ref,
-      amount: d.amount,
-      currency: d.currency || 'GHS',
-      payment_options: 'card, mobilemoneyghana, ussd',
-      customer: d.customer,
-      customizations: {
-        title: 'Studio Gabochie',
-        description: (d.tier_slug || slug).charAt(0).toUpperCase() + (d.tier_slug || slug).slice(1) + ' Tier',
-        logo: window.location.origin + '/assets/images/logo.png'
-      },
-      callback: function(payload) {
-        if (payload.status === 'successful' || payload.transaction_id) {
-          document.cookie = 'ga_upgrade=' + d.tier_slug + '; path=/; max-age=60';
-          window.location.href = '/member/?success=' + d.tier_slug;
-        }
-      },
-      onclose: function() {
-        btn.disabled = false; btn.textContent = 'Upgrade';
-        if (typeof window.payClosed === 'function') window.payClosed('tier');
-      }
-    };
-    if (d.is_recurring && d.plan_id) opts.payment_plan = parseInt(d.plan_id);
-    FlutterwaveCheckout(opts);
+      name: (d.customer && d.customer.name) || '',
+      email: (d.customer && d.customer.email) || '',
+      phone: (d.customer && d.customer.phone) || '',
+      redirect: '/member/?success=' + encodeURIComponent(d.tier_slug || slug),
+      btn: btn,
+      btnLabel: 'Upgrade',
+      context: 'tier'
+    });
   })
   .catch(function() {
     btn.disabled = false;
@@ -251,10 +237,34 @@ document.addEventListener('DOMContentLoaded', function() {
   var successMsg = document.getElementById('successMsg');
   var params = new URLSearchParams(window.location.search);
   if (params.get('success')) {
-    successMsg.className = 'form-msg success';
-    successMsg.style.display = 'block';
-    successMsg.textContent = 'Upgrade successful! Your ' + params.get('success') + ' membership is now active.';
-    setTimeout(function() { window.history.replaceState(null, '', '/member/'); }, 3000);
+    if (params.get('status') === 'pending' && params.get('tx_ref')) {
+      // ExpressPay redirect: confirm before celebrating.
+      successMsg.className = 'form-msg';
+      successMsg.style.display = 'block';
+      successMsg.style.background = 'rgba(234,179,8,.1)';
+      successMsg.style.color = '#EAB308';
+      successMsg.style.border = '1px solid rgba(234,179,8,.25)';
+      successMsg.textContent = 'Payment processing — confirming now...';
+      var txRef = params.get('tx_ref');
+      var polls = 0;
+      var pollTimer = setInterval(function() {
+        polls++;
+        if (polls > 20) { clearInterval(pollTimer); return; }
+        fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(txRef))
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (d && d.status === 'ok' && d.approved) {
+              clearInterval(pollTimer);
+              window.location.href = '/member/?success=' + encodeURIComponent(params.get('success'));
+            }
+          }).catch(function() {});
+      }, 8000);
+    } else {
+      successMsg.className = 'form-msg success';
+      successMsg.style.display = 'block';
+      successMsg.textContent = 'Upgrade successful! Your ' + params.get('success') + ' membership is now active.';
+      setTimeout(function() { window.history.replaceState(null, '', '/member/'); }, 3000);
+    }
   }
   fetch('/api/auth/session', { headers: { 'Authorization': 'Bearer ' + sessionToken } })
     .then(function(r) { return r.json(); })

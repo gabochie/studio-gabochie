@@ -1,19 +1,21 @@
 import { getToken, getSessionUser } from './_token.js';
+import { expresspayQuery } from '../gateways/expresspay/_expresspay.js';
 
-async function verifyFlutterwave(env, transactionId, txRef, expectedAmount) {
-  var key = env.FLW_SECRET_KEY;
-  if (!key) return { ok: false, code: 'NO_KEY' };
-  var res = await fetch('https://api.flutterwave.com/v3/transactions/' + encodeURIComponent(transactionId) + '/verify', {
-    headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }
-  });
-  if (!res.ok) return { ok: false, code: 'FLW_HTTP_' + res.status };
-  var data = await res.json();
-  if (!data || data.status !== 'success' || !data.data) return { ok: false, code: 'VERIFY_FAILED' };
-  var t = data.data;
-  if (t.status !== 'successful') return { ok: false, code: 'PAYMENT_OPEN' };
-  if (txRef && t.tx_ref && t.tx_ref !== txRef) return { ok: false, code: 'TX_REF_MISMATCH' };
-  if (expectedAmount != null && t.amount != null && Math.round(Number(t.amount)) !== Math.round(Number(expectedAmount))) return { ok: false, code: 'AMOUNT_MISMATCH' };
-  if (t.currency && t.currency !== 'GHS') return { ok: false, code: 'CURRENCY_MISMATCH' };
+async function verifyExpressPay(env, txRef, expectedAmount) {
+  if (!txRef) return { ok: false, code: 'MISSING_TX' };
+  var token = '';
+  try {
+    var row = await env.DB.prepare('SELECT token FROM expresspay_tokens WHERE tx_ref = ?').bind(txRef).first();
+    if (row && row.token) token = row.token;
+  } catch (_e) {}
+  if (!token) return { ok: false, code: 'NO_TOKEN' };
+  var q = await expresspayQuery(env, token);
+  if (q.error) return { ok: false, code: 'VERIFY_FAILED' };
+  if (q.pending) return { ok: false, code: 'PAYMENT_OPEN' };
+  if (!q.approved) return { ok: false, code: 'PAYMENT_OPEN' };
+  if (q.orderId && q.orderId !== txRef) return { ok: false, code: 'TX_REF_MISMATCH' };
+  if (expectedAmount != null && Math.abs(Number(q.amount) - Number(expectedAmount)) > 0.01) return { ok: false, code: 'AMOUNT_MISMATCH' };
+  if (q.currency && q.currency !== 'GHS') return { ok: false, code: 'CURRENCY_MISMATCH' };
   return { ok: true };
 }
 
@@ -72,12 +74,7 @@ export async function onRequest(context) {
     }
     var price = enrollment.price == null ? 0 : Number(enrollment.price);
     if (price > 0) {
-      if (!transaction_id) {
-        return new Response(JSON.stringify({ status: 'error', message: 'Payment verification required', code: 'MISSING_TX' }), {
-          status: 402, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
-        });
-      }
-      var verified = await verifyFlutterwave(env, transaction_id, tx_ref || '', price);
+      var verified = await verifyExpressPay(env, tx_ref, price);
       if (!verified.ok) {
         return new Response(JSON.stringify({ status: 'error', message: 'Payment could not be verified', code: verified.code }), {
           status: 402, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)

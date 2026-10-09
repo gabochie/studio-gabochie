@@ -144,7 +144,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 
     <span class="gateway-label">Pay with</span>
     <div class="gateway-grid" id="gatewayGrid">
-      <button type="button" class="gateway-btn selected" data-gateway="flutterwave" onclick="selectGateway('flutterwave')"><span class="gw-icon">&#128179;</span>Card / MoMo</button>
+      <button type="button" class="gateway-btn selected" data-gateway="expresspay" onclick="selectGateway('expresspay')"><span class="gw-icon">&#128179;</span>Card / MoMo</button>
       <button type="button" class="gateway-btn" data-gateway="moolre" onclick="selectGateway('moolre')"><span class="gw-icon">&#128188;</span>Moolre</button>
       <button type="button" class="gateway-btn" data-gateway="crypto" onclick="selectGateway('crypto')"><span class="gw-icon">&#8383;</span>Crypto</button>
       <button type="button" class="gateway-btn" data-gateway="manual" onclick="selectGateway('manual')"><span class="gw-icon">&#128176;</span>MoMo Pin</button>
@@ -154,7 +154,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 
     <button class="submit-btn" id="payBtn" onclick="startPayment()">Donate Now</button>
 
-    <div class="secure-badge">&#128274; Secured payments — Flutterwave, Moolre, Crypto</div>
+    <div class="secure-badge">&#128274; Secured payments — ExpressPay, Moolre, Crypto</div>
     <div class="trust-row"><span>Card &middot; MoMo &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/donations.html">Donation policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
   </div>
 
@@ -200,6 +200,20 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     st.textContent = 'Pending confirmation';
     st.style.color = '#EAB308';
     document.getElementById('receiptMsg').textContent = 'We received your transfer notice. Your receipt will confirm here once the payment clears — no further action needed.';
+    // Poll ExpressPay until approval, then reload into the confirmed receipt.
+    var polls = 0;
+    var pollTimer = setInterval(function() {
+      polls++;
+      if (polls > 20) { clearInterval(pollTimer); return; }
+      fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(tx))
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d && d.status === 'ok' && d.approved) {
+            clearInterval(pollTimer);
+            window.location.href = window.location.origin + '/donate/?tx_ref=' + encodeURIComponent(tx) + '&status=successful' + (amount ? '&amount=' + encodeURIComponent(amount) : '');
+          }
+        }).catch(function() {});
+    }, 8000);
   } else if (status === 'successful' || status === 'completed') {
     st.textContent = 'Confirmed';
     st.style.color = '#22C55E';
@@ -218,7 +232,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 var selectedAmount = 100;
 var custSelected = false;
 var isMonthly = false;
-var selectedGateway = 'flutterwave';
+var selectedGateway = 'expresspay';
 
 function selectGateway(gw) {
   selectedGateway = gw;
@@ -226,7 +240,7 @@ function selectGateway(gw) {
     b.classList.remove('selected');
     if (b.dataset.gateway === gw) b.classList.add('selected');
   });
-  if (gw !== 'flutterwave') {
+  if (gw !== 'expresspay' && gw !== 'flutterwave') {
     document.getElementById('gatewayPanel').innerHTML = '';
     document.getElementById('gatewayPanel').style.display = 'none';
   }
@@ -243,7 +257,7 @@ function setFrequency(freq) {
   document.getElementById('patronCard').style.display = isMonthly ? 'block' : 'none';
   document.getElementById('payBtn').textContent = isMonthly ? 'Become a Monthly Patron' : 'Donate Now';
   document.getElementById('gatewayGrid').classList.toggle('disabled', isMonthly);
-  if (isMonthly) selectGateway('flutterwave');
+  if (isMonthly) selectGateway('expresspay');
 }
 
 function selectAmount(amt) {
@@ -289,43 +303,27 @@ function startPayment() {
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
-  if (selectedGateway !== 'flutterwave') {
+  if (selectedGateway !== 'expresspay' && selectedGateway !== 'flutterwave') {
     startAlternativeGateway(amount, name, email, phone, btn);
     return;
   }
 
   var tx_ref = 'donate_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-  var redirectUrl = window.location.origin + '/donate/?tx_ref=' + encodeURIComponent(tx_ref) + '&status=successful&amount=' + amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
 
   if (navigator.sendBeacon) {
     navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, amount: amount}), page: location.pathname, email: email}));
   }
 
-  FlutterwaveCheckout({
-    public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+  window.payWithExpressPay({
     tx_ref: tx_ref,
+    name: name,
+    email: email,
+    phone: phone,
     amount: amount,
-    currency: 'GHS',
-    payment_options: 'card, mobilemoneyghana, ussd',
-    meta: {source: 'donate_standalone'},
-    customer: { email: email, name: name, phone_number: phone },
-    customizations: {
-      title: 'Donation to Studio Gabochie',
-      description: 'Support books, videos, and teachings',
-      logo: window.location.origin + '/assets/images/logo.png'
-    },
-    callback: function(response) {
-      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
-      btn.disabled = false;
-      btn.textContent = 'Donate Now';
-      if (typeof window.payError === 'function') window.payError('Donation was not completed — <strong>no charge was made.</strong> Please try again.', 'donate');
-      else alert('Donation was not completed. Please try again or email studio@gabochie.com');
-    },
-    onclose: function() {
-      btn.disabled = false;
-      btn.textContent = 'Donate Now';
-      if (typeof window.payClosed === 'function') window.payClosed('donate');
-    }
+    redirect: '/donate/?amount=' + amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone),
+    btn: btn,
+    btnLabel: 'Donate Now',
+    context: 'donate'
   });
 }
 
@@ -462,33 +460,18 @@ function startMonthlySubscription() {
     })
   }).then(function(r){return r.json()}).then(function(data){
     if (data.status !== 'ok') throw new Error(data.message || 'Failed to create');
-    FlutterwaveCheckout({
-      public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_success', event_data: data.tx_ref}));
+    }
+    window.payWithExpressPay({
       tx_ref: data.tx_ref,
-      amount: data.amount,
-      currency: data.currency || 'GHS',
-      payment_plan: data.is_recurring && data.plan_id ? parseInt(data.plan_id) : undefined,
-      payment_options: 'card, mobilemoneyghana, ussd',
-      customer: { email: email, name: name, phone: phone },
-      customizations: {
-        title: 'Studio Gabochie',
-        description: 'Monthly Supporter — 50 GHS/mo',
-        logo: window.location.origin + '/assets/images/logo.png'
-      },
-      callback: function(response) {
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_success', event_data: data.tx_ref}));
-        }
-        window.location.href = '/donate/?tx_ref=' + encodeURIComponent(data.tx_ref) + '&status=successful&amount=' + data.amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
-      },
-      onclose: function() {
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'subscription_cancelled', event_data: 'monthly'}));
-        }
-        btn.disabled = false;
-        btn.textContent = 'Become a Monthly Patron';
-        if (typeof window.payClosed === 'function') window.payClosed('donate_monthly');
-      }
+      name: name,
+      email: email,
+      phone: phone,
+      redirect: '/donate/?amount=' + data.amount + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone),
+      btn: btn,
+      btnLabel: 'Become a Monthly Patron',
+      context: 'donate_monthly'
     });
   }).catch(function(err) {
     btn.disabled = false;
