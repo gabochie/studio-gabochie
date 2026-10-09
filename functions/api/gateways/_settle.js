@@ -1,5 +1,6 @@
 import { queueEmail, donationImpactFollowup, bookUpsell, daysFromNow } from '../email/_send.js';
 import { generateInvoice } from '../invoices/generate.js';
+import { sendGuitarReceipt, guitarBuyer } from '../guitar/_receipt.js';
 
 // Shared settlement for confirmed payments, gateway-agnostic.
 // Called by the Flutterwave webhook (legacy), the ExpressPay callback,
@@ -41,6 +42,23 @@ export async function settlePaidTx(env, db, p) {
         }
       } catch (_ce) {}
     }
+  }
+
+  // Guitar unlock (tx_ref prefix: GUITAR_): complete the pending payment,
+  // ensure stats, send the purchase receipt. Lowercase legacy guitar_ refs
+  // keep the welcome email below.
+  if (event === 'charge.completed' && tx_ref.startsWith('GUITAR_')) {
+    try {
+      await db.prepare("UPDATE guitar_payments SET status = 'completed' WHERE flw_tx_ref = ? AND status != 'completed'").bind(tx_ref).run();
+      var gPay = await db.prepare('SELECT user_id, email FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
+      if (gPay && gPay.user_id) {
+        await db.prepare(
+          'INSERT INTO guitar_user_stats (user_id, total_xp, level, updated_at) VALUES (?, 0, 1, datetime(\'now\')) ON CONFLICT(user_id) DO NOTHING'
+        ).bind(gPay.user_id).run();
+      }
+      var gBuyer = await guitarBuyer(db, tx_ref, (gPay && gPay.email) || donor_email);
+      await sendGuitarReceipt(env, { email: gBuyer.email, name: gBuyer.name, phone: gBuyer.phone, txRef: tx_ref, amount: verifiedAmount });
+    } catch (_e) {}
   }
 
   // Mark guitar course enrollment

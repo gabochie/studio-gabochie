@@ -224,7 +224,6 @@ export async function onRequest(context) {
       '<!-- STICKY CTA -->' +
       '<div class="sticky-cta"><button onclick="document.getElementById(\'donate\').scrollIntoView({behavior:\'smooth\'})">Donate Now — Every GH\u00a2100 Trains 1 Youth</button></div>' +
       '<script>' +
-      'var FLW_KEY="FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X";' +
       'var SLUG="1-million-systems-thinkers";' +
       'function pickTier(el){' +
       'document.querySelectorAll(".tier-card.selected").forEach(function(c){c.classList.remove("selected")});' +
@@ -250,28 +249,29 @@ export async function onRequest(context) {
       'var btn=document.getElementById("dnBtn");btn.disabled=true;btn.textContent="Opening Payment...";' +
       'var tx_ref="camp_"+SLUG+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);' +
       'try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"donation_started",tx_ref:tx_ref,amount:amt,email:email,name:name,campaign:SLUG})})}catch(e){}' +
-      'FlutterwaveCheckout({' +
-      'public_key:FLW_KEY,tx_ref:tx_ref,amount:amt,currency:"GHS",' +
-      'payment_options:"card,mobilemoneyghana,ussd",' +
-      'customer:{email:email,name:name||"Anonymous",phone:phone},' +
-      'meta:{campaign_slug:SLUG},' +
-      'customizations:{title:"Studio Gabochie",description:"Train 1M Systems Thinkers",logo:window.location.origin+"/assets/images/logo.png"},' +
-      'callback:function(p){' +
-      'if(p.status==="successful"||p.transaction_id){' +
-      'window.location.href="/campaigns/1-million-systems-thinkers?thankyou=1";' +
-      '}' +
-      '},' +
-      'onclose:function(){btn.disabled=false;btn.textContent="Donate Now"}' +
-      '})}' +
+      'fetch("/api/gateways/expresspay/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tx_ref:tx_ref,amount:amt,name:name,email:email,phone:phone,redirect:"/campaigns/1-million-systems-thinkers?thankyou=pending"})})' +
+      '.then(function(r){return r.json()}).then(function(d){' +
+      'if(d.status==="ok"&&d.checkout_url){window.location.href=d.checkout_url;return}' +
+      'btn.disabled=false;btn.textContent="Donate Now";alert(d.message||"Could not start payment. No charge was made.")' +
+      '}).catch(function(){btn.disabled=false;btn.textContent="Donate Now";alert("Network error. No charge was made.")})}' +
+      'var thanksBox=' +
+      '"<div style=\\"text-align:center;padding:20px\\">" +' +
+      '"<div style=\\"font-size:48px;margin-bottom:8px\\">\\u2713</div>" +' +
+      '"<h3 style=\\"font-family:Barlow Condensed,sans-serif;font-size:22px;color:#34C77B;margin:0 0 4px\\">Thank You!</h3>" +' +
+      '"<p style=\\"font-size:14px;color:#6B7F9A;margin:0 0 4px\\">Your contribution is powering the next generation of systems thinkers.</p>" +' +
+      '"<p style=\\"font-size:12px;color:#4A5F7A\\">A receipt will be sent to your email.</p>" +' +
+      '"<a href=\\"/campaigns/1-million-systems-thinkers\\" style=\\"display:inline-block;margin-top:12px;color:#C9A84C;font-size:13px\\">&larr; Back to campaign</a>" +' +
+      '"</div>";' +
       'if(location.search.indexOf("thankyou=1")>=0){' +
-      'document.getElementById("donateBox").innerHTML="' +
-      '<div style=\\"text-align:center;padding:20px\\">' +
-      '<div style=\\"font-size:48px;margin-bottom:8px\\">\\u2713</div>' +
-      '<h3 style=\\"font-family:Barlow Condensed,sans-serif;font-size:22px;color:#34C77B;margin:0 0 4px\\">Thank You!</h3>' +
-      '<p style=\\"font-size:14px;color:#6B7F9A;margin:0 0 4px\\">Your contribution is powering the next generation of systems thinkers.</p>' +
-      '<p style=\\"font-size:12px;color:#4A5F7A\\">A receipt will be sent to your email.</p>' +
-      '<a href=\\"/campaigns/1-million-systems-thinkers\\" style=\\"display:inline-block;margin-top:12px;color:#C9A84C;font-size:13px\\">&larr; Back to campaign</a>' +
-      '</div>";' +
+      'document.getElementById("donateBox").innerHTML=thanksBox;' +
+      '}' +
+      'else if(location.search.indexOf("thankyou=pending")>=0){' +
+      'var q=new URLSearchParams(location.search);var ptx=q.get("tx_ref")||"";' +
+      'document.getElementById("donateBox").innerHTML="<div style=\\"text-align:center;padding:20px\\"><h3 style=\\"font-family:Barlow Condensed,sans-serif;font-size:22px;color:#EAB308;margin:0 0 4px\\">Confirming Payment...</h3><p style=\\"font-size:14px;color:#6B7F9A;margin:0\\">Your receipt will confirm here once the payment clears.</p></div>";' +
+      'if(ptx){var polls=0;var timer=setInterval(function(){polls++;if(polls>20){clearInterval(timer);return}' +
+      'fetch("/api/gateways/expresspay/status?tx_ref="+encodeURIComponent(ptx)).then(function(r){return r.json()}).then(function(d){' +
+      'if(d&&d.status==="ok"&&d.approved){clearInterval(timer);document.getElementById("donateBox").innerHTML=thanksBox}' +
+      '}).catch(function(){})},8000)}' +
       '}' +
       '</script>' +
       '</body></html>';

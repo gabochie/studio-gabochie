@@ -78,6 +78,23 @@ const MODULES = [
   const modId = p.get('module') ? parseInt(p.get('module')) : null;
   const lesId = p.get('lesson') ? parseInt(p.get('lesson')) : null;
   try { enrollStatus = await Guitar.getEnrollStatus(); } catch(e) {}
+  // Returning from ExpressPay: wait for approval, then reload unlocked.
+  if (p.get('upgrade') === 'pending' && p.get('tx_ref') && !(enrollStatus && enrollStatus.unlocked)) {
+    const rtx = p.get('tx_ref');
+    c.innerHTML = '<div class="section-title">Confirming Payment...</div><div class="section-sub">Your receipt will unlock here once the payment clears — no further action needed.</div>';
+    let polls = 0;
+    const timer = setInterval(async () => {
+      polls++;
+      if (polls > 20) { clearInterval(timer); return; }
+      try {
+        const s = await (await fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(rtx))).json();
+        if (s && s.status === 'ok' && s.approved) {
+          clearInterval(timer);
+          window.location.href = '/guitar/learn/';
+        }
+      } catch(e) {}
+    }, 8000);
+  }
 
   var _freeMods = Guitar.FREE_MODULES || 3;
 

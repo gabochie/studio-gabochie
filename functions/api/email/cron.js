@@ -1,4 +1,4 @@
-import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
+import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, tierRenewalReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
@@ -20,7 +20,7 @@ export async function onRequest(context) {
   }
 
   try {
-    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, checkout: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
+    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, checkout: { checked: 0, queued: 0 }, renewal: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
 
     // Step 1: Abandoned donation recovery
     try {
@@ -95,6 +95,31 @@ export async function onRequest(context) {
       }
     } catch (err) {
       result.errors.push('checkout: ' + err.message);
+    }
+
+    // Step 1d: Tier renewal reminders (one-time periods, no auto-charge)
+    try {
+      var { results: renewalResults } = await env.DB.prepare(
+        `SELECT u.name, u.email, u.membership_tier, u.membership_expires_at
+         FROM users u
+         WHERE u.membership_expires_at IS NOT NULL
+           AND u.membership_expires_at != ''
+           AND u.membership_expires_at <= datetime('now', '+7 days')
+           AND u.email != ''
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = u.email AND q.email_type = 'tier_renewal' AND q.created_at >= u.membership_expires_at)
+         ORDER BY u.membership_expires_at ASC LIMIT 50`
+      ).all();
+
+      result.renewal.checked = renewalResults.length;
+      var tierLabels = { supporter: 'Supporter', premium: 'Scholar', vip: 'Patron', founding: 'Founding Partner', scholar: 'Scholar', patron: 'Patron' };
+      for (var rn of renewalResults) {
+        var rName = rn.membership_tier ? (tierLabels[rn.membership_tier] || rn.membership_tier) : 'Membership';
+        var rDate = String(rn.membership_expires_at || '').slice(0, 10);
+        await queueEmail(env, rn.email, rn.name || '', 'Your ' + rName + ' renews soon — Studio Gabochie', tierRenewalReminder(rn.name || '', rName, rDate), 'tier_renewal', daysFromNow(0));
+        result.renewal.queued++;
+      }
+    } catch (err) {
+      result.errors.push('renewal: ' + err.message);
     }
 
     // Step 2: Process email queue

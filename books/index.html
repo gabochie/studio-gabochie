@@ -208,25 +208,16 @@ function payWithAmount() {
     body: JSON.stringify({tx_ref: tx_ref, email: email, name: name, amount: amount, books: _leadSlug})
   }).catch(function(){});
 
-  FlutterwaveCheckout({
-    public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-    tx_ref: tx_ref,
-    amount: amount,
-    currency: 'GHS',
-    payment_options: 'card, mobilemoneyghana, ussd',
-    meta: {source: 'book_pwyw', book: _leadSlug},
-    customer: { email: email, name: name },
-    customizations: {
-      title: 'Book Contribution',
-      description: 'Pay what you want for ' + document.getElementById('leadBookName').textContent,
-      logo: window.location.origin + '/assets/images/logo.png'
-    },
-    callback: function(response) {
-      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
-      alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
-    },
-    onclose: function() { if (typeof window.payClosed === 'function') window.payClosed('books_pwyw'); }
-  });
+  if (typeof window.payWithExpressPay === 'function') {
+    var pwBtn = document.getElementById('payWithBtn');
+    if (pwBtn) { pwBtn.disabled = true; pwBtn.textContent = 'Opening payment...'; }
+    window.payWithExpressPay({
+      tx_ref: tx_ref, name: name, email: email, phone: '',
+      redirect: '/books/download', btn: pwBtn, btnLabel: 'Pay & Download', context: 'books_pwyw'
+    });
+    return;
+  }
+  alert('Payment system loading. Please refresh and try again.');
 }
 
 function payWithCrypto() {
@@ -280,31 +271,17 @@ function buyBundle() {
 
   var redirectUrl = window.location.origin + '/books/download?tx_ref=' + encodeURIComponent(tx_ref) + '&email=' + encodeURIComponent(email) + '&name=' + encodeURIComponent(name);
 
-  FlutterwaveCheckout({
-    public_key: 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X',
-    tx_ref: tx_ref,
-    amount: 300,
-    currency: 'GHS',
-    payment_options: 'card, mobilemoneyghana, ussd',
-    meta: {source: 'books_bundle'},
-    customer: { email: email, name: name },
-    customizations: {
-      title: 'Premium Books Bundle',
-      description: 'All 4 published works',
-      logo: window.location.origin + '/assets/images/logo.png'
-    },
-    callback: function(response) {
-      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
-      btn.disabled = false;
-      btn.textContent = 'Buy Bundle — GHS 300';
-      alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
-    },
-    onclose: function() {
-      btn.disabled = false;
-      btn.textContent = 'Buy Bundle — GHS 300';
-      if (typeof window.payClosed === 'function') window.payClosed('books_bundle');
-    }
-  });
+  if (typeof window.payWithExpressPay === 'function') {
+    window.payWithExpressPay({
+      tx_ref: tx_ref, name: name, email: email, phone: '',
+      redirect: '/books/download', btn: btn, btnLabel: 'Buy Bundle — GHS 300', context: 'books_bundle'
+    });
+    return;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Buy Bundle — GHS 300';
+  alert('Payment system loading. Please refresh and try again.');
 }
 
 function recordBookPurchase(tx_ref, email, name, amount, books) {
