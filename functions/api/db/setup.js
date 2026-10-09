@@ -329,6 +329,12 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_scheduled ON whatsapp_queue(scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_status ON whatsapp_queue(status)`,
+      // ExpressPay checkout tokens (query API needs the token; order-id alone is not enough)
+      `CREATE TABLE IF NOT EXISTS expresspay_tokens (
+        tx_ref TEXT PRIMARY KEY,
+        token TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
       // Seed test sponsor
       `INSERT OR IGNORE INTO sponsors (email, company, access_code) VALUES ('sponsor@test.com', 'Test Corp', 'SPONSOR2026')`,
       // Subscriptions table for recurring supporter tiers
