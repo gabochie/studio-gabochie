@@ -5,7 +5,7 @@ import { onRequest as upgrade } from '../../functions/api/enroll/upgrade.js';
 function post(body, db) {
   return buildContext('http://localhost/api/enroll/upgrade', {
     method: 'POST',
-    env: { DB: db, FLW_SECRET_KEY: 'flw-secret' },
+    env: { DB: db, EXPRESSPAY_MERCHANT_ID: 'mid', EXPRESSPAY_API_KEY: 'key' },
     request: new Request('http://localhost/api/enroll/upgrade', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok-123' },
@@ -18,7 +18,8 @@ function paidEnrollment() {
   return mockDb({
     enrollments: [
       { id: 1, program_id: 9, access_token: 'tok-123', status: 'sample', payment_ref: '', price: 250, full_content: '<p>all lessons</p>' }
-    ]
+    ],
+    expresspay_tokens: [{ tx_ref: 'upgrade_abc', token: 'tok-exp' }]
   });
 }
 
@@ -30,10 +31,10 @@ function freeEnrollment() {
   });
 }
 
-function flwOk(txRef, amount) {
+function expQueryOk(txRef, amount, result) {
   globalThis.fetch = async function (url) {
-    expect(String(url)).toContain('/v3/transactions/');
-    return new Response(JSON.stringify({ status: 'success', data: { status: 'successful', tx_ref: txRef || 'upgrade_abc', amount: amount || 250, currency: 'GHS' } }), {
+    expect(String(url)).toContain('/query.php');
+    return new Response(JSON.stringify({ result: result == null ? 1 : result, 'result-text': 'ok', 'order-id': txRef || 'upgrade_abc', token: 'tok-exp', currency: 'GHS', amount: String(amount == null ? 250 : amount), 'transaction-id': 'EXP1' }), {
       status: 200, headers: { 'Content-Type': 'application/json' }
     });
   };
@@ -53,10 +54,10 @@ describe('enroll upgrade', function () {
     expect(db._tables.enrollments[0].status).toBe('sample');
   });
 
-  it('upgrades after Flutterwave verification succeeds', async function () {
-    flwOk('upgrade_abc', 250);
+  it('upgrades after ExpressPay verification succeeds', async function () {
+    expQueryOk('upgrade_abc', 250);
     var db = paidEnrollment();
-    var res = await upgrade(post({ tx_ref: 'upgrade_abc', transaction_id: 'txn-123' }, db));
+    var res = await upgrade(post({ tx_ref: 'upgrade_abc' }, db));
     expect(res.status).toBe(200);
     var data = await res.json();
     expect(data.status).toBe('ok');
@@ -65,23 +66,19 @@ describe('enroll upgrade', function () {
   });
 
   it('rejects a completed payment with a mismatched amount', async function () {
-    flwOk('upgrade_abc', 80);
+    expQueryOk('upgrade_abc', 80);
     var db = paidEnrollment();
-    var res = await upgrade(post({ tx_ref: 'upgrade_abc', transaction_id: 'txn-222' }, db));
+    var res = await upgrade(post({ tx_ref: 'upgrade_abc' }, db));
     expect(res.status).toBe(402);
     var data = await res.json();
     expect(data.code).toBe('AMOUNT_MISMATCH');
     expect(db._tables.enrollments[0].status).toBe('sample');
   });
 
-  it('rejects a non-successful Flutterwave transaction', async function () {
-    globalThis.fetch = async function () {
-      return new Response(JSON.stringify({ status: 'success', data: { status: 'failed', tx_ref: 'upgrade_abc', amount: 250, currency: 'GHS' } }), {
-        status: 200, headers: { 'Content-Type': 'application/json' }
-      });
-    };
+  it('rejects a non-approved ExpressPay transaction', async function () {
+    expQueryOk('upgrade_abc', 250, 2);
     var db = paidEnrollment();
-    var res = await upgrade(post({ tx_ref: 'upgrade_abc', transaction_id: 'txn-333' }, db));
+    var res = await upgrade(post({ tx_ref: 'upgrade_abc' }, db));
     expect(res.status).toBe(402);
     var data = await res.json();
     expect(data.code).toBe('PAYMENT_OPEN');

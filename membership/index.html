@@ -287,7 +287,7 @@ function renderPlans() {
       '<p class="plan-desc">' + (p.description || '') + '</p>' +
       '<ul class="plan-features">' + featureLis + '</ul>' +
       btnHtml +
-      '<div class="trust-row"><span>&#128274; Secured by Flutterwave</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>' +
+      '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>' +
       '<div class="trust-sub">Card &middot; MoMo &middot; USSD — charged in GHS. No hidden fees.</div>' +
       '</div>';
   });
@@ -306,31 +306,16 @@ function subscribe(slug, btn) {
   .then(function(r){ return r.json(); })
   .then(function(d){
     if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; if (typeof window.payError === 'function') window.payError(d.message || 'Could not start checkout.', 'tier'); else alert(d.message || 'Failed'); return; }
-    var opts = {
-      public_key: FLW_PUBLIC_KEY,
+    window.payWithExpressPay({
       tx_ref: d.tx_ref,
-      amount: d.amount,
-      currency: d.currency || 'GHS',
-      payment_options: 'card, mobilemoneyghana, ussd',
-      customer: d.customer,
-      customizations: {
-        title: 'Studio Gabochie',
-        description: slug.charAt(0).toUpperCase() + slug.slice(1) + ' Tier',
-        logo: window.location.origin + '/assets/images/logo.png'
-      },
-      callback: function(payload){
-        if (payload.status === 'successful' || payload.transaction_id) {
-          window.location.href = '/member/?success=' + slug;
-        }
-      },
-      onclose: function(){
-        btn.disabled = false;
-        btn.textContent = 'Upgrade';
-        if (typeof window.payClosed === 'function') window.payClosed('tier');
-      }
-    };
-    if (d.is_recurring && d.plan_id) opts.payment_plan = parseInt(d.plan_id);
-    FlutterwaveCheckout(opts);
+      name: (d.customer && d.customer.name) || '',
+      email: (d.customer && d.customer.email) || '',
+      phone: (d.customer && d.customer.phone) || '',
+      redirect: '/member/?success=' + encodeURIComponent(slug),
+      btn: btn,
+      btnLabel: 'Upgrade',
+      context: 'tier'
+    });
   })
   .catch(function(){
     btn.disabled = false;

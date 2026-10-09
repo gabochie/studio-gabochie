@@ -194,6 +194,29 @@ window.payError = function(msg, context) {
   payToast(msg || 'Payment failed — <strong>no charge was made.</strong> Please try again.', 'checkout_failed', context || '');
 };
 
+/* ── ExpressPay redirect checkout ── */
+window.payWithExpressPay = function(opts) {
+  opts = opts || {};
+  var btn = opts.btn;
+  return fetch('/api/gateways/expresspay/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tx_ref: opts.tx_ref, amount: opts.amount, name: opts.name, email: opts.email, phone: opts.phone, redirect: opts.redirect })
+  }).then(function(r) {
+    return r.json().then(function(d) { return { ok: r.ok, d: d }; });
+  }).then(function(res) {
+    if (!res.ok || !res.d || res.d.status !== 'ok' || !res.d.checkout_url) {
+      throw new Error((res.d && res.d.message) || 'Could not start payment');
+    }
+    window.location.href = res.d.checkout_url;
+  }).catch(function(err) {
+    if (btn) { btn.disabled = false; btn.textContent = opts.btnLabel || 'Try Again'; }
+    var msg = (err && err.message ? err.message : 'Could not start payment.') + ' — <strong>no charge was made.</strong>';
+    if (typeof window.payError === 'function') window.payError(msg, opts.context || 'expresspay');
+    else alert(msg.replace(/<[^>]*>/g, ''));
+  });
+};
+
 /* eslint-disable-next-line no-unused-vars */
 function tagOnboard(email, name, tag) {
   if (!email || !tag) return;
