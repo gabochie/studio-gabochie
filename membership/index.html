@@ -266,7 +266,7 @@ function renderPlans() {
     var iconClass = TIER_COLORS[p.slug] || 'free';
     var iconName = TIER_ICONS[p.slug] || 'ti-user';
 
-    var displayPrice = price > 0 ? 'GH\u00a2 ' + price : 'Free';
+    var displayPrice = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GH\u00a2 ' + price) : 'Free';
 
     var btnHtml;
     if (isCurrent) {
@@ -370,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('plansGrid').innerHTML = '<div class="error-msg">Something went wrong.</div>';
     });
   }
+  window.addEventListener('ga:currencychange', function() { if (allTiers && allTiers.length) renderPlans(); });
 });
 </script>
 <script src="/nav.js"></script>

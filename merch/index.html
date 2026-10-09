@@ -134,7 +134,7 @@ function renderMerch() {
       '<div class="info">' +
       '<h3>' + m.name + '</h3>' +
       '<div class="variant">' + m.variant + '</div>' +
-      '<div class="price">GH¢ ' + m.price + '</div>' +
+      '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(m.price) : 'GH¢ ' + m.price) + '</div>' +
       sizeHtml +
       '<button class="btn-buy" id="buyBtn_' + i + '" disabled onclick="buyMerchItem(' + i + ')"><i class="ti ti-shopping-cart"></i> Select Size &amp; Buy</button>' +
       '<button class="btn-buy" id="cryptoBtn_' + i + '" disabled onclick="buyMerchCrypto(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with Crypto</button>' +
@@ -224,6 +224,15 @@ fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(functio
     d.items.forEach(function(i){ if (!__inventory[i.product_slug]) __inventory[i.product_slug] = {}; __inventory[i.product_slug][i.size] = i.quantity; });
   }
 }).catch(function(){}).then(function(){ renderMerch(); });
+
+// Re-price in place on currency change (keeps size selections intact)
+window.addEventListener('ga:currencychange', function() {
+  if (typeof window.formatPrice !== 'function') return;
+  var prices = document.querySelectorAll('#merchGrid .merch-card .price');
+  prices.forEach(function(el, i) {
+    if (merchInventory[i]) el.textContent = window.formatPrice(merchInventory[i].price);
+  });
+});
 
 // Show success banner immediately if returning from payment
 (function(){

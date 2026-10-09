@@ -151,7 +151,7 @@ function truncateText(s, n) {
 
 function formatPriceEl(price) {
   if (price > 0) {
-    return '<span>Module 1 free &middot; Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(price, 'GHS') : 'GH\u00a2 ' + price) + '</strong></span>';
+    return '<span>Module 1 free &middot; Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GH\u00a2 ' + price) + '</strong></span>';
   }
   return '<span><strong class="free-tag" style="color:#34C77B">Free forever</strong></span>';
 }
@@ -290,7 +290,8 @@ function renderPrograms(staticData, apiPrograms) {
 
   grid.innerHTML = sectionHTML || html;
 
-  // Delegate enroll clicks for inline cards
+  // Delegate enroll clicks for inline cards (bound once; renderPrograms re-runs on currency change)
+  if (!grid.dataset.bound) {
   grid.addEventListener('click', function (e) {
     var btn = e.target.closest ? e.target.closest('[data-enroll-slug]') : null;
     if (!btn) return;
@@ -301,16 +302,22 @@ function renderPrograms(staticData, apiPrograms) {
       btn.getAttribute('data-enroll-tagline') || ''
     );
   });
+  grid.dataset.bound = '1';
+  }
 }
 
 (function () {
   var staticData = window.COURSE_DATA || { courses: [] };
+  var lastApi = null;
+  window.addEventListener('ga:currencychange', function () {
+    renderPrograms(staticData, lastApi);
+  });
 
   // Live programs from the DB — fall back to static data off-network
   if (typeof fetch === 'function') {
     fetch('/api/programs')
       .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function (d) { renderPrograms(staticData, (d && d.programs) || []); })
+      .then(function (d) { lastApi = (d && d.programs) || []; renderPrograms(staticData, lastApi); })
       .catch(function () { renderPrograms(staticData, null); });
   } else {
     renderPrograms(staticData, null);
