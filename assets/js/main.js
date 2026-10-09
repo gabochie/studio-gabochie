@@ -168,6 +168,32 @@ function gaGetUtm() {
   }
 })();
 
+/* ── Payment close guidance ── */
+function payToast(msg, eventType, eventData) {
+  try {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/event', JSON.stringify({ event_type: eventType || 'checkout_closed', event_data: eventData || '', page: location.pathname }));
+    }
+  } catch (_e) {}
+  var t = document.getElementById('payToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'payToast';
+    t.className = 'pay-toast';
+    document.body.appendChild(t);
+  }
+  t.innerHTML = msg + ' <a href="mailto:studio@gabochie.com">Need help?</a>';
+  t.style.display = 'block';
+  clearTimeout(window.__payToastTimer);
+  window.__payToastTimer = setTimeout(function() { t.style.display = 'none'; }, 7000);
+}
+window.payClosed = function(context) {
+  payToast('Payment window closed — <strong>no charge was made.</strong>', 'checkout_closed', context || '');
+};
+window.payError = function(msg, context) {
+  payToast(msg || 'Payment failed — <strong>no charge was made.</strong> Please try again.', 'checkout_failed', context || '');
+};
+
 /* eslint-disable-next-line no-unused-vars */
 function tagOnboard(email, name, tag) {
   if (!email || !tag) return;

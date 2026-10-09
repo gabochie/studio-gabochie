@@ -856,6 +856,7 @@ callback: function(payment) {
           onclose: function() {
             btn.disabled = false;
             btn.textContent = 'Upgrade \u2014 ' + window.formatPrice(price);
+            if (typeof window.payClosed === 'function') window.payClosed('course_upgrade');
           }
         });
       }).catch(function() {

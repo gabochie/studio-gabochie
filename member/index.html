@@ -189,7 +189,7 @@ function subscribeTier(slug, btn) {
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
-    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; alert(d.message || 'Failed to start checkout'); return null; }
+    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; if (typeof window.payError === 'function') window.payError(d.message || 'Could not start checkout.', 'tier'); else alert(d.message || 'Failed to start checkout'); return null; }
     return d;
   })
   .catch(function() {
@@ -223,6 +223,7 @@ function upgrade(slug) {
       },
       onclose: function() {
         btn.disabled = false; btn.textContent = 'Upgrade';
+        if (typeof window.payClosed === 'function') window.payClosed('tier');
       }
     };
     if (d.is_recurring && d.plan_id) opts.payment_plan = parseInt(d.plan_id);
@@ -231,7 +232,8 @@ function upgrade(slug) {
   .catch(function() {
     btn.disabled = false;
     btn.textContent = 'Upgrade';
-    alert('Connection error. Please try again.');
+    if (typeof window.payError === 'function') window.payError('Connection error — <strong>no charge was made.</strong> Please try again.', 'tier');
+    else alert('Connection error. Please try again.');
   });
 }
 function upgradeCrypto(slug) {
