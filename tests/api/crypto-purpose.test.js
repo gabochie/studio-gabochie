@@ -21,6 +21,17 @@ function jsonOk(data) {
   return new Response(JSON.stringify(data), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
 
+// Signed webhook context: computes a valid NOWPayments HMAC over the raw body.
+async function signedWebhook(rawBody, db) {
+  var key = await crypto.subtle.importKey('raw', new TextEncoder().encode('secret'), { name: 'HMAC', hash: 'SHA-512' }, false, ['sign']);
+  var out = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(rawBody));
+  var sig = Array.from(new Uint8Array(out)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  var url = 'http://localhost/api/gateways/crypto/webhook';
+  var ctx = buildContext(url, { method: 'POST', env: { DB: db, NOWPAYMENTS_IPN_SECRET: 'secret' } });
+  ctx.request = new Request(url, { method: 'POST', headers: { 'x-nowpayments-sig': sig }, body: rawBody });
+  return ctx;
+}
+
 function baseDb() {
   return mockDb({
     donations: [],
@@ -166,8 +177,7 @@ describe('crypto guitar unlocks', function () {
       status: 'pending', provider: 'crypto',
       metadata: JSON.stringify({ purpose: 'guitar', user_id: 5 })
     });
-    var ctx = post('http://localhost/api/gateways/crypto/webhook',
-      { order_id: 'crypto_g1', payment_status: 'finished', payment_id: 'np-9' }, { DB: db });
+    var ctx = await signedWebhook('{"order_id":"crypto_g1","payment_status":"finished","payment_id":"np-9"}', db);
     var data = await (await cryptoWebhook(ctx)).json();
     expect(data.status).toBe('ok');
     expect(db._tables.guitar_payments[0].status).toBe('completed');
@@ -184,8 +194,7 @@ describe('crypto webhook routing', function () {
       status: 'pending', provider: 'crypto',
       metadata: JSON.stringify({ purpose: 'course', enrollment_id: 11 })
     });
-    var ctx = post('http://localhost/api/gateways/crypto/webhook',
-      { order_id: 'crypto_c1', payment_status: 'finished', payment_id: 'np-1' }, { DB: db });
+    var ctx = await signedWebhook('{"order_id":"crypto_c1","payment_status":"finished","payment_id":"np-1"}', db);
     var data = await (await cryptoWebhook(ctx)).json();
     expect(data.status).toBe('ok');
     expect(db._tables.enrollments[0].status).toBe('active');
@@ -194,8 +203,7 @@ describe('crypto webhook routing', function () {
 
   it('ignores unsettled IPN events', async function () {
     var db = baseDb();
-    var ctx = post('http://localhost/api/gateways/crypto/webhook',
-      { order_id: 'crypto_c1', payment_status: 'waiting' }, { DB: db });
+    var ctx = await signedWebhook('{"order_id":"crypto_c1","payment_status":"waiting"}', db);
     var data = await (await cryptoWebhook(ctx)).json();
     expect(data.status).toBe('ok');
   });

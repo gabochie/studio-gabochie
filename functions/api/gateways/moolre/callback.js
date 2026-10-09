@@ -12,23 +12,16 @@ export async function onRequest(context) {
   }
 
   if (env.DB) {
-    // Refresh status of any pending Moolre donations when Moolre pings us without a reference.
     const data = body.data || {};
     const ref = data.externalref || body.externalref || '';
     const txid = data.transactionid || (body.reference || '');
 
-    let row = null;
-    if (ref && env.DB) {
-      row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(ref).first();
-    }
-    if ((!row || !ref) && env.DB) {
-      // Fall back to most recent pending moolre donation for this provider
-      row = await env.DB.prepare(
-        "SELECT * FROM donations WHERE provider = 'moolre' AND status = 'pending' ORDER BY created_at DESC LIMIT 1"
-      ).first();
-    }
+    // Require the merchant reference: never credit the "most recent pending"
+    // row, which misattributes concurrent donors' payments.
+    if (!ref) return json({ error: 'Missing externalref' }, 400);
+    const row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(ref).first();
     if (row) {
-      const v = await verifyMoolre(env, { externalref: ref || row.tx_ref, transactionid: txid });
+      const v = await verifyMoolre(env, { externalref: row.tx_ref, transactionid: txid });
       if (v.success) {
         await finalizeDonation(env, {
           tx_ref: row.tx_ref,
