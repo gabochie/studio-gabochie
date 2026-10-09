@@ -1,5 +1,3 @@
-import { resolvePlanId } from './_plans.js';
-
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
@@ -16,7 +14,6 @@ export async function onRequest(context) {
       tiers = await env.DB.prepare("SELECT slug, name, description, monthly_price_ghs, yearly_price_ghs, features, badge, sort_order FROM unified_tiers ORDER BY sort_order ASC").all();
       (tiers.results || []).forEach(function (t) { t.flw_plan_id = ''; });
     }
-    var flwKey = env.FLW_PUBLIC_KEY || 'FLWPUBK-6b8e97034170a30c3e07c20e4eab58af-X';
     return new Response(JSON.stringify({
       status: 'ok',
       tiers: (tiers.results || []).map(function(t) {
@@ -31,12 +28,11 @@ export async function onRequest(context) {
           features: parsed,
           badge: t.badge,
           sort_order: t.sort_order,
-          monthly_recurring: !!resolvePlanId(env, t.slug, 'monthly', t.flw_plan_id),
-          yearly_recurring: !!resolvePlanId(env, t.slug, 'yearly', t.flw_plan_id)
+          monthly_recurring: false,
+          yearly_recurring: false
         };
       }),
-      currency: 'GHS',
-      public_key: flwKey
+      currency: 'GHS'
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: err.message }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });

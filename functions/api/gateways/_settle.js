@@ -49,15 +49,18 @@ export async function settlePaidTx(env, db, p) {
   // keep the welcome email below.
   if (event === 'charge.completed' && tx_ref.startsWith('GUITAR_')) {
     try {
-      await db.prepare("UPDATE guitar_payments SET status = 'completed' WHERE flw_tx_ref = ? AND status != 'completed'").bind(tx_ref).run();
-      var gPay = await db.prepare('SELECT user_id, email FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
-      if (gPay && gPay.user_id) {
-        await db.prepare(
-          'INSERT INTO guitar_user_stats (user_id, total_xp, level, updated_at) VALUES (?, 0, 1, datetime(\'now\')) ON CONFLICT(user_id) DO NOTHING'
-        ).bind(gPay.user_id).run();
+      var gExisting = await db.prepare("SELECT status FROM guitar_payments WHERE flw_tx_ref = ?").bind(tx_ref).first();
+      if (!gExisting || gExisting.status !== 'completed') {
+        await db.prepare("UPDATE guitar_payments SET status = 'completed' WHERE flw_tx_ref = ?").bind(tx_ref).run();
+        var gPay = await db.prepare('SELECT user_id, email FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
+        if (gPay && gPay.user_id) {
+          await db.prepare(
+            'INSERT INTO guitar_user_stats (user_id, total_xp, level, updated_at) VALUES (?, 0, 1, datetime(\'now\')) ON CONFLICT(user_id) DO NOTHING'
+          ).bind(gPay.user_id).run();
+        }
+        var gBuyer = await guitarBuyer(db, tx_ref, (gPay && gPay.email) || donor_email);
+        await sendGuitarReceipt(env, { email: gBuyer.email, name: gBuyer.name, phone: gBuyer.phone, txRef: tx_ref, amount: verifiedAmount });
       }
-      var gBuyer = await guitarBuyer(db, tx_ref, (gPay && gPay.email) || donor_email);
-      await sendGuitarReceipt(env, { email: gBuyer.email, name: gBuyer.name, phone: gBuyer.phone, txRef: tx_ref, amount: verifiedAmount });
     } catch (_e) {}
   }
 

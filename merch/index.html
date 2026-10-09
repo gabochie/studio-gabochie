@@ -38,12 +38,10 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://checkout.flutterwave.com">
 <title>Merch — Studio Gabochie</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
 <link rel="stylesheet" href="../assets/css/main.css">
-<script defer src="https://checkout.flutterwave.com/v3.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--content-max:1440px}
@@ -139,7 +137,7 @@ function renderMerch() {
       sizeHtml +
       '<button class="btn-buy" id="buyBtn_' + i + '" disabled onclick="buyMerchItem(' + i + ')"><i class="ti ti-shopping-cart"></i> Select Size &amp; Buy</button>' +
       '<button class="btn-buy" id="cryptoBtn_' + i + '" disabled onclick="buyMerchCrypto(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with Crypto</button>' +
-      '<div class="trust-row"><span>&#128274; Secured by Flutterwave</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>' +
+      '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>' +
       '</div></div>';
   }).join('');
 }

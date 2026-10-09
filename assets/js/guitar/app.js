@@ -5,8 +5,6 @@
 const Guitar = {
   /* ----- Config ----- */
   API_ROOT: '/api/guitar',
-  PAYSTACK_PUBLIC_KEY: 'pk_test_7246579d3b5c565c392874d4c1068366eb11f0b2',
-  FLUTTERWAVE_PUBLIC_KEY: 'FLWPUBK_TEST-6f4a7e5d8c9b0a1d2e3f4a5b6c7d8e9f-X',
   PRICE: '99',
   COMPARE_PRICE: '500',
   CURRENCY_SYMBOL: 'GH₵',
@@ -51,8 +49,6 @@ const Guitar = {
   async fetchConfig() {
     try {
       const config = await (await fetch('/api/guitar/config')).json();
-      if (config.paystackPublicKey) this.PAYSTACK_PUBLIC_KEY = config.paystackPublicKey;
-      if (config.flutterwavePublicKey) this.FLUTTERWAVE_PUBLIC_KEY = config.flutterwavePublicKey;
       if (config.price) this.PRICE = config.price;
       if (config.comparePrice) this.COMPARE_PRICE = config.comparePrice;
       if (config.currencySymbol) this.CURRENCY_SYMBOL = config.currencySymbol;

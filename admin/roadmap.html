@@ -1148,7 +1148,7 @@ var DATA = {
           "id": "10.4",
           "task": "Payment & webhook endpoints exist",
           "status": "pending",
-          "launch": [{"label":"Flutterwave webhook","url":"../functions/api/payments/flutterwave.js","local":true},{"label":"Subscription webhook","url":"../functions/api/subscription/","local":true}],
+          "launch": [{"label":"ExpressPay callback","url":"../functions/api/gateways/expresspay/callback.js","local":true},{"label":"Shared settlement","url":"../functions/api/gateways/_settle.js","local":true}],
           "items": [
             "Flutterwave webhook endpoint exists (flutterwave.js)",
             "Subscription webhook handler exists"
@@ -1173,7 +1173,7 @@ var DATA = {
             "_headers file contains Content-Security-Policy",
             "_headers file contains Strict-Transport-Security",
             "_headers file contains X-Content-Type-Options",
-            "CSP allows Flutterwave checkout CDN",
+            "CSP blocks legacy checkout CDNs",
             "CSP allows Brevo email API"
           ]
         },
@@ -1186,7 +1186,7 @@ var DATA = {
             "Homepage lead form action points to /api/contact",
             "Newsletter subscribe form action points to /api/contact",
             "Ad booking modal references openBooking function",
-            "Donation Flutterwave checkout JS present on page"
+            "Donation ExpressPay checkout present on page"
           ]
         },
         {
@@ -1800,7 +1800,7 @@ var CHECKS = {
     {i:0, label:"Site deployed and reachable", check:function(){return checkPageExists("../index.html")}},
     {i:1, label:"HTTPS working", check:function(){return checkPageExists("https://studio.gabochie.com/")}},
     {i:2, label:"Nav links work on all pages", check:function(){return checkPageExists("../manifesto/index.html") && checkPageExists("../newsletter/index.html")}},
-    {i:3, label:"Donation buttons present", check:function(){return checkPageContains("../index.html","flutterwave")}},
+    {i:3, label:"Donation buttons present", check:function(){return checkPageContains("../donate/index.html","payWithExpressPay")}},
     {i:4, label:"Books downloadable", check:function(){return checkBookFilenames()}},
     {i:5, label:"Legal pages accessible", check:function(){return checkPageExists("../legal/privacy.html") && checkPageExists("../legal/terms.html")}},
     {i:6, label:"Lead form submits (Formspree)", check:function(){return checkPageContains("../index.html","xgoplkoe")}}
@@ -1863,10 +1863,10 @@ var CHECKS = {
     {i:2, label:"CRUD Workers deployed", check:function(){return checkFileExists("../admin/api/subscribers.js")}},
     {i:3, label:"KV data migrated to D1", check:function(){return checkKVLive()}}
   ],
-  "3.2": [ // On-site Flutterwave Payments
-    {i:0, label:"Flutterwave checkout embedded on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}},
+  "3.2": [ // ExpressPay redirect checkout
+    {i:0, label:"ExpressPay checkout on donate page", check:function(){return checkPageContains("../donate/index.html","payWithExpressPay")}},
     {i:1, label:"Payment webhook Worker exists", check:function(){return checkFileExists("../functions/api/payments/flutterwave.js")}},
-    {i:2, label:"Sponsorship booking accepts payment", check:function(){return checkPageContains("../newsletter/advertise.html","FlutterwaveCheckout") || checkPageContains("../newsletter/advertise.html","makePayment")}},
+    {i:2, label:"Sponsorship booking accepts payment", check:function(){return checkPageExists("../newsletter/advertise.html")}},
     {i:3, label:"Admin donation dashboard exists", check:function(){return checkFileExists("donations.html")}}
   ],
   "3.3": [ // Content Management
@@ -1938,8 +1938,8 @@ var CHECKS = {
     {i:4, label:"Music page exists", check:function(){return checkPageContains("../music/index.html","renderMusic")}}
   ],
   "10.4": [
-    {i:0, label:"Flutterwave webhook exists", check:function(){return checkFileExists("../functions/api/payments/flutterwave.js")}},
-    {i:1, label:"Membership subscribe API exists", check:function(){return checkFileExists("../functions/api/membership/subscribe.js")}}
+    {i:0, label:"ExpressPay callback exists", check:function(){return checkFileExists("../functions/api/gateways/expresspay/callback.js")}},
+    {i:1, label:"Tiers subscribe API exists", check:function(){return checkFileExists("../functions/api/tiers/subscribe.js")}}
   ],
   "10.5": [
     {i:0, label:"D1 ping endpoint exists", check:function(){return checkFileExists("../functions/api/db/ping.js")}},
@@ -1949,14 +1949,14 @@ var CHECKS = {
     {i:0, label:"CSP in _headers", check:function(){return checkPageContains("../_headers","Content-Security-Policy")}},
     {i:1, label:"HSTS in _headers", check:function(){return checkPageContains("../_headers","Strict-Transport-Security")}},
     {i:2, label:"X-Content-Type-Options in _headers", check:function(){return checkPageContains("../_headers","X-Content-Type-Options")}},
-    {i:3, label:"CSP allows Flutterwave", check:function(){return checkPageContains("../_headers","checkout.flutterwave.com")}},
+    {i:3, label:"CSP blocks legacy checkout CDNs", check:function(){return !checkPageContains("../_headers","checkout.flutterwave.com")}},
     {i:4, label:"CSP allows Brevo API", check:function(){return checkPageContains("../_headers","api.brevo.com")}}
   ],
   "10.7": [
     {i:0, label:"Lead form uses /api/contact", check:function(){return checkPageContains("../index.html","/api/contact")}},
     {i:1, label:"Subscribe form on homepage", check:function(){return checkPageContains("../index.html","subscribeForm") || checkPageContains("../index.html","/api/contact")}},
     {i:2, label:"Ad booking has openBooking", check:function(){return checkPageContains("../newsletter/advertise.html","openBooking")}},
-    {i:3, label:"Flutterwave checkout JS on page", check:function(){return checkPageContains("../index.html","FlutterwaveCheckout") || checkPageContains("../index.html","makePayment")}}
+    {i:3, label:"No legacy checkout JS on donate page", check:function(){return !checkPageContains("../donate/index.html","FlutterwaveCheckout")}}
   ],
   "10.8": [
     {i:0, label:"_redirects has /privacy rule", check:function(){return checkPageContains("../_redirects","/privacy")}},

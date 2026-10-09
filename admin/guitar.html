@@ -93,20 +93,7 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
 
   <div class="section-title">&#9881; Settings</div>
   <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
-    <label style="font-size:12px;color:#5A7A9F;display:block;margin-bottom:6px">Paystack Public Key</label>
-    <div style="display:flex;gap:8px">
-      <input id="paystackKeyInput" type="text" style="flex:1;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:10px 12px;color:#CBD5E1;font-size:13px;font-family:monospace" placeholder="pk_live_..." />
-      <button type="button" class="btn-sm" onclick="savePaystackKey()" style="white-space:nowrap">Save</button>
-    </div>
-    <p style="font-size:11px;color:#3A5278;margin-top:6px" id="paystackKeyStatus">Loaded from settings</p>
-  </div>
-  <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
-    <label style="font-size:12px;color:#5A7A9F;display:block;margin-bottom:6px">Flutterwave Public Key</label>
-    <div style="display:flex;gap:8px">
-      <input id="flwKeyInput" type="text" style="flex:1;background:#0A1628;border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:10px 12px;color:#CBD5E1;font-size:13px;font-family:monospace" placeholder="FLWPUBK-..." />
-      <button type="button" class="btn-sm" onclick="saveFlwKey()" style="white-space:nowrap">Save</button>
-    </div>
-    <p style="font-size:11px;color:#3A5278;margin-top:6px" id="flwKeyStatus">Loaded from settings</p>
+    <p style="font-size:12px;color:#5A7A9F;margin:0">Payments run through ExpressPay (server-side keys in Cloudflare env). No public keys to manage here.</p>
   </div>
   <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:20px;margin-bottom:24px">
     <label style="font-size:12px;color:#5A7A9F;display:block;margin-bottom:12px;font-weight:600">Pricing</label>
@@ -145,7 +132,7 @@ td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
         <div style="font-size:18px;flex-shrink:0">🔑</div>
-        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set live payment keys</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Enter live Paystack + Flutterwave public keys in Settings above</div></div>
+        <div><div style="font-weight:600;font-size:13px;color:#CBD5E1">Set ExpressPay live keys</div><div style="font-size:11px;color:#5A7A9F;margin-top:4px">Set EXPRESSPAY_MERCHANT_ID + EXPRESSPAY_API_KEY + EXPRESSPAY_LIVE=1 in Cloudflare env</div></div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
         <div style="font-size:18px;flex-shrink:0">💰</div>
@@ -277,57 +264,9 @@ async function loadGuitarData() {
   }
 }
 loadGuitarData();
-loadPaystackKey();
 
-function loadPaystackKey() {
-  adminFetch('/api/admin/preferences').then(r => r.json()).then(data => {
-    if (data.status === 'ok' && data.preferences?.guitar_paystack_key) {
-      document.getElementById('paystackKeyInput').value = data.preferences.guitar_paystack_key;
-      document.getElementById('paystackKeyStatus').textContent = 'Loaded — live key active';
-    } else {
-      document.getElementById('paystackKeyStatus').textContent = 'Using default test key — set a live key above';
-    }
-  }).catch(() => {
-    document.getElementById('paystackKeyStatus').textContent = 'Could not load';
-  });
-}
-
-loadFlwKey();
 loadPricing();
 loadVideoEditor();
-
-function loadFlwKey() {
-  adminFetch('/api/admin/preferences').then(r => r.json()).then(data => {
-    if (data.status === 'ok' && data.preferences?.guitar_flutterwave_key) {
-      document.getElementById('flwKeyInput').value = data.preferences.guitar_flutterwave_key;
-      document.getElementById('flwKeyStatus').textContent = 'Loaded';
-    } else {
-      document.getElementById('flwKeyStatus').textContent = 'Using default — set a key above';
-    }
-  }).catch(() => {
-    document.getElementById('flwKeyStatus').textContent = 'Could not load';
-  });
-}
-
-function saveFlwKey() {
-  var key = document.getElementById('flwKeyInput').value.trim();
-  if (!key) { document.getElementById('flwKeyStatus').textContent = 'Key cannot be empty'; return; }
-  document.getElementById('flwKeyStatus').textContent = 'Saving...';
-  adminFetch('/api/admin/preferences', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ key: 'guitar_flutterwave_key', value: key })
-  }).then(r => r.json()).then(data => {
-    if (data.status === 'ok') {
-      document.getElementById('flwKeyStatus').textContent = 'Saved!';
-    } else {
-      document.getElementById('flwKeyStatus').textContent = 'Error: ' + (data.message || 'unknown');
-    }
-  }).catch(e => {
-    document.getElementById('flwKeyStatus').textContent = 'Error: ' + e.message;
-  });
-}
-
 var _guitarCurrencySymbol = 'GH₵';
 
 var PRICING_KEYS = {
@@ -490,24 +429,6 @@ function confirmReset() {
     resultEl.textContent = 'Error: ' + e.message;
   });
 }
-
-function savePaystackKey() {
-  var key = document.getElementById('paystackKeyInput').value.trim();
-  if (!key) { document.getElementById('paystackKeyStatus').textContent = 'Key cannot be empty'; return; }
-  document.getElementById('paystackKeyStatus').textContent = 'Saving...';
-  adminFetch('/api/admin/preferences', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ key: 'guitar_paystack_key', value: key })
-  }).then(r => r.json()).then(data => {
-    if (data.status === 'ok') {
-      document.getElementById('paystackKeyStatus').textContent = 'Saved! Reload guitar pages to apply.';
-    } else {
-      document.getElementById('paystackKeyStatus').textContent = 'Error: ' + (data.message || 'unknown');
-    }
-  }).catch(e => {
-    document.getElementById('paystackKeyStatus').textContent = 'Error: ' + e.message;
-  });
 }
 </script>
 </body>

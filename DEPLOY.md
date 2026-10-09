@@ -44,11 +44,9 @@ Add these to **Cloudflare Pages** → project → **Settings** → **Environment
 
 | Variable | Required? | Description |
 |---|---|---|
-| `FLW_PLAN_SUPPORTER` | Yes | Flutterwave Payment Plan ID for Monthly Supporter (GH50/mo) |
-| `FLW_PLAN_PATRON` | Yes | Flutterwave Payment Plan ID for Annual Patron (GH500/yr) |
-| `FLW_PLAN_FOUNDING` | Yes | Flutterwave Payment Plan ID for Founding Partner (GH2500/yr) |
-| `FLW_SECRET_KEY` | Yes | Flutterwave secret key (from Settings → API) |
-| `FLW_SECRET_HASH` | Yes | Flutterwave webhook hash (set in webhook config) |
+| `EXPRESSPAY_MERCHANT_ID` | Yes | ExpressPay merchant ID (sandbox: 306264946940) |
+| `EXPRESSPAY_API_KEY` | Yes | ExpressPay API key (keep secret — never commit) |
+| `EXPRESSPAY_LIVE` | For live | Set to `1` for production (default is sandbox) |
 | `BREVO_API_KEY` | Yes | Brevo SMTP API key (for email automation) |
 | `CRON_SECRET` | Yes | Shared secret for `/api/email/cron` (must match GitHub Actions secret) |
 | `AGENT_AUTH_KEY` | Yes | Shared secret for `/api/agents/*` endpoints (must match GitHub Actions secret) |
@@ -58,36 +56,18 @@ Each variable should have values for **Production** (and optionally Preview).
 
 ---
 
-## Step 4: Flutterwave Webhook
+## Step 4: ExpressPay Webhook (post-url)
 
-1. Go to Flutterwave dashboard → **Settings** → **Webhook**
-2. Set the webhook URL to: `https://<project>.pages.dev/api/payments/flutterwave`
-3. Set a **Secret Hash** (any random string)
-4. Copy that hash as `FLW_SECRET_HASH` in Cloudflare env vars
-5. Copy your **Secret Key** from Settings → API as `FLW_SECRET_KEY`
+No dashboard registration is needed: every checkout submit sends
+`post-url=https://<project>.pages.dev/api/gateways/expresspay/callback`,
+and ExpressPay posts final MoMo/card statuses there. The callback re-queries
+ExpressPay before settling, so forged posts cannot unlock anything.
 
-### Recurring Payment Plans (in Flutterwave dashboard)
+Tiers are one-time charges per period (no auto-renewal): the
+`tier_renewal` cron step emails members before `membership_expires_at`.
 
-These are already configured in the code with these IDs — no env vars needed
-unless you want to override for different environments:
-
-| Plan | Amount | Interval | ID |
-|---|---|---|---|
-| Monthly Supporter | GH 50 | Monthly | `160302` |
-| Annual Patron | GH 500 | Yearly | `160303` |
-| Founding Partner | GH 2500 | Yearly | `160304` |
-
-To override (e.g., for staging), set `FLW_PLAN_SUPPORTER`, `FLW_PLAN_PATRON`,
-`FLW_PLAN_FOUNDING` env vars in Cloudflare Pages.
-
-Per-tier recurring for the newer tiers is configured with (see
-`functions/api/tiers/_plans.js` — unset means one-time charge):
-
-| Variable | Purpose |
-|---|---|
-| `FLW_PLAN_SCHOLAR_MONTHLY` / `FLW_PLAN_SCHOLAR_YEARLY` | Scholar recurring plans |
-| `FLW_PLAN_PATRON_MONTHLY` / `FLW_PLAN_PATRON_YEARLY` | Patron recurring plans |
-| `FLW_PLAN_SUPPORTER_YEARLY` | Supporter yearly override |
+> Sandbox test cards: Visa `4846801111111119` (CVV 123, exp 12/26),
+> MoMo success wallet `233541111111`, fail wallet `233542222222`.
 
 ---
 
@@ -196,21 +176,22 @@ The guitar course runs on the same Cloudflare Pages project and D1 database. Aft
    - 20 achievements/badges
 2. Verify with `https://<project>.pages.dev/api/guitar/modules` — should return all 16 modules
 
-### Flutterwave Paywall
+### ExpressPay Paywall
 
-The guitar course uses **Flutterwave** for a one-time GH₵ 99 course unlock (Modules 6+).
-No additional env vars are needed — the existing `FLW_SECRET_KEY` and `FLW_SECRET_HASH` are reused.
+The guitar course uses **ExpressPay** for a one-time GH₵ 99 course unlock.
+No additional env vars are needed — the existing `EXPRESSPAY_*` keys are reused.
 
-Webhook endpoint: `POST /api/guitar/enroll/webhook` (auto-configured alongside main webhook).
+Settlement: `POST /api/gateways/expresspay/callback` (shared post-url), which
+completes the pending `guitar_payments` row and emails the receipt.
 
 ### Enrollment Flow
 
 | Step | Endpoint | Description |
 |---|---|---|
 | Check status | `GET /api/guitar/enroll/status` | `{tier: "free"/"registered"/"premium"}` |
-| Register (free) | `POST /api/guitar/enroll` with `{plan: "free"}` | Creates user stats, enables Modules 1-5 |
-| Purchase | `POST /api/guitar/enroll` with `{plan: "premium"}` | Returns Flutterwave checkout URL, redirect user |
-| Webhook | `POST /api/guitar/enroll/webhook` | Flutterwave calls this on payment success, unlocks Modules 6-16 |
+| Register (free) | `POST /api/guitar/register` | Creates user stats, enables free modules |
+| Purchase | `POST /api/guitar/enroll` (auth) | Returns `tx_ref`; pay via `POST /api/gateways/expresspay/create`, redirect user to `checkout_url` |
+| Callback | `POST /api/gateways/expresspay/callback` | ExpressPay post-url; query-verified, unlocks full access + receipt |
 
 ### D1 Tables (guitar_*)
 
@@ -232,10 +213,10 @@ All prefixed with `guitar_` to avoid clashes with existing tables:
 - [ ] Visit `/school/` — programs listed, only Genesis is active
 - [ ] Visit `/books/` — book cards load, download modal appears
 - [ ] Visit `/admin/` — redirects to Cloudflare Access login
-- [ ] Make a test donation — Flutterwave modal opens
+- [ ] Make a GH¢1 test donation — ExpressPay checkout opens (sandbox card above)
 - [ ] Visit `/admin/` — dashboard shows CI/CD card (after first CI run)
 - [ ] Verify `/books/*.pdf` direct access returns 403 rewrite
-- [ ] Check `/api/payments/flutterwave` webhook responds (test in Flutterwave)
+- [ ] Test ExpressPay callback: `POST /api/gateways/expresspay/callback` with sandbox order settles + receipts
 - [ ] Visit `/api/guitar/setup` — returns `"Guitar tables ready"`
 - [ ] Visit `/api/guitar/modules` — returns 16 modules with lessons
 - [ ] Visit `/school/guitar/` — landing page renders with animated hero and curriculum
