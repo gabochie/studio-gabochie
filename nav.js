@@ -67,8 +67,12 @@
     '</div>' +
     '</footer>';
 
+  // Footer-only mode: pages with their own header/nav (e.g. guitar section)
+  // set window.GA_FOOTER_ONLY = true before loading nav.js to get just the footer.
+  var footerOnly = (typeof window !== 'undefined' && window.GA_FOOTER_ONLY === true);
+
   var phNav = document.getElementById('nav-placeholder');
-  if (phNav) {
+  if (phNav && !footerOnly) {
     phNav.outerHTML = navHtml;
   }
 
