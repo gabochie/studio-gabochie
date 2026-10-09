@@ -143,5 +143,5 @@ document.getElementById('tuner-stop-btn').onclick = function() {
 <script defer src="/assets/js/main.js"></script>
 <script>window.GA_FOOTER_ONLY=true;</script>
 <script src="/nav.js"></script>
-<script>(function(){var f=document.querySelector('footer');var s=document.querySelector('div.scrollable');if(f&&s&&f.parentNode!==s){s.appendChild(f);}})();</script>
+<script>(function(){var saved=null,n=0;function dock(){var live=document.querySelector('footer');if(live&&!saved){try{saved=live.cloneNode(true);}catch(e){}}var s=document.querySelector('div.scrollable');if(!s){return;}if(!live&&saved){s.appendChild(saved.cloneNode(true));}else if(live&&live.parentNode!==s){s.appendChild(live);}}dock();var t=setInterval(function(){dock();if(++n>=12){clearInterval(t);}},500);})();</script>
 </body></html>
