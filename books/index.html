@@ -220,11 +220,14 @@ function payWithAmount() {
       logo: window.location.origin + '/assets/images/logo.png'
     },
     callback: function(response) {
-      window.location.href = redirectUrl;
+      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
+      alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
     },
     onclose: function() {}
   });
 }
+
+function payWithCrypto() {
 
 function payWithCrypto() {
   var email = document.getElementById('leadEmail').value.trim();
@@ -289,7 +292,10 @@ function buyBundle() {
       logo: window.location.origin + '/assets/images/logo.png'
     },
     callback: function(response) {
-      window.location.href = redirectUrl;
+      if (response && response.status === 'successful') { window.location.href = redirectUrl; return; }
+      btn.disabled = false;
+      btn.textContent = 'Buy Bundle — GHS 300';
+      alert('Payment was not completed — no charge was made. Please try again or email studio@gabochie.com');
     },
     onclose: function() {
       btn.disabled = false;
