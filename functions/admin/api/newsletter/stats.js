@@ -48,11 +48,34 @@ export async function onRequest(context) {
       contacts,
       campaigns,
       open_rate: openRate,
-      click_rate: clickRate
+      click_rate: clickRate,
+      issues: await issueProgress(env)
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (_err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
+  }
+}
+
+async function issueProgress(env) {
+  try {
+    if (!env.DB) return [];
+    const { results } = await env.DB.prepare(
+      'SELECT id, issue_number, subject, subscriber_count, sent_count, failed_count, status, sent_at FROM newsletter_issues ORDER BY issue_number DESC LIMIT 10'
+    ).all();
+    return (results || []).map(function (r) {
+      return {
+        issue_number: r.issue_number,
+        subject: r.subject,
+        status: r.status || 'sent',
+        subscribed: r.subscriber_count || 0,
+        sent: r.sent_count || 0,
+        failed: r.failed_count || 0,
+        sent_at: r.sent_at
+      };
+    });
+  } catch (_e) {
+    return [];
   }
 }
