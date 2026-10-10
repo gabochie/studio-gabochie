@@ -816,7 +816,7 @@ function broadcast() {
   var html = renderToHTML(blocks, '');
   var status = document.getElementById('sendStatus');
   status.className = 'active';
-  status.innerHTML = 'Sending to all subscribers...';
+  status.innerHTML = 'Queueing for all subscribers...';
   adminFetch('/admin/api/newsletter/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -824,7 +824,8 @@ function broadcast() {
   }).then(function(r){ return r.json(); }).then(function(d){
     if (d.status === 'ok') {
       status.className = 'active ok';
-      status.innerHTML = '&#10003; Sent to ' + escapeHtml(d.sent) + ' subscribers' + (d.failed ? ' (' + escapeHtml(d.failed) + ' failed)' : '') + '. Issue #' + escapeHtml(d.issue_number) + ' archived.';
+      status.innerHTML = '&#10003; Queued ' + escapeHtml(d.enqueued) + ' sends for Issue #' + escapeHtml(d.issue_number) + ' — draining hourly. Watch progress in Subscribers &rarr; Issues.';
+    } else {
       // Mark the calendar issue as published
       if (loadedCalendarDate) {
         // Mark calendar issue as published via API

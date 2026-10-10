@@ -1,4 +1,5 @@
 import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, tierRenewalReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
+import { personalize } from '../../admin/api/newsletter/send.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
@@ -10,6 +11,9 @@ export async function onRequest(context) {
   }
 
   var cronSecret = request.headers.get('X-Cron-Secret') || '';
+  if (!cronSecret) {
+    try { cronSecret = new URL(request.url).searchParams.get('secret') || ''; } catch (_) {}
+  }
 
   if (!env.CRON_SECRET || cronSecret !== env.CRON_SECRET) {
     return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
@@ -161,6 +165,47 @@ export async function onRequest(context) {
       result.whatsapp = { sent: waSent, pending: waResults.length - waSent };
     } catch (err) {
       result.errors.push('whatsapp-process: ' + err.message);
+    }
+
+    // Step 4: Drain the newsletter outbox (bounded batch per tick)
+    try {
+      var { results: outRows } = await env.DB.prepare(
+        `SELECT o.id, o.issue_id, o.email, o.name, o.edition, o.ref_code, i.subject, i.html
+         FROM newsletter_outbox o JOIN newsletter_issues i ON i.id = o.issue_id
+         WHERE o.status = 'pending' AND o.attempts < 3
+         ORDER BY o.id ASC LIMIT 50`
+      ).all();
+
+      var nlSent = 0, nlFail = 0;
+      var touchedIssues = {};
+      for (var n = 0; n < outRows.length; n++) {
+        var item = outRows[n];
+        touchedIssues[item.issue_id] = true;
+        try {
+          await sendBrevoEmail(env, item.email, item.name, item.subject, personalize(item.html || '', item.name, item.edition, item.ref_code));
+          await env.DB.prepare("UPDATE newsletter_outbox SET status = 'sent', sent_at = datetime('now') WHERE id = ?").bind(item.id).run();
+          nlSent++;
+        } catch (err) {
+          var errMsg = String((err && err.message) || err).slice(0, 200);
+          try {
+            var cur = await env.DB.prepare('SELECT attempts FROM newsletter_outbox WHERE id = ?').bind(item.id).first();
+            var nextAttempts = ((cur && cur.attempts) || 0) + 1;
+            await env.DB.prepare('UPDATE newsletter_outbox SET attempts = ?, last_error = ?, status = ? WHERE id = ?').bind(nextAttempts, errMsg, nextAttempts >= 3 ? 'failed' : 'pending', item.id).run();
+          } catch (_e) {}
+          nlFail++;
+        }
+      }
+      for (var issueId in touchedIssues) {
+        try {
+          var sentN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'sent'").bind(issueId).first();
+          var failN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'failed'").bind(issueId).first();
+          var pendN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'pending'").bind(issueId).first();
+          await env.DB.prepare("UPDATE newsletter_issues SET sent_count = ?, failed_count = ?, status = ? WHERE id = ?").bind((sentN && sentN.n) || 0, (failN && failN.n) || 0, (pendN && pendN.n > 0) ? 'sending' : 'sent', issueId).run();
+        } catch (_e) {}
+      }
+      result.newsletter = { sent: nlSent, failed: nlFail, attempted: outRows.length };
+    } catch (err) {
+      result.errors.push('newsletter: ' + err.message);
     }
 
     return new Response(JSON.stringify({ status: 'ok', ...result }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });

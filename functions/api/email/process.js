@@ -34,9 +34,13 @@ export async function onRequest(context) {
 
     let sent = 0;
     for (const row of results) {
-      await sendBrevoEmail(env, row.to_email, row.to_name, row.subject, row.html_content);
-      await env.DB.prepare('UPDATE email_queue SET sent_at = datetime(\'now\') WHERE id = ?').bind(row.id).run();
-      sent++;
+      try {
+        await sendBrevoEmail(env, row.to_email, row.to_name, row.subject, row.html_content);
+        await env.DB.prepare('UPDATE email_queue SET sent_at = datetime(\'now\') WHERE id = ?').bind(row.id).run();
+        sent++;
+      } catch (_e) {
+        // Leave unsent for the next tick; do not mark failures as delivered.
+      }
     }
 
     return new Response(JSON.stringify({ status: 'ok', sent, pending: results.length - sent }), {

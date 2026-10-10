@@ -1,4 +1,4 @@
-function personalize(html, name, edition, refCode) {
+export function personalize(html, name, edition, refCode) {
   return html
     .replace(/\{\{NAME\}\}/g, name || 'Friend')
     .replace(/\{\{REF_CODE\}\}/g, refCode || '')
@@ -32,9 +32,7 @@ export async function onRequest(context) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST required' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
   }
-  if (!env.BREVO_API_KEY) {
-    return new Response(JSON.stringify({ status: 'not_configured', message: 'BREVO_API_KEY not set' }), { headers: { 'Content-Type': 'application/json' } });
-  }
+  // Note: enqueueing needs no Brevo key — only the drain sends.
   try {
     const { subject, html, test_email, theme } = await request.json();
     if (!subject || !html) {
@@ -56,48 +54,42 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', message: 'Test sent to ' + test_email + ' (' + edition + ', ' + name + ')' }), { headers: { 'Content-Type': 'application/json' } });
     }
 
-    // Broadcast: query all subscribers with name and edition for personalization
+    // Broadcast: enqueue one outbox row per confirmed subscriber.
+    // A worker (email cron drain) sends them in bounded batches so large
+    // lists never blow the function time limit. The issue archives immediately
+    // with status 'sending'; progress is tracked via sent/failed counts.
     const subs = await env.DB.prepare("SELECT email, name, edition, ref_code FROM subscribers WHERE email != '' AND confirmed != 0").all();
     const subscribers = subs.results || [];
     if (subscribers.length === 0) {
       return new Response(JSON.stringify({ status: 'error', message: 'No confirmed subscribers to send to' }), { headers: { 'Content-Type': 'application/json' } });
     }
 
-    // Send individually (per-subscriber personalization) with concurrency control
-    const CONCURRENCY = 10;
-    let sent = 0;
-    let failed = 0;
-    const errors = [];
-
-    for (let i = 0; i < subscribers.length; i += CONCURRENCY) {
-      const batch = subscribers.slice(i, i + CONCURRENCY);
-      const results = await Promise.allSettled(batch.map(async (s) => {
-        const rendered = personalize(html, s.name, s.edition, s.ref_code);
-        await sendViaBrevo(env, { email: s.email }, subject, rendered);
-      }));
-      for (const r of results) {
-        if (r.status === 'fulfilled') {
-          sent++;
-        } else {
-          failed++;
-          errors.push(r.reason ? r.reason.message : 'Unknown');
-        }
-      }
-    }
-
-    // Archive issue
+    // Archive issue first (status 'sending')
     const row = await env.DB.prepare("SELECT COALESCE(MAX(issue_number), 0) + 1 AS next_num FROM newsletter_issues").first();
     const issueNumber = row ? row.next_num : 1;
-    await env.DB.prepare(
-      "INSERT INTO newsletter_issues (issue_number, subject, theme, html, subscriber_count) VALUES (?, ?, ?, ?, ?)"
+    const issueInsert = await env.DB.prepare(
+      "INSERT INTO newsletter_issues (issue_number, subject, theme, html, subscriber_count, status, sent_count, failed_count) VALUES (?, ?, ?, ?, ?, 'sending', 0, 0)"
     ).bind(issueNumber, subject, theme || '', html, subscribers.length).run();
+    const issueId = issueInsert && issueInsert.meta ? issueInsert.meta.last_row_id : issueNumber;
+
+    let enqueued = 0;
+    // Row-by-row inserts: portable across D1 and trivially resumable.
+    // Enqueue runs once per broadcast in admin (no hot path), so throughput is fine.
+    for (let i = 0; i < subscribers.length; i++) {
+      const s = subscribers[i];
+      await env.DB.prepare(
+        'INSERT INTO newsletter_outbox (issue_id, email, name, edition, ref_code, status, attempts) VALUES (?, ?, ?, ?, ?, \'pending\', 0)'
+      ).bind(issueId, s.email, s.name || '', s.edition || 'GH', s.ref_code || '').run();
+      enqueued++;
+    }
 
     return new Response(JSON.stringify({
       status: 'ok',
-      message: `Sent to ${sent} subscribers (${failed} failed)`,
-      sent, failed, total: subscribers.length,
+      message: `Enqueued ${enqueued} sends for issue #${issueNumber} — draining hourly`,
+      enqueued: enqueued,
+      total: subscribers.length,
       issue_number: issueNumber,
-      errors: errors.length > 0 ? errors.slice(0, 5) : undefined
+      issue_id: issueId
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error: ' + err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });

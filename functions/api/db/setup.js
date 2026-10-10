@@ -1084,6 +1084,25 @@ export async function onRequest(context) {
         subscriber_count INTEGER DEFAULT 0,
         sent_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      `ALTER TABLE newsletter_issues ADD COLUMN status TEXT DEFAULT 'sent'`,
+      `ALTER TABLE newsletter_issues ADD COLUMN sent_count INTEGER DEFAULT 0`,
+      `ALTER TABLE newsletter_issues ADD COLUMN failed_count INTEGER DEFAULT 0`,
+      // Batched broadcast outbox: enqueue fast, drain across cron ticks
+      `CREATE TABLE IF NOT EXISTS newsletter_outbox (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        issue_id INTEGER NOT NULL,
+        email TEXT NOT NULL,
+        name TEXT DEFAULT '',
+        edition TEXT DEFAULT 'GH',
+        ref_code TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'pending',
+        attempts INTEGER DEFAULT 0,
+        last_error TEXT DEFAULT '',
+        sent_at TEXT DEFAULT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_drain ON newsletter_outbox(status, id)`,
+      `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_issue ON newsletter_outbox(issue_id)`,
       // Newsletter calendar table (replaces localStorage)
       `CREATE TABLE IF NOT EXISTS newsletter_calendar (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
