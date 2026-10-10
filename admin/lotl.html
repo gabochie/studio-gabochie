@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LOTL Studio â€” Admin Â· Studio Gabochie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.lotl-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
+.lotl-panel{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px}
+.lotl-panel h3{font-family:'Syne',sans-serif;font-size:15px;color:#E8EEF7;margin:0 0 10px}
+.svc-row{display:grid;grid-template-columns:34px 1fr 100px 120px 40px;gap:8px;align-items:center;padding:8px;border:1px solid #1E3250;border-radius:8px;margin-bottom:8px;background:#0A1628}
+.svc-row.on{border-color:#C9A84C}
+.svc-row .n{font-family:'Space Mono',monospace;font-size:12px;color:#5A7A9F;text-align:center}
+.lotl-grid input[type=text],.lotl-grid input[type=date],.lotl-grid textarea,.lotl-grid select{width:100%;padding:8px 10px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#E8EEF7;font-family:'Inter',sans-serif;font-size:12px;outline:none}
+.lotl-grid input:focus,.lotl-grid textarea:focus{border-color:#C9A84C}
+.lotl-grid textarea{min-height:340px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.5;white-space:pre}
+.mini-btn{font-family:'Inter',sans-serif;font-size:11px;padding:6px 10px;border-radius:6px;border:1px solid #1E3250;background:transparent;color:#8A9BB5;cursor:pointer}
+.mini-btn:hover{border-color:#C9A84C;color:#C9A84C}
+.mini-btn.danger:hover{border-color:#E8637A;color:#E8637A}
+.rule{font-size:12px;color:#5A7A9F;margin:0 0 12px}
+.rule b{color:#C9A84C}
+.status-ok{color:#22C55E;font-size:12px}
+.status-bad{color:#E8637A;font-size:12px}
+@media(max-width:900px){.lotl-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 class="page-title">LOTL <span>Studio</span></h1>
+  <p class="page-desc">Edit the Love Of The Lord series and each service lineup. Edits are exported as JSON â€” copy or download, then commit <code>love-of-the-lord/series.json</code> and the lineup files.</p>
+
+  <div class="rule">Loaded from <b>/love-of-the-lord/series.json</b> Â· rotation: monthly full sermon + weekly refresh (see 09-LOTL-52-week-calendar.md).</div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+    <button class="btn btn-gold btn-sm" onclick="loadAll()">&#8635; Reload from site</button>
+    <button class="btn btn-outline btn-sm" onclick="addService()">+ Add service</button>
+    <button class="btn btn-outline btn-sm" onclick="validateAll()">&#10003; Validate</button>
+    <button class="btn btn-outline btn-sm" onclick="copySeries()">Copy series.json</button>
+    <button class="btn btn-outline btn-sm" onclick="downloadSeries()">Download series.json</button>
+    <button class="btn btn-outline btn-sm" onclick="downloadLineups()">Download all lineups</button>
+    <span id="saveState" class="status-ok" hidden>Copied</span>
+  </div>
+
+  <div class="lotl-grid">
+    <div class="lotl-panel">
+      <h3>Seasons &amp; services</h3>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <select id="seasonSelect" onchange="renderServices()"></select>
+        <button class="mini-btn" onclick="addSeason()">+ Season</button>
+      </div>
+      <div id="servicesList"><div style="color:#5A7A9F;font-size:13px">Loadingâ€¦</div></div>
+    </div>
+    <div class="lotl-panel">
+      <h3 id="lineupTitle">Lineup â€” select a service</h3>
+      <div class="rule" id="lineupPath"></div>
+      <textarea id="lineupEditor" spellcheck="false" placeholder="Select a service to edit its lineupâ€¦" oninput="markLineupDirty()"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="mini-btn" onclick="saveLineup()">Save to memory</button>
+        <button class="mini-btn" onclick="formatLineup()">Format</button>
+        <button class="mini-btn" onclick="downloadCurrentLineup()">Download this lineup</button>
+        <span id="lineupState" style="font-size:12px;color:#5A7A9F"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+var LOTL_BASE = '/love-of-the-lord/';
+var series = null;
+var lineups = {};          // filename -> parsed JSON
+var activeServiceId = null;
+var nextNewService = 1;
+
+function byId(id) { return document.getElementById(id); }
+
+function fetchJson(url) {
+  return fetch(url, { cache: 'no-store', headers: { Accept: 'application/json' } }).then(function (r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+    return r.json();
+  });
+}
+
+function loadAll() {
+  byId('servicesList').innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loadingâ€¦</div>';
+  fetchJson(LOTL_BASE + 'series.json').then(function (data) {
+    series = data;
+    var files = [];
+    (series.seasons || []).forEach(function (s) {
+      (s.services || []).forEach(function (svc) { if (svc.lineup && files.indexOf(svc.lineup) === -1) files.push(svc.lineup); });
+    });
+    return Promise.all(files.map(function (f) {
+      return fetchJson(LOTL_BASE + f).then(function (j) { lineups[f] = j; }).catch(function () { lineups[f] = null; });
+    }));
+  }).then(function () {
+    renderSeasonSelect();
+    renderServices();
+    Toast && Toast.success && Toast.success('Loaded ' + (series.seasons || []).length + ' season(s)');
+  }).catch(function (e) {
+    byId('servicesList').innerHTML = '<div class="status-bad">Failed to load: ' + e.message + '</div>';
+  });
+}
+
+function renderSeasonSelect() {
+  var sel = byId('seasonSelect');
+  var prev = sel.value;
+  sel.innerHTML = '';
+  (series.seasons || []).forEach(function (s, i) {
+    var o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = s.title + (s.quarter ? ' Â· ' + s.quarter : '');
+    sel.appendChild(o);
+  });
+  if (prev && sel.options.length) sel.value = prev;
+  if (!sel.value && sel.options.length) sel.selectedIndex = 0;
+}
+
+function currentSeason() {
+  var i = parseInt(byId('seasonSelect').value || '0', 10) || 0;
+  return (series.seasons || [])[i];
+}
+
+function renderServices() {
+  var season = currentSeason();
+  var box = byId('servicesList');
+  if (!season) { box.innerHTML = '<div style="color:#5A7A9F;font-size:13px">No seasons yet. Add one.</div>'; return; }
+  box.innerHTML = '';
+  (season.services || []).forEach(function (svc, i) {
+    var row = document.createElement('div');
+    row.className = 'svc-row' + (svc.id === activeServiceId ? ' on' : '');
+    row.innerHTML =
+      '<div class="n">' + (svc.n || (i + 1)) + '</div>' +
+      '<input type="text" value="' + esc(svc.title || '') + '" onchange="editService(' + i + ',\'title\',this.value)" placeholder="Service title">' +
+      '<input type="date" value="' + esc(svc.date || '') + '" onchange="editService(' + i + ',\'date\',this.value)">' +
+      '<button class="mini-btn" onclick="openLineup(\'' + esc(svc.id || '') + '\')">Lineup</button>' +
+      '<button class="mini-btn danger" onclick="removeService(' + i + ')" title="Remove">&#10005;</button>';
+    box.appendChild(row);
+  });
+}
+
+function editService(i, field, value) {
+  var season = currentSeason();
+  if (!season || !season.services[i]) return;
+  season.services[i][field] = value;
+}
+
+function addSeason() {
+  var title = prompt('Season title (e.g. The Kingdom Mind):');
+  if (!title) return;
+  series.seasons = series.seasons || [];
+  series.seasons.push({ id: 's' + (series.seasons.length + 1), title: title, quarter: '', verse: '', services: [] });
+  renderSeasonSelect();
+  byId('seasonSelect').selectedIndex = series.seasons.length - 1;
+  renderServices();
+}
+
+function addService() {
+  var season = currentSeason();
+  if (!season) { Toast && Toast.error && Toast.error('Add a season first.'); return; }
+  season.services = season.services || [];
+  var n = (season.services.length ? Math.max.apply(null, season.services.map(function (s) { return s.n || 0; })) : 0) + 1;
+  var id = 'service-' + String(n).padStart(3, '0');
+  while (serviceExists(id)) { n += 1; nextNewService += 1; id = 'service-' + String(n).padStart(3, '0'); }
+  var line = 'lineups/' + id + '.json';
+  var tmpl = lineupTemplate(id, season.title);
+  season.services.push({ id: id, n: n, title: 'New service', date: new Date().toISOString().slice(0, 10), theme_verse: season.verse || '', lineup: line });
+  lineups[line] = tmpl;
+  activeServiceId = id;
+  renderServices();
+  openLineup(id);
+}
+
+function serviceExists(id) {
+  var found = false;
+  (series.seasons || []).forEach(function (s) { (s.services || []).forEach(function (svc) { if (svc.id === id) found = true; }); });
+  return found;
+}
+
+function removeService(i) {
+  var season = currentSeason();
+  if (!season || !season.services[i]) return;
+  if (!confirm('Remove "' + (season.services[i].title || 'this service') + '"?')) return;
+  var gone = season.services.splice(i, 1)[0];
+  if (gone && gone.id === activeServiceId) { activeServiceId = null; byId('lineupEditor').value = ''; }
+  renderServices();
+}
+
+function findService(id) {
+  var out = null;
+  (series.seasons || []).forEach(function (s) {
+    (s.services || []).forEach(function (svc) { if (svc.id === id) out = { season: s, service: svc }; });
+  });
+  return out;
+}
+
+function openLineup(id) {
+  var hit = findService(id);
+  if (!hit) return;
+  activeServiceId = id;
+  renderServices();
+  byId('lineupTitle').textContent = 'Lineup â€” ' + (hit.service.title || id);
+  byId('lineupPath').textContent = 'Files: love-of-the-lord/' + hit.service.lineup;
+  var data = lineups[hit.service.lineup];
+  byId('lineupEditor').value = data ? JSON.stringify(data, null, 2) : '{\n  "service": {\n    "id": "' + id + '",\n    "express_stop_ids": ["welcome", "praise", "word", "altar"]\n  },\n  "stops": []\n}';
+  byId('lineupState').textContent = data ? 'loaded' : 'new â€” not on site yet';
+}
+
+function markLineupDirty() { byId('lineupState').textContent = 'edited (unsaved)'; }
+
+function saveLineup() {
+  var hit = findService(activeServiceId);
+  if (!hit) return;
+  try {
+    var parsed = JSON.parse(byId('lineupEditor').value);
+    lineups[hit.service.lineup] = parsed;
+    byId('lineupState').textContent = 'saved to memory âœ“';
+  } catch (e) {
+    byId('lineupState').innerHTML = '<span class="status-bad">Invalid JSON: ' + esc(e.message) + '</span>';
+  }
+}
+
+function formatLineup() {
+  try {
+    byId('lineupEditor').value = JSON.stringify(JSON.parse(byId('lineupEditor').value), null, 2);
+    byId('lineupState').textContent = 'formatted';
+  } catch (e) {
+    byId('lineupState').innerHTML = '<span class="status-bad">Invalid JSON: ' + esc(e.message) + '</span>';
+  }
+}
+
+function validateAll() {
+  var problems = [];
+  (series.seasons || []).forEach(function (s) {
+    (s.services || []).forEach(function (svc) {
+      if (!svc.id || !svc.title) problems.push('Service missing id/title in season "' + s.title + '"');
+      if (!svc.lineup) problems.push(svc.id + ': missing lineup path');
+      if (svc.lineup && !lineups[svc.lineup]) problems.push(svc.id + ': lineup ' + svc.lineup + ' not loaded');
+      if (svc.lineup && lineups[svc.lineup] && !Array.isArray(lineups[svc.lineup].stops)) problems.push(svc.id + ': lineup has no stops[]');
+    });
+  });
+  if (problems.length) {
+    alert('Problems:\n- ' + problems.join('\n- '));
+    Toast && Toast.error && Toast.error(problems.length + ' problem(s)');
+  } else {
+    alert('Valid \u2713 ' + countServices() + ' service(s), ' + Object.keys(lineups).length + ' lineup(s).');
+    Toast && Toast.success && Toast.success('All valid');
+  }
+}
+
+function countServices() {
+  var n = 0;
+  (series.seasons || []).forEach(function (s) { n += (s.services || []).length; });
+  return n;
+}
+
+function lineupTemplate(id, seasonTitle) {
+  return {
+    service: { id: id, title: 'New service', theme_verse: '', mode_full_minutes: 60, mode_express_minutes: 15, express_stop_ids: ['welcome', 'praise', 'word', 'altar'], season: seasonTitle || '' },
+    stops: [
+      { id: 'welcome', n: 1, title: 'Welcome & Opening Prayer', desc: 'Gideon welcomes you + opening prayer.', minutes: 3, short: 'Welcome' },
+      { id: 'praise', n: 2, title: 'Praise â€” High Energy', desc: '2 upbeat songs.', minutes: 12, short: 'Praise' },
+      { id: 'worship', n: 3, title: 'Worship â€” Slow & Intimate', desc: '1 slow song.', minutes: 8, short: 'Worship' },
+      { id: 'announcements', n: 4, title: 'Announcements & New Friends', desc: 'This week.', minutes: 3, short: 'News' },
+      { id: 'offering', n: 5, title: 'Offering â€” Give with Love', desc: 'Separate LOTL fund.', minutes: 3, short: 'Giving' },
+      { id: 'word', n: 6, title: 'The Word', desc: 'Sermon.', minutes: 25, media: { type: 'audio', src: '', note: 'Add self-owned mp3' }, short: 'Word' },
+      { id: 'altar', n: 7, title: 'Altar Call', desc: "Sinner's prayer.", minutes: 5, short: 'Altar' },
+      { id: 'prayer', n: 8, title: 'Prayer + Q&A', desc: 'Book a free prayer call.', minutes: 5, short: 'Prayer' },
+      { id: 'benediction', n: 9, title: 'Benediction & Share', desc: 'Blessing + invite.', minutes: 2, short: 'Blessing' }
+    ]
+  };
+}
+
+function copySeries() {
+  navigator.clipboard.writeText(JSON.stringify(series, null, 2)).then(function () { flash('Copied series.json'); });
+}
+
+function downloadSeries() {
+  download('series.json', JSON.stringify(series, null, 2));
+}
+
+function downloadCurrentLineup() {
+  var hit = findService(activeServiceId);
+  if (!hit) return;
+  saveLineup();
+  var data = lineups[hit.service.lineup];
+  download(hit.service.lineup.split('/').pop(), JSON.stringify(data, null, 2));
+}
+
+function downloadLineups() {
+  Object.keys(lineups).forEach(function (f, i) {
+    setTimeout(function () { download(f.split('/').pop(), JSON.stringify(lineups[f], null, 2)); }, i * 300);
+  });
+  flash('Downloading ' + Object.keys(lineups).length + ' lineup(s)');
+}
+
+function download(name, text) {
+  var blob = new Blob([text], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
+
+function flash(msg) {
+  var s = byId('saveState');
+  s.textContent = msg;
+  s.hidden = false;
+  setTimeout(function () { s.hidden = true; }, 2500);
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+loadAll();
+</script>
+</body>
+</html>

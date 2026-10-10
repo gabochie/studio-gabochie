@@ -43,7 +43,8 @@
     {
       label: 'Ministry',
       items: [
-        { href: 'ministry.html', icon: '⛪', label: 'Community Inbox' }
+        { href: 'ministry.html', icon: '⛪', label: 'Community Inbox' },
+        { href: 'lotl.html',     icon: '\uD83C\uDFA7', label: 'LOTL Studio' }
       ]
     },
     {
