@@ -194,6 +194,22 @@ h1 span{color:#C9A84C}
     </div>
     <div id="sendStatus"></div>
   </div>
+
+  <div class="send-panel" style="margin-top:16px">
+    <h3 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#F1F5F9;margin:0 0 4px">&#128197; Scheduled Issues</h3>
+    <p style="color:#6B7F9A;font-size:12px;margin:0 0 12px">AI drafts every Friday · you approve · approved issues send automatically Saturday 06:00 GMT. Nothing sends without approval.</p>
+    <div class="send-row">
+      <div class="send-field">
+        <label>Draft topic</label>
+        <input type="text" id="schedTopic" placeholder="e.g. faithful stewardship">
+      </div>
+      <button class="btn btn-blue" onclick="draftScheduled()">AI Draft</button>
+      <div style="flex:1;min-width:100px"></div>
+      <button class="btn btn-outline" onclick="loadSchedule()">Refresh</button>
+    </div>
+    <div id="schedList" style="margin-top:12px"></div>
+    <div id="schedStatus"></div>
+  </div>
 </div>
 
 <div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="https://news.gabochie.com/">Public Archive</a></div>
@@ -903,10 +919,78 @@ function loadStats() {
   });
 }
 
+// ── Scheduled issues ──
+function schedStatusBadge(s) {
+  var colors = { draft: '#3B82F6', approved: '#C9A84C', queued: '#8B5CF6', sending: '#8B5CF6', sent: '#34C77B', skipped: '#5A7A9F' };
+  return '<span class="status-badge" style="background:rgba(59,130,246,.12);color:' + (colors[s] || '#5A7A9F') + '">' + esc(s) + '</span>';
+}
+
+function loadSchedule() {
+  if (!ensureAdminKey()) return;
+  var el = document.getElementById('schedList');
+  el.innerHTML = '<p style="color:#5A7A9F;font-size:12px">Loading...</p>';
+  adminFetch('/admin/api/newsletter/schedule', { cache: 'no-store' }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(d) {
+    if (d.status !== 'ok') throw new Error(d.message || 'API error');
+    var rows = d.schedule || [];
+    if (!rows.length) { el.innerHTML = '<p style="color:#5A7A9F;font-size:12px">No scheduled issues yet. Draft one above or wait for Friday.</p>'; return; }
+    var html = '';
+    rows.forEach(function(s) {
+      html += '<div class="cal-issue-row">' +
+        '<div class="info"><div class="theme">' + esc(s.subject || '(untitled draft)') + '</div><div class="date">week of ' + esc(s.week_of) + ' · ' + esc(s.topic || '') + '</div></div>' +
+        schedStatusBadge(s.status) +
+        (s.status === 'draft' ? ' <button class="btn btn-gold btn-sm" onclick="approveScheduled(' + s.id + ')">Approve</button>' : '') +
+        (s.status === 'approved' ? ' <button class="btn btn-blue btn-sm" onclick="sendScheduledNow(' + s.id + ')">Send now</button>' : '') +
+        '</div>';
+    });
+    el.innerHTML = html;
+  }).catch(function(err) {
+    el.innerHTML = '<p style="color:#E8637A;font-size:12px">Error: ' + escapeHtml(err.message) + '</p>';
+  });
+}
+
+function schedPost(action, extra) {
+  if (!ensureAdminKey()) return Promise.reject(new Error('Admin API Key required'));
+  var body = Object.assign({ action: action }, extra || {});
+  var el = document.getElementById('schedStatus');
+  el.innerHTML = '<p style="color:#5A7A9F;font-size:12px">Working...</p>';
+  return adminFetch('/admin/api/newsletter/schedule', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.status !== 'ok') throw new Error(d.message || 'Failed');
+    el.innerHTML = '<p style="color:#34C77B;font-size:12px">' + escapeHtml(action === 'draft' ? 'Draft saved.' : action === 'approve' ? 'Approved — will send Saturday 06:00 GMT.' : 'Queued — draining hourly.') + '</p>';
+    loadSchedule();
+    return d;
+  }).catch(function(err) {
+    el.innerHTML = '<p style="color:#E8637A;font-size:12px">Error: ' + escapeHtml(err.message) + '</p>';
+    throw err;
+  });
+}
+
+function draftScheduled() {
+  var topic = document.getElementById('schedTopic').value.trim();
+  schedPost('draft', topic ? { topic: topic } : {}).catch(function() {});
+}
+
+function approveScheduled(id) {
+  if (!confirm('Approve this issue for Saturday send?')) return;
+  schedPost('approve', { id: id }).catch(function() {});
+}
+
+function sendScheduledNow(id) {
+  if (!confirm('Queue this issue for sending now?')) return;
+  schedPost('send-now', { id: id }).catch(function() {});
+}
+
 // ── Init ──
 loadDefault();
 loadTplList();
 loadStats();
+loadSchedule();
 setInterval(loadStats, 30000);
 
 // Scope awareness

@@ -1103,6 +1103,23 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_drain ON newsletter_outbox(status, id)`,
       `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_issue ON newsletter_outbox(issue_id)`,
+      // Scheduled issues: AI-drafted Fridays, approved by human, sent Saturdays
+      `CREATE TABLE IF NOT EXISTS newsletter_schedule (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        week_of TEXT NOT NULL,
+        topic TEXT DEFAULT '',
+        subject TEXT NOT NULL DEFAULT '',
+        theme TEXT NOT NULL DEFAULT '',
+        html TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'draft',
+        created_by TEXT DEFAULT 'manual',
+        approved_by TEXT DEFAULT '',
+        approved_at TEXT DEFAULT NULL,
+        issue_id INTEGER DEFAULT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_newsletter_schedule_week ON newsletter_schedule(week_of, status)`,
       // Newsletter calendar table (replaces localStorage)
       `CREATE TABLE IF NOT EXISTS newsletter_calendar (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

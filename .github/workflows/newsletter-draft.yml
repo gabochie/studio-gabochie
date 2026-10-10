@@ -1,0 +1,30 @@
+name: Friday — AI Newsletter Draft
+
+on:
+  schedule:
+    # Fridays 06:00 UTC — draft tomorrow's issue for human approval
+    - cron: '0 6 * * 5'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Draft topic override'
+        required: false
+        default: ''
+
+jobs:
+  draft-issue:
+    name: Generate Saturday issue draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request AI draft
+        run: |
+          TOPIC='${{ inputs.topic }}'
+          BODY="{\"action\":\"draft\""
+          if [ -n "$TOPIC" ]; then
+            BODY="$BODY,\"topic\":\"$TOPIC\""
+          fi
+          BODY="$BODY}"
+          curl -s -X POST 'https://studio.gabochie.com/admin/api/newsletter/schedule' \
+            -H 'Content-Type: application/json' \
+            -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
+            -d "$BODY" || echo "Draft request failed"
