@@ -172,7 +172,7 @@ export async function onRequest(context) {
     // Step 4: Drain the newsletter outbox (bounded batch per tick)
     try {
       var { results: outRows } = await env.DB.prepare(
-        `SELECT o.id, o.issue_id, o.email, o.name, o.edition, o.ref_code, i.subject, i.html
+        `SELECT o.id, o.issue_id, o.email, o.name, o.edition, o.ref_code, i.subject, i.html, i.issue_number
          FROM newsletter_outbox o JOIN newsletter_issues i ON i.id = o.issue_id
          WHERE o.status = 'pending' AND o.attempts < 3
          ORDER BY o.id ASC LIMIT 50`
@@ -184,7 +184,8 @@ export async function onRequest(context) {
         var item = outRows[n];
         touchedIssues[item.issue_id] = true;
         try {
-          await sendBrevoEmail(env, item.email, item.name, item.subject, personalize(item.html || '', item.name, item.edition, item.ref_code));
+          const tag = 'newsletter-issue-' + (item.issue_number || item.issue_id || 'x');
+          await sendBrevoEmail(env, item.email, item.name, item.subject, personalize(item.html || '', item.name, item.edition, item.ref_code), { tags: ['newsletter', tag] });
           await env.DB.prepare("UPDATE newsletter_outbox SET status = 'sent', sent_at = datetime('now') WHERE id = ?").bind(item.id).run();
           nlSent++;
         } catch (err) {

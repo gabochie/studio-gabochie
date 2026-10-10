@@ -1,14 +1,16 @@
-export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent) {
+export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent, opts) {
   if (!env.BREVO_API_KEY) return;
+  const payload = {
+    sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
+    to: [{ email: toEmail, name: toName || '' }],
+    subject,
+    htmlContent
+  };
+  if (opts && opts.tags && opts.tags.length) payload.tags = opts.tags;
   const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
-    body: JSON.stringify({
-      sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
-      to: [{ email: toEmail, name: toName || '' }],
-      subject,
-      htmlContent
-    })
+    body: JSON.stringify(payload)
   });
   if (!resp.ok) {
     const errText = await resp.text().catch(function () { return ''; });
