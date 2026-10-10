@@ -389,6 +389,70 @@
       .catch(function () {});
   }
 
+  /* ---------- this week strip ---------- */
+  function renderThisWeek() {
+    var box = $('thisWeek');
+    if (!box) return;
+    Promise.all([
+      fetch('series.json', { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      fetch('answers/answers.json', { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); }).catch(function () { return null; })
+    ]).then(function (res) {
+      var s = res[0];
+      var a = res[1];
+      var svc = null;
+      var seasonTitle = '';
+      if (s) {
+        var pairs = allServices(s);
+        pairs.some(function (p) {
+          if (p.service.id === s.current) { svc = p.service; seasonTitle = p.season.title; return true; }
+          return false;
+        });
+        if (!svc && pairs.length) { svc = pairs[0].service; seasonTitle = pairs[0].season.title; }
+      }
+      var twSvc = $('twService');
+      if (twSvc) {
+        twSvc.textContent = svc
+          ? (seasonTitle ? seasonTitle + ' · ' : '') + svc.title + (svc.date ? ' · ' + svc.date : '')
+          : 'Foundations of Grace · Grace for New Beginnings';
+      }
+      var twAns = $('twAnswers');
+      if (twAns && a && a.answers && a.answers.length) {
+        var latest = a.answers.slice().sort(function (x, y) { return String(y.date).localeCompare(String(x.date)); })[0];
+        twAns.textContent = (latest.category ? latest.category + ' — ' : '') + (latest.question || '');
+      }
+      box.hidden = false;
+    }).catch(function () {});
+  }
+
+  /* ---------- testimony rotation (weekly) ---------- */
+  function weekIndex() {
+    var now = new Date();
+    var start = Date.UTC(now.getUTCFullYear(), 0, 1);
+    return Math.floor((now.getTime() - start) / 604800000);
+  }
+
+  function renderTestimonies() {
+    var wall = $('testimonyWall');
+    if (!wall) return;
+    fetch('testimonies.json', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var list = (data && data.testimonies) || [];
+        if (list.length < 3) return;
+        var off = Math.abs(weekIndex()) % list.length;
+        var pick = [];
+        for (var i = 0; i < 3; i += 1) pick.push(list[(off + i) % list.length]);
+        wall.innerHTML = '';
+        pick.forEach(function (t) {
+          var d = document.createElement('div');
+          d.className = 't';
+          d.innerHTML = '<b>' + escapeHtml(t.name || 'Friend') + (t.city ? ', ' + escapeHtml(t.city) : '') + ' ★</b><br>"' + escapeHtml(t.text || '') + '"';
+          wall.appendChild(d);
+        });
+      })
+      .catch(function () {});
+  }
+
   function wireForm(formId, okId, source) {
     var f = $(formId);
     if (!f) return;
@@ -466,7 +530,9 @@
   document.addEventListener('DOMContentLoaded', function () {
     audioOnly = prefersLowData();
     loadSeries();
+    renderThisWeek();
     renderLatestAnswers();
+    renderTestimonies();
     softenCookies();
     try {
       var n = localStorage.getItem(LS_AMEN);

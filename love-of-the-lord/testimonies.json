@@ -1,0 +1,54 @@
+{
+  "updated": "2026-10-11",
+  "note": "Testimony wall + Friday celebration rotation. Consent-gated: add only submissions approved in the Community Inbox (source lotl-testimony). First name + city only.",
+  "testimonies": [
+    {
+      "id": "t-001",
+      "name": "Ama",
+      "city": "Accra",
+      "text": "I had church at 2am nursing my baby. I cried through worship. God met me.",
+      "date": "2026-09-28",
+      "featured": true
+    },
+    {
+      "id": "t-002",
+      "name": "Kwame",
+      "city": "Kumasi",
+      "text": "Sent my frustration Tuesday, answer came Friday with Scriptures. I booked prayer.",
+      "date": "2026-10-02",
+      "featured": true
+    },
+    {
+      "id": "t-003",
+      "name": "Blessing",
+      "city": "London",
+      "text": "Express service on the bus, altar call in my seat. I gave my life again.",
+      "date": "2026-10-05",
+      "featured": true
+    },
+    {
+      "id": "t-004",
+      "name": "Yaw",
+      "city": "Takoradi",
+      "text": "I stopped drinking after the Word on new beginnings. My wife says I am a new man.",
+      "date": "2026-10-07",
+      "featured": false
+    },
+    {
+      "id": "t-005",
+      "name": "Efua",
+      "city": "Tema",
+      "text": "My shop was empty for weeks. I tithed with love and trusted — customers came back.",
+      "date": "2026-10-08",
+      "featured": false
+    },
+    {
+      "id": "t-006",
+      "name": "Daniel",
+      "city": "Toronto",
+      "text": "Watched with my kids every Sunday. They now ask for 'church on the phone' after school.",
+      "date": "2026-10-09",
+      "featured": false
+    }
+  ]
+}
