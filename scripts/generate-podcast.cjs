@@ -1,0 +1,137 @@
+/* Generate love-of-the-lord/podcast.xml from series.json + answers.json.
+   Episodes are only emitted when a self-owned MP3 exists (copyright: licensed
+   worship is never distributed — see 11-LOTL-audio-and-podcast-plan.md).
+
+   A service becomes an episode when its series.json entry has:
+     "audio": { "src": "love-of-the-lord/audio/<file>.mp3", "bytes": 1234567, "duration": 1500 }
+   A Friday Answer becomes an episode when answers.json has:
+     video.mp3 = "love-of-the-lord/audio/<file>.mp3"
+
+   Usage: node scripts/generate-podcast.cjs
+*/
+
+const fs = require('fs');
+const path = require('path');
+
+const DOMAIN = 'https://studio.gabochie.com';
+const root = path.join(__dirname, '..');
+const lotl = path.join(root, 'love-of-the-lord');
+
+function readJson(rel) {
+  return JSON.parse(fs.readFileSync(path.join(root, rel), 'utf8'));
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function rfc822(date) {
+  const d = new Date(date + 'T09:00:00Z');
+  return isNaN(d.getTime()) ? new Date().toUTCString() : d.toUTCString();
+}
+
+function absolute(src) {
+  if (!src) return '';
+  return /^https?:\/\//.test(src) ? src : DOMAIN + (src.charAt(0) === '/' ? src : '/' + src);
+}
+
+function collectEpisodes() {
+  const episodes = [];
+
+  const series = readJson('love-of-the-lord/series.json');
+  (series.seasons || []).forEach(function (season) {
+    (season.services || []).forEach(function (svc) {
+      if (!svc.audio || !svc.audio.src) return;
+      episodes.push({
+        id: svc.id,
+        title: svc.title,
+        date: svc.date,
+        description: (season.title ? season.title + ' — ' : '') + (svc.theme_verse || '') + ' Sunday service from Love Of The Lord.',
+        url: absolute(svc.audio.src),
+        bytes: svc.audio.bytes || 0,
+        duration: svc.audio.duration || 0,
+        season: season.n || season.id || 1,
+        episode: svc.n || undefined,
+      });
+    });
+  });
+
+  const answers = readJson('love-of-the-lord/answers/answers.json');
+  (answers.answers || []).forEach(function (a) {
+    if (!a.video || !a.video.mp3) return;
+    episodes.push({
+      id: a.id,
+      title: 'Answer: ' + a.question,
+      date: a.date,
+      description: (a.counsel || '') + ' ' + (a.scriptures || []).join(' · '),
+      url: absolute(a.video.mp3),
+      bytes: a.video.bytes || 0,
+      duration: a.video.duration || 0,
+    });
+  });
+
+  episodes.sort(function (x, y) { return String(y.date).localeCompare(String(x.date)); });
+  return episodes;
+}
+
+function itemXml(e) {
+  const lines = ['    <item>'];
+  lines.push('      <title>' + esc(e.title) + '</title>');
+  lines.push('      <description>' + esc(e.description) + '</description>');
+  lines.push('      <link>' + DOMAIN + '/love-of-the-lord/</link>');
+  lines.push('      <guid isPermaLink="false">' + esc(e.id) + '</guid>');
+  lines.push('      <pubDate>' + rfc822(e.date) + '</pubDate>');
+  if (e.duration) lines.push('      <itunes:duration>' + Math.round(e.duration) + '</itunes:duration>');
+  if (e.season) lines.push('      <itunes:season>' + esc(e.season) + '</itunes:season>');
+  if (e.episode) lines.push('      <itunes:episode>' + esc(e.episode) + '</itunes:episode>');
+  lines.push('      <enclosure url="' + esc(e.url) + '" length="' + (e.bytes || 0) + '" type="audio/mpeg"/>');
+  lines.push('    </item>');
+  return lines.join('\n');
+}
+
+function build() {
+  const episodes = collectEpisodes();
+  const lines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">',
+    '<channel>',
+    '  <title>Love Of The Lord — Global Ministry</title>',
+    '  <link>' + DOMAIN + '/love-of-the-lord/</link>',
+    '  <language>en</language>',
+    '  <description>Church anytime, anywhere. Sermons, Friday Answers and midweek Word from Love Of The Lord Global Ministry — Bible answers to real pain.</description>',
+    '  <itunes:author>Love Of The Lord</itunes:author>',
+    '  <itunes:type>episodic</itunes:type>',
+    '  <itunes:owner>',
+    '    <itunes:name>Love Of The Lord</itunes:name>',
+    '    <itunes:email>love@gabochie.com</itunes:email>',
+    '  </itunes:owner>',
+    '  <itunes:category text="Religion &amp; Spirituality">',
+    '    <itunes:category text="Christianity"/>',
+    '  </itunes:category>',
+    '  <itunes:explicit>false</itunes:explicit>',
+    '  <itunes:image href="' + DOMAIN + '/love-of-the-lord/og-cover.png"/>',
+    '  <image>',
+    '    <url>' + DOMAIN + '/love-of-the-lord/og-cover.png</url>',
+    '    <title>Love Of The Lord — Global Ministry</title>',
+    '    <link>' + DOMAIN + '/love-of-the-lord/</link>',
+    '  </image>',
+    '  <lastBuildDate>' + new Date().toUTCString() + '</lastBuildDate>',
+    '  <!-- Generated by scripts/generate-podcast.cjs — do not edit by hand. -->',
+  ];
+  episodes.forEach(function (e) { lines.push(itemXml(e)); });
+  if (!episodes.length) {
+    lines.push('  <!-- No distributable episodes yet: add self-owned MP3s (see 11-LOTL-audio-and-podcast-plan.md). -->');
+  }
+  lines.push('</channel>');
+  lines.push('</rss>');
+  return lines.join('\n') + '\n';
+}
+
+fs.writeFileSync(path.join(lotl, 'podcast.xml'), build());
+const n = collectEpisodes().length;
+console.log('podcast.xml regenerated — ' + n + ' episode(s).');

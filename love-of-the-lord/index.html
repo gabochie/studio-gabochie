@@ -152,6 +152,13 @@ details.fold summary::-webkit-details-marker{display:none}
 .ans-card small{color:#C9A84C;font-size:11px}
 .ans-tag{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C}
 @media(max-width:860px){.ans-grid{grid-template-columns:1fr}}
+.this-week{background:linear-gradient(90deg,rgba(201,168,76,.10),rgba(193,39,45,.06));border-top:1px solid rgba(201,168,76,.25);border-bottom:1px solid rgba(201,168,76,.25)}
+.this-week[hidden]{display:none}
+.this-week-in{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:14px 0}
+.tw-item{font-family:'DM Sans',sans-serif;font-size:13px;color:#E8EEF7;display:flex;flex-direction:column;gap:3px}
+.tw-k{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#C9A84C}
+.tw-item b{font-weight:600;color:#F1F5F9}
+@media(max-width:860px){.this-week-in{grid-template-columns:1fr;gap:8px}}
 </style>
 </head>
 <body>
@@ -207,6 +214,14 @@ details.fold summary::-webkit-details-marker{display:none}
 </div>
 </div>
 </header>
+
+<section class="this-week" id="thisWeek" aria-label="This week at Love Of The Lord" hidden>
+<div class="container this-week-in">
+<div class="tw-item"><span class="tw-k">This week's service</span><b id="twService">Foundations of Grace · Grace for New Beginnings</b></div>
+<div class="tw-item"><span class="tw-k">Friday answers</span><b id="twAnswers">3 real-life questions answered from the Bible</b></div>
+<div class="tw-item"><span class="tw-k">Free prayer call</span><b>Tue &amp; Thu 10:00–11:30 · Sat 09:00–10:30</b></div>
+</div>
+</section>
 
 <section class="section" id="service">
 <div class="container">
@@ -317,7 +332,7 @@ details.fold summary::-webkit-details-marker{display:none}
 </div>
 </form>
 <div class="ok" id="familyOk" hidden>Welcome to the family! <a href="https://wa.me/233243262019?text=Hello%2C%20I%20want%20to%20join%20the%20Love%20Of%20The%20Lord%20Family%20Circle!">Tap to enter WhatsApp →</a></div>
-<div class="twall">
+<div class="twall" id="testimonyWall">
 <div class="t"><b>Ama, Accra ★</b><br>"I had church at 2am nursing my baby. I cried through worship. God met me."</div>
 <div class="t"><b>Kwame, Kumasi ★</b><br>"Sent my frustration Tuesday, answer came Friday with Scriptures. I booked prayer."</div>
 <div class="t"><b>Blessing, London ★</b><br>"Express service on the bus, altar call in my seat. I gave my life again."</div>

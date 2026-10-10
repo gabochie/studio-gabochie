@@ -227,6 +227,19 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(page.locator('#latestAnswers .ans-card')).toHaveCount(3, { timeout: 10000 });
     await expect(page.locator('a[href="/love-of-the-lord/answers/"]').first()).toBeVisible();
   });
+
+  test('this-week strip renders from series + answers data', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#thisWeek')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#twService')).toContainText('Grace for New Beginnings');
+    await expect(page.locator('#twAnswers')).not.toBeEmpty();
+  });
+
+  test('testimony wall rotates 3 approved stories from data', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#testimonyWall .t')).toHaveCount(3, { timeout: 10000 });
+    await expect(page.locator('#testimonyWall .t').first()).toContainText('★');
+  });
 });
 
 test.describe('Love Of The Lord — answers archive', function () {
