@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v10';
+const VERSION = 'gabochie-v11';
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 /* Cloudflare Pages serves clean URLs: /offline.html 308-redirects to /offline,
@@ -19,6 +19,12 @@ const PRECACHE_URLS = [
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/icons/apple-touch-icon.png',
+  '/love-of-the-lord/',
+  '/love-of-the-lord/give/',
+  '/love-of-the-lord/lineup.json',
+  '/love-of-the-lord/service.js',
+  '/love-of-the-lord/logo.webp',
+  '/love-of-the-lord/og-cover.png',
 ];
 
 /* Public, idempotent catalog GETs — safe to serve stale-while-revalidate.

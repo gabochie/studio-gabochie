@@ -1,0 +1,162 @@
+{
+  "service": {
+    "id": "service-001",
+    "title": "Grace for New Beginnings",
+    "theme_verse": "Lamentations 3:22-23 — His mercies are new every morning.",
+    "mode_full_minutes": 60,
+    "mode_express_minutes": 15,
+    "express_stop_ids": [
+      "welcome",
+      "praise",
+      "word",
+      "altar"
+    ]
+  },
+  "stops": [
+    {
+      "id": "welcome",
+      "n": 1,
+      "title": "Welcome & Opening Prayer",
+      "desc": "Gideon welcomes you + opening prayer. You are home.",
+      "minutes": 3,
+      "media": {
+        "type": "bridge",
+        "src": "",
+        "note": "Record 01-welcome.mp4 (60s) — see 02 scripts doc"
+      },
+      "prompt": "Where are you watching from? Whisper it — God sees you.",
+      "short": "Welcome"
+    },
+    {
+      "id": "praise",
+      "n": 2,
+      "title": "Praise — High Energy",
+      "desc": "2 upbeat songs. Stand up, clap, lyrics on screen.",
+      "minutes": 12,
+      "media": {
+        "type": "youtube",
+        "playlist": "",
+        "note": "Add 2 praise YouTube IDs (unlisted playlist LOTL Full 01)"
+      },
+      "lyrics": [
+        "This is the day the Lord has made — we will rejoice!",
+        "Praise Him with dancing and song!"
+      ],
+      "prompt": "Stand up wherever you are — clap those hands!",
+      "short": "Praise"
+    },
+    {
+      "id": "worship",
+      "n": 3,
+      "title": "Worship — Slow & Intimate",
+      "desc": "1 slow song. Dim lights moment. Hand on chest.",
+      "minutes": 8,
+      "media": {
+        "type": "youtube",
+        "playlist": "",
+        "note": "Add 1 slow worship YouTube ID"
+      },
+      "prompt": "Whisper His name — Jesus… He is here.",
+      "short": "Worship"
+    },
+    {
+      "id": "announcements",
+      "n": 4,
+      "title": "Announcements & New Friends",
+      "desc": "This week's answers, school gift, how to belong.",
+      "minutes": 3,
+      "cards": [
+        {
+          "t": "New here? Tap I'm New",
+          "d": "We pray for every new name this week. No spam, just love."
+        },
+        {
+          "t": "Friday Answers",
+          "d": "3 real-life questions answered from the Bible — with your TikToks seeded in."
+        },
+        {
+          "t": "Free gift: Module 1",
+          "d": "School of Creativity, Love & Wisdom — start free, no card."
+        }
+      ],
+      "short": "News"
+    },
+    {
+      "id": "offering",
+      "n": 5,
+      "title": "Offering — Give with Love",
+      "desc": "Separate LOTL fund. Cheerful, no pressure.",
+      "minutes": 3,
+      "verse": "2 Cor 9:7 — God loves a cheerful giver.",
+      "momo": {
+        "name": "Gideon Abochie",
+        "network": "MTN",
+        "number": "024 326 2019"
+      },
+      "short": "Giving"
+    },
+    {
+      "id": "word",
+      "n": 6,
+      "title": "The Word",
+      "desc": "Sermon: Grace for New Beginnings (25 min). Notebook open.",
+      "minutes": 25,
+      "media": {
+        "type": "youtube",
+        "src": "",
+        "note": "Add sermon YouTube ID or TikTok compilation"
+      },
+      "takeaways": [
+        "Mercy resets every morning.",
+        "Frustration is a question — the Bible has answers.",
+        "Write one obedient step for this week."
+      ],
+      "short": "Word"
+    },
+    {
+      "id": "altar",
+      "n": 7,
+      "title": "Altar Call",
+      "desc": "Sinner's prayer line-by-line. Tap I Gave My Life Today.",
+      "minutes": 5,
+      "prayer": "Lord Jesus, I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen!",
+      "short": "Altar"
+    },
+    {
+      "id": "prayer",
+      "n": 8,
+      "title": "Prayer + Q&A",
+      "desc": "Book a free 15-min prayer call. Ask your life question.",
+      "minutes": 5,
+      "slots": [
+        "Tue 10:00",
+        "Tue 10:30",
+        "Tue 11:00",
+        "Tue 11:30",
+        "Thu 10:00",
+        "Thu 10:30",
+        "Thu 11:00",
+        "Thu 11:30",
+        "Sat 09:00",
+        "Sat 09:30",
+        "Sat 10:00",
+        "Sat 10:30"
+      ],
+      "contact": {
+        "email": "love@gabochie.com",
+        "phone": "+233243262019",
+        "whatsapp": "https://wa.me/233243262019"
+      },
+      "short": "Prayer"
+    },
+    {
+      "id": "benediction",
+      "n": 9,
+      "title": "Benediction & Share",
+      "desc": "Blessing + invite a friend with your link (?ref=).",
+      "minutes": 2,
+      "blessing": "May the Lord bless you and keep you. May His face shine on you. Go in love, live with wisdom.",
+      "short": "Blessing"
+    }
+  ]
+}

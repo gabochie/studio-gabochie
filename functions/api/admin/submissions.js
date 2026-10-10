@@ -12,7 +12,14 @@ export async function onRequest(context) {
 
   try {
     if (request.method === 'GET') {
-      var results = (await env.DB.prepare("SELECT * FROM contact_submissions ORDER BY created_at DESC LIMIT 100").all()).results || [];
+      var srcUrl = new URL(request.url);
+      var srcFilter = srcUrl.searchParams.get('source') || '';
+      var results;
+      if (srcFilter) {
+        results = (await env.DB.prepare("SELECT * FROM contact_submissions WHERE source LIKE ? ORDER BY created_at DESC LIMIT 200").bind(srcFilter + '%').all()).results || [];
+      } else {
+        results = (await env.DB.prepare("SELECT * FROM contact_submissions ORDER BY created_at DESC LIMIT 100").all()).results || [];
+      }
       return new Response(JSON.stringify({ status: 'ok', items: results }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 

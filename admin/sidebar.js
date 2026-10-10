@@ -41,6 +41,12 @@
       ]
     },
     {
+      label: 'Ministry',
+      items: [
+        { href: 'ministry.html', icon: '⛪', label: 'Community Inbox' }
+      ]
+    },
+    {
       label: 'Finance',
       items: [
         { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' }
