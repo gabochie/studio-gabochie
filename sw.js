@@ -1,6 +1,7 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v13';
+const VERSION = 'gabochie-v14';
+const AUDIO_CACHE_MAX_BYTES = 26214400; // 25 MB per file — keep offline storage bounded.
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 /* Cloudflare Pages serves clean URLs: /offline.html 308-redirects to /offline,
@@ -119,6 +120,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Ministry audio: cache-first (whole-file only) so the last service plays offline.
+  if (path.startsWith('/love-of-the-lord/audio/')) {
+    event.respondWith(cacheFirstAudio(request));
+    return;
+  }
+
   // Catalog API: stale-while-revalidate.
   if (RUNTIME_GET_PREFIXES.some((p) => path.startsWith(p))) {
     event.respondWith(staleWhileRevalidate(request));
@@ -133,6 +140,22 @@ async function cacheFirst(request) {
   if (response.ok) {
     const cache = await caches.open(RUNTIME_CACHE);
     cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function cacheFirstAudio(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  // Only cache full 200 bodies small enough to keep offline storage bounded.
+  // Range (206) responses are never cached.
+  if (response.status === 200) {
+    const len = parseInt(response.headers.get('Content-Length') || '0', 10);
+    if (!len || len <= AUDIO_CACHE_MAX_BYTES) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+    }
   }
   return response;
 }

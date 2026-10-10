@@ -265,3 +265,20 @@ test.describe('Love Of The Lord — answers archive', function () {
     await expect(page.locator('a[href*="tiktok.com"]').first()).toBeVisible();
   });
 });
+
+test.describe('Admin — LOTL Studio editor', function () {
+  test('loads series.json and renders editable service rows', async function ({ page }) {
+    await page.goto('/admin/lotl.html');
+    await expect(page.locator('#servicesList .svc-row').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#servicesList .svc-row')).toHaveCount(1);
+    await expect(page.locator('#seasonSelect option').first()).toContainText('Foundations of Grace');
+  });
+
+  test('opening a service loads its lineup stops into the editor', async function ({ page }) {
+    await page.goto('/admin/lotl.html');
+    await expect(page.locator('#servicesList .svc-row').first()).toBeVisible({ timeout: 10000 });
+    await page.locator('#servicesList button', { hasText: 'Lineup' }).first().click();
+    await expect(page.locator('#lineupEditor')).toHaveValue(/welcome/);
+    await expect(page.locator('#lineupPath')).toContainText('lineup.json');
+  });
+});

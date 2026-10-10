@@ -59,6 +59,7 @@
     <div class="cal-controls">
       <select id="yearSelect" onchange="renderCalendar()"></select>
       <button class="btn btn-gold btn-sm" onclick="addThemePills()">Suggest Themes</button>
+      <button class="btn btn-outline btn-sm" onclick="fillLotlThemes()">Fill Love Of The Lord</button>
       <button class="btn btn-outline btn-sm" onclick="exportCalendar()">Export JSON</button>
       <button class="btn btn-outline btn-sm" onclick="importCalendar()">Import JSON</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
@@ -90,6 +91,8 @@
           <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Leadership & Service</span>
           <span class="pill" onclick="navigator.clipboard.writeText(this.textContent)">Ghanaian Innovation Stories</span>
         </div>
+        <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;margin:12px 0 6px">Love Of The Lord &middot; 4 quarterly series</div>
+        <div class="pill-grid" id="lotlPills"></div>
       </details>
     </div>
 
@@ -186,6 +189,66 @@ var DEFAULT_THEMES = [
   "Annual Review: The Studio Year One",
   "Preview: Year Two & Beyond"
 ];
+
+/* Love Of The Lord weekly themes — the 4 quarterly series (see 09-LOTL-52-week-calendar.md).
+   Used by the "Fill Love Of The Lord" preset and the LOTL pills. */
+var LOTL_THEMES = [
+  "Foundations of Grace: Grace for New Beginnings",
+  "Foundations of Grace: Mercy That Never Runs Out",
+  "Foundations of Grace: The God Who Restores",
+  "Foundations of Grace: Faith Over Frustration",
+  "Foundations of Grace: Rooted and Established",
+  "Foundations of Grace: His Mercies Are New",
+  "The Kingdom Mind: Seek First the Kingdom",
+  "The Kingdom Mind: Kingdom Perspective on Money",
+  "The Kingdom Mind: A Renewed Mind",
+  "The Kingdom Mind: Kingdom Ambition",
+  "The Kingdom Mind: Citizens, Not Consumers",
+  "The Kingdom Mind: Think on These Things",
+  "Love in Action: Love Your Neighbour",
+  "Love in Action: Forgiveness That Frees",
+  "Love in Action: Serving as Worship",
+  "Love in Action: Marriage and Family",
+  "Love in Action: Generosity and Community",
+  "Love in Action: Love as the Highest Apologetic",
+  "Hope and Harvest: Hope That Does Not Disappoint",
+  "Hope and Harvest: Sowing and Reaping",
+  "Hope and Harvest: Faith in the Waiting",
+  "Hope and Harvest: Thanksgiving and Praise",
+  "Hope and Harvest: Carry the Fire",
+  "Hope and Harvest: The End of the Matter"
+];
+
+function renderLotlPills() {
+  var box = document.getElementById('lotlPills');
+  if (!box) return;
+  LOTL_THEMES.forEach(function (t) {
+    var s = document.createElement('span');
+    s.className = 'pill';
+    s.textContent = t;
+    s.onclick = function () { navigator.clipboard.writeText(t); };
+    box.appendChild(s);
+  });
+}
+
+function fillLotlThemes() {
+  if (!_calCache) { Toast.error('Calendar not loaded yet.'); return; }
+  if (!confirm('Fill empty issues with the Love Of The Lord quarterly series themes?')) return;
+  var keys = Object.keys(_calCache.issues).sort();
+  var i = 0;
+  keys.forEach(function (key) {
+    if (!_calCache.issues[key].theme && LOTL_THEMES[i]) {
+      _calCache.issues[key].theme = LOTL_THEMES[i];
+      _calCache.issues[key].tags = ['LOTL'];
+      i++;
+    }
+  });
+  saveCalToAPI(_calCache.year, _calCache.issues);
+  renderCalendar();
+  Toast.success('Added ' + i + ' Love Of The Lord theme(s).');
+}
+
+renderLotlPills();
 
 function getSaturdays(year) {
   var dates = [];
