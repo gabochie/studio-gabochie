@@ -131,6 +131,27 @@ details.fold{margin-top:12px;background:#0F1E38;border:1px solid #1E3250;border-
 details.fold summary{cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#C9A84C;padding:10px 0;list-style:none}
 details.fold summary::-webkit-details-marker{display:none}
 @media(max-width:860px){.hero-grid{grid-template-columns:1fr;text-align:center}.hero p{margin-left:auto;margin-right:auto}.cta-row{justify-content:center}.grid3,.split,.twall{grid-template-columns:1fr}.hero{padding-top:84px}}
+.screen.has-media img:not(.audio-cover){display:none}
+.stage{position:absolute;inset:0;z-index:1;background:#000}
+.stage[hidden]{display:none}
+.stage iframe,.stage video{width:100%;height:100%;border:0;background:#000;display:block}
+.stage .audio-stage{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:22px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.18),transparent 60%),#0A1628}
+.screen .stage .audio-cover{position:static;inset:auto;width:74px;height:74px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;opacity:1}
+.audio-title{font-family:'DM Sans',sans-serif;color:#F1F5F9;font-size:13px;text-align:center;max-width:90%;position:relative;z-index:2}
+.audio-stage audio{width:min(520px,92%);position:relative;z-index:2}
+.screen.has-media .play{position:absolute;right:12px;bottom:12px;width:46px;height:46px;font-size:15px;z-index:4;border-width:3px}
+.screen.has-media .now{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 8px;background:linear-gradient(transparent,rgba(0,0,0,.8));text-align:left}
+.svc-pick{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
+.svc-pick .season{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2F4A2E}
+.svc-pick select{font-family:'DM Sans',sans-serif;font-size:12px;background:#fff;border:1px solid #CBBF9F;border-radius:8px;color:#2B2118;padding:6px 10px;max-width:62%}
+.ans-block{margin-top:26px}
+.ans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.ans-card{display:flex;flex-direction:column;gap:6px;background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:16px;text-decoration:none;color:#E8EEF7;font-family:'DM Sans',sans-serif;font-size:13px;transition:border-color .2s}
+.ans-card:hover{border-color:#C9A84C}
+.ans-card b{font-weight:600}
+.ans-card small{color:#C9A84C;font-size:11px}
+.ans-tag{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C}
+@media(max-width:860px){.ans-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -164,12 +185,14 @@ details.fold summary::-webkit-details-marker{display:none}
 <div>
 <div class="player" id="start">
 <div class="screen">
+<div class="stage" id="stage" hidden></div>
 <img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo" loading="lazy">
 <button type="button" class="play" id="playBtn" aria-label="Play next part" onclick="return lotlPlay()">▶</button>
 <div class="now" id="nowPlaying">Welcome — Grace for New Beginnings · Service 001</div>
 </div>
 <div class="pmeta">
 <div class="resume" id="resumeBar" hidden><span>Welcome back — continue?</span><button type="button" class="btn btn-gold btn-sm" onclick="return lotlResume()">Continue</button></div>
+<div class="svc-pick"><span class="season" id="seasonLabel">Foundations of Grace · Grace for New Beginnings</span><select id="servicePicker" aria-label="Choose service"></select></div>
 <div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700" id="modeLabel">FULL SERVICE · 60 MIN</div>
 <div class="progress" role="progressbar" aria-label="Service progress"><i id="bar"></i></div>
 <div class="pills" id="steps"></div>
@@ -235,6 +258,11 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="cta-row" style="margin-top:10px"><button class="btn btn-gold" type="submit">Send my question →</button></div>
 </form>
 <div class="ok" id="askOk" hidden>Received. We answer 3 every Friday — yours may be next. <a href="mailto:love@gabochie.com">love@gabochie.com</a></div>
+</div>
+<div class="ans-block">
+<div class="kicker">Latest answers</div>
+<div class="ans-grid" id="latestAnswers"></div>
+<a class="micro" href="/love-of-the-lord/answers/" style="display:inline-block;margin-top:10px">See all answers →</a>
 </div>
 </div>
 </section>

@@ -197,4 +197,58 @@ test.describe('Love Of The Lord — service page', function () {
     var familyName = await page.locator('#familyForm [name=name]').inputValue();
     expect(familyName).toContain('ama');
   });
+
+  test('series engine populates the service picker from series.json', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#servicePicker option').first()).toBeAttached({ timeout: 10000 });
+    await expect(page.locator('#servicePicker optgroup')).toHaveCount(1);
+    await expect(page.locator('#servicePicker optgroup')).toHaveAttribute('label', 'Foundations of Grace');
+    await expect(page.locator('#servicePicker option').first()).toContainText('Grace for New Beginnings');
+    await expect(page.locator('#seasonLabel')).toContainText('Foundations of Grace');
+  });
+
+  test('media stage stays hidden when the lineup has no media yet', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await expect(page.locator('#stage')).toBeHidden();
+    await expect(page.locator('.screen.has-media')).toHaveCount(0);
+  });
+
+  test('audio-only toggle reports its state', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.locator('.amen-row button', { hasText: 'Audio-only' }).click();
+    await expect(page.locator('#audioNote')).toBeVisible();
+    await expect(page.locator('#audioNote')).toContainText('Audio-only');
+  });
+
+  test('latest answers strip renders 3 answers on the home page', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#latestAnswers .ans-card')).toHaveCount(3, { timeout: 10000 });
+    await expect(page.locator('a[href="/love-of-the-lord/answers/"]').first()).toBeVisible();
+  });
+});
+
+test.describe('Love Of The Lord — answers archive', function () {
+  test('loads the archive with seeded answers and filters', async function ({ page }) {
+    await page.goto('/love-of-the-lord/answers/');
+    await expect(page.locator('.ans-item')).toHaveCount(6, { timeout: 10000 });
+    await expect(page.locator('#filters button').first()).toContainText('All');
+    await expect(page.locator('.ans-list')).toContainText('Past Answer');
+  });
+
+  test('filter narrows the list by category', async function ({ page }) {
+    await page.goto('/love-of-the-lord/answers/');
+    await expect(page.locator('.ans-item')).toHaveCount(6, { timeout: 10000 });
+    await page.locator('#filters button', { hasText: 'Faith' }).click();
+    var count = await page.locator('.ans-item').count();
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThan(6);
+  });
+
+  test('archived answers link out to their source video', async function ({ page }) {
+    await page.goto('/love-of-the-lord/answers/');
+    await expect(page.locator('.ans-item').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('a[href*="tiktok.com"]').first()).toBeVisible();
+  });
 });

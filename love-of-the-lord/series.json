@@ -1,0 +1,22 @@
+{
+  "updated": "2026-10-11",
+  "current": "service-001",
+  "seasons": [
+    {
+      "id": "s1",
+      "title": "Foundations of Grace",
+      "quarter": "Q1 2026–27",
+      "verse": "Lamentations 3:22-23 — His mercies are new every morning.",
+      "services": [
+        {
+          "id": "service-001",
+          "n": 1,
+          "title": "Grace for New Beginnings",
+          "date": "2026-10-11",
+          "theme_verse": "Lamentations 3:22-23 — His mercies are new every morning.",
+          "lineup": "lineup.json"
+        }
+      ]
+    }
+  ]
+}
