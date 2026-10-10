@@ -68,6 +68,13 @@
       "description": "Learn guitar online",
       "url": "/guitar/",
       "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Have Church Now",
+      "short_name": "Church",
+      "description": "Love Of The Lord — autonomous online service",
+      "url": "/love-of-the-lord/",
+      "icons": [{ "src": "/love-of-the-lord/logo.webp", "sizes": "512x512" }]
     }
   ]
 }

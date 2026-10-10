@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ministry Inbox — Admin · Studio Gabochie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.queue-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.queue-tabs button{font-family:Inter,sans-serif;font-size:12px;font-weight:600;padding:8px 14px;border-radius:16px;border:1px solid #1E3250;background:transparent;color:#8A9BB5;cursor:pointer}
+.queue-tabs button.on{background:#C9A84C;border-color:#C9A84C;color:#0A1628}
+.queue-tabs button .n{opacity:.7;font-weight:400}
+.new-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#CBD5E1}
+.new-banner b{color:#C9A84C}
+.status-filter{margin-left:auto;font-family:Inter,sans-serif;font-size:12px;background:#0A1628;color:#CBD5E1;border:1px solid #1E3250;border-radius:8px;padding:8px 10px}
+.wa-btn{display:inline-flex;align-items:center;gap:6px;background:#1FA855;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 class="page-title">Ministry <span>Inbox</span></h1>
+  <p class="page-desc">Love Of The Lord community triage — new friends, prayer consults, questions, family joins, testimonies, decisions. Review weekly; nothing rots here.</p>
+
+  <div class="new-banner" id="newBanner" hidden><b id="newCount">0</b> new waiting across all queues. Oldest first — start at the top.</div>
+
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+    <button class="btn btn-outline" onclick="loadMinistry()">&#8635; Refresh</button>
+    <span id="subCount" style="font-size:12px;color:#5A7A9F"></span>
+    <select class="status-filter" id="statusFilter" onchange="renderMinistry()" aria-label="Filter by status">
+      <option value="">All statuses</option>
+      <option value="new" selected>New only</option>
+      <option value="read">Read</option>
+      <option value="replied">Replied</option>
+    </select>
+  </div>
+  <div class="queue-tabs" id="queueTabs"></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Contact</th><th>Queue</th><th>Message</th><th>Date</th><th>Status</th><th></th></tr></thead>
+      <tbody id="subsBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:#3A5278">Loading ministry inbox&hellip;</td></tr></tbody>
+    </table>
+  </div>
+</div>
+<div class="footer"><a href="index.html">&larr; Dashboard</a></div>
+
+<div class="m-overlay" id="detailModal">
+  <div class="m">
+    <div class="m-title" id="detailTitle">Ministry item</div>
+    <div class="m-body" id="detailBody"></div>
+    <div class="m-footer"><button class="btn btn-secondary" onclick="document.getElementById('detailModal').classList.remove('open')">Close</button></div>
+  </div>
+</div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+
+var QUEUES = [
+  { key: '',          label: 'All LOTL' },
+  { key: 'lotl-new',       label: 'New Here' },
+  { key: 'lotl-consult',   label: 'Prayer Consults' },
+  { key: 'lotl-question',  label: 'Questions' },
+  { key: 'lotl-community', label: 'Family Joins' },
+  { key: 'lotl-testimony', label: 'Testimonies' },
+  { key: 'lotl-decision',  label: 'Decisions' }
+];
+var QUEUE_LABEL = {};
+QUEUES.forEach(function (q) { QUEUE_LABEL[q.key] = q.label; });
+var allItems = [];
+var activeQueue = '';
+
+function waNumber(msg) {
+  var m = String(msg || '').match(/\[WhatsApp ([^\]]+)\]/);
+  if (!m) return '';
+  var digits = m[1].replace(/\D/g, '');
+  if (/^0\d{9}$/.test(digits)) return '233' + digits.slice(1);
+  return digits;
+}
+
+function cleanMsg(msg) {
+  return String(msg || '').replace(/^\[WhatsApp [^\]]+\]\s*/, '');
+}
+
+function fmtDate(iso) {
+  try { return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
+  catch (_e) { return iso || '-'; }
+}
+
+function renderTabs() {
+  var tabs = document.getElementById('queueTabs');
+  tabs.innerHTML = '';
+  QUEUES.forEach(function (q) {
+    var n = q.key
+      ? allItems.filter(function (s) { return s.source === q.key && s.status === 'new'; }).length
+      : allItems.filter(function (s) { return s.status === 'new'; }).length;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = activeQueue === q.key ? 'on' : '';
+    b.innerHTML = escapeHtml(q.label) + (n ? ' <span class="n">(' + n + ')</span>' : '');
+    b.addEventListener('click', function () { activeQueue = q.key; renderTabs(); renderMinistry(); });
+    tabs.appendChild(b);
+  });
+}
+
+function loadMinistry() {
+  document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#3A5278">Loading&hellip;</td></tr>';
+  adminFetch('/api/admin/submissions?source=lotl-').then(function (r) { return r.json(); }).then(function (d) {
+    if (d.status !== 'ok') throw new Error(d.message);
+    allItems = (d.items || []).slice().sort(function (a, b) {
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+    var fresh = allItems.filter(function (s) { return s.status === 'new'; }).length;
+    document.getElementById('newCount').textContent = fresh;
+    document.getElementById('newBanner').hidden = fresh === 0;
+    document.getElementById('subCount').textContent = allItems.length + ' LOTL item(s)';
+    renderTabs();
+    renderMinistry();
+  }).catch(function (e) {
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#E8637A">Failed: ' + escapeHtml(e.message) + '</td></tr>';
+  });
+}
+
+function renderMinistry() {
+  var statusF = document.getElementById('statusFilter').value;
+  var items = allItems.filter(function (s) {
+    if (activeQueue && s.source !== activeQueue) return false;
+    if (statusF && s.status !== statusF) return false;
+    return true;
+  });
+  if (!items.length) {
+    document.getElementById('subsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#3A5278">Queue clear — nothing waiting here</td></tr>';
+    return;
+  }
+  document.getElementById('subsBody').innerHTML = items.map(function (s) {
+    var stCls = s.status === 'new' ? 'tag-yellow' : s.status === 'read' ? 'tag-blue' : s.status === 'replied' ? 'tag-green' : 'tag-dim';
+    var wa = waNumber(s.message);
+    var contact = escapeHtml(s.email || '-');
+    if (wa) contact += '<br><span style="font-size:11px;color:#1FA855">' + escapeHtml(wa) + '</span>';
+    return '<tr><td>' + escapeHtml(s.name || '-') + '</td><td style="font-size:12px">' + contact + '</td>' +
+      '<td><span class="source-tag">' + escapeHtml(QUEUE_LABEL[s.source] || s.source || 'LOTL') + '</span></td>' +
+      '<td style="font-size:12px;color:#94A3B8;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(cleanMsg(s.message) || s.subject || '-') + '</td>' +
+      '<td style="font-size:12px;color:#5A7A9F">' + escapeHtml(fmtDate(s.created_at)) + '</td>' +
+      '<td><span class="tag ' + stCls + '">' + escapeHtml(s.status) + '</span></td>' +
+      '<td><button class="btn-icon" onclick="viewMinistry(' + s.id + ')" title="View">&#8594;</button></td></tr>';
+  }).join('');
+}
+
+function viewMinistry(id) {
+  var s = allItems.filter(function (x) { return x.id === id; })[0];
+  if (!s) { Toast.error('Not found'); return; }
+  var wa = waNumber(s.message);
+  var h = '';
+  h += '<div class="m-detail-row"><span class="mdl-l">Name</span><span class="mdl-v">' + escapeHtml(s.name || '-') + '</span></div>';
+  h += '<div class="m-detail-row"><span class="mdl-l">Email</span><span class="mdl-v">' + escapeHtml(s.email || '-') + '</span></div>';
+  if (wa) h += '<div class="m-detail-row"><span class="mdl-l">WhatsApp</span><span class="mdl-v">' + escapeHtml(wa) + '</span></div>';
+  h += '<div class="m-detail-row"><span class="mdl-l">Queue</span><span class="mdl-v">' + escapeHtml(QUEUE_LABEL[s.source] || s.source || '-') + '</span></div>';
+  h += '<div class="m-detail-row"><span class="mdl-l">Date</span><span class="mdl-v">' + escapeHtml(new Date(s.created_at).toLocaleString()) + '</span></div>';
+  if (cleanMsg(s.message)) h += '<div class="m-detail-row"><span class="mdl-l">Message</span><span class="mdl-v" style="font-size:13px;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto">' + escapeHtml(cleanMsg(s.message)) + '</span></div>';
+  h += '<div class="m-detail-row"><span class="mdl-l">Status</span><span class="mdl-v">' + escapeHtml(s.status || 'new') + '</span></div>';
+  h += '<div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">';
+  if (wa) h += '<a class="wa-btn" target="_blank" rel="noopener" href="https://wa.me/' + encodeURIComponent(wa) + '?text=' + encodeURIComponent('Hello ' + (s.name || 'friend') + ', Love Of The Lord here — we received your message!') + '">WhatsApp ' + escapeHtml(s.name || '') + ' \u2197</a>';
+  if (s.status === 'new') h += '<button class="btn btn-secondary btn-sm" onclick="markMinistry(' + id + ',\'read\')">Mark Read</button>';
+  if (s.status === 'read') h += '<button class="btn btn-primary btn-sm" onclick="markMinistry(' + id + ',\'replied\')">Mark Replied</button>';
+  h += '</div>';
+  document.getElementById('detailTitle').textContent = (QUEUE_LABEL[s.source] || 'Ministry') + ' #' + id;
+  document.getElementById('detailBody').innerHTML = h;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function markMinistry(id, status) {
+  adminFetch('/api/admin/submissions?id=' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: status }) }).then(function (r) { return r.json(); }).then(function (d) {
+    if (d.status === 'ok') { document.getElementById('detailModal').classList.remove('open'); loadMinistry(); }
+    else throw new Error(d.message);
+  }).catch(function (e) { Toast.error('Failed: ' + e.message); });
+}
+
+loadMinistry();
+</script>
+</body>
+</html>

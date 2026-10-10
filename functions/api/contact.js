@@ -58,6 +58,21 @@ export async function onRequest(context) {
     const phone = formData.get('phone') || '';
     const msg = formData.get('message') || '';
     const book = formData.get('book') || formData.get('_subject') || '';
+    const rawSource = formData.get('source') || '';
+    // Ministry (Love Of The Lord) queue tags — service.js posts these.
+    const LOTL_SUBJECTS = {
+      'lotl-new': "LOTL: I'm New",
+      'lotl-consult': 'LOTL: Prayer Consult',
+      'lotl-question': 'LOTL: Question',
+      'lotl-community': 'LOTL: Join Family',
+      'lotl-testimony': 'LOTL: Testimony',
+      'lotl-decision': 'LOTL: Decision'
+    };
+    const srcLabel = LOTL_SUBJECTS[rawSource] || '';
+    const subject = book || srcLabel || 'Contact Form';
+    const sourceVal = rawSource || book || 'contact';
+    // contact_submissions has no phone column — carry WhatsApp into the message head.
+    const storedMsg = phone ? '[WhatsApp ' + phone + ']' + (msg ? ' ' + msg : '') : msg;
     const spam = formData.get('_gotcha');
     if (spam) {
       return new Response(JSON.stringify({ status: 'ok' }), {
@@ -66,21 +81,25 @@ export async function onRequest(context) {
     }
     const db = env.DB;
     const notify = env.NOTIFY_EMAIL || 'gid@gabochie.com';
+    // Subscribers stay email-keyed (OR IGNORE would collapse phone-only leads).
     if (db && email) {
       await db.prepare(
         `INSERT OR IGNORE INTO subscribers (name, email, source, book, phone) VALUES (?, ?, ?, ?, ?)`
-      ).bind(name, email, book || 'contact', book || '', phone).run();
+      ).bind(name, email, sourceVal === 'contact' ? (book || 'contact') : sourceVal, book || '', phone).run();
       if (phone) {
         await db.prepare("UPDATE subscribers SET phone = ? WHERE email = ? AND (phone IS NULL OR phone = '')").bind(phone, email).run();
       }
+    }
+    // Triage inbox accepts email OR phone — WhatsApp-first visitors must never vanish.
+    if (db && (email || phone)) {
       // Store in contact_submissions for admin review
       await db.prepare(
         `INSERT INTO contact_submissions (name, email, subject, message, source) VALUES (?, ?, ?, ?, ?)`
-      ).bind(name, email, book || 'Contact Form', msg, 'contact').run();
+      ).bind(name, email, subject, storedMsg, sourceVal).run();
       // Queue admin notification
-      await queueEmail(env, notify, 'Gideon', 'New Contact: ' + name, notifyHtml(name, email, msg, 'contact'), 'admin_notification');
+      await queueEmail(env, notify, 'Gideon', 'New ' + subject + ': ' + name, notifyHtml(name, email, storedMsg, sourceVal), 'admin_notification');
       // Queue manifesto follow-up (day 3) if a book download
-      if (book) {
+      if (book && email) {
         try {
           const slugMap = { 'The Bible as Kingdom OS': 'the-bible-as-kingdom-os', 'The Divine Algorithm': 'divine-algorithm', 'AI-Powered Strategic Development': 'ai-national-development', '1 Million Coders Manifesto': '1-million-coders-manifesto' };
           const slug = slugMap[book] || 'the-bible-as-kingdom-os';

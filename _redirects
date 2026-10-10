@@ -5,6 +5,12 @@
 /courses /courses/ 200
 /courses/systems-thinking /courses/systems-thinking/ 200
 
+# ─── Love Of The Lord (global ministry) ───
+/lotl /love-of-the-lord/ 301
+/lotl/ /love-of-the-lord/ 301
+/love-of-the-lord /love-of-the-lord/ 200
+/love-of-the-lord/give /love-of-the-lord/give/ 200
+
 # ─── Core infrastructure (kept) ───
 /login /login/ 200
 /register /register/ 200
