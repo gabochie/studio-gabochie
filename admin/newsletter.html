@@ -909,6 +909,14 @@ function loadStats() {
         html += '<div class="stat-pill" style="border-color:rgba(59,130,246,.3)"><strong>' + fmtNum(b.contacts || 0) + '</strong> Brevo contacts</div>' +
           '<div class="stat-pill" style="border-color:rgba(52,199,123,.3)"><strong>' + (b.open_rate || '—') + '</strong> open rate</div>' +
           '<div class="stat-pill" style="border-color:rgba(201,168,76,.3)"><strong>' + (b.click_rate || '—') + '</strong> click rate</div>';
+        if (b.engagement) {
+          var e = b.engagement;
+          html += '<div class="stat-pill" style="border-color:rgba(52,199,123,.3)"><strong>' + fmtNum(e.delivered || 0) + '</strong> delivered (30d)</div>' +
+            '<div class="stat-pill" style="border-color:rgba(59,130,246,.3)"><strong>' + (e.open_rate != null ? e.open_rate.toFixed(1) + '%' : '—') + '</strong> opens (30d)</div>' +
+            '<div class="stat-pill" style="border-color:rgba(201,168,76,.3)"><strong>' + (e.click_rate != null ? e.click_rate.toFixed(1) + '%' : '—') + '</strong> clicks (30d)</div>' +
+            '<div class="stat-pill" style="border-color:rgba(232,99,122,.3)"><strong>' + fmtNum(e.bounces || 0) + '</strong> bounces · ' + fmtNum(e.complaints || 0) + ' spam</div>';
+        }
+        html += renderIssueTable(b.issues || []);
       }
       el.innerHTML = html;
     }).catch(function(){
@@ -917,6 +925,23 @@ function loadStats() {
   }).catch(function(){
     el.innerHTML = '<div class="stat-pill">Failed to load stats</div>';
   });
+}
+
+// ── Per-issue engagement table ──
+function renderIssueTable(issues) {
+  if (!issues.length) return '';
+  var html = '<div style="flex-basis:100%;margin-top:12px;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">' +
+    '<tr style="color:#5A7A9F;text-align:left"><th style="padding:6px 8px">Issue</th><th style="padding:6px 8px">Status</th><th style="padding:6px 8px">Sent</th><th style="padding:6px 8px">Opens</th><th style="padding:6px 8px">Clicks</th><th style="padding:6px 8px">Bounced</th></tr>';
+  issues.forEach(function(it) {
+    var g = it.engagement || {};
+    html += '<tr style="border-top:1px solid #1E3250;color:#CBD5E1"><td style="padding:6px 8px">#' + esc(it.issue_number) + ' ' + esc((it.subject || '').slice(0, 40)) + '</td>' +
+      '<td style="padding:6px 8px">' + schedStatusBadge(it.status) + '</td>' +
+      '<td style="padding:6px 8px">' + fmtNum(it.sent) + '/' + fmtNum(it.subscribed) + '</td>' +
+      '<td style="padding:6px 8px">' + (g.opens != null ? fmtNum(g.opens) : '—') + '</td>' +
+      '<td style="padding:6px 8px">' + (g.clicks != null ? fmtNum(g.clicks) : '—') + '</td>' +
+      '<td style="padding:6px 8px">' + (g.bounces != null ? fmtNum(g.bounces) : '—') + '</td></tr>';
+  });
+  return html + '</table><p style="color:#3A5278;font-size:11px;margin:6px 0 0">Engagement appears for issues sent after tagging began; older sends show delivery counts only.</p></div>';
 }
 
 // ── Scheduled issues ──

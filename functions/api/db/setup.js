@@ -1103,6 +1103,12 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_drain ON newsletter_outbox(status, id)`,
       `CREATE INDEX IF NOT EXISTS idx_newsletter_outbox_issue ON newsletter_outbox(issue_id)`,
+      // Cached Brevo stats snapshots (avoid hammering the API per dashboard load)
+      `CREATE TABLE IF NOT EXISTS brevo_stats_cache (
+        cache_key TEXT PRIMARY KEY,
+        payload TEXT NOT NULL DEFAULT '{}',
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
       // Scheduled issues: AI-drafted Fridays, approved by human, sent Saturdays
       `CREATE TABLE IF NOT EXISTS newsletter_schedule (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
