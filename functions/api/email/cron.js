@@ -1,5 +1,7 @@
 import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, tierRenewalReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
 import { personalize } from '../../admin/api/newsletter/send.js';
+import { enqueueBroadcast } from '../../admin/api/newsletter/_enqueue.js';
+import { saturdaySendDue } from '../../admin/api/newsletter/schedule.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
 export async function onRequest(context) {
@@ -206,6 +208,27 @@ export async function onRequest(context) {
       result.newsletter = { sent: nlSent, failed: nlFail, attempted: outRows.length };
     } catch (err) {
       result.errors.push('newsletter: ' + err.message);
+    }
+
+    // Step 5: Saturday scheduled send (approved issues only — never auto-send drafts)
+    try {
+      const weekOf = saturdaySendDue(new Date());
+      if (weekOf) {
+        const sched = await env.DB.prepare(
+          "SELECT id, subject, theme, html FROM newsletter_schedule WHERE week_of = ? AND status = 'approved' ORDER BY id DESC LIMIT 1"
+        ).bind(weekOf).first();
+        if (sched) {
+          const queued = await enqueueBroadcast(env, { subject: sched.subject, theme: sched.theme, html: sched.html });
+          if (queued.ok) {
+            await env.DB.prepare("UPDATE newsletter_schedule SET status = 'queued', issue_id = ?, updated_at = datetime('now') WHERE id = ?").bind(queued.issueId, sched.id).run();
+            result.scheduled = { sent: true, week_of: weekOf, issue_number: queued.issueNumber, enqueued: queued.enqueued };
+          } else {
+            result.errors.push('scheduled: ' + queued.error);
+          }
+        }
+      }
+    } catch (err) {
+      result.errors.push('scheduled: ' + err.message);
     }
 
     return new Response(JSON.stringify({ status: 'ok', ...result }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });

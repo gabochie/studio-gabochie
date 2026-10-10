@@ -24,6 +24,7 @@ async function sendViaBrevo(env, to, subject, htmlContent) {
 }
 
 import { requireAdmin } from '../../_auth.js';
+import { enqueueBroadcast } from './_enqueue.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -54,42 +55,19 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'ok', message: 'Test sent to ' + test_email + ' (' + edition + ', ' + name + ')' }), { headers: { 'Content-Type': 'application/json' } });
     }
 
-    // Broadcast: enqueue one outbox row per confirmed subscriber.
-    // A worker (email cron drain) sends them in bounded batches so large
-    // lists never blow the function time limit. The issue archives immediately
-    // with status 'sending'; progress is tracked via sent/failed counts.
-    const subs = await env.DB.prepare("SELECT email, name, edition, ref_code FROM subscribers WHERE email != '' AND confirmed != 0").all();
-    const subscribers = subs.results || [];
-    if (subscribers.length === 0) {
-      return new Response(JSON.stringify({ status: 'error', message: 'No confirmed subscribers to send to' }), { headers: { 'Content-Type': 'application/json' } });
-    }
-
-    // Archive issue first (status 'sending')
-    const row = await env.DB.prepare("SELECT COALESCE(MAX(issue_number), 0) + 1 AS next_num FROM newsletter_issues").first();
-    const issueNumber = row ? row.next_num : 1;
-    const issueInsert = await env.DB.prepare(
-      "INSERT INTO newsletter_issues (issue_number, subject, theme, html, subscriber_count, status, sent_count, failed_count) VALUES (?, ?, ?, ?, ?, 'sending', 0, 0)"
-    ).bind(issueNumber, subject, theme || '', html, subscribers.length).run();
-    const issueId = issueInsert && issueInsert.meta ? issueInsert.meta.last_row_id : issueNumber;
-
-    let enqueued = 0;
-    // Row-by-row inserts: portable across D1 and trivially resumable.
-    // Enqueue runs once per broadcast in admin (no hot path), so throughput is fine.
-    for (let i = 0; i < subscribers.length; i++) {
-      const s = subscribers[i];
-      await env.DB.prepare(
-        'INSERT INTO newsletter_outbox (issue_id, email, name, edition, ref_code, status, attempts) VALUES (?, ?, ?, ?, ?, \'pending\', 0)'
-      ).bind(issueId, s.email, s.name || '', s.edition || 'GH', s.ref_code || '').run();
-      enqueued++;
+    // Broadcast: enqueue via the shared module (cron drain sends).
+    const result = await enqueueBroadcast(env, { subject: subject, html: html, theme: theme });
+    if (!result.ok) {
+      return new Response(JSON.stringify({ status: 'error', message: result.error }), { headers: { 'Content-Type': 'application/json' } });
     }
 
     return new Response(JSON.stringify({
       status: 'ok',
-      message: `Enqueued ${enqueued} sends for issue #${issueNumber} — draining hourly`,
-      enqueued: enqueued,
-      total: subscribers.length,
-      issue_number: issueNumber,
-      issue_id: issueId
+      message: `Enqueued ${result.enqueued} sends for issue #${result.issueNumber} — draining hourly`,
+      enqueued: result.enqueued,
+      total: result.total,
+      issue_number: result.issueNumber,
+      issue_id: result.issueId
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response(JSON.stringify({ status: 'error', message: 'Internal error: ' + err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
