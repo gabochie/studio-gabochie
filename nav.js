@@ -70,8 +70,8 @@
     '<a href="tel:+233243262019">+233 243 262 019</a>' +
     '<span style="display:block;font-family:\'Barlow\',sans-serif;font-size:13px;color:#5A7A9F;margin-bottom:8px">P.O. Box SK 2125, Sakumono, Tema &mdash; Ghana</span>' +
     '</div>' +
-    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; Accra, Ghana.</div>' +
     '<div class="footer-legal footer-legal--bar"><a href="/legal/privacy.html">Privacy</a><span>·</span><a href="/legal/cookies.html">Cookies</a><span>·</span><a href="/legal/terms.html">Terms</a><span>·</span><a href="/legal/refund.html">Refunds</a><span>·</span><a href="/legal/disclaimer.html">Disclaimer</a><span>·</span><a href="/legal/donations.html">Donations</a></div>' +
+    '<div class="footer-bottom">&copy; ' + new Date().getFullYear() + ' Studio Gabochie &mdash; Accra, Ghana.</div>' +
     '</div>' +
     '</footer>';
 

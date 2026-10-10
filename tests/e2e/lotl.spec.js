@@ -111,7 +111,7 @@ test.describe('Love Of The Lord — service page', function () {
         var els = [...document.querySelectorAll('footer .container > *')].map(function (e) { return e.className; });
         return els.join(',');
       });
-      expect(order.indexOf('footer-bottom')).toBeLessThan(order.indexOf('footer-legal--bar'));
+      expect(order.indexOf('footer-legal--bar')).toBeLessThan(order.indexOf('footer-bottom'));
     }
   });
   test('global footer links the Ministry on every page', async function ({ page }) {
