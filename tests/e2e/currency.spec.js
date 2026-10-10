@@ -35,4 +35,26 @@ test.describe('Currency toggle (site-wide)', function () {
     await page.goto('/love-of-the-lord/give/');
     await expect(page.locator('#currencyToggle')).toBeHidden();
   });
+
+  test('course landing prices convert with currency toggle', async function ({ page }) {
+    await page.goto('/courses/digital-marketing/');
+    var price = page.locator('#priceValue');
+    await expect(price).toContainText('$', { timeout: 10000 });
+    await page.selectOption('#currencyToggle select', 'GHS');
+    await expect(price).toContainText('GH\u20b5');
+  });
+
+  test('systems-thinking inline price converts with currency toggle', async function ({ page }) {
+    await page.goto('/courses/systems-thinking/');
+    var price = page.locator('#priceValue');
+    await expect(price).toContainText('$', { timeout: 10000 });
+    await page.selectOption('#currencyToggle select', 'GHS');
+    await expect(price).toContainText('GH\u20b5');
+  });
+
+  test('school exposes a dynamic reprice hook', async function ({ page }) {
+    await page.goto('/school/');
+    var hasHook = await page.evaluate(function () { return typeof window.gaRepriceDynamic === 'function'; });
+    expect(hasHook).toBe(true);
+  });
 });
