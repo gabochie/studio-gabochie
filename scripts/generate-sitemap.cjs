@@ -60,7 +60,7 @@ const VALID_PREFIX = new Set([
   'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
   'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
   'membership', 'merch', 'services', 'contact', 'press', 'partners', 'careers',
-  'nationbuilding'
+  'nationbuilding', 'love-of-the-lord'
 ]);
 
 function buildXml() {

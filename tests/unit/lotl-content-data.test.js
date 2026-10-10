@@ -1,0 +1,90 @@
+import { describe, it, expect } from 'vitest';
+import { readFileSync, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const lotl = join(root, 'love-of-the-lord');
+
+function readJson(rel) {
+  return JSON.parse(readFileSync(join(root, rel), 'utf8'));
+}
+
+describe('LOTL series engine data (series.json)', function () {
+  const series = readJson('love-of-the-lord/series.json');
+
+  it('declares a current service that exists', function () {
+    expect(typeof series.current).toBe('string');
+    const ids = [];
+    series.seasons.forEach(function (s) { (s.services || []).forEach(function (svc) { ids.push(svc.id); }); });
+    expect(ids).toContain(series.current);
+  });
+
+  it('every season has a title and at least one service', function () {
+    expect(series.seasons.length).toBeGreaterThan(0);
+    series.seasons.forEach(function (s) {
+      expect(s.title).toBeTruthy();
+      expect(s.services.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('every service points at a lineup file that exists', function () {
+    series.seasons.forEach(function (s) {
+      s.services.forEach(function (svc) {
+        expect(svc.id).toBeTruthy();
+        expect(svc.title).toBeTruthy();
+        expect(svc.lineup).toBeTruthy();
+        expect(existsSync(join(lotl, svc.lineup))).toBe(true);
+      });
+    });
+  });
+});
+
+describe('LOTL lineup data (lineup.json)', function () {
+  const lineup = readJson('love-of-the-lord/lineup.json');
+
+  it('has the 9-stop order of service', function () {
+    expect(lineup.stops.length).toBe(9);
+    expect(lineup.stops[0].id).toBe('welcome');
+    expect(lineup.stops[8].id).toBe('benediction');
+  });
+
+  it('exposes express-mode stop ids that exist in the lineup', function () {
+    const ids = lineup.stops.map(function (s) { return s.id; });
+    lineup.service.express_stop_ids.forEach(function (id) { expect(ids).toContain(id); });
+  });
+});
+
+describe('LOTL answers archive data (answers.json)', function () {
+  const data = readJson('love-of-the-lord/answers/answers.json');
+
+  it('has seeded answers with unique ids', function () {
+    expect(data.answers.length).toBeGreaterThanOrEqual(3);
+    const ids = data.answers.map(function (a) { return a.id; });
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('every answer has question, category, date and scriptures', function () {
+    data.answers.forEach(function (a) {
+      expect(a.question).toBeTruthy();
+      expect(a.category).toBeTruthy();
+      expect(a.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(Array.isArray(a.scriptures)).toBe(true);
+      expect(a.video).toBeTruthy();
+    });
+  });
+
+  it('at least one seeded answer links a TikTok video', function () {
+    const withVideo = data.answers.filter(function (a) { return a.video && a.video.tiktok; });
+    expect(withVideo.length).toBeGreaterThan(0);
+  });
+});
+
+describe('LOTL podcast feed (podcast.xml)', function () {
+  it('is valid RSS with iTunes metadata', function () {
+    const xml = readFileSync(join(lotl, 'podcast.xml'), 'utf8');
+    expect(xml).toContain('<rss');
+    expect(xml).toContain('itunes:category');
+    expect(xml).toContain('love@gabochie.com');
+  });
+});

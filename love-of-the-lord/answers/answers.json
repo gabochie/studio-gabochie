@@ -1,0 +1,66 @@
+{
+  "updated": "2026-10-11",
+  "note": "Friday Answers archive. Seeded with Past Answers from existing TikToks. A new entry is added every Friday.",
+  "answers": [
+    {
+      "id": "pa-001",
+      "question": "Where is God when I am frustrated and nothing is working?",
+      "category": "Faith",
+      "date": "2026-09-20",
+      "source": "Past Answer",
+      "scriptures": ["Psalm 34:18", "Lamentations 3:22-23"],
+      "counsel": "Frustration is not proof that God left. It is a signal that your soul is tired and needs mercy, not more pressure. His mercy is new every morning — including tomorrow.",
+      "video": { "tiktok": "7610894227723078913", "youtube": "", "mp3": "" }
+    },
+    {
+      "id": "pa-002",
+      "question": "Can anything good come out of my ordinary, small life?",
+      "category": "Purpose",
+      "date": "2026-09-27",
+      "source": "Past Answer",
+      "scriptures": ["Zechariah 4:10", "1 Corinthians 1:27-29"],
+      "counsel": "God starts big things small on purpose. Your ordinary faithfulness is exactly the kind of material He builds with. Do not despise the day of small beginnings.",
+      "video": { "tiktok": "7611357216582552848", "youtube": "", "mp3": "" }
+    },
+    {
+      "id": "pa-003",
+      "question": "How do I love people who have hurt me?",
+      "category": "Love & Marriage",
+      "date": "2026-10-04",
+      "source": "Past Answer",
+      "scriptures": ["Matthew 6:14", "Romans 12:18"],
+      "counsel": "Forgiveness is not saying it did not hurt. It is choosing to release the debt to God so it stops owning you. You can forgive and still set healthy boundaries.",
+      "video": { "tiktok": "7610121906984963329", "youtube": "", "mp3": "" }
+    },
+    {
+      "id": "ans-004",
+      "question": "I prayed for money for school and got nothing. Where is God in my lack?",
+      "category": "Work & Money",
+      "date": "2026-10-11",
+      "source": "Friday Answer",
+      "scriptures": ["Philippians 4:19", "Matthew 6:33"],
+      "counsel": "Sometimes God provides the door before the money. Ask Him for wisdom and one next step this week — a skill, a person, a small job. Provision often arrives through a step, not a lightning bolt.",
+      "video": { "tiktok": "", "youtube": "", "mp3": "" }
+    },
+    {
+      "id": "ans-005",
+      "question": "Why does God feel silent when I need Him most?",
+      "category": "Faith",
+      "date": "2026-10-11",
+      "source": "Friday Answer",
+      "scriptures": ["Isaiah 41:10", "Psalm 46:10"],
+      "counsel": "Silence is not absence. God often quiets us to deepen us. Stay in the Word, keep praying short honest prayers, and trust what He already said even when you cannot feel Him.",
+      "video": { "tiktok": "", "youtube": "", "mp3": "" }
+    },
+    {
+      "id": "ans-006",
+      "question": "Is it wrong to be ambitious and want to succeed?",
+      "category": "Purpose",
+      "date": "2026-10-11",
+      "source": "Friday Answer",
+      "scriptures": ["Colossians 3:23", "Proverbs 4:7"],
+      "counsel": "Ambition is not sin — selfish ambition is. Work heartily as unto the Lord. Let your success serve people and give God glory, not become your god.",
+      "video": { "tiktok": "", "youtube": "", "mp3": "" }
+    }
+  ]
+}

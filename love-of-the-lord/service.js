@@ -1,4 +1,6 @@
-/* Love Of The Lord — autonomous service player (MVP, PWA-friendly, no framework). */
+/* Love Of The Lord — autonomous service player (MVP, PWA-friendly, no framework).
+   Sprint A: series engine (series.json), media render layer (youtube/bridge/audio),
+   real audio-only + low-data default, latest-answers strip. */
 (function () {
   'use strict';
   var LS_PROGRESS = 'lotl_progress_v1';
@@ -12,21 +14,73 @@
   var stops = [];
   var idx = 0;
   var mode = 'full';
+  var audioOnly = false;
+  var series = null;
+  var service = null;
 
   function $(id) { return document.getElementById(id); }
 
-  function loadLineup() {
-    fetch('lineup.json', { headers: { Accept: 'application/json' } })
+  function prefersLowData() {
+    try {
+      var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (!c) return false;
+      if (c.saveData) return true;
+      return c.effectiveType === 'slow-2g' || c.effectiveType === '2g';
+    } catch (_e) { return false; }
+  }
+
+  function loadSeries() {
+    fetch('series.json', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        stops = (data && data.stops) || [];
-        restore();
-        render();
+        series = data;
+        service = currentService(data);
+        populatePicker(data, service);
+        loadLineup(service && service.lineup ? service.lineup : 'lineup.json');
+      })
+      .catch(function () { loadLineup('lineup.json'); });
+  }
+
+  function allServices(s) {
+    var out = [];
+    if (!s || !s.seasons) return out;
+    s.seasons.forEach(function (season) {
+      (season.services || []).forEach(function (svc) {
+        out.push({ season: season, service: svc });
+      });
+    });
+    return out;
+  }
+
+  function currentService(s) {
+    var found = null;
+    allServices(s).some(function (pair) {
+      if (pair.service.id === s.current) { found = pair.service; return true; }
+      return false;
+    });
+    if (found) return found;
+    var first = allServices(s)[0];
+    return first ? first.service : null;
+  }
+
+  function loadLineup(url) {
+    fetch(url, { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        applyService(data);
       })
       .catch(function () {
         stops = fallbackStops();
         render();
       });
+  }
+
+  function applyService(data) {
+    stops = (data && data.stops) || [];
+    if (data && data.service) service = data.service;
+    updateServiceLabel(data && data.service);
+    restore();
+    render();
   }
 
   function fallbackStops() {
@@ -78,6 +132,131 @@
     try { return parseInt(localStorage.getItem(LS_MAX) || '-1', 10); } catch (_e) { return -1; }
   }
 
+  /* ---------- series picker ---------- */
+  function updateServiceLabel(svc) {
+    var season = $('seasonLabel');
+    if (!season) return;
+    var seasonTitle = '';
+    if (series) {
+      var pair = allServices(series).filter(function (p) { return svc && p.service.id === svc.id; })[0];
+      if (pair) seasonTitle = pair.season.title;
+    }
+    season.textContent = (seasonTitle ? seasonTitle + ' · ' : '') + (svc && svc.title ? svc.title : '');
+  }
+
+  function populatePicker(s, svc) {
+    var sel = $('servicePicker');
+    if (!sel || !s || !s.seasons) return;
+    sel.innerHTML = '';
+    s.seasons.forEach(function (season) {
+      var group = document.createElement('optgroup');
+      group.label = season.title;
+      (season.services || []).forEach(function (item) {
+        var opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = (item.n ? item.n + '. ' : '') + item.title + (item.date ? ' · ' + item.date : '');
+        if (svc && item.id === svc.id) opt.selected = true;
+        group.appendChild(opt);
+      });
+      sel.appendChild(group);
+    });
+    sel.onchange = function () { selectService(sel.value); };
+  }
+
+  function selectService(id) {
+    if (!series) return;
+    series.current = id;
+    var svc = currentService(series);
+    service = svc;
+    idx = 0;
+    try { localStorage.removeItem(LS_PROGRESS); localStorage.removeItem(LS_MAX); } catch (_e) {}
+    var resume = $('resumeBar'); if (resume) resume.hidden = true;
+    if (svc && svc.lineup) loadLineup(svc.lineup);
+    else render();
+  }
+  window.lotlSelectService = selectService;
+
+  /* ---------- media render layer ---------- */
+  function youtubeId(src) {
+    if (!src) return '';
+    if (/^[\w-]{11}$/.test(src)) return src;
+    var m = String(src).match(/[?&]v=([\w-]{11})/) || String(src).match(/youtu\.be\/([\w-]{11})/);
+    return m ? m[1] : '';
+  }
+
+  function youtubeEmbed(m) {
+    var url = '';
+    var id = youtubeId(m.src);
+    if (id) url = 'https://www.youtube.com/embed/' + id;
+    else if (m.playlist) url = 'https://www.youtube.com/embed/videoseries?list=' + encodeURIComponent(m.playlist);
+    if (!url) return null;
+    var f = document.createElement('iframe');
+    f.src = url;
+    f.title = m.title || 'Love Of The Lord media';
+    f.loading = 'lazy';
+    f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    f.setAttribute('allowfullscreen', '');
+    return f;
+  }
+
+  function videoNode(m) {
+    if (!m || !m.src) return null;
+    var v = document.createElement('video');
+    v.src = m.src;
+    v.controls = true;
+    v.playsInline = true;
+    v.setAttribute('preload', 'metadata');
+    v.setAttribute('playsinline', '');
+    if (m.poster) v.setAttribute('poster', m.poster);
+    return v;
+  }
+
+  function audioNode(m, stop) {
+    if (!m || !m.src) return null;
+    var wrap = document.createElement('div');
+    wrap.className = 'audio-stage';
+    var cover = document.createElement('img');
+    cover.src = '/love-of-the-lord/logo.webp';
+    cover.alt = 'Love Of The Lord';
+    cover.className = 'audio-cover';
+    var title = document.createElement('div');
+    title.className = 'audio-title';
+    title.textContent = m.title || (stop && stop.title) || 'Love Of The Lord';
+    var a = document.createElement('audio');
+    a.controls = true;
+    a.preload = 'metadata';
+    a.src = m.src;
+    wrap.appendChild(cover);
+    wrap.appendChild(title);
+    wrap.appendChild(a);
+    return wrap;
+  }
+
+  function renderMedia(stop) {
+    var stage = $('stage');
+    if (!stage) return;
+    var screen = stage.parentNode;
+    stage.innerHTML = '';
+    stage.className = 'stage';
+    var m = stop && stop.media;
+    var node = null;
+    if (m) {
+      var aud = (audioOnly && m.audio) ? m.audio : (m.type === 'audio' ? m : null);
+      if (m.type === 'youtube' && !audioOnly) node = youtubeEmbed(m);
+      else if (aud) node = audioNode(aud, stop);
+      else if (m.type === 'bridge' && !audioOnly) node = videoNode(m);
+    }
+    if (node) {
+      stage.appendChild(node);
+      stage.hidden = false;
+      if (screen) screen.classList.add('has-media');
+    } else {
+      stage.hidden = true;
+      if (screen) screen.classList.remove('has-media');
+    }
+  }
+
+  /* ---------- render ---------- */
   function render() {
     var list = visibleStops();
     if (!list.length) return;
@@ -119,6 +298,7 @@
     if (now) now.textContent = list[idx].title + ' — ' + (list[idx].desc || '');
     var modeLabel = $('modeLabel');
     if (modeLabel) modeLabel.textContent = mode === 'express' ? 'EXPRESS · 15 MIN' : 'FULL SERVICE · 60 MIN';
+    renderMedia(list[idx]);
   }
 
   function escapeHtml(s) {
@@ -170,10 +350,44 @@
   };
 
   window.lotlWorship = function () { var d = $('dim'); if (d) d.classList.add('open'); return false; };
+
   window.lotlAudio = function () {
-    var note = $('audioNote'); if (note) note.hidden = !note.hidden;
+    audioOnly = !audioOnly;
+    var note = $('audioNote');
+    if (note) {
+      note.hidden = false;
+      note.textContent = audioOnly
+        ? 'Audio-only ON — video hidden, audio + lyrics continue. Good for low data.'
+        : 'Audio-only off — video restored where available.';
+    }
+    renderMedia(visibleStops()[idx]);
     return false;
   };
+
+  /* ---------- latest answers (home strip) ---------- */
+  function renderLatestAnswers() {
+    var box = $('latestAnswers');
+    if (!box) return;
+    fetch('answers/answers.json', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var list = (data && data.answers) || [];
+        list = list.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); }).slice(0, 3);
+        if (!list.length) return;
+        box.innerHTML = '';
+        list.forEach(function (a) {
+          var d = document.createElement('a');
+          d.className = 'ans-card';
+          d.href = '/love-of-the-lord/answers/';
+          var sc = (a.scriptures || []).slice(0, 2).join(' · ');
+          d.innerHTML = '<span class="ans-tag">' + escapeHtml(a.category || 'Answer') + '</span>' +
+            '<b>' + escapeHtml(a.question || '') + '</b>' +
+            (sc ? '<small>' + escapeHtml(sc) + '</small>' : '');
+          box.appendChild(d);
+        });
+      })
+      .catch(function () {});
+  }
 
   function wireForm(formId, okId, source) {
     var f = $(formId);
@@ -250,7 +464,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    loadLineup();
+    audioOnly = prefersLowData();
+    loadSeries();
+    renderLatestAnswers();
     softenCookies();
     try {
       var n = localStorage.getItem(LS_AMEN);

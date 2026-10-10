@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+  <title>Love Of The Lord — Global Ministry</title>
+  <link>https://studio.gabochie.com/love-of-the-lord/</link>
+  <language>en</language>
+  <description>Church anytime, anywhere. Sermons, Friday Answers and midweek Word from Love Of The Lord Global Ministry — Bible answers to real pain.</description>
+  <itunes:author>Love Of The Lord</itunes:author>
+  <itunes:owner>
+    <itunes:name>Love Of The Lord</itunes:name>
+    <itunes:email>love@gabochie.com</itunes:email>
+  </itunes:owner>
+  <itunes:category text="Religion &amp; Spirituality">
+    <itunes:category text="Christianity"/>
+  </itunes:category>
+  <itunes:explicit>false</itunes:explicit>
+  <itunes:image href="https://studio.gabochie.com/love-of-the-lord/og-cover.png"/>
+  <image>
+    <url>https://studio.gabochie.com/love-of-the-lord/og-cover.png</url>
+    <title>Love Of The Lord — Global Ministry</title>
+    <link>https://studio.gabochie.com/love-of-the-lord/</link>
+  </image>
+  <!-- Episodes are generated as sermons and Friday Answers publish (see 11-LOTL-audio-and-podcast-plan.md). -->
+</channel>
+</rss>

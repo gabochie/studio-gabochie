@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v11';
+const VERSION = 'gabochie-v12';
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 /* Cloudflare Pages serves clean URLs: /offline.html 308-redirects to /offline,
@@ -21,7 +21,10 @@ const PRECACHE_URLS = [
   '/assets/icons/apple-touch-icon.png',
   '/love-of-the-lord/',
   '/love-of-the-lord/give/',
+  '/love-of-the-lord/answers/',
   '/love-of-the-lord/lineup.json',
+  '/love-of-the-lord/series.json',
+  '/love-of-the-lord/answers/answers.json',
   '/love-of-the-lord/service.js',
   '/love-of-the-lord/logo.webp',
   '/love-of-the-lord/og-cover.png',
