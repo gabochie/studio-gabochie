@@ -68,6 +68,8 @@ Tiers are one-time charges per period (no auto-renewal): the
 
 > Sandbox test cards: Visa `4846801111111119` (CVV 123, exp 12/26),
 > MoMo success wallet `233541111111`, fail wallet `233542222222`.
+> Network coverage to verify on-device before claiming: complete one sandbox
+> checkout each with an MTN, Telecel, and AT test wallet.
 
 ---
 
