@@ -181,6 +181,7 @@ button,a,.btn,.nav-toggle,.gallery-item,.rate-item-cta,input,textarea,select{tou
 .currency-select:hover{border-color:#3A5278}
 .currency-select:focus{border-color:#C9A84C}
 .currency-select option{background:#0F1E38;color:#CBD5E1}
+.bill-note{font-family:'DM Sans',sans-serif;font-size:12px;color:#5A7A9F;text-align:center;margin:10px 0 0}
 @media(max-width:860px){
   /* Park above the bottom tab bar (~64px) instead of fighting it */
   .currency-toggle{bottom:calc(78px + env(safe-area-inset-bottom, 0px));right:12px}

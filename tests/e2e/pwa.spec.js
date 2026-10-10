@@ -53,9 +53,18 @@ test.describe('PWA shell', function () {
     await page.setViewportSize({ width: 390, height: 844 });
     var bar = page.locator('.tab-bar');
     await expect(bar).toBeVisible();
-    for (const label of ['Home', 'Courses', 'Guitar', 'Books', 'Account']) {
+    for (const label of ['Home', 'Courses', 'Church', 'Books', 'Account']) {
       await expect(bar.getByText(label, { exact: true })).toBeVisible();
     }
     await expect(bar.locator('[data-tab="home"].active')).toBeVisible();
+  });
+
+  test('ministry pages get the same tab bar with Church active', async function ({ page }) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/love-of-the-lord/');
+    var bar = page.locator('.tab-bar');
+    await expect(bar).toBeVisible({ timeout: 10000 });
+    await expect(bar.locator('[data-tab="church"].active')).toBeVisible();
+    await expect(bar.locator('[data-tab="church"]')).toHaveAttribute('href', '/love-of-the-lord/');
   });
 });

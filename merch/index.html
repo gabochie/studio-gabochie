@@ -133,7 +133,7 @@ function renderMerch() {
       '<h3>' + m.name + '</h3>' +
       '<div class="variant">' + m.variant + '</div>' +
       '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(m.price) : 'GH¢ ' + m.price) + '</div>' +
-      '<div class="trust-sub" style="text-align:left;margin:0 0 8px">+ delivery GH¢20 Accra / GH¢50 upcountry at checkout &middot; 7-day return on unworn sizes (<a href="/legal/refund.html" style="color:#C9A84C">details</a>)</div>' +
+      '<div class="trust-sub" style="text-align:left;margin:0 0 8px">+ delivery GH¢20 Accra / GH¢50 upcountry at checkout &middot; 7-day return on unworn sizes (<a href="/legal/refund.html" style="color:#C9A84C">details</a>) &middot; prices ≈ in your currency, billed in GH₵</div>' +
       sizeHtml +
       '<button class="btn-buy" id="buyBtn_' + i + '" disabled onclick="buyMerchItem(' + i + ')"><i class="ti ti-shopping-cart"></i> Select Size &amp; Buy</button>' +
       '<button class="btn-buy" id="cryptoBtn_' + i + '" disabled onclick="buyMerchCrypto(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with Crypto</button>' +

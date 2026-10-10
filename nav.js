@@ -11,11 +11,12 @@
     '<button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>' +
     '</div>' +
     '</nav>' +
-    '<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector(\'.nav-toggle\'))"></div>' +
+    '<div class="nav-mobile-overlay" onclick="toggleNav(document.querySelector(\'.nav-toggle\'))"></div>';
+  var tabBarHtml =
     '<nav class="tab-bar">' +
     '<a href="/" data-tab="home"><i class="ti ti-home"></i><span>Home</span></a>' +
     '<a href="/courses/" data-tab="courses"><i class="ti ti-book"></i><span>Courses</span></a>' +
-    '<a href="/guitar/" data-tab="guitar"><i class="ti ti-music"></i><span>Guitar</span></a>' +
+    '<a href="/love-of-the-lord/" data-tab="church"><i class="ti ti-cross"></i><span>Church</span></a>' +
     '<a href="/books/" data-tab="books"><i class="ti ti-bookmark"></i><span>Books</span></a>' +
     '<a href="/dashboard/" data-tab="account"><i class="ti ti-user"></i><span>Account</span></a>' +
     '</nav>';
@@ -84,6 +85,12 @@
     phNav.outerHTML = navHtml;
   }
 
+  // Bottom tab bar renders on every page (including footer-only pages like
+  // the ministry and guitar sections) so mobile navigation stays consistent.
+  if (!document.querySelector('.tab-bar')) {
+    document.body.insertAdjacentHTML('beforeend', tabBarHtml);
+  }
+
   var phFooter = document.getElementById('footer-placeholder');
   if (phFooter) {
     phFooter.outerHTML = footerHtml;
@@ -93,6 +100,7 @@
     var path = window.location.pathname;
     var tab = 'home';
     if (path.indexOf('/courses/') === 0 || path === '/school/') tab = 'courses';
+    else if (path.indexOf('/love-of-the-lord/') === 0 || path === '/lotl/') tab = 'church';
     else if (path.indexOf('/guitar/') === 0) tab = 'guitar';
     else if (path.indexOf('/books/') === 0) tab = 'books';
     else if (path.indexOf('/dashboard/') === 0 || path.indexOf('/member/') === 0 ||
