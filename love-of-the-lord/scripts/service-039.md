@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-039 — Love Your Neighbour
 date: 2027-07-04 · cadence: full · series: Love in Action · verse: Mark 12:31
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: Love Your Neighbour. Open your Bible to Mark 12:31. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today, first Sunday of July, closing our third quarter: Love Your Neighbour — the whole duty, reviewed and commissioned. Open your Bible to Mark 12, verses 30 and 31. You shall love the Lord your God with all your heart, with all your soul, with all your mind, and with all your strength. This is the first commandment. And the second, like it, is this: You shall love your neighbor as yourself. There is no other commandment greater than these. Thirteen weeks of love in action come down to this: ALL of it hangs here.
+
+On these two commandments HANG all the Law and the Prophets. Picture it: the entire Bible suspended from two nails — love God wholly, love neighbour as self. Every sermon this quarter was a facet of these two: neighbour named and helped; forgiveness given seventy-times-seven; serving as worship; houses choosing God; generosity without needy; love proving and unifying; self rightly loved; enemies prayed for; hidden service; talking laughing belonging homes; sowing cheerfully; gentle answers. Thirteen Sundays, one double command. If you missed weeks, the archive keeps them — love has no expiry date.
+
+Love GOD with ALL — heart (affections), soul (life-breath), mind (thoughts), strength (body and means). Total love, not compartment love. Audit the four chambers this week: does He have your heart's first loyalty, your soul's confidence, your mind's meditation, your strength's firstfruits? Where one chamber lags, bring it deliberately this month. Half-hearted love produces half-hearted everything.
+
+Love NEIGHBOUR as SELF — the horizontal beam holding the vertical. You cannot claim the first while skipping the second; John is blunt that haters of brethren walk in darkness whatever they profess. So survey your loves: God-ward (worship, Word, prayer — honest measure?) and neighbour-ward (spouse, children, church, street, enemies — concrete acts?). Strengthen the weaker beam this month with one daily practice each.
+
+And now we are SENT into Hope and Harvest — for love believed becomes hope held and harvest reaped. Carry Q3's love into Q4's fields: the sowing, waiting, thanksgiving, and fire ahead will need exactly the hearts this quarter built. Thank Him aloud for three loves learned — one toward God, one toward neighbour, one toward enemy. Release Q3 grateful. Invite one person into Q4 with you. Bringers bring.
+
+If you have never given your life to Jesus — love Himself stands with open arms this morning. Come home. And if you drifted, hear this: the same love that sought you thirteen weeks seeks you still. New quarter, same faithful Love, fresh mercies issued.
+
+Father, I love You with all — heart, soul, mind, strength — and my neighbour as myself. Review my loves, repair my beams, and send me into harvest carrying Q3's fire. In the mighty name of Jesus. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

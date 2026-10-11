@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-036 — Marriage and Family
 date: 2027-06-13 · cadence: refresh · series: Love in Action · verse: Joshua 24:15
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Marriage and Family. Open your Bible to Joshua 24:15. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Marriage and Family — talking, laughing, and belonging. Open your Bible to Joshua 24, verse 15. Weeks ago we chose as houses. Today: how choosing houses STAY choosing — through communication, delight, and wider family.
+
+First: TALK — speak truth in love, fight fair, repair fast. Most marriages do not die from big betrayals but from small silences stacked for years. Learn the fair-fight rules: no name-calling ever, no bringing dead issues to new arguments, no silent punishments, no going to bed warring if humanly possible. And repair quickly — the first to apologize wins twice. Say daily: thank you, I am sorry, I love you, I need you. Four sentences that insure any marriage.
+
+Second: DELIGHT — befriend your spouse again. Before you were husband and wife, you were friends who laughed. Date weekly (even walking counts), play often, tease kindly, praise publicly, touch tenderly. Children feel safest not when parents never disagree, but when parents visibly delight in each other. Courtship must not end at the wedding; it must deepen. Plan one delight this week — a date, a surprise, an hour unplugged together.
+
+Third: BELONG wider — family beyond nuclear. Singles: you are not half a family waiting; you are full family now, with church as household — serve, belong, flourish, marry well or serve wholly, both honorable. Widows, singles, orphans, lonely: the church must BE family — adopt seats at tables, remember birthdays, show up at hospitals. And every home: practice hospitality — open doors feed souls faster than perfect sermons.
+
+Your step: hold one honest talk (thank + sorry + need), plan one delight date, and widen one circle (invite one lonely person) — all three this week. Tell one person.
+
+Father, make our houses talking, laughing, belonging homes. Heal communication, restore delight, and adopt every lonely one into family. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

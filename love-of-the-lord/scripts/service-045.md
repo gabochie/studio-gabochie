@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-045 — The End of the Matter
 date: 2027-08-15 · cadence: refresh · series: Hope and Harvest · verse: Ecclesiastes 12:13
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: The End of the Matter. Open your Bible to Ecclesiastes 12:13. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: The End of the Matter. Open your Bible to Ecclesiastes 12, verse 13. Let us hear the conclusion of the whole matter: Fear God and keep His commandments, for this is man's all. Solomon tested everything — wealth, pleasure, projects, wisdom — and wrote the review. Today we read the bottom line before we pay his tuition.
+
+Vanity of vanities, ALL is vanity — that is the experiment, not the conclusion. Solomon ran every lab: wine, women, wealth, works, wisdom pushed to excess. Result: chasing wind, grasping smoke. Learn from his wallet, not yours: pleasure thrills then thins, riches gather then scatter, applause swells then silences, youth blooms then bends. If fulfillment lived in MORE, the man who had most would be fullest — and he wrote emptiest. Stop auditioning vanities; the review is published.
+
+The CONCLUSION, then: fear God and keep His commandments, for THIS is man's all — his whole duty, his entire account, the sum after all subtractions. Fear here is awe-struck reverence that obeys, not terror that hides. Keep His commandments — not suggestions, not moods, but the King's orders as life's operating system. This simplifies everything: career, marriage, money, morals — run each through fear-and-keep. If it fears God and keeps His Word, do it. If not, drop it whatever it pays. Simplicity after complexity is wisdom's final form.
+
+For God will bring EVERY work into judgment, including every secret thing, whether good or evil. Secrets are temporary; judgment makes all public. Live today the life you will not blush to replay — in money unseen, in clicks unshared, in thoughts unspoken, in dealings unobserved. The coming audit purifies present choices better than any camera. And for the forgiven, judgment holds no terror — only rewards. Keep short accounts: confess fast, forgive fast, obey fast.
+
+Your step: write your own one-sentence conclusion — what, after all, is YOUR all? Then delete one vanity-chase this week (one excess, one pretense, one shortcut) and keep one commandment you have postponed. Tell one person both.
+
+Father, after all testing, this is my all: I fear You and keep Your commandments. Expose my vanities, simplify my life to Your will, and ready me for Your joyful audit. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
