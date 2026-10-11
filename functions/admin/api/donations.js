@@ -1,4 +1,5 @@
 import { requireAdmin } from '../_auth.js';
+import { finalizeDonation } from '../../api/gateways/_shared.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -40,6 +41,19 @@ export async function onRequest(context) {
         await env.DB.prepare(
           "UPDATE donations SET status = 'successful' WHERE tx_ref = ?"
         ).bind(tx_ref).run();
+        // Fire the receipt + invoice + impact follow-up (best-effort).
+        try {
+          await finalizeDonation(env, {
+            tx_ref: tx_ref,
+            amount: row.amount,
+            currency: row.currency || 'GHS',
+            donor_name: row.donor_name || '',
+            donor_email: row.donor_email || '',
+            donor_phone: row.donor_phone || '',
+            gateway: row.provider || 'manual',
+            gateway_txid: row.flw_id || ''
+          });
+        } catch (_e) {}
         return new Response(JSON.stringify({ status: 'ok', message: 'Donation confirmed' }), {
           headers: { 'Content-Type': 'application/json' }
         });
