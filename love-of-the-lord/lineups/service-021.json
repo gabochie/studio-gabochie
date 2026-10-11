@@ -34,12 +34,12 @@
       "id": "praise",
       "n": 2,
       "title": "Praise — High Energy",
-      "desc": "2 upbeat songs. Stand up, clap, lyrics on screen.",
+      "desc": "Theme song of the church. Stand up, clap, lyrics on screen.",
       "minutes": 12,
       "media": {
-        "type": "youtube",
-        "playlist": "",
-        "note": "Add 2 praise YouTube IDs (unlisted LOTL Full playlist)"
+        "type": "audio",
+        "src": "/love-of-the-lord/audio/themes/theme-children-ministry.mp3",
+        "note": "Church theme song — in R2 lotl/audio/themes/"
       },
       "lyrics": [
         "This is the day the Lord has made — we will rejoice!",
@@ -52,12 +52,12 @@
       "id": "worship",
       "n": 3,
       "title": "Worship — Slow & Intimate",
-      "desc": "1 slow song. Dim lights moment. Hand on chest.",
+      "desc": "Interlude moment. Hand on chest, eyes closed.",
       "minutes": 8,
       "media": {
-        "type": "youtube",
-        "playlist": "",
-        "note": "Add 1 slow worship YouTube ID"
+        "type": "audio",
+        "src": "/love-of-the-lord/audio/interludes/interlude-love-and-power.mp3",
+        "note": "Self-owned interlude — in R2 lotl/audio/interludes/"
       },
       "prompt": "Whisper His name — Jesus… He is here.",
       "short": "Worship"
