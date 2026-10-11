@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Order Received — 7 Fearless Steps | Studio Gabochie</title>
+<meta name="description" content="Your 7 Fearless Steps pre-order is received. Here is your reference and what happens next.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://studio.gabochie.com/books/fearless-steps/thanks/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
+<link rel="stylesheet" href="/assets/css/main.css">
+<style>
+/* ── Page styles only. Header/footer/tab-bar + base tokens come from /assets/css/main.css + /nav.js ── */
+:root{--gold:#e0a800;--gold2:#f5c518;--ink:#1a1a1a;--muted:#5b6570;--paper:#fff;--wash:#f6f7f9;--line:#e4e8ee;--radius:14px;--maxw:720px;--font-heading:'Barlow Condensed',sans-serif;--font-body:'DM Sans',system-ui,sans-serif}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.6;padding-top:64px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px;width:100%}
+section{padding:48px 0}
+.center{text-align:center}
+.receipt{background:var(--wash);border:1px solid var(--line);border-top:5px solid var(--gold);border-radius:18px;padding:34px 28px;box-shadow:0 20px 44px rgba(16,24,40,.10)}
+.receipt .tick{font-size:2.4rem}
+.receipt h1{font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.4rem);margin:6px 0}
+.ref{display:inline-block;font-family:var(--font-heading);font-size:1.4rem;font-weight:700;letter-spacing:.1em;background:#0d1b2a;color:#fff;border-radius:10px;padding:8px 20px;margin:10px 0}
+.next{ text-align:left;max-width:520px;margin:22px auto;padding-left:22px}
+.next li{margin-bottom:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-heading);font-size:1.02rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:15px 28px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#241c00;box-shadow:0 8px 20px rgba(224,168,0,.35)}
+.btn-outline{background:transparent;border:1.5px solid var(--gold);color:#9a7d1e;box-shadow:none}
+.links{display:grid;gap:10px;justify-items:center;margin-top:18px}
+.fine{font-size:.85rem;color:var(--muted);margin-top:16px}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<section>
+  <div class="wrap">
+    <div class="receipt center">
+      <div class="tick">✅</div>
+      <h1>Order received<span id="hello"></span></h1>
+      <div>Your reference:</div>
+      <div class="ref" id="ref">FS-——————</div>
+      <p id="summary" style="color:var(--muted)"></p>
+      <ol class="next">
+        <li><b>We confirm on WhatsApp</b> within 24 hours with your delivery time.</li>
+        <li><b>Pay <span class="price-convert" data-ghs="49">GHS 49</span> on delivery</b> (cash or MoMo) — quote your reference.</li>
+        <li><b>Your copy unlocks everything:</b> bonus cards + full online reader &amp; audio code.</li>
+      </ol>
+      <div class="links">
+        <a class="btn" href="https://studio.gabochie.com/books/fearless-steps/read/" target="_blank" rel="noopener">Read the free sample while you wait →</a>
+        <a class="btn btn-outline" id="shareBtn" href="#">Share with a friend →</a>
+      </div>
+      <p class="fine">Screenshot this page — your reference proves your pre-order price. Questions? WhatsApp <a href="https://wa.me/233243262019">+233 243 262 019</a>.</p>
+    </div>
+  </div>
+</section>
+<div id="footer-placeholder"></div>
+<script>
+(function(){
+  var p = new URLSearchParams(location.search);
+  var ref = (p.get("ref")||"").toUpperCase().slice(0,12);
+  var name = p.get("name")||"";
+  var city = p.get("city")||"";
+  if(ref) document.getElementById("ref").textContent = ref;
+  if(name) document.getElementById("hello").textContent = ", " + name.split(" ")[0];
+  if(name || city) document.getElementById("summary").textContent = [name, city].filter(Boolean).join(" · ") + " · GHS 49 on delivery";
+  var variant = p.get("v")||"b";
+  var share = "I just reserved '7 Fearless Steps' (GHS 49 pre-order). Read the free sample here: https://studio.gabochie.com/books/fearless-steps/read/?v="+variant;
+  var sh = document.getElementById("shareBtn");
+  sh.href = "https://wa.me/?text="+encodeURIComponent(share);
+  sh.target = "_blank"; sh.rel = "noopener";
+})();
+</script>
+<script defer src="/assets/js/main.js"></script>
+<script src="/nav.js"></script>
+</body>
+</html>
