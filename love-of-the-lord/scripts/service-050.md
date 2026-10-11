@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-050 — Carry the Fire
 date: 2027-09-19 · cadence: refresh · series: Hope and Harvest · verse: Leviticus 6:13
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Carry the Fire. Open your Bible to Leviticus 6:13. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Carry the Fire — tending, guarding, spreading. Open your Bible to Leviticus 6, verse 13. Weeks ago we learned the ever-burning altar and our priesthood. Today: the DAILY rhythms that keep it lit, the dampeners that kill it, and the handoff to the next generation.
+
+TEND it morning and evening. The priests laid fresh wood every morning and kept fire through the night watches. Firekeeping is rhythmic, not random: morning Word before noise, midday prayer arrows, evening review and release. Same times, same place, same God — rhythm builds embers that survive feelings. Sporadic seekers sparkle and fade; rhythmic keepers burn for decades. Set your two daily appointments with the Flame and keep them like oxygen.
+
+REMOVE the ashes daily. Every fire makes ash — yesterday's failures forgiven but un-cleared, offenses nursed, worries stocked. Ashes don't look dangerous; they just quietly smother. The priests cleared ashes EVERY morning before laying fresh wood. Do likewise: confess fast (do not stockpile guilt), forgive fast (do not warehouse wounds), release cares nightly (do not sleep stocked). Clean altars catch quickly; ashy ones smoke without burning.
+
+GUARD against dampeners. Do not quench the Spirit: persistent sin poured on conscience, endless noise drowning the still voice, bad company drizzling doubt, neglected gathering letting wind scatter coals. Identify your chief dampener this week — the show, the scroll, the relationship, the habit — and cut its water supply. Fires do not die for lack of love; they die for lack of guarding.
+
+And SPREAD it house to house. Fire kept only warms the keeper; fire shared sets streets alight. Pass the torch deliberately: disciple one person, share one testimony weekly, invite constantly, model burningly. The next generation inherits embers or ashes depending on what we carry home. Be a torch-passer, not a museum keeper.
+
+Your step: fix two daily fire-appointments, clear one ash-heap (confess/forgive/release), cut one dampener, and pass the torch once this week. Write all four, tell one keeper-friend.
+
+Father, teach me tending rhythms, daily ash-clearing, jealous guarding, and joyful spreading. Let my altar never go out and my torch never stay home. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
