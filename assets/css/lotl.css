@@ -4,7 +4,7 @@
    everything below is the single source of truth — do not redeclare per page. */
 
 /* ── Topbar ── */
-.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #1E3250}
+.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #1E3250;padding-top:env(safe-area-inset-top,0px)}
 .lotl-nav .inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
 .lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;flex-shrink:0}
 .lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#F1F5F9;line-height:1.1}
@@ -12,9 +12,14 @@
 .lotl-brand small a{color:#C9A84C;text-decoration:none}
 .lotl-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;min-height:44px;display:inline-flex;align-items:center;color:#8A9BB5;text-decoration:none;padding:8px 12px;border:1px solid #1E3250;border-radius:20px}
+.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;min-height:44px;display:inline-flex;align-items:center;color:#A8B9D1;text-decoration:none;padding:8px 12px;border:1px solid #1E3250;border-radius:20px;flex-shrink:0}
 .lotl-links a.live{color:#0A1628;background:#C9A84C;border-color:#C9A84C;font-weight:700}
-@media(max-width:640px){.lotl-links a:not(.live){display:none}}
+/* Mobile: sideways-scroll strip keeps every section reachable (no hamburger here) */
+@media(max-width:640px){
+  .lotl-nav .inner{flex-wrap:wrap}
+  .lotl-links{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .lotl-links::-webkit-scrollbar{display:none}
+}
 
 /* ── Ministry band: full-width airy section directly above the global Studio footer ── */
 .lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 20px 44px;text-align:center;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px}
@@ -24,7 +29,8 @@ nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none
 .lotl-ministry small{font-size:12px}
 .lotl-ministry small a{color:#C9A84C;text-decoration:none}
 .lotl-ministry nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:13px;position:static;height:auto;background:none;border:none}
-.lotl-ministry nav a{color:#C9A84C;text-decoration:none}
+.lotl-ministry nav a{color:#C9A84C;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:640px){.lotl-ministry{padding:32px 20px 28px}}
 
 /* ── Eyebrow label ── */
 .kicker{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C;font-weight:700}
@@ -59,3 +65,6 @@ textarea.lotl-field{resize:vertical;min-height:64px}
 /* ── Shared text + focus ── */
 .lotl-muted{font-family:'DM Sans',sans-serif;color:#A8B9D1;font-size:14px}
 :focus-visible{outline:2px solid #C9A84C;outline-offset:2px}
+
+/* ── Mobile rhythm: copy-to-clipboard target ── */
+#copyMomo{min-height:44px;display:inline-flex;align-items:center}
