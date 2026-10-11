@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-049 — Thanksgiving and Praise
 date: 2027-09-12 · cadence: refresh · series: Hope and Harvest · verse: Psalm 100:4
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Thanksgiving and Praise. Open your Bible to Psalm 100:4. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Thanksgiving and Praise — blessing His name, counting His triad, witnessing by gratitude. Open your Bible to Psalm 100, verse 4. Weeks ago we entered gates with thanks and warred with praise. Today: BLESSING Him back, COUNTING His threefold goodness, and WITNESSING through gratitude.
+
+BLESS His name. To bless God is to speak WELL of Him — publicly, specifically, warmly. The opposite also exists: believers who speak well of everything but God — food, weather, teams — while silent about heaven's kindness. Reverse it this week: bless Him aloud daily (morning mercies named), bless Him publicly (testimony shared), bless Him permanently (gratitude as lifestyle, not season). Let no day end without one spoken blessing. Muteness toward heaven is ingratitude with manners.
+
+COUNT His triad: for the Lord is GOOD, His mercy is EVERLASTING, His truth ENDURES to all generations. Three thanksgiving buckets — fill each weekly. GOODNESS: list gifts (breath, health, work, family, grace upon grace). MERCY: list rescues (sins forgiven, dangers passed, second chances). TRUTH: list anchors (promises kept, Word proven, prophecies pending with guarantee). Counted blessings multiply; uncounted ones evaporate. Keep the journal — ink beats memory every time.
+
+And WITNESS by gratitude. Grateful people evangelize effortlessly; murmurers repel efficiently. Nobody asks miserable Christians for their secret — but radiant thanksgiving draws questions, and questions open doors for answers. Your thanks is a tract; your praise, a sermon; your contentment, an apologetic. Pair every blessing counted with one person told. Gratitude shared doubles — in you and in them.
+
+Your step: speak three blessings aloud daily (morning, midday, night), fill one item in each triad bucket, and tell one person one goodness this week. Write all, tell one witness.
+
+Father, I bless Your name — aloud, publicly, permanently. You are good, Your mercy endures, Your truth stands forever. Make my gratitude a witness that draws the watching world. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
