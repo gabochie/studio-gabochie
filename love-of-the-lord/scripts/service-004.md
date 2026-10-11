@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-004 — Faith Over Frustration
 date: 2026-11-01 · cadence: full · series: Foundations of Grace · verse: Psalm 34:18
 
@@ -11,7 +12,21 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: Faith Over Frustration. Open your Bible to Psalm 34:18. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today: Faith Over Frustration. Open your Bible to Psalm 34, verse 18. The Lord is near to the brokenhearted and saves the crushed in spirit. This word is for everybody tired of being tired — the mother awake at 2am, the graduate still waiting, the trader watching goods gather dust, the believer who prayed and heaven seemed silent.
+
+First, hear where this psalm was born. David wrote it fleeing for his life from King Saul — and so desperate that he pretended madness before a foreign king, drooling on the doors. Humiliation. And yet the psalm opens: I will bless the Lord at all times. Faith over frustration is not pretending everything is fine. It is blessing God FROM the frustration, not after it.
+
+Point one: frustration is DATA, not a verdict. When nothing works — the trotro stalls, the money finishes before the month, the child falls sick again — your soul flashes a warning light. That light means you are tired, not finished. It means you need God, not that God left. Treat frustration as a signal to stop and refuel, never as proof that heaven closed. The presence of pressure is not the absence of God.
+
+Point two: His nearness comes BEFORE His answers. Read it slowly: NEAR to the brokenhearted. Not "fixes" the brokenhearted first — NEAR. God does not always remove the valley before He enters it. The nurse crying through worship at 2am did not get an explanation that night; she got a Presence. Stop demanding the solution before you receive the Companion. Let Him sit with you in it — the answer often walks in holding His hand.
+
+Point three: turn frustration into ASKING. The psalm says He SAVES the crushed in spirit — but the saving starts with telling. Cast your cares on Him, because He cares for you. Frustration you swallow becomes bitterness; frustration you speak becomes prayer. Today, convert every complaint into a request. Instead of "nothing works," pray "Lord, show me the one next step." Instead of "I am alone," declare "You are near."
+
+Here is your step for the week, in three moves. One: when frustration rises, stop, breathe, and pray one honest sentence — Lord, I am stuck, and I know You are near. Two: take the one small next step in your power today — one call, one application, one apology. Movement restores faith faster than thinking. Three: tell one person your step, so faith has a witness.
+
+And if your frustration is really unbelief wearing work clothes — if deep down you doubt God is good — come home right now. The altar is open in your heart before it is ever open in a building. Whisper: Jesus, I trust You again.
+
+Father, You are near even when my plans are not. I release my frustration and receive Your nearness. Give me the next small step and the grace to take it. Make my waiting a workshop, not a prison. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
