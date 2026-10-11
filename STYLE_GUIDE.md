@@ -147,10 +147,14 @@ agent       → blue at 12% bg
 
 ## Responsive Breakpoints
 
+Blessed public breakpoints: **860px** (tab bar + grids collapse), **640px** (hamburger), **480px** (tight spacing). Do not introduce new breakpoints without updating this table.
+
 | Breakpoint | Admin | Public |
 |------------|-------|--------|
+| max-width: 860px | — | Bottom tab bar appears, grids collapse, hamburger takes over nav |
 | max-width: 700px | Nav stacks, grids collapse to 1-2 cols | — |
-| max-width: 640px | — | Mobile nav toggle appears |
+| max-width: 640px | — | (covered by 860px rule above) |
+| max-width: 480px | — | Tight spacing, single column |
 
 ---
 
