@@ -210,9 +210,18 @@ describe('Manual MoMo gateway', function () {
     expect(data.status).toBe('ok');
     expect(data.momo_number).toBe('0243262019');
     expect(data.payout_display).toBe('0243 262 019');
+    expect(data.momo_name).toBe('GABOCHIE DESIGN');
     expect(data.tx_ref).toMatch(/^manual_/);
     expect(db._tables.donations).toHaveLength(1);
     expect(db._tables.donations[0].provider).toBe('manual');
     expect(db._tables.donations[0].status).toBe('pending');
+  });
+
+  it('defaults to the merchant wallet when no env override', async function () {
+    var db = mockDb({ donations: [] });
+    var ctx = post('http://localhost/api/gateways/manual/create', { amount: 30, name: 'Cee', email: 'cee@test.com' }, { DB: db });
+    var data = await (await manualCreate(ctx)).json();
+    expect(data.momo_number).toBe('0559624456');
+    expect(data.momo_name).toBe('GABOCHIE DESIGN');
   });
 });

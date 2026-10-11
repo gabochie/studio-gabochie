@@ -18,7 +18,8 @@ export async function onRequest(context) {
   const phone = (body.phone || '').trim() || '';
 
   const tx_ref = 'manual_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
-  const momoNumber = env.MOMO_NUMBER || '0243262019';
+  const momoNumber = env.MOMO_NUMBER || '0559624456';
+  const momoName = env.MOMO_NAME || 'GABOCHIE DESIGN';
 
   if (env.DB) {
     try {
@@ -34,6 +35,7 @@ export async function onRequest(context) {
     status: 'ok',
     tx_ref,
     momo_number: momoNumber,
+    momo_name: momoName,
     payout_display: momoNumber.slice(0, 4) + ' ' + momoNumber.slice(4, 7) + ' ' + momoNumber.slice(7),
     amount_ghs: amount,
     currency: 'GHS',
