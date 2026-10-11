@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-012 — His Mercies Are New
 date: 2026-12-27 · cadence: refresh · series: Foundations of Grace · verse: Lamentations 3:23
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: His Mercies Are New. Open your Bible to Lamentations 3:23. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: His Mercies Are New — what mercy survives, and what mercy makes of us. Open your Bible to Lamentations 3:22-23. Because of the Lord's great love we are not consumed; His compassions fail not. Weeks ago we learned the morning rhythm. Today: what exactly canNOT kill His compassion — and what His compassion must make of YOU.
+
+His compassions FAIL NOT. Say that slowly over your worst memory. Betrayal did not exhaust it. Delay did not outlast it. Death itself — the final locust — did not finish it, for mercy outlives the grave through resurrection. Whatever in your past feels bigger than forgiveness, place it beside FAIL NOT and watch it shrink. There is no sin so stylish, no failure so repeated, no pit so deep that compassions fail there. If you can still breathe, mercy still reaches.
+
+But here is the turn most miss: mercy received must become mercy GIVEN — every morning, like Him. If His compassions are new every morning toward you, then YOUR compassions must be new every morning toward others. The spouse who offended yesterday deserves fresh mercy today, not yesterday's trial reheated. The child, the worker, the debtor, the enemy — sunrise cancels overnight debts. Families transform when one person practices morning mercy. Be that person this week.
+
+Do not sunset on anger. The Bible commands it because overnight anger ferments into bitterness by dawn. Before sleep tonight, release one name, bless one offender, close one case. Wake up a mercy-giver, reflecting the Mercy-Giver.
+
+Your step: each morning this week, before touching your phone, pray: Father, new mercies for me — and through me, for one person today. Then deliver one mercy daily: a forgiveness, a kindness, a patience. Keep a list. Watch your house change.
+
+Father, Your compassions fail not — over me, my past, my house. Make me a morning-mercy giver in Your image. New mercies received, new mercies released, every day. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

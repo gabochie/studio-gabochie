@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-013 — Grace for New Beginnings
 date: 2027-01-03 · cadence: full · series: Foundations of Grace · verse: Lamentations 3:22-23
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: Grace for New Beginnings. Open your Bible to Lamentations 3:22-23. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today, first Sunday of the new year, closing our first quarter: Grace for New Beginnings — BECAUSE. Open your Bible to Lamentations 3:22-23. Because of the Lord's great love we are not consumed; His compassions fail not. They are new every morning; great is Your faithfulness. Thirteen weeks ago we began with grace. Today we end the quarter where we started — deeper, stronger, and sent.
+
+BECAUSE. Do not rush past the smallest biggest word in the text. We are not consumed — BECAUSE of His great love. Not because we performed, not because the year was kind, not because we finally got serious. Because HE loves. Every mercy of this quarter — every morning renewed, every failure forgiven, every root deepened, every frustration survived, every year restored — has exactly one cause: His great love. Write that over 2026 before you write a single resolution for 2027. Grace is not the introduction to your story; it is the ink of every page.
+
+Now count with me, quarter in review. Week 1: new beginnings from ruins. Weeks 2 and 8: mercy that removes and pities, then waits and overflows. Weeks 3 and 9: restoration of years, then restoration to overflow. Weeks 4 and 10: frustration as data, then the seeking life. Weeks 5 and 11: roots and building, then the walk. Weeks 6 and 12: morning mercies, then mercies that make us merciful. Thirteen Sundays, one thread: steadfast love, new every morning. If you missed weeks, the archive keeps them — grace has no expiry date.
+
+And now we are SENT. Next quarter we enter The Kingdom Mind — seeking first the Kingdom. Grace received becomes Kingdom assignment. You do not graduate from grace; you graduate WITH it, into purpose. So today, do three things. One: thank Him aloud for three specific mercies of this quarter — name them, don't generalize gratitude. Two: release 2026 fully — every regret, every debt of the heart — and step into 2027 unchained. Three: invite one person into next quarter with you. Nobody should do Kingdom alone.
+
+If you have never given your life to Jesus — what better morning than the first Sunday of the year? The altar will be open in a moment. Come home. And if you drifted last year, hear this: the same grace that carried thirteen weeks will carry the next thirteen. New year, same faithful God, fresh mercies already issued with your name on them.
+
+Father, because of Your great love we stand here — unconsumed, restored, rooted, and sent. We close this quarter grateful and open the new year trusting. Bless every family under this word, establish the work of our hands, and let 2027 be a year of Kingdom advance. Go with us. In the mighty name of Jesus. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

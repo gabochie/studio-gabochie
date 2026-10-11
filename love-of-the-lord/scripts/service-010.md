@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-010 — Faith Over Frustration
 date: 2026-12-13 · cadence: refresh · series: Foundations of Grace · verse: Psalm 34:18
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Faith Over Frustration. Open your Bible to Psalm 34:18. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Faith Over Frustration — the seeking life. Open your Bible to Psalm 34. Weeks ago we learned frustration is data and God is near. Today we learn what the near God DOES for seekers: He hears, He lets Himself be tasted, and He leaves no wanter wanting.
+
+Read verse 4: I sought the Lord, and He heard me, and delivered me from all my fears. And verse 6: This poor man cried out, and the Lord heard him, and saved him out of all his troubles. Twice: sought — heard. Cried — saved. Seeking is not wishing; it is crying out on purpose, with your mouth, naming the fear. Vague anxiety gets vague comfort. Named fears get named deliverances. What exactly are you afraid of? Say it to Him today — the specific thing, not "everything."
+
+Then verse 8: Oh, taste and see that the Lord is good. Faith is not only argued; it is TASTED. You cannot think your way into trust — you must experience His goodness in one small answered prayer, one provided meal, one peace that lands. Stop trying to be convinced and start collecting tastes. Keep a list this week: every small goodness, written down. Tastes compound into trust.
+
+Then verses 9 and 10: Fear the Lord, you His saints, for those who fear Him lack nothing. The young lions suffer want — strength without surrender goes hungry. But surrendered weakness eats. No want! Not no trouble — no WANT, no lack of what you truly need, when you truly need it. Frustration says "I lack." Faith answers "my Father knows."
+
+Your step: write down one named fear, pray it aloud once, and write down three tastes of goodness before Friday. Seek, taste, and watch want die.
+
+Father, I seek You on purpose today — hear me and deliver me from this fear. Let me taste Your goodness this week until trust rises. You are near, and with You I lack nothing. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

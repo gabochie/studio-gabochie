@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-011 — Rooted and Established
 date: 2026-12-20 · cadence: refresh · series: Foundations of Grace · verse: Colossians 2:6-7
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Rooted and Established. Open your Bible to Colossians 2:6-7. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Rooted and Established — the walk. Open your Bible to Colossians chapter 2, verses 6 to 8. Weeks ago we learned depth before height. Today: rooted people MOVE. As you received Christ Jesus the Lord, so WALK in Him.
+
+Walk! Roots are not anchors that forbid sailing; they are foundations that permit building high. Some Christians use "being rooted" as an excuse to sit still for ten years — same seat, same complaints, same level. That is not rooted; that is buried. Rooted trees still grow upward and outward every season. Ask yourself honestly: am I more loving, more patient, more generous than last year? If nothing moves, nothing is rooted — examine the soil, not the sermon.
+
+As you RECEIVED Christ Jesus the Lord, so walk. Notice: the same gospel that saved you grows you. No upgrade, no new secret, no special anointing beyond Jesus. Beware, Paul warns in verse 8, lest anyone cheat you through philosophy and empty deceit. Ghana is full of spiritual novelties — new prophets with new requirements every market day. The established believer is not impressed by novelty; he checks everything against Christ received. If it adds to Jesus, it subtracts from Him. Hold the teaching you were taught.
+
+Established in the FAITH — not in feelings, crowds, or miracles, but in the faith once delivered. Feelings are weather; faith is climate. Build your walk on what God SAID, and let moods adjust to truth, not truth to moods.
+
+Your step: identify one area where you have stalled while calling it stability — prayer, giving, forgiving, serving — and take one walking step this week. Roots that do not walk are decorations. Tell one person your step.
+
+Father, I received Christ, and in Him I will walk — moving, growing, uncheated. Guard me from empty deceit and establish me in the faith I was taught. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
