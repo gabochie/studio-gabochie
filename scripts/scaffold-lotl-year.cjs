@@ -32,6 +32,23 @@ const lineupsDir = path.join(lotl, 'lineups');
 const START = Date.UTC(2026, 9, 11); // Sunday 2026-10-11 (service-001)
 const AUDIO_BASE = '/love-of-the-lord/audio/';
 
+/* Self-owned worship interludes (uploaded to R2 lotl/audio/interludes/).
+   Rotated across the year so no two consecutive weeks repeat. */
+const INTERLUDES = [
+  'interlude-overcoming-trials.mp3',
+  'interlude-divine-provision.mp3',
+  'interlude-love-and-power.mp3',
+];
+
+/* Church theme song "I Just Wanna Let You Know" versions (uploaded to R2
+   lotl/audio/themes/). Rotated across the year for the praise stop. */
+const THEMES = [
+  'theme-children-ministry.mp3',
+  'theme-youth-praise-worship.mp3',
+  'theme-afrobeat.mp3',
+  'theme-urban-afrobeat-rnb.mp3',
+];
+
 /* The 4 quarterly series and their official 6 weekly themes — mirrors
    admin/calendar.html LOTL_THEMES. Each theme carries its key verse. */
 const SEASONS = [
@@ -97,15 +114,15 @@ function audio(sid, stop) {
   return { type: 'audio', src: AUDIO_BASE + sid + '/' + stop + '.mp3', note: 'Add self-owned mp3' };
 }
 
-function stopList(sid, theme, cadence) {
+function stopList(sid, svcTheme, cadence, interlude, praiseTrack) {
   const wordMinutes = cadence === 'full' ? 25 : 15;
   return [
     { id: 'welcome', n: 1, title: 'Welcome & Opening Prayer', desc: 'Gideon welcomes you + opening prayer. You are home.', minutes: 3, media: audio(sid, 'welcome'), prompt: 'Where are you watching from? Whisper it — God sees you.', short: 'Welcome' },
-    { id: 'praise', n: 2, title: 'Praise — High Energy', desc: '2 upbeat songs. Stand up, clap, lyrics on screen.', minutes: 12, media: { type: 'youtube', playlist: '', note: 'Add 2 praise YouTube IDs (unlisted LOTL Full playlist)' }, lyrics: ['This is the day the Lord has made — we will rejoice!', 'Praise Him with dancing and song!'], prompt: 'Stand up wherever you are — clap those hands!', short: 'Praise' },
-    { id: 'worship', n: 3, title: 'Worship — Slow & Intimate', desc: '1 slow song. Dim lights moment. Hand on chest.', minutes: 8, media: { type: 'youtube', playlist: '', note: 'Add 1 slow worship YouTube ID' }, prompt: 'Whisper His name — Jesus… He is here.', short: 'Worship' },
+    { id: 'praise', n: 2, title: 'Praise — High Energy', desc: 'Theme song of the church. Stand up, clap, lyrics on screen.', minutes: 12, media: { type: 'audio', src: AUDIO_BASE + 'themes/' + praiseTrack, note: 'Church theme song — in R2 lotl/audio/themes/' }, lyrics: ['This is the day the Lord has made — we will rejoice!', 'Praise Him with dancing and song!'], prompt: 'Stand up wherever you are — clap those hands!', short: 'Praise' },
+    { id: 'worship', n: 3, title: 'Worship — Slow & Intimate', desc: 'Interlude moment. Hand on chest, eyes closed.', minutes: 8, media: { type: 'audio', src: AUDIO_BASE + 'interludes/' + interlude, note: 'Self-owned interlude — in R2 lotl/audio/interludes/' }, prompt: 'Whisper His name — Jesus… He is here.', short: 'Worship' },
     { id: 'announcements', n: 4, title: 'Announcements & New Friends', desc: "This week's answers, school gift, how to belong.", minutes: 3, media: audio(sid, 'announcements'), cards: [{ t: 'New here? Tap I\'m New', d: 'We pray for every new name this week. No spam, just love.' }, { t: 'Friday Answers', d: '3 real-life questions answered from the Bible — with your TikToks seeded in.' }, { t: 'Free gift: Module 1', d: 'School of Creativity, Love & Wisdom — start free, no card.' }], short: 'News' },
     { id: 'offering', n: 5, title: 'Offering — Give with Love', desc: 'Separate LOTL fund. Cheerful, no pressure.', minutes: 3, verse: '2 Cor 9:7 — God loves a cheerful giver.', momo: { name: 'Gideon Abochie', network: 'MTN', number: '024 326 2019' }, media: audio(sid, 'offering'), short: 'Giving' },
-    { id: 'word', n: 6, title: 'The Word', desc: (cadence === 'full' ? 'Full sermon: ' : 'Refresh: ') + theme + ' (' + wordMinutes + ' min). Notebook open.', minutes: wordMinutes, media: audio(sid, 'word'), takeaways: ['Mercy resets every morning.', 'Frustration is a question — the Bible has answers.', 'Write one obedient step for this week.'], short: 'Word' },
+    { id: 'word', n: 6, title: 'The Word', desc: (cadence === 'full' ? 'Full sermon: ' : 'Refresh: ') + svcTheme + ' (' + wordMinutes + ' min). Notebook open.', minutes: wordMinutes, media: audio(sid, 'word'), takeaways: ['Mercy resets every morning.', 'Frustration is a question — the Bible has answers.', 'Write one obedient step for this week.'], short: 'Word' },
     { id: 'altar', n: 7, title: 'Altar Call', desc: "Sinner's prayer line-by-line. Tap I Gave My Life Today.", minutes: 5, prayer: 'Lord Jesus, I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen!', media: audio(sid, 'altar'), short: 'Altar' },
     { id: 'prayer', n: 8, title: 'Prayer + Q&A', desc: 'Book a free 15-min prayer call. Ask your life question.', minutes: 5, media: audio(sid, 'prayer'), slots: ['Tue 10:00', 'Tue 10:30', 'Tue 11:00', 'Tue 11:30', 'Thu 10:00', 'Thu 10:30', 'Thu 11:00', 'Thu 11:30', 'Sat 09:00', 'Sat 09:30', 'Sat 10:00', 'Sat 10:30'], contact: { email: 'love@gabochie.com', phone: '+233243262019', whatsapp: 'https://wa.me/233243262019' }, short: 'Prayer' },
     { id: 'benediction', n: 9, title: 'Benediction & Share', desc: 'Blessing + invite a friend with your link (?ref=).', minutes: 2, blessing: 'May the Lord bless you and keep you. May His face shine on you. Go in love, live with wisdom.', media: audio(sid, 'benediction'), short: 'Blessing' },
@@ -139,13 +156,15 @@ function build() {
       const verse = theme[1];
       const date = weekDate(global);
       const cadence = cadenceFor(date);
+      const interlude = INTERLUDES[global % INTERLUDES.length];
+      const praiseTrack = THEMES[global % THEMES.length];
       // service-001 keeps the root lineup.json (precached + pinned by tests).
       const lineup = id === 'service-001' ? 'lineup.json' : 'lineups/' + id + '.json';
       seasonOut.services.push({ id: id, n: n + 1, title: title, theme: title, series: season.title, date: date, cadence: cadence, theme_verse: verse, lineup: lineup });
       if (id !== 'service-001') {
         const doc = {
           service: { id: id, title: title, theme_verse: verse, series: season.title, cadence: cadence, mode_full_minutes: 60, mode_express_minutes: 15, express_stop_ids: ['welcome', 'praise', 'word', 'altar'], season: season.title },
-          stops: stopList(id, title, cadence),
+          stops: stopList(id, title, cadence, interlude, praiseTrack),
         };
         fs.writeFileSync(path.join(lineupsDir, id + '.json'), JSON.stringify(doc, null, 2) + '\n');
       }

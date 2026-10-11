@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0A1628">
+<title>Ministry Shop — Love Of The Lord</title>
+<meta name="description" content="Love Of The Lord Ministry Shop — theme song and interlude downloads, books, devotionals, church merch and sermon audio. Every purchase supports the ministry.">
+<link rel="canonical" href="https://studio.gabochie.com/love-of-the-lord/shop/">
+<meta property="og:title" content="Ministry Shop — Love Of The Lord">
+<meta property="og:description" content="Own the theme song, interludes, books and merch. Every purchase supports Love Of The Lord Global Ministry.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studio.gabochie.com/love-of-the-lord/shop/">
+<meta property="og:site_name" content="Love Of The Lord">
+<meta property="og:image" content="https://studio.gabochie.com/love-of-the-lord/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/love-of-the-lord/logo.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
+<link rel="stylesheet" href="/assets/css/main.css">
+<style>
+:root{--cream:#F7F1E5}
+body{background:#0A1628}
+.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);border-bottom:1px solid #1E3250}
+.lotl-nav .inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C}
+.lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#F1F5F9;line-height:1.1}
+.lotl-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;color:#C9A84C;text-transform:uppercase}
+.lotl-brand small a{color:#C9A84C;text-decoration:none}
+.lotl-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none}
+.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5;text-decoration:none;padding:8px 12px;border:1px solid #1E3250;border-radius:20px}
+.lotl-links a.live{color:#0A1628;background:#C9A84C;border-color:#C9A84C;font-weight:700}
+@media(max-width:640px){.lotl-links a:not(.live){display:none}}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.shophero{padding:56px 0 10px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.16),transparent 55%),linear-gradient(180deg,#0A1628,#131f38 70%,#0A1628)}
+.kicker{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:#C9A84C;font-weight:700}
+.shophero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,5vw,54px);line-height:.98;color:#fff;text-transform:uppercase;margin:8px 0 10px}
+.shophero h1 span{color:#C9A84C}
+.shophero p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:15px;max-width:640px}
+.shopsec{padding:30px 0 6px}
+.shopsec h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:#F1F5F9;text-transform:uppercase;margin-bottom:4px}
+.shopsec h2 span{color:#C9A84C}
+.shopsec .sub{font-family:'DM Sans',sans-serif;color:#8A9BB5;font-size:13px;margin-bottom:14px}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.pcard{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:18px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pcard:hover{border-color:#C9A84C}
+.pcard .ptag{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C}
+.pcard h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#F1F5F9;margin:0}
+.pcard p{font-family:'DM Sans',sans-serif;font-size:13px;color:#8A9BB5;margin:0;line-height:1.6}
+.pcard .price{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;color:#C9A84C}
+.pcard .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.btn-buy{flex:1;min-width:0;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:#C9A84C;color:#0A1628;border:none;border-radius:10px;padding:11px 12px;cursor:pointer}
+.btn-crypto{flex:1;min-width:0;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:transparent;color:#8A9BB5;border:1px solid #1E3250;border-radius:10px;padding:11px 12px;cursor:pointer}
+.ans-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;text-decoration:none;padding:10px 16px;border-radius:10px;border:1px solid #C9A84C;color:#C9A84C;display:inline-block;text-align:center}
+.ans-btn.gold{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+#orderSuccess{display:none;background:rgba(52,199,123,.12);border:1px solid #34C77B;color:#34C77B;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px;margin:18px 0}
+#myMusic{display:none;background:#0F1E38;border:1px solid #C9A84C;border-radius:14px;padding:18px;margin:18px 0}
+#myMusic h3{font-family:'Barlow Condensed',sans-serif;color:#F1F5F9;font-size:20px;margin:0 0 8px}
+#myMusic a.dl{display:block;font-family:'DM Sans',sans-serif;font-size:13px;color:#C9A84C;margin:6px 0}
+.notify{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:18px;min-width:0}
+.notify h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#F1F5F9;margin:0 0 6px}
+.notify p{font-family:'DM Sans',sans-serif;font-size:13px;color:#8A9BB5;margin:0 0 10px}
+.notify form{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.notify input{padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;min-width:0}
+.notify .ok{display:none;background:rgba(52,199,123,.12);border:1px solid #34C77B;color:#34C77B;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:10px;margin-top:10px}
+.muted{font-family:'DM Sans',sans-serif;color:#8A9BB5;font-size:13px}
+.lotl-foot{border-top:1px solid rgba(201,168,76,.25);padding:20px 0 14px;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px;margin-top:40px}
+.lotl-foot-in{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding:0 20px}
+.lotl-foot img{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;flex-shrink:0}
+.lotl-foot b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.1em;color:#F1F5F9}
+.lotl-foot small a,.lotl-foot nav a{color:#C9A84C;text-decoration:none}
+.lotl-foot nav{margin-left:auto;display:flex;gap:14px;flex-wrap:wrap;font-size:12px}
+@media(max-width:640px){.shop-grid{grid-template-columns:1fr}.notify form{grid-template-columns:1fr}.lotl-foot-in{justify-content:center;text-align:center}.lotl-foot nav{margin-left:0;justify-content:center}}
+</style>
+</head>
+<body>
+<header class="lotl-nav">
+<div class="inner">
+<img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo">
+<div class="lotl-brand"><b>Love Of The Lord</b><small>Global Ministry · <a href="/">by Studio Gabochie</a></small></div>
+<nav class="lotl-links" aria-label="Ministry">
+<a href="/love-of-the-lord/">Service</a>
+<a href="/love-of-the-lord/devotionals/">Devotionals</a>
+<a href="/love-of-the-lord/answers/">Answers</a>
+<a href="/love-of-the-lord/shop/" class="live">Shop</a>
+<a href="/love-of-the-lord/give/">Give</a>
+<a href="/love-of-the-lord/#start" style="border-color:#C9A84C;color:#C9A84C">▶ Have Church Now</a>
+</nav>
+</div>
+</header>
+
+<header class="shophero">
+<div class="wrap">
+<div class="kicker">Ministry Shop · Own it + support</div>
+<h1>Take the ministry<br><span>home with you.</span></h1>
+<p>Theme song, interludes, books, devotionals and church merch. Streams free in church — buying downloads to keep and funds the work.</p>
+</div>
+</header>
+
+<main class="wrap">
+<div id="orderSuccess">Payment received — thank you! Your download links are below.</div>
+<div id="myMusic"><h3>Your music</h3><div id="myMusicLinks"></div></div>
+
+<section class="shopsec" id="music">
+<h2>Music <span>downloads</span></h2>
+<p class="sub">Theme song “I Just Wanna Let You Know” + worship interludes. MP3, yours forever. Billed in GH₵.</p>
+<div class="shop-grid" id="musicGrid"></div>
+</section>
+
+<section class="shopsec" id="books">
+<h2>Books <span>&amp; devotionals</span></h2>
+<p class="sub">Grow deeper during the week.</p>
+<div class="shop-grid">
+<div class="pcard"><div class="ptag">Books</div><h3>Ministry Books</h3><p>Faith, creativity and wisdom — including Fearless Steps. See titles, prices and free chapters.</p><div class="row"><a class="ans-btn gold" href="/books/">Browse books →</a></div></div>
+<div class="pcard"><div class="ptag">Free · Mondays</div><h3>Weekly Devotionals</h3><p>5-minute S.O.A.P. devotionals every Monday — Scripture, Observation, Application, Prayer.</p><div class="row"><a class="ans-btn gold" href="/love-of-the-lord/devotionals/">Read free →</a></div></div>
+<div class="pcard"><div class="ptag">Coming soon</div><h3>52-Week Devotional Ebook</h3><p>The full year of Monday devotionals in one ebook. Leave your email — we will tell you first.</p><div class="notify" style="border:none;padding:0"><form id="ebookForm"><input name="name" placeholder="Your name" aria-label="Your name"><input name="email" type="email" required placeholder="Email" aria-label="Email"><button class="btn-buy" type="submit">Notify me</button></form><div class="ok" id="ebookOk">You are on the list. Watch your inbox.</div></div></div>
+</div>
+</section>
+
+<section class="shopsec" id="merch">
+<h2>Church <span>merch</span></h2>
+<p class="sub">Wear the vision. Same checkout, sizes and delivery as the main store.</p>
+<div class="shop-grid">
+<div class="pcard"><div class="ptag">Apparel</div><h3>Tees · Hoodie · Cap</h3><p>Official Studio Gabochie merch — Soc Tee, Nation Builder Tee, Studio Hoodie, Wisdom Cap. Delivery GH₵20 Accra / GH₵50 upcountry.</p><div class="row"><a class="ans-btn gold" href="/merch/">Shop merch →</a></div></div>
+</div>
+</section>
+
+<section class="shopsec" id="sermons">
+<h2>Sermon <span>audio</span></h2>
+<p class="sub">The full sermon archive is being recorded week by week.</p>
+<div class="shop-grid">
+<div class="pcard"><div class="ptag">Coming soon</div><h3>Full Sermon Archive</h3><p>Every Sunday sermon as downloadable MP3 — full and refresh editions. Leave your email for opening-week access.</p><div class="notify" style="border:none;padding:0"><form id="sermonForm"><input name="name" placeholder="Your name" aria-label="Your name"><input name="email" type="email" required placeholder="Email" aria-label="Email"><button class="btn-buy" type="submit">Notify me</button></form><div class="ok" id="sermonOk">You are on the list. Watch your inbox.</div></div></div>
+</div>
+<p class="muted" style="margin:18px 0 40px">Payments secured by ExpressPay &amp; crypto · <a href="/legal/refund.html" style="color:#C9A84C">Refund policy</a> · <a href="mailto:love@gabochie.com" style="color:#C9A84C">love@gabochie.com</a></p>
+</section>
+</main>
+
+<div class="lotl-foot">
+<div class="lotl-foot-in">
+<img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo" loading="lazy">
+<div><b>LOVE OF THE LORD · GLOBAL MINISTRY</b><small>A ministry inside Studio Gabochie · <a href="mailto:love@gabochie.com">love@gabochie.com</a> · <a href="tel:+233243262019">+233 243 262 019</a></small></div>
+<nav aria-label="Ministry"><a href="/love-of-the-lord/">Service</a><a href="/love-of-the-lord/shop/">Shop</a><a href="/love-of-the-lord/give/">Give</a><a href="/contact/">Contact</a><a href="/unsubscribe/">Unsubscribe</a></nav>
+</div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script>
+(function(){
+  'use strict';
+  var TRACKS = [
+    { slug: 'theme-children-ministry', name: 'Theme: Children Ministry', file: 'themes/theme-children-ministry.mp3', price: 50 },
+    { slug: 'theme-youth-praise-worship', name: 'Theme: Youth Praise & Worship', file: 'themes/theme-youth-praise-worship.mp3', price: 50 },
+    { slug: 'theme-afrobeat', name: 'Theme: Afrobeat', file: 'themes/theme-afrobeat.mp3', price: 50 },
+    { slug: 'theme-urban-afrobeat-rnb', name: 'Theme: Urban Afrobeat R&B', file: 'themes/theme-urban-afrobeat-rnb.mp3', price: 50 },
+    { slug: 'interlude-overcoming-trials', name: 'Interlude: Overcoming Trials', file: 'interludes/interlude-overcoming-trials.mp3', price: 30 },
+    { slug: 'interlude-divine-provision', name: 'Interlude: Divine Provision', file: 'interludes/interlude-divine-provision.mp3', price: 30 },
+    { slug: 'interlude-love-and-power', name: 'Interlude: Love & Power', file: 'interludes/interlude-love-and-power.mp3', price: 30 },
+    { slug: 'music-collection', name: 'Complete Music Collection (7 tracks)', file: 'bundle', price: 200 }
+  ];
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function audioUrl(file){ return '/love-of-the-lord/audio/' + file; }
+
+  function render(){
+    var grid = document.getElementById('musicGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    TRACKS.forEach(function(t, i){
+      var el = document.createElement('div');
+      el.className = 'pcard';
+      el.innerHTML =
+        '<div class="ptag">' + (t.file === 'bundle' ? 'Bundle · Save' : 'MP3 download') + '</div>' +
+        '<h3>' + esc(t.name) + '</h3>' +
+        '<p>' + (t.file === 'bundle' ? 'All 4 theme versions + all 3 interludes in one purchase.' : 'Studio master · plays offline · yours forever.') + '</p>' +
+        '<div class="price price-convert" data-ghs="' + t.price + '">GH₵ ' + t.price + '</div>' +
+        '<div class="row"><button class="btn-buy" onclick="lotlBuy(' + i + ',\'momo\')">Buy</button>' +
+        '<button class="btn-crypto" id="cbtn_' + i + '" onclick="lotlBuy(' + i + ',\'crypto\')">Crypto</button></div>';
+      grid.appendChild(el);
+    });
+  }
+
+  window.lotlBuy = function(i, via){
+    var t = TRACKS[i];
+    if(!t) return;
+    if(via === 'crypto' && typeof window.CryptoPay === 'undefined'){ alert('Payment widget still loading. Try again in a moment.'); return; }
+    if(typeof showStoreModal !== 'function'){ alert('Checkout still loading. Please refresh and try again.'); return; }
+    showStoreModal(function(user){
+      fetch('/api/store/create', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_type: 'music', item_name: t.name, item_variant: t.file, product_slug: t.slug, amount: t.price, currency: 'GHS', customer_name: user.name, customer_email: user.email, user_id: user.user_id || 0, phone: user.phone || '' })
+      }).then(function(r){ return r.json(); }).then(function(d){
+        if(!d || d.status !== 'ok'){ alert('Failed to create order. Please try again.'); return; }
+        if(via === 'crypto'){ window.CryptoPay.start({ purpose: 'lotl-music', tx_ref: d.tx_ref, button: document.getElementById('cbtn_' + i) }); return; }
+        if(typeof window.payWithExpressPay === 'function'){
+          window.payWithExpressPay({ tx_ref: d.tx_ref, name: user.name, email: user.email, phone: user.phone || '', redirect: '/love-of-the-lord/shop/?order=' + encodeURIComponent(d.tx_ref), btn: null, btnLabel: '', context: 'lotl-music' });
+          return;
+        }
+        alert('Payment system loading. Please refresh and try again.');
+      }).catch(function(){ alert('Network error — no charge was made. Please try again.'); });
+    });
+  };
+
+  function reveal(files){
+    var box = document.getElementById('myMusic');
+    var links = document.getElementById('myMusicLinks');
+    if(!box || !links) return;
+    links.innerHTML = '';
+    files.forEach(function(f){
+      var a = document.createElement('a');
+      a.className = 'dl';
+      a.href = audioUrl(f);
+      a.setAttribute('download', '');
+      a.textContent = '⬇ Download ' + f.split('/').pop();
+      links.appendChild(a);
+    });
+    box.style.display = 'block';
+    var ok = document.getElementById('orderSuccess');
+    if(ok) ok.style.display = 'block';
+    box.scrollIntoView();
+  }
+
+  function verify(tx){
+    fetch('/api/store/download?tx_ref=' + encodeURIComponent(tx)).then(function(r){ return r.json(); }).then(function(d){
+      if(!d || d.status !== 'ok' || !d.order) return;
+      var v = d.order.item_variant || '';
+      var files = (v === 'bundle') ? TRACKS.filter(function(t){ return t.file !== 'bundle'; }).map(function(t){ return t.file; }) : [v];
+      reveal(files);
+    }).catch(function(){});
+  }
+
+  function wireNotify(formId, okId, source){
+    var f = document.getElementById(formId);
+    if(!f) return;
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(f);
+      fd.append('source', source);
+      fd.append('message', 'Notify when available');
+      fetch('/api/contact', { method: 'POST', body: fd }).then(function(){
+        var ok = document.getElementById(okId);
+        if(ok) ok.style.display = 'block';
+        f.reset();
+      }).catch(function(){ alert('Could not save. Please try again.'); });
+    });
+  }
+
+  render();
+  wireNotify('ebookForm', 'ebookOk', 'lotl-shop-ebook-notify');
+  wireNotify('sermonForm', 'sermonOk', 'lotl-shop-sermon-notify');
+
+  (function(){
+    var q = new URLSearchParams(window.location.search);
+    var tx = q.get('order');
+    if(!tx) return;
+    var st = q.get('status');
+    if(st === 'successful' || st === 'completed'){ verify(tx); return; }
+    var n = 0;
+    var timer = setInterval(function(){
+      n++;
+      if(n > 10){ clearInterval(timer); verify(tx); return; }
+      fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(tx)).then(function(r){ return r.json(); }).then(function(d){
+        if(d && d.status === 'ok' && d.approved){ clearInterval(timer); verify(tx); }
+      }).catch(function(){});
+    }, 6000);
+    verify(tx);
+  })();
+})();
+</script>
+<script defer src="/assets/js/main.js"></script>
+<script src="/nav.js"></script>
+</body>
+</html>
