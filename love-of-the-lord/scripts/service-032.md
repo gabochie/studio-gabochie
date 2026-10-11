@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-032 — Love as the Highest Apologetic
 date: 2027-05-16 · cadence: refresh · series: Love in Action · verse: John 13:35
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Love as the Highest Apologetic. Open your Bible to John 13:35. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Love as the Highest Apologetic. Open your Bible to John 13, verse 35. By this all will know that you are My disciples, if you have love for one another. Arguments rarely convert; LOVE does. The world is not waiting for a better debate — it is waiting for a better demonstration.
+
+By THIS all will know. Not by our buildings, budgets, crowds, or correctness — by LOVE. For one another first (the watching world reads Christian-to-Christian love as Exhibit A), then for all. When believers backbite, sue, envy, and divide, the world concludes correctly that our gospel does not work — on us. But when they see forgiveness, generosity, unity across tribe and class, they conclude the opposite: God must be real, because this love is not natural. Your love life is someone's apologetics textbook. Write legibly.
+
+For love has MARKS the world can verify. First Corinthians 13 is not wedding decoration; it is a checklist: patient with slow people, kind to rude ones, not envying the promoted, not boasting, not rude, not self-seeking, not easily angered, keeping no record of wrongs. Audit one relationship this week by these marks. Where you fail the checklist, you fail the witness — and grace is available to retake the test immediately.
+
+And love UNIFIES across walls. Jesus prayed in John 17 that we may be one — so that the WORLD may believe. Our unity is evangelistic strategy, not mere niceness. Every tribal, denominational, and class wall crossed in love preaches louder than a thousand tracts. Befriend one believer unlike you this week — different tribe, status, or tradition — visibly, warmly.
+
+Your step: perform one VISIBLE act of love this week that unbelievers will notice — serve, give, reconcile, include — and tell one Christian friend to hold you to it. Let them know by THIS.
+
+Father, make my love Your highest argument. Patient, kind, unifying love that proves I am Yours. Let the watching world meet You in how I love. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
