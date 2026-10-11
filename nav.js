@@ -5,6 +5,8 @@
     '<a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Studio Gabochie"> <span class="nav-brand-wrapper"><span class="nav-brand-title">Studio Gabochie</span><span class="nav-brand-tagline">Creativity, Love &amp; Wisdom</span></span></a>' +
     '<div class="nav-links">' +
     '<a href="/courses/" class="nav-active-link">Courses</a>' +
+    '<a href="/love-of-the-lord/" class="nav-active-link">Church</a>' +
+    '<a href="/books/" class="nav-active-link">Books</a>' +
     '<button id="pwaInstallBtn" class="pwa-install" hidden>Install App</button>' +
     '<span id="navAuth" class="nav-auth"></span>' +
     '</div>' +
@@ -115,9 +117,11 @@
     var links = document.querySelectorAll('.nav-links .nav-active-link, .nav-links a');
     links.forEach(function(a) {
       var href = a.getAttribute('href') || '';
-      if (href === '/courses/' && path.indexOf('/courses/') === 0) {
+      if (href === '/courses/' && (path.indexOf('/courses/') === 0 || path === '/school/')) {
         a.classList.add('active');
-      } else if (href === '/courses/' && path === '/school/') {
+      } else if (href === '/love-of-the-lord/' && (path.indexOf('/love-of-the-lord/') === 0 || path === '/lotl/')) {
+        a.classList.add('active');
+      } else if (href === '/books/' && path.indexOf('/books/') === 0) {
         a.classList.add('active');
       }
     });

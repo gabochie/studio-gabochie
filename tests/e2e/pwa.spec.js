@@ -67,4 +67,15 @@ test.describe('PWA shell', function () {
     await expect(bar.locator('[data-tab="church"].active')).toBeVisible();
     await expect(bar.locator('[data-tab="church"]')).toHaveAttribute('href', '/love-of-the-lord/');
   });
+
+  test('desktop header reads Courses, Church, Books in order', async function ({ page }) {
+    await page.goto('/');
+    var links = page.locator('.nav-links a.nav-active-link');
+    await expect(links).toHaveCount(3);
+    await expect(links.nth(0)).toHaveText('Courses');
+    await expect(links.nth(1)).toHaveText('Church');
+    await expect(links.nth(2)).toHaveText('Books');
+    await expect(links.nth(1)).toHaveAttribute('href', '/love-of-the-lord/');
+    await expect(links.nth(2)).toHaveAttribute('href', '/books/');
+  });
 });
