@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-044 — Carry the Fire
 date: 2027-08-08 · cadence: refresh · series: Hope and Harvest · verse: Leviticus 6:13
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Carry the Fire. Open your Bible to Leviticus 6:13. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Carry the Fire. Open your Bible to Leviticus 6, verse 13. A fire shall always be burning on the altar; it shall never go out. God commands perpetual fire — and appoints YOU its keeper. For we are priests now, and every heart an altar. Today we learn to burn without going out.
+
+EVER burning, NEVER out. God's fire is not event-based (conferences, camps, Sundays) but altar-based — continuous. Events ignite; altars MAINTAIN. Many burn bright at programs and go cold by Wednesday because no altar exists at home. Build yours: a place, a time, a practice — daily Word, daily prayer, daily obedience. Small coals tended beat bonfires abandoned. Consistency outlasts intensity, every time, in every life.
+
+For PRIESTS tend the fire — and you ARE one. The priest's daily job: remove ashes (confess quickly, forgive fast, clear clutter), lay fresh wood (feed on Word, worship, fellowship), and keep it burning (never delegate your altar entirely to pastors, programs, or playlists). Ashes of yesterday's failures, offenses, and worries smother today's flame — clear them each morning. Fresh wood daily: no wood, no fire; no Word, no warmth. Tend it yourself; no one can outsource your burning.
+
+And CARRY it — fire is for TRANSPORT, not just enjoyment. Moses' bush burned unconsumed; carry that paradox into rooms: warm without burning out, bright without showing off. Take the fire to work (integrity), home (patience), streets (kindness), church (zeal). A carrier spreads; a container merely holds. If your fire never leaves your room, it is a candle, not an altar. Export it daily.
+
+Gone cold? REKINDLE today: stir up the gift (fan buried embers through prayer and Word), return to first love (remember, repent, repeat first works), and ask for fresh baptism of fire. Cold altars relight fast under honest hands. Do not admire ashes; disturb them until flame returns.
+
+Your step: establish (or re-establish) one daily altar practice this week — time, place, Word + prayer — and carry the fire once deliberately (one act of warmth to a cold person/place). Tell one person your altar time for accountability.
+
+Father, let Your fire ever burn on my heart's altar and never go out. Teach my priesthood to clear ashes, lay wood daily, and carry Your flame everywhere. Rekindle me afresh today. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

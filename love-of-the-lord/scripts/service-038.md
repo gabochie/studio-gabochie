@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-038 — Love as the Highest Apologetic
 date: 2027-06-27 · cadence: refresh · series: Love in Action · verse: John 13:35
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Love as the Highest Apologetic. Open your Bible to John 13:35. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Love as the Highest Apologetic — manner and message. Open your Bible to John 13, verse 35, and hear First Peter 3:15 beside it. Weeks ago we learned love proves and unifies. Today: HOW to answer — with gentleness, with a transformed life, and with a ready gospel.
+
+With GENTLENESS and respect. Sanctify the Lord in your hearts — then be ready to give an answer to everyone who asks, with meekness and fear. Manner IS message: harsh truth-telling un-says the truth. The world rejects rude correctness daily — and should. Speak as to someone Christ died for (they are), firmly without sneering, confidently without bullying, patiently without condescending. Win the person, not just the point. Nobody was ever insulted into the Kingdom.
+
+With a TRANSFORMED life behind the words. Your testimony is Exhibit A that the gospel works — on you, visibly. Before-and-after preaches: the temper tamed, the bottle broken, the marriage mended, the honesty restored. Keep your story short, specific, and Christ-centered: what I was, what He did, what I am. Practice a three-minute version this week. Vague testimonies convince vaguely; specific ones pierce.
+
+With the GOSPEL ready on your lips. Know it simply enough for a child and a professor alike: God loves, man sinned, Christ died and rose, repent and believe, receive new life. Five lines. Memorize the outline, carry a verse (John 3:16; Romans 10:9), and offer, never force. Witnessing is farming: some plant, some water, God gives increase — your job is faithful sowing plus loving watering.
+
+Your step: write your three-minute testimony, share it once this week (person, post, or prayer group), and answer one person's question with gentleness. Tell one Christian friend you did.
+
+Father, make my manner gentle, my life Exhibit A, and my gospel ready. Use my love and lips together to convince the watching world. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-035 — Serving as Worship
 date: 2027-06-06 · cadence: full · series: Love in Action · verse: Romans 12:1
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: Serving as Worship. Open your Bible to Romans 12:1. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today: Serving as Worship — the living sacrifice, the fitted gift, and the excellent heart. Open your Bible to Romans 12, verse 1. Present your bodies a living sacrifice, holy, acceptable to God, which is your reasonable service. Weeks ago we learned service is worship beyond songs. Today, first Sunday of June, we go all the way in: what makes service WORSHIP, and worship that God accepts.
+
+First: it must be LIVING and HOLY. Living — ongoing, daily, not a Sunday performance that dies Monday morning. Holy — set apart, clean-handed, pure-hearted. God does not accept serving with dirty hands and a dirty heart; He first cleanses, then commissions. Confess quickly, forgive quickly, stay usable. A holy servant's ordinary work shines; an unholy servant's religious work stinks, however loud the music. Check the vessel before offering the service.
+
+Second: serve according to your FITTING — your gift, your grace, your lane. The body has many parts; the eye does not sweep and the broom does not see. Stop envying another's assignment and discover yours: teaching, helping, giving, organizing, mercy, music, media, children, prayer, practicals. Ask three questions: What do I do gladly? What do others say I do well? What need near me stays unmet? Where those three meet is your ministry address. Move in this month. The church has a place with your name on it — and a gap with your shape.
+
+Third: serve with EXCELLENCE, heartily as to the Lord. Whatever you do — ushering, sound, cleaning, counting, cooking — do it as unto God, not men. Excellence is not perfectionism (fear dressed finely); it is love made careful. Arrive early. Prepare properly. Finish fully. Smile genuinely. The same task done grudgingly is labor; done heartily, it is liturgy. Let them say of our volunteers what was said of Daniel: an excellent spirit was in him.
+
+And all of it ACCEPTABLE to God — the quiet audit at the end. Not applauded by men, but accepted by Him. Serve for the Audience of One, and earthly applause becomes optional extra, not oxygen.
+
+Your step this month: join one serving team (or start your fitted ministry), show up early once, and do one task excellently and hiddenly. Tell your pastor or one leader your yes this week.
+
+Father, I present my body — living, holy, fitted, excellent. Show me my lane, teach my hands worship, and accept my service. Make me indispensable to Your work and invisible to praise. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
