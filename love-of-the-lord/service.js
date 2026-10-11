@@ -17,6 +17,36 @@
   var audioOnly = false;
   var series = null;
   var service = null;
+  var autoplayNext = false; // set on user-initiated stop/service select; consumed by renderMedia
+  var savedIdx = 0; // resume target (restore() no longer jumps on load)
+
+  function pauseStage() {
+    try {
+      var stage = $('stage');
+      if (!stage) return;
+      var media = stage.querySelectorAll('audio,video');
+      for (var i = 0; i < media.length; i++) { try { media[i].pause(); } catch (_e) {} }
+    } catch (_e2) {}
+  }
+
+  function scrollStage() {
+    var stage = $('stage');
+    if (stage && !stage.hidden && stage.scrollIntoView) stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function renderFallback(stop) {
+    var wrap = document.createElement('div');
+    wrap.className = 'media-fallback';
+    var bits = [];
+    if (stop.prompt) bits.push('<p class="fb-prompt">' + escapeHtml(stop.prompt) + '</p>');
+    if (stop.lyrics) bits.push('<p class="fb-lyrics">' + escapeHtml(stop.lyrics.join(' · ')) + '</p>');
+    if (stop.takeaways) bits.push('<p class="fb-take">' + escapeHtml(stop.takeaways.join(' · ')) + '</p>');
+    if (stop.prayer) bits.push('<p class="fb-prayer">' + escapeHtml(stop.prayer) + '</p>');
+    if (stop.blessing) bits.push('<p class="fb-prayer">' + escapeHtml(stop.blessing) + '</p>');
+    if (!bits.length && stop.desc) bits.push('<p>' + escapeHtml(stop.desc) + '</p>');
+    wrap.innerHTML = '<div class="fb-title">' + escapeHtml((stop && stop.title) || 'Love Of The Lord') + '</div>' + bits.join('');
+    return wrap;
+  }
 
   function $(id) { return document.getElementById(id); }
 
@@ -103,6 +133,7 @@
     updateServiceLabel(data && data.service);
     restore();
     render();
+    if (autoplayNext) scrollStage();
   }
 
   function fallbackStops() {
@@ -132,12 +163,14 @@
       var raw = localStorage.getItem(LS_PROGRESS);
       if (!raw) return;
       var p = JSON.parse(raw);
-      if (p && typeof p.idx === 'number' && p.idx < stops.length) idx = p.idx;
       if (p && p.mode) mode = p.mode;
-      var resume = $('resumeBar');
-      if (resume && p && p.idx > 0) {
-        resume.hidden = false;
-        resume.querySelector('span').textContent = 'Welcome back — continue from ' + (stops[p.idx] ? stops[p.idx].title : 'where you stopped') + '?';
+      if (p && typeof p.idx === 'number' && p.idx > 0 && p.idx < stops.length) {
+        savedIdx = p.idx;
+        var resume = $('resumeBar');
+        if (resume) {
+          resume.hidden = false;
+          resume.querySelector('span').textContent = 'Welcome back — continue from ' + (stops[p.idx] ? stops[p.idx].title : 'where you stopped') + '?';
+        }
       }
     } catch (_e) {}
   }
@@ -187,14 +220,21 @@
 
   function selectService(id) {
     if (!series) return;
+    if (id !== series.current && (idx > 0 || maxReached() > 0)) {
+      if (typeof window.confirm === 'function' && !window.confirm('Switch service? Your progress here will be cleared.')) {
+        var sel = $('servicePicker'); if (sel) sel.value = series.current;
+        return;
+      }
+    }
     series.current = id;
     var svc = serviceById(series, id) || (allServices(series)[0] || {}).service || null;
     service = svc;
-    idx = 0;
+    idx = 0; savedIdx = 0;
     try { localStorage.removeItem(LS_PROGRESS); localStorage.removeItem(LS_MAX); } catch (_e) {}
     var resume = $('resumeBar'); if (resume) resume.hidden = true;
+    autoplayNext = true;
     if (svc && svc.lineup) loadLineup(svc.lineup);
-    else render();
+    else { render(); scrollStage(); }
   }
   window.lotlSelectService = selectService;
 
@@ -206,12 +246,13 @@
     return m ? m[1] : '';
   }
 
-  function youtubeEmbed(m) {
+  function youtubeEmbed(m, autoplay) {
     var url = '';
     var id = youtubeId(m.src);
     if (id) url = 'https://www.youtube.com/embed/' + id;
     else if (m.playlist) url = 'https://www.youtube.com/embed/videoseries?list=' + encodeURIComponent(m.playlist);
     if (!url) return null;
+    if (autoplay) url += (url.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1';
     var f = document.createElement('iframe');
     f.src = url;
     f.title = m.title || 'Love Of The Lord media';
@@ -256,7 +297,7 @@
 
   function renderMedia(stop) {
     var stage = $('stage');
-    if (!stage) return;
+    if (!stage) { autoplayNext = false; return; }
     var screen = stage.parentNode;
     stage.innerHTML = '';
     stage.className = 'stage';
@@ -264,16 +305,28 @@
     var node = null;
     if (m) {
       var aud = (audioOnly && m.audio) ? m.audio : (m.type === 'audio' ? m : null);
-      if (m.type === 'youtube' && !audioOnly) node = youtubeEmbed(m);
+      if (m.type === 'youtube' && !audioOnly) node = youtubeEmbed(m, autoplayNext);
       else if (aud) node = audioNode(aud, stop);
       else if (m.type === 'bridge' && !audioOnly) node = videoNode(m);
+      if (node && autoplayNext) {
+        var target = node;
+        if (target.querySelector) {
+          var inner = target.querySelector('audio,video');
+          if (inner) target = inner;
+        }
+        if (target && (target.tagName === 'AUDIO' || target.tagName === 'VIDEO') && target.play) {
+          try { var pr = target.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (_e) {}
+        }
+      }
     }
+    autoplayNext = false;
     if (node) {
       stage.appendChild(node);
       stage.hidden = false;
       if (screen) screen.classList.add('has-media');
     } else {
-      stage.hidden = true;
+      stage.appendChild(renderFallback(stop || {}));
+      stage.hidden = false;
       if (screen) screen.classList.remove('has-media');
     }
   }
@@ -297,7 +350,7 @@
         var status = i === idx ? 'Now' : (done ? 'Done ✓' : (i === idx + 1 ? 'Up next' : 'Stop ' + (i + 1)));
         var num = done && i !== idx ? '✓' : String(i + 1);
         d.innerHTML = '<span class="n">' + num + '</span><span class="t"><b>' + escapeHtml(s.title) + '</b><small>' + escapeHtml(s.desc || '') + '</small></span><span class="time">' + (s.minutes || '') + (s.minutes ? ' min' : '') + '<span class="st">' + status + '</span></span>';
-        d.addEventListener('click', function () { idx = i; save(); render(); });
+        d.addEventListener('click', function () { idx = i; save(); autoplayNext = true; render(); scrollStage(); });
         order.appendChild(d);
       });
     }
@@ -310,7 +363,7 @@
         p.className = 'pill' + (i === idx ? ' on' : '');
         if (i === idx) p.setAttribute('aria-current', 'true');
         p.textContent = (i + 1) + ' · ' + (s.short || s.title.split(' ')[0]);
-        p.addEventListener('click', function () { idx = i; save(); render(); });
+        p.addEventListener('click', function () { idx = i; save(); autoplayNext = true; render(); scrollStage(); });
         pills.appendChild(p);
       });
     }
@@ -331,36 +384,44 @@
 
   window.lotlPlay = function () {
     var list = visibleStops();
-    var btn = $('playBtn');
     if (idx < list.length - 1) {
       idx += 1;
       save(); render();
-      if (btn) btn.textContent = '⏸';
     } else {
       try { localStorage.setItem(LS_DONE, new Date().toISOString()); } catch (_e) {}
       var done = $('doneDim');
       if (done) done.classList.add('open');
-      if (btn) btn.textContent = '▶';
     }
     return false;
   };
 
   window.lotlRestart = function () {
-    idx = 0; save(); render();
+    idx = 0; savedIdx = 0;
+    try { localStorage.removeItem(LS_PROGRESS); localStorage.removeItem(LS_MAX); } catch (_e) {}
+    render();
     var done = $('doneDim');
     if (done) done.classList.remove('open');
+    var r = $('resumeBar'); if (r) r.hidden = true;
     var s = $('start'); if (s && s.scrollIntoView) s.scrollIntoView({ behavior: 'smooth' });
     return false;
   };
 
   window.lotlMode = function (m) {
-    mode = m; idx = 0; save(); render();
+    if (m !== mode && (idx > 0 || maxReached() > 0)) {
+      if (typeof window.confirm === 'function' && !window.confirm('Switch mode? Your progress here will be cleared.')) return false;
+    }
+    mode = m; idx = 0; savedIdx = 0; save(); render();
     var dd = $('doneDim'); if (dd) dd.classList.remove('open');
     var s = $('start'); if (s && s.scrollIntoView) s.scrollIntoView({ behavior: 'smooth' });
     return false;
   };
 
-  window.lotlResume = function () { var r = $('resumeBar'); if (r) r.hidden = true; render(); return false; };
+  window.lotlResume = function () {
+    var r = $('resumeBar'); if (r) r.hidden = true;
+    if (savedIdx > 0 && savedIdx < stops.length) idx = savedIdx;
+    save(); render(); scrollStage();
+    return false;
+  };
 
   window.lotlAmen = function () {
     var n = 318;
@@ -371,10 +432,27 @@
     return false;
   };
 
-  window.lotlWorship = function () { var d = $('dim'); if (d) d.classList.add('open'); return false; };
+  window.lotlWorship = function () {
+    pauseStage();
+    var d = $('dim');
+    if (d) {
+      d.classList.add('open');
+      if (!d.hasAttribute('tabindex')) d.setAttribute('tabindex', '-1');
+      if (d.focus) d.focus();
+    }
+    return false;
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      var d = $('dim');
+      if (d && d.classList.contains('open')) d.classList.remove('open');
+    }
+  });
 
   window.lotlAudio = function () {
     audioOnly = !audioOnly;
+    var ab = $('audioBtn');
+    if (ab) ab.classList.toggle('on', audioOnly);
     var note = $('audioNote');
     if (note) {
       note.hidden = false;
@@ -390,6 +468,7 @@
   function renderLatestAnswers() {
     var box = $('latestAnswers');
     if (!box) return;
+    box.innerHTML = '<p class="lotl-muted">Loading answers…</p>';
     fetch('answers/answers.json', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -408,7 +487,7 @@
           box.appendChild(d);
         });
       })
-      .catch(function () {});
+      .catch(function () { stripFail('latestAnswers', 'Could not load answers. Please refresh.'); });
   }
 
   /* ---------- this week strip ---------- */
@@ -484,14 +563,15 @@
       var fd = new FormData(f);
       fd.append('source', source);
       fetch(CONTACT_ENDPOINT, { method: 'POST', body: fd })
-        .then(function () { showOk(okId, f); })
-        .catch(function () { showOk(okId, f); });
+        .then(function (r) { if (r && r.ok === false) showErr(okId, f); else showOk(okId, f); })
+        .catch(function () { showErr(okId, f); });
     });
   }
 
   function showOk(okId, f) {
     var ok = $(okId);
     if (ok) ok.hidden = false;
+    try { var prev = f.querySelector('.lotl-err'); if (prev) prev.style.display = 'none'; } catch (_e3) {}
     try { rememberWho(f); } catch (_e2) {}
     try {
       var wa = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Hello Love Of The Lord, I just had church online. My name is ' + (f.querySelector('[name=name]') || {}).value || '');
@@ -500,6 +580,28 @@
     } catch (_e) {}
     f.reset();
     prefillForms();
+  }
+
+  function showErr(okId, f) {
+    var ok = $(okId);
+    if (ok) ok.hidden = true;
+    try { rememberWho(f); } catch (_e2) {}
+    try { prefillForms(); } catch (_e3) {}
+    var err = null;
+    try { err = f.querySelector('.lotl-err'); } catch (_e4) {}
+    if (!err) {
+      err = document.createElement('p');
+      err.className = 'lotl-err';
+      err.setAttribute('role', 'alert');
+      f.appendChild(err);
+    }
+    err.textContent = 'Could not send. Check your connection and try again — your details are saved on this phone.';
+    err.style.display = 'block';
+  }
+
+  function stripFail(id, msg) {
+    var box = $(id);
+    if (box) box.innerHTML = '<p class="lotl-muted">' + escapeHtml(msg) + '</p>';
   }
 
   function rememberWho(f) {

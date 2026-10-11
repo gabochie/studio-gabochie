@@ -1,0 +1,61 @@
+/* Love Of The Lord — shared chrome + components.
+   Linked by every love-of-the-lord/* page after /assets/css/main.css.
+   Page <style> blocks keep ONLY page-specific UI (player, give panel, lists);
+   everything below is the single source of truth — do not redeclare per page. */
+
+/* ── Topbar ── */
+.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #1E3250}
+.lotl-nav .inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;flex-shrink:0}
+.lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#F1F5F9;line-height:1.1}
+.lotl-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;color:#C9A84C;text-transform:uppercase}
+.lotl-brand small a{color:#C9A84C;text-decoration:none}
+.lotl-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;min-height:44px;display:inline-flex;align-items:center;color:#8A9BB5;text-decoration:none;padding:8px 12px;border:1px solid #1E3250;border-radius:20px}
+.lotl-links a.live{color:#0A1628;background:#C9A84C;border-color:#C9A84C;font-weight:700}
+@media(max-width:640px){.lotl-links a:not(.live){display:none}}
+
+/* ── Ministry band: full-width airy section directly above the global Studio footer ── */
+.lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 20px 44px;text-align:center;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px}
+.lotl-ministry-in{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:12px}
+.lotl-ministry img{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C}
+.lotl-ministry b{font-family:'Barlow Condensed',sans-serif;font-size:19px;letter-spacing:.12em;color:#F1F5F9}
+.lotl-ministry small{font-size:12px}
+.lotl-ministry small a{color:#C9A84C;text-decoration:none}
+.lotl-ministry nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:13px;position:static;height:auto;background:none;border:none}
+.lotl-ministry nav a{color:#C9A84C;text-decoration:none}
+
+/* ── Eyebrow label ── */
+.kicker{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C;font-weight:700}
+
+/* ── Cookie notice docks above the tab bar on mobile (mirrors main.css) ── */
+@media(max-width:860px){#cookieNotice{bottom:calc(64px + env(safe-area-inset-bottom,0px))!important}}
+
+/* ── One button system (DM Sans; .lotl-btn-lg preserves hero CTA hierarchy) ── */
+.lotl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:#C9A84C;color:#0A1628;border:1px solid #C9A84C;border-radius:10px;padding:11px 16px;cursor:pointer;text-decoration:none}
+.lotl-btn:hover{background:#D9B85C;border-color:#D9B85C}
+.lotl-btn-lg{font-size:15px;padding:14px 22px}
+.lotl-btn-outline{background:transparent;color:#C9A84C}
+.lotl-btn-outline:hover{background:rgba(201,168,76,.1)}
+.lotl-btn-ghost{background:transparent;color:#8A9BB5;border-color:#1E3250}
+.lotl-btn-ghost:hover{color:#CBD5E1;border-color:#3A5278}
+.lotl-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Cards + tag pills (min-width:0 stops sideways overflow) ── */
+.lotl-card{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:20px;min-width:0}
+.lotl-card:hover{border-color:rgba(201,168,76,.5)}
+.lotl-tag{display:inline-block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);padding:4px 10px;border-radius:14px}
+
+/* ── Form fields + labels + success ── */
+.lotl-label{display:block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8A9BB5;margin-bottom:6px}
+.lotl-label.lotl-label-dark{color:#5A4A3A}
+.lotl-field{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #1E3250;background:#0A1628;color:#F1F5F9;font-family:'DM Sans',sans-serif;font-size:14px;min-width:0}
+.lotl-field:focus{outline:none;border-color:#C9A84C}
+textarea.lotl-field{resize:vertical;min-height:64px}
+.lotl-ok{background:rgba(52,199,123,.12);border:1px solid #34C77B;color:#34C77B;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
+.lotl-err{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);color:#F87171;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
+
+/* ── Shared text + focus ── */
+.lotl-muted{font-family:'DM Sans',sans-serif;color:#A8B9D1;font-size:14px}
+:focus-visible{outline:2px solid #C9A84C;outline-offset:2px}
