@@ -35,6 +35,12 @@ body{background:#0A1628}
 .hero h1 span{color:#C9A84C}
 .hero p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:15px;max-width:480px;margin-bottom:18px}
 .cta-row{display:flex;gap:10px;flex-wrap:wrap}
+.frow{display:grid;gap:8px}
+.frow>*{min-width:0}
+.frow.c3{grid-template-columns:1fr 1fr auto}
+.frow.c2{grid-template-columns:1fr 1fr}
+.frow.c21a{grid-template-columns:2fr 1fr auto}
+@media(max-width:640px){.frow.c3,.frow.c2,.frow.c21a{grid-template-columns:1fr}}
 .micro{font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5;margin-top:12px}
 .player{background:var(--cream);color:var(--ink);border-radius:18px;overflow:hidden;border:1px solid rgba(201,168,76,.5);box-shadow:0 24px 60px rgba(0,0,0,.45)}
 .screen{position:relative;aspect-ratio:16/9;background:#0A1628;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:20px}
@@ -245,7 +251,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="card" style="margin-top:14px">
 <form id="newForm">
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px">
+<div class="frow c3">
 <input name="name" required placeholder="Your name" aria-label="Your name" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <input name="email" type="email" required placeholder="Email or WhatsApp" aria-label="Email" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <button class="btn btn-gold" type="submit">I'm New 🙏</button>
@@ -266,7 +272,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <form id="askForm">
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 <textarea name="message" required maxlength="600" placeholder="e.g. Why is this happening to me? Where is God in my frustration?" aria-label="Your question"></textarea>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="frow c2">
 <input name="name" placeholder="Name (optional)" aria-label="Name" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <input name="email" placeholder="WhatsApp or email (to send your answer)" aria-label="Contact" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 </div>
@@ -325,7 +331,7 @@ details.fold summary::-webkit-details-marker{display:none}
 </div>
 <form id="familyForm" style="margin-top:14px">
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px">
+<div class="frow c3">
 <input name="name" required placeholder="Your name" aria-label="Your name" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <input name="phone" required placeholder="WhatsApp number" aria-label="WhatsApp number" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <button class="btn btn-gold" type="submit">Join Family Circle</button>
@@ -340,7 +346,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <details class="fold"><summary>＋ Share your testimony (optional — inspires Friday answers)</summary>
 <form id="storyForm">
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-<div style="display:grid;grid-template-columns:2fr 1fr auto;gap:8px">
+<div class="frow c21a">
 <input name="message" required placeholder="Share your testimony in 1 line…" aria-label="Your testimony" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <input name="name" placeholder="First name + city" aria-label="Name" style="padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#fff">
 <button class="btn btn-outline btn-sm" type="submit">Share</button>

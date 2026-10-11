@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>LOTL Studio â€” Admin Â· Studio Gabochie</title>
+<title>LOTL Studio — Admin · Studio Gabochie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -33,9 +33,9 @@
 <div class="wrap">
 
   <h1 class="page-title">LOTL <span>Studio</span></h1>
-  <p class="page-desc">Edit the Love Of The Lord series and each service lineup. Edits are exported as JSON â€” copy or download, then commit <code>love-of-the-lord/series.json</code> and the lineup files.</p>
+  <p class="page-desc">Edit the Love Of The Lord series and each service lineup. Edits are exported as JSON — copy or download, then commit <code>love-of-the-lord/series.json</code> and the lineup files.</p>
 
-  <div class="rule">Loaded from <b>/love-of-the-lord/series.json</b> Â· rotation: monthly full sermon + weekly refresh (see 09-LOTL-52-week-calendar.md).</div>
+  <div class="rule">Loaded from <b>/love-of-the-lord/series.json</b> · rotation: monthly full sermon + weekly refresh (see 09-LOTL-52-week-calendar.md).</div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
     <button class="btn btn-gold btn-sm" onclick="loadAll()">&#8635; Reload from site</button>
@@ -57,7 +57,7 @@
       <div id="servicesList"><div style="color:#5A7A9F;font-size:13px">Loadingâ€¦</div></div>
     </div>
     <div class="lotl-panel">
-      <h3 id="lineupTitle">Lineup â€” select a service</h3>
+      <h3 id="lineupTitle">Lineup — select a service</h3>
       <div class="rule" id="lineupPath"></div>
       <textarea id="lineupEditor" spellcheck="false" placeholder="Select a service to edit its lineupâ€¦" oninput="markLineupDirty()"></textarea>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
@@ -117,7 +117,7 @@ function renderSeasonSelect() {
   (series.seasons || []).forEach(function (s, i) {
     var o = document.createElement('option');
     o.value = String(i);
-    o.textContent = s.title + (s.quarter ? ' Â· ' + s.quarter : '');
+    o.textContent = s.title + (s.quarter ? ' · ' + s.quarter : '');
     sel.appendChild(o);
   });
   if (prev && sel.options.length) sel.value = prev;
@@ -207,11 +207,11 @@ function openLineup(id) {
   if (!hit) return;
   activeServiceId = id;
   renderServices();
-  byId('lineupTitle').textContent = 'Lineup â€” ' + (hit.service.title || id);
+  byId('lineupTitle').textContent = 'Lineup — ' + (hit.service.title || id);
   byId('lineupPath').textContent = 'Files: love-of-the-lord/' + hit.service.lineup;
   var data = lineups[hit.service.lineup];
   byId('lineupEditor').value = data ? JSON.stringify(data, null, 2) : '{\n  "service": {\n    "id": "' + id + '",\n    "express_stop_ids": ["welcome", "praise", "word", "altar"]\n  },\n  "stops": []\n}';
-  byId('lineupState').textContent = data ? 'loaded' : 'new â€” not on site yet';
+  byId('lineupState').textContent = data ? 'loaded' : 'new — not on site yet';
 }
 
 function markLineupDirty() { byId('lineupState').textContent = 'edited (unsaved)'; }
@@ -267,10 +267,10 @@ function lineupTemplate(id, seasonTitle) {
     service: { id: id, title: 'New service', theme_verse: '', mode_full_minutes: 60, mode_express_minutes: 15, express_stop_ids: ['welcome', 'praise', 'word', 'altar'], season: seasonTitle || '' },
     stops: [
       { id: 'welcome', n: 1, title: 'Welcome & Opening Prayer', desc: 'Gideon welcomes you + opening prayer.', minutes: 3, short: 'Welcome' },
-      { id: 'praise', n: 2, title: 'Praise â€” High Energy', desc: '2 upbeat songs.', minutes: 12, short: 'Praise' },
-      { id: 'worship', n: 3, title: 'Worship â€” Slow & Intimate', desc: '1 slow song.', minutes: 8, short: 'Worship' },
+      { id: 'praise', n: 2, title: 'Praise — High Energy', desc: '2 upbeat songs.', minutes: 12, short: 'Praise' },
+      { id: 'worship', n: 3, title: 'Worship — Slow & Intimate', desc: '1 slow song.', minutes: 8, short: 'Worship' },
       { id: 'announcements', n: 4, title: 'Announcements & New Friends', desc: 'This week.', minutes: 3, short: 'News' },
-      { id: 'offering', n: 5, title: 'Offering â€” Give with Love', desc: 'Separate LOTL fund.', minutes: 3, short: 'Giving' },
+      { id: 'offering', n: 5, title: 'Offering — Give with Love', desc: 'Separate LOTL fund.', minutes: 3, short: 'Giving' },
       { id: 'word', n: 6, title: 'The Word', desc: 'Sermon.', minutes: 25, media: { type: 'audio', src: '', note: 'Add self-owned mp3' }, short: 'Word' },
       { id: 'altar', n: 7, title: 'Altar Call', desc: "Sinner's prayer.", minutes: 5, short: 'Altar' },
       { id: 'prayer', n: 8, title: 'Prayer + Q&A', desc: 'Book a free prayer call.', minutes: 5, short: 'Prayer' },

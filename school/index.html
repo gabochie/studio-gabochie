@@ -721,6 +721,8 @@ document.addEventListener('submit', function(e){
     showLoggedIn(s.name);
   }
   loadPrograms();
+  window.gaRepriceDynamic = loadPrograms;
+  window.addEventListener('ga:currencychange', loadPrograms);
 })();
 </script>
 
