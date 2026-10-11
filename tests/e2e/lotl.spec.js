@@ -201,15 +201,16 @@ test.describe('Love Of The Lord — service page', function () {
   test('series engine populates the service picker from series.json', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page.locator('#servicePicker option').first()).toBeAttached({ timeout: 10000 });
-    await expect(page.locator('#servicePicker optgroup')).toHaveCount(1);
-    await expect(page.locator('#servicePicker optgroup')).toHaveAttribute('label', 'Foundations of Grace');
+    await expect(page.locator('#servicePicker optgroup')).toHaveCount(4);
+    await expect(page.locator('#servicePicker optgroup').first()).toHaveAttribute('label', 'Foundations of Grace');
     await expect(page.locator('#servicePicker option').first()).toContainText('Grace for New Beginnings');
-    await expect(page.locator('#seasonLabel')).toContainText('Foundations of Grace');
+    await expect(page.locator('#seasonLabel')).toContainText(/Foundations of Grace|The Kingdom Mind|Love in Action|Hope and Harvest/);
   });
 
   test('media stage stays hidden when the lineup has no media yet', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.locator('#servicePicker').selectOption('service-001');
     await expect(page.locator('#stage')).toBeHidden();
     await expect(page.locator('.screen.has-media')).toHaveCount(0);
   });
@@ -231,7 +232,7 @@ test.describe('Love Of The Lord — service page', function () {
   test('this-week strip renders from series + answers data', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page.locator('#thisWeek')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('#twService')).toContainText('Grace for New Beginnings');
+    await expect(page.locator('#twService')).toContainText(/\d{4}-\d{2}-\d{2}/);
     await expect(page.locator('#twAnswers')).not.toBeEmpty();
   });
 
@@ -270,7 +271,7 @@ test.describe('Admin — LOTL Studio editor', function () {
   test('loads series.json and renders editable service rows', async function ({ page }) {
     await page.goto('/admin/lotl.html');
     await expect(page.locator('#servicesList .svc-row').first()).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('#servicesList .svc-row')).toHaveCount(1);
+    await expect(page.locator('#servicesList .svc-row')).toHaveCount(13);
     await expect(page.locator('#seasonSelect option').first()).toContainText('Foundations of Grace');
   });
 
