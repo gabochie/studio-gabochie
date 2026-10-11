@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-025 — Think on These Things
 date: 2027-03-28 · cadence: refresh · series: The Kingdom Mind · verse: Philippians 4:8
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Think on These Things. Open your Bible to Philippians 4:8. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Think on These Things — the peace that follows. Open your Bible to Philippians 4, verses 6 to 9. Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus. Weeks ago we learned the eight filters. Today: what right thinking PRODUCES — peace that stands guard.
+
+Be anxious for NOTHING. Nothing is a large word covering small worries and large terrors alike. Anxiety is interest paid on trouble before it is due — stop pre-paying. The command is not "feel nothing" but "carry nothing alone": in EVERYTHING, by prayer and supplication, WITH thanksgiving, let requests be made known. Everything qualifies — school fees, health scares, marriage strain, national news. Thanksgiving is the envelope your request travels in; grateful prayers get priority handling in heaven.
+
+Then the PEACE of God — not peace WITH God (settled at the cross) but peace OF God (His own calm deposited in you). Which SURPASSES all understanding — it makes no sense to accountants of trouble, yet it holds. And it will GUARD — military word, like soldiers at gates — your HEARTS and MINDS. Peace is not the absence of pressure; it is a garrison around your inner life while pressure rages outside. Meditate rightly, pray thankfully, and heaven posts guards.
+
+And verse 9 seals it: the things you learned, received, heard, saw in me — DO. And the God of peace will be WITH you. Peace is practiced into presence. Do the Word you thought about, and the God of the Word draws near in peace. Thinking without doing is entertainment; thinking WITH doing is transformation.
+
+Your step: convert one anxiety into a thanksgiving-prayer today — write the worry, write three thanks beside it, pray both aloud. Then do one thing from this week's meditations. Tell one person your peace report before Friday.
+
+Father, I refuse anxiety and receive Your guarding peace. Teach my thoughts Your filters, my mouth Your thanks, my life Your practice. Stand watch over my heart and mind. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-023 — Kingdom Ambition
 date: 2027-03-14 · cadence: refresh · series: The Kingdom Mind · verse: Mark 10:43-45
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Kingdom Ambition. Open your Bible to Mark 10:43-45. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Kingdom Ambition — the ransom and the hidden place. Open your Bible to Mark 10, verses 43 to 45. Whoever of you desires to be first shall be slave of all. For even the Son of Man did not come to be served, but to serve, and to give His life a ransom for many. Weeks ago we learned ambition's direction. Today: its PRICE and its HIDING place.
+
+The price: He GAVE His life — a RANSOM for many. Ransom means a price paid to free captives. True greatness in the Kingdom is measured not by what you accumulate but by what you RELEASE — captives freed, burdens lifted, people ransomed by your sacrifice. Ask of your ambitions: who goes free if I succeed? If the answer is only you, it is too small for the Kingdom. Enlarge every dream until captives walk out of it. Want the business — to employ the jobless. Want the platform — to preach to the lost. Want the wealth — to fund the work. Ransom-shaped ambition.
+
+The hiding place: SLAVE OF ALL. Not servant of some — slave of ALL. The lowest place, by choice. No title needed, no recognition required, no credit chased. Most serve where seen; Kingdom slaves serve where NEEDED — the unnoticed chair stacking, the unthanked giving, the unposted kindness. Hidden service is heaven-noticed service. God promotes in secret what pride demands in public. Stop auditioning for people; minister to the least and let the Father who sees in secret reward openly.
+
+And see who models it: the SON OF MAN — highest rank, lowest towel. If He washed feet, no task is beneath you. If He gave His life, no sacrifice is too great. Ambition that will not kneel will eventually bow to something smaller. Kneel first, voluntarily, daily.
+
+Your step: do one hidden act of service this week — tell no one but God — and identify one captive (a debt, a habit, a person) your ambition could ransom. Write both down. Tell one person only your growth, never your glory.
+
+Father, I want greatness Your way — ransom-giving, hidden-serving, Christ-following. Kill my need for titles and birth in me slave-of-all love. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

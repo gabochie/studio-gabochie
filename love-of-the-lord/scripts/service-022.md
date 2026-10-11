@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-022 — A Renewed Mind
 date: 2027-03-07 · cadence: full · series: The Kingdom Mind · verse: Romans 12:2
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: A Renewed Mind. Open your Bible to Romans 12:2. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today: A Renewed Mind — the sacrifice, the proof, and the stand. Open your Bible to Romans 12, verses 1 and 2. I beseech you therefore, brethren, by the mercies of God, that you present your bodies a living sacrifice, holy, acceptable to God, which is your reasonable service. And do not be conformed to this world, but be transformed by the renewing of your mind, that you may prove what is that good and acceptable and perfect will of God. Weeks ago we learned the mold and the washing. Today: the SACRIFICE that starts it, the PROOF that follows it, and the STAND it requires.
+
+First, the sacrifice: present your BODIES. Not your Sundays — your bodies. Your mornings, your mouth, your money, your members. A living sacrifice — living, so it keeps crawling off the altar and must be re-presented daily; sacrifice, so it costs something real. Dead religion gives God leftovers; renewed minds give Him the body first and ask questions later. What part of your body have you kept back — eyes, appetite, tongue, habits? Place it on the altar this morning. Worship is not the slow song before the sermon. Worship is the body presented Monday to Saturday.
+
+Second, the proof: that you may PROVE what is good, acceptable, perfect. Prove — test, approve, demonstrate. God's will has grades, and renewed minds graduate. Stuck on a decision — whom to marry, where to work, whether to move? The issue is rarely lack of information. Present the body, renew the mind, and clarity comes as a BYPRODUCT, not as a prerequisite. Stop demanding directions before surrender; surrender, and directions unfold. Many are parked waiting for perfect will while neglecting good will right in front of them. Do the revealed good, and the hidden perfect reveals itself.
+
+Third, the stand: do NOT be conformed. Conformed is passive — the world presses, you take shape. Exams pressure you to cheat; office pressure to falsify; relationship pressure to fornicate; social pressure to perform. The renewed mind RESISTS the press — same heat, different shape, because an inner pattern governs. Expect to look odd. Noah looked odd until rain. Stand anyway. Courage is conformity refused daily.
+
+Your step this month: present one bodily area you have withheld (name it), renew with one daily washing (ten verses), and take one stand this week where pressure pushes — politely, firmly, without apology. Tell one person all three.
+
+Father, I present my body — a living sacrifice. Renew my mind, prove Your will to me grade by grade, and give me courage to stand apart. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
