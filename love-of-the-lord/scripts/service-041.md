@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-041 — Sowing and Reaping
 date: 2027-07-18 · cadence: refresh · series: Hope and Harvest · verse: Galatians 6:7
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Sowing and Reaping. Open your Bible to Galatians 6:7. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Sowing and Reaping. Open your Bible to Galatians 6, verse 7. Do not be deceived, God is not mocked; for whatever a man sows, that he will also reap. Heaven runs on harvest law — inescapable, impartial, and generous to the wise. Today we learn to sow on purpose.
+
+God is NOT mocked. You cannot con consequences: secret sowing still harvests openly. Sow to the FLESH — lust, laziness, deceit, excess — and reap corruption, guaranteed, no matter the prayers pasted on top. Sow to the SPIRIT — Word, prayer, purity, generosity, service — and reap everlasting life in ever-increasing measure. Audit your two fields honestly this week: what am I sowing daily with time, money, eyes, words? The harvest you fear or desire is already planted. Change the seed, change the season.
+
+For harvest follows LAW: kind (apples beget apples — sow kindness, reap kindness; sow gossip, reap isolation), TIMING (seed, time, then harvest — impatience aborts miracles; keep sowing in season), and MULTIPLICATION (one seed, many grains — small faithfulness returns disproportionately). Do not judge by today's bare soil; judge by faithful sowing. Farmers do not dig up seeds nightly to check. Plant, water, trust, wait.
+
+And do NOT grow weary in doing good, for in due season we shall reap if we do not lose heart. Weariness is harvest's greatest thief — quitting one season early. The breakthrough is often closest when quitting feels wisest. Strengthen weary hands today: rest without quitting, weep without stopping, sow through tears — for those who sow in tears SHALL reap in joy. Your due season has a date heaven already set.
+
+Your step: name one good seed to sow daily this week (prayer, giving, Word, kindness) and one flesh-seed to starve (cut it off at the source). Write both, tell one person, sow before Friday.
+
+Father, I will not mock Your harvest law. Teach my hands sowing, my heart patience, my eyes the coming harvest. Let me reap in joy what I sow in faith. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

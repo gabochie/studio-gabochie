@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-043 — Thanksgiving and Praise
 date: 2027-08-01 · cadence: full · series: Hope and Harvest · verse: Psalm 100:4
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Full sermon today: Thanksgiving and Praise. Open your Bible to Psalm 100:4. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (twenty-five-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Full sermon today: Thanksgiving and Praise — the protocol of presence and the weapon of worship. Open your Bible to Psalm 100, verse 4. Enter into His gates with thanksgiving, and into His courts with praise. Be thankful to Him, and bless His name. Gates have protocols. Heaven's gates open to THANKSGIVING first — not complaints, not demands, not negotiations. Today we enter rightly.
+
+First: thanksgiving is ENTRY, not decoration. Many pray backwards: present lists, then (if time) thanks. Heaven's order reverses: thanks FIRST, then requests ride in on gratitude's clearance. Enter every prayer, every Sunday, every morning with thanksgiving — for breath, mercy, sleep, food, family, grace. Thanksgiving tunes the heart to heaven's frequency; grumbling tunes it to static. Before you ask for more, acknowledge the much already given. Protocol observed, presence granted.
+
+For He is GOOD, His mercy ENDURES, His truth ENDURES to all generations. Three anchors for thanks when feelings refuse: His goodness (nature, not mood), His mercy (lasting, not lapsing), His truth (standing forever, not shifting with news). Thank Him for WHO He is before WHAT He gives — mature thanks praises character above presents. List His attributes aloud today; watch gratitude rise independent of circumstances.
+
+And praise is WARFARE. When Jehoshaphat faced impossible armies, singers went FIRST — and God set ambushes while they sang. Walls fall to shouts, chains to hymns at midnight, seas to songs of Moses. Your praise is not background music to battle; it IS battle. Singing in the kitchen routs despair; worship on the bus confuses darkness; thanksgiving in lack invites overflow. Stop waiting to feel like praising — praise until you feel, and watch heaven move while you sing.
+
+So BECOME thankful and a praiser as identity, not season. Keep a daily three-thanks journal. Sing one song daily on purpose. Testify one goodness weekly. Bless His name aloud — in traffic, at work, over food. Thanksgiving people carry portable Eden; praise people host portable heaven.
+
+Your step this month: start the three-thanks journal today, sing deliberately daily, and testify one goodness publicly this week. Tell one person your practice.
+
+Father, I enter Your gates with thanksgiving and Your courts with praise. You are good, Your mercy endures, Your truth stands forever. Fight for me as I sing, and make my life a psalm. In Jesus' mighty name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
