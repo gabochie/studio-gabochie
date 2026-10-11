@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-016 — A Renewed Mind
 date: 2027-01-24 · cadence: refresh · series: The Kingdom Mind · verse: Romans 12:2
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: A Renewed Mind. Open your Bible to Romans 12:2. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: A Renewed Mind. Open your Bible to Romans 12, verse 2. Do not be conformed to this world, but be transformed by the renewing of your mind, that you may prove what is that good and acceptable and perfect will of God. Battles are won or lost first between the ears. Today God renews thinking.
+
+Do not be CONFORMED to this world. Conformed means pressed into a mold — like-bank-notes? No: like the world's mold of fear, greed, lust, tribalism, and shortcuts. The mold says: everybody cheats, so cheat; everybody fears, so fear; marry for money, work for show, worship for luck. Refuse the mold. You are in the world, not of its press. When everyone zigs in panic, the renewed mind can zag in peace — because it answers to a different pattern.
+
+But be TRANSFORMED by the RENEWING of your mind. Note: transformed, not merely informed. Information alone puffs up; transformation comes by washing — daily exposure to the Word that scrubs yesterday's lies. A mind fed on gossip, porn, fear-news, and envy cannot produce peace, whatever Sundays it attends. Mind diet matters more than food diet: garbage in, garbage out; Word in, wisdom out.
+
+Then you will PROVE — test and approve — the will of God. Confused about a decision? The problem is rarely lack of information; it is an unrenewed mind that cannot recognize God's voice through the noise. Renew first; clarity follows. Good, acceptable, perfect — His will has grades, and renewed minds graduate into them.
+
+Your step: choose one input to change this week — unfollow one fear-source, replace thirty minutes of scrolling with ten verses daily — and memorize Romans 12:2 word-perfect. Write down one lie you have believed, cross it out, and write the truth beside it. Tell one person your swap.
+
+Father, I refuse the mold of this world. Wash my mind with Your Word, transform my thinking, and let me prove Your good and perfect will this week. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

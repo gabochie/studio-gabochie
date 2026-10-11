@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-015 — Kingdom Perspective on Money
 date: 2027-01-17 · cadence: refresh · series: The Kingdom Mind · verse: Matthew 6:19-21
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Kingdom Perspective on Money. Open your Bible to Matthew 6:19-21. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Kingdom Perspective on Money. Open your Bible to Matthew 6, verses 19 to 21. Do not lay up for yourselves treasures on earth, where moth and rust destroy and where thieves break in and steal; but lay up for yourselves treasures in heaven. For where your treasure is, there your heart will be also. Money is a good servant, a terrible master, and an accurate diary.
+
+Treasures on EARTH rot by nature. Moth eats cloth, rust eats metal, thieves break in — and in our day, inflation eats cedi, fire eats shops, and fraud eats accounts. Anything stored only here is stored in a burning house. Jesus is not against wealth; He is against wealth as WAREHOUSE. Use earthly things; store eternal ones.
+
+For where your TREASURE is, there your HEART will be also. Notice the order: treasure first, heart follows. Your heart is not as independent as you think — it trails your money like a dog trails its master. Want to know what you truly love? Check your statements and your schedule. That audit never lies. If heaven has little of your treasure, heaven has little of your heart — and that can change starting this week.
+
+So make money a MISSIONARY. Send it ahead to heaven through generosity: giving to the work, to the poor, to the call. Every cedi given in love is a cedi that moth cannot touch. And flee the love of money — sakawa schemes, bribes, cutting corners, marrying for wallets. The love of money has buried more destinies in Ghana than poverty ever did. Be rich toward God: earn honestly, budget wisely, save patiently, give cheerfully, owe no man unnecessarily.
+
+Your step: give your first portion this week BEFORE spending (not after), and write a simple one-page budget — income, giving, saving, spending. Tell one person your plan. Stewardship starts written.
+
+Father, You own all I have; I am only its steward. Free me from the love of money, teach me to store in heaven, and make my treasure pull my heart home to You. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
