@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-021 — Kingdom Perspective on Money
 date: 2027-02-28 · cadence: refresh · series: The Kingdom Mind · verse: Matthew 6:19-21
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Kingdom Perspective on Money. Open your Bible to Matthew 6:19-21. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Kingdom Perspective on Money — choosing your master. Open your Bible to Matthew 6, verses 19 to 21, and hear verse 24 beside it: No one can serve two masters. Weeks ago we learned treasure pulls the heart. Today: you must CHOOSE who you serve — God or mammon — because neutrality with money is a myth.
+
+Mammon is not money; it is money PERSONIFIED — a spirit that promises security, status, and freedom, then collects worship as payment. You can tell who serves mammon: decisions priced but never prayed, generosity that never happens, anxiety that never sleeps, ethics that bend where profit beckons. And you can tell who serves God with money: giving first, contentment present, integrity non-negotiable, peace intact in plenty and in want. Audit yourself honestly this week — which master gets your firstfruits, your best hours, your final word?
+
+Then learn CONTENTMENT — godliness with contentment is great gain. Contentment is not complacency (refusing growth); it is sufficiency of soul (refusing envy). The contented work hard without worshipping work, enjoy blessings without being owned by them, and sleep while schemers toss. In a Ghana of pressure — wedding loans, funeral debts, lifestyle loans — contentment is warfare. Owe no man unnecessarily; live below your grace, not above your income; let your needs be few and your giving be great.
+
+And practice GENEROSITY as warfare. Every cheerful gift is a blow against mammon's grip. Tithes declare God first. Offerings advance His work. Alms rescue His poor. Givers sleep; hoarders calculate. Make this week a week of open hands: give something that costs you something, on purpose, with joy.
+
+Your step: declare your master aloud — Jesus is Lord over my money — then prove it with one act: give first, cancel one envy-driven purchase, or clear one small debt. Write it, tell one person, do it before Friday.
+
+Father, I choose You as Master over mammon. Teach me contentment, break debt's yoke, and make my hands generous weapons in Your Kingdom. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
