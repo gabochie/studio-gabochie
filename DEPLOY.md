@@ -47,6 +47,8 @@ Add these to **Cloudflare Pages** → project → **Settings** → **Environment
 | `EXPRESSPAY_MERCHANT_ID` | Yes | ExpressPay merchant ID (sandbox: 306264946940) |
 | `EXPRESSPAY_API_KEY` | Yes | ExpressPay API key (keep secret — never commit) |
 | `EXPRESSPAY_LIVE` | For live | Set to `1` for production (default is sandbox) |
+| `MOMO_NUMBER` / `MOMO_NAME` | Optional | Manual MoMo wallet override (default: merchant 0559624456 / GABOCHIE DESIGN) |
+| `BANK_NAME` / `BANK_ACCOUNT_NAME` / `BANK_ACCOUNT_NUMBER` / `BANK_BRANCH` | For bank transfers | Manual bank-transfer details; unset = guided to email instead |
 | `BREVO_API_KEY` | Yes | Brevo SMTP API key (for email automation) |
 | `CRON_SECRET` | Yes | Shared secret for `/api/email/cron` (must match GitHub Actions secret) |
 | `AGENT_AUTH_KEY` | Yes | Shared secret for `/api/agents/*` endpoints (must match GitHub Actions secret) |
