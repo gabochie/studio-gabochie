@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-047 — Sowing and Reaping
 date: 2027-08-29 · cadence: refresh · series: Hope and Harvest · verse: Galatians 6:7
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Sowing and Reaping. Open your Bible to Galatians 6:7. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Sowing and Reaping — do good to all, in due season. Open your Bible to Galatians 6, verses 7 to 10. Weeks ago we learned harvest law. Today: WHERE to sow (to all, starting at home), WHEN to expect (due season, not instant), and WHAT money-seeds grow.
+
+Do good TO ALL, as opportunity comes — especially to the household of faith. Opportunity, not convenience, sets the schedule: the need in front of you today outranks the project of someday. Start at home — household of faith first (your church family, your blood family, your team): charity begins at home but must not END there. Then widen rings: neighbours, strangers, enemies. Keep a running "opportunity list" — needs you notice weekly — and work it steadily. Sowers who sow everywhere reap somewhere gloriously.
+
+In DUE season — seasons, not schedules. Farmers respect calendars they did not write: sowing season, growing season (invisible, longest, most-quit-here), harvest season. Your due season has a date heaven set; impatience cannot hasten it, but quitting can forfeit it. Winter faith keeps sowing though nothing shows: keep giving, keep serving, keep pure, keep praying through the invisible months. Spring is coming to the steadfast — it always does, right on heaven's calendar, never yours.
+
+And sow MONEY as seed, not just store it as harvest. Money sown into Kingdom soil — giving, missions, poor, church — grows eternal interest no bank matches. Review your money-sowing this week: what percent is seed vs store? Increase seed one step. And sow KINDNESS lavishly (cheapest seed, richest crop), TIME deliberately, WORDS life-givingly, PRAYERS fervently. Diversified sowers reap diversified harvests.
+
+Your step: meet one need on your opportunity list this week, raise one sowing percentage, and encourage one weary sower not to quit. Write all three, tell one person, sow before Friday.
+
+Father, I will do good to all as opportunity comes — at home first, then to the ends of my reach. Teach me seasons, keep me sowing through winters, and bring my due season in Your time. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

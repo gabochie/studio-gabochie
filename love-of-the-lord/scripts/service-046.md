@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-046 — Hope That Does Not Disappoint
 date: 2027-08-22 · cadence: refresh · series: Hope and Harvest · verse: Romans 5:5
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Hope That Does Not Disappoint. Open your Bible to Romans 5:5. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Hope That Does Not Disappoint — shameless, patient, rejoicing hope. Open your Bible to Romans 5, verse 5. Weeks ago we anchored hope and traced its chain. Today: how hope BEHAVES — unashamed before mockers, patient through delays, rejoicing ahead of arrivals.
+
+SHAMELESS hope. Hope does not disappoint — literally, does not put to shame. Mockers sneer: where is your God now? Still single? Still renting? Still waiting? Shameless hope answers with head high: my God is coming, and His lateness is not His absence. Refuse to apologize for believing. Noah built shamelessly for decades; the ark mocked until rain. Your hope will look foolish right up until it looks prophetic. Hold the posture; heaven keeps the schedule.
+
+PATIENT hope — hope as a helmet. Paul elsewhere calls hope the helmet of salvation: head protection for long battles. Helmets are worn BEFORE wounds, daily, as discipline. Patient hope shows up every morning dressed for a wait that may last years: still praying, still sowing, still pure, still giving. Impatience strips the helmet mid-battle and wonders at the headache. Keep it on. The patient inherit promises; the hasty inherit regrets.
+
+REJOICING hope — rejoicing IN hope, as Romans 12 commands. Rejoice NOW over THEN: celebrate the coming harvest at sowing time, sing over the answer before it lands, thank God for the testimony in advance. This is not denial; it is time travel by faith — future joy imported into present pressure. Make a list titled "Coming" and rejoice over each item aloud this week. Joy is hope's native language; speak it fluently.
+
+Your step: answer one mocker (including inner ones) with one shameless declaration; put your helmet on with one patient practice renewed; and rejoice aloud over three coming things daily. Tell one person your hope-list.
+
+Father, my hope will not shame me — it is patient as a helmet and joyful as a foretaste. Dress me daily, keep me rejoicing, and bring every arrival in Your time. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
