@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-008 — Mercy That Never Runs Out
 date: 2026-11-29 · cadence: refresh · series: Foundations of Grace · verse: Psalm 103:8-12
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Mercy That Never Runs Out. Open your Bible to Psalm 103:8-12. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Mercy That Never Runs Out — the patience and the plenty of God. Open your Bible to Psalm 103, verses 8 to 12. Weeks ago we learned mercy removes and pities. Today we learn mercy WAITS and OVERFLOWS.
+
+Slow to anger. Think about that. God is not short-fused with slow learners. Peter denied Him three times and still got breakfast on the beach. Thomas doubted for a week and still got to touch the wounds. You, restarting the same habit for the tenth time — He is still slow to anger with you. His patience is not permission to stall, but it IS proof He has not given up on you. Stop interpreting delay as rejection. Slow to anger means heaven is still rooting for you.
+
+Abounding in love. Abounding — not sufficient, not minimum, not rationed. Abounding is excess, overflow, more than the need. God does not give mercy in teaspoons. When He forgives, He floods. When He provides, the vats overflow. Whatever you need this week — patience for that child, strength for that job, peace for that night — ask largely, because you are asking Abundance Himself.
+
+And here is where it turns: forgiven people forgive. Jesus told of a servant forgiven millions who then choked a man over coins — and called it wicked. Mercy received but refused to others curdles. Who owes you? A debt of money, an apology never given, respect withheld. Release it this week — not because they deserve it, but because you were released first. Cancel one debt, in your heart fully and with your mouth where wise.
+
+Your step: name the person you need to forgive, pray one blessing over them by name, and take one concrete step of release before Friday. Then watch what happens to your own peace. Mercy flows through channels, not reservoirs.
+
+Father, slow to anger and abounding in love — thank You for waiting on me and flooding me. Make me a channel, not a reservoir. I release my debtors as You released me. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

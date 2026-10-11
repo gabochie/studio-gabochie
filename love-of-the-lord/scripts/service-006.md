@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-006 — His Mercies Are New
 date: 2026-11-15 · cadence: refresh · series: Foundations of Grace · verse: Lamentations 3:23
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: His Mercies Are New. Open your Bible to Lamentations 3:23. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: His Mercies Are New. Open your Bible to Lamentations 3:23. They are new every morning; great is Your faithfulness. Six weeks ago we began with grace. Today we learn the RHYTHM that keeps grace fresh: morning by morning.
+
+Israel learned this rhythm with manna. Every morning it lay on the ground — enough for the day, never for hoarding. Those who tried to store it found worms by sunrise. Mercy works the same way. You cannot live Tuesday on Sunday's mercy, and you do not need to. There is fresh supply this morning with your name on it. Stop dragging yesterday's failure into today's account. Yesterday's mercy covered yesterday. Today starts clean.
+
+Point one: make MORNING your altar. Before the phone, before the news, before the worry list — receive. Even sixty seconds: Father, I receive fresh mercy for today. The day you start empty of yesterday, you start full of Him. Mornings set trajectories; whoever owns your first minutes owns your day.
+
+Point two: anchor on FAITHFULNESS, not feelings. Great is THY faithfulness — not great is my consistency. Your feelings fluctuate with sleep, weather, and bank alerts. His faithfulness does not. When you cannot trace His hand, trust His heart — the track record of every morning you already survived is proof of every morning to come.
+
+Point three: let new mercy make you NEW. Mercies are not maintenance doses to keep a dying thing alive; they are creation material. Each morning God re-issues you. So ask: what does the new-me do today that the old-me postponed? One obedient thing. Write it, tell one person, do it before Friday.
+
+Father, I receive this morning's mercy with open hands. Wash yesterday away, anchor me in Your faithfulness, and make me new today. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
