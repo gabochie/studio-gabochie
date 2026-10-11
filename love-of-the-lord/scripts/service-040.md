@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-040 — Hope That Does Not Disappoint
 date: 2027-07-11 · cadence: refresh · series: Hope and Harvest · verse: Romans 5:5
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Hope That Does Not Disappoint. Open your Bible to Romans 5:5. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today, opening our final quarter: Hope That Does Not Disappoint. Open your Bible to Romans 5, verse 5. Now hope does not disappoint, because the love of God has been poured out in our hearts by the Holy Spirit who was given to us. Welcome to Hope and Harvest — where everything believed becomes everything received.
+
+First, hope is not WISHING. Wishing says "maybe"; hope says "surely, in God's time." Biblical hope is an anchor — sure, steadfast, holding in storms — not a lottery ticket. People disappoint because people change, fail, and die. God disappoints NEVER, because He cannot lie, cannot fail, and cannot stop loving. Has God ever failed you? Search honestly: every "failure" was timing, method, or misunderstanding — never unfaithfulness. Anchor hope in character, not circumstances.
+
+Then the CHAIN that builds it: tribulation produces perseverance; perseverance, character; and character, hope. Read it backward when suffering: this pressure is producing staying power; staying power is forming Christ-character; character is maturing unshakable hope. So do not waste tribulation by merely enduring it — mine it. Ask in every trial: what perseverance is this building, what character is this forming, what hope is this maturing? Suffering with sense becomes seminary.
+
+And the PROOF poured already: the LOVE of God poured out in our hearts by the Holy Spirit given to us. Hope's guarantee is not future only — it is present deposit. The Spirit Himself, living in you, is God's down payment that every promise will clear. Feeling hopeless? You are not empty; you are full of the Guarantee who groans, comforts, and reminds. Stir Him up today.
+
+Your step: write down one hope that has wavered, attach one proof of God's past faithfulness beside it, and declare daily this week: this hope does not disappoint. Tell one person your anchored hope.
+
+Father, my hope anchors in You — sure, steadfast, und disappointable. Build it through my trials, prove it by Your love poured in me, and let it hold through every storm. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

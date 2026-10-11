@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-042 — Faith in the Waiting
 date: 2027-07-25 · cadence: refresh · series: Hope and Harvest · verse: Psalm 27:14
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Faith in the Waiting. Open your Bible to Psalm 27:14. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Faith in the Waiting. Open your Bible to Psalm 27, verse 14. Wait on the Lord; be of good courage, and He shall strengthen your heart; wait, I say, on the Lord! Waiting rooms test faith more than battlefields. Today we learn to wait ACTIVELY, COURAGEOUSLY, and REPEATEDLY.
+
+Wait ACTIVELY — waiting on the Lord is not idling. Hebrew waiting pictures a waiter serving attentively, a watchman scanning, a servant ready. While you wait for the job, the spouse, the healing, the call: serve where you are, prepare as if it comes tomorrow, pray as if it depends on God, work as if it depends on you. Idle waiting rots; active waiting ripens. Ask: what can I do TODAY that my future answered prayer will thank me for? Do that daily while waiting.
+
+Be of good COURAGE — for He shall STRENGTHEN your heart. Courage here is not self-pumped hype; it is God-strengthened heart, renewed per waiting season. Fainting is optional because strengthening is promised — but received, not automatic. Draw it daily: Word before worry, worship before news, stillness before speed. A strengthened heart waits sweetly; an unstrengthened one waits sourly. Choose sweet by drawing daily.
+
+And WAIT, I say, ON THE LORD — repeated for emphasis because waiting fails once and must resume. Relapsed into fretting? Return to waiting. Tried forcing doors? Return to waiting. Delay means NOT YET, rarely NO — and His delays develop what instant answers cannot: depth, discernment, dependence. Some testimonies require long obedience. Keep waiting actively, courageously, repeatedly — the Lord of the wait is worth it.
+
+Your step: convert one passive wait into active preparation this week (one course, one application, one health step, one prayer hour), take courage daily from one verse, and tell one person what you are waiting FOR and Who you are waiting ON.
+
+Father, teach me to wait actively, courageously, repeatedly. Strengthen my heart daily, develop me in delay, and bring Your answer in Your perfect season. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
