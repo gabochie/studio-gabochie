@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-024 — Citizens, Not Consumers
 date: 2027-03-21 · cadence: refresh · series: The Kingdom Mind · verse: Philippians 3:20
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Citizens, Not Consumers. Open your Bible to Philippians 3:20. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Citizens, Not Consumers — the eager wait and the weeping heart. Open your Bible to Philippians 3, verse 20. For our citizenship is in heaven, from which we also eagerly wait for the Savior, the Lord Jesus Christ. Weeks ago we learned colony living and ambassadors. Today: what citizens WAIT for — and how citizens WEEP.
+
+Eagerly wait. Not dread, not doze — EAGERLY wait. The Greek word strains forward like a runner at the line. Citizens live in holy anticipation: He is coming, and His coming rights every wrong. This hope is an anchor, not an escape — it steadies you IN storms, not just out of them. The one who eagerly waits cannot be bribed by the present, because the future outshines it. Tempted to sell out for quick gain? Remember what you are waiting for. The coming King makes present compromises look like trading gold for sand.
+
+And He will TRANSFORM our lowly body to be like His glorious body. Citizenship ends in glorification — this tired, aging, aching frame remade like His. Every hospital visit, every funeral, every mirror of decline whispers the same promise: this is not the final edition. Live resurrection-shaped now: care for bodies (temples), grieve with hope (not as others who have none), and refuse despair over diagnoses. The best version of you is still coming.
+
+Then the weeping heart. Just before, Paul says of belly-gods: I tell you even weeping. Citizens do not sneer at the lost; they WEEP for them. The corrupt official, the addicted youth, the mocking colleague — behind the appetite is a captive. Weep, then witness. Contempt never converted anyone; compassion has converted multitudes. Let your heart break for one lost person this week — then open your mouth to them in love.
+
+Your step: write down what you are eagerly waiting for (His coming + one personal hope), and one lost person you will weep-pray for daily plus invite once this month. Tell one person both.
+
+Father, my citizenship is in heaven and my hope strains toward Your coming. Transform my lowly frame, anchor me in eager waiting, and break my heart for the lost as Yours breaks. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
