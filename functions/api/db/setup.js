@@ -930,8 +930,9 @@ export async function onRequest(context) {
         ('Premium Books Bundle', 'premium-bundle', 'All 4 published works in one premium download package. Plus exclusive thank-you page.', 300, '/books/premium-bundle.html', 1, 5)
       `,
       `INSERT OR IGNORE INTO books (title, slug, description, price, file_url, cover_url, is_premium, sort_order) VALUES
-        ('7 Fearless Steps From Witchcraft to Greater Ghanaian Destiny', 'fearless-steps', 'Pre-order the 36-page easy-read booklet (GHS 49). Free online sample: read + listen to the Introduction and Step 1.', 49, '/books/fearless-steps/', '/books/fearless-steps/img/after.png', 1, 0)
+        ('7 Fearless Steps From Witchcraft to Greater Ghanaian Destiny', 'fearless-steps', 'Pre-order the 36-page easy-read booklet (GHS 49). Free online sample: read + listen to the Introduction and Step 1.', 49, '/books/fearless-steps/', '/books/fearless-steps/img/after.jpg', 1, 0)
       `,
+      `UPDATE books SET cover_url = '/books/fearless-steps/img/after.jpg' WHERE cover_url = '/books/fearless-steps/img/after.png'`,
       // Mark Phase 5 + 6.1 tasks as done (for existing installations)
       `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`,
       `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%book sales%' AND status = 'pending'`,
