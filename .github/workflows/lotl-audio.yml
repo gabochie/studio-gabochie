@@ -1,0 +1,38 @@
+# LOTL weekly audio — text -> mp3 -> R2, on the Sunday cadence.
+#
+# Every Sunday 05:00 UTC (before the 09:00 service window) this renders the
+# current week's text scripts to mp3 and uploads them to R2, so the church
+# auto-loads and plays without any code change. Manual runs: Actions tab ->
+# "LOTL weekly audio" -> Run workflow (optional service_id, e.g. service-002).
+#
+# Required repo secrets: OPENAI_API_KEY, CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
+name: LOTL weekly audio
+
+on:
+  schedule:
+    - cron: '0 5 * * 0'
+  workflow_dispatch:
+    inputs:
+      service_id:
+        description: 'Service id (default: this week from series.json)'
+        required: false
+        default: ''
+
+jobs:
+  render-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Text -> mp3
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/lotl-tts.cjs ${{ inputs.service_id }}
+      - name: mp3 -> R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node scripts/lotl-upload-audio.cjs ${{ inputs.service_id }}

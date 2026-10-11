@@ -52,15 +52,37 @@
     return out;
   }
 
-  function currentService(s) {
-    var found = null;
+  function serviceById(s, id) {
+    var hit = null;
     allServices(s).some(function (pair) {
-      if (pair.service.id === s.current) { found = pair.service; return true; }
+      if (pair.service.id === id) { hit = pair.service; return true; }
       return false;
     });
-    if (found) return found;
-    var first = allServices(s)[0];
-    return first ? first.service : null;
+    return hit;
+  }
+
+  /* Most recent service whose date has arrived (services are chronological),
+     else the first upcoming one. Lets the church auto-load each week. */
+  function serviceForToday(s) {
+    var pairs = allServices(s);
+    if (!pairs.length) return null;
+    var today = new Date();
+    today.setHours(23, 59, 59, 999);
+    var due = null;
+    pairs.forEach(function (pair) {
+      var d = pair.service.date ? new Date(pair.service.date + 'T12:00:00') : null;
+      if (d && !isNaN(d.getTime()) && d <= today) due = pair.service;
+    });
+    return due || pairs[0].service;
+  }
+
+  function currentService(s) {
+    if (!s) return null;
+    if (s.auto) {
+      var today = serviceForToday(s);
+      if (today) { s.current = today.id; return today; }
+    }
+    return serviceById(s, s.current) || (allServices(s)[0] || {}).service || null;
   }
 
   function loadLineup(url) {
@@ -166,7 +188,7 @@
   function selectService(id) {
     if (!series) return;
     series.current = id;
-    var svc = currentService(series);
+    var svc = serviceById(series, id) || (allServices(series)[0] || {}).service || null;
     service = svc;
     idx = 0;
     try { localStorage.removeItem(LS_PROGRESS); localStorage.removeItem(LS_MAX); } catch (_e) {}
@@ -403,8 +425,9 @@
       var seasonTitle = '';
       if (s) {
         var pairs = allServices(s);
+        var wantId = s.auto ? (serviceForToday(s) || {}).id : s.current;
         pairs.some(function (p) {
-          if (p.service.id === s.current) { svc = p.service; seasonTitle = p.season.title; return true; }
+          if (p.service.id === wantId) { svc = p.service; seasonTitle = p.season.title; return true; }
           return false;
         });
         if (!svc && pairs.length) { svc = pairs[0].service; seasonTitle = pairs[0].season.title; }

@@ -1,9 +1,11 @@
 {
   "updated": "2026-10-11",
   "current": "service-001",
+  "auto": true,
   "seasons": [
     {
       "id": "s1",
+      "n": 1,
       "title": "Foundations of Grace",
       "quarter": "Q1 2026–27",
       "verse": "Lamentations 3:22-23 — His mercies are new every morning.",
@@ -12,9 +14,600 @@
           "id": "service-001",
           "n": 1,
           "title": "Grace for New Beginnings",
+          "theme": "Grace for New Beginnings",
+          "series": "Foundations of Grace",
           "date": "2026-10-11",
-          "theme_verse": "Lamentations 3:22-23 — His mercies are new every morning.",
+          "cadence": "refresh",
+          "theme_verse": "Lamentations 3:22-23",
           "lineup": "lineup.json"
+        },
+        {
+          "id": "service-002",
+          "n": 2,
+          "title": "Mercy That Never Runs Out",
+          "theme": "Mercy That Never Runs Out",
+          "series": "Foundations of Grace",
+          "date": "2026-10-18",
+          "cadence": "refresh",
+          "theme_verse": "Psalm 103:8-12",
+          "lineup": "lineups/service-002.json"
+        },
+        {
+          "id": "service-003",
+          "n": 3,
+          "title": "The God Who Restores",
+          "theme": "The God Who Restores",
+          "series": "Foundations of Grace",
+          "date": "2026-10-25",
+          "cadence": "refresh",
+          "theme_verse": "Joel 2:25",
+          "lineup": "lineups/service-003.json"
+        },
+        {
+          "id": "service-004",
+          "n": 4,
+          "title": "Faith Over Frustration",
+          "theme": "Faith Over Frustration",
+          "series": "Foundations of Grace",
+          "date": "2026-11-01",
+          "cadence": "full",
+          "theme_verse": "Psalm 34:18",
+          "lineup": "lineups/service-004.json"
+        },
+        {
+          "id": "service-005",
+          "n": 5,
+          "title": "Rooted and Established",
+          "theme": "Rooted and Established",
+          "series": "Foundations of Grace",
+          "date": "2026-11-08",
+          "cadence": "refresh",
+          "theme_verse": "Colossians 2:6-7",
+          "lineup": "lineups/service-005.json"
+        },
+        {
+          "id": "service-006",
+          "n": 6,
+          "title": "His Mercies Are New",
+          "theme": "His Mercies Are New",
+          "series": "Foundations of Grace",
+          "date": "2026-11-15",
+          "cadence": "refresh",
+          "theme_verse": "Lamentations 3:23",
+          "lineup": "lineups/service-006.json"
+        },
+        {
+          "id": "service-007",
+          "n": 7,
+          "title": "Grace for New Beginnings",
+          "theme": "Grace for New Beginnings",
+          "series": "Foundations of Grace",
+          "date": "2026-11-22",
+          "cadence": "refresh",
+          "theme_verse": "Lamentations 3:22-23",
+          "lineup": "lineups/service-007.json"
+        },
+        {
+          "id": "service-008",
+          "n": 8,
+          "title": "Mercy That Never Runs Out",
+          "theme": "Mercy That Never Runs Out",
+          "series": "Foundations of Grace",
+          "date": "2026-11-29",
+          "cadence": "refresh",
+          "theme_verse": "Psalm 103:8-12",
+          "lineup": "lineups/service-008.json"
+        },
+        {
+          "id": "service-009",
+          "n": 9,
+          "title": "The God Who Restores",
+          "theme": "The God Who Restores",
+          "series": "Foundations of Grace",
+          "date": "2026-12-06",
+          "cadence": "full",
+          "theme_verse": "Joel 2:25",
+          "lineup": "lineups/service-009.json"
+        },
+        {
+          "id": "service-010",
+          "n": 10,
+          "title": "Faith Over Frustration",
+          "theme": "Faith Over Frustration",
+          "series": "Foundations of Grace",
+          "date": "2026-12-13",
+          "cadence": "refresh",
+          "theme_verse": "Psalm 34:18",
+          "lineup": "lineups/service-010.json"
+        },
+        {
+          "id": "service-011",
+          "n": 11,
+          "title": "Rooted and Established",
+          "theme": "Rooted and Established",
+          "series": "Foundations of Grace",
+          "date": "2026-12-20",
+          "cadence": "refresh",
+          "theme_verse": "Colossians 2:6-7",
+          "lineup": "lineups/service-011.json"
+        },
+        {
+          "id": "service-012",
+          "n": 12,
+          "title": "His Mercies Are New",
+          "theme": "His Mercies Are New",
+          "series": "Foundations of Grace",
+          "date": "2026-12-27",
+          "cadence": "refresh",
+          "theme_verse": "Lamentations 3:23",
+          "lineup": "lineups/service-012.json"
+        },
+        {
+          "id": "service-013",
+          "n": 13,
+          "title": "Grace for New Beginnings",
+          "theme": "Grace for New Beginnings",
+          "series": "Foundations of Grace",
+          "date": "2027-01-03",
+          "cadence": "full",
+          "theme_verse": "Lamentations 3:22-23",
+          "lineup": "lineups/service-013.json"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "n": 2,
+      "title": "The Kingdom Mind",
+      "quarter": "Q2 2026–27",
+      "verse": "Matthew 6:33 — Seek first the kingdom of God and His righteousness.",
+      "services": [
+        {
+          "id": "service-014",
+          "n": 1,
+          "title": "Seek First the Kingdom",
+          "theme": "Seek First the Kingdom",
+          "series": "The Kingdom Mind",
+          "date": "2027-01-10",
+          "cadence": "refresh",
+          "theme_verse": "Matthew 6:33",
+          "lineup": "lineups/service-014.json"
+        },
+        {
+          "id": "service-015",
+          "n": 2,
+          "title": "Kingdom Perspective on Money",
+          "theme": "Kingdom Perspective on Money",
+          "series": "The Kingdom Mind",
+          "date": "2027-01-17",
+          "cadence": "refresh",
+          "theme_verse": "Matthew 6:19-21",
+          "lineup": "lineups/service-015.json"
+        },
+        {
+          "id": "service-016",
+          "n": 3,
+          "title": "A Renewed Mind",
+          "theme": "A Renewed Mind",
+          "series": "The Kingdom Mind",
+          "date": "2027-01-24",
+          "cadence": "refresh",
+          "theme_verse": "Romans 12:2",
+          "lineup": "lineups/service-016.json"
+        },
+        {
+          "id": "service-017",
+          "n": 4,
+          "title": "Kingdom Ambition",
+          "theme": "Kingdom Ambition",
+          "series": "The Kingdom Mind",
+          "date": "2027-01-31",
+          "cadence": "refresh",
+          "theme_verse": "Mark 10:43-45",
+          "lineup": "lineups/service-017.json"
+        },
+        {
+          "id": "service-018",
+          "n": 5,
+          "title": "Citizens, Not Consumers",
+          "theme": "Citizens, Not Consumers",
+          "series": "The Kingdom Mind",
+          "date": "2027-02-07",
+          "cadence": "full",
+          "theme_verse": "Philippians 3:20",
+          "lineup": "lineups/service-018.json"
+        },
+        {
+          "id": "service-019",
+          "n": 6,
+          "title": "Think on These Things",
+          "theme": "Think on These Things",
+          "series": "The Kingdom Mind",
+          "date": "2027-02-14",
+          "cadence": "refresh",
+          "theme_verse": "Philippians 4:8",
+          "lineup": "lineups/service-019.json"
+        },
+        {
+          "id": "service-020",
+          "n": 7,
+          "title": "Seek First the Kingdom",
+          "theme": "Seek First the Kingdom",
+          "series": "The Kingdom Mind",
+          "date": "2027-02-21",
+          "cadence": "refresh",
+          "theme_verse": "Matthew 6:33",
+          "lineup": "lineups/service-020.json"
+        },
+        {
+          "id": "service-021",
+          "n": 8,
+          "title": "Kingdom Perspective on Money",
+          "theme": "Kingdom Perspective on Money",
+          "series": "The Kingdom Mind",
+          "date": "2027-02-28",
+          "cadence": "refresh",
+          "theme_verse": "Matthew 6:19-21",
+          "lineup": "lineups/service-021.json"
+        },
+        {
+          "id": "service-022",
+          "n": 9,
+          "title": "A Renewed Mind",
+          "theme": "A Renewed Mind",
+          "series": "The Kingdom Mind",
+          "date": "2027-03-07",
+          "cadence": "full",
+          "theme_verse": "Romans 12:2",
+          "lineup": "lineups/service-022.json"
+        },
+        {
+          "id": "service-023",
+          "n": 10,
+          "title": "Kingdom Ambition",
+          "theme": "Kingdom Ambition",
+          "series": "The Kingdom Mind",
+          "date": "2027-03-14",
+          "cadence": "refresh",
+          "theme_verse": "Mark 10:43-45",
+          "lineup": "lineups/service-023.json"
+        },
+        {
+          "id": "service-024",
+          "n": 11,
+          "title": "Citizens, Not Consumers",
+          "theme": "Citizens, Not Consumers",
+          "series": "The Kingdom Mind",
+          "date": "2027-03-21",
+          "cadence": "refresh",
+          "theme_verse": "Philippians 3:20",
+          "lineup": "lineups/service-024.json"
+        },
+        {
+          "id": "service-025",
+          "n": 12,
+          "title": "Think on These Things",
+          "theme": "Think on These Things",
+          "series": "The Kingdom Mind",
+          "date": "2027-03-28",
+          "cadence": "refresh",
+          "theme_verse": "Philippians 4:8",
+          "lineup": "lineups/service-025.json"
+        },
+        {
+          "id": "service-026",
+          "n": 13,
+          "title": "Seek First the Kingdom",
+          "theme": "Seek First the Kingdom",
+          "series": "The Kingdom Mind",
+          "date": "2027-04-04",
+          "cadence": "full",
+          "theme_verse": "Matthew 6:33",
+          "lineup": "lineups/service-026.json"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "n": 3,
+      "title": "Love in Action",
+      "quarter": "Q3 2026–27",
+      "verse": "John 13:34-35 — Love one another: by this all will know you are My disciples.",
+      "services": [
+        {
+          "id": "service-027",
+          "n": 1,
+          "title": "Love Your Neighbour",
+          "theme": "Love Your Neighbour",
+          "series": "Love in Action",
+          "date": "2027-04-11",
+          "cadence": "refresh",
+          "theme_verse": "Mark 12:31",
+          "lineup": "lineups/service-027.json"
+        },
+        {
+          "id": "service-028",
+          "n": 2,
+          "title": "Forgiveness That Frees",
+          "theme": "Forgiveness That Frees",
+          "series": "Love in Action",
+          "date": "2027-04-18",
+          "cadence": "refresh",
+          "theme_verse": "Ephesians 4:32",
+          "lineup": "lineups/service-028.json"
+        },
+        {
+          "id": "service-029",
+          "n": 3,
+          "title": "Serving as Worship",
+          "theme": "Serving as Worship",
+          "series": "Love in Action",
+          "date": "2027-04-25",
+          "cadence": "refresh",
+          "theme_verse": "Romans 12:1",
+          "lineup": "lineups/service-029.json"
+        },
+        {
+          "id": "service-030",
+          "n": 4,
+          "title": "Marriage and Family",
+          "theme": "Marriage and Family",
+          "series": "Love in Action",
+          "date": "2027-05-02",
+          "cadence": "full",
+          "theme_verse": "Joshua 24:15",
+          "lineup": "lineups/service-030.json"
+        },
+        {
+          "id": "service-031",
+          "n": 5,
+          "title": "Generosity and Community",
+          "theme": "Generosity and Community",
+          "series": "Love in Action",
+          "date": "2027-05-09",
+          "cadence": "refresh",
+          "theme_verse": "Acts 2:44-45",
+          "lineup": "lineups/service-031.json"
+        },
+        {
+          "id": "service-032",
+          "n": 6,
+          "title": "Love as the Highest Apologetic",
+          "theme": "Love as the Highest Apologetic",
+          "series": "Love in Action",
+          "date": "2027-05-16",
+          "cadence": "refresh",
+          "theme_verse": "John 13:35",
+          "lineup": "lineups/service-032.json"
+        },
+        {
+          "id": "service-033",
+          "n": 7,
+          "title": "Love Your Neighbour",
+          "theme": "Love Your Neighbour",
+          "series": "Love in Action",
+          "date": "2027-05-23",
+          "cadence": "refresh",
+          "theme_verse": "Mark 12:31",
+          "lineup": "lineups/service-033.json"
+        },
+        {
+          "id": "service-034",
+          "n": 8,
+          "title": "Forgiveness That Frees",
+          "theme": "Forgiveness That Frees",
+          "series": "Love in Action",
+          "date": "2027-05-30",
+          "cadence": "refresh",
+          "theme_verse": "Ephesians 4:32",
+          "lineup": "lineups/service-034.json"
+        },
+        {
+          "id": "service-035",
+          "n": 9,
+          "title": "Serving as Worship",
+          "theme": "Serving as Worship",
+          "series": "Love in Action",
+          "date": "2027-06-06",
+          "cadence": "full",
+          "theme_verse": "Romans 12:1",
+          "lineup": "lineups/service-035.json"
+        },
+        {
+          "id": "service-036",
+          "n": 10,
+          "title": "Marriage and Family",
+          "theme": "Marriage and Family",
+          "series": "Love in Action",
+          "date": "2027-06-13",
+          "cadence": "refresh",
+          "theme_verse": "Joshua 24:15",
+          "lineup": "lineups/service-036.json"
+        },
+        {
+          "id": "service-037",
+          "n": 11,
+          "title": "Generosity and Community",
+          "theme": "Generosity and Community",
+          "series": "Love in Action",
+          "date": "2027-06-20",
+          "cadence": "refresh",
+          "theme_verse": "Acts 2:44-45",
+          "lineup": "lineups/service-037.json"
+        },
+        {
+          "id": "service-038",
+          "n": 12,
+          "title": "Love as the Highest Apologetic",
+          "theme": "Love as the Highest Apologetic",
+          "series": "Love in Action",
+          "date": "2027-06-27",
+          "cadence": "refresh",
+          "theme_verse": "John 13:35",
+          "lineup": "lineups/service-038.json"
+        },
+        {
+          "id": "service-039",
+          "n": 13,
+          "title": "Love Your Neighbour",
+          "theme": "Love Your Neighbour",
+          "series": "Love in Action",
+          "date": "2027-07-04",
+          "cadence": "full",
+          "theme_verse": "Mark 12:31",
+          "lineup": "lineups/service-039.json"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "n": 4,
+      "title": "Hope and Harvest",
+      "quarter": "Q4 2026–27",
+      "verse": "Romans 15:13 — May the God of hope fill you with all joy and peace.",
+      "services": [
+        {
+          "id": "service-040",
+          "n": 1,
+          "title": "Hope That Does Not Disappoint",
+          "theme": "Hope That Does Not Disappoint",
+          "series": "Hope and Harvest",
+          "date": "2027-07-11",
+          "cadence": "refresh",
+          "theme_verse": "Romans 5:5",
+          "lineup": "lineups/service-040.json"
+        },
+        {
+          "id": "service-041",
+          "n": 2,
+          "title": "Sowing and Reaping",
+          "theme": "Sowing and Reaping",
+          "series": "Hope and Harvest",
+          "date": "2027-07-18",
+          "cadence": "refresh",
+          "theme_verse": "Galatians 6:7",
+          "lineup": "lineups/service-041.json"
+        },
+        {
+          "id": "service-042",
+          "n": 3,
+          "title": "Faith in the Waiting",
+          "theme": "Faith in the Waiting",
+          "series": "Hope and Harvest",
+          "date": "2027-07-25",
+          "cadence": "refresh",
+          "theme_verse": "Psalm 27:14",
+          "lineup": "lineups/service-042.json"
+        },
+        {
+          "id": "service-043",
+          "n": 4,
+          "title": "Thanksgiving and Praise",
+          "theme": "Thanksgiving and Praise",
+          "series": "Hope and Harvest",
+          "date": "2027-08-01",
+          "cadence": "full",
+          "theme_verse": "Psalm 100:4",
+          "lineup": "lineups/service-043.json"
+        },
+        {
+          "id": "service-044",
+          "n": 5,
+          "title": "Carry the Fire",
+          "theme": "Carry the Fire",
+          "series": "Hope and Harvest",
+          "date": "2027-08-08",
+          "cadence": "refresh",
+          "theme_verse": "Leviticus 6:13",
+          "lineup": "lineups/service-044.json"
+        },
+        {
+          "id": "service-045",
+          "n": 6,
+          "title": "The End of the Matter",
+          "theme": "The End of the Matter",
+          "series": "Hope and Harvest",
+          "date": "2027-08-15",
+          "cadence": "refresh",
+          "theme_verse": "Ecclesiastes 12:13",
+          "lineup": "lineups/service-045.json"
+        },
+        {
+          "id": "service-046",
+          "n": 7,
+          "title": "Hope That Does Not Disappoint",
+          "theme": "Hope That Does Not Disappoint",
+          "series": "Hope and Harvest",
+          "date": "2027-08-22",
+          "cadence": "refresh",
+          "theme_verse": "Romans 5:5",
+          "lineup": "lineups/service-046.json"
+        },
+        {
+          "id": "service-047",
+          "n": 8,
+          "title": "Sowing and Reaping",
+          "theme": "Sowing and Reaping",
+          "series": "Hope and Harvest",
+          "date": "2027-08-29",
+          "cadence": "refresh",
+          "theme_verse": "Galatians 6:7",
+          "lineup": "lineups/service-047.json"
+        },
+        {
+          "id": "service-048",
+          "n": 9,
+          "title": "Faith in the Waiting",
+          "theme": "Faith in the Waiting",
+          "series": "Hope and Harvest",
+          "date": "2027-09-05",
+          "cadence": "full",
+          "theme_verse": "Psalm 27:14",
+          "lineup": "lineups/service-048.json"
+        },
+        {
+          "id": "service-049",
+          "n": 10,
+          "title": "Thanksgiving and Praise",
+          "theme": "Thanksgiving and Praise",
+          "series": "Hope and Harvest",
+          "date": "2027-09-12",
+          "cadence": "refresh",
+          "theme_verse": "Psalm 100:4",
+          "lineup": "lineups/service-049.json"
+        },
+        {
+          "id": "service-050",
+          "n": 11,
+          "title": "Carry the Fire",
+          "theme": "Carry the Fire",
+          "series": "Hope and Harvest",
+          "date": "2027-09-19",
+          "cadence": "refresh",
+          "theme_verse": "Leviticus 6:13",
+          "lineup": "lineups/service-050.json"
+        },
+        {
+          "id": "service-051",
+          "n": 12,
+          "title": "The End of the Matter",
+          "theme": "The End of the Matter",
+          "series": "Hope and Harvest",
+          "date": "2027-09-26",
+          "cadence": "refresh",
+          "theme_verse": "Ecclesiastes 12:13",
+          "lineup": "lineups/service-051.json"
+        },
+        {
+          "id": "service-052",
+          "n": 13,
+          "title": "Hope That Does Not Disappoint",
+          "theme": "Hope That Does Not Disappoint",
+          "series": "Hope and Harvest",
+          "date": "2027-10-03",
+          "cadence": "full",
+          "theme_verse": "Romans 5:5",
+          "lineup": "lineups/service-052.json"
         }
       ]
     }

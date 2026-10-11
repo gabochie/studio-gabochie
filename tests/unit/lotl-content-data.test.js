@@ -28,6 +28,12 @@ describe('LOTL series engine data (series.json)', function () {
     });
   });
 
+  it('covers a full year — 4 seasons x 13 services', function () {
+    expect(series.seasons.length).toBe(4);
+    const total = series.seasons.reduce(function (n, s) { return n + (s.services || []).length; }, 0);
+    expect(total).toBe(52);
+  });
+
   it('every service points at a lineup file that exists', function () {
     series.seasons.forEach(function (s) {
       s.services.forEach(function (svc) {

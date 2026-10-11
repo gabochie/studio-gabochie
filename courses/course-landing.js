@@ -45,7 +45,15 @@
       if (els.heroDesc) els.heroDesc.textContent = c.description || '';
       if (els.heroSample) els.heroSample.textContent = c.sampleIncludes || 'Module 1 free - no card required';
       if (els.priceValue) {
-        els.priceValue.innerHTML = (c.price > 0 ? 'GH\u00a2 ' + c.price : 'Free') + (c.price > 0 ? ' <small>one-time</small>' : '');
+        var renderPrice = function () {
+          var txt = c.price > 0
+            ? (typeof window.formatPrice === 'function' ? window.formatPrice(c.price) : 'GH\u00a2 ' + c.price)
+            : 'Free';
+          els.priceValue.innerHTML = txt + (c.price > 0 ? ' <small>one-time</small>' : '');
+        };
+        renderPrice();
+        window.gaRepriceDynamic = renderPrice;
+        window.addEventListener('ga:currencychange', renderPrice);
       }
       if (els.priceNote) els.priceNote.textContent = c.priceNote || '';
       if (els.priceMeta) {

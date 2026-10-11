@@ -136,7 +136,7 @@ body{font-family:'Libre Baskerville',Georgia,serif}
     </div>
     <div class="price-card" id="priceCard">
       <div class="price-label">Full Access</div>
-      <div class="price" id="priceValue">GH¢ 250</div>
+      <div class="price" id="priceValue">GHï¿½ 250</div>
       <div class="price-note" id="priceNote"></div>
       <div class="meta-row" id="priceMeta"></div>
       <button class="btn btn-gold btn-lg" onclick="openEnroll()"><i class="ti ti-bolt"></i> Enroll Now</button>
@@ -232,7 +232,14 @@ function findCourse(data){
   document.getElementById('heroDesc').textContent = c.description || '';
   document.getElementById('heroSample').textContent = c.sampleIncludes || 'Module 1 free - no card required';
   document.getElementById('priceNote').textContent = c.priceNote || '';
-  document.getElementById('priceValue').innerHTML = (c.price > 0 ? 'GH¢ ' + c.price : 'Free') + (c.price > 0 ? ' <small>one-time</small>' : '');
+  var pvEl = document.getElementById('priceValue');
+  var renderPrice = function(){
+    pvEl.innerHTML = (c.price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(c.price) : 'GH\u00a2 ' + c.price) : 'Free') + (c.price > 0 ? ' <small>one-time</small>' : '');
+  };
+  renderPrice();
+  window.addEventListener('load', renderPrice);
+  window.gaRepriceDynamic = renderPrice;
+  window.addEventListener('ga:currencychange', renderPrice);
   var meta = [];
   if (c.duration) meta.push('<span><i class="ti ti-clock"></i> ' + c.duration + '</span>');
   if (c.level) meta.push('<span><i class="ti ti-chart-line"></i> ' + c.level + '</span>');

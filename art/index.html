@@ -77,11 +77,13 @@ function renderArt() {
       '<div class="info">' +
       '<h3>' + a.title + '</h3>' +
       '<div class="medium">' + a.medium + '</div>' +
-      '<div class="price">GH¢ ' + a.price + '</div>' +
+      '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(a.price) : 'GH\u00a2 ' + a.price) + '</div>' +
       '<button class="btn-buy" onclick="buyArtItem(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ')"><i class="ti ti-shopping-cart"></i> Buy Artwork</button>' +
       '</div></div>';
   }).join('');
 }
+window.gaRepriceDynamic = renderArt;
+window.addEventListener('ga:currencychange', renderArt);
 
 function buyArtItem(name, price) {
   showStoreModal(function(user) {
