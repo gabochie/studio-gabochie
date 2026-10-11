@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/assets/css/main.css">
 <style>
 /* ── Reader styles only. Header/footer/tab-bar + base tokens come from /assets/css/main.css + /nav.js ── */
-:root{--navy:#0A1628;--navy2:#0F1E38;--line:#1E3250;--gold:#C9A84C;--ink:#F1F5F9;--mut:#8fa0b5;--dim:#5A7A9F}
+.funnel{--navy:#0A1628;--navy2:#0F1E38;--line:#1E3250;--gold:#C9A84C;--ink:#F1F5F9;--mut:#8fa0b5;--dim:#5A7A9F}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var(--ink);line-height:1.7;padding-top:64px;padding-bottom:24px}
 @media(max-width:760px){body{padding-bottom:84px}}
 #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#f5c518,var(--gold));z-index:200}
@@ -88,7 +88,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 /* global footer comes from /nav.js */
 </style>
 </head>
-<body>
+<body class="funnel">
 <div id="progress"></div>
 <div id="nav-placeholder"></div>
 <div class="wrap" id="sample">
