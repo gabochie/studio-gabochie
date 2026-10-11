@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-034 — Forgiveness That Frees
 date: 2027-05-30 · cadence: refresh · series: Love in Action · verse: Ephesians 4:32
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Forgiveness That Frees. Open your Bible to Ephesians 4:32. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Forgiveness That Frees — seventy times seven and without apology. Open your Bible to Ephesians 4, verse 32. Weeks ago we learned forgiven-first mechanics. Today: forgiveness as LIFESTYLE — repeated, unapologized-for, and reconciling.
+
+Seventy times SEVEN. When Peter suggested seven times as generous, Jesus answered seventy times seven — not 490 as a limit, but infinity as a lifestyle. Some people need forgiving repeatedly: the habitually late, the chronically harsh, the repeat offender. Each fresh offense needs fresh release, or old bills stack into bitterness. Keep a short account: forgive quickly, fully, each time. Forgiveness is not a ceremony you perform once; it is hygiene you practice daily, like washing.
+
+Even WITHOUT apology. On the cross, with nails fresh and mockers loud, Jesus prayed: Father, forgive them, for they do not know what they do. No one had repented. No one had asked. Forgiveness flowed anyway — because it frees the GIVER first, regardless of the offender. Waiting for apologies that may never come keeps YOU chained to THEIR schedule. Release unilaterally before God today; reconciliation can wait for their repentance, but YOUR freedom cannot.
+
+Then pursue RECONCILIATION where wise. Forgiveness is instant grace; rebuilding trust is slow proof — but attempt the bridge. Go to the offender where safe: confess your part, state the hurt plainly, propose the way forward. Some bridges rebuild gloriously. Some cannot (abuse, danger) — then forgive from distance and keep boundaries with love. Both are obedience: release always, restore where wise.
+
+Your step: identify one repeat offender and forgive the latest instance specifically by name today; and take one reconciliation step where safe (a call, a visit, a letter) before Friday. Tell one mature believer both.
+
+Father, seventy times seven — make forgiveness my lifestyle, not my event. I release without waiting for apology, and I pursue peace where wise. Free me as I free, daily. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

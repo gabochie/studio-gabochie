@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-029 — Serving as Worship
 date: 2027-04-25 · cadence: refresh · series: Love in Action · verse: Romans 12:1
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Serving as Worship. Open your Bible to Romans 12:1. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Serving as Worship. Open your Bible to Romans 12, verse 1. Present your bodies a living sacrifice, holy, acceptable to God, which is your reasonable service. Worship is not the slow songs before the sermon. Worship is the LIFE presented after it — and much of that life looks like serving.
+
+See where serving ranks: your REASONABLE service — logical, expected, baseline Christianity, not bonus level. Singing with raised hands while refusing to stack a chair is like praising the chef and refusing to eat. God counts ushers, cleaners, children's teachers, errand-runners, and givers as worship leaders in work clothes. The Kingdom runs on hidden servants, and heaven applauds what earth overlooks.
+
+Serve HEARTILY, as to the Lord. Whatever you do — sweeping, typing, nursing, driving, cooking — do it heartily, as to the Lord and not to men. That scrubs drudgery off duty: the same chore becomes worship the moment the audience changes from boss to God. Complainers serve men and feel used; worshippers serve God and feel honored. Audit your attitude this week at the sink, desk, and steering wheel: who am I really serving here?
+
+And serve WHERE NEEDED, not only where noticed. Ask your pastor, your spouse, your supervisor: what is one need I can fill quietly this week? Then fill it without announcement. Hidden service is heaven-noticed service. The Father who sees in secret rewards openly — in due season, often suddenly, always surely.
+
+Your step: pick one regular act of service and begin it this week — church setup team, a neighbor's errand, an elder's visit, excellence at your post. Tell one person for accountability, tell no one else for applause.
+
+Father, I present my body — my hands, hours, and strength — as worship. Show me where I am needed, teach me to serve heartily as unto You, and reward in secret what I refuse to parade. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.

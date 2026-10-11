@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-037 — Generosity and Community
 date: 2027-06-20 · cadence: refresh · series: Love in Action · verse: Acts 2:44-45
 
@@ -11,7 +12,19 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Generosity and Community. Open your Bible to Acts 2:44-45. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Generosity and Community — the mechanics of heaven's economy. Open your Bible to Acts 2, verses 44 and 45, and hear Second Corinthians 9 beside it. Weeks ago we learned sharing builds community. Today: HOW heaven multiplies givers — sowing, cheer, sufficiency, and honest answers.
+
+SOWING and reaping: he who sows sparingly will reap sparingly, and he who sows bountifully will reap bountifully. Farming, not gambling. Small faithful seeds, sown consistently, out-yield occasional windfalls. Start where you are — then increase yearly. Review your giving percentage this week; nudge it one step up. God measures seed, not size: the widow's coins outweighed rich bags because proportion, not amount, is heaven's scale.
+
+CHEERFULLY, not grudgingly or of necessity — for God loves a cheerful giver. Grudging giving (resentful, pressured) and necessity-giving (manipulated, feared) both miss the blessing, whatever the amount. Check your heart as you give: joy or jaw-clenching? If giving feels like loss, revisit love first — cheerful flows from grateful. Never give to impress, to compete, or from fear of curses. Give loved, and love giving.
+
+And He provides SEED to the sower — grace abounding so you have sufficiency in all things for every good work. God funds His assignments: the giving you do unlocks the giving you can do. Many wait to have before they give; heaven's order is give to have. Test Him in this —(empty barns never filled anyone, but open hands never stay empty long.
+
+Honest answers: Is tithing New Testament? Jesus affirmed it while weighting justice and mercy heavier — do both. How much? Start at the tithe, grow toward generosity as faith rises. Where? Your storehouse — the church that feeds you — plus the poor, missions, and callings as He leads. Keep records; review yearly; increase gladly.
+
+Your step: set (or raise) your giving percentage on paper this week, give one cheerful gift beyond it, and tell one person your plan for accountability.
+
+Father, teach me heaven's mechanics — sow bountifully, give cheerfully, trust Your supply. Make me a channel of community provision. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
