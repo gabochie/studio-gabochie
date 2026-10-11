@@ -54,6 +54,8 @@ a{text-decoration:none;color:inherit}
 
 /* ── Nav ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:64px;display:flex;align-items:center;font-family:var(--font-body)}
+/* Ministry (LOTL) link rows reuse <nav> for in-flow content — never fix them. Per-page guards mirror this. */
+.lotl-links,.lotl-foot nav{position:static;height:auto;background:none;border:none}
 nav .container{display:flex;align-items:center;justify-content:space-between;max-width:var(--content-max);margin:0 auto;width:100%}
 .nav-brand{display:flex;align-items:center;gap:12px;color:#fff}
 .nav-brand img{height:56px;width:auto;display:block}

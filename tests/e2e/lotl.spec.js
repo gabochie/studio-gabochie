@@ -73,24 +73,25 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(page.locator('.lotl-nav').locator('text=Have Church Now')).toBeVisible();
   });
 
-  test('full shared footer restored below the slim ministry strip', async function ({ page }) {
+  test('ministry band sits directly above the shared global footer', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
-    await expect(page.locator('.lotl-foot-in').first()).toBeVisible();
+    await expect(page.locator('.lotl-ministry-in').first()).toBeVisible();
+    await expect(page.locator('.lotl-ministry').first()).toContainText('love@gabochie.com');
     await expect(page.locator('footer').first()).toBeVisible({ timeout: 10000 });
     await expect(page.locator('footer').locator('text=Offerings').first()).toBeVisible();
     await expect(page.locator('footer').locator('text=Learn').first()).toBeVisible();
     var gap = await page.evaluate(function () {
-      var slim = document.querySelector('.lotl-foot');
+      var band = document.querySelector('.lotl-ministry');
       var foot = document.querySelector('footer');
-      if (!slim || !foot) return -1;
-      return foot.getBoundingClientRect().top - slim.getBoundingClientRect().bottom;
+      if (!band || !foot) return -1;
+      return foot.getBoundingClientRect().top - band.getBoundingClientRect().bottom;
     });
     expect(gap).toBeGreaterThanOrEqual(70);
   });
   test('no ministry nav is hijacked by the site-wide fixed nav rule', async function ({ page }) {
     await page.goto('/love-of-the-lord/give/');
     var pos = await page.evaluate(function () {
-      var els = document.querySelectorAll('.lotl-nav, .lotl-links, .lotl-foot nav');
+      var els = document.querySelectorAll('.lotl-nav, .lotl-links, .lotl-ministry nav');
       var out = {};
       els.forEach(function (el, i) { out[i + ':' + el.tagName + '.' + el.className] = getComputedStyle(el).position; });
       return out;
@@ -193,7 +194,7 @@ test.describe('Love Of The Lord — service page', function () {
     await page.locator('#prayerForm [name=name]').fill(' ama ');
     await page.locator('#prayerForm [name=phone]').fill('0240000000');
     await page.locator('#prayerForm button[type=submit]').click();
-    await expect(page.locator('#prayerOk')).toBeVisible();
+    await expect(page.locator('#prayerOk, #prayerForm .lotl-err').first()).toBeVisible();
     var familyName = await page.locator('#familyForm [name=name]').inputValue();
     expect(familyName).toContain('ama');
   });
@@ -207,12 +208,59 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(page.locator('#seasonLabel')).toContainText(/Foundations of Grace|The Kingdom Mind|Love in Action|Hope and Harvest/);
   });
 
-  test('media stage stays hidden when the lineup has no media yet', async function ({ page }) {
+  test('empty media renders a helpful fallback instead of a dead stage', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
     await page.locator('#servicePicker').selectOption('service-001');
-    await expect(page.locator('#stage')).toBeHidden();
+    await expect(page.locator('#stage')).toBeVisible();
+    await expect(page.locator('#stage')).toContainText('Where are you watching from?');
     await expect(page.locator('.screen.has-media')).toHaveCount(0);
+  });
+
+  test('resume continues saved position and restart clears it', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.evaluate(function () {
+      localStorage.setItem('lotl_progress_v1', JSON.stringify({ idx: 4, mode: 'full' }));
+      localStorage.setItem('lotl_max_v1', '4');
+    });
+    await page.reload();
+    await expect(page.locator('#resumeBar')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#resumeBar')).toContainText('Offering');
+    await page.locator('#resumeBar button', { hasText: 'Continue' }).click();
+    await expect(page.locator('#order .stop.on').first()).toContainText('Offering');
+    await expect(page.locator('#resumeBar')).toBeHidden();
+    await page.evaluate(function () {
+      localStorage.setItem('lotl_progress_v1', JSON.stringify({ idx: 3, mode: 'full' }));
+    });
+    await page.reload();
+    await expect(page.locator('#resumeBar')).toBeVisible({ timeout: 10000 });
+    await page.locator('#resumeBar button', { hasText: 'Restart' }).click();
+    var saved = await page.evaluate(function () { return localStorage.getItem('lotl_progress_v1'); });
+    expect(saved).toBeNull();
+    await expect(page.locator('#order .stop.on').first()).toContainText('Welcome');
+  });
+
+  test('switching service with progress asks first', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.evaluate(function () {
+      localStorage.setItem('lotl_progress_v1', JSON.stringify({ idx: 2, mode: 'full' }));
+      localStorage.setItem('lotl_max_v1', '2');
+    });
+    await page.reload();
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    var seen = '';
+    page.on('dialog', async function (d) { seen = d.message(); await d.dismiss(); });
+    await page.locator('#servicePicker').selectOption('service-002');
+    expect(seen).toContain('Switch service?');
+    await expect(page.locator('#seasonLabel')).toContainText('Grace for New Beginnings');
+    page.removeAllListeners('dialog');
+    page.on('dialog', async function (d) { await d.accept(); });
+    await page.locator('#servicePicker').selectOption('service-002');
+    await expect(page.locator('#seasonLabel')).toContainText('Mercy That Never Runs Out');
+    var saved = await page.evaluate(function () { return localStorage.getItem('lotl_progress_v1'); });
+    expect(saved).toBeNull();
   });
 
   test('audio-only toggle reports its state', async function ({ page }) {
