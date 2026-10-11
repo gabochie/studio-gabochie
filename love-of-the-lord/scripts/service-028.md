@@ -1,3 +1,4 @@
+<!-- locked -->
 # service-028 — Forgiveness That Frees
 date: 2027-04-18 · cadence: refresh · series: Love in Action · verse: Ephesians 4:32
 
@@ -11,7 +12,17 @@ Family, hear this. First, if you are new here, tap I am New — we pray for ever
 We give because we love. This offering supports the Love Of The Lord fund — data, prayer calls, and the free school. Give cheerfully, no pressure, no amount too small. God loves a cheerful giver. You can give with MTN MoMo to Gideon Abochie: zero two four, three two six, two zero one nine. Every cedi is prayed over. Thank you for building with us.
 
 ## word
-Refresh today: Forgiveness That Frees. Open your Bible to Ephesians 4:32. Hear what the Spirit is saying to us this week. First, receive the word with an open heart — not as information, but as food. Second, let it search you: where does this verse meet your real life — your work, your family, your fears? Third, obey one thing. Not ten. One. Here is your step for the week: write down one obedient action from this word, tell one person, and do it before Friday. Let's pray. Father, plant this word deep. Water it through the week and make it fruit in our lives. In Jesus' name. Amen. (fifteen-minute teaching slot. Expand this draft to a full manuscript before recording.)
+Refresh today: Forgiveness That Frees — first YOU, then them. Open your Bible to Ephesians 4, verse 32. And be kind to one another, tenderhearted, forgiving one another, even as God in Christ forgave you. Forgiveness is not denying the wound; it is refusing to let the wound run your life. Today the prisoner set free is you.
+
+Start where Paul starts: EVEN AS God in Christ forgave YOU. Forgiveness flows downhill — from the forgiven to the offender. You cannot give what you have not received, so receive first: your confessed sins removed east-from-west, your record clean, your Father smiling. Meditate that until gratitude rises, because grateful hearts forgive easily and guilty hearts forgive rarely. Get forgiven fresh, then give it fresh.
+
+Then put AWAY the whole wardrobe of unforgiveness Paul lists just before: bitterness, wrath, anger, clamor, evil speaking, malice. Inventory your closet honestly. Bitterness replays; wrath explodes; anger simmers; clamor shouts; evil speaking assassinates; malice plots. Name which one lives in you toward whom. You cannot evict what you will not name. Drag it into the light today — confession to God first, then where wise, to a trusted believer.
+
+Then practice KIND, TENDERHEARTED mechanics. Kindness does good to the offender (a prayer, a help, a greeting). Tenderheartedness feels with them (hurt people hurt people — see the wound behind their wound). And forgiving releases the DEBT — cancel it before God even if they never apologize, even if trust must be rebuilt slowly. Note well: forgive all, trust wisely. Forgiveness is instant grace; trust is rebuilt proof. Release everyone; restore cautiously.
+
+Your step: write the name, speak the release aloud — I forgive you, I cancel this debt — and take one kind action toward them (or toward God about them) before Friday. Tell one mature believer you did it, so freedom has a witness.
+
+Father, as You forgave me in Christ, I forgive now — fully, out loud, from the heart. Empty my wardrobe of bitterness and dress me in kindness. Free me as I free. In Jesus' name. Amen.
 
 ## altar
 If you have never given your life to Jesus, or you drifted and want to come home, this moment is yours. Pray this with me, line by line, out loud. Lord Jesus. I believe You died for me. Wash me with Your blood. Come into my heart. Make me new. I am Yours from today. Amen. If you prayed that, tap I Gave My Life Today — heaven is rejoicing, and we want to pray with you this week.
