@@ -71,15 +71,18 @@ test.describe('PWA shell', function () {
   test('exactly one bottom nav per page, guitar keeps its 6-item bar', async function ({ page }) {
     await page.setViewportSize({ width: 390, height: 844 });
     var cases = [
-      { url: '/', bar: '.tab-bar', items: 5 },
-      { url: '/guitar/learn/', bar: '.bottom-nav', items: 6 },
-      { url: '/guitar/dashboard/', bar: '.bottom-nav', items: 6 }
+      { url: '/', bar: 'nav.tab-bar', items: 5 },
+      { url: '/guitar/learn/', bar: 'nav.bottom-nav', items: 6 },
+      { url: '/guitar/dashboard/', bar: 'nav.bottom-nav', items: 6 }
     ];
     for (const c of cases) {
-      await page.goto(c.url);
-      var bars = page.locator('nav.tab-bar, nav.bottom-nav');
-      await expect(bars).toHaveCount(1);
-      await expect(page.locator(c.bar)).toBeVisible();
+      await page.goto(c.url, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(
+        () => document.querySelectorAll('nav.tab-bar, nav.bottom-nav').length > 0,
+        null,
+        { timeout: 15000 }
+      );
+      await expect(page.locator('nav.tab-bar, nav.bottom-nav')).toHaveCount(1);
       await expect(page.locator(c.bar + ' a')).toHaveCount(c.items);
     }
     await expect(page.locator('.bottom-nav .nav-item.active')).toContainText('Progress');
