@@ -5,7 +5,7 @@
 
 /* ── Topbar ── */
 .lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #1E3250;padding-top:env(safe-area-inset-top,0px)}
-.lotl-nav .inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+.lotl-nav .inner{max-width:1440px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
 .lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;flex-shrink:0}
 .lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#F1F5F9;line-height:1.1}
 .lotl-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;color:#C9A84C;text-transform:uppercase}
@@ -25,7 +25,7 @@ nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none
 }
 
 /* ── Ministry band: full-width airy section directly above the global Studio footer ── */
-.lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 20px 44px;text-align:center;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px}
+.lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 24px 44px;text-align:center;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px}
 .lotl-ministry-in{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:12px}
 .lotl-ministry img{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C}
 .lotl-ministry b{font-family:'Barlow Condensed',sans-serif;font-size:19px;letter-spacing:.12em;color:#F1F5F9}
@@ -33,7 +33,7 @@ nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none
 .lotl-ministry small a{color:#C9A84C;text-decoration:none}
 .lotl-ministry nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:13px;position:static;height:auto;background:none;border:none}
 .lotl-ministry nav a{color:#C9A84C;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
-@media(max-width:640px){.lotl-ministry{padding:32px 20px 28px}}
+@media(max-width:640px){.lotl-ministry{padding:32px 24px 28px}}
 
 /* ── Eyebrow label ── */
 .kicker{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C;font-weight:700}
