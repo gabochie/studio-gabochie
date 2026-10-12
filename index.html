@@ -157,7 +157,7 @@ body{font-family:'Libre Baskerville',Georgia,serif}
     </div>
     <div>
       <div class="hero-card">
-        <div class="label">The Flagship · Creative Mind</div>
+        <div class="label">The Flagship · Wisdom</div>
         <ul id="heroOutcomes">
           <li><i class="ti ti-check"></i><span>Systems Thinking — see the whole, not the parts</span></li>
           <li><i class="ti ti-check"></i><span>Design &amp; Architecture — shape what you build</span></li>
@@ -180,9 +180,9 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 <!-- ═══ SCHOOLS ═══ -->
 <section class="section schools" id="schools">
   <div class="container text-center">
-    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> Five Schools · One Vision</div>
+    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> Six Categories · One Vision</div>
     <h2 class="section-heading">A School for <span>Vision Builders</span></h2>
-    <p class="section-sub" style="margin-left:auto;margin-right:auto">Five schools of creative work — and a wisdom layer beneath them all, because what you build is only as strong as the truth it stands on.</p>
+    <p class="section-sub" style="margin-left:auto;margin-right:auto">Six categories of growth — creativity, love, wisdom, integrity, purity, and kingdom — because what you build is only as strong as the truth it stands on.</p>
     <div class="schools-grid" id="schoolsGrid"></div>
   </div>
 </section>
@@ -216,7 +216,7 @@ body{font-family:'Libre Baskerville',Georgia,serif}
 <!-- ═══ LEARN (FLAGSHIP) ═══ -->
 <section class="section learn" id="learn">
   <div class="container text-center">
-    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> The Flagship · Creative Mind</div>
+    <div class="section-label" style="justify-content:center"><i class="ti ti-school"></i> The Flagship · Wisdom</div>
     <h2 class="section-heading">Start With <span>Systems Thinking.</span></h2>
     <p class="section-sub" style="margin-left:auto;margin-right:auto">A short, practical flagship course you can finish around real life — each module builds on the last. See how a course works before you explore the rest.</p>
     <div class="learn-grid" id="modulesGrid"></div>
@@ -263,7 +263,7 @@ body{font-family:'Libre Baskerville',Georgia,serif}
     <div class="faq-list" id="faqList">
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">What kind of school is this? <i class="ti ti-chevron-down"></i></button>
-        <div class="faq-answer">A ministry-backed school of practical creative skills — organized into five schools (Mind, Love, Work, Expression, Impact) with a wisdom layer rooted in Scripture. Students are vision builders.</div>
+        <div class="faq-answer">A ministry-backed school of practical creative skills — organized into six categories (creativity, love, wisdom, integrity, purity, kingdom). Students are vision builders.</div>
       </div>
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">Do I need any experience? <i class="ti ti-chevron-down"></i></button>
@@ -380,7 +380,7 @@ function animateCounters(){return}
         : '<span class="count"><i class="ti ti-folder"></i> ' + count + ' course' + (count === 1 ? '' : 's') + '</span>';
       return '<a href="/courses/#school-' + s.slug + '" class="school-card' + (isLayer ? ' wisdom' : '') + '">' +
         '<div class="sicon"><i class="ti ' + (s.icon || 'ti-school') + '"></i></div>' +
-        (isLayer ? '<div class="slayer">Wisdom Layer</div>' : '') +
+        (isLayer ? '<div class="slayer">Wisdom</div>' : '') +
         '<h3>' + s.label + '</h3><p>' + (s.blurb || '') + '</p>' + countHtml + '</a>';
     }).join('');
   }
