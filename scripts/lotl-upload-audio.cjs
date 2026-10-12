@@ -58,7 +58,7 @@ function main() {
   STOPS.forEach(function (stop) {
     const key = 'lotl/audio/' + id + '/' + stop + '.mp3';
     const file = path.join(dir, id, stop + '.mp3');
-    execSync('npx wrangler r2 object put ' + BUCKET + '/' + key + ' --file="' + file + '"', { stdio: 'inherit' });
+    execSync('npx wrangler r2 object put ' + BUCKET + '/' + key + ' --file="' + file + '" --remote', { stdio: 'inherit' });
     console.log('uploaded: ' + key);
   });
   console.log('done — ' + id + ' plays automatically (series auto-cadence).');
