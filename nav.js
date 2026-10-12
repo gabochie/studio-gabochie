@@ -7,9 +7,9 @@
     '<a href="/courses/" class="nav-active-link">Courses</a>' +
     '<a href="/love-of-the-lord/" class="nav-active-link">Church</a>' +
     '<a href="/books/" class="nav-active-link">Books</a>' +
-    '<button id="pwaInstallBtn" class="pwa-install" hidden>Install App</button>' +
     '<span id="navAuth" class="nav-auth"></span>' +
     '</div>' +
+    '<button id="pwaInstallBtn" class="pwa-install" hidden>Install App</button>' +
     '<button class="nav-toggle" onclick="toggleNav(this)" aria-label="Menu"><span></span><span></span><span></span></button>' +
     '</div>' +
     '</nav>' +
@@ -205,15 +205,41 @@
   // PWA install prompt: show an in-app Install button only when the browser
   // fires beforeinstallprompt and the app isn't already installed.
   var deferredInstallPrompt = null;
+  function isIosDevice() {
+    try {
+      var ua = navigator.userAgent || '';
+      return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    } catch (_e) { return false; }
+  }
+  function isInstalled() {
+    try {
+      return window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+    } catch (_e) { return false; }
+  }
   function updateInstallBtn() {
     var btn = document.getElementById('pwaInstallBtn');
     if (!btn) return;
-    var installed = false;
-    try {
-      installed = window.matchMedia('(display-mode: standalone)').matches ||
-        window.navigator.standalone === true;
-    } catch (_e) {}
-    btn.hidden = installed || !deferredInstallPrompt;
+    // iOS Safari never fires beforeinstallprompt: offer the manual flow instead.
+    if (!isInstalled() && isIosDevice()) {
+      btn.hidden = false;
+      btn.setAttribute('data-ios', '1');
+      return;
+    }
+    btn.hidden = isInstalled() || !deferredInstallPrompt;
+  }
+  function showIosHint() {
+    var t = document.getElementById('iosInstallHint');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'iosInstallHint';
+      t.className = 'pay-toast';
+      document.body.appendChild(t);
+    }
+    t.innerHTML = 'To install: tap <strong>Share</strong> in Safari, then <strong>Add to Home Screen</strong>. <a href="mailto:studio@gabochie.com">Need help?</a>';
+    t.style.display = 'block';
+    clearTimeout(window.__iosHintTimer);
+    window.__iosHintTimer = setTimeout(function() { t.style.display = 'none'; }, 8000);
   }
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
@@ -226,7 +252,11 @@
   });
   document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('#pwaInstallBtn') : null;
-    if (!btn || !deferredInstallPrompt) return;
+    if (!btn) return;
+    if (btn.getAttribute('data-ios') === '1' || !deferredInstallPrompt) {
+      if (isIosDevice() && !isInstalled()) { e.preventDefault(); showIosHint(); }
+      return;
+    }
     e.preventDefault();
     deferredInstallPrompt.prompt();
     deferredInstallPrompt.userChoice.then(function () {
@@ -239,7 +269,9 @@
   });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', registerServiceWorker);
+    document.addEventListener('DOMContentLoaded', updateInstallBtn);
   } else {
     registerServiceWorker();
+    updateInstallBtn();
   }
 })();
