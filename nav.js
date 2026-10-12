@@ -66,6 +66,7 @@
     '</div>' +
     '<div>' +
     '<h4>Connect</h4>' +
+    '<a href="/about/">About Us</a>' +
     '<a href="/contact/">Contact Form</a>' +
     '<a href="/press/">For Media</a>' +
     '<a href="/partners/">Partner With Us</a>' +
