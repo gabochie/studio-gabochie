@@ -306,7 +306,7 @@
       document.body.appendChild(b);
       document.getElementById('pwaBannerClose').addEventListener('click', function () { hideInstallBanner(true); });
       document.getElementById('pwaBannerInstall').addEventListener('click', function () {
-        if (deferredInstallPrompt) {
+        if (deferredInstallPrompt && typeof deferredInstallPrompt.prompt === 'function') {
           hideInstallBanner(false);
           deferredInstallPrompt.prompt();
           deferredInstallPrompt.userChoice.then(function () {
@@ -329,6 +329,8 @@
     if (!isMobileWidth() || isInstalled() || installDismissedRecently()) return;
     // Only offer what works: a real prompt, or the iOS manual flow.
     if (!deferredInstallPrompt && !isIosDevice()) return;
+    var existing = document.getElementById('pwaInstallBanner');
+    if (existing && existing.style.display === 'flex') return;
     setTimeout(showInstallBanner, 5000);
   }
   window.addEventListener('appinstalled', function () {
@@ -338,9 +340,11 @@
     document.addEventListener('DOMContentLoaded', registerServiceWorker);
     document.addEventListener('DOMContentLoaded', updateInstallBtn);
     document.addEventListener('DOMContentLoaded', maybeShowInstallBanner);
+    window.addEventListener('load', maybeShowInstallBanner);
   } else {
     registerServiceWorker();
     updateInstallBtn();
     maybeShowInstallBanner();
+    window.addEventListener('load', maybeShowInstallBanner);
   }
 })();
