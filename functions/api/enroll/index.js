@@ -115,14 +115,23 @@ export async function onRequest(context) {
         }
       };
 
-      // If ?enrollments=1, also return all enrollments for the user
+      // If ?enrollments=1, also return all enrollments for the user (with progress)
       if (url.searchParams.get('enrollments') === '1') {
         var allRows = await db.prepare(
           'SELECT p.title, p.slug, e.status, e.enrolled_at FROM enrollments e JOIN programs p ON e.program_id = p.id WHERE e.student_email = ? OR e.user_id = (SELECT user_id FROM enrollments WHERE id = ?) ORDER BY e.enrolled_at DESC'
         ).bind(row.student_email, row.id).all();
-        response.enrollments = (allRows.results || []).map(function(r) {
-          return { title: r.title, slug: r.slug, status: r.status, enrolled_at: r.enrolled_at };
-        });
+        var enrollList = [];
+        for (var ei = 0; ei < (allRows.results || []).length; ei++) {
+          var er = allRows.results[ei];
+          var prog = { total: 0, done: 0 };
+          try {
+            var modRow = await db.prepare('SELECT COUNT(*) AS c FROM modules WHERE program_id = (SELECT program_id FROM programs WHERE slug = ?)').bind(er.slug).first();
+            var doneRow = await db.prepare('SELECT COUNT(*) AS c FROM module_completions WHERE enrollment_id = (SELECT id FROM enrollments WHERE student_email = ? AND program_id = (SELECT program_id FROM programs WHERE slug = ?) ORDER BY enrolled_at DESC LIMIT 1)').bind(er.student_email || row.student_email, er.slug).first();
+            prog = { total: (modRow && modRow.c) || 0, done: (doneRow && doneRow.c) || 0 };
+          } catch (_e) {}
+          enrollList.push({ title: er.title, slug: er.slug, status: er.status, enrolled_at: er.enrolled_at, progress: prog });
+        }
+        response.enrollments = enrollList;
       }
 
       return new Response(JSON.stringify(response), {
