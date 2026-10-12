@@ -18,18 +18,18 @@ window.COURSE_DATA = {
       wisdom: 'What is worth creating?'
     },
     schools: [
-      { slug: 'mind', label: 'Creative Mind', icon: 'ti-brain', blurb: 'How to think, imagine, solve problems and design ideas that work.' },
-      { slug: 'love', label: 'Creative Love', icon: 'ti-heart-filled', blurb: 'How to create with others — relationships, communication, family and community.' },
-      { slug: 'work', label: 'Creative Work', icon: 'ti-briefcase', blurb: 'How to create value, build skills and turn ideas into income.' },
-      { slug: 'expression', label: 'Creative Expression', icon: 'ti-palette', blurb: 'How to make music, art, stories and things that move people.' },
-      { slug: 'impact', label: 'Creative Impact', icon: 'ti-world', blurb: 'How to lead, build community and shape your country.' },
-      { slug: 'wisdom', label: 'Wisdom Layer', icon: 'ti-bible', blurb: 'How to create with discernment — rooted in Scripture and truth.', isLayer: true }
+      { slug: 'creativity', label: 'Creativity', icon: 'ti-palette', blurb: 'Imagine and make — art, music, story, design.' },
+      { slug: 'love', label: 'Love', icon: 'ti-heart-filled', blurb: 'Loved, loving — God, neighbour, family, lived out loud.' },
+      { slug: 'wisdom', label: 'Wisdom', icon: 'ti-bible', blurb: 'Think clearly, discern deeply, decide well.', isLayer: true },
+      { slug: 'integrity', label: 'Integrity', icon: 'ti-shield-check', blurb: 'Truthful in public and private.' },
+      { slug: 'purity', label: 'Purity', icon: 'ti-droplet', blurb: 'Holy living, free life — body, eyes, habits.' },
+      { slug: 'kingdom', label: 'Kingdom', icon: 'ti-briefcase', blurb: 'Work, lead, build as mission — marketplace and nation.' }
     ]
   },
   courses: [
     {
       slug: 'systems-thinking',
-      school: 'mind',
+      school: 'wisdom',
       title: 'Systems Thinking for Vision Builders',
       tagline: 'Understand how things really work — then change them.',
       hasLandingPage: true,
@@ -69,7 +69,7 @@ window.COURSE_DATA = {
     // ── Additional courses (catalog fallback) — full content in /api/programs ──
     {
       slug: 'guitar-method',
-      school: 'expression',
+      school: 'creativity',
       title: 'Gideon Guitar Method',
       tagline: 'Learn to play your favorite Ghanaian songs on guitar.',
       hasLandingPage: true,
@@ -85,7 +85,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-design-thinking',
-      school: 'mind',
+      school: 'wisdom',
       title: 'Design Thinking for Vision Builders',
       tagline: 'A practical toolkit for solving real problems.',
       status: 'coming_soon',
@@ -96,7 +96,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'pattern-recognition-vision-builders',
-      school: 'mind',
+      school: 'creativity',
       title: 'Pattern Recognition for Vision Builders',
       tagline: 'See the patterns others miss.',
       status: 'coming_soon',
@@ -107,7 +107,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'architectural-thinking',
-      school: 'mind',
+      school: 'wisdom',
       title: 'Architectural Thinking for Vision Builders',
       tagline: 'Build ideas that stand.',
       status: 'coming_soon',
@@ -118,7 +118,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'web-development',
-      school: 'work',
+      school: 'kingdom',
       title: 'Web Development for Ghanaians',
       tagline: 'Build websites and start freelancing',
       hasLandingPage: true,
@@ -156,7 +156,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'digital-marketing',
-      school: 'work',
+      school: 'kingdom',
       title: 'Digital Marketing & Social Media',
       tagline: 'Grow brands and earn from anywhere',
       hasLandingPage: true,
@@ -194,7 +194,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'civic-intelligence',
-      school: 'impact',
+      school: 'integrity',
       title: 'Civic Intelligence Certificate',
       tagline: 'Build the tools and habits of engaged citizenship for Ghana\'s future',
       hasLandingPage: true,
@@ -232,7 +232,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'freelancing-ai',
-      school: 'work',
+      school: 'kingdom',
       title: 'Freelancing with AI Tools',
       tagline: 'Use AI to land clients and deliver faster',
       hasLandingPage: true,
@@ -267,7 +267,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'ai-fundamentals',
-      school: 'mind',
+      school: 'wisdom',
       title: 'AI Fundamentals for Ghanaians',
       tagline: 'Understand AI, apply it to Ghanaian sectors, and build ethically',
       hasLandingPage: true,
@@ -305,7 +305,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'essential-values',
-      school: 'impact',
+      school: 'integrity',
       title: 'Essential Values for National Development',
       tagline: 'Character formation for engaged citizenship and nation building',
       hasLandingPage: true,
@@ -343,7 +343,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'digital-entrepreneurship',
-      school: 'work',
+      school: 'kingdom',
       title: 'Digital Entrepreneurship & the Creative Economy',
       tagline: 'Build digital products and creative businesses for Ghanaian and global markets',
       hasLandingPage: true,
@@ -381,7 +381,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'youth-leadership',
-      school: 'impact',
+      school: 'kingdom',
       title: 'Youth Leadership & Community Organizing',
       tagline: 'Lead community change through civic clubs, projects, and advocacy',
       hasLandingPage: true,
@@ -419,7 +419,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'sketching-vision-builders',
-      school: 'expression',
+      school: 'creativity',
       title: 'Sketching & Drawing for Vision Builders',
       tagline: 'Drawing is thinking made visible.',
       hasLandingPage: true,
@@ -519,7 +519,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'design-thinking-genesis',
-      school: 'wisdom',
+      school: 'creativity',
       title: 'Design Thinking in Genesis – The Creation',
       tagline: 'God as the original designer.',
       status: 'coming_soon',
@@ -530,7 +530,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-biomimicry',
-      school: 'mind',
+      school: 'wisdom',
       title: 'Introduction to Biomimicry',
       tagline: 'Nature as mentor.',
       status: 'coming_soon',
@@ -541,7 +541,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-geometry',
-      school: 'mind',
+      school: 'creativity',
       title: 'Introduction to Geometry',
       tagline: 'The shapes behind everything.',
       status: 'coming_soon',
@@ -552,7 +552,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-computing',
-      school: 'mind',
+      school: 'kingdom',
       title: 'Introduction to Computing',
       tagline: 'Understand the machine.',
       status: 'coming_soon',
@@ -563,7 +563,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-storytelling',
-      school: 'expression',
+      school: 'creativity',
       title: 'Introduction to Storytelling & Narrative Design',
       tagline: 'Stories that stick.',
       status: 'coming_soon',
@@ -571,6 +571,90 @@ window.COURSE_DATA = {
       duration: 'Self-paced',
       level: 'Beginner friendly',
       description: 'Character, structure, voice, and metaphor — craft narratives across every medium.'
+    }    ,
+    {
+      slug: 'love-marriage-family',
+      school: 'love',
+      title: 'Love, Marriage & Family',
+      tagline: 'Covenant love at home.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'Build a God-centered marriage and family: covenant foundations, communication, conflict repair, parenting, and belonging for singles and widows.',
+      outline: ['Covenant foundations', 'Communication that heals', 'Conflict repair', 'Parenting with grace', 'Singles, widows and belonging']
+    },
+    {
+      slug: 'serving-as-worship',
+      school: 'love',
+      title: 'Serving as Worship',
+      tagline: 'Serve like worship.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'Turn everyday service into worship: servanthood theology, finding your lane, hidden service, and excellence that honours God.',
+      outline: ['Servanthood theology', 'Finding your lane', 'Hidden service', 'Excellence as worship']
+    },
+    {
+      slug: 'forgiveness-reconciliation',
+      school: 'love',
+      title: 'Forgiveness & Reconciliation',
+      tagline: 'Release debts, rebuild bridges.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'Forgiven first, forgiving always: the mechanics of release, seventy-times-seven living, forgiving without apology, and rebuilding wisely.',
+      outline: ['Forgiven first', 'Release mechanics', 'Seventy-times-seven living', 'Reconciliation steps']
+    },
+    {
+      slug: 'integrity-in-business',
+      school: 'integrity',
+      title: 'Integrity in Business & Leadership',
+      tagline: 'Clean hands, clean business.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'Honest money, corruption resistance, stewardship, and leading clean in Ghanaian markets and offices.',
+      outline: ['Honest money', 'Resisting corruption', 'Stewardship systems', 'Leading clean']
+    },
+    {
+      slug: 'truth-media-literacy',
+      school: 'integrity',
+      title: 'Truth & Media Literacy',
+      tagline: 'True in an age of fakes.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'Navigate misinformation, verify sources, understand AI deepfakes, and speak truthfully in a noisy age.',
+      outline: ['Misinformation patterns', 'Verifying sources', 'AI and deepfakes', 'Truthful speech']
+    },
+    {
+      slug: 'purity-holy-living',
+      school: 'purity',
+      title: 'Purity & Holy Living',
+      tagline: 'Holy living, free life.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'A pastoral path to holy living: God\'s design, guarding eyes and habits, accountability, and daily renewal. (Pastoral guidance; seek a trusted counselor for deep struggles.)',
+      outline: ['God\'s design', 'Guarding eyes and habits', 'Accountability that works', 'Daily renewal']
+    },
+    {
+      slug: 'freedom-from-addiction',
+      school: 'purity',
+      title: 'Freedom from Addiction',
+      tagline: 'Break chains, stay free.',
+      status: 'coming_soon',
+      price: 0,
+      duration: 'Self-paced',
+      level: 'Beginner friendly',
+      description: 'A faith-rooted road out of addiction: honesty, triggers, community, relapse and rebuild, then helping others. (Walk this with professional help alongside faith — you are not alone.)',
+      outline: ['Honesty first', 'Triggers and patterns', 'Community and accountability', 'Relapse and rebuild', 'Helping others free']
     }
   ]
 };
