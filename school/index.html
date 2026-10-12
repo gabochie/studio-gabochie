@@ -69,11 +69,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .card .topic-tag{padding:4px 10px;border-radius:20px;font-size:11px;background:rgba(255,255,255,.04);color:#5A7A9F;border:1px solid #1E3250}
 .card .price-area{font-size:13px;color:#C9A84C;margin-bottom:16px;padding-top:12px;border-top:1px solid #1E3250}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s;width:100%}
-.btn-primary{background:#C9A84C;color:#0A1628}
-.btn-primary:hover{background:#D9B85C;transform:translateY(-1px)}
-.btn-primary:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed;transform:none}
-.btn-secondary{background:rgba(255,255,255,.06);border:1px solid #1E3250;color:#CBD5E1}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.btn-gold:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed;transform:none}
 
 /* Guitar CTA */
 .guitar-cta{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1a2d4a,#0F1E38);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 28px;margin:24px 0;transition:border-color .2s}
@@ -132,9 +128,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .enroll-option .opt-desc{font-size:12px;color:#5A7A9F}
 .enroll-flow input[type="text"],.enroll-flow input[type="email"],.enroll-flow input[type="tel"]{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;margin-bottom:12px;transition:border-color .2s;box-sizing:border-box}
 .enroll-flow input:focus{outline:none;border-color:#C9A84C}
-.enroll-flow .btn-submit{background:#22C55E;color:#0A1628;width:100%;justify-content:center;padding:14px;margin-top:4px}
-.enroll-flow .btn-submit:hover{background:#34D96B}
-.enroll-flow .btn-submit:disabled{background:rgba(34,197,94,.2);color:#5A7A9F;cursor:not-allowed}
+.enroll-flow .btn-gold{width:100%;justify-content:center;padding:14px;margin-top:4px}
 .msg{display:none;padding:14px;border-radius:8px;font-size:13px;line-height:1.5;margin-top:12px}
 .msg-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
 .msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
@@ -297,7 +291,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <div><div class="opt-label">Both — I want the full picture</div><div class="opt-desc">Systems thinking to analyze + architectural thinking to build</div></div>
       </div>
       <div class="enroll-nav">
-        <button class="btn btn-primary" onclick="nextStep()" id="nextPurposeBtn" disabled>Next</button>
+        <button class="btn btn-gold" onclick="nextStep()" id="nextPurposeBtn" disabled>Next</button>
       </div>
     </div>
 
@@ -308,10 +302,10 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <input type="text" id="enrollName" placeholder="Your name" autocomplete="name">
       <input type="email" id="enrollEmail" placeholder="Your email" autocomplete="email">
       <input type="tel" id="enrollPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
-      <button class="btn btn-submit" id="enrollSubmit" onclick="submitEnroll()">Start Learning</button>
+      <button class="btn btn-gold" id="enrollSubmit" onclick="submitEnroll()">Start Learning</button>
       <div class="msg" id="enrollMsg"></div>
       <div class="enroll-nav">
-        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-outline" onclick="prevStep()">Back</button>
       </div>
     </div>
   </div>
@@ -631,9 +625,9 @@ function loadPrograms() {
       if (isComing) {
         btnHtml = '<button class="btn btn-coming" onclick="openWaitlist(\'' + p.slug + '\')">Notify Me</button>';
       } else if (isGuitar) {
-        btnHtml = '<a href="/school/guitar/" class="btn btn-primary">Start Free Trial &rarr;</a>';
+        btnHtml = '<a href="/school/guitar/" class="btn btn-gold">Start Free Trial &rarr;</a>';
       } else {
-        btnHtml = '<button class="btn btn-primary" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
+        btnHtml = '<button class="btn btn-gold" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
       }
       var description = isComing ? '<div class="desc coming-desc">' + p.description + '</div>' : '<div class="desc">' + p.description + '</div>';
       var track = trackLabel(p.slug);
