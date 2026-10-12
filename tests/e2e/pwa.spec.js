@@ -116,4 +116,23 @@ test.describe('PWA shell', function () {
     await expect(page.locator('#pwaInstallBanner')).toBeHidden();
     await ctx.close();
   });
+
+  test('Android banner fires Install without crashing on stubbed prompt', async function ({ browser }) {
+    var ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    var page = await ctx.newPage();
+    await page.goto('/');
+    await page.evaluate(function () {
+      window.__prompted = false;
+      var e = new Event('beforeinstallprompt', { cancelable: true });
+      e.prompt = function () { window.__prompted = true; };
+      e.userChoice = Promise.resolve({ outcome: 'accepted' });
+      window.dispatchEvent(e);
+    });
+    await expect(page.locator('#pwaInstallBanner')).toBeVisible({ timeout: 12000 });
+    await page.locator('#pwaBannerInstall').click();
+    await expect.poll(async function () {
+      return await page.evaluate(function () { return !!window.__prompted; });
+    }, { timeout: 5000 }).toBe(true);
+    await ctx.close();
+  });
 });
