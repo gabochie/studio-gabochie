@@ -89,7 +89,9 @@
 
   // Bottom tab bar renders on every page (including footer-only pages like
   // the ministry and guitar sections) so mobile navigation stays consistent.
-  if (!document.querySelector('.tab-bar')) {
+  // Pages with their own section bar (.bottom-nav, e.g. guitar) keep just
+  // that one — never stack two bottom bars.
+  if (!document.querySelector('.tab-bar') && !document.querySelector('.bottom-nav')) {
     document.body.insertAdjacentHTML('beforeend', tabBarHtml);
   }
 
