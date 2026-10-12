@@ -226,10 +226,10 @@ const Guitar = {
           <div style="font-size:12px;color:var(--text3);margin-top:4px">Modules 1-${this.FREE_MODULES} free • Full course ${this.CURRENCY_SYMBOL} ${this.PRICE}</div>
         </div>
         <form id="register-form">
-          <input class="form-input" name="name" placeholder="Your name" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
-          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
-          <input class="form-input" name="phone" type="tel" placeholder="Phone (optional)" style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
-          <select name="skill_level" style="margin-bottom:12px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text2);appearance:none">
+          <input class="form-input" name="name" placeholder="Your name" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <input class="form-input" name="phone" type="tel" placeholder="Phone (optional)" style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <select name="skill_level" style="margin-bottom:12px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text2);appearance:none">
             <option value="beginner">Beginner — never played</option>
             <option value="starter">Starter — know a few chords</option>
             <option value="intermediate">Intermediate — can play songs</option>
@@ -293,7 +293,7 @@ const Guitar = {
           <div style="font-size:12px;color:var(--text3);margin-top:4px">Enter your email to sign in</div>
         </div>
         <form id="login-form">
-          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
+          <input class="form-input" name="email" type="email" placeholder="your@email.com" required style="margin-bottom:8px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;width:100%;box-sizing:border-box;background:var(--bg);color:var(--text)">
           <button type="submit" class="btn btn-primary btn-block" id="login-submit" style="padding:14px;font-size:15px">Sign In <i class="ti ti-arrow-right"></i></button>
           <p id="login-err" style="color:var(--red-light);font-size:12px;display:none;text-align:center;margin-top:8px"></p>
           <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:12px">New here? <a href="#" onclick="Guitar.hideSheet();Guitar.showRegisterModal();return false" style="color:var(--gld)">Create account</a></p>

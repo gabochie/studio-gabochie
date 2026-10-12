@@ -44,6 +44,11 @@ h1 span{color:#C9A84C}
 .plan-card .btn-primary{background:#C9A84C;color:#0A1628}
 .plan-card .btn-primary:hover{background:#D9B85C}
 .plan-card .btn-current{background:rgba(107,127,154,.15);color:#6B7F9A;cursor:default}
+/* Free-content CTAs reuse the canonical buttons outside plan cards */
+.btn-primary{display:inline-block;padding:10px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none;background:#C9A84C;color:#0A1628;text-decoration:none}
+.btn-primary:hover{background:#D9B85C}
+.btn-secondary{display:inline-block;padding:10px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;border:1.5px solid #C9A84C;color:#C9A84C;text-decoration:none}
+.btn-secondary:hover{background:#C9A84C;color:#0A1628}
 .loading{text-align:center;padding:60px 0;color:#6B7F9A;font-size:14px}
 .hidden{display:none}
 .btn-logout{background:none;border:1px solid #1E3250;color:#6B7F9A;padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
@@ -149,8 +154,7 @@ function renderPlans(plans, currentTier) {
     var isCurrent = p.slug === activeSlug;
     var price = p.slug === 'founding' ? (p.yearly_price_ghs || 0) : (p.monthly_price_ghs || 0);
     var periodLabel = p.slug === 'founding' ? '/yr' : (price > 0 ? '/mo' : '');
-    var autoRenews = p.slug === 'founding' ? !!p.yearly_recurring : !!p.monthly_recurring;
-    var billNote = price > 0 ? (autoRenews ? 'auto-renews' : 'one-time charge') : '';
+    var billNote = price > 0 ? 'one-time charge' : '';
     var features = (typeof p.features === 'string' ? JSON.parse(p.features) : p.features) || [];
     var featureLis = '';
     for (var j = 0; j < features.length; j++) {
@@ -159,8 +163,9 @@ function renderPlans(plans, currentTier) {
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
-        (price > 0 ? '<button class="btn" style="margin-top:8px;background:none;border:1px solid #1E3250;color:#8A9BB5" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
-    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + (price > 0 ? 'GHS ' + price : 'Free') + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
+        (price > 0 ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
+    var priceHtml = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GHS ' + price) : 'Free';
+    html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + priceHtml + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
   }
   var foot = 'Founding is yearly-only.';
   foot += ' Every tier is a one-time charge per period — no auto-renewal. We email you before it expires so you can renew in one tap.';

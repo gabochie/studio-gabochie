@@ -290,13 +290,13 @@ function startPayment() {
   var email = document.getElementById('donorEmail').value.trim();
   var phone = document.getElementById('donorPhone').value.trim();
 
-  if (!name) { alert('Please enter your name.'); return; }
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  if (!name) { window.payError('Please enter your name.', 'donate'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'donate'); return; }
   tagOnboard(email, name, 'donation');
   var amount = selectedAmount;
   if (custSelected) {
     var c = parseFloat(document.getElementById('customAmount').value);
-    if (!c || c < 5) { alert('Please enter a valid amount (minimum GHS 5).'); return; }
+    if (!c || c < 5) { window.payError('Please enter a valid amount (minimum GHS 5).', 'donate'); return; }
     amount = c;
   }
 
@@ -430,7 +430,7 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
   }).catch(function(err) {
     btn.disabled = false;
     btn.textContent = 'Try Again';
-    alert(err.message || 'Something went wrong. Please try again or email studio@gabochie.com');
+    window.payError((err.message || 'Something went wrong.') + ' — email studio@gabochie.com', 'donate');
   });
 }
 
@@ -459,8 +459,8 @@ function startMonthlySubscription() {
   var email = document.getElementById('donorEmail').value.trim();
   var phone = document.getElementById('donorPhone').value.trim();
 
-  if (!name) { alert('Please enter your name.'); return; }
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+  if (!name) { window.payError('Please enter your name.', 'donate'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'donate'); return; }
   tagOnboard(email, name, 'patron');
   btn.disabled = true;
   btn.textContent = 'Opening...';
@@ -496,7 +496,7 @@ function startMonthlySubscription() {
   }).catch(function(err) {
     btn.disabled = false;
     btn.textContent = 'Try Again';
-    alert('Something went wrong. Please try again or email studio@gabochie.com');
+    window.payError('Something went wrong — email studio@gabochie.com', 'donate');
   });
 }
 </script>
