@@ -65,12 +65,6 @@ h1 span{color:#C9A84C}
 .error-msg{text-align:center;padding:60px 0}
 .error-msg h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#EF4444;margin-bottom:8px}
 .error-msg p{color:#8A9BB5;font-size:14px;margin-bottom:20px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
-.btn-primary{background:#C9A84C;color:#0A1628}
-.btn-primary:hover{background:#D9B85C}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-secondary{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
 .no-print{display:block}
 .module-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:opacity .2s}
 .module-item:last-child{border-bottom:none}
@@ -121,8 +115,8 @@ h1 span{color:#C9A84C}
       <div class="login-msg" id="loginMsg"></div>
     </div>
     <div style="margin-top:20px">
-      <a href="/courses/" class="btn btn-primary">Browse Courses</a>
-      <a href="../index.html" class="btn btn-secondary">Back to Home</a>
+      <a href="/courses/" class="btn btn-gold">Browse Courses</a>
+      <a href="../index.html" class="btn btn-outline">Back to Home</a>
     </div>
   </div>
 </div>
@@ -142,7 +136,7 @@ h1 span{color:#C9A84C}
       <span id="programDuration"></span>
       <span id="programStatus"></span>
     </div>
-    <button class="btn btn-secondary no-print" onclick="window.print()">&#128424; Print This Page</button>
+    <button class="btn btn-outline no-print" onclick="window.print()">&#128424; Print This Page</button>
   </div>
 
   <!-- Sample content (shown to all) -->
@@ -176,8 +170,8 @@ h1 span{color:#C9A84C}
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete course with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:12px"><span id="upgradePriceBig"><span class="price-convert" data-ghs="250">GH¢ 250</span></span> <span style="font-size:14px;color:#5A7A9F;font-weight:400">one-time</span></div>
-    <button class="btn btn-primary" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
-    <button class="btn btn-secondary" id="cryptoBtn" onclick="cryptoUpgrade(this)" style="margin-top:8px">Pay with Crypto</button>
+    <button class="btn btn-gold" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
+    <button class="btn btn-outline" id="cryptoBtn" onclick="cryptoUpgrade(this)" style="margin-top:8px">Pay with Crypto</button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via ExpressPay</p>
     <div class="trust-row"><span>Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
     <p style="font-size:12px;margin-top:10px"><a href="/member/" style="color:#C9A84C;text-decoration:underline">Compare memberships — unlock every course with Scholar</a></p>
@@ -217,15 +211,15 @@ h1 span{color:#C9A84C}
       <p id="quizStatus" style="color:#8A9BB5;font-size:13px;margin-bottom:16px">Complete the final quiz to unlock your certificate. You need 70% to pass.</p>
       <div id="quizQuestions"></div>
       <div id="quizActions" style="text-align:center;margin-top:12px">
-        <button class="btn btn-primary" id="quizStartBtn" onclick="startQuiz()">Start Final Quiz</button>
-        <button class="btn btn-primary" id="quizSubmitBtn" onclick="submitQuiz()" style="display:none">Submit Answers</button>
+        <button class="btn btn-gold" id="quizStartBtn" onclick="startQuiz()">Start Final Quiz</button>
+        <button class="btn btn-gold" id="quizSubmitBtn" onclick="submitQuiz()" style="display:none">Submit Answers</button>
       </div>
       <div id="quizResult" style="display:none;text-align:center;padding:20px"></div>
     </div>
     <div id="certSection" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center">
       <div style="font-size:32px;margin-bottom:8px">&#9733;</div>
       <p style="color:#22C55E;font-size:14px;font-weight:600;margin-bottom:12px">All modules completed!</p>
-      <button class="btn btn-primary" id="certBtn" onclick="handleCertificate()">Claim Your Certificate</button>
+      <button class="btn btn-gold" id="certBtn" onclick="handleCertificate()">Claim Your Certificate</button>
       <p id="certLink" style="display:none;margin-top:8px"><a href="#" id="certHref" style="color:#C9A84C;font-size:13px;text-decoration:underline">View your certificate &rarr;</a></p>
     </div>
   </div>
@@ -557,12 +551,12 @@ function submitQuiz() {
         result.innerHTML = '<div style="font-size:32px;margin-bottom:8px">&#127881;</div>' +
           '<p style="color:#22C55E;font-size:16px;font-weight:600">You passed! Score: ' + d.score + '/' + d.total + ' (' + pct + '%)</p>' +
           '<p style="color:#8A9BB5;font-size:13px;margin:8px 0 16px">You can now claim your certificate.</p>' +
-          '<button class="btn btn-primary" onclick="handleCertificate()">Claim Your Certificate</button>';
+          '<button class="btn btn-gold" onclick="handleCertificate()">Claim Your Certificate</button>';
       } else {
         result.innerHTML = '<div style="font-size:32px;margin-bottom:8px">&#128546;</div>' +
           '<p style="color:#E8637A;font-size:16px;font-weight:600">Score: ' + d.score + '/' + d.total + ' (' + pct + '%)</p>' +
           '<p style="color:#8A9BB5;font-size:13px;margin:8px 0 16px">You need ' + d.pass_threshold + '% to pass. Review the material and try again.</p>' +
-          '<button class="btn btn-primary" onclick="location.reload()">Retake Quiz</button>';
+          '<button class="btn btn-gold" onclick="location.reload()">Retake Quiz</button>';
       }
     } else {
       btn.disabled = false;

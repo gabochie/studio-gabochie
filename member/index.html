@@ -40,15 +40,8 @@ h1 span{color:#C9A84C}
 .plan-card ul{list-style:none;padding:0;margin:16px 0;text-align:left}
 .plan-card ul li{font-size:13px;color:#8A9BB5;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .plan-card ul li:last-child{border-bottom:none}
-.plan-card .btn{display:inline-block;padding:10px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none}
-.plan-card .btn-primary{background:#C9A84C;color:#0A1628}
-.plan-card .btn-primary:hover{background:#D9B85C}
 .plan-card .btn-current{background:rgba(107,127,154,.15);color:#6B7F9A;cursor:default}
-/* Free-content CTAs reuse the canonical buttons outside plan cards */
-.btn-primary{display:inline-block;padding:10px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;border:none;background:#C9A84C;color:#0A1628;text-decoration:none}
-.btn-primary:hover{background:#D9B85C}
-.btn-secondary{display:inline-block;padding:10px 24px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;border:1.5px solid #C9A84C;color:#C9A84C;text-decoration:none}
-.btn-secondary:hover{background:#C9A84C;color:#0A1628}
+/* CTAs use canonical .btn-gold/.btn-outline from main.css */
 .loading{text-align:center;padding:60px 0;color:#6B7F9A;font-size:14px}
 .hidden{display:none}
 .btn-logout{background:none;border:1px solid #1E3250;color:#6B7F9A;padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
@@ -84,7 +77,7 @@ h1 span{color:#C9A84C}
           <div>
             <strong>Download Your Free Book</strong>
             <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">The Bible as Kingdom OS — the full lead book, free to members.</p>
-            <a href="/api/books/serve?slug=the-bible-as-kingdom-os&email=__EMAIL__" class="btn btn-primary" id="freeBookLink"><i class="ti ti-download"></i> Open Book</a>
+            <a href="/api/books/serve?slug=the-bible-as-kingdom-os&email=__EMAIL__" class="btn btn-gold" id="freeBookLink"><i class="ti ti-download"></i> Open Book</a>
           </div>
         </div>
         <div class="free-item">
@@ -93,8 +86,8 @@ h1 span{color:#C9A84C}
             <strong>Start a Program's First Module</strong>
             <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Full first module of every program — free, no upgrade needed.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <a href="/guitar/" class="btn btn-secondary">Guitar Method</a>
-              <a href="/courses/" class="btn btn-secondary">All Programs</a>
+              <a href="/guitar/" class="btn btn-outline">Guitar Method</a>
+              <a href="/courses/" class="btn btn-outline">All Programs</a>
             </div>
           </div>
         </div>
@@ -103,7 +96,7 @@ h1 span{color:#C9A84C}
           <div>
             <strong>Audio &amp; Devotional Samples</strong>
             <p style="margin:4px 0 8px;color:#8A9BB5;font-size:13px">Listen in your workspace while you work, rest, or commute.</p>
-            <a href="/courses/" class="btn btn-secondary">Browse Audio</a>
+            <a href="/courses/" class="btn btn-outline">Browse Audio</a>
           </div>
         </div>
       </div>
@@ -162,7 +155,7 @@ function renderPlans(plans, currentTier) {
     }
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
-      : '<button class="btn btn-primary" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
+      : '<button class="btn btn-gold" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
         (price > 0 ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
     var priceHtml = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GHS ' + price) : 'Free';
     html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + priceHtml + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
@@ -192,7 +185,7 @@ function subscribeTier(slug, btn) {
 }
 function upgrade(slug) {
   if (!sessionToken) return;
-  var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
+  var btn = event && event.target ? event.target : document.querySelector('.btn-gold');
   subscribeTier(slug, btn).then(function(d) {
     if (!d) return;
     document.cookie = 'ga_upgrade=' + d.tier_slug + '; path=/; max-age=60';
@@ -217,7 +210,7 @@ function upgrade(slug) {
 function upgradeCrypto(slug) {
   if (!sessionToken) return;
   if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
-  var btn = event && event.target ? event.target : document.querySelector('.btn-primary');
+  var btn = event && event.target ? event.target : document.querySelector('.btn-gold');
   subscribeTier(slug, btn).then(function(d) {
     if (!d) return;
     window.CryptoPay.start({ purpose: 'tier', tx_ref: d.tx_ref, button: btn });
