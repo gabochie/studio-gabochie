@@ -68,6 +68,23 @@ test.describe('PWA shell', function () {
     await expect(bar.locator('[data-tab="church"]')).toHaveAttribute('href', '/love-of-the-lord/');
   });
 
+  test('exactly one bottom nav per page, guitar keeps its 6-item bar', async function ({ page }) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    var cases = [
+      { url: '/', bar: '.tab-bar', items: 5 },
+      { url: '/guitar/learn/', bar: '.bottom-nav', items: 6 },
+      { url: '/guitar/dashboard/', bar: '.bottom-nav', items: 6 }
+    ];
+    for (const c of cases) {
+      await page.goto(c.url);
+      var bars = page.locator('nav.tab-bar, nav.bottom-nav');
+      await expect(bars).toHaveCount(1);
+      await expect(page.locator(c.bar)).toBeVisible();
+      await expect(page.locator(c.bar + ' a')).toHaveCount(c.items);
+    }
+    await expect(page.locator('.bottom-nav .nav-item.active')).toContainText('Progress');
+  });
+
   test('desktop header reads Courses, Church, Books in order', async function ({ page }) {
     await page.goto('/');
     var links = page.locator('.nav-links a.nav-active-link');
