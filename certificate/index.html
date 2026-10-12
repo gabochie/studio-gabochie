@@ -17,8 +17,13 @@
 <link rel="stylesheet" href="../assets/css/main.css">
 <style>
 :root{--content-max:1440px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#F4F6FA;font-family:'Libre Baskerville',Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+body{background:#F4F6FA;font-family:'Libre Baskerville',Georgia,serif;min-height:100vh;padding:96px 24px calc(24px + env(safe-area-inset-bottom, 0px))}
+/* Clean sheet: no global footer or tab bar on this verification page
+   (nav.js swaps #footer-placeholder for a <footer>, so hide the result) */
+footer,.tab-bar{display:none}
+.cert-actions{text-align:center;margin-top:20px}
 .cert-wrap{max-width:800px;width:100%;margin:0 auto}
 .certificate{background:#fff;border:2px solid #C9A84C;padding:48px;text-align:center;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.08)}
 .cert-border{position:absolute;inset:8px;border:1px solid #C9A84C;pointer-events:none}
@@ -39,7 +44,21 @@ body{background:#F4F6FA;font-family:'Libre Baskerville',Georgia,serif;min-height
 .error h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#E8637A;margin-bottom:8px}
 .error p{color:#64748B;font-size:14px;margin-bottom:16px}
 .error a{color:#C9A84C;text-decoration:underline}
-@media print{body{background:#fff;padding:0}.cert-wrap{max-width:100%}.certificate{box-shadow:none;border-color:#C9A84C}}
+@media print{
+  body{background:#fff;padding:0}
+  .cert-wrap{max-width:100%}
+  .certificate{box-shadow:none;border-color:#C9A84C}
+  nav,.tab-bar,footer,#footer-placeholder,#nav-placeholder,.cookie-notice,.cert-actions,.pwa-banner,#pwaInstallBanner{display:none!important}
+}
+@media(max-width:640px){
+  body{padding:88px 16px calc(16px + env(safe-area-inset-bottom, 0px))}
+  .certificate{padding:32px 20px}
+  .cert-title{font-size:28px}
+  .cert-name{font-size:32px}
+  .cert-footer{flex-wrap:wrap;gap:24px}
+  .cert-footer .sig-line{width:140px}
+  .cert-actions a{margin-left:0!important;margin-top:10px}
+}
 </style>
 </head>
 <body>
@@ -77,7 +96,7 @@ body{background:#F4F6FA;font-family:'Libre Baskerville',Georgia,serif;min-height
     </div>
     <div class="cert-code" id="certCode"></div>
   </div>
-  <div style="text-align:center;margin-top:20px">
+  <div class="cert-actions">
     <button onclick="window.print()" style="padding:10px 24px;border:none;border-radius:6px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Print Certificate</button>
     <a href="../dashboard/" style="display:inline-block;margin-left:12px;padding:10px 24px;border:1px solid #CBD5E1;border-radius:6px;color:#64748B;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Back to Dashboard</a>
   </div>
