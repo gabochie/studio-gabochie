@@ -245,6 +245,7 @@
     e.preventDefault();
     deferredInstallPrompt = e;
     updateInstallBtn();
+    maybeShowInstallBanner();
   });
   window.addEventListener('appinstalled', function () {
     deferredInstallPrompt = null;
@@ -267,11 +268,79 @@
       updateInstallBtn();
     });
   });
+  // Floating install banner (mobile): slim bar under the header, shown at
+  // most once per session — auto-hides, remembers dismissal for 7 days,
+  // never renders when installed. Desktop keeps the header button instead.
+  var INSTALL_DISMISS_KEY = 'ga_install_dismiss';
+  var installBannerTimer = null;
+  function installDismissedRecently() {
+    try {
+      var ts = parseInt(localStorage.getItem(INSTALL_DISMISS_KEY) || '0', 10) || 0;
+      return (Date.now() - ts) < 7 * 24 * 60 * 60 * 1000;
+    } catch (_e) { return false; }
+  }
+  function stampInstallDismissal() {
+    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch (_e) {}
+  }
+  function isMobileWidth() {
+    try { return window.matchMedia('(max-width: 860px)').matches; } catch (_e) { return false; }
+  }
+  function hideInstallBanner(stamp) {
+    var b = document.getElementById('pwaInstallBanner');
+    if (b) b.style.display = 'none';
+    clearTimeout(installBannerTimer);
+    if (stamp) stampInstallDismissal();
+  }
+  function showInstallBanner() {
+    if (isInstalled() || installDismissedRecently()) return;
+    var b = document.getElementById('pwaInstallBanner');
+    if (!b) {
+      b = document.createElement('div');
+      b.id = 'pwaInstallBanner';
+      b.className = 'pwa-banner';
+      b.innerHTML =
+        '<img src="/assets/icons/icon-192.png" alt="" width="28" height="28">' +
+        '<span>Install the app for the full experience</span>' +
+        '<button type="button" id="pwaBannerInstall">Install</button>' +
+        '<button type="button" id="pwaBannerClose" aria-label="Dismiss">\u00d7</button>';
+      document.body.appendChild(b);
+      document.getElementById('pwaBannerClose').addEventListener('click', function () { hideInstallBanner(true); });
+      document.getElementById('pwaBannerInstall').addEventListener('click', function () {
+        if (deferredInstallPrompt) {
+          hideInstallBanner(false);
+          deferredInstallPrompt.prompt();
+          deferredInstallPrompt.userChoice.then(function () {
+            deferredInstallPrompt = null;
+            updateInstallBtn();
+          }).catch(function () {
+            deferredInstallPrompt = null;
+            updateInstallBtn();
+          });
+        } else if (isIosDevice() && !isInstalled()) {
+          showIosHint();
+        }
+      });
+    }
+    b.style.display = 'flex';
+    clearTimeout(installBannerTimer);
+    installBannerTimer = setTimeout(function () { hideInstallBanner(false); }, 10000);
+  }
+  function maybeShowInstallBanner() {
+    if (!isMobileWidth() || isInstalled() || installDismissedRecently()) return;
+    // Only offer what works: a real prompt, or the iOS manual flow.
+    if (!deferredInstallPrompt && !isIosDevice()) return;
+    setTimeout(showInstallBanner, 5000);
+  }
+  window.addEventListener('appinstalled', function () {
+    hideInstallBanner(false);
+  });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', registerServiceWorker);
     document.addEventListener('DOMContentLoaded', updateInstallBtn);
+    document.addEventListener('DOMContentLoaded', maybeShowInstallBanner);
   } else {
     registerServiceWorker();
     updateInstallBtn();
+    maybeShowInstallBanner();
   }
 })();

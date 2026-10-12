@@ -98,4 +98,22 @@ test.describe('PWA shell', function () {
     await expect(links.nth(1)).toHaveAttribute('href', '/love-of-the-lord/');
     await expect(links.nth(2)).toHaveAttribute('href', '/books/');
   });
+
+  test('mobile install banner appears on iOS, closes, and remembers', async function ({ browser }) {
+    var ctx = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+    });
+    var page = await ctx.newPage();
+    await page.goto('/');
+    await expect(page.locator('#pwaInstallBanner')).toBeVisible({ timeout: 12000 });
+    await page.locator('#pwaBannerClose').click();
+    await expect(page.locator('#pwaInstallBanner')).toBeHidden();
+    var stamped = await page.evaluate(function () { return !!window.localStorage.getItem('ga_install_dismiss'); });
+    expect(stamped).toBe(true);
+    await page.reload();
+    await page.waitForTimeout(7000);
+    await expect(page.locator('#pwaInstallBanner')).toBeHidden();
+    await ctx.close();
+  });
 });
