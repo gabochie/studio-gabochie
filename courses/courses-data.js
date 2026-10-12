@@ -23,7 +23,8 @@ window.COURSE_DATA = {
       { slug: 'wisdom', label: 'Wisdom', icon: 'ti-bible', blurb: 'Think clearly, discern deeply, decide well.', isLayer: true },
       { slug: 'integrity', label: 'Integrity', icon: 'ti-shield-check', blurb: 'Truthful in public and private.' },
       { slug: 'purity', label: 'Purity', icon: 'ti-droplet', blurb: 'Holy living, free life — body, eyes, habits.' },
-      { slug: 'kingdom', label: 'Kingdom', icon: 'ti-briefcase', blurb: 'Work, lead, build as mission — marketplace and nation.' }
+      { slug: 'kingdom', label: 'Kingdom', icon: 'ti-briefcase', blurb: 'Work, lead, build as mission — marketplace and nation.' },
+      { slug: 'it', label: 'IT', icon: 'ti-code', blurb: 'Tech skills for work and mission — web, AI, marketing, computing.' }
     ]
   },
   courses: [
@@ -118,7 +119,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'web-development',
-      school: 'kingdom',
+      school: 'it',
       title: 'Web Development for Ghanaians',
       tagline: 'Build websites and start freelancing',
       hasLandingPage: true,
@@ -156,7 +157,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'digital-marketing',
-      school: 'kingdom',
+      school: 'it',
       title: 'Digital Marketing & Social Media',
       tagline: 'Grow brands and earn from anywhere',
       hasLandingPage: true,
@@ -232,7 +233,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'freelancing-ai',
-      school: 'kingdom',
+      school: 'it',
       title: 'Freelancing with AI Tools',
       tagline: 'Use AI to land clients and deliver faster',
       hasLandingPage: true,
@@ -267,7 +268,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'ai-fundamentals',
-      school: 'wisdom',
+      school: 'it',
       title: 'AI Fundamentals for Ghanaians',
       tagline: 'Understand AI, apply it to Ghanaian sectors, and build ethically',
       hasLandingPage: true,
@@ -552,7 +553,7 @@ window.COURSE_DATA = {
     },
     {
       slug: 'intro-computing',
-      school: 'kingdom',
+      school: 'it',
       title: 'Introduction to Computing',
       tagline: 'Understand the machine.',
       status: 'coming_soon',
