@@ -198,10 +198,10 @@ function payWithAmount() {
   var email = document.getElementById('leadEmail').value.trim();
   var name = document.querySelector('#leadForm input[name="name"]').value.trim();
   var amount = parseFloat(document.getElementById('payAmount').value);
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
+  if (!name) { window.payError('Please enter your name.', 'books'); return; }
   tagOnboard(email, name, 'book_download');
-  if (amount > 0 && amount < 50) { alert('Minimum paid contribution is GH\u00a250.'); return; }
+  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u00a250.', 'books'); return; }
   if (!amount || amount <= 0) { document.getElementById('leadSubmitBtn').click(); return; }
 
   var tx_ref = 'bookpw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
@@ -222,19 +222,19 @@ function payWithAmount() {
     });
     return;
   }
-  alert('Payment system loading. Please refresh and try again.');
+  window.payError('Payment system loading. Please refresh and try again.', 'books');
 }
 
 function payWithCrypto() {
   var email = document.getElementById('leadEmail').value.trim();
   var name = document.querySelector('#leadForm input[name="name"]').value.trim();
   var amount = parseFloat(document.getElementById('payAmount').value);
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  if (!name) { alert('Please enter your name.'); return; }
-  if (amount > 0 && amount < 50) { alert('Minimum paid contribution is GH\u00a250.'); return; }
-  if (!amount || amount <= 0) { alert('Enter an amount of at least GH\u00a250 for crypto payment.'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
+  if (!name) { window.payError('Please enter your name.', 'books'); return; }
+  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u00a250.', 'books'); return; }
+  if (!amount || amount <= 0) { window.payError('Enter an amount of at least GH\u00a250 for crypto payment.', 'books'); return; }
   tagOnboard(email, name, 'book_download_crypto');
-  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  if (typeof window.CryptoPay === 'undefined') { if (typeof window.payError === 'function') window.payError('Payment widget still loading. Try again in a moment.', 'books'); else alert('Payment widget still loading. Try again in a moment.'); return; }
   var tx_ref = 'bookpw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   recordBookPurchase(tx_ref, email, name, amount, _leadSlug);
   window.CryptoPay.start({ purpose: 'books', tx_ref: tx_ref, button: document.getElementById('payCryptoBtn') });
@@ -256,8 +256,8 @@ function loadBooks() {
 function buyBundle() {
   var email = document.getElementById('bundleEmail').value.trim();
   var name = document.getElementById('bundleName').value.trim();
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
+  if (!name) { window.payError('Please enter your name.', 'books'); return; }
   tagOnboard(email, name, 'book_bundle');
   var btn = document.getElementById('buyBtn');
   btn.disabled = true;
@@ -284,7 +284,7 @@ function buyBundle() {
 
   btn.disabled = false;
   btn.textContent = 'Buy Bundle — GHS 300';
-  alert('Payment system loading. Please refresh and try again.');
+  window.payError('Payment system loading. Please refresh and try again.', 'books');
 }
 
 function recordBookPurchase(tx_ref, email, name, amount, books) {
@@ -298,10 +298,10 @@ function recordBookPurchase(tx_ref, email, name, amount, books) {
 function buyBundleCrypto() {
   var email = document.getElementById('bundleEmail').value.trim();
   var name = document.getElementById('bundleName').value.trim();
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  if (!name) { alert('Please enter your name.'); return; }
+  if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
+  if (!name) { window.payError('Please enter your name.', 'books'); return; }
   tagOnboard(email, name, 'book_bundle_crypto');
-  if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
+  if (typeof window.CryptoPay === 'undefined') { if (typeof window.payError === 'function') window.payError('Payment widget still loading. Try again in a moment.', 'books'); else alert('Payment widget still loading. Try again in a moment.'); return; }
   var tx_ref = 'books_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
   recordBookPurchase(tx_ref, email, name, 300, 'premium-bundle');
   window.CryptoPay.start({ purpose: 'books', tx_ref: tx_ref, button: document.getElementById('buyCryptoBtn') });

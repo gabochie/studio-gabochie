@@ -175,7 +175,8 @@ h1 span{color:#C9A84C}
   <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete course with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
-    <button class="btn btn-primary" id="upgradeBtn">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:12px"><span id="upgradePriceBig"><span class="price-convert" data-ghs="250">GH¢ 250</span></span> <span style="font-size:14px;color:#5A7A9F;font-weight:400">one-time</span></div>
+    <button class="btn btn-primary" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
     <button class="btn btn-secondary" id="cryptoBtn" onclick="cryptoUpgrade(this)" style="margin-top:8px">Pay with Crypto</button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via ExpressPay</p>
     <div class="trust-row"><span>Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
@@ -252,6 +253,8 @@ function renderUpgradePrice() {
   if (__upgradePrice === null || __upgradePrice <= 0) return;
   var el = document.getElementById('upgradePrice');
   if (el) el.textContent = window.formatPrice(__upgradePrice);
+  var big = document.getElementById('upgradePriceBig');
+  if (big) big.textContent = window.formatPrice(__upgradePrice);
 }
 window.gaRepriceDynamic = renderUpgradePrice;
 window.addEventListener('ga:currencychange', renderUpgradePrice);

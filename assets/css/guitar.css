@@ -308,6 +308,8 @@
   margin: 10px auto 8px;
 }
 .sheet-scroll { padding: 0 24px 24px; overflow-y: auto; }
+/* Pay CTA stays in thumb reach while the sheet scrolls */
+#pay-now-btn,#wl-pay-now-btn{position:sticky;bottom:0;z-index:2}
 
 /* ===== Fretboard (enhanced) ===== */
 .fretboard {
@@ -678,7 +680,7 @@
   width: 100%; padding: 12px 14px; border-radius: var(--radius-md);
   background: rgba(255,255,255,.04);
   border: 1px solid rgba(255,255,255,.08);
-  color: var(--text); font-size: 14px;
+  color: var(--text); font-size: 16px;
   font-family: 'DM Sans', sans-serif;
   transition: all .2s var(--ease-out);
   outline: none;
