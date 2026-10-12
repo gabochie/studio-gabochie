@@ -440,12 +440,14 @@ function handleCertificate() {
     } else {
       btn.disabled = false;
       btn.textContent = 'Claim Your Certificate';
-      alert(d.message || 'Could not generate certificate.');
+      if (typeof window.payError === 'function') window.payError(d.message || 'Could not generate certificate.', 'certificate');
+      else alert(d.message || 'Could not generate certificate.');
     }
   }).catch(function(){
     btn.disabled = false;
     btn.textContent = 'Claim Your Certificate';
-    alert('Network error. Please try again.');
+    if (typeof window.payError === 'function') window.payError('Network error. Please try again.', 'certificate');
+    else alert('Network error. Please try again.');
   });
 }
 

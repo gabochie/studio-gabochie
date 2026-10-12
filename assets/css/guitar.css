@@ -307,6 +307,8 @@
   background: rgba(255,255,255,.12);
   margin: 10px auto 8px;
 }
+/* Pay button sticks to the sheet bottom (thumb zone + safe area) */
+.sheet .btn-block:first-of-type{position:sticky;bottom:0}
 .sheet-scroll { padding: 0 24px 24px; overflow-y: auto; }
 /* Pay CTA stays in thumb reach while the sheet scrolls */
 #pay-now-btn,#wl-pay-now-btn{position:sticky;bottom:0;z-index:2}
