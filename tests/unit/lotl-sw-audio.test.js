@@ -8,7 +8,7 @@ const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 
 describe('service worker — offline LOTL audio', function () {
   it('is bumped past v13', function () {
-    expect(sw).toMatch(/const VERSION = 'gabochie-v1[4-9]/);
+    expect(sw).toMatch(/const VERSION = 'gabochie-v(1[4-9]|[2-9]\d+)/);
   });
 
   it('routes ministry audio through a cache-first handler', function () {
