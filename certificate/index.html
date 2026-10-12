@@ -56,11 +56,14 @@ footer,.tab-bar{display:none}
 .share-row a{display:inline-block;padding:10px 20px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
 .share-wa{background:#22C55E;color:#fff}
 .share-gift{background:transparent;border:1px solid #C9A84C;color:#C9A84C}
+.mini-foot{text-align:center;margin:32px auto 0;font-size:12px;color:#94A3B8;font-family:'DM Sans',sans-serif}
+.mini-foot a{color:#C9A84C;text-decoration:none;margin:0 8px}
+.mini-foot a:hover{text-decoration:underline}
 @media print{
   body{background:#fff;padding:0}
   .cert-wrap{max-width:100%}
   .certificate{box-shadow:none;border-color:#C9A84C}
-  nav,.tab-bar,footer,#footer-placeholder,#nav-placeholder,.cookie-notice,.cert-actions,.share-row,.pwa-banner,#pwaInstallBanner{display:none!important}
+  nav,.tab-bar,footer,#footer-placeholder,#nav-placeholder,.cookie-notice,.cert-actions,.share-row,.mini-foot,.pwa-banner,#pwaInstallBanner{display:none!important}
 }
 @media(max-width:640px){
   body{padding:88px 16px calc(16px + env(safe-area-inset-bottom, 0px))}
@@ -144,6 +147,12 @@ footer,.tab-bar{display:none}
   <div class="cert-actions">
     <button onclick="window.print()" style="padding:10px 24px;border:none;border-radius:6px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer">Print Certificate</button>
     <a href="../dashboard/" style="display:inline-block;margin-left:12px;padding:10px 24px;border:1px solid #CBD5E1;border-radius:6px;color:#64748B;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Back to Dashboard</a>
+  </div>
+</div>
+
+<div class="cert-wrap">
+  <div class="mini-foot">
+    <a href="/certificate/">Verify a certificate</a>·<a href="/contact/">Support</a>·<a href="mailto:studio@gabochie.com">studio@gabochie.com</a>
   </div>
 </div>
 
