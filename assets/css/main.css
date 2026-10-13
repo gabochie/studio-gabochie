@@ -126,7 +126,7 @@ footer{padding-bottom:calc(32px + env(safe-area-inset-bottom, 0px))}
 .nav-mobile-overlay.open{display:block}
 @media(max-width:860px){
   .nav-toggle{display:flex}
-  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:var(--space-4) var(--space-6) var(--space-6);border-bottom:1px solid rgba(255,255,255,0.06);z-index:99;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,22,40,0.97);backdrop-filter:blur(12px);flex-direction:column;padding:var(--space-4) var(--space-6) var(--space-6);border-bottom:1px solid rgba(255,255,255,0.06);z-index:102;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
   .nav-links.open{display:flex}
   .nav-links a{display:block;padding:var(--space-3) var(--space-4);font-size:var(--text-sm);border-radius:var(--radius-sm);width:100%}
   .nav-donate{text-align:center;margin-top:4px}
@@ -222,7 +222,6 @@ button,a,.btn,.nav-toggle,.gallery-item,.rate-item-cta,input,textarea,select{tou
   body.ga-cookie-open .currency-toggle{bottom:calc(64px + 14px + var(--cookie-h, 0px) + env(safe-area-inset-bottom, 0px))}
   /* 16px floor kills iOS auto-zoom on focus; desktop untouched */
   input[type=text],input[type=email],input[type=tel],input[type=number],input[type=password],input:not([type]),select,textarea{font-size:16px!important}
-}
 }
 
 /* ── Trust row (reused under every pay button) ── */

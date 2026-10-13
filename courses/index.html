@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
 <link rel="stylesheet" href="../assets/css/main.css">
 <style>
-.hero{max-width:var(--content-max);margin:0 auto;padding:56px 24px 32px;text-align:center}
+.hero{max-width:var(--content-max);margin:0 auto;padding:calc(64px + env(safe-area-inset-top, 0px) + 48px) 24px 32px;text-align:center}
 .hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
 .hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,6vw,68px);font-weight:700;color:#fff;line-height:.95;letter-spacing:-.02em;margin-bottom:16px}
 .hero h1 span{color:#C9A84C}
@@ -60,7 +60,7 @@
 .faq-a.open{display:block}
 @media(max-width:640px){.program-grid{grid-template-columns:1fr}}
 /* Enroll modal */
-.enroll-overlay{position:fixed;inset:0;background:rgba(10,22,40,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+.enroll-overlay{position:fixed;inset:0;background:rgba(10,22,40,.9);z-index:100000;display:none;align-items:center;justify-content:center;padding:24px}
 .enroll-overlay.open{display:flex}
 .enroll-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:40px 32px;max-width:420px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
 .enroll-modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:#5A7A9F;font-size:28px;cursor:pointer;line-height:1;padding:4px;font-family:serif}
@@ -314,14 +314,27 @@ function renderPrograms(staticData, apiPrograms) {
     renderPrograms(staticData, lastApi);
   });
 
+  // Deep links (e.g. homepage cards -> /courses/#school-it) resolve only
+  // after the grid renders, so scroll to the section once it exists.
+  // Currency re-renders deliberately do NOT re-scroll (see gaRepriceDynamic).
+  function scrollToSchoolHash() {
+    try {
+      var h = window.location.hash;
+      if (!h || h.indexOf('#school-') !== 0) return;
+      var el = document.getElementById(h.slice(1));
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' });
+    } catch (_e) {}
+  }
+
   // Live programs from the DB — fall back to static data off-network
   if (typeof fetch === 'function') {
     fetch('/api/programs')
       .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function (d) { lastApi = (d && d.programs) || []; renderPrograms(staticData, lastApi); })
-      .catch(function () { renderPrograms(staticData, null); });
+      .then(function (d) { lastApi = (d && d.programs) || []; renderPrograms(staticData, lastApi); scrollToSchoolHash(); })
+      .catch(function () { renderPrograms(staticData, null); scrollToSchoolHash(); });
   } else {
     renderPrograms(staticData, null);
+    scrollToSchoolHash();
   }
 })();
 
