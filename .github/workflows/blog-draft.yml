@@ -1,0 +1,38 @@
+name: Weekly — AI Blog Draft
+
+on:
+  schedule:
+    # Wednesdays 06:00 UTC — draft next post for human review
+    - cron: '0 6 * * 3'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Post topic override (blank = rotate house list)'
+        required: false
+        default: ''
+
+jobs:
+  draft-post:
+    name: Generate draft post
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request AI draft
+        run: |
+          TOPIC='${{ inputs.topic }}'
+          if [ -z "$TOPIC" ]; then
+            WEEK=$(date +%U)
+            case $((10#$WEEK % 6)) in
+              0) TOPIC='Creative confidence for beginners: shipping your first piece of work';;
+              1) TOPIC='Systems thinking applied to personal productivity in Ghana';;
+              2) TOPIC='Faith and work: biblical wisdom for young professionals';;
+              3) TOPIC='Nation building through creativity: what Ghanaian youth can make';;
+              4) TOPIC='How to learn guitar as an adult beginner: a practical roadmap';;
+              *) TOPIC='Turning ideas into income: freelancing fundamentals for creatives';;
+            esac
+          fi
+          RESP=$(curl -s -X POST 'https://studio.gabochie.com/api/ai/draft-post' \
+            -H 'Content-Type: application/json' \
+            -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
+            -d "{\"topic\":\"$TOPIC\"}")
+          echo "$RESP"
+          echo "$RESP" | grep -q '"status":"ok"' || (echo 'Draft request failed' && exit 1)
