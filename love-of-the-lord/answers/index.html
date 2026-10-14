@@ -144,7 +144,7 @@ body{background:#0A1628}
     box.innerHTML='';
     cats.forEach(function(c){
       var b=document.createElement('button');
-      b.type='button';b.textContent=c;if(c===activeCat)b.className='on';
+      b.type='button';b.textContent=c;if(c===activeCat)b.className='on';b.setAttribute('aria-pressed', c===activeCat ? 'true' : 'false');
       b.addEventListener('click',function(){activeCat=c;buildFilters();render();});
       box.appendChild(b);
     });
