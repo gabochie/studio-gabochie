@@ -1,14 +1,1 @@
-(function () {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
-  if (window.__gaTracked) return;
-  window.__gaTracked = true;
-  var page = window.location.pathname;
-  try {
-    var ref = document.referrer || '';
-    (navigator.sendBeacon || function (u, d) {
-      var x = new XMLHttpRequest();
-      x.open('POST', u, true);
-      x.send(d);
-    })('/api/track', JSON.stringify({ page: page, referrer: ref }));
-  } catch (_e) { /* noop */ }
-})();
+!function(){if("localhost"!==window.location.hostname&&"127.0.0.1"!==window.location.hostname&&!window.__gaTracked){window.__gaTracked=!0;var n=window.location.pathname;try{var a=document.referrer||"";(navigator.sendBeacon||function(n,a){var o=new XMLHttpRequest;o.open("POST",n,!0),o.send(a)})("/api/track",JSON.stringify({page:n,referrer:a}))}catch(n){}}}();

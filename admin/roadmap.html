@@ -1790,7 +1790,7 @@ var CHECKS = {
   ],
   "1.2": [ // Compress assets
     {i:0, label:"logo.png compressed", check:function(){return checkFileSmall("../assets/images/logo.png",100)} },
-    {i:1, label:"neogh-logo.png compressed", check:function(){return checkFileSmall("../assets/images/neogh-logo.png",100)} }
+    {i:1, label:"neogh-logo.png removed (dead asset)", check:function(){return checkPageMissing("../assets/images/neogh-logo.png")} }
   ],
   "1.3": [ // Cloudflare config
     {i:0, label:"_headers exists", check:function(){return checkFileExists("../_headers")}},
