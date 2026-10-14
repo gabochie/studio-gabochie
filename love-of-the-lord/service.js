@@ -386,6 +386,7 @@
     var list = visibleStops();
     if (idx < list.length - 1) {
       idx += 1;
+      autoplayNext = true; // the tap is a user gesture: start this stop's media
       save(); render();
     } else {
       try { localStorage.setItem(LS_DONE, new Date().toISOString()); } catch (_e) {}
@@ -398,6 +399,7 @@
   window.lotlRestart = function () {
     idx = 0; savedIdx = 0;
     try { localStorage.removeItem(LS_PROGRESS); localStorage.removeItem(LS_MAX); } catch (_e) {}
+    autoplayNext = true; // explicit replay gesture: start the first stop's media
     render();
     var done = $('doneDim');
     if (done) done.classList.remove('open');
@@ -410,7 +412,9 @@
     if (m !== mode && (idx > 0 || maxReached() > 0)) {
       if (typeof window.confirm === 'function' && !window.confirm('Switch mode? Your progress here will be cleared.')) return false;
     }
-    mode = m; idx = 0; savedIdx = 0; save(); render();
+    mode = m; idx = 0; savedIdx = 0; save();
+    autoplayNext = true; // mode tap is a start gesture: play the first stop
+    render();
     var dd = $('doneDim'); if (dd) dd.classList.remove('open');
     var s = $('start'); if (s && s.scrollIntoView) s.scrollIntoView({ behavior: 'smooth' });
     return false;
@@ -419,6 +423,7 @@
   window.lotlResume = function () {
     var r = $('resumeBar'); if (r) r.hidden = true;
     if (savedIdx > 0 && savedIdx < stops.length) idx = savedIdx;
+    autoplayNext = true; // continue means continue playing
     save(); render(); scrollStage();
     return false;
   };
