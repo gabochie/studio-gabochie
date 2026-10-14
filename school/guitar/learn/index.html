@@ -9,6 +9,8 @@
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A1628'/><path d='M13 5 L13 11 L10 16 C9 20 10 27 16 27 C22 27 23 20 22 16 L19 11 L19 5 Z' fill='%23C9A84C'/><circle cx='16' cy='21' r='3' fill='%230A1628'/><rect x='14' y='12' width='4' height='2' fill='%230A1628'/><line x1='15' y1='5' x2='15' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='16' y1='5' x2='16' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='17' y1='5' x2='17' y2='25' stroke='%230A1628' stroke-width='0.4'/></svg>
 ">
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
 .readaloud-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -40,7 +42,7 @@
   </nav>
 </div>
 
-<script src="/assets/js/guitar/app.js"></script>
+<script defer src="/assets/js/guitar/app.js"></script>
 <script>
 const MODULES = [
   {id:1,tier:'bronze',title:'Meet Your Guitar',lessons:[{id:1,title:'Parts of the Guitar',video:'',duration:5},{id:2,title:'How to Hold the Guitar',video:'',duration:5},{id:3,title:'How to Tune Your Guitar',video:'',duration:8},{id:4,title:'Posture & Ergonomics Check',video:'',duration:4}]},
@@ -61,6 +63,9 @@ const MODULES = [
   {id:16,tier:'gold',title:'Next Steps',lessons:[{id:61,title:'Building a Practice Routine',video:'',duration:8},{id:62,title:'Introduction to Recording',video:'',duration:10},{id:63,title:'Guitar Gear Guide',video:'',duration:10},{id:64,title:'Your Guitar Journey Ahead',video:'',duration:8}]}
 ];
 
+// Boot after parse: app.js is deferred (executes pre-DOMContentLoaded) and the
+// stage DOM must exist before Guitar.init touches it.
+window.addEventListener('DOMContentLoaded', function() {
 (async function() {
   let user, enrollStatus = null;
   try {
@@ -279,6 +284,7 @@ const MODULES = [
   else if (modId) await renderModule(modId);
   else renderModules();
 })();
+});
 </script>
 <script>
 var readAloud={utterance:null,speaking:false,paused:false,currentContentId:null,currentPlayBtnId:null,currentStatusId:null,chunks:[],chunkIndex:0};
