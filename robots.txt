@@ -1,6 +1,7 @@
 # Allow all well-behaved crawlers
 User-agent: *
 Allow: /
+Allow: /api/sitemap-posts
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
@@ -46,4 +47,5 @@ Disallow: /
 
 # Sitemaps
 Sitemap: https://studio.gabochie.com/sitemap.xml
+Sitemap: https://studio.gabochie.com/api/sitemap-posts
 Sitemap: https://news.gabochie.com/sitemap.xml
