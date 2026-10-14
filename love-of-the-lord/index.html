@@ -109,8 +109,11 @@ body{background:#0A1628}
 .qa{background:#162540;border:1px dashed rgba(201,168,76,.5);border-radius:14px;padding:24px}
 .qa textarea{width:100%;font-family:'DM Sans',sans-serif;min-height:90px;border-radius:10px;padding:12px;background:#0A1628;border:1px solid #1E3250;color:#fff;margin:10px 0}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{font-family:'DM Sans',sans-serif;font-size:12px;background:#0A1628;border:1px solid #1E3250;color:#8A9BB5;padding:6px 12px;border-radius:16px}
+.chip{font-family:'DM Sans',sans-serif;font-size:12px;background:#0A1628;border:1px solid #1E3250;color:#8A9BB5;padding:6px 12px;border-radius:16px;cursor:pointer}
 .chip.hot{border-color:#C9A84C;color:#C9A84C}
+.slots span.sel{background:#2F4A2E;color:#fff;border-color:#2F4A2E}
+.slots span{cursor:pointer}
+.audio-err{font-family:'DM Sans',sans-serif;font-size:13px;color:#FCA5A5;background:rgba(232,99,122,.08);border:1px solid rgba(232,99,122,.3);border-radius:8px;padding:10px 14px;margin-top:12px}
 .family{background:linear-gradient(135deg,#122b1f,#1d4030);border:1px solid rgba(201,168,76,.4);border-radius:14px;padding:24px}
 .twall{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
 .t{background:rgba(247,241,229,.06);border:1px solid rgba(247,241,229,.2);border-radius:12px;padding:16px;font-family:'DM Sans',sans-serif;font-size:13px;color:#E8EEF7}
@@ -187,7 +190,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <p>A full charismatic service — praise, worship, Word, altar call, prayer and family. Guided step by step, no pastor needed. 60-min full or 15-min express.</p>
 <div class="cta-row">
 <button type="button" class="lotl-btn lotl-btn-lg" onclick="return lotlMode('full')">▶ Full Service · 60 min</button>
-<button type="button" class="lotl-btn lotl-btn-outline lotl-btn-lg" onclick="return lotlMode('express')">Express · 15 min</button>
+<button type="button" class="lotl-btn lotl-btn-outline lotl-btn-lg" onclick="return lotlMode('express')">Express · 4 Stops</button>
 </div>
 <div class="micro">✓ Free &nbsp; ✓ No login &nbsp; ✓ Audio-only for low data &nbsp; ✓ Installable app (PWA)</div>
 </div>
@@ -197,7 +200,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="stage" id="stage" hidden></div>
 <img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo" loading="lazy">
 <button type="button" class="play" id="playBtn" aria-label="Next part" title="Next part" onclick="return lotlPlay()">⏭</button>
-<div class="now" id="nowPlaying">Welcome — Grace for New Beginnings · Service 001</div>
+<div class="now" id="nowPlaying" aria-live="polite">Welcome — Grace for New Beginnings · Service 001</div>
 </div>
 <div class="pmeta">
 <div class="resume" id="resumeBar" hidden><span>Welcome back — continue?</span><span style="display:flex;gap:8px"><button type="button" class="lotl-btn" onclick="return lotlResume()">Continue</button><button type="button" class="lotl-btn lotl-btn-outline" onclick="return lotlRestart()">Restart</button></span></div>
@@ -249,7 +252,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 <div class="frow c3">
 <div><label class="lotl-label" for="newName">Name</label><input class="lotl-field" id="newName" name="name" required placeholder="Your name" aria-label="Your name"></div>
-<div><label class="lotl-label" for="newEmail">Email or WhatsApp</label><input class="lotl-field" id="newEmail" name="email" type="email" required placeholder="Email or WhatsApp" aria-label="Email"></div>
+<div><label class="lotl-label" for="newEmail">Email or WhatsApp</label><input class="lotl-field" id="newEmail" name="email" type="text" inputmode="email" required placeholder="Email or WhatsApp" aria-label="Email or WhatsApp"></div>
 <button class="lotl-btn" type="submit">I'm New 🙏</button>
 </div>
 </form>
@@ -392,6 +395,38 @@ details.fold summary::-webkit-details-marker{display:none}
 </div>
 </div>
 
+<script>
+// Topic chips fill the question box; slot pills pick one slot into the booking.
+(function(){
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+  each('.chips .chip', function(c){
+    c.addEventListener('click', function(){
+      each('.chips .chip', function(x){ x.classList.remove('hot'); });
+      c.classList.add('hot');
+      var m = document.getElementById('askMessage');
+      if (m) {
+        var tag = '[' + c.textContent.trim() + '] ';
+        if (m.value.indexOf(tag) !== 0) m.value = tag + m.value;
+        m.focus();
+      }
+    });
+  });
+  var pf = document.getElementById('prayerForm');
+  var slotInput = document.createElement('input');
+  slotInput.type = 'hidden'; slotInput.id = 'prayerSlot'; slotInput.name = 'slot';
+  if (pf) pf.appendChild(slotInput);
+  each('.slots span', function(s){
+    s.setAttribute('role', 'button'); s.setAttribute('tabindex', '0');
+    function pick(){
+      each('.slots span', function(x){ x.classList.remove('sel'); x.removeAttribute('aria-pressed'); });
+      s.classList.add('sel'); s.setAttribute('aria-pressed', 'true');
+      if (slotInput) slotInput.value = s.textContent.trim();
+    }
+    s.addEventListener('click', pick);
+    s.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+  });
+})();
+</script>
 <script src="/love-of-the-lord/service.js" defer></script>
 <script>window.GA_FOOTER_ONLY = true;</script>
 <script defer src="/assets/js/main.js"></script>
