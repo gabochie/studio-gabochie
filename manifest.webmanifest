@@ -33,16 +33,16 @@
   "dir": "ltr",
   "screenshots": [
     {
-      "src": "/assets/screenshots/home-mobile.png",
+      "src": "/assets/screenshots/home-mobile.jpg",
       "sizes": "390x844",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Studio Gabochie home on mobile"
     },
     {
-      "src": "/assets/screenshots/home-wide.png",
+      "src": "/assets/screenshots/home-wide.jpg",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Studio Gabochie home on desktop"
     }
