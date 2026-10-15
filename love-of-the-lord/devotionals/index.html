@@ -145,7 +145,7 @@ body{background:#0A1628}
     box.innerHTML='';
     series.forEach(function(s){
       var b=document.createElement('button');
-      b.type='button';b.textContent=s;if(s===activeSeries)b.className='on';
+      b.type='button';b.textContent=s;if(s===activeSeries)b.className='on';b.setAttribute('aria-pressed', s===activeSeries ? 'true' : 'false');
       b.addEventListener('click',function(){activeSeries=s;buildFilters();render();});
       box.appendChild(b);
     });
