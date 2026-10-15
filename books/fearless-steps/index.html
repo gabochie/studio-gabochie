@@ -215,12 +215,12 @@ footer{margin-top:0}
     <p class="lead">This is not a theory. It is the path God walks with ordinary Ghanaians — and it is waiting for you.</p>
     <div class="compare">
       <figure>
-        <img src="img/before.jpg" alt="Crushed by trials and fear" loading="lazy">
+        <picture><source srcset="img/before.webp" type="image/webp"><img src="img/before.jpg" width="640" height="640" alt="Crushed by trials and fear" loading="lazy"></picture>
         <figcaption>Before — crushed by trials and fear</figcaption>
       </figure>
       <div class="arrow">&#8594;</div>
       <figure>
-        <img src="img/after.jpg" alt="Walking in divine authority and power" loading="lazy">
+        <picture><source srcset="img/after.webp" type="image/webp"><img src="img/after.jpg" width="640" height="640" alt="Walking in divine authority and power" loading="lazy"></picture>
         <figcaption>After — walking in divine authority and power</figcaption>
       </figure>
     </div>
@@ -324,9 +324,10 @@ footer{margin-top:0}
         <div class="center" style="display:grid;gap:10px;justify-items:center;margin-top:8px">
           <a class="btn btn-gold sampleLink" href="https://studio.gabochie.com/books/fearless-steps/read/" target="_blank" rel="noopener">Read the free sample while you wait &rarr;</a>
           <!-- pay-on-delivery only: no online checkout -->
-          <span id="groupWrap"><a id="groupBtn" href="#" style="display:none">Join the Fearless Warriors group &rarr;</a><span id="groupNote" style="font-size:.85rem;color:var(--muted)">Want the prayer group now? Ask for the link when we confirm on WhatsApp.</span></span>
+          <span id="groupWrap"><a id="groupBtn" href="#" style="display:none">Join the Fearless Warriors group &rarr;</a><a id="groupReqBtn" href="#" style="font-size:.9rem">Get the prayer-group link &rarr;</a><span id="groupNote" style="display:none;font-size:.85rem;color:var(--muted)">Want the prayer group now? Ask for the link when we confirm on WhatsApp.</span></span>
           <a href="#" id="shareBtn" style="font-size:.9rem">Share with a friend who needs this &rarr;</a>
           <a href="#" id="receiptLink" style="font-size:.9rem">Open your receipt page &rarr;</a>
+          <a href="#" id="waConfirmBtn" style="font-size:.9rem">Confirm on WhatsApp &rarr;</a>
         </div>
       </div>
 
@@ -373,7 +374,7 @@ footer{margin-top:0}
 <script>
 const CONFIG = {
   whatsapp: "233243262019",
-  orderEndpoint: "",                     // POST JSON here if set; empty = WhatsApp fallback
+  orderEndpoint: "/api/fearless/order",                     // POST JSON here if set; empty = WhatsApp fallback
   // Pay-on-delivery only: no online checkout .
   groupLink: "",                         // WhatsApp group invite link. Empty = hidden until you paste it
   readerUrl: "https://studio.gabochie.com/books/fearless-steps/read/",  // free-sample reader (staged, uncommitted)
@@ -457,8 +458,15 @@ function submitOrder(e){
     if(CONFIG.groupLink){
       var g = document.getElementById("groupBtn");
       g.href = CONFIG.groupLink; g.style.display = "";
-      document.getElementById("groupNote").style.display = "none";
+      document.getElementById("groupReqBtn").style.display = "none";
+    } else {
+      var q = document.getElementById("groupReqBtn");
+      q.href = "https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent("Hello! My pre-order ref is "+ref+". Please send me the Fearless Warriors prayer-group link.");
+      q.target = "_blank"; q.rel = "noopener";
     }
+    var wc = document.getElementById("waConfirmBtn");
+    wc.href = "https://wa.me/"+CONFIG.whatsapp+"?text="+msg;
+    wc.target = "_blank"; wc.rel = "noopener";
     var share = "I just reserved '7 Fearless Steps' (GHS 49 pre-order). Read the free sample here: "+
       CONFIG.readerUrl+"?v="+variant;
     var sh = document.getElementById("shareBtn");

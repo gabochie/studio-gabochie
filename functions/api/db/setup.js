@@ -117,6 +117,33 @@ export async function onRequest(context) {
         downloaded INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      `CREATE TABLE IF NOT EXISTS fearless_orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ref TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL DEFAULT '',
+        phone TEXT NOT NULL DEFAULT '',
+        city TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL DEFAULT '',
+        variant TEXT NOT NULL DEFAULT 'b',
+        source TEXT NOT NULL DEFAULT 'sales',
+        status TEXT NOT NULL DEFAULT 'reserved',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_fearless_orders_ref ON fearless_orders(ref)`,
+      `CREATE TABLE IF NOT EXISTS fearless_codes (
+        code TEXT PRIMARY KEY,
+        status TEXT NOT NULL DEFAULT 'active',
+        issued_to TEXT DEFAULT '',
+        redeemed_at TEXT DEFAULT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE TABLE IF NOT EXISTS fearless_tokens (
+        token TEXT PRIMARY KEY,
+        code TEXT NOT NULL DEFAULT '',
+        email TEXT NOT NULL DEFAULT '',
+        expires_at TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
       `CREATE TABLE IF NOT EXISTS store_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tx_ref TEXT NOT NULL UNIQUE,
