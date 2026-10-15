@@ -30,7 +30,12 @@
           "date": "2026-10-18",
           "cadence": "refresh",
           "theme_verse": "Psalm 103:8-12",
-          "lineup": "lineups/service-002.json"
+          "lineup": "lineups/service-002.json",
+          "audio": {
+            "src": "/love-of-the-lord/audio/service-002/word.mp3",
+            "bytes": 1887021,
+            "duration": 118
+          }
         },
         {
           "id": "service-003",
