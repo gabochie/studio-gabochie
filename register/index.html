@@ -20,6 +20,7 @@
 :root{--content-max:1440px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',sans-serif;background:#0A1628;color:#CBD5E1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+@media(max-width:860px){body{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}}
 .login-wrap{width:100%;max-width:420px}
 .logo{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#8B7034);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:24px;color:#0A1628;font-weight:700;font-family:'Barlow Condensed',sans-serif}
 h1{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#F1F5F9;text-align:center;margin-bottom:6px;letter-spacing:-.01em}

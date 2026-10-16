@@ -44,7 +44,7 @@ section{padding:48px 0}
       <p id="summary" style="color:var(--muted)"></p>
       <ol class="next">
         <li><b>We confirm on WhatsApp</b> within 24 hours with your delivery time.</li>
-        <li><b>Pay <span class="price-convert" data-ghs="49">GHS 49</span> on delivery</b> (cash or MoMo) — quote your reference.</li>
+        <li><b>Pay <span class="price-convert" data-ghs="49">GH₵49</span> on delivery</b> (cash or MoMo) — quote your reference.</li>
         <li><b>Your copy unlocks everything:</b> bonus cards + full online reader &amp; audio code.</li>
       </ol>
       <div class="links">
@@ -64,9 +64,9 @@ section{padding:48px 0}
   var city = p.get("city")||"";
   if(ref) document.getElementById("ref").textContent = ref;
   if(name) document.getElementById("hello").textContent = ", " + name.split(" ")[0];
-  if(name || city) document.getElementById("summary").textContent = [name, city].filter(Boolean).join(" · ") + " · GHS 49 on delivery";
+  if(name || city) document.getElementById("summary").textContent = [name, city].filter(Boolean).join(" · ") + " · GH₵49 on delivery";
   var variant = p.get("v")||"b";
-  var share = "I just reserved '7 Fearless Steps' (GHS 49 pre-order). Read the free sample here: https://studio.gabochie.com/books/fearless-steps/read/?v="+variant;
+  var share = "I just reserved '7 Fearless Steps' (GH₵49 pre-order). Read the free sample here: https://studio.gabochie.com/books/fearless-steps/read/?v="+variant;
   var sh = document.getElementById("shareBtn");
   sh.href = "https://wa.me/?text="+encodeURIComponent(share);
   sh.target = "_blank"; sh.rel = "noopener";

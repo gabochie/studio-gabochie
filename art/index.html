@@ -74,9 +74,10 @@ function renderArt() {
     return '<div class="art-card">' +
       '<div class="img-placeholder"><i class="ti ti-palette"></i></div>' +
       '<div class="info">' +
-      '<h3>' + a.title + '</h3>' +
-      '<div class="medium">' + a.medium + '</div>' +
-      '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(a.price) : 'GH\u00a2 ' + a.price) + '</div>' +
+      '<h3>' + esc(a.title) + '</h3>' +
+      '<div class="medium">' + esc(a.medium) + '</div>' +
+      '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(a.price) : 'GH\u20b5 ' + a.price) + '</div>' +
+      '<div class="bill-note">≈ in your currency · charged in GHS</div>' +
       '<button class="btn btn-outline btn-sm btn-buy" onclick="buyArtItem(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ')"><i class="ti ti-shopping-cart"></i> Buy Artwork</button>' +
       '</div></div>';
   }).join('');

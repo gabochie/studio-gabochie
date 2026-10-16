@@ -100,11 +100,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     </div>
 
     <div class="amount-grid" id="amountGrid">
-      <button class="amount-btn" data-amount="50" onclick="selectAmount(50)"><span class="price-convert" data-ghs="50">GH&#8373;50</span></button>
-      <button class="amount-btn selected" data-amount="100" onclick="selectAmount(100)"><span class="price-convert" data-ghs="100">GH&#8373;100</span></button>
-      <button class="amount-btn" data-amount="250" onclick="selectAmount(250)"><span class="price-convert" data-ghs="250">GH&#8373;250</span></button>
-      <button class="amount-btn" data-amount="500" onclick="selectAmount(500)"><span class="price-convert" data-ghs="500">GH&#8373;500</span></button>
-      <button class="amount-btn" data-amount="1000" onclick="selectAmount(1000)"><span class="price-convert" data-ghs="1000">GH&#8373;1,000</span></button>
+      <button class="amount-btn" data-amount="50" onclick="selectAmount(50)"><span class="price-convert" data-ghs="50">GH₵50</span></button>
+      <button class="amount-btn selected" data-amount="100" onclick="selectAmount(100)"><span class="price-convert" data-ghs="100">GH₵100</span></button>
+      <button class="amount-btn" data-amount="250" onclick="selectAmount(250)"><span class="price-convert" data-ghs="250">GH₵250</span></button>
+      <button class="amount-btn" data-amount="500" onclick="selectAmount(500)"><span class="price-convert" data-ghs="500">GH₵500</span></button>
+      <button class="amount-btn" data-amount="1000" onclick="selectAmount(1000)"><span class="price-convert" data-ghs="1000">GH₵1,000</span></button>
       <button class="amount-btn custom" id="customBtn" onclick="selectCustom()">Custom</button>
     </div>
 
@@ -117,7 +117,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="patron-card" id="patronCard" style="display:none">
       <div class="patron-icon">&#10024;</div>
       <div class="patron-name">Monthly Patron</div>
-      <div class="patron-price"><span class="price-convert" data-ghs="50">GH&#8373;50</span> <small>/mo</small></div>
+      <div class="patron-price"><span class="price-convert" data-ghs="50">GH₵50</span> <small>/mo</small></div>
       <div class="patron-desc">Early access to content, supporter badge, and monthly teaching video from Gideon. Cancel anytime.</div>
       <ul class="patron-features">
         <li>Early access to all new content</li>
@@ -193,7 +193,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   view.style.display = 'block';
   document.getElementById('rTxRef').textContent = tx;
   document.getElementById('rAmount').textContent = amount
-    ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH¢ ' + Number(amount).toFixed(2))
+    ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH₵ ' + Number(amount).toFixed(2))
     : '—';
   var st = document.getElementById('rStatus');
   if (status === 'pending') {
@@ -296,7 +296,7 @@ function startPayment() {
   var amount = selectedAmount;
   if (custSelected) {
     var c = parseFloat(document.getElementById('customAmount').value);
-    if (!c || c < 5) { window.payError('Please enter a valid amount (minimum GHS 5).', 'donate'); return; }
+    if (!c || c < 5) { window.payError('Please enter a valid amount (minimum GH₵5).', 'donate'); return; }
     amount = c;
   }
 
@@ -369,22 +369,24 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
         window.location.href = d.invoice_url;
         return;
       }
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+
       // Manual send — show the addresses.
       var addrHtml = '';
       var hasAddr = false;
       if (d.addresses && d.addresses.btc) {
         hasAddr = true;
-        addrHtml += '<h3>Pay with Bitcoin (BTC)</h3><div class="gw-address"><span>' + d.addresses.btc + '</span><button onclick="copyText(\'' + d.addresses.btc + '\')">Copy</button></div>';
+        addrHtml += '<h3>Pay with Bitcoin (BTC)</h3><div class="gw-address"><span>' + esc(d.addresses.btc) + '</span><button onclick="copyText(\'' + String(d.addresses.btc).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
       }
       if (d.addresses && d.addresses.usdt_trc20) {
         hasAddr = true;
-        addrHtml += '<h3>Pay with USDT (TRC-20)</h3><div class="gw-address"><span>' + d.addresses.usdt_trc20 + '</span><button onclick="copyText(\'' + d.addresses.usdt_trc20 + '\')">Copy</button></div>';
+        addrHtml += '<h3>Pay with USDT (TRC-20)</h3><div class="gw-address"><span>' + esc(d.addresses.usdt_trc20) + '</span><button onclick="copyText(\'' + String(d.addresses.usdt_trc20).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
       }
-      addrHtml += '<p class="gw-amount">$ ' + Number(d.amount_usd || 0).toFixed(2) + ' <small style="font-size:13px;color:#6B7F9A">(' + Number(d.amount_ghs || amount).toFixed(2) + ' GHS)</small></p>';
-      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Use this memo when sending so we can match you: <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong></p>';
+      addrHtml += '<p class="gw-amount">$ ' + Number(d.amount_usd || 0).toFixed(2) + ' <small style="font-size:13px;color:#6B7F9A">(' + Number(d.amount_ghs || amount).toFixed(2) + ' GH₵)</small></p>';
+      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Use this memo when sending so we can match you: <strong style="color:#CBD5E1;font-family:monospace">' + esc(d.tx_ref) + '</strong></p>';
       addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Send to a brand-new address from your wallet. We confirm crypto gifts manually within 24 hours and email your receipt.</p>';
       if (!hasAddr) {
-        addrHtml = '<h3>Crypto donation</h3><p>Crypto checkout is being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send any crypto amount with memo <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong> and we will reach out.</p>';
+        addrHtml = '<h3>Crypto donation</h3><p>Crypto checkout is being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send any crypto amount with memo <strong style="color:#CBD5E1;font-family:monospace">' + esc(d.tx_ref) + '</strong> and we will reach out.</p>';
       }
       addrHtml +='<button class="gw-close" onclick="closeGatewayPanel()">Done — I have sent it</button>';
       showGatewayPanel(addrHtml);
@@ -399,11 +401,11 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
         navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'bank'}), page: location.pathname, email: email}));
       }
       if (!d.configured) {
-        showGatewayPanel('<h3>Bank transfer</h3><p>Bank transfers are being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send <strong style="color:#CBD5E1">GH¢ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> with reference <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong> and we will reach out.</p><button class="gw-close" onclick="closeGatewayPanel()">Done</button>');
+        showGatewayPanel('<h3>Bank transfer</h3><p>Bank transfers are being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send <strong style="color:#CBD5E1">GH₵ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> with reference <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong> and we will reach out.</p><button class="gw-close" onclick="closeGatewayPanel()">Done</button>');
       } else {
-        var bankHtml = '<h3>Pay by Bank Transfer</h3><div class="gw-note">Send <strong class="gw-amount">GH¢ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> to:</div>' +
-          '<div class="gw-momo">' + d.bank_name + '<br>' + d.account_name + '<br><strong>' + d.account_number + '</strong>' + (d.bank_branch ? '<br>' + d.bank_branch : '') + '</div>' +
-          '<div class="gw-note">Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + d.tx_ref + '</strong></div><div class="gw-note">' + d.note + '</div>' +
+        var bankHtml = '<h3>Pay by Bank Transfer</h3><div class="gw-note">Send <strong class="gw-amount">GH₵ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> to:</div>' +
+          '<div class="gw-momo">' + esc(d.bank_name) + '<br>' + esc(d.account_name) + '<br><strong>' + esc(d.account_number) + '</strong>' + (d.bank_branch ? '<br>' + esc(d.bank_branch) : '') + '</div>' +
+          '<div class="gw-note">Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + esc(d.tx_ref) + '</strong></div><div class="gw-note">' + esc(d.note) + '</div>' +
           '<button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
         showGatewayPanel(bankHtml);
       }
@@ -417,7 +419,7 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'manual'}), page: location.pathname, email: email}));
       }
-      var m = 'Send <strong class="gw-amount">GH\u00a2 ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> via MoMo to:';
+      var m = 'Send <strong class="gw-amount">GH\u20b5 ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> via MoMo to:';
       var panelHtml = '<h3>Pay with Mobile Money</h3><div class="gw-momo">' + d.payout_display + '</div><div class="gw-note">' + (d.momo_name || 'GABOCHIE DESIGN') + ' — ' + d.momo_number + '<br>Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + d.tx_ref + '</strong></div><div class="gw-note">' + d.note + '</div><button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
       showGatewayPanel(panelHtml);
       window.pendingTxRef = d.tx_ref;
@@ -430,7 +432,7 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
   }).catch(function(err) {
     btn.disabled = false;
     btn.textContent = 'Try Again';
-    window.payError((err.message || 'Something went wrong.') + ' — email studio@gabochie.com', 'donate');
+    window.payErrorText((err.message || 'Something went wrong.') + ' — email studio@gabochie.com', 'donate');
   });
 }
 

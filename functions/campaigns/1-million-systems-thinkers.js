@@ -1,5 +1,5 @@
 var esc = function(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
-var fmt = function(n) { return 'GH\u00a2 ' + Number(n || 0).toLocaleString(); };
+var fmt = function(n) { return 'GH\u20b5 ' + Number(n || 0).toLocaleString(); };
 var fmtDate = function(d) {
   if (!d) return '';
   var p = d.split(/[-T]/);
@@ -60,7 +60,7 @@ export async function onRequest(context) {
     }).join('');
 
     var faqs = [
-      { q: 'How are the funds used?', a: '100% of donations fund our Systems Thinking curriculum: curriculum development (20%), trainer stipends (35%), learning materials (25%), digital platform (15%), and admin/operations (5%). Every GH\u00a2100 trains one youth for a full semester.' },
+      { q: 'How are the funds used?', a: '100% of donations fund our Systems Thinking curriculum: curriculum development (20%), trainer stipends (35%), learning materials (25%), digital platform (15%), and admin/operations (5%). Every GH\u20b5100 trains one youth for a full semester.' },
       { q: 'Who gets trained?', a: 'Ghanaian youth aged 15-35 across all 16 regions. We prioritize underserved communities, young women, and persons with disabilities through targeted outreach and scholarships.' },
       { q: 'Is this a government program?', a: 'No, this is a citizen-led initiative by Studio Gabochie. We collaborate with schools, churches, mosques, district assemblies, and CSOs to reach youth where they already gather.' },
       { q: 'How do I know my donation was received?', a: 'You will receive an email receipt immediately after payment. A formal tax-deductible invoice is also available on request.' },
@@ -75,14 +75,14 @@ export async function onRequest(context) {
     var html = '<!DOCTYPE html><html lang="en"><head>' +
       '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
       '<title>Train 1 Million Ghanaian Youth in Systems Thinking — Flagship Campaign</title>' +
-      '<meta name="description" content="A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.">' +
+      '<meta name="description" content="A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u20b5100 trains one youth for a full semester.">' +
       '<meta property="og:title" content="Train 1 Million Youth in Systems Thinking">' +
-      '<meta property="og:description" content="Join the movement to equip 1,000,000 Ghanaian youth with the skills to shape Ghana\u2019s future. Every GH\u00a2100 trains one youth for a semester.">' +
+      '<meta property="og:description" content="Join the movement to equip 1,000,000 Ghanaian youth with the skills to shape Ghana\u2019s future. Every GH\u20b5100 trains one youth for a semester.">' +
       '<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">' +
       '<meta property="og:url" content="' + pageUrl + '">' +
       '<meta property="og:type" content="website">' +
       '<meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="' + pageUrl + '">' +
-      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u00a2100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://studio.gabochie.com/assets/images/og-image.jpg","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"Studio Gabochie","url":"https://studio.gabochie.com/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"Campaign","name":"Train 1 Million Ghanaian Youth in Systems Thinking","description":"A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Every GH\u20b5100 trains one youth for a full semester.","url":"' + pageUrl + '","image":"https://studio.gabochie.com/assets/images/og-image.jpg","status":"https://schema.org/ActiveActionStatus","fundingGoal":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.goal_amount || 1000000) + '"},"amountRaised":{"@type":"MonetaryAmount","currency":"GHS","value":"' + (campaign.raised_amount || 0) + '"},"sponsor":{"@type":"Organization","name":"Studio Gabochie","url":"https://studio.gabochie.com/"},"eligibleRegion":{"@type":"Country","name":"GH"}}</script>' +
       '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
       '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">' +
       '<style>' +
@@ -158,7 +158,7 @@ export async function onRequest(context) {
       '<!-- HERO -->' +
       '<div class="hero"><div class="hero-badge">Flagship Campaign</div>' +
       '<h1>Train <em>1 Million</em> Systems Thinking Ghanaian Youth</h1>' +
-      '<p class="sub">A generation-defining mission to equip <strong>1,000,000 Ghanaian youth</strong> with systems thinking, problem-solving, and AI-era skills. Every <strong>GH\u00a2100</strong> trains one youth for a full semester.</p>' +
+      '<p class="sub">A generation-defining mission to equip <strong>1,000,000 Ghanaian youth</strong> with systems thinking, problem-solving, and AI-era skills. Every <strong>GH\u20b5100</strong> trains one youth for a full semester.</p>' +
       '<div class="hero-stats">' +
       '<div class="hero-stat"><div class="num">' + fmt(raised) + '</div><div class="lbl">Raised</div></div>' +
       '<div class="hero-stat"><div class="num">' + fmt(goal) + '</div><div class="lbl">Goal</div></div>' +
@@ -221,7 +221,7 @@ export async function onRequest(context) {
       '<a href="mailto:?subject=' + encodeURIComponent('Train 1 Million Ghanaian Youth in Systems Thinking') + '&body=' + encodeURIComponent('I am supporting this campaign to train 1 million Ghanaian youth in systems thinking. Join me: ' + pageUrl) + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>' +
       '</div></div>' +
       '<!-- STICKY CTA -->' +
-      '<div class="sticky-cta"><button onclick="document.getElementById(\'donate\').scrollIntoView({behavior:\'smooth\'})">Donate Now — Every GH\u00a2100 Trains 1 Youth</button></div>' +
+      '<div class="sticky-cta"><button onclick="document.getElementById(\'donate\').scrollIntoView({behavior:\'smooth\'})">Donate Now — Every GH\u20b5100 Trains 1 Youth</button></div>' +
       '<script>' +
       'var SLUG="1-million-systems-thinkers";' +
       'function pickTier(el){' +

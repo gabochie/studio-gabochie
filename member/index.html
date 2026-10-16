@@ -105,7 +105,7 @@ h1 span{color:#C9A84C}
       <h2>Go Deeper <span style="color:#5A7A9F;font-size:13px;font-weight:400">— only when it serves you</span></h2>
       <p style="margin-bottom:16px">Unlock every program in full, the entire book library, mentorship, and more.</p>
       <div class="plan-grid" id="plans"></div>
-      <p style="margin-top:16px;font-size:13px;color:#8A9BB5">Prefer to own, not subscribe? <a href="/books/" style="color:#C9A84C">Get the Premium Books Bundle — GH¢300 one-time</a></p>
+      <p style="margin-top:16px;font-size:13px;color:#8A9BB5">Prefer to own, not subscribe? <a href="/books/" style="color:#C9A84C">Get the Premium Books Bundle — GH₵300 one-time</a></p>
     </div>
   </div>
 </div>
@@ -138,6 +138,8 @@ var sessionToken = getCookie('ga_session');
 var TIER_SLUG_TO_LEGACY = { free:'free', supporter:'supporter', scholar:'premium', patron:'vip', founding:'founding' };
 var LEGACY_TO_TIER_SLUG = { free:'free', premium:'scholar', vip:'patron', supporter:'supporter', founding:'founding' };
 
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+
 function renderPlans(plans, currentTier) {
   var container = document.getElementById('plans');
   var activeSlug = LEGACY_TO_TIER_SLUG[currentTier] || currentTier;
@@ -151,13 +153,13 @@ function renderPlans(plans, currentTier) {
     var features = (typeof p.features === 'string' ? JSON.parse(p.features) : p.features) || [];
     var featureLis = '';
     for (var j = 0; j < features.length; j++) {
-      featureLis += '<li>&#10003; ' + features[j] + '</li>';
+      featureLis += '<li>&#10003; ' + esc(features[j]) + '</li>';
     }
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-gold" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
         (price > 0 ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
-    var priceHtml = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GHS ' + price) : 'Free';
+    var priceHtml = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GH₵ ' + price) : 'Free';
     html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + priceHtml + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
   }
   var foot = 'Founding is yearly-only.';
@@ -165,16 +167,16 @@ function renderPlans(plans, currentTier) {
   html += '<p style="grid-column:1/-1;font-size:11px;color:#5A7A9F;text-align:center;margin:4px 0 0">' + foot + '</p>';
   container.innerHTML = html;
 }
-function subscribeTier(slug, btn) {
+function subscribeTier(slug, btn, interval) {
   btn.disabled = true; btn.textContent = 'Processing\u2026';
   return fetch('/api/tiers/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
-    body: JSON.stringify({ tier: slug, interval: 'monthly' })
+    body: JSON.stringify({ tier: slug, interval: interval || 'monthly' })
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
-    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; if (typeof window.payError === 'function') window.payError(d.message || 'Could not start checkout.', 'tier'); else alert(d.message || 'Failed to start checkout'); return null; }
+    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; if (typeof window.payErrorText === 'function') window.payErrorText(d.message || 'Could not start checkout.', 'tier'); else alert(d.message || 'Failed to start checkout'); return null; }
     return d;
   })
   .catch(function() {
@@ -186,7 +188,7 @@ function subscribeTier(slug, btn) {
 function upgrade(slug) {
   if (!sessionToken) return;
   var btn = event && event.target ? event.target : document.querySelector('.btn-gold');
-  subscribeTier(slug, btn).then(function(d) {
+  subscribeTier(slug, btn, slug === 'founding' ? 'yearly' : 'monthly').then(function(d) {
     if (!d) return;
     document.cookie = 'ga_upgrade=' + d.tier_slug + '; path=/; max-age=60';
     window.payWithExpressPay({
@@ -211,7 +213,7 @@ function upgradeCrypto(slug) {
   if (!sessionToken) return;
   if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
   var btn = event && event.target ? event.target : document.querySelector('.btn-gold');
-  subscribeTier(slug, btn).then(function(d) {
+  subscribeTier(slug, btn, slug === 'founding' ? 'yearly' : 'monthly').then(function(d) {
     if (!d) return;
     window.CryptoPay.start({ purpose: 'tier', tx_ref: d.tx_ref, button: btn });
   });
@@ -275,9 +277,13 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(function(r) { if (r) return r.json(); })
     .then(function(d) {
       if (d && d.status === 'ok') renderPlans(d.tiers, currentTier);
+      window.__memberTiers = (d && d.tiers) || window.__memberTiers || null;
+      window.__memberCurrent = currentTier;
     })
     .catch(function() { document.getElementById('loading').textContent = 'Something went wrong. Please refresh.'; });
 });
+window.gaRepriceDynamic = function () { if (window.__memberTiers) renderPlans(window.__memberTiers, window.__memberCurrent); };
+window.addEventListener('ga:currencychange', window.gaRepriceDynamic);
 </script>
 </body>
 </html>
