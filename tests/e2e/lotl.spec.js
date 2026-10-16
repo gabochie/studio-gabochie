@@ -188,6 +188,44 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(page.locator('#doneDim.open')).toBeHidden();
   });
 
+  test('prev returns to the previous stop', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.locator('#nextBtn').click();
+    await page.locator('#nextBtn').click();
+    var saved = await page.evaluate(function () { return localStorage.getItem('lotl_progress_v1'); });
+    expect(saved).toContain('"idx":2');
+    await page.locator('#prevBtn').click();
+    saved = await page.evaluate(function () { return localStorage.getItem('lotl_progress_v1'); });
+    expect(saved).toContain('"idx":1');
+    await expect(page.locator('#playBtn')).toContainText('▶');
+  });
+
+  test('play pauses and resumes the current stop audio', async function ({ page }) {
+    await page.goto('/love-of-the-lord/');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await page.evaluate(function () {
+      document.querySelectorAll('#stage audio').forEach(function (a) { a.remove(); });
+      var C = new (window.AudioContext || window.webkitAudioContext)();
+      var o = C.createOscillator();
+      var g = C.createGain(); g.gain.value = 0;
+      o.connect(g);
+      var d = C.createMediaStreamDestination(); g.connect(d); o.start();
+      var a = document.createElement('audio'); a.id = 'probeTone'; a.srcObject = d.stream;
+      document.getElementById('stage').appendChild(a);
+    });
+    await page.locator('#playBtn').click();
+    await expect.poll(async function () {
+      return page.evaluate(function () { return document.getElementById('probeTone').paused; });
+    }).toBe(false);
+    await expect(page.locator('#playBtn')).toContainText('⏸');
+    await page.locator('#playBtn').click();
+    await expect.poll(async function () {
+      return page.evaluate(function () { return document.getElementById('probeTone').paused; });
+    }).toBe(true);
+    await expect(page.locator('#playBtn')).toContainText('▶');
+  });
+
   test('name pre-fills across forms after first submit', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page.locator('#prayerForm')).toBeVisible({ timeout: 10000 });

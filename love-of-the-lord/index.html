@@ -142,7 +142,8 @@ details.fold summary::-webkit-details-marker{display:none}
 .screen .stage .audio-cover{position:static;inset:auto;width:74px;height:74px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;opacity:1}
 .audio-title{font-family:'DM Sans',sans-serif;color:#F1F5F9;font-size:13px;text-align:center;max-width:90%;position:relative;z-index:2}
 .audio-stage audio{width:min(520px,92%);position:relative;z-index:2}
-.screen.has-media .play{position:absolute;right:12px;bottom:12px;width:46px;height:46px;font-size:15px;z-index:4;border-width:3px}
+.tport{position:relative;z-index:2;display:flex;gap:14px;align-items:center;justify-content:center;margin:4px 0 2px}
+.play.side{width:54px;height:54px;font-size:19px;border-width:3px}
 .screen.has-media .now{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 8px;background:linear-gradient(transparent,rgba(0,0,0,.8));text-align:left}
 .svc-pick{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
 .svc-pick .season{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2F4A2E}
@@ -199,7 +200,11 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="screen">
 <div class="stage" id="stage" hidden></div>
 <img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo" loading="lazy">
-<button type="button" class="play" id="playBtn" aria-label="Next part" title="Next part" onclick="return lotlPlay()">⏭</button>
+<div class="tport" role="group" aria-label="Service transport">
+<button type="button" class="play side" id="prevBtn" aria-label="Previous part" title="Previous part" onclick="return lotlPrev()">⏮</button>
+<button type="button" class="play" id="playBtn" aria-label="Play" title="Play" aria-pressed="false" onclick="return lotlPlay()">▶</button>
+<button type="button" class="play side" id="nextBtn" aria-label="Next part" title="Next part" onclick="return lotlNext()">⏭</button>
+</div>
 <div class="now" id="nowPlaying" aria-live="polite">Welcome — Grace for New Beginnings · Service 001</div>
 </div>
 <div class="pmeta">
