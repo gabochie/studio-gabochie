@@ -47,7 +47,7 @@
       if (els.priceValue) {
         var renderPrice = function () {
           var txt = c.price > 0
-            ? (typeof window.formatPrice === 'function' ? window.formatPrice(c.price) : 'GH\u00a2 ' + c.price)
+            ? (typeof window.formatPrice === 'function' ? window.formatPrice(c.price) : 'GH\u20b5 ' + c.price)
             : 'Free';
           els.priceValue.innerHTML = txt + (c.price > 0 ? ' <small>one-time</small>' : '');
         };
@@ -57,9 +57,10 @@
       }
       if (els.priceNote) els.priceNote.textContent = c.priceNote || '';
       if (els.priceMeta) {
+        var esc = window.__esc || (window.__esc = function (s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; });
         var meta = [];
         var addMeta = function (icon, text) {
-          if (text) meta.push('<span><i class="ti ' + icon + '"></i> ' + text + '</span>');
+          if (text) meta.push('<span><i class="ti ' + icon + '"></i> ' + esc(text) + '</span>');
         };
         addMeta('ti-clock', c.duration);
         addMeta('ti-chart-line', c.level);
@@ -68,12 +69,12 @@
       }
       if (els.outcomesGrid && c.outcomes) {
         els.outcomesGrid.innerHTML = c.outcomes.map(function (o) {
-          return '<div class="outcome"><i class="ti ti-check"></i><span>' + o + '</span></div>';
+          return '<div class="outcome"><i class="ti ti-check"></i><span>' + esc(o) + '</span></div>';
         }).join('');
       }
       if (els.moduleList && c.modules) {
         els.moduleList.innerHTML = c.modules.map(function (m, i) {
-          return '<div class="module-item"><div class="module-num">' + (i + 1) + '</div><div><h3>' + m.title + '</h3><p>' + m.summary + '</p></div></div>';
+          return '<div class="module-item"><div class="module-num">' + (i + 1) + '</div><div><h3>' + esc(m.title) + '</h3><p>' + esc(m.summary) + '</p></div></div>';
         }).join('');
       }
       if (els.curriculumSub) {
@@ -84,7 +85,7 @@
       if (els.enrollSub) els.enrollSub.textContent = c.tagline || '';
       if (els.faqList && c.faqs) {
         els.faqList.innerHTML = c.faqs.map(function (f) {
-          return '<div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">' + f.q + ' <i class="ti ti-chevron-down"></i></button><div class="faq-answer">' + f.a + '</div></div>';
+          return '<div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">' + esc(f.q) + ' <i class="ti ti-chevron-down"></i></button><div class="faq-answer">' + esc(f.a) + '</div></div>';
         }).join('');
       }
     }
@@ -122,12 +123,12 @@
         }).then(function (r) { return r.json(); }).then(function (d) {
           if (d.status === 'ok') {
             msg.className = 'msg ok';
-            msg.innerHTML = "<strong>You're in!</strong> Check your email for dashboard access. <a href='/dashboard/?token=" + (d.enrollment ? d.enrollment.access_token : '') + "'>Go to your dashboard &rarr;</a>";
+            msg.innerHTML = "<strong>You're in!</strong> Check your email for dashboard access. <a href='/dashboard/?token=" + esc(d.enrollment ? d.enrollment.access_token : '') + "'>Go to your dashboard &rarr;</a>";
             btn.style.display = 'none';
             if (typeof window.tagOnboard === 'function') window.tagOnboard(email, name, 'enrolled:' + slug);
           } else {
             msg.className = 'msg err';
-            msg.innerHTML = d.message || 'Something went wrong. Please try again.';
+            msg.innerHTML = esc(d.message || 'Something went wrong. Please try again.');
             btn.disabled = false;
             btn.innerHTML = 'Start Free';
           }

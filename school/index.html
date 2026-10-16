@@ -332,7 +332,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 </div>
 
 <script>
-if (typeof window.formatPrice !== 'function') { window.formatPrice = function(a,c){return(c||'GH¢ ')+(Number(a)||0).toFixed(2)}; }
+if (typeof window.formatPrice !== 'function') { window.formatPrice = function(a,c){return(c||'GH₵ ')+(Number(a)||0).toFixed(2)}; }
 var selectedPurpose = '';
 var selectedSlug = '';
 var studentEmail = '';
@@ -611,11 +611,13 @@ function loadPrograms() {
       if (a.status !== 'active' && b.status === 'active') return 1;
       return (a.sort_order || 0) - (b.sort_order || 0);
     });
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+
     d.programs.forEach(function(p, i){
       var isComing = p.status === 'coming_soon';
       var isActive = p.status === 'active';
       var isGuitar = p.slug === 'guitar-method';
-      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access ' + window.formatPrice(p.price) : 'Free for all';
+      var priceLabel = p.price > 0 ? 'Free Sample \u00b7 Full Access ' + (typeof window.formatPrice === 'function' ? window.formatPrice(p.price) : 'GH₵ ' + p.price) : 'Free for all';
       var card = document.createElement('div');
       card.className = isComing ? 'card card-coming' : (isActive && i === 0 ? 'card card-active' : 'card');
       card.setAttribute('data-slug', p.slug);
@@ -623,15 +625,15 @@ function loadPrograms() {
       var badge = isComing ? '<span class="badge badge-coming">Coming Soon</span>' : (isPaid ? '<span class="badge badge-paid">Free Sample</span>' : '<span class="badge badge-free">Free for All</span>');
       var btnHtml;
       if (isComing) {
-        btnHtml = '<button class="btn btn-coming" onclick="openWaitlist(\'' + p.slug + '\')">Notify Me</button>';
+        btnHtml = '<button class="btn btn-coming" onclick="openWaitlist(\'' + String(p.slug).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + '\')">Notify Me</button>';
       } else if (isGuitar) {
         btnHtml = '<a href="/school/guitar/" class="btn btn-gold">Start Free Trial &rarr;</a>';
       } else {
-        btnHtml = '<button class="btn btn-gold" onclick="' + (student ? "handleEnroll('" + p.slug + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
+        btnHtml = '<button class="btn btn-gold" onclick="' + (student ? "handleEnroll('" + String(p.slug).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "')" : "scrollToAuth()") + '">' + (student ? 'Start Free Sample' : 'Register to Enroll') + '</button>';
       }
       var description = isComing ? '<div class="desc coming-desc">' + p.description + '</div>' : '<div class="desc">' + p.description + '</div>';
       var track = trackLabel(p.slug);
-      card.innerHTML = badge + track + '<h2>' + p.title + '</h2>' + '<div class="slugline">' + p.tagline + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + p.duration + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>' + window.formatPrice(p.price) + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div>' + btnHtml;
+      card.innerHTML = badge + track + '<h2>' + esc(p.title) + '</h2>' + '<div class="slugline">' + esc(p.tagline) + '</div>' + description + '<div class="meta"><span>Duration: <strong>' + esc(p.duration) + '</strong></span>' + (p.price > 0 ? '<span>Full Access: <strong>' + (typeof window.formatPrice === 'function' ? window.formatPrice(p.price) : 'GH₵ ' + p.price) + '</strong></span>' : '') + '</div>' + '<div class="price-area">' + priceLabel + '</div><div class="bill-note">≈ in your currency · charged in GHS</div>' + btnHtml;
       grid.appendChild(card);
     });
   }).catch(function(){

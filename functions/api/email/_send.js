@@ -283,7 +283,7 @@ export const bookUpsell = (name) => `<!DOCTYPE html><html><body style="font-fami
       <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">Go Deeper with the <span style="color:#C9A84C">Premium Bundle</span></h1>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Thank you for your recent book purchase. I hope the content is already reshaping how you see your work and your world.</p>
-      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Did you know you can get the <strong>complete premium bundle</strong> — all my published works — for just <strong>GH¢300</strong>? That is the most affordable way to build your library.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Did you know you can get the <strong>complete premium bundle</strong> — all my published works — for just <strong>GH₵300</strong>? That is the most affordable way to build your library.</p>
       <div style="text-align:center;margin:24px 0">
         <a href="https://studio.gabochie.com/books/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Explore the Bundle</a>
       </div>

@@ -76,6 +76,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 
 /* Currency toggle */
 .currency-toggle{display:flex;gap:6px;margin-bottom:24px;justify-content:center;flex-wrap:wrap}
+#currencyToggle{display:none!important} /* no prices on this page; global toggle would convert nothing */
 .currency-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 14px;border:1px solid var(--rule);border-radius:20px;background:transparent;color:var(--ink-lt);cursor:pointer;transition:all .2s;font-weight:500;letter-spacing:.02em}
 .currency-btn:hover{border-color:var(--gold);color:var(--gold)}
 .currency-btn.active{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600}
@@ -100,7 +101,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Libre Baskerville',Georg
 .faq-a.open{display:block}
 
 /* Form */
-.form-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
+.form-overlay{display:none;position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
 .form-overlay.open{display:flex}
 .form-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto}
 .form-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:8px}

@@ -662,7 +662,7 @@ var Toast = {
     var icons = { succ:'\u2713', err:'\u2717', warn:'\u26A0', info:'\u2139' };
     var t = document.createElement('div');
     t.className = 't t-' + (type === 'success' ? 'succ' : type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'info');
-    t.innerHTML = '<span class="ti">' + (icons[type === 'success' ? 'succ' : type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'info'] || '\u2139') + '</span><span class="tm">' + msg + '</span>';
+    t.innerHTML = '<span class="ti">' + (icons[type === 'success' ? 'succ' : type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'info'] || '\u2139') + '</span><span class="tm">' + _e(msg) + '</span>';
     $('tc').appendChild(t);
     setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300); }, dur);
   },

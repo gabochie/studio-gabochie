@@ -86,21 +86,21 @@ body{background:var(--bg-dark);color:var(--text-body);font-family:Inter,sans-ser
       var barW = Math.min(pct, 100);
       var isComplete = pct >= 100;
       var donateRef = c.slug ? 'camp_' + c.slug : '';
-      var currencySymbol = c.currency === 'GHS' ? 'GH\u00a2' : c.currency === 'USD' ? '$' : c.currency;
+      var currencySymbol = c.currency === 'GHS' ? 'GH\u20b5' : c.currency === 'USD' ? '$' : c.currency;
       return '<div class="campaign-card">'+
         '<h2>' + esc(c.name) + '</h2>'+
         (c.description ? '<p class="desc">' + esc(c.description) + '</p>' : '')+
         '<div class="campaign-meta">'+
           '<span class="tag ' + (isComplete ? 'green' : '') + '">' + esc(c.type) + '</span>'+
-          (c.end_date ? '<span class="tag">Ends ' + c.end_date + '</span>' : '')+
+          (c.end_date ? '<span class="tag">Ends ' + esc(c.end_date) + '</span>' : '')+
         '</div>'+
         '<div class="progress-bar-wrap"><div class="progress-bar-fill ' + (isComplete ? 'complete' : '') + '" style="width:' + barW + '%"></div></div>'+
         '<div class="progress-stats">'+
-          '<span class="raised ' + (isComplete ? 'complete' : '') + '">' + currencySymbol + ' ' + commafy(c.raised_amount) + '</span>'+
+          '<span class="raised ' + (isComplete ? 'complete' : '') + '">' + esc(currencySymbol) + ' ' + commafy(c.raised_amount) + '</span>'+
           '<span class="pct">' + pct + '%</span>'+
-          '<span class="goal">of ' + currencySymbol + ' ' + commafy(c.goal_amount) + '</span>'+
+          '<span class="goal">of ' + esc(currencySymbol) + ' ' + commafy(c.goal_amount) + '</span>'+
         '</div>'+
-        '<a class="cta" href="/donate/?campaign=' + encodeURIComponent(donateRef) + '" onclick="setCampaignRef(\'' + donateRef + '\')">Donate Now</a>'+
+        '<a class="cta" href="/donate/?campaign=' + encodeURIComponent(donateRef) + '" onclick="setCampaignRef(\'' + String(donateRef).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + '\')">Donate Now</a>'+
       '</div>';
     }).join('');
 

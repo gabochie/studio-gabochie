@@ -53,7 +53,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .footer a{color:#5A7A9F;text-decoration:none}
 .footer a:hover{color:#C9A84C}
 .secure-badge{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;font-size:12px;color:#5A7A9F}
-.lead-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;display:none;align-items:center;justify-content:center}
+.lead-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:100000;display:none;align-items:center;justify-content:center}
 .lead-overlay.open{display:flex}
 .lead-modal{background:#0F1E38;border:1px solid #1E3250;border-radius:16px;padding:32px 28px;max-width:400px;width:90%;text-align:center}
 .lead-modal .icon{font-size:40px;margin-bottom:8px}
@@ -80,20 +80,20 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 
   <div class="book-card" style="border:2px solid #C9A84C;background:linear-gradient(135deg,#0F1E38,#1A2A45)">
     <div class="icon">🔥</div>
-    <div class="info"><h3>7 Fearless Steps From Witchcraft to Greater Ghanaian Destiny</h3><p>Pre-order the 36-page easy-read booklet (GHS 49). Read + listen to the free sample now — no email needed.</p><div class="meta"><span class="free-badge">Pre-order · Free sample</span></div></div>
+    <div class="info"><h3>7 Fearless Steps From Witchcraft to Greater Ghanaian Destiny</h3><p>Pre-order the 36-page easy-read booklet (GH₵49). Read + listen to the free sample now — no email needed.</p><div class="meta"><span class="free-badge">Pre-order · Free sample</span></div></div>
     <a class="btn btn-gold" href="/books/fearless-steps/">Pre-Order</a>
   </div>
 
   <div class="free-books" id="freeBooks">
     <h3>&#128214; Downloads — Pay What You Want</h3>
-    <p style="font-size:13px;color:#5A7A9F;margin-top:-10px;margin-bottom:16px">All resources are available for <strong>GH&#8373;50–100</strong> (&#36;3–6). Your contribution supports the mission.</p>
+    <p style="font-size:13px;color:#5A7A9F;margin-top:-10px;margin-bottom:16px">All resources are available for <strong>GH₵50–100</strong> (&#36;3–6). Your contribution supports the mission.</p>
     <div id="freeBooksList"></div>
   </div>
 
   <div class="bundle-card" id="bundleCard">
     <h3>&#127775; Premium Books Bundle</h3>
     <p>Get all 4 published works in one premium download package. Support the mission and unlock the full collection.</p>
-    <div class="price"><span class="price-convert" data-ghs="300">GH&#8373;300</span> <span>/ one-time</span></div>
+    <div class="price"><span class="price-convert" data-ghs="300">GH₵300</span> <span>/ one-time</span></div>
     <p class="bill-note">Shown in your currency (≈). Billed in GH₵.</p>
     <div class="input-group" style="margin-bottom:12px">
       <input type="email" id="bundleEmail" placeholder="Your email address" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
@@ -101,7 +101,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="input-group" style="margin-bottom:16px">
       <input type="text" id="bundleName" placeholder="Your full name" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
     </div>
-    <button class="btn btn-gold" id="buyBtn" onclick="buyBundle()">Buy Bundle — <span class="price-convert" data-ghs="300">GH&#8373;300</span></button>
+    <button class="btn btn-gold" id="buyBtn" onclick="buyBundle()">Buy Bundle — <span class="price-convert" data-ghs="300">GH₵300</span></button>
     <div style="margin-top:10px"><button class="btn btn-outline" id="buyCryptoBtn" onclick="buyBundleCrypto()">Pay with Crypto</button></div>
     <div class="secure-badge">&#128274; Secured by ExpressPay</div>
     <div class="trust-row"><span>Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
@@ -115,13 +115,13 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <div class="icon">&#128214;</div>
         <h3>Get Your Copy</h3>
         <p class="book-name" id="leadBookName"></p>
-        <p style="font-size:12px;color:#6B7F9A;margin-bottom:12px">Minimum contribution: <strong style="color:#C9A84C"><span class="price-convert" data-ghs="50">GH&#8373;50</span></strong></p>
+        <p style="font-size:12px;color:#6B7F9A;margin-bottom:12px">Minimum contribution: <strong style="color:#C9A84C"><span class="price-convert" data-ghs="50">GH₵50</span></strong></p>
         <form id="leadForm">
           <input type="text" name="name" placeholder="Your name" required>
           <input type="email" name="email" id="leadEmail" placeholder="Your email" required>
           <input type="tel" name="phone" placeholder="WhatsApp (e.g. 233501234567)" style="width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:10px">
           <div style="display:flex;gap:8px;margin-bottom:10px">
-            <input type="number" id="payAmount" placeholder="Amount (GH&#8373;)" min="50" value="50" step="10" style="flex:1;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;width:0">
+            <input type="number" id="payAmount" placeholder="Amount (GH₵)" min="50" value="50" step="10" style="flex:1;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;width:0">
             <button type="button" id="payWithBtn" onclick="payWithAmount()" style="padding:12px 16px;border:2px solid #C9A84C;border-radius:8px;background:transparent;color:#C9A84C;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.1em">Pay &amp; Download</button>
           </div>
           <button type="button" id="payCryptoBtn" onclick="payWithCrypto()" style="width:100%;padding:10px;margin-bottom:10px;border:1px solid #1E3250;border-radius:8px;background:transparent;color:#8A9BB5;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.1em">Pay with Crypto</button>
@@ -201,7 +201,7 @@ function payWithAmount() {
   if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
   if (!name) { window.payError('Please enter your name.', 'books'); return; }
   tagOnboard(email, name, 'book_download');
-  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u00a250.', 'books'); return; }
+  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u20b550.', 'books'); return; }
   if (!amount || amount <= 0) { document.getElementById('leadSubmitBtn').click(); return; }
 
   var tx_ref = 'bookpw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
@@ -231,8 +231,8 @@ function payWithCrypto() {
   var amount = parseFloat(document.getElementById('payAmount').value);
   if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'books'); return; }
   if (!name) { window.payError('Please enter your name.', 'books'); return; }
-  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u00a250.', 'books'); return; }
-  if (!amount || amount <= 0) { window.payError('Enter an amount of at least GH\u00a250 for crypto payment.', 'books'); return; }
+  if (amount > 0 && amount < 50) { window.payError('Minimum paid contribution is GH\u20b550.', 'books'); return; }
+  if (!amount || amount <= 0) { window.payError('Enter an amount of at least GH\u20b550 for crypto payment.', 'books'); return; }
   tagOnboard(email, name, 'book_download_crypto');
   if (typeof window.CryptoPay === 'undefined') { if (typeof window.payError === 'function') window.payError('Payment widget still loading. Try again in a moment.', 'books'); else alert('Payment widget still loading. Try again in a moment.'); return; }
   var tx_ref = 'bookpw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
@@ -240,13 +240,15 @@ function payWithCrypto() {
   window.CryptoPay.start({ purpose: 'books', tx_ref: tx_ref, button: document.getElementById('payCryptoBtn') });
 }
 
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+
 function loadBooks() {
   fetch('/api/books').then(function(r){return r.json()}).then(function(d){
     if(d.status !== 'ok') return;
     var free = d.items.filter(function(b){return !b.is_premium});
     var list = document.getElementById('freeBooksList');
     var html = free.map(function(b){
-      var cardHtml = '<div class="book-card"><div class="icon">&#128214;</div><div class="info"><h3>' + b.title + '</h3><p>' + b.description + '</p><div class="meta"><span class="free-badge">Pay What You Want</span></div></div><button class="btn btn-outline" onclick="openLead(\'' + b.title.replace(/'/g, "\\'") + '\',\'' + b.slug + '\')">Get Copy <small style="font-weight:400;opacity:.6">GH&#8373;50\u2013100</small></button></div>';
+      var cardHtml = '<div class="book-card"><div class="icon">&#128214;</div><div class="info"><h3>' + esc(b.title) + '</h3><p>' + esc(b.description) + '</p><div class="meta"><span class="free-badge">Pay What You Want</span></div></div><button class="btn btn-outline" onclick="openLead(\'' + String(b.title).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + '\',\'' + String(b.slug).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + '\')">Get Copy <small style="font-weight:400;opacity:.6">GH₵50\u2013100</small></button></div>';
       return cardHtml;
     }).join('');
     list.innerHTML = html;
@@ -277,13 +279,13 @@ function buyBundle() {
   if (typeof window.payWithExpressPay === 'function') {
     window.payWithExpressPay({
       tx_ref: tx_ref, name: name, email: email, phone: '',
-      redirect: '/books/download', btn: btn, btnLabel: 'Buy Bundle — GHS 300', context: 'books_bundle'
+      redirect: '/books/download', btn: btn, btnLabel: (typeof window.formatPrice === 'function' ? 'Buy Bundle — ' + window.formatPrice(300) : 'Buy Bundle — GHS 300'), context: 'books_bundle'
     });
     return;
   }
 
   btn.disabled = false;
-  btn.textContent = 'Buy Bundle — GHS 300';
+  btn.textContent = (typeof window.formatPrice === 'function' ? 'Buy Bundle — ' + window.formatPrice(300) : 'Buy Bundle — GHS 300');
   window.payError('Payment system loading. Please refresh and try again.', 'books');
 }
 

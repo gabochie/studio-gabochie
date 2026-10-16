@@ -54,7 +54,7 @@ function answerUrl(a) {
 }
 
 function card(a, idx) {
-  const scriptures = (a.scriptures || []).join(' &middot; ');
+  const scriptures = (a.scriptures || []).map(esc).join(' &middot; ');
   return `
       <tr><td style="padding:0 0 18px 0">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#ffffff;border:1px solid #ece5d5;border-radius:14px">

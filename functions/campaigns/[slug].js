@@ -9,7 +9,7 @@ function formatDate(d) {
 }
 
 function fmtAmount(n, cur) {
-  var sym = cur === 'GHS' ? 'GH\u00a2' : (cur === 'USD' ? '$' : cur + ' ');
+  var sym = cur === 'GHS' ? 'GH\u20b5' : (cur === 'USD' ? '$' : cur + ' ');
   return sym + ' ' + Number(n || 0).toLocaleString();
 }
 

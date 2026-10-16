@@ -61,7 +61,7 @@ p{margin:0 0 1em}
 .bar b{color:#ffe07a}
 
 /* Hero */
-header.hero{background:linear-gradient(160deg,#0d1b2a,#122a44);color:#fff;padding:44px 0 52px;position:relative;overflow:hidden}
+header.hero{background:linear-gradient(160deg,#0d1b2a,#122a44);color:#fff;padding:calc(108px + env(safe-area-inset-top, 0px)) 0 52px;position:relative;overflow:hidden}
 .hero .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
 .series{color:#fff;background:rgba(224,168,0,.18);border:1px solid var(--gold);display:inline-block;padding:4px 12px;
   border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
@@ -133,7 +133,8 @@ input{font:inherit;padding:13px 14px;border:1px solid #cdd4dd;border-radius:10px
 .final{background:#0d1b2a;color:#fff;text-align:center}
 .final h2{color:#fff}
 .final .lead{color:#cfd8e3}
-.sticky{position:sticky;bottom:0;z-index:40;background:rgba(13,27,42,.96);color:#fff;padding:12px 0;box-shadow:0 -6px 20px rgba(0,0,0,.25)}
+.sticky{position:sticky;bottom:0;z-index:40;background:rgba(13,27,42,.96);color:#fff;padding:12px 0;box-shadow:0 -6px 20px rgba(0,0,0,.35)}
+@media(max-width:860px){.sticky{bottom:calc(58px + env(safe-area-inset-bottom,0px));z-index:101}body.ga-cookie-open .sticky{bottom:calc(58px + var(--cookie-h,0px) + env(safe-area-inset-bottom,0px))}}
 .sticky .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .sticky .txt{font-weight:700;font-size:.95rem}
 .sticky .txt small{display:block;color:var(--gold2);font-weight:600}
@@ -158,7 +159,7 @@ footer{margin-top:0}
 <div id="nav-placeholder"></div>
 
 <!-- URGENCY BAR -->
-<div class="bar">🔥 <b>PRE-LAUNCH:</b> Save GHS 20 + free bonus pack — offer ends <b><span id="deadline">Sunday midnight</span></b></div>
+<div class="bar">🔥 <b>PRE-LAUNCH:</b> Save GH₵20 + free bonus pack — offer ends <b><span id="deadline">Sunday midnight</span></b></div>
 
 <!-- HERO -->
 <header class="hero">
@@ -257,7 +258,7 @@ footer{margin-top:0}
     </div>
     <div class="gifts">
       <div class="gift"><div class="tag">Bonus 1</div><h3>The 7-Day Declaration Card</h3><p>Speak one fearless line a day for a week — and watch your house change.</p><div class="val">Value <span class="price-convert" data-ghs="30">GHS 30</span> — yours free</div></div>
-      <div class="gift"><div class="tag">Bonus 2</div><h3>Psalm 91 Sleep Card</h3><p>The night-time shield prayer, printed small for your pillow or wall.</p><div class="val">Value <span class="price-convert" data-ghs="20">GHS 20</span> — yours free</div></div>
+      <div class="gift"><div class="tag">Bonus 2</div><h3>Psalm 91 Sleep Card</h3><p>The night-time shield prayer, printed small for your pillow or wall.</p><div class="val">Value <span class="price-convert" data-ghs="20">GH₵20</span> — yours free</div></div>
       <div class="gift"><div class="tag">Bonus 3</div><h3>Fearless Warriors WhatsApp Group</h3><p>Daily prayer, testimonials, and a live deliverance session with the author.</p><div class="val">Value <span class="price-convert" data-ghs="50">GHS 50</span> — yours free</div></div>
     </div>
   </div>
@@ -283,20 +284,20 @@ footer{margin-top:0}
       <div class="center">
         <div class="kicker" style="color:#9a7d1e">Pre-order offer</div>
         <h2 style="color:#0d1b2a">Get everything for less than a plate of rice</h2>
-        <div class="price"><span class="was price-convert" data-ghs="69">GHS 69</span><span class="now price-convert" data-ghs="49">GHS 49</span></div>
+        <div class="price"><span class="was price-convert" data-ghs="69">GHS 69</span><span class="now price-convert" data-ghs="49">GH₵49</span></div>
         <p style="color:var(--muted)">Pre-order price for the first 500 copies. After launch: regular price.</p>
       </div>
       <ul class="stack">
         <li><span>📖 <b>7 Fearless Steps</b> — 36-page easy-read booklet</span><b class="price-convert" data-ghs="69">GHS 69</b></li>
         <li><span>📝 7-Day Declaration Card</span><b class="price-convert" data-ghs="30">GHS 30</b></li>
-        <li><span>🌙 Psalm 91 Sleep Card</span><b class="price-convert" data-ghs="20">GHS 20</b></li>
+        <li><span>🌙 Psalm 91 Sleep Card</span><b class="price-convert" data-ghs="20">GH₵20</b></li>
         <li><span>💬 Fearless Warriors WhatsApp Group</span><b class="price-convert" data-ghs="50">GHS 50</b></li>
         <li><span>📱 Online reader + full audio narration (read &amp; listen anywhere)</span><b>Included</b></li>
         <li><span>🚚 Delivery to your city</span><b>Included</b></li>
       </ul>
       <div class="center" style="margin:6px 0 18px">
         <span style="color:var(--muted)">Total value <b class="price-convert" data-ghs="169">GHS 169</b> &nbsp;→&nbsp; you pay today</span>
-        <div class="price" style="justify-content:center"><span class="now price-convert" data-ghs="49">GHS 49</span></div>
+        <div class="price" style="justify-content:center"><span class="now price-convert" data-ghs="49">GH₵49</span></div>
       </div>
 
       <form id="orderForm" onsubmit="return submitOrder(event)">
@@ -318,7 +319,7 @@ footer{margin-top:0}
         </div>
         <ol style="max-width:520px;margin:18px auto;padding-left:22px">
           <li style="margin-bottom:8px"><b>We confirm on WhatsApp</b> within 24 hours with your delivery time.</li>
-          <li style="margin-bottom:8px"><b>Pay GHS 49 on delivery</b> (cash or MoMo) — quote your reference.</li>
+          <li style="margin-bottom:8px"><b>Pay GH₵49 on delivery</b> (cash or MoMo) — quote your reference.</li>
           <li style="margin-bottom:8px"><b>Your copy unlocks everything:</b> bonus cards + full online reader &amp; audio code.</li>
         </ol>
         <div class="center" style="display:grid;gap:10px;justify-items:center;margin-top:8px">
@@ -345,7 +346,7 @@ footer{margin-top:0}
       <details><summary>I am not "in bondage." Should I still read it?</summary><p>Yes. Every believer faces fear, family patterns, and unanswered prayer. The 7 steps strengthen anyone — and great for giving to a friend who is afraid.</p></details>
       <details><summary>How is it delivered, and when?</summary><p>We deliver the printed booklet to Accra, Kumasi, Tema, Takoradi and by courier nationwide. You will get a WhatsApp message with the delivery time after you reserve. Digital access is available immediately — you can start reading online and listening to the narration right away.</p></details>
       <details><summary>Can I read it online or listen to it?</summary><p>Yes — every copy includes online access. Read the full booklet in the online reader, and listen to the complete audio narration on any phone. A free sample (the Introduction and Chapter 1, in full) is open to everyone; your unique code unlocks the rest. No app to download.</p></details>
-      <details><summary>Do I pay now?</summary><p>No. Pre-order holds your copy and locks the GHS 49 price. You pay on delivery, or by mobile money if you prefer.</p></details>
+      <details><summary>Do I pay now?</summary><p>No. Pre-order holds your copy and locks the GH₵49 price. You pay on delivery, or by mobile money if you prefer.</p></details>
       <details><summary>Is it in English?</summary><p>Yes, plain simple English. A Twi edition is planned after launch — tell us if you want one.</p></details>
     </div>
   </div>
@@ -356,7 +357,7 @@ footer{margin-top:0}
   <div class="wrap reveal">
     <h2>You can keep the fear another year. Or you can break free this evening.</h2>
     <p class="lead" style="margin:12px auto 26px">Seven steps. One short book. A whole new destiny — for you, your family, and your Ghana.</p>
-    <a class="btn btn-gold btn-lg" href="#order">Reserve my copy for <span class="price-convert" data-ghs="49">GHS 49</span> &rarr;</a>
+    <a class="btn btn-gold btn-lg" href="#order">Reserve my copy for <span class="price-convert" data-ghs="49">GH₵49</span> &rarr;</a>
     <p style="color:#aeb9c6;font-size:.85rem;margin-top:14px">Pre-order closes Sunday. Free bonus pack included.</p>
   </div>
 </section>
@@ -364,7 +365,7 @@ footer{margin-top:0}
 <!-- STICKY -->
 <div class="sticky">
   <div class="wrap">
-    <div class="txt">Pre-order price ends Sunday<small><span class="price-convert" data-ghs="49">GHS 49</span> — save GHS 20 + free bonus pack</small></div>
+    <div class="txt">Pre-order price ends Sunday<small><span class="price-convert" data-ghs="49">GH₵49</span> — save GH₵20 + free bonus pack</small></div>
     <a class="btn btn-gold" href="#order">Reserve now</a>
   </div>
 </div>
@@ -449,7 +450,7 @@ function submitOrder(e){
     var panel = document.getElementById("orderDone");
     document.getElementById("ordRef").textContent = ref;
     document.getElementById("ordSummary").textContent =
-      name+" · "+city+" · GHS 49 on delivery · confirmation goes to "+phone;
+      name+" · "+city+" · GH₵49 on delivery · confirmation goes to "+phone;
     if(email){
       fetch("https://studio.gabochie.com/api/subscribe",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({name:name,email:email,phone:phone,source:"fearless-preorder",whatsapp_opt_in:1,utm_campaign:"preorder"})}).catch(function(){});
@@ -467,7 +468,7 @@ function submitOrder(e){
     var wc = document.getElementById("waConfirmBtn");
     wc.href = "https://wa.me/"+CONFIG.whatsapp+"?text="+msg;
     wc.target = "_blank"; wc.rel = "noopener";
-    var share = "I just reserved '7 Fearless Steps' (GHS 49 pre-order). Read the free sample here: "+
+    var share = "I just reserved '7 Fearless Steps' (GH₵49 pre-order). Read the free sample here: "+
       CONFIG.readerUrl+"?v="+variant;
     var sh = document.getElementById("shareBtn");
     sh.href = "https://wa.me/?text="+encodeURIComponent(share);

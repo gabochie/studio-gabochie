@@ -169,8 +169,8 @@ h1 span{color:#C9A84C}
   <div class="card no-print" id="upgradeCard" style="border-color:rgba(201,168,76,.3);display:none">
     <h2>Unlock <span>Full Access</span></h2>
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete course with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:12px"><span id="upgradePriceBig"><span class="price-convert" data-ghs="250">GH¢ 250</span></span> <span style="font-size:14px;color:#5A7A9F;font-weight:400">one-time</span></div>
-    <button class="btn btn-gold" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH¢ 250</span></span></button>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:12px"><span id="upgradePriceBig"><span class="price-convert" data-ghs="250">GH₵ 250</span></span> <span style="font-size:14px;color:#5A7A9F;font-weight:400">one-time</span></div>
+    <button class="btn btn-gold" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH₵ 250</span></span></button>
     <button class="btn btn-outline" id="cryptoBtn" onclick="cryptoUpgrade(this)" style="margin-top:8px">Pay with Crypto</button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via ExpressPay</p>
     <div class="trust-row"><span>Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
@@ -241,7 +241,7 @@ h1 span{color:#C9A84C}
 </div>
 
 <script>
-if (typeof window.formatPrice !== 'function') { window.formatPrice = function(a,c){return(c||'GH¢ ')+(Number(a)||0).toFixed(2)}; }
+if (typeof window.formatPrice !== 'function') { window.formatPrice = function(a,c){return(c||'GH₵ ')+(Number(a)||0).toFixed(2)}; }
 var __upgradePrice = null;
 function renderUpgradePrice() {
   if (__upgradePrice === null || __upgradePrice <= 0) return;
@@ -312,8 +312,8 @@ function loadDashboard() {
 
       document.getElementById('programTitle').textContent = e.program_title;
       document.getElementById('programTagline').textContent = e.tagline;
-      document.getElementById('programDuration').innerHTML = 'Duration: <strong>' + e.duration + '</strong>';
-      document.getElementById('programStatus').innerHTML = 'Status: <strong>' + e.price_label + '</strong>';
+      document.getElementById('programDuration').innerHTML = 'Duration: <strong>' + esc(e.duration) + '</strong>';
+      document.getElementById('programStatus').innerHTML = 'Status: <strong>' + esc(e.price_label) + '</strong>';
 
       // Set badge
       var badge = document.getElementById('statusBadge');
@@ -382,9 +382,9 @@ function loadProgress() {
         var done = m.completed === 1;
         var dateStr = m.completed_at ? new Date(m.completed_at).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
         list.innerHTML +=
-          '<div class="module-item" onclick="toggleModule(\'' + m.slug + '\')">' +
-          '<div class="module-check' + (done ? ' done' : '') + '">' + (done ? '\u2713' : '') + '</div>' +
-          '<div class="module-title' + (done ? ' done' : '') + '">' + m.title + '</div>' +
+        '<div class="module-item" onclick="toggleModule(\'' + String(m.slug).replace(/\\/g, "\\\\").replace(/'/g, "\\'") + '\')">' +
+        '<div class="module-check' + (done ? ' done' : '') + '">' + (done ? '\u2713' : '') + '</div>' +
+        '<div class="module-title' + (done ? ' done' : '') + '">' + esc(m.title) + '</div>' +
           '<div class="module-date">' + dateStr + '</div>' +
           '</div>';
       });
@@ -401,6 +401,8 @@ function loadProgress() {
     .catch(function() {});
 }
 
+function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+
 function fetchAchievements() {
   api('/api/enroll/achievements')
     .then(function(r) { return r.json(); })
@@ -411,9 +413,9 @@ function fetchAchievements() {
       grid.innerHTML = '';
       d.achievements.forEach(function(a) {
         grid.innerHTML +=
-          '<div style="text-align:center;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:10px;padding:12px 6px;transition:transform .2s" title="' + (a.description || a.name) + '">' +
-          '<div style="font-size:24px;margin-bottom:4px">' + (a.icon || '&#127942;') + '</div>' +
-          '<div style="font-size:10px;color:#C9A84C;font-weight:600;line-height:1.2">' + a.name + '</div>' +
+          '<div style="text-align:center;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:10px;padding:12px 6px;transition:transform .2s" title="' + esc(a.description || a.name) + '">' +
+          '<div style="font-size:24px;margin-bottom:4px">' + (a.icon ? esc(a.icon) : '&#127942;') + '</div>' +
+          '<div style="font-size:10px;color:#C9A84C;font-weight:600;line-height:1.2">' + esc(a.name) + '</div>' +
           '</div>';
       });
     })
@@ -434,7 +436,7 @@ function handleCertificate() {
     } else {
       btn.disabled = false;
       btn.textContent = 'Claim Your Certificate';
-      if (typeof window.payError === 'function') window.payError(d.message || 'Could not generate certificate.', 'certificate');
+      if (typeof window.payErrorText === 'function') window.payErrorText(d.message || 'Could not generate certificate.', 'certificate');
       else alert(d.message || 'Could not generate certificate.');
     }
   }).catch(function(){
@@ -504,11 +506,11 @@ function startQuiz() {
       d.questions.forEach(function(q, i) {
         var opts = JSON.parse(q.options);
         html += '<div class="quiz-question" style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,.2);border:1px solid #1E3250;border-radius:8px">' +
-          '<p style="font-weight:600;margin-bottom:10px;color:#E8EEF7;font-size:14px">' + (i+1) + '. ' + q.question + '</p>';
+          '<p style="font-weight:600;margin-bottom:10px;color:#E8EEF7;font-size:14px">' + (i+1) + '. ' + esc(q.question) + '</p>';
         opts.forEach(function(opt, j) {
           html += '<label style="display:block;padding:8px 12px;margin-bottom:4px;border-radius:6px;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid transparent;transition:all .2s">' +
             '<input type="radio" name="q_' + q.id + '" value="' + j + '" style="margin-right:8px;accent-color:#C9A84C">' +
-            opt + '</label>';
+            esc(opt) + '</label>';
         });
         html += '</div>';
       });

@@ -106,7 +106,7 @@ if (status === 'pending') {
   document.getElementById('rDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   document.getElementById('rName').textContent = name || 'Anonymous';
   document.getElementById('rEmail').textContent = email || '—';
-  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH¢ ' + Number(amount).toFixed(2)) : '—';
+  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH₵ ' + Number(amount).toFixed(2)) : '—';
   document.getElementById('rStatus').textContent = 'Pending confirmation';
   document.getElementById('rStatus').style.color = '#EAB308';
 } else if (status === 'successful' || status === 'completed' || !status) {
@@ -118,7 +118,7 @@ if (status === 'pending') {
     document.getElementById('phoneRow').style.display = '';
     document.getElementById('rPhone').textContent = phone;
   }
-  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH¢ ' + Number(amount).toFixed(2)) : '—';
+  document.getElementById('rAmount').textContent = amount ? (typeof window.formatPrice === 'function' ? window.formatPrice(amount, 'GHS') : 'GH₵ ' + Number(amount).toFixed(2)) : '—';
   if (email && email !== 'donor@anonymous.invalid' && email !== '—') {
     document.getElementById('emailNote').style.display = 'block';
     document.getElementById('emailNoteAddr').textContent = email;
