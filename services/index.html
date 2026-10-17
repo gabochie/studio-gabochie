@@ -11,7 +11,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Services — Studio Gabochie">
-<meta property="og:description" content="Professional services in architectural design, systems thinking, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.">
+<meta property="og:description" content="Professional services in freelance DevOps engineering, architectural design, systems thinking, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/services/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
@@ -19,12 +19,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>Services — Studio Gabochie</title>
-<meta name="description" content="Professional services in architectural design, systems thinking, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.">
+<meta name="description" content="Professional services in freelance DevOps engineering, architectural design, systems thinking, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="/assets/fonts/tabler/tabler-icons.min.css" rel="stylesheet">
 <link href="../assets/css/main.css" rel="stylesheet">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Service","name":"Studio Gabochie Services","url":"https://studio.gabochie.com/services/","description":"Professional services in architectural design, systems thinking consulting, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.","provider":{"@type":"Person","name":"Gideon Abochie"},"areaServed":"Africa","offers":[{"@type":"Offer","itemOffered":"Architectural Design & Visualization"},{"@type":"Offer","itemOffered":"Systems Thinking Consulting"},{"@type":"Offer","itemOffered":"Curriculum & Course Design"},{"@type":"Offer","itemOffered":"Speaking & Keynotes"},{"@type":"Offer","itemOffered":"Writing & Editorial Services"},{"@type":"Offer","itemOffered":"Mentorship & Coaching"},{"@type":"Offer","itemOffered":"Brand & Creative Direction"},{"@type":"Offer","itemOffered":"Digital Skills Training"}]}
+{"@context":"https://schema.org","@type":"Service","name":"Studio Gabochie Services","url":"https://studio.gabochie.com/services/","description":"Professional services in freelance DevOps engineering, architectural design, systems thinking consulting, curriculum development, speaking, writing, mentorship, brand direction, and digital skills training.","provider":{"@type":"Person","name":"Gideon Abochie"},"areaServed":"Africa","offers":[{"@type":"Offer","itemOffered":"Freelance DevOps Engineering"},{"@type":"Offer","itemOffered":"Architectural Design & Visualization"},{"@type":"Offer","itemOffered":"Systems Thinking Consulting"},{"@type":"Offer","itemOffered":"Curriculum & Course Design"},{"@type":"Offer","itemOffered":"Speaking & Keynotes"},{"@type":"Offer","itemOffered":"Writing & Editorial Services"},{"@type":"Offer","itemOffered":"Mentorship & Coaching"},{"@type":"Offer","itemOffered":"Brand & Creative Direction"},{"@type":"Offer","itemOffered":"Digital Skills Training"}]}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -37,8 +37,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .hero h1 span{color:#C9A84C}
 .hero p{font-size:16px;color:#8A9BB5;max-width:640px;margin:0 auto 40px;line-height:1.7}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:var(--content-max);margin:0 auto;padding:0 24px 60px}
-.service-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;transition:all .3s;display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer}
+.service-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;transition:all .3s;display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer;position:relative}
 .service-card:hover{border-color:#C9A84C;transform:translateY(-4px)}
+.service-card.pillar{grid-column:1/-1;border-color:#C9A84C;background:linear-gradient(135deg,#0F1E38 0%,#1A2D4A 100%)}
+.service-card.pillar h3{font-size:26px}
+.pillar-badge{position:absolute;top:24px;right:24px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border-radius:20px}
 .service-icon{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;color:#C9A84C;flex-shrink:0}
 .service-card h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
 .service-card p{font-size:13px;color:#8A9BB5;line-height:1.6;flex:1}
@@ -65,10 +68,17 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="hero">
   <div class="hero-eyebrow">What We Offer</div>
   <h1>Our <span>Services</span></h1>
-  <p>From architectural design and systems thinking to curriculum development and creative direction — we offer professional services that equip leaders, build organizations, and shape the built environment across Africa.</p>
+  <p>From freelance DevOps engineering and architectural design to systems thinking and creative direction — we offer professional services that equip leaders, build organizations, and shape the built environment across Africa.</p>
 </div>
 
 <div class="services-grid">
+  <a href="/services/devops/" class="service-card pillar">
+    <span class="pillar-badge">Pillar Service</span>
+    <div class="service-icon"><i class="ti ti-rocket"></i></div>
+    <h3>Freelance DevOps Engineering</h3>
+    <p>Cloud infrastructure, CI/CD pipelines, container orchestration, observability, and reliability engineering. We help teams ship faster and run systems that stay up — from automation and infrastructure-as-code to monitoring, scaling, and cost control.</p>
+    <span class="price-tag">Custom quote &rarr;</span>
+  </a>
   <a href="/services/architectural-design/" class="service-card">
     <div class="service-icon"><i class="ti ti-building-arch"></i></div>
     <h3>Architectural Design &amp; Visualization</h3>
