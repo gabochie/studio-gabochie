@@ -69,6 +69,22 @@ function notifyMe(){
 </body>
 </html>`;
 
+// Geo-dynamic currency for the Love Of The Lord surface only. The visitor's
+// country (Cloudflare edge) maps to a default currency; an explicit user choice
+// in localStorage (ga_currency) still wins on the client. See /assets/js/geo-currency.js.
+var GEO_EUROZONE = ['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES', 'HR'];
+
+function geoCurrencyFor(country) {
+  if (country === 'GH') return 'GHS';
+  if (country === 'GB') return 'GBP';
+  if (GEO_EUROZONE.indexOf(country) >= 0) return 'EUR';
+  return 'USD';
+}
+
+function isGeoScope(path) {
+  return path === '/love-of-the-lord' || path.indexOf('/love-of-the-lord/') === 0;
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -160,5 +176,23 @@ export async function onRequest(context) {
     }
   }
 
-  return context.next();
+  var pageResponse = await context.next();
+
+  // Annotate Love Of The Lord HTML with the visitor's country + default currency.
+  // Every other path is returned untouched.
+  if (isGeoScope(path)) {
+    var contentType = pageResponse.headers.get('Content-Type') || '';
+    if (contentType.indexOf('text/html') >= 0) {
+      var country = (request.cf && request.cf.country) || '';
+      var currency = geoCurrencyFor(country);
+      return new HTMLRewriter().on('html', {
+        element: function (el) {
+          el.setAttribute('data-geo-country', country);
+          el.setAttribute('data-geo-currency', currency);
+        }
+      }).transform(pageResponse);
+    }
+  }
+
+  return pageResponse;
 }

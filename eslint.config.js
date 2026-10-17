@@ -107,6 +107,7 @@ export default [
         FormData: 'readonly',
         atob: 'readonly',
         btoa: 'readonly',
+        HTMLRewriter: 'readonly',
       },
     },
     rules: {
