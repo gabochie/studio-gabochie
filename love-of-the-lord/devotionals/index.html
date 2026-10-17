@@ -92,7 +92,7 @@ body{background:#0A1628}
 
 <header class="dvhero">
 <div class="wrap">
-<div class="brand-row"><img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo"><div><b>Love Of The Lord · Global Ministry</b><small>Yearly message: Focus on The Love of The Lord · January: The Eternal Source</small></div></div>
+<div class="brand-row"><img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo"><div><b>Love Of The Lord · Global Ministry</b><small id="yearMsg">Yearly message: Focus on The Love of The Lord · 365 days wired</small></div></div>
 <div class="kicker">Daily PDD · Prayer · Declaration · Decree</div>
 <h1>Love of the Lord,<br><span>every single day.</span></h1>
 <p>Daily teaching + prayer + declaration + decree (60-90s audio). Weekly S.O.A.P. lives under Weekly.</p>
@@ -103,7 +103,7 @@ body{background:#0A1628}
 </header>
 
 <main class="wrap">
-<div id="dailyPane"><div class="dv-list" id="dailyList" aria-live="polite"><p class="lotl-muted">Loading daily decrees…</p></div></div>
+<div id="dailyPane"><div class="filters" id="monthFilters" aria-label="Filter by month"></div><div class="dv-list" id="dailyList" aria-live="polite"><p class="lotl-muted">Loading daily decrees…</p></div></div>
 <div id="weeklyPane" hidden><div class="dv-list" id="dvList" aria-live="polite"><p class="lotl-muted">Loading devotionals…</p></div></div>
 <div class="cta">
 <h2>Grow in the Word with us</h2>
@@ -182,18 +182,45 @@ body{background:#0A1628}
   tabD.addEventListener('click', function(){ show('daily'); });
   tabW.addEventListener('click', function(){ show('weekly'); });
   show('daily');
-  // Daily PDD feed from January pilot (same shape Feb-Dec will follow)
-  fetch('../daily/2027-01.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(data){
+  // Instant read-aloud (free, no MP3): uses built-in phone voice. MP3 render comes later.
+  window._pddDays = [];
+  window.lotlReadAloud = function(i, btn){
+    try {
+      if(!('speechSynthesis' in window)){ if(btn) btn.textContent = '🔊 No voice on this device'; return false; }
+      var x = window._pddDays[i];
+      if(!x) return false;
+      window.speechSynthesis.cancel();
+      if(btn && btn.dataset.playing === '1'){ btn.dataset.playing = ''; btn.textContent = '🔊 Play decree (60-90s)'; return false; }
+      var u = new SpeechSynthesisUtterance(x.audioScript || (x.teaching + ' ' + x.decree));
+      u.rate = 0.95; u.pitch = 1;
+      try {
+        var vs = window.speechSynthesis.getVoices() || [];
+        var en = vs.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('en') === 0; });
+        if(en.length) u.voice = en[0];
+      } catch(_e) {}
+      u.onend = function(){ if(btn){ btn.dataset.playing = ''; btn.textContent = '🔊 Play decree (60-90s)'; } };
+      if(btn){ btn.dataset.playing = '1'; btn.textContent = '⏹ Stop'; }
+      window.speechSynthesis.speak(u);
+    } catch(_e) {}
+    return false;
+  };
+  // Daily PDD full-year feed: all 12 months wired, month filter, read-aloud intact
+  var _allDays = [];
+  var _activeMonth = 'All';
+  function renderDaily(){
     var box = document.getElementById('dailyList');
-    var days = (data && data.days) || [];
-    days.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
-    if(!days.length){ box.innerHTML = '<p class="lotl-muted">Daily decrees loading — check back 06:00 GMT.</p>'; return; }
+    if(!box) return;
+    var list = _allDays.filter(function(x){ return _activeMonth === 'All' || (x.date||'').slice(0,7) === _activeMonth; });
+    list.sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
+    if(!list.length){ box.innerHTML = '<p class="lotl-muted">No days in this month yet.</p>'; return; }
+    var shown = list.slice(0, _activeMonth === 'All' ? 7 : 31);
+    window._pddDays = shown;
     box.innerHTML = '';
-    days.slice(0, 7).forEach(function(x){
+    shown.forEach(function(x, i){
       var el = document.createElement('article');
       el.className = 'daily-card';
       el.innerHTML =
-        '<div class="kicker">🎯 ' + esc(x.date) + ' (' + esc(x.weekday) + ') · ' + esc(x.dimensionLabel) + '</div>' +
+        '<div class="kicker">🎯 ' + esc(x.date) + ' (' + esc(x.weekday) + ') · ' + esc(x.dimensionLabel) + ' · ' + esc(x.monthTheme||'') + '</div>' +
         '<h3>' + esc(x.serviceTheme) + '</h3>' +
         '<div class="dvsrc">' + esc(x.scripture) + '</div>' +
         '<div class="dverse">' + esc(x.verse) + '</div>' +
@@ -202,13 +229,37 @@ body{background:#0A1628}
         '<div class="declare">' + esc(x.declaration) + '</div>' +
         '<p><b>Decree:</b> ' + esc(x.decree) + '</p>' +
         '<p><b>Action:</b> ' + esc(x.action) + '</p>' +
-        '<div class="ans-actions"><a class="lotl-btn" href="https://wa.me/?text=' + encodeURIComponent(x.declaration + ' — Focus on The Love of The Lord ' + x.date) + '">Share ↗</a></div>';
+        '<div class="ans-actions"><button type="button" class="lotl-btn" onclick="return lotlReadAloud(' + i + ',this)">🔊 Play decree (60-90s)</button><a class="lotl-btn lotl-btn-outline" href="https://wa.me/?text=' + encodeURIComponent(x.declaration + ' — Focus on The Love of The Lord ' + x.date) + '">Share ↗</a></div>';
       box.appendChild(el);
     });
     var more = document.createElement('p');
     more.className = 'lotl-muted';
-    more.innerHTML = 'Showing latest 7 of ' + days.length + ' January days · Full pack: <a href="../daily/2027-01-preview.html" style="color:#C9A84C">open formatted preview →</a>';
+    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (latest across 365 days — pick a month)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
     box.appendChild(more);
+  }
+  function buildMonths(){
+    var box = document.getElementById('monthFilters');
+    if(!box) return;
+    var months = ['All'];
+    _allDays.forEach(function(x){ var k = (x.date||'').slice(0,7); if(k && months.indexOf(k) < 0) months.push(k); });
+    months.sort();
+    box.innerHTML = '';
+    months.forEach(function(k){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = k === 'All' ? 'Latest' : k.slice(5) + '/' + k.slice(0,4);
+      if(k === _activeMonth) b.className = 'on';
+      b.setAttribute('aria-pressed', k === _activeMonth ? 'true' : 'false');
+      b.addEventListener('click', function(){ _activeMonth = k; buildMonths(); renderDaily(); });
+      box.appendChild(b);
+    });
+  }
+  Promise.all(['01','02','03','04','05','06','07','08','09','10','11','12'].map(function(mm){
+    return fetch('../daily/2027-' + mm + '.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).catch(function(){ return {days:[]}; });
+  })).then(function(packs){
+    _allDays = [];
+    packs.forEach(function(p){ (_allDays = _allDays.concat((p && p.days) || [])); });
+    buildMonths(); renderDaily();
   }).catch(function(){
     var box = document.getElementById('dailyList');
     if(box) box.innerHTML = '<p class="lotl-muted">Could not load daily decrees. <a href="../daily/2027-01-preview.html" style="color:#C9A84C">Open preview →</a></p>';
