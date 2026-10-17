@@ -25,7 +25,10 @@ export async function onRequest(context) {
   const headers = moolreHeaders(env);
   const site = publicBase(env);
   const callbackUrl = site + '/api/gateways/moolre/callback';
-  const redirectUrl = site + '/donate.html?tx_ref=' + encodeURIComponent(tx_ref) +
+  // Callers may return the donor to their own same-origin page (e.g. the church
+  // Give page). Rejected unless it is a single-slash root-relative path.
+  var redirectPath = (body.redirect && body.redirect.charAt(0) === '/' && body.redirect.charAt(1) !== '/') ? body.redirect : '/donate.html';
+  const redirectUrl = site + redirectPath + (redirectPath.indexOf('?') >= 0 ? '&' : '?') + 'tx_ref=' + encodeURIComponent(tx_ref) +
     '&status=successful&amount=' + amount +
     '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
 
