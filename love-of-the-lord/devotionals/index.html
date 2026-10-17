@@ -207,6 +207,13 @@ body{background:#0A1628}
   // Daily PDD full-year feed: all 12 months wired, month filter, read-aloud intact
   var _allDays = [];
   var _activeMonth = 'All';
+  function lotlShareBtn(x){
+    var text = x.declaration + ' — Focus on The Love of The Lord ' + x.date;
+    var path = '/love-of-the-lord/devotionals/';
+    var url = window.lotlShareUrl ? window.lotlShareUrl(path, { content: x.date, campaign: 'lotl-decrees' }) : 'https://studio.gabochie.com' + path;
+    var href = 'https://wa.me/?text=' + encodeURIComponent(text + '\n' + url);
+    return '<a class="lotl-btn lotl-btn-outline" href="' + href + '" target="_blank" rel="noopener" data-lotl-share data-share-path="' + path + '" data-share-text="' + esc(text) + '" data-share-content="' + esc(x.date) + '" data-share-campaign="lotl-decrees">Share ↗</a>';
+  }
   function renderDaily(){
     var box = document.getElementById('dailyList');
     if(!box) return;
@@ -229,7 +236,7 @@ body{background:#0A1628}
         '<div class="declare">' + esc(x.declaration) + '</div>' +
         '<p><b>Decree:</b> ' + esc(x.decree) + '</p>' +
         '<p><b>Action:</b> ' + esc(x.action) + '</p>' +
-        '<div class="ans-actions"><button type="button" class="lotl-btn" onclick="return lotlReadAloud(' + i + ',this)">🔊 Play decree (60-90s)</button><a class="lotl-btn lotl-btn-outline" href="https://wa.me/?text=' + encodeURIComponent(x.declaration + ' — Focus on The Love of The Lord ' + x.date) + '">Share ↗</a></div>';
+        '<div class="ans-actions"><button type="button" class="lotl-btn" onclick="return lotlReadAloud(' + i + ',this)">🔊 Play decree (60-90s)</button>' + lotlShareBtn(x) + '</div>';
       box.appendChild(el);
     });
     var more = document.createElement('p');
@@ -274,6 +281,7 @@ body{background:#0A1628}
 })();
 </script>
 <script>window.GA_FOOTER_ONLY = true;</script>
+<script defer src="/love-of-the-lord/share.js"></script>
 <script defer src="/assets/js/main.js"></script>
 <script src="/nav.js"></script>
 </body>
