@@ -55,20 +55,6 @@ body{background:#0A1628}
 .cta h2{font-family:'Barlow Condensed',sans-serif;color:#F7F1E5;font-size:26px;text-transform:uppercase;margin-bottom:8px}
 .cta p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:14px;margin-bottom:14px}
 /* buttons + muted text live in /assets/css/lotl.css */
-.brand-row{display:flex;gap:12px;align-items:center;margin-bottom:10px}
-.brand-row img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #C9A84C;background:#F7F1E5}
-.brand-row b{display:block;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C}
-.brand-row small{display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5}
-.tabs{display:flex;gap:8px;margin:16px 0 4px}
-.tabs button{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:#0A1628;border:1px solid #1E3250;color:#8A9BB5;padding:10px 18px;min-height:44px;border-radius:20px;cursor:pointer}
-.tabs button.on{border-color:#C9A84C;color:#0A1628;background:#C9A84C}
-.daily-card{background:var(--cream);color:var(--ink);border-radius:14px;padding:20px;margin:14px 0;border:1px solid rgba(201,168,76,.6)}
-.daily-card h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:4px 0 6px;text-transform:uppercase;color:var(--ink)}
-.daily-card .dvsrc{font-family:'Barlow Condensed',sans-serif;color:#C1272D;font-size:14px}
-.daily-card .dverse{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;background:#EFE6D2;border-left:3px solid #C1272D;border-radius:0 8px 8px 0;padding:10px 12px;margin:10px 0;font-size:14px;line-height:1.6}
-.daily-card p{font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.65;color:#3d3227;margin:8px 0}
-.daily-card .declare{background:#2B2118;color:#F7F1E5;border-radius:10px;padding:12px 14px;font-weight:700;text-align:center;margin:10px 0}
-.daily-card audio{width:100%;margin-top:8px}
 #currencyToggle{display:none!important}
 </style>
 </head>
@@ -92,19 +78,16 @@ body{background:#0A1628}
 
 <header class="dvhero">
 <div class="wrap">
-<div class="brand-row"><img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo"><div><b>Love Of The Lord · Global Ministry</b><small>Yearly message: Focus on The Love of The Lord · January: The Eternal Source</small></div></div>
-<div class="kicker">Daily PDD · Prayer · Declaration · Decree</div>
-<h1>Love of the Lord,<br><span>every single day.</span></h1>
-<p>Daily teaching + prayer + declaration + decree (60-90s audio). Weekly S.O.A.P. lives under Weekly.</p>
-<div class="tabs" role="tablist" aria-label="Devotional view"><button type="button" id="tabDaily" class="on" aria-selected="true">Daily · PDD</button><button type="button" id="tabWeekly" aria-selected="false">Weekly · S.O.A.P.</button></div>
-<div id="weeklyTools"><div class="filters" id="filters" aria-label="Filter devotionals by series"></div>
-<input class="search" id="query" type="search" placeholder="Search devotionals…" aria-label="Search devotionals"></div>
+<div class="kicker">Monday · S.O.A.P.</div>
+<h1>5 minutes with God,<br><span>before the week runs you.</span></h1>
+<p>A short devotional every Monday: Scripture · Observation · Application · Prayer. Written simple, from the Word, for your real week.</p>
+<div class="filters" id="filters" aria-label="Filter devotionals by series"></div>
+<input class="search" id="query" type="search" placeholder="Search devotionals…" aria-label="Search devotionals">
 </div>
 </header>
 
 <main class="wrap">
-<div id="dailyPane"><div class="dv-list" id="dailyList" aria-live="polite"><p class="lotl-muted">Loading daily decrees…</p></div></div>
-<div id="weeklyPane" hidden><div class="dv-list" id="dvList" aria-live="polite"><p class="lotl-muted">Loading devotionals…</p></div></div>
+<div class="dv-list" id="dvList" aria-live="polite"><p class="lotl-muted">Loading devotionals…</p></div>
 <div class="cta">
 <h2>Grow in the Word with us</h2>
 <p>Send us a Scripture you are chewing on, or pray with a pastor about what you read this week.</p>
@@ -168,51 +151,6 @@ body{background:#0A1628}
     });
   }
   document.getElementById('query').addEventListener('input', render);
-  // Tabs: Daily PDD (default) vs Weekly SOAP
-  var tabD = document.getElementById('tabDaily'), tabW = document.getElementById('tabWeekly');
-  function show(which){
-    var daily = which === 'daily';
-    document.getElementById('dailyPane').hidden = !daily;
-    document.getElementById('weeklyPane').hidden = daily;
-    document.getElementById('weeklyTools').style.display = daily ? 'none' : '';
-    tabD.className = daily ? 'on' : ''; tabW.className = daily ? '' : 'on';
-    tabD.setAttribute('aria-selected', daily ? 'true' : 'false');
-    tabW.setAttribute('aria-selected', daily ? 'false' : 'true');
-  }
-  tabD.addEventListener('click', function(){ show('daily'); });
-  tabW.addEventListener('click', function(){ show('weekly'); });
-  show('daily');
-  // Daily PDD feed from January pilot (same shape Feb-Dec will follow)
-  fetch('../daily/2027-01.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(data){
-    var box = document.getElementById('dailyList');
-    var days = (data && data.days) || [];
-    days.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
-    if(!days.length){ box.innerHTML = '<p class="lotl-muted">Daily decrees loading — check back 06:00 GMT.</p>'; return; }
-    box.innerHTML = '';
-    days.slice(0, 7).forEach(function(x){
-      var el = document.createElement('article');
-      el.className = 'daily-card';
-      el.innerHTML =
-        '<div class="kicker">🎯 ' + esc(x.date) + ' (' + esc(x.weekday) + ') · ' + esc(x.dimensionLabel) + '</div>' +
-        '<h3>' + esc(x.serviceTheme) + '</h3>' +
-        '<div class="dvsrc">' + esc(x.scripture) + '</div>' +
-        '<div class="dverse">' + esc(x.verse) + '</div>' +
-        '<p><b>Teaching:</b> ' + esc(x.teaching) + '</p>' +
-        '<p><b>Prayer:</b> ' + esc(x.prayer) + '</p>' +
-        '<div class="declare">' + esc(x.declaration) + '</div>' +
-        '<p><b>Decree:</b> ' + esc(x.decree) + '</p>' +
-        '<p><b>Action:</b> ' + esc(x.action) + '</p>' +
-        '<div class="ans-actions"><a class="lotl-btn" href="https://wa.me/?text=' + encodeURIComponent(x.declaration + ' — Focus on The Love of The Lord ' + x.date) + '">Share ↗</a></div>';
-      box.appendChild(el);
-    });
-    var more = document.createElement('p');
-    more.className = 'lotl-muted';
-    more.innerHTML = 'Showing latest 7 of ' + days.length + ' January days · Full pack: <a href="../daily/2027-01-preview.html" style="color:#C9A84C">open formatted preview →</a>';
-    box.appendChild(more);
-  }).catch(function(){
-    var box = document.getElementById('dailyList');
-    if(box) box.innerHTML = '<p class="lotl-muted">Could not load daily decrees. <a href="../daily/2027-01-preview.html" style="color:#C9A84C">Open preview →</a></p>';
-  });
   fetch('devotionals.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(data){
     items=(data&&data.devotionals)||[];
     items.sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
