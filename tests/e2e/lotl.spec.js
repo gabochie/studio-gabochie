@@ -147,6 +147,17 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(page.locator('text=024 326 2019').first()).toBeVisible();
   });
 
+  test('give receipt tolerates ExpressPay order-id glued to the return URL', async function ({ page }) {
+    // ExpressPay appends "?order-id=..." to the return URL, corrupting the last
+    // param (e.g. status=pending?order-id=donate_lotl_x). Receipt must still resolve.
+    var tx = 'donate_lotl_test123';
+    await page.goto('/love-of-the-lord/give/?tx_ref=' + tx + '&status=pending?order-id=' + tx + '&');
+    await expect(page.locator('#receiptView')).toBeVisible();
+    await expect(page.locator('#rTxRef')).toContainText(tx);
+    await expect(page.locator('#rStatus')).toHaveText('Pending confirmation');
+    await expect(page.locator('#receiptTitle')).not.toContainText('Payment failed');
+  });
+
   test('/lotl/ shortcut redirects to canonical', async function ({ page }) {
     var res = await page.goto('/lotl/');
     expect([200, 301, 308]).toContain(res.status());

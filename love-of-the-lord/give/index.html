@@ -376,10 +376,14 @@ body{background:#0A1628}
 
   function showReceipt() {
     var q = new URLSearchParams(window.location.search);
-    var tx = q.get('tx_ref');
+    // ExpressPay appends its own "?order-id=..." to the return URL, which can
+    // tack junk onto the last param value (e.g. "status=pending?order-id=x").
+    // Trim each value at the first stray delimiter so the receipt still resolves.
+    var clean = function (v) { return String(v == null ? '' : v).split('?')[0].split('&')[0].trim(); };
+    var tx = clean(q.get('tx_ref'));
     if (!tx) return;
-    var status = q.get('status') || 'successful';
-    var amount = q.get('amount') || '';
+    var status = clean(q.get('status')) || 'successful';
+    var amount = clean(q.get('amount'));
     // Only ExpressPay returns are verified live; moolre/bank return URLs are not
     // proof of settlement, so never claim "Confirmed" for them.
     var gate = /^moolre_/.test(tx) ? 'moolre' : (/^bank_/.test(tx) ? 'bank' : 'expresspay');
@@ -399,7 +403,7 @@ body{background:#0A1628}
         polls++;
         if (polls > 20) { clearInterval(timer); return; }
         fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(tx)).then(function (r) { return r.json(); }).then(function (d) {
-          if (d && d.status === 'ok' && d.approved) { clearInterval(timer); window.location.href = PATH + '?tx_ref=' + encodeURIComponent(tx) + '&status=successful' + (amount ? '&amount=' + encodeURIComponent(amount) : ''); }
+          if (d && d.status === 'ok' && d.approved) { clearInterval(timer); var amt = amount || (d.amount != null ? d.amount : ''); window.location.href = PATH + '?tx_ref=' + encodeURIComponent(tx) + '&status=successful' + (amt ? '&amount=' + encodeURIComponent(amt) : ''); }
         }).catch(function () {});
       }, 8000);
     } else if (status === 'successful' || status === 'completed') {
