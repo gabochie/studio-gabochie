@@ -1,5 +1,6 @@
 import { json, readBody, ghsToUsd, newRef } from '../_shared.js';
 import { getSessionUser } from '../../enroll/_token.js';
+import { checkRateLimit } from '../../_rate-limit.js';
 
 async function guitarPrice(db) {
   try {
@@ -36,6 +37,10 @@ var DESCRIPTIONS = {
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'crypto_create', 5, 60)) {
+    return json({ status: 'error', message: 'Too many requests. Try again later.' }, 429);
+  }
   let body;
   try {
     body = await readBody(request);
