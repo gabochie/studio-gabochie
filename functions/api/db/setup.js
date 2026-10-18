@@ -947,6 +947,15 @@ export async function onRequest(context) {
         ('Create email_queue D1 table', 'Store pending/scheduled emails for automation sequences', 4, 'done', 'agent', 'high'),
         ('Build email queue processing endpoint', '/api/email/process — sends due queued emails via Brevo SMTP', 4, 'done', 'agent', 'high')
       `,
+      /* ── Pending blockers & audit follow-ups (high priority) ── */
+      `INSERT OR IGNORE INTO tasks (title, description, phase, status, source, priority) VALUES
+        ('Provide Moolre sandbox credentials', 'Set MOOLRE_API_USER, MOOLRE_PUBLIC_KEY, MOOLRE_ACCOUNT_NUMBER + MOOLRE_SANDBOX so /api/gateways/moolre/create can be E2E-tested', 13, 'pending', 'manual', 'high'),
+        ('Provide NOWPayments sandbox credentials', 'Set NOWPAYMENTS_API_KEY + NOWPAYMENTS_IPN_SECRET to E2E-test the crypto invoice rail and its HMAC-SHA512 webhook', 13, 'pending', 'manual', 'high'),
+        ('Provide bank gateway sandbox credentials', 'Set bank transfer gateway env vars so /api/gateways/bank/create can be E2E-tested', 13, 'pending', 'manual', 'high'),
+        ('Add apple-mobile-web-app-title to church pages', 'love-of-the-lord index/answers/devotionals/shop/give missing apple-mobile-web-app-title meta (PWA install name)', 9, 'pending', 'manual', 'high'),
+        ('Add RSS podcast.xml alternate link on church pages', 'index/shop/give missing link rel=alternate type=application/rss+xml href=/podcast.xml', 9, 'pending', 'manual', 'high'),
+        ('Align script/flag drift across church pages', 'share.js missing on answers/shop; geo-currency.js missing on devotionals/answers; GA_FOOTER_ONLY missing on give/shop', 9, 'pending', 'manual', 'high')
+      `,
       // Mark Phase 6.1 as done (book sales)
       `UPDATE tasks SET status = 'done' WHERE id IN (SELECT id FROM tasks WHERE title = 'Set up digital book sales with pay-per-download' AND phase = 6)`,
       `INSERT OR IGNORE INTO books (title, slug, description, price, file_url, is_premium, sort_order) VALUES
