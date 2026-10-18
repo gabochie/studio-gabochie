@@ -236,13 +236,16 @@ window.addEventListener('ga:currencychange', repriceMerch);
 // Show success banner immediately if returning from payment
 (function(){
   var params = new URLSearchParams(window.location.search);
-  if (params.get('status') === 'successful' || params.get('status') === 'completed') {
+  // ExpressPay appends "?order-id=..." to the return URL, corrupting the last param.
+  var clean = function (v) { return String(v == null ? '' : v).split('?')[0].split('&')[0].trim(); };
+  var mStatus = clean(params.get('status'));
+  if (mStatus === 'successful' || mStatus === 'completed') {
     var el = document.getElementById('orderSuccess');
     if (el) el.style.display = 'block';
     // Clean URL
     if (history.replaceState) history.replaceState({}, '', '/merch/');
-  } else if (params.get('status') === 'pending' && params.get('order')) {
-    var mTx = params.get('order');
+  } else if (mStatus === 'pending' && params.get('order')) {
+    var mTx = clean(params.get('order'));
     var mPolls = 0;
     var mTimer = setInterval(function() {
       mPolls++;

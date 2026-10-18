@@ -94,9 +94,11 @@ p{color:#8A9BB5;line-height:1.7;margin-bottom:24px;font-size:15px}
 
 <script>
 var params = new URLSearchParams(window.location.search);
-var tx = params.get('tx_ref') || '—';
-var status = params.get('status') || '';
-var amount = params.get('amount') || '';
+// ExpressPay appends "?order-id=..." to the return URL, corrupting the last param.
+var clean = function (v) { return String(v == null ? '' : v).split('?')[0].split('&')[0].trim(); };
+var tx = clean(params.get('tx_ref')) || '—';
+var status = clean(params.get('status')) || '';
+var amount = clean(params.get('amount')) || '';
 var name = params.get('name') || '';
 var email = params.get('email') || '';
 var phone = params.get('phone') || '';
