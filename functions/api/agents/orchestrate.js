@@ -244,7 +244,7 @@ export async function onRequest(context) {
       total_pending: (await env.DB.prepare("SELECT COUNT(*) as c FROM agent_queue WHERE status = 'pending'").first()).c,
       results: results
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
-  } catch (_err) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+} catch (err) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Internal error', detail: err.message }), { status: 500, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
   }
-}
