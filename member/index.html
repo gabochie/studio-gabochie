@@ -223,8 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!sessionToken) { window.location.href = '/login/'; return; }
   var successMsg = document.getElementById('successMsg');
   var params = new URLSearchParams(window.location.search);
+  // ExpressPay appends "?order-id=..." to the return URL, corrupting the last param.
+  var clean = function (v) { return String(v == null ? '' : v).split('?')[0].split('&')[0].trim(); };
   if (params.get('success')) {
-    if (params.get('status') === 'pending' && params.get('tx_ref')) {
+    if (clean(params.get('status')) === 'pending' && params.get('tx_ref')) {
       // ExpressPay redirect: confirm before celebrating.
       successMsg.className = 'form-msg';
       successMsg.style.display = 'block';
