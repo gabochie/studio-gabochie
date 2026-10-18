@@ -2,6 +2,16 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Love Of The Lord — service page', function () {
+  // Pin the active service to service-001, whose lineup has no playable media, so that
+  // clicking play advances the journey. Otherwise the page auto-selects "today's" service
+  // by date, which gains real media on 2026-10-18 and turns play into a media toggle.
+  async function pinNoMediaService(page) {
+    await expect(page.locator('#servicePicker option').first()).toBeAttached({ timeout: 10000 });
+    await page.locator('#servicePicker').selectOption('service-001');
+    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await expect(page.locator('#seasonLabel')).toContainText('Grace for New Beginnings');
+  }
+
   test('loads with ministry title and hero CTAs', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
     await expect(page).toHaveTitle(/Love Of The Lord/);
@@ -18,7 +28,7 @@ test.describe('Love Of The Lord — service page', function () {
 
   test('play advances progress and remembers position', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
-    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await pinNoMediaService(page);
     var bar = page.locator('#bar');
     var before = await bar.evaluate(function (el) { return el.style.width; });
     await page.locator('#playBtn').click();
@@ -179,7 +189,7 @@ test.describe('Love Of The Lord — service page', function () {
 
   test('journey shows Now / Up next / Done states', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
-    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await pinNoMediaService(page);
     await expect(page.locator('#order .stop.on .st').first()).toContainText('Now');
     await page.locator('#playBtn').click();
     await expect(page.locator('#order .stop.done').first()).toBeVisible();
@@ -188,7 +198,7 @@ test.describe('Love Of The Lord — service page', function () {
 
   test('finishing the service opens the celebration card', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
-    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await pinNoMediaService(page);
     for (var i = 0; i < 9; i++) {
       await page.locator('#playBtn').click();
     }
@@ -292,13 +302,11 @@ test.describe('Love Of The Lord — service page', function () {
 
   test('switching service with progress asks first', async function ({ page }) {
     await page.goto('/love-of-the-lord/');
-    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
+    await pinNoMediaService(page);
     await page.evaluate(function () {
       localStorage.setItem('lotl_progress_v1', JSON.stringify({ idx: 2, mode: 'full' }));
       localStorage.setItem('lotl_max_v1', '2');
     });
-    await page.reload();
-    await expect(page.locator('#order .stop')).toHaveCount(9, { timeout: 10000 });
     var seen = '';
     page.on('dialog', async function (d) { seen = d.message(); await d.dismiss(); });
     await page.locator('#servicePicker').selectOption('service-002');

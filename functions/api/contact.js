@@ -2,13 +2,19 @@ import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
 import { requireAdminAuth } from './admin/_admin-auth.js';
 import { checkRateLimit } from './_rate-limit.js';
 
+// Escape form input before interpolating into the admin notification HTML so a
+// submission cannot inject markup into the review inbox.
+const escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+  return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+});
+
 const notifyHtml = (name, email, msg, source) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
   <h2 style="color:#0A1628">New Contact Submission</h2>
   <table style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;border-collapse:collapse;width:100%">
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:80px">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${name}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${email}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Source:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${source}</td></tr>
-    ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${msg}</td></tr>` : ''}
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:80px">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${escapeHtml(name)}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${escapeHtml(email)}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Source:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${escapeHtml(source)}</td></tr>
+    ${msg ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Message:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${escapeHtml(msg)}</td></tr>` : ''}
   </table>
   <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://studio.gabochie.com/admin/agents.html">Go to Command Center</a></p></body></html>`;
 

@@ -292,4 +292,23 @@ describe('LOTL ministry queues via POST /api/contact', function () {
     expect(tables().contact_submissions.length).toBe(0);
     expect(tables().subscribers.length).toBe(0);
   });
+
+  it('escapes submitted HTML in the queued admin notification email', async function () {
+    ctx.request = postForm('http://localhost/api/contact', {
+      name: '<b>Ama</b>',
+      email: 'ama@example.com',
+      message: '<img src=x onerror=alert(1)>',
+      source: 'lotl-testimony',
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    var admin = tables().email_queue.filter(function (m) {
+      return m.email_type === 'admin_notification';
+    })[0];
+    expect(admin).toBeTruthy();
+    expect(admin.html_content).not.toContain('<img src=x');
+    expect(admin.html_content).not.toContain('<b>Ama</b>');
+    expect(admin.html_content).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    expect(admin.html_content).toContain('&lt;b&gt;Ama&lt;/b&gt;');
+  });
 });
