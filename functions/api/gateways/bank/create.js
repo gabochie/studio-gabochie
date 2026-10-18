@@ -1,4 +1,5 @@
 import { json, readBody } from '../_shared.js';
+import { checkRateLimit } from '../../_rate-limit.js';
 
 // POST /api/gateways/bank/create
 // Stages a pending bank-transfer donation and returns the account details.
@@ -8,6 +9,10 @@ import { json, readBody } from '../_shared.js';
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'bank_create', 5, 60)) {
+    return json({ status: 'error', message: 'Too many requests. Try again later.' }, 429);
+  }
   let body;
   try {
     body = await readBody(request);

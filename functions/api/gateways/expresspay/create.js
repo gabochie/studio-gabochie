@@ -1,5 +1,6 @@
 import { json, readBody } from '../_shared.js';
 import { expresspaySubmit, expresspayCheckoutUrl, publicBase } from './_expresspay.js';
+import { checkRateLimit } from '../../_rate-limit.js';
 
 // POST /api/gateways/expresspay/create
 // Body: { tx_ref, name?, email?, phone?, redirect? }
@@ -9,6 +10,10 @@ import { expresspaySubmit, expresspayCheckoutUrl, publicBase } from './_expressp
 export async function onRequest(context) {
   const { request, env } = context;
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!await checkRateLimit(env.DB, ip, 'expresspay_create', 5, 60)) {
+    return json({ status: 'error', message: 'Too many requests. Try again later.' }, 429);
+  }
   let body;
   try {
     body = await readBody(request);
