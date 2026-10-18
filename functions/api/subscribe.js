@@ -25,6 +25,7 @@ var REWARD_TIERS = [
 
 import { confirmSubscription } from './email/_send.js';
 import { checkRateLimit } from './_rate-limit.js';
+import { verifyTurnstile, turnstileToken } from './_turnstile.js';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -38,6 +39,7 @@ export async function onRequest(context) {
     var name = '', email = '', source = 'newsletter', ref = '', phone = '';
     var utmSource = '', utmMedium = '', utmCampaign = '';
     var waOptIn = false;
+    var turnstile = '';
     if (ct.includes('application/json')) {
       var body = await request.json();
       name = body.name || '';
@@ -49,6 +51,7 @@ export async function onRequest(context) {
       utmSource = body.utm_source || '';
       utmMedium = body.utm_medium || '';
       utmCampaign = body.utm_campaign || '';
+      turnstile = turnstileToken(body);
     } else {
       var fd = await request.formData();
       name = fd.get('name') || '';
@@ -60,6 +63,12 @@ export async function onRequest(context) {
       utmSource = fd.get('utm_source') || '';
       utmMedium = fd.get('utm_medium') || '';
       utmCampaign = fd.get('utm_campaign') || '';
+      turnstile = turnstileToken(fd, 'form');
+    }
+    if (!await verifyTurnstile(env, request, turnstile)) {
+      return new Response(JSON.stringify({ status: 'error', message: 'CAPTCHA verification failed. Please try again.' }), {
+        status: 403, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
     }
     var meta = { country: '' };
     if (utmSource) meta.utm_source = String(utmSource).slice(0, 80);

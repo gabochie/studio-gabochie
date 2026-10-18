@@ -1,4 +1,5 @@
 import { queueEmail } from '../email/_send.js';
+import { verifyTurnstile, turnstileToken } from '../_turnstile.js';
 
 const notifyHtml = (service, name, email, phone, company, budget, timeline, description, referral) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
   <h2 style="color:#0A1628">New Service Inquiry: ${service}</h2>
@@ -24,6 +25,11 @@ export async function onRequest(context) {
   }
   try {
     const formData = await request.formData();
+    if (!await verifyTurnstile(env, request, turnstileToken(formData, 'form'))) {
+      return new Response(JSON.stringify({ status: 'error', message: 'CAPTCHA verification failed. Please try again.' }), {
+        status: 403, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
     const service = formData.get('service') || '';
     const name = formData.get('name') || '';
     const email = formData.get('email') || '';

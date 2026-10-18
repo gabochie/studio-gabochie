@@ -1,4 +1,5 @@
 import { checkRateLimit } from './_rate-limit.js';
+import { verifyTurnstile, turnstileToken } from './_turnstile.js';
 
 var CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 
@@ -18,6 +19,9 @@ export async function onRequest(context) {
 
   try {
     var body = await request.json();
+    if (!await verifyTurnstile(env, request, turnstileToken(body))) {
+      return new Response(JSON.stringify({ error: 'CAPTCHA verification failed. Please try again.' }), { status: 403, headers: { 'Content-Type': 'application/json', ...CORS } });
+    }
     var name = (body.name || '').trim();
     var email = (body.email || '').trim();
     var phone = (body.phone || '').trim();

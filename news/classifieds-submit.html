@@ -49,6 +49,7 @@ textarea{resize:vertical;min-height:80px}
 .terms{font-size:11px;color:var(--gray);margin-top:12px;text-align:center}
 .terms a{color:var(--navy)}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -126,6 +127,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
     <button type="submit" class="submit-btn" id="submitBtn">Submit for Review</button>
   </form>
 
@@ -170,7 +172,7 @@ function submitListing(e) {
   fetch('https://studio.gabochie.com/api/classifieds', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title: title, description: description, category: category, price: price, contact_name: contact_name, contact_email: contact_email, contact_phone: contact_phone, location: location, website: website })
+    body: JSON.stringify({ title: title, description: description, category: category, price: price, contact_name: contact_name, contact_email: contact_email, contact_phone: contact_phone, location: location, website: website, cf_turnstile_token: (document.querySelector('#classifiedForm input[name="cf-turnstile-response"]') || {}).value || '' })
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data.status === 'ok') {
       showMsg('Thank you! Your listing has been submitted for review. We will notify you once approved.', 'success');

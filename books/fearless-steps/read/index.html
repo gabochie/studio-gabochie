@@ -87,6 +87,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 .comply{font-size:12px;color:var(--dim);text-align:center;margin:20px 0;line-height:1.7}
 /* global footer comes from /nav.js */
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="funnel">
 <div id="progress"></div>
@@ -236,12 +237,15 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 <a class="btn-gold" href="https://wa.me/233243262019?text=Hello%21%20I%20just%20read%20the%20FREE%20sample%20of%207%20Fearless%20Steps.%20I%20want%20to%20reserve%20my%20copy%20%28GHS%2049%29.%20My%20name%20is%3A%20">Reserve my copy →</a>
 <div class="capture">
 <p><strong style="color:#F1F5F9">Not ready to order?</strong> Leave your name — we will WhatsApp you Step 2 free and launch news.</p>
+<form onsubmit="return false">
 <div class="row">
 <input id="capName" type="text" placeholder="Your name" autocomplete="name">
 <input id="capEmail" type="email" placeholder="Email (for Step 2 + news)" autocomplete="email">
 <input id="capPhone" type="tel" placeholder="WhatsApp (e.g. 233501234567)">
-<button onclick="captureLead()">Send me Step 2 →</button>
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
+<button type="button" onclick="captureLead()">Send me Step 2</button>
 </div>
+</form>
 <div class="code-row">Have a printed code? Enter it here at launch:
 <input type="text" placeholder="e.g. FS-XXXX-XXXX" disabled> <em>(codes ship inside every printed copy)</em></div>
 </div>
@@ -325,7 +329,7 @@ function captureLead(){
   if(window.tagOnboard){ try{tagOnboard(ce, n, 'fearless_sample');}catch(e0){} }
   if(ce && ce.indexOf('@')>0){
     fetch('https://studio.gabochie.com/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:n,email:ce,phone:p,source:'fearless-sample',whatsapp_opt_in:1})}).catch(function(){});
+      body:JSON.stringify({name:n,email:ce,phone:p,source:'fearless-sample',whatsapp_opt_in:1,cf_turnstile_token: (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''})}).catch(function(){});
   }
   var msg='Hello! My name is '+n+'. I read the FREE sample of 7 Fearless Steps — please send me Step 2 and launch news.';
   window.open('https://wa.me/233243262019?text='+encodeURIComponent(msg),'_blank');

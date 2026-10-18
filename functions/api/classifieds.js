@@ -1,4 +1,5 @@
 import { checkRateLimit } from './_rate-limit.js';
+import { verifyTurnstile, turnstileToken } from './_turnstile.js';
 
 var CATEGORIES = ['jobs', 'services', 'products', 'events', 'housing', 'community'];
 
@@ -51,6 +52,9 @@ export async function onRequest(context) {
 
   try {
     var body = await request.json();
+    if (!await verifyTurnstile(env, request, turnstileToken(body))) {
+      return new Response(JSON.stringify({ error: 'CAPTCHA verification failed. Please try again.' }), { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+    }
     var title = (body.title || '').trim();
     var description = (body.description || '').trim();
     let category = body.category || 'jobs';

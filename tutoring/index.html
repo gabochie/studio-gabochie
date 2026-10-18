@@ -144,6 +144,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
   .subject-grid{grid-template-columns:1fr 1fr}
 }
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <div id="nav-placeholder"></div>
@@ -290,6 +291,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
             <div class="subject-grid" id="subjectGrid"></div>
             <div class="hint">Select all that apply. We'll tailor our launch notification to your interests.</div>
           </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
           <button type="submit" class="btn btn-gold" id="submitBtn" style="width:100%">Join the Waitlist</button>
         </form>
         <div class="social-proof">
@@ -353,7 +355,8 @@ function submitWaitlist(e) {
     email: document.getElementById('email').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     role: roleEl ? roleEl.value : 'both',
-    subjects: subjects
+    subjects: subjects,
+    cf_turnstile_token: (document.querySelector('#waitlistForm input[name="cf-turnstile-response"]') || {}).value || ''
   };
 
   if (!data.name || !data.email) {

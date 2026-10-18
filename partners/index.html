@@ -79,6 +79,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .faq-a.open{display:block}
 @media(max-width:640px){.hero{padding:60px 16px 30px}.benefits-grid{padding:0 16px 40px}.partner-types{padding:0 16px 40px}.form-section{padding:0 16px 60px}.faq-section{padding:0 16px 60px}}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -204,6 +205,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <label for="message">Tell us more about your vision (optional)</label>
         <textarea id="message" name="message" rows="4"></textarea>
       </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit" class="submit-btn" id="submitBtn">Send Partnership Inquiry</button>
       <div class="msg" id="formMsg"></div>
     </form>
@@ -254,6 +256,7 @@ document.getElementById('partnerForm').addEventListener('submit', async function
     fd.append('email', data.email);
     fd.append('_subject', 'Partnership inquiry: ' + data.org + ' (' + data.interest + ')');
     fd.append('message', data.message + '\n\n— Organization: ' + data.org + ' (' + data.orgType + ')\n— Interest: ' + data.interest);
+    fd.append('cf-turnstile-response', (this.querySelector('input[name="cf-turnstile-response"]') || {}).value || '');
     const r = await fetch('/api/contact', {method:'POST',body:fd});
     const j = await r.json();
     if (j.status === 'ok') {
