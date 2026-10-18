@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -97,7 +97,7 @@ body{background:#0A1628}
 <a href="/love-of-the-lord/shop/">Shop</a>
 <a href="/love-of-the-lord/#prayer">Prayer</a>
 <a href="/love-of-the-lord/#family">Family</a>
-<a href="/love-of-the-lord/#start" class="live">▶ Have Church Now</a>
+<a href="/love-of-the-lord/#start" class="live">\u25B6 Have Church Now</a>
 </nav>
 </div>
 </header>
@@ -131,7 +131,7 @@ body{background:#0A1628}
 
     <div class="gateway-label">Give with</div>
     <div class="gateway-grid" id="gatewayGrid"></div>
-    <button type="button" class="more-toggle" id="moreWaysToggle" aria-expanded="false">More ways to give ▾</button>
+    <button type="button" class="more-toggle" id="moreWaysToggle" aria-expanded="false">More ways to give â–¾</button>
     <div class="more-ways" id="moreWays"></div>
     <div class="gateway-panel" id="gatewayPanel"></div>
 
@@ -144,7 +144,7 @@ body{background:#0A1628}
       <button type="button" class="copy-btn" id="copyMomo">Copy number</button> <span id="copyMsg" role="status" style="font-size:12px;color:#6EE7B7"></span>
     </div>
     <div class="cta-row">
-      <a class="lotl-btn lotl-btn-outline" href="https://wa.me/233243262019?text=Hello%2C%20I%20just%20gave%20a%20love%20offering!">I gave — notify 🙏</a>
+      <a class="lotl-btn lotl-btn-outline" href="https://wa.me/233243262019?text=Hello%2C%20I%20just%20gave%20a%20love%20offering!">I gave — notify ðŸ™</a>
     </div>
 
     <div class="rails">
@@ -154,14 +154,14 @@ body{background:#0A1628}
       <div class="rail"><b>3 · Crypto (global)</b> — USDC/USDT, BTC and more. Every coin converts to ministry work and is receipted.</div>
       <div class="rail"><b>4 · Bank transfer</b> — details provided at checkout.</div>
     </div>
-    <p class="fine" id="finePrint">Shown in your currency (≈) — you are charged in Ghana Cedis (GH₵). Crypto settles in USD.</p>
+    <p class="fine" id="finePrint">Shown in your currency (â‰ˆ) — you are charged in Ghana Cedis (GHâ‚µ). Crypto settles in USD.</p>
     <div class="cta-row">
-      <a class="lotl-btn lotl-btn-outline" href="/love-of-the-lord/">← Back to Service</a>
+      <a class="lotl-btn lotl-btn-outline" href="/love-of-the-lord/">â† Back to Service</a>
     </div>
   </div>
 
   <div class="card" id="receiptView" style="display:none">
-    <div style="font-size:48px;text-align:center" id="receiptIcon">✓</div>
+    <div style="font-size:48px;text-align:center" id="receiptIcon">âœ“</div>
     <h1 id="receiptTitle">Thank <span>you</span></h1>
     <p class="lead" id="receiptMsg">Your generous gift makes every outreach and act of benevolence possible. A receipt has been emailed to you.</p>
     <div class="receipt" id="receiptCard">
@@ -171,7 +171,7 @@ body{background:#0A1628}
         <tr><td>Status</td><td id="rStatus" style="color:#22C55E">Confirmed</td></tr>
       </table>
     </div>
-    <button type="button" class="give-btn" onclick="window.print()">🖨 Print receipt</button>
+    <button type="button" class="give-btn" onclick="window.print()">ðŸ–¨ Print receipt</button>
     <div class="cta-row">
       <a class="lotl-btn lotl-btn-outline" href="https://wa.me/?text=Have%20church%20with%20me%20anytime%0Ahttps%3A%2F%2Fstudio.gabochie.com%2Flove-of-the-lord%2F%3Futm_source%3Dlotl%26utm_medium%3Dshare%26utm_campaign%3Dlotl-give-invite%26utm_content%3Dreceipt" data-lotl-share data-share-path="/love-of-the-lord/" data-share-text="Have church with me anytime" data-share-content="receipt" data-share-campaign="lotl-give-invite" target="_blank" rel="noopener">Invite a friend →</a>
       <a class="lotl-btn lotl-btn-outline" href="/love-of-the-lord/give/">Give again</a>
@@ -301,7 +301,7 @@ body{background:#0A1628}
     if (toggle) toggle.addEventListener('click', function () {
       var open = $('moreWays').classList.toggle('open');
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      toggle.textContent = open ? 'Fewer ways ▴' : 'More ways to give ▾';
+      toggle.textContent = open ? 'Fewer ways â–´' : 'More ways to give â–¾';
     });
   }
 
@@ -319,7 +319,7 @@ body{background:#0A1628}
     if (!(amountGhs > 0)) { window.payError('Please choose or enter an amount.', 'lotl-give'); return; }
     if (typeof tagOnboard === 'function') tagOnboard(email, name, 'lotl-donation');
     beacon('donation_started', { name: name, amount: amountGhs, gateway: gateway, currency: cur });
-    btn.disabled = true; btn.textContent = 'Processing…';
+    btn.disabled = true; btn.textContent = 'Processingâ€¦';
     if (gateway === 'expresspay') payExpress(amountGhs, name, email, phone, btn);
     else if (gateway === 'crypto') payCrypto(amountGhs, name, email, phone, btn);
     else payAlt(amountGhs, name, email, phone, btn);
@@ -410,7 +410,7 @@ body{background:#0A1628}
     } else if (status === 'successful' || status === 'completed') {
       st.textContent = 'Confirmed'; st.style.color = '#22C55E';
     } else {
-      $('receiptIcon').textContent = '✗'; $('receiptIcon').style.color = '#EF4444';
+      $('receiptIcon').textContent = 'âœ—'; $('receiptIcon').style.color = '#EF4444';
       $('receiptTitle').textContent = 'Payment failed';
       $('receiptMsg').textContent = 'Your payment did not go through. No charge was made.';
       $('receiptCard').style.display = 'none';
@@ -432,7 +432,7 @@ body{background:#0A1628}
     var copyBtn = $('copyMomo');
     if (copyBtn) copyBtn.addEventListener('click', function () {
       var num = '0243262019';
-      var done = function () { copyBtn.textContent = 'Copied ✓'; var m = $('copyMsg'); if (m) m.textContent = 'MoMo number copied'; };
+      var done = function () { copyBtn.textContent = 'Copied âœ“'; var m = $('copyMsg'); if (m) m.textContent = 'MoMo number copied'; };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(num).then(done, function () { window.prompt('Copy MoMo number:', num); });
       else window.prompt('Copy MoMo number:', num);
     });
@@ -455,3 +455,4 @@ body{background:#0A1628}
 </script>
 </body>
 </html>
+

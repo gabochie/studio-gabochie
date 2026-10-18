@@ -16,6 +16,7 @@ const FIXES = [
   ['\u00e2\u2020\u2019', '\u2192'], // right arrow (variant)
   ['\u00c2\u00b7', '\u00B7'], // middle dot
   ['\u00c2\u00a2', '\u00A2'], // cent
+  ['\u00e2\u2013\u00b6', '\u25B6'], // black right-pointing triangle (▶) mojibake
 ];
 
 function walk(dir, exts, results) {
