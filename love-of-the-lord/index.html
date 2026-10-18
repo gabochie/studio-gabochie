@@ -165,6 +165,7 @@ details.fold summary::-webkit-details-marker{display:none}
 .tw-item b{font-weight:600;color:#F1F5F9}
 @media(max-width:860px){.this-week-in{grid-template-columns:1fr;gap:8px}}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <header class="lotl-nav">
@@ -259,6 +260,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="frow c3">
 <div><label class="lotl-label" for="newName">Name</label><input class="lotl-field" id="newName" name="name" required placeholder="Your name" aria-label="Your name"></div>
 <div><label class="lotl-label" for="newEmail">Email or WhatsApp</label><input class="lotl-field" id="newEmail" name="email" type="text" inputmode="email" required placeholder="Email or WhatsApp" aria-label="Email or WhatsApp"></div>
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
 <button class="lotl-btn" type="submit">I'm New 🙏</button>
 </div>
 </form>
@@ -281,7 +283,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div><label class="lotl-label" for="askName">Name (optional)</label><input class="lotl-field" id="askName" name="name" placeholder="Name (optional)" aria-label="Name"></div>
 <div><label class="lotl-label" for="askEmail">WhatsApp or email</label><input class="lotl-field" id="askEmail" name="email" placeholder="WhatsApp or email (to send your answer)" aria-label="Contact"></div>
 </div>
-<div class="cta-row" style="margin-top:10px"><button class="lotl-btn" type="submit">Send my question →</button></div>
+<div class="cta-row" style="margin-top:10px"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div><button class="lotl-btn" type="submit">Send my question →</button></div>
 </form>
 <div class="lotl-ok" id="askOk" hidden>Received. We answer 3 every Friday — yours may be next. <a href="mailto:love@gabochie.com">love@gabochie.com</a></div>
 </div>
@@ -315,7 +317,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <label class="lotl-label lotl-label-dark" for="prayerPhone">WhatsApp number</label><input id="prayerPhone" name="phone" required placeholder="WhatsApp number e.g. 024..." aria-label="WhatsApp number">
 <label class="lotl-label lotl-label-dark" for="prayerEmail">Email (optional)</label><input id="prayerEmail" name="email" type="email" placeholder="Email (optional)" aria-label="Email">
 <label class="lotl-label lotl-label-dark" for="prayerMessage">Prayer request (optional)</label><textarea id="prayerMessage" name="message" rows="2" placeholder="1-line prayer request (optional)" aria-label="Prayer request"></textarea>
-<div class="cta-row"><button class="lotl-btn" type="submit">Book free prayer call →</button></div>
+<div class="cta-row"><div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div><button class="lotl-btn" type="submit">Book free prayer call →</button></div>
 </form>
 <div class="lotl-ok" id="prayerOk" hidden>Booked! We will WhatsApp you before your slot. <a href="https://wa.me/233243262019?text=Hello%20Love%20Of%20The%20Lord%2C%20I%20booked%20prayer!">Confirm now →</a></div>
 </div>
@@ -339,6 +341,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="frow c3">
 <div><label class="lotl-label" for="familyName">Name</label><input class="lotl-field" id="familyName" name="name" required placeholder="Your name" aria-label="Your name"></div>
 <div><label class="lotl-label" for="familyPhone">WhatsApp number</label><input class="lotl-field" id="familyPhone" name="phone" required placeholder="WhatsApp number" aria-label="WhatsApp number"></div>
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
 <button class="lotl-btn" type="submit">Join Family Circle</button>
 </div>
 </form>
@@ -354,6 +357,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="frow c21a">
 <div><label class="lotl-label" for="storyMessage">Your testimony</label><input class="lotl-field" id="storyMessage" name="message" required placeholder="Share your testimony in 1 line…" aria-label="Your testimony"></div>
 <div><label class="lotl-label" for="storyName">First name + city</label><input class="lotl-field" id="storyName" name="name" placeholder="First name + city" aria-label="Name"></div>
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
 <button class="lotl-btn lotl-btn-outline" type="submit">Share</button>
 </div>
 </form>

@@ -75,6 +75,7 @@ h1 span{color:#C9A84C}
 .mini-footer a{color:#5A7A9F;text-decoration:none;margin:0 8px}
 .mini-footer a:hover{color:#C9A84C}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -105,6 +106,7 @@ h1 span{color:#C9A84C}
         <input type="tel" id="startPhone" name="phone" placeholder="+233 XX XXX XXXX" autocomplete="tel">
       </div>
       <label class="wa-optin"><input type="checkbox" id="startWaOptIn" name="whatsapp_opt_in" value="1"> <span>Yes, send me WhatsApp updates. Unsubscribe anytime.</span></label>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit" class="submit-btn" id="startBtn">Send Me The Weekly</button>
       <div class="form-msg" id="startMsg" role="status"></div>
     </form>
@@ -224,7 +226,7 @@ document.getElementById('startForm').addEventListener('submit', function(e){
   fetch('/api/subscribe', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({name:name, email:email, phone:phone, whatsapp_opt_in:waOptIn, source:'start-page', ref:REF,
-      utm_source: UTM.source, utm_medium: UTM.medium, utm_campaign: UTM.campaign})
+      utm_source: UTM.source, utm_medium: UTM.medium, utm_campaign: UTM.campaign, cf_turnstile_token: (document.querySelector('#startForm input[name="cf-turnstile-response"]') || {}).value || ''})
   }).then(function(r){ return r.json(); }).then(function(d){
     btn.disabled = false;
     btn.textContent = 'Send Me The Weekly';

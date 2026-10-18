@@ -63,6 +63,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
 @media(max-width:640px){.hero{padding:60px 16px 30px}.article-grid{grid-template-columns:1fr}.section{padding:0 16px 40px}.subscribe-form{flex-direction:column}}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -144,6 +145,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <form class="subscribe-form" id="contentSubForm">
       <input type="email" id="contentSubEmail" placeholder="Your email address" required style="margin-bottom:6px">
       <input type="tel" id="contentSubPhone" placeholder="WhatsApp number (e.g. 233501234567)" style="width:100%;padding:10px 14px;border:1px solid #1E3250;border-radius:6px;background:#0A1628;color:#E8EEF7;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:6px">
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit">Subscribe</button>
     </form>
     <div class="msg" id="contentSubMsg"></div>
@@ -169,7 +171,7 @@ document.getElementById('contentSubForm').addEventListener('submit', async funct
   msg.className = 'msg';
   try {
     const _u = (() => { try { const v = JSON.parse(localStorage.getItem('ga_utm') || '{}'); return v && v.utm_source ? v : {}; } catch(e) { return {}; } })();
-    const r = await fetch('/api/subscribe', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email, phone, source:'content-page', utm_source: _u.utm_source || '', utm_medium: _u.utm_medium || '', utm_campaign: _u.utm_campaign || '', utm_content: _u.utm_content || '', utm_term: _u.utm_term || ''})});
+    const r = await fetch('/api/subscribe', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email, phone, source:'content-page', utm_source: _u.utm_source || '', utm_medium: _u.utm_medium || '', utm_campaign: _u.utm_campaign || '', utm_content: _u.utm_content || '', utm_term: _u.utm_term || '', cf_turnstile_token: (document.querySelector('#contentSubForm input[name="cf-turnstile-response"]') || {}).value || '')});
     const j = await r.json();
     if (j.ok) {
       msg.className = 'msg msg-success';

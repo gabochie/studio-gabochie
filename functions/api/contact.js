@@ -1,6 +1,7 @@
 import { queueEmail, manifestoFollowup, daysFromNow } from './email/_send.js';
 import { requireAdminAuth } from './admin/_admin-auth.js';
 import { checkRateLimit } from './_rate-limit.js';
+import { verifyTurnstile, turnstileToken } from './_turnstile.js';
 
 // Escape form input before interpolating into the admin notification HTML so a
 // submission cannot inject markup into the review inbox.
@@ -59,6 +60,11 @@ export async function onRequest(context) {
   }
   try {
     const formData = await request.formData();
+    if (!await verifyTurnstile(env, request, turnstileToken(formData, 'form'))) {
+      return new Response(JSON.stringify({ status: 'error', message: 'CAPTCHA verification failed. Please try again.' }), {
+        status: 403, headers: { 'Content-Type': 'application/json' }
+      });
+    }
     const name = formData.get('name') || '';
     const email = formData.get('email') || '';
     const phone = formData.get('phone') || '';

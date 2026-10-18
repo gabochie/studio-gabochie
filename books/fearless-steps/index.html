@@ -154,6 +154,7 @@ footer{margin-top:0}
   .cover{max-width:300px;margin:0 auto;justify-self:auto}
 }
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="funnel">
 <div id="nav-placeholder"></div>
@@ -301,6 +302,7 @@ footer{margin-top:0}
       </div>
 
       <form id="orderForm" onsubmit="return submitOrder(event)">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
         <div class="row">
           <input id="fname" name="name" placeholder="Your full name" required>
           <input id="fphone" name="phone" placeholder="Phone / WhatsApp number" required inputmode="tel">
@@ -453,7 +455,7 @@ function submitOrder(e){
       name+" · "+city+" · GH₵49 on delivery · confirmation goes to "+phone;
     if(email){
       fetch("https://studio.gabochie.com/api/subscribe",{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({name:name,email:email,phone:phone,source:"fearless-preorder",whatsapp_opt_in:1,utm_campaign:"preorder"})}).catch(function(){});
+        body:JSON.stringify({name:name,email:email,phone:phone,source:"fearless-preorder",whatsapp_opt_in:1,utm_campaign:"preorder",cf_turnstile_token: (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''})}).catch(function(){});
       document.getElementById("ordSummary").textContent += " · launch news to "+email;
     }
     if(CONFIG.groupLink){

@@ -28,7 +28,9 @@ h1 span{color:#C9A84C}
 .socials a:hover{color:#C9A84C;border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.06)}
 .footer{font-family:'Courier Prime',monospace;font-size:10px;color:#3A5278;margin-top:32px;letter-spacing:.05em;text-transform:uppercase}
 .success{display:none;color:#22C55E;font-family:'Barlow',sans-serif;font-size:14px;padding:12px;margin-top:12px}
+.cf-turnstile{width:100%;display:flex;justify-content:center;margin-top:4px}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -36,10 +38,11 @@ h1 span{color:#C9A84C}
   <h1>Coming<br><span>Soon</span></h1>
   <div class="tagline">Creativity, Love &amp; Wisdom</div>
   <p class="desc">We're building something beautiful — a space where <strong>creativity</strong>, <strong>love</strong>, and <strong>wisdom</strong> come together. Leave your email and we'll let you know the moment we launch.</p>
-  <div class="notify">
+  <form class="notify" onsubmit="return false">
     <input type="email" id="notifyEmail" placeholder="Your email address" required>
-    <button id="notifyBtn" onclick="notifyMe()">Notify Me</button>
-  </div>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
+    <button type="button" id="notifyBtn" onclick="notifyMe()">Notify Me</button>
+  </form>
   <div class="success" id="notifySuccess">&#10003; You're on the list! We'll notify you at launch.</div>
   <div class="socials">
     <a href="https://x.com/GideonAbochie" target="_blank" title="X / Twitter"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
@@ -55,6 +58,7 @@ function notifyMe(){
   if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
   btn.disabled = true; btn.textContent = 'Subscribing\u2026';
   var fd = new FormData(); fd.append('email', email); fd.append('source', 'coming-soon');
+  fd.append('cf-turnstile-response', (document.querySelector('.notify input[name="cf-turnstile-response"]') || {}).value || '');
   fetch('/api/contact', {method:'POST', body:fd}).then(function(r){
     if (!r.ok) throw new Error('Failed');
     document.getElementById('notifySuccess').style.display = 'block';

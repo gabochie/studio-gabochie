@@ -54,6 +54,7 @@ body{background:#0A1628}
 .lotl-foot{margin-top:0}
 @media(max-width:640px){.shop-grid{grid-template-columns:1fr}.notify form{grid-template-columns:1fr}}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <header class="lotl-nav">
@@ -99,7 +100,7 @@ body{background:#0A1628}
 <div class="shop-grid">
 <div class="lotl-card"><div class="lotl-tag">Books</div><h3>Ministry Books</h3><p>Faith, creativity and wisdom — including Fearless Steps. See titles, prices and free chapters.</p><div class="row"><a class="lotl-btn" href="/books/">Browse books →</a></div></div>
 <div class="lotl-card"><div class="lotl-tag">Free · Mondays</div><h3>Weekly Devotionals</h3><p>5-minute S.O.A.P. devotionals every Monday — Scripture, Observation, Application, Prayer.</p><div class="row"><a class="lotl-btn" href="/love-of-the-lord/devotionals/">Read free →</a></div></div>
-<div class="lotl-card"><div class="lotl-tag">Coming soon</div><h3>52-Week Devotional Ebook</h3><p>The full year of Monday devotionals in one ebook. Leave your email — we will tell you first.</p><div class="notify" style="border:none;padding:0"><form id="ebookForm"><div><label class="lotl-label" for="ebookName">Name</label><input class="lotl-field" id="ebookName" name="name" placeholder="Your name" aria-label="Your name"></div><div><label class="lotl-label" for="ebookEmail">Email</label><input class="lotl-field" id="ebookEmail" name="email" type="email" required placeholder="Email" aria-label="Email"></div><button class="lotl-btn" type="submit">Notify me</button></form><div class="lotl-ok" style="display:none" id="ebookOk">You are on the list. Watch your inbox.</div></div></div>
+<div class="lotl-card"><div class="lotl-tag">Coming soon</div><h3>52-Week Devotional Ebook</h3><p>The full year of Monday devotionals in one ebook. Leave your email — we will tell you first.</p><div class="notify" style="border:none;padding:0"><form id="ebookForm"><div><label class="lotl-label" for="ebookName">Name</label><input class="lotl-field" id="ebookName" name="name" placeholder="Your name" aria-label="Your name"></div><div><label class="lotl-label" for="ebookEmail">Email</label><input class="lotl-field" id="ebookEmail" name="email" type="email" required placeholder="Email" aria-label="Email"></div><div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div><button class="lotl-btn" type="submit">Notify me</button></form><div class="lotl-ok" style="display:none" id="ebookOk">You are on the list. Watch your inbox.</div></div></div>
 </div>
 </section>
 
@@ -115,7 +116,7 @@ body{background:#0A1628}
 <h2>Sermon <span>audio</span></h2>
 <p class="sub">The full sermon archive is being recorded week by week.</p>
 <div class="shop-grid">
-<div class="lotl-card"><div class="lotl-tag">Coming soon</div><h3>Full Sermon Archive</h3><p>Every Sunday sermon as downloadable MP3 — full and refresh editions. Leave your email for opening-week access.</p><div class="notify" style="border:none;padding:0"><form id="sermonForm"><div><label class="lotl-label" for="sermonName">Name</label><input class="lotl-field" id="sermonName" name="name" placeholder="Your name" aria-label="Your name"></div><div><label class="lotl-label" for="sermonEmail">Email</label><input class="lotl-field" id="sermonEmail" name="email" type="email" required placeholder="Email" aria-label="Email"></div><button class="lotl-btn" type="submit">Notify me</button></form><div class="lotl-ok" style="display:none" id="sermonOk">You are on the list. Watch your inbox.</div></div></div>
+<div class="lotl-card"><div class="lotl-tag">Coming soon</div><h3>Full Sermon Archive</h3><p>Every Sunday sermon as downloadable MP3 — full and refresh editions. Leave your email for opening-week access.</p><div class="notify" style="border:none;padding:0"><form id="sermonForm"><div><label class="lotl-label" for="sermonName">Name</label><input class="lotl-field" id="sermonName" name="name" placeholder="Your name" aria-label="Your name"></div><div><label class="lotl-label" for="sermonEmail">Email</label><input class="lotl-field" id="sermonEmail" name="email" type="email" required placeholder="Email" aria-label="Email"></div><div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div><button class="lotl-btn" type="submit">Notify me</button></form><div class="lotl-ok" style="display:none" id="sermonOk">You are on the list. Watch your inbox.</div></div></div>
 </div>
 <p class="lotl-muted" style="margin:18px 0 40px">Payments secured by ExpressPay &amp; crypto · <a href="/legal/refund.html" style="color:#C9A84C">Refund policy</a> · <a href="mailto:love@gabochie.com" style="color:#C9A84C">love@gabochie.com</a></p>
 </section>

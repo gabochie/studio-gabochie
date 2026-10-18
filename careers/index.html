@@ -163,6 +163,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
   .job-card-top{flex-direction:column}
 }
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <div id="nav-placeholder"></div>
@@ -310,6 +311,7 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
             <label>Cover Letter / Why You?</label>
             <textarea id="cover_letter" placeholder="Tell us about yourself, your skills, and why you want to join the mission..."></textarea>
           </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
           <button type="submit" class="btn btn-gold" id="appBtn" style="width:100%">Submit Application</button>
         </form>
       </div>
@@ -456,7 +458,8 @@ function submitApplication(e) {
     name: document.getElementById('app_name').value.trim(),
     email: document.getElementById('app_email').value.trim(),
     phone: document.getElementById('app_phone').value.trim(),
-    cover_letter: document.getElementById('cover_letter').value.trim()
+    cover_letter: document.getElementById('cover_letter').value.trim(),
+    cf_turnstile_token: (document.querySelector('#careerForm input[name="cf-turnstile-response"]') || {}).value || ''
   };
 
   if (!data.name || !data.email) {

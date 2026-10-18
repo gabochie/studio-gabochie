@@ -88,6 +88,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
 @media(max-width:640px){.hero{padding:60px 16px 30px}.bio-card{grid-template-columns:1fr;text-align:center}.bio-photo{margin:0 auto}.bio-social{justify-content:center}.book-card{flex-direction:column;align-items:center;text-align:center}.section{padding:0 16px 40px}.media-grid{grid-template-columns:1fr}}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -316,6 +317,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <label for="mediaMessage">Details / Topic Ideas</label>
         <textarea id="mediaMessage" name="message" rows="3" required></textarea>
       </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit" class="submit-btn" id="mediaBtn">Send Inquiry</button>
       <div class="msg" id="mediaMsg"></div>
     </form>
@@ -346,6 +348,7 @@ document.getElementById('mediaForm').addEventListener('submit', async function(e
     fd.append('email', data.email);
     fd.append('_subject', 'Media inquiry: ' + data.mediaType + ' — ' + data.outlet);
     fd.append('message', data.message + '\n\n— Outlet: ' + data.outlet + ' (' + data.mediaType + ')');
+    fd.append('cf-turnstile-response', (this.querySelector('input[name="cf-turnstile-response"]') || {}).value || '');
     const r = await fetch('/api/contact', {method:'POST',body:fd});
     const j = await r.json();
     if (j.status === 'ok') {
