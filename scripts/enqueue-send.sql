@@ -1,0 +1,2 @@
+INSERT INTO agent_queue (agent_type, workflow_id, priority, status, payload, scheduled_at, created_at) VALUES 
+('outreach', 42, 1, 'pending', '{"action":"send_newsletter","batch_size":10}', datetime('now'), datetime('now'));

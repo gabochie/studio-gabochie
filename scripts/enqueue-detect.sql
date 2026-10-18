@@ -1,0 +1,2 @@
+INSERT INTO agent_queue (agent_type, workflow_id, priority, status, payload, scheduled_at, created_at) VALUES 
+('outreach', 42, 1, 'pending', '{"action":"detect","query":"SELECT * FROM cold_outreach WHERE status=''pending'' ORDER BY id LIMIT 50"}', datetime('now'), datetime('now'));
