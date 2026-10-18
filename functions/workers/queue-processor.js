@@ -3,7 +3,6 @@
  * Runs every minute via cron trigger
  * Processes pending items in agent_queue
  */
-import { ensureAgentTables } from '../api/agents/_init.js';
 
 async function processQueueItem(db, env, item) {
   var startedAt = new Date().toISOString();
@@ -114,7 +113,7 @@ async function processQueueItem(db, env, item) {
       if (queryResult.length > 0) {
         await db.prepare(
           "INSERT INTO agent_queue (agent_type, workflow_id, priority, payload, scheduled_at, created_at) VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))"
-        ).bind('outreach', item.workflow_id || 0, 2, JSON.stringify({action:'send_newsletter',batch_size:10}), datetime('now'), datetime('now')).run();
+        ).bind('outreach', item.workflow_id || 0, 2, JSON.stringify({action:'send_newsletter',batch_size:10})).run();
       }
     } else if (item.agent_type === 'analytics') {
       var tables = payload.tables || ['donations', 'subscriptions', 'subscribers', 'store_orders'];
@@ -256,11 +255,11 @@ async function queueEmail(env, toEmail, toName, subject, htmlContent, emailType)
   await env.DB.prepare(
     `INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type, scheduled_at, created_at)
      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))`
-  ).bind(toEmail, toName || '', subject, htmlContent, emailType || 'agent', datetime('now')).run();
+  ).bind(toEmail, toName || '', subject, htmlContent, emailType || 'agent').run();
 }
 
 export default {
-  async scheduled(controller, env, ctx) {
+  async scheduled(controller, env, _ctx) {
     if (!env.DB) return;
     
     try {
