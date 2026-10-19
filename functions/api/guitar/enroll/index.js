@@ -6,10 +6,10 @@ export async function onRequest(context) {
   const user = await getUser(context);
   if (!user) return json({error:'Auth required'}, 401);
 
-  let price = 99, currency = 'GHS';
+  let price = 299, currency = 'GHS';
   try {
     const pRow = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_price'").first();
-    if (pRow) price = parseInt(pRow.value) || 250;
+    if (pRow) price = parseInt(pRow.value) || 299;
     const cRow = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_currency_symbol'").first();
     if (cRow) currency = cRow.value;
   } catch (_) {}

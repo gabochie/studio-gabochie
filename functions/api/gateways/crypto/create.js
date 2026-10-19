@@ -7,7 +7,7 @@ async function guitarPrice(db) {
     const row = await db.prepare("SELECT value FROM settings WHERE key = 'guitar_price'").first();
     if (row && parseInt(row.value)) return parseInt(row.value);
   } catch (_e) {}
-  return 99;
+  return 299;
 }
 
 var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch', 'guitar'];
