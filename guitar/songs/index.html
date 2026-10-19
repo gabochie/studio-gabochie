@@ -99,7 +99,7 @@ const SONGS = [
   {id:12,title:'Victory',artist:'Joe Mettle',difficulty:'gold',chords:['C','G','Am','F'],video:'https://www.youtube.com/embed/mZhm2Xrx7yI',progression:'C → G → Am → F',strum:'Down-up, down-up'},
   {id:13,title:'Agona',artist:'Ebo Taylor',difficulty:'gold',chords:['Am','D7','G','C','F','E7'],video:'https://www.youtube.com/embed/vsl5GqQxsSE',progression:'Am → D7 → G → C → F → E7',strum:'Highlife chop'}
 ];
-let currentFilter = 'all', currentUserEmail = null;
+let currentFilter = 'all';
 // ── Mini Player State ──
 let mpSong = null, mpIdx = 0, mpPlaying = false, mpInterval = null, mpTempoVal = 70;
 window.playSong = function(id) {
@@ -177,7 +177,6 @@ window.showSongDetail = function(id) {
 };
 
 window.handleSongsSignIn = async function(user) {
-  currentUserEmail = user.email || '';
   document.getElementById('songs-auth').style.display='none';
   document.getElementById('songs-content').style.display='block';
   renderSongs('all');
@@ -204,47 +203,39 @@ document.getElementById('buy-btn').onclick = function() {
         <li><span class="check">✅</span> Lifetime access — one payment, forever</li>
       </ul>
       <button class="btn btn-primary btn-block" id="pay-now-btn">Pay <span data-g-symbol-amount>GH₵ 99</span> Now <i class="ti ti-arrow-right"></i></button>
+      <button class="btn btn-ghost btn-block mt-sm" id="pay-momo-btn">Pay with Mobile Money (Moolre)</button>
       <button class="btn btn-ghost btn-block mt-sm" onclick="Guitar.hideSheet()">Maybe Later</button>
-      <div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
+      <div class="trust-row"><span>&#128274; Secured by ExpressPay &amp; Moolre</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
       <div class="trust-sub">MoMo &middot; Card — charged in GHS. 14-day refund if no coursework past Module 5 is accessed.</div>
       <p id="pay-error" style="color:var(--red-light);font-size:12px;text-align:center;margin-top:8px;display:none"></p>
     </div>
   `);
   setTimeout(() => {
-    document.getElementById('pay-now-btn').onclick = async function() {
+    async function startPay(gateway) {
       try {
         const data = await Guitar.enroll();
         if (data.alreadyUnlocked) {
           Guitar.hideSheet();
           Guitar.showToast('Already unlocked!','success');
           document.getElementById('songs-unlock').style.display='none';
-        } else if (data.tx_ref) {
-          Guitar.hideSheet();
-          Guitar.showToast('Opening payment...', 'info');
-          try {
-            const cr = await fetch('/api/gateways/expresspay/create', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ tx_ref: data.tx_ref, name: '', email: currentUserEmail, phone: '', redirect: '/guitar/learn/?upgrade=pending' })
-            }).then(r => r.json());
-            if (cr.status === 'ok' && cr.checkout_url) {
-              window.location.href = cr.checkout_url;
-            } else {
-              Guitar.showToast('Could not start payment: ' + (cr.message || 'try again'), 'error');
-            }
-          } catch(e) {
-            Guitar.showToast('Network error. No charge was made.', 'error');
-          }
-        } else {
+          return;
+        }
+        if (!data.tx_ref) {
           Guitar.hideSheet();
           Guitar.showToast('Enrollment successful!','success');
           document.getElementById('songs-unlock').style.display='none';
+          return;
         }
+        Guitar.hideSheet();
+        Guitar.showToast('Opening payment...', 'info');
+        await Guitar.openGateway(data.tx_ref, gateway, '/guitar/learn/?upgrade=pending');
       } catch(e) {
-        document.getElementById('pay-error').textContent = 'Payment failed. Please try again.';
-        document.getElementById('pay-error').style.display='block';
+        Guitar.showToast((e && e.message) ? e.message + ' — no charge was made.' : 'Network error. No charge was made.', 'error');
       }
-    };
+    }
+    document.getElementById('pay-now-btn').onclick = function() { startPay('expresspay'); };
+    const momoBtn = document.getElementById('pay-momo-btn');
+    if (momoBtn) momoBtn.onclick = function() { startPay('moolre'); };
   }, 100);
 };
 

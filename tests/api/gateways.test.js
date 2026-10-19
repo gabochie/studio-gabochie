@@ -101,6 +101,78 @@ describe('Moolre gateway', function () {
     expect(res.status).toBe(400);
     expect(db._tables.donations[0].status).toBe('pending');
   });
+
+  it('resolves a guitar tx_ref server-side and stages no donation', async function () {
+    globalThis.fetch = async function (url, opts) {
+      expect(String(url)).toBe('https://api.moolre.com/embed/link');
+      var body = JSON.parse(opts.body);
+      expect(body.externalref).toBe('GUITAR_TEST1');
+      expect(body.amount).toBe('99');
+      return jsonOk({ status: 1, code: 'POS09', message: 'OK', data: { authorization_url: 'https://pos.moolre.com/abc', reference: 'uuid-9' } });
+    };
+    var db = mockDb({
+      donations: [],
+      guitar_payments: [{ id: 1, flw_tx_ref: 'GUITAR_TEST1', amount: 99, user_id: 7, email: 'sam@test.com', status: 'pending' }],
+      users: [{ id: 7, name: 'Sam', email: 'sam@test.com', phone: '+233551234567' }]
+    });
+    var ctx = post('http://localhost/api/gateways/moolre/create', { tx_ref: 'GUITAR_TEST1' }, { DB: db, MOOLRE_API_USER: 'user', MOOLRE_PUBLIC_KEY: 'pub', MOOLRE_ACCOUNT_NUMBER: '12345', MOOLRE_BASE_URL: 'https://api.moolre.com' });
+    var res = await moolreCreate(ctx);
+    expect(res.status).toBe(200);
+    var data = await res.json();
+    expect(data.status).toBe('ok');
+    expect(data.tx_ref).toBe('GUITAR_TEST1');
+    expect(db._tables.donations).toHaveLength(0);
+  });
+
+  it('rejects a create with an unknown tx_ref', async function () {
+    var db = mockDb({ donations: [], guitar_payments: [] });
+    var ctx = post('http://localhost/api/gateways/moolre/create', { tx_ref: 'GUITAR_MISSING' }, { DB: db, MOOLRE_BASE_URL: 'https://api.moolre.com' });
+    var res = await moolreCreate(ctx);
+    expect(res.status).toBe(404);
+    expect(db._tables.donations).toHaveLength(0);
+  });
+
+  it('settles a guitar payment on callback', async function () {
+    var called = [];
+    globalThis.fetch = async function (url, opts) {
+      called.push(String(url));
+      if (String(url).indexOf('/open/transact/status') >= 0) {
+        var b = JSON.parse(opts.body);
+        if (b.idtype === 1) {
+          return jsonOk({ status: 1, code: 'SS01', message: 'ok', data: { txstatus: 1, amount: '99', transactionid: 'TXN-G', externalref: b.id, go: null } });
+        }
+      }
+      return jsonOk({ status: 0, data: {} });
+    };
+    var db = mockDb({
+      donations: [],
+      guitar_payments: [{ id: 1, flw_tx_ref: 'GUITAR_SETTLE1', amount: 99, user_id: 7, email: 'sam@test.com', status: 'pending' }],
+      guitar_user_stats: [],
+      users: [{ id: 7, name: 'Sam', email: 'sam@test.com', phone: '+233551234567' }]
+    });
+    var ctx = post('http://localhost/api/gateways/moolre/callback', { status: 1, code: 'P01', message: 'Transaction Successful', data: { externalref: 'GUITAR_SETTLE1' } }, { DB: db, MOOLRE_API_USER: 'user', MOOLRE_PUBLIC_KEY: 'pub', MOOLRE_ACCOUNT_NUMBER: '12345', MOOLRE_BASE_URL: 'https://api.moolre.com' });
+    var res = await moolreCallback(ctx);
+    expect(res.status).toBe(200);
+    expect(db._tables.guitar_payments[0].status).toBe('completed');
+    expect(db._tables.donations).toHaveLength(0);
+    expect(called.some(function (u) { return u.indexOf('/open/transact/status') >= 0; })).toBe(true);
+  });
+
+  it('rejects a callback whose paid amount does not match', async function () {
+    globalThis.fetch = async function (url, opts) {
+      var b = JSON.parse(opts.body);
+      return jsonOk({ status: 1, data: { txstatus: 1, amount: '5', transactionid: 'TXN-BAD', externalref: b.id } });
+    };
+    var db = mockDb({
+      donations: [],
+      guitar_payments: [{ id: 1, flw_tx_ref: 'GUITAR_AMT1', amount: 99, user_id: 7, email: 'sam@test.com', status: 'pending' }],
+      users: [{ id: 7, name: 'Sam', email: 'sam@test.com', phone: '' }]
+    });
+    var ctx = post('http://localhost/api/gateways/moolre/callback', { status: 1, data: { externalref: 'GUITAR_AMT1' } }, { DB: db, MOOLRE_API_USER: 'user', MOOLRE_PUBLIC_KEY: 'pub', MOOLRE_ACCOUNT_NUMBER: '12345', MOOLRE_BASE_URL: 'https://api.moolre.com' });
+    var res = await moolreCallback(ctx);
+    expect(res.status).toBe(402);
+    expect(db._tables.guitar_payments[0].status).toBe('pending');
+  });
 });
 
 describe('Crypto gateway', function () {
