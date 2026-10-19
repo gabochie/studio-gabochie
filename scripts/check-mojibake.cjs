@@ -27,6 +27,27 @@ const PATTERNS = [
   { pattern: '\u00c2\u00a2', label: 'corrupted cent (\\u00A2)' },
   // Previous-generation mojibake from katakana corruption
   { pattern: '\u00e3\u201a', label: 'likely corrupted katakana' },
+  // Love Of The Lord generation (UTF-8 read as Windows-1252, re-saved as UTF-8)
+  { pattern: '\u00e2\u2014\u008f', label: 'corrupted black circle (\\u25CF)' },
+  { pattern: '\u00e2\u0153\u201c', label: 'corrupted check mark (\\u2713)' },
+  { pattern: '\u00e2\u0153\u2014', label: 'corrupted heavy check (\\u2714)' },
+  { pattern: '\u00e2\u008f\u00ae', label: 'corrupted prev track (\\u23EE)' },
+  { pattern: '\u00e2\u008f\u00ad', label: 'corrupted next track (\\u23ED)' },
+  { pattern: '\u00f0\u0178\u2122\u008f', label: 'corrupted folded hands (\\u1F64F)' },
+  { pattern: '\u00f0\u0178\u0152\u2122', label: 'corrupted mic (\\u1F399)' },
+  { pattern: '\u00f0\u0178\u017d\u00a7', label: 'corrupted headphone (\\u1F3A7)' },
+  { pattern: '\u00f0\u0178\u017d\u00b5', label: 'corrupted musical note (\\u1F3B5)' },
+  { pattern: '\u00f0\u0178\u017d\u2030', label: 'corrupted party popper (\\u1F389)' },
+  { pattern: '\u00f0\u0178\u2013\u00a8', label: 'corrupted printer (\\u1F5A8)' },
+  { pattern: '\u00e2\u02dc\u2026', label: 'corrupted black star (\\u2605)' },
+  { pattern: '\u00ef\u00bc\u2039', label: 'corrupted fullwidth plus (\\uFF0B)' },
+  { pattern: '\u00e2\u20ac\u00a6', label: 'corrupted ellipsis (\\u2026)' },
+  { pattern: '\u00e2\u201a\u00b5', label: 'corrupted cedi (\\u20B5)' },
+  { pattern: '\u00e2\u2030\u02c6', label: 'corrupted almost-equal (\\u2248)' },
+  { pattern: '\u00e2\u2020\u0090', label: 'corrupted left arrow (\\u2190)' },
+  { pattern: '\u00e2\u2020\u00ba', label: 'corrupted anticlockwise arrow (\\u21BA)' },
+  { pattern: '\u00e2\u2013\u00b4', label: 'corrupted up triangle (\\u25B4)' },
+  { pattern: '\u00e2\u2013\u00be', label: 'corrupted down triangle (\\u25BE)' },
 ];
 
 function walk(dir, exts, results) {

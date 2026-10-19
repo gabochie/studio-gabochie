@@ -54,12 +54,12 @@
         <select id="seasonSelect" onchange="renderServices()"></select>
         <button class="mini-btn" onclick="addSeason()">+ Season</button>
       </div>
-      <div id="servicesList"><div style="color:#5A7A9F;font-size:13px">Loadingâ€¦</div></div>
+      <div id="servicesList"><div style="color:#5A7A9F;font-size:13px">Loading…</div></div>
     </div>
     <div class="lotl-panel">
       <h3 id="lineupTitle">Lineup — select a service</h3>
       <div class="rule" id="lineupPath"></div>
-      <textarea id="lineupEditor" spellcheck="false" placeholder="Select a service to edit its lineupâ€¦" oninput="markLineupDirty()"></textarea>
+      <textarea id="lineupEditor" spellcheck="false" placeholder="Select a service to edit its lineup…" oninput="markLineupDirty()"></textarea>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         <button class="mini-btn" onclick="saveLineup()">Save to memory</button>
         <button class="mini-btn" onclick="formatLineup()">Format</button>
@@ -91,7 +91,7 @@ function fetchJson(url) {
 }
 
 function loadAll() {
-  byId('servicesList').innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loadingâ€¦</div>';
+  byId('servicesList').innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loading…</div>';
   fetchJson(LOTL_BASE + 'series.json').then(function (data) {
     series = data;
     var files = [];
@@ -222,7 +222,7 @@ function saveLineup() {
   try {
     var parsed = JSON.parse(byId('lineupEditor').value);
     lineups[hit.service.lineup] = parsed;
-    byId('lineupState').textContent = 'saved to memory âœ“';
+    byId('lineupState').textContent = 'saved to memory ✓';
   } catch (e) {
     byId('lineupState').innerHTML = '<span class="status-bad">Invalid JSON: ' + esc(e.message) + '</span>';
   }
