@@ -1,54 +1,47 @@
-import { sendBrevoEmail } from './_send.js';
+import { processEmailQueue } from './_process-queue.js';
+import { requireAdmin } from '../../admin/_auth.js';
+
+function json(data, status) {
+  return new Response(JSON.stringify(data), {
+    status: status || 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
 export async function onRequest(context) {
   const { request, env } = context;
-  if (!env.DB) {
-    return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
-  }
+
+  // Admin-only: this endpoint lists the queue (recipient PII) and can trigger
+  // real sends, so it must never be anonymously reachable.
+  const denied = await requireAdmin(request, env);
+  if (denied) return denied;
+
+  if (!env.DB) return json({ error: 'D1 not bound' }, 501);
+
   try {
     const url = new URL(request.url);
 
-    // List mode — return the full queue (for MailChannels Worker)
+    // List mode — preview the queue for the admin dashboard.
     if (url.searchParams.get('list')) {
       const { results } = await env.DB.prepare(
         "SELECT * FROM email_queue WHERE sent_at IS NULL AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
       ).all();
-      return new Response(JSON.stringify({ status: 'ok', count: results.length, items: results }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return json({ status: 'ok', count: results.length, items: results });
     }
 
-    // Mark-sent mode — called by the MailChannels cron Worker
+    // Mark-sent mode — for an external sender that delivered the message itself.
     var markId = url.searchParams.get('mark_sent');
     if (markId) {
-      await env.DB.prepare("UPDATE email_queue SET sent_at = datetime('now') WHERE id = ? AND sent_at IS NULL").bind(parseInt(markId)).run();
-      return new Response(JSON.stringify({ status: 'ok', marked: parseInt(markId) }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      await env.DB.prepare(
+        "UPDATE email_queue SET sent_at = datetime('now'), status = 'sent' WHERE id = ? AND sent_at IS NULL"
+      ).bind(parseInt(markId)).run();
+      return json({ status: 'ok', marked: parseInt(markId) });
     }
 
-    // Process mode — send remaining due emails via Brevo
-    const { results } = await env.DB.prepare(
-      "SELECT * FROM email_queue WHERE sent_at IS NULL AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
-    ).all();
-
-    let sent = 0;
-    for (const row of results) {
-      try {
-        await sendBrevoEmail(env, row.to_email, row.to_name, row.subject, row.html_content);
-        await env.DB.prepare('UPDATE email_queue SET sent_at = datetime(\'now\') WHERE id = ?').bind(row.id).run();
-        sent++;
-      } catch (_e) {
-        // Leave unsent for the next tick; do not mark failures as delivered.
-      }
-    }
-
-    return new Response(JSON.stringify({ status: 'ok', sent, pending: results.length - sent }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    // Process mode — drain due emails through the shared processor.
+    const summary = await processEmailQueue(env, env.DB);
+    return json({ status: 'ok', sent: summary.sent, pending: summary.pending, failed: summary.failed });
   } catch (_err) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Internal error' }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
-    });
+    return json({ status: 'error', message: 'Internal error' }, 500);
   }
 }
