@@ -1,5 +1,6 @@
 import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, tierRenewalReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
 import { processEmailQueue } from './_process-queue.js';
+import { enqueueLotlDaily, lotlDailyEnabled, todayKey } from './_lotl-daily.js';
 import { personalize } from '../../admin/api/newsletter/send.js';
 import { enqueueBroadcast } from '../../admin/api/newsletter/_enqueue.js';
 import { saturdaySendDue } from '../../admin/api/newsletter/schedule.js';
@@ -127,6 +128,20 @@ export async function onRequest(context) {
       }
     } catch (err) {
       result.errors.push('renewal: ' + err.message);
+    }
+
+    // Step 1e: Daily LOTL devotional broadcast (opt-in only, once per day).
+    // Enqueued before the drain so the same tick carries it out. Off by default.
+    try {
+      if (await lotlDailyEnabled(env)) {
+        var lotlQueued = await enqueueLotlDaily(env, { date: todayKey() });
+        result.lotl_daily = lotlQueued;
+        if (!lotlQueued.ok && lotlQueued.error && lotlQueued.error.indexOf('Already sent') !== 0) {
+          result.lotl_daily.note = lotlQueued.error;
+        }
+      }
+    } catch (err) {
+      result.errors.push('lotl-daily: ' + err.message);
     }
 
     // Step 2: Process email queue (shared processor — signed unsubscribe,

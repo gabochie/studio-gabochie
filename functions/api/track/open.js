@@ -22,11 +22,11 @@ export async function onRequest(context) {
        WHERE id = ? AND to_email = ?`
     ).bind(messageId, contactEmail).run();
 
-    // Log tracking event
+    // Log tracking event (contact resolved from outreach OR subscribers)
     await env.DB.prepare(
       `INSERT INTO tracking_events (message_id, contact_id, event_type, event_data, created_at)
-       VALUES (?, (SELECT id FROM cold_outreach WHERE email = ? LIMIT 1), 'open', ?, datetime('now'))`
-    ).bind(messageId, contactEmail, JSON.stringify({ userAgent: request.headers.get('User-Agent') })).run();
+       VALUES (?, COALESCE((SELECT id FROM cold_outreach WHERE email = ? LIMIT 1), (SELECT id FROM subscribers WHERE email = ? LIMIT 1)), 'open', ?, datetime('now'))`
+    ).bind(messageId, contactEmail, contactEmail, JSON.stringify({ userAgent: request.headers.get('User-Agent') })).run();
 
   } catch (err) {
     console.error('Open tracking error:', err);

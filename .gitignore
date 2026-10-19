@@ -9,4 +9,5 @@ test-results/
 playwright-report/
 dist-audio/
 love-of-the-lord/audio/
+cold_databases/dbgabochie-import/
 *.log

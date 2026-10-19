@@ -99,6 +99,41 @@ describe('POST /api/subscribe', function () {
     expect(rows[0].whatsapp_opt_in).toBe(0);
   });
 
+  it('stores the LOTL daily opt-in when requested', async function () {
+    ctx.request = postJson('http://localhost/api/subscribe', {
+      name: 'Adwoa', email: 'adwoa@example.com', source: 'lotl-devotionals', lotl_daily: 1,
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    var rows = ctx.env.DB._tables.subscribers;
+    expect(rows[0].lotl_daily).toBe(1);
+  });
+
+  it('leaves the LOTL daily opt-in off by default', async function () {
+    ctx.request = postJson('http://localhost/api/subscribe', {
+      email: 'noopt@example.com', source: 'start-page',
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    expect(ctx.env.DB._tables.subscribers[0].lotl_daily).toBe(0);
+  });
+
+  it('opts an already-confirmed subscriber into the daily without duplicating', async function () {
+    ctx.env.DB._tables.subscribers.push({
+      id: 1, name: 'Esi', email: 'esi@example.com',
+      source: 'start-page', ref_code: 'GA-ESI123', confirmed: 1, confirm_token: 'tok', lotl_daily: 0,
+    });
+    ctx.request = postJson('http://localhost/api/subscribe', {
+      email: 'esi@example.com', source: 'lotl-devotionals', lotl_daily: 1,
+    });
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.existing).toBe(true);
+    expect(ctx.env.DB._tables.subscribers.length).toBe(1);
+    expect(ctx.env.DB._tables.subscribers[0].lotl_daily).toBe(1);
+  });
+
   it('returns existing confirmed subscriber without duplicating', async function () {
     ctx.env.DB._tables.subscribers.push({
       id: 1, name: 'Yaw', email: 'yaw@example.com',

@@ -1611,6 +1611,14 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
       `CREATE INDEX IF NOT EXISTS idx_service_inquiries_service ON service_inquiries(service)`,
       `CREATE INDEX IF NOT EXISTS idx_service_inquiries_status ON service_inquiries(status)`,
       `CREATE INDEX IF NOT EXISTS idx_service_inquiries_created ON service_inquiries(created_at)`,
+      // ── Daily LOTL devotional broadcast (opt-in) ──
+      `ALTER TABLE subscribers ADD COLUMN lotl_daily INTEGER DEFAULT 0`,
+      `INSERT OR IGNORE INTO settings (key, value) VALUES ('lotl_daily_enabled', '0')`,
+      `CREATE TABLE IF NOT EXISTS lotl_daily_sends (
+        send_date TEXT PRIMARY KEY,
+        total INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now'))
+      )`,
     ];
     const results = [];
     for (const sql of statements) {

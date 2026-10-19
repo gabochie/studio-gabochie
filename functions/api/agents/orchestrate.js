@@ -1,5 +1,6 @@
 import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
+import { runDueWorkflows } from './_workflows.js';
 import { queueEmail } from '../email/_send.js';
 import { callAI } from './_ai.js';
 
@@ -228,6 +229,16 @@ export async function onRequest(context) {
     var body = await request.json();
     var maxItems = (body && body.max_items) || 5;
 
+    // Self-driving workflow tick: enqueue steps for any active workflow whose
+    // cron/interval schedule is due. Guarded so a workflow error never blocks
+    // direct agent-queue processing.
+    var workflowsTriggered = null;
+    try {
+      workflowsTriggered = await runDueWorkflows(env.DB, new Date());
+    } catch (wfErr) {
+      workflowsTriggered = { error: wfErr.message };
+    }
+
     var pendingItems = (await env.DB.prepare(
       "SELECT * FROM agent_queue WHERE status = 'pending' AND (scheduled_at IS NULL OR scheduled_at <= datetime('now')) ORDER BY priority DESC, created_at ASC LIMIT ?"
     ).bind(maxItems).all()).results || [];
@@ -241,6 +252,7 @@ export async function onRequest(context) {
     return new Response(JSON.stringify({
       status: 'ok',
       processed: results.length,
+      workflows_triggered: workflowsTriggered,
       total_pending: (await env.DB.prepare("SELECT COUNT(*) as c FROM agent_queue WHERE status = 'pending'").first()).c,
       results: results
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
