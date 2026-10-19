@@ -3,6 +3,8 @@
  * Runs every minute via cron trigger
  * Polls email_queue, sends via Brevo, updates status
  */
+import { buildUnsubscribeUrl, unsubscribeFooter, injectUnsubscribeAndPixel } from '../api/email/_unsubscribe.js';
+
 export default {
   async scheduled(controller, env, ctx) {
     if (!env.BREVO_API_KEY) {
@@ -72,9 +74,10 @@ async function processEmail(email, env) {
     // Build tracking pixel and click tracking URLs
     const baseUrl = env.PUBLIC_BASE_URL || 'https://studio.gabochie.com';
     const trackingPixel = `<img src="${baseUrl}/api/track/open?mid=${id}&cid=${encodeURIComponent(email.to_email)}" width="1" height="1" alt="" style="display:none">`;
-    
-    // Inject tracking pixel into HTML
-    const htmlWithTracking = email.html_content.replace('</body>', `${trackingPixel}</body>`);
+
+    // Compliance: append a signed unsubscribe link + tracking pixel.
+    const unsubUrl = await buildUnsubscribeUrl(baseUrl, email.to_email, env);
+    const htmlWithTracking = injectUnsubscribeAndPixel(email.html_content, unsubscribeFooter(unsubUrl), trackingPixel);
 
     // Rewrite links for click tracking
     const clickTrackedHtml = rewriteLinksForTracking(htmlWithTracking, baseUrl, id, email.to_email);

@@ -1,3 +1,5 @@
+import { buildUnsubscribeUrl, unsubscribeFooter, injectUnsubscribeAndPixel } from '../email/_unsubscribe.js';
+
 export async function onRequest(context) {
   const { env } = context;
   
@@ -76,8 +78,10 @@ async function processEmail(email, env) {
 
     const baseUrl = env.PUBLIC_BASE_URL || 'https://studio.gabochie.com';
     const trackingPixel = `<img src="${baseUrl}/api/track/open?mid=${id}&cid=${encodeURIComponent(email.to_email)}" width="1" height="1" alt="" style="display:none">`;
-    
-    const htmlWithTracking = email.html_content.replace('</body>', `${trackingPixel}</body>`);
+
+    // Compliance: append a signed unsubscribe link + tracking pixel.
+    const unsubUrl = await buildUnsubscribeUrl(baseUrl, email.to_email, env);
+    const htmlWithTracking = injectUnsubscribeAndPixel(email.html_content, unsubscribeFooter(unsubUrl), trackingPixel);
 
     const clickTrackedHtml = rewriteLinksForTracking(htmlWithTracking, baseUrl, id, email.to_email);
 

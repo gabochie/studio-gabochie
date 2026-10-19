@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v21';
+const VERSION = 'gabochie-v22';
 const AUDIO_CACHE_MAX_BYTES = 26214400; // 25 MB per file — keep offline storage bounded.
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
@@ -23,6 +23,9 @@ const PRECACHE_URLS = [
   '/love-of-the-lord/',
   '/love-of-the-lord/devotionals/',
   '/love-of-the-lord/devotionals/devotionals.json',
+  '/love-of-the-lord/daily/2026-10.json',
+  '/love-of-the-lord/daily/2026-11.json',
+  '/love-of-the-lord/daily/2026-12.json',
   '/love-of-the-lord/daily/2027-01.json',
   '/love-of-the-lord/daily/2027-02.json',
   '/love-of-the-lord/daily/2027-03.json',

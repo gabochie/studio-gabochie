@@ -93,7 +93,7 @@ body{background:#0A1628}
 
 <header class="dvhero">
 <div class="wrap">
-<div class="brand-row"><img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo"><div><b>Love Of The Lord · Global Ministry</b><small id="yearMsg">Yearly message: Focus on The Love of The Lord · 365 days wired</small></div></div>
+<div class="brand-row"><img src="/love-of-the-lord/logo.webp" alt="Love Of The Lord logo"><div><b>Love Of The Lord · Global Ministry</b><small id="yearMsg">Yearly message: Focus on The Love of The Lord · Daily decrees</small></div></div>
 <div class="kicker">Daily PDD · Prayer · Declaration · Decree</div>
 <h1>Love of the Lord,<br><span>every single day.</span></h1>
 <p>Daily teaching + prayer + declaration + decree (60-90s audio). Weekly S.O.A.P. lives under Weekly.</p>
@@ -207,9 +207,10 @@ body{background:#0A1628}
     } catch(_e) {}
     return false;
   };
-  // Daily PDD full-year feed: all 12 months wired, month filter, read-aloud intact
+  // Daily PDD feed: 2026-2027 months wired, month filter, read-aloud intact
   var _allDays = [];
   var _activeMonth = 'All';
+  var _today = new Date().toISOString().slice(0, 10);
   function lotlShareBtn(x){
     var text = x.declaration + ' — Focus on The Love of The Lord ' + x.date;
     var path = '/love-of-the-lord/devotionals/';
@@ -220,7 +221,12 @@ body{background:#0A1628}
   function renderDaily(){
     var box = document.getElementById('dailyList');
     if(!box) return;
-    var list = _allDays.filter(function(x){ return _activeMonth === 'All' || (x.date||'').slice(0,7) === _activeMonth; });
+    var list = _allDays.filter(function(x){
+      if(_activeMonth === 'All') return String(x.date||'') <= _today;
+      return (x.date||'').slice(0,7) === _activeMonth;
+    });
+    // Before the feed start date, "Latest" would be empty — show everything we have.
+    if(_activeMonth === 'All' && !list.length) list = _allDays.slice();
     list.sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
     if(!list.length){ box.innerHTML = '<p class="lotl-muted">No days in this month yet.</p>'; return; }
     var shown = list.slice(0, _activeMonth === 'All' ? 7 : 31);
@@ -244,7 +250,7 @@ body{background:#0A1628}
     });
     var more = document.createElement('p');
     more.className = 'lotl-muted';
-    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (latest across 365 days — pick a month)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
+    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (latest up to today — pick a month)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
     box.appendChild(more);
   }
   function buildMonths(){
@@ -264,9 +270,14 @@ body{background:#0A1628}
       box.appendChild(b);
     });
   }
-  Promise.all(['01','02','03','04','05','06','07','08','09','10','11','12'].map(function(mm){
-    return fetch('../daily/2027-' + mm + '.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).catch(function(){ return {days:[]}; });
-  })).then(function(packs){
+  var _months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+  var _feeds = [];
+  [2026, 2027].forEach(function(y){
+    _months.forEach(function(mm){
+      _feeds.push(fetch('../daily/' + y + '-' + mm + '.json',{headers:{Accept:'application/json'}}).then(function(r){return r.ok?r.json():{days:[]};}).catch(function(){ return {days:[]}; }));
+    });
+  });
+  Promise.all(_feeds).then(function(packs){
     _allDays = [];
     packs.forEach(function(p){ (_allDays = _allDays.concat((p && p.days) || [])); });
     buildMonths(); renderDaily();

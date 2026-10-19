@@ -63,6 +63,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="email">Email Campaign</button>
     <button class="tab" data-tab="recommend">Recommendations</button>
+    <button class="tab" data-tab="metrics">Performance</button>
   </div>
 
   <div id="tab-email" class="tab-content active">
@@ -103,6 +104,17 @@
     <button class="btn" onclick="getRecommendations()">Get Recommendations</button>
     <div id="rec-results" style="margin-top:12px"></div>
   </div>
+
+  <div id="tab-metrics" class="tab-content">
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+      <span style="font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px">Period</span>
+      <button class="btn btn-outline" data-period="7d" onclick="loadMetrics('7d')">7d</button>
+      <button class="btn btn-outline" data-period="30d" onclick="loadMetrics('30d')">30d</button>
+      <button class="btn btn-outline" data-period="90d" onclick="loadMetrics('90d')">90d</button>
+      <button class="btn btn-outline" onclick="loadMetrics(currentPeriod)">Refresh</button>
+    </div>
+    <div id="metrics-body"><div style="color:#5A7A9F;font-size:13px">Loading…</div></div>
+  </div>
 </div>
 
 <script src="admin.js"></script>
@@ -116,6 +128,7 @@ document.querySelectorAll('.tab').forEach(function(t) {
     document.querySelectorAll('.tab-content').forEach(function(x) { x.classList.remove('active'); });
     t.classList.add('active');
     document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+    if (t.dataset.tab === 'metrics') loadMetrics(currentPeriod);
   });
 });
 
@@ -202,7 +215,89 @@ async function sendCampaign() {
     document.getElementById('status-msg').textContent = 'Error: ' + err.message;
   }
   btn.disabled = false; btn.textContent = 'Send to Segment';
-  loadSegments();
+var currentPeriod = '7d';
+
+function metricCard(num, label) {
+  return '<div class="seg-card" style="cursor:default"><span class="num">' + (num || 0) + '</span><div class="label">' + label + '</div></div>';
+}
+
+async function loadMetrics(period) {
+  currentPeriod = period || currentPeriod;
+  var box = document.getElementById('metrics-body');
+  box.innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loading…</div>';
+  try {
+    var r = await fetch('/api/admin/outreach/metrics?period=' + encodeURIComponent(currentPeriod), { headers: { 'X-Admin-Key': getAdminKey() } });
+    var d = await r.json();
+    if (!r.ok || d.error) throw new Error(d.error || ('HTTP ' + r.status));
+
+    var e = d.email || {};
+    var rates = e.rates || {};
+    var html = '<div class="grid">'
+      + metricCard(e.queued, 'Queued')
+      + metricCard(e.sent, 'Sent')
+      + metricCard(e.delivered, 'Delivered')
+      + metricCard(e.opened, 'Opened')
+      + metricCard(e.clicked, 'Clicked')
+      + metricCard(e.bounced, 'Bounced')
+      + metricCard(e.complained, 'Complaints')
+      + metricCard(e.unsubscribed, 'Unsubscribed')
+      + metricCard(e.failed, 'Failed')
+      + '</div>';
+
+    html += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:16px;margin-bottom:20px">'
+      + '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:600;color:#F1F5F9;margin-bottom:8px">Rates</div>'
+      + '<div style="font-size:13px;color:#CBD5E1;line-height:1.9">'
+      + 'Delivery: <b style="color:#C9A84C">' + (rates.delivery || 0) + '%</b> · '
+      + 'Open: <b style="color:#C9A84C">' + (rates.open || 0) + '%</b> · '
+      + 'Click: <b style="color:#C9A84C">' + (rates.click || 0) + '%</b> · '
+      + 'CTR of delivered: <b style="color:#C9A84C">' + (rates.clickToDelivery || 0) + '%</b> · '
+      + 'Bounce: <b style="color:#C9A84C">' + (rates.bounce || 0) + '%</b> · '
+      + 'Complaint: <b style="color:#C9A84C">' + (rates.complaint || 0) + '%</b>'
+      + '</div></div>';
+
+    var wf = d.workflows || {};
+    var wfKeys = Object.keys(wf);
+    html += '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:600;color:#F1F5F9;margin-bottom:8px">By Workflow</div>';
+    if (wfKeys.length) {
+      html += '<div style="background:#0F1E38;border:1px solid #1E3250;border-radius:10px;overflow:hidden">'
+        + '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#CBD5E1">'
+        + '<thead><tr style="color:#5A7A9F;text-transform:uppercase;font-size:10px;letter-spacing:.08em">'
+        + '<th style="text-align:left;padding:8px 12px">Workflow</th><th style="padding:8px">Sent</th><th style="padding:8px">Delivered</th><th style="padding:8px">Opened</th><th style="padding:8px">Clicked</th><th style="padding:8px">Bounced</th></tr></thead><tbody>';
+      wfKeys.forEach(function(k) {
+        var s = wf[k] || {};
+        html += '<tr style="border-top:1px solid #1E3250"><td style="text-align:left;padding:8px 12px;color:#C9A84C">' + escapeHtml(k) + '</td>'
+          + '<td style="text-align:center;padding:8px">' + (s.sent || 0) + '</td>'
+          + '<td style="text-align:center;padding:8px">' + (s.delivered || 0) + '</td>'
+          + '<td style="text-align:center;padding:8px">' + (s.opened || 0) + '</td>'
+          + '<td style="text-align:center;padding:8px">' + (s.clicked || 0) + '</td>'
+          + '<td style="text-align:center;padding:8px">' + (s.bounced || 0) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    } else {
+      html += '<div style="color:#5A7A9F;font-size:13px">No active workflows.</div>';
+    }
+
+    var c = d.contacts || {};
+    html += '<div style="font-family:\'Syne\',sans-serif;font-size:13px;font-weight:600;color:#F1F5F9;margin:20px 0 8px">Outreach Contacts</div>'
+      + '<div style="font-size:13px;color:#CBD5E1;margin-bottom:8px">Total: <b style="color:#C9A84C">' + (c.total || 0) + '</b></div>';
+    if (c.byStatus && c.byStatus.length) {
+      html += '<div style="font-size:12px;color:#CBD5E1;line-height:1.9">' + c.byStatus.map(function(x) { return escapeHtml(x.status || '—') + ': <b style="color:#C9A84C">' + (x.cnt || 0) + '</b>'; }).join(' · ') + '</div>';
+    }
+    if (c.topCategories && c.topCategories.length) {
+      html += '<div style="font-size:12px;color:#5A7A9F;line-height:1.9;margin-top:6px">Top categories: ' + c.topCategories.map(function(x) { return escapeHtml(x.category) + ' (' + (x.cnt || 0) + ')'; }).join(', ') + '</div>';
+    }
+    box.innerHTML = html;
+
+    document.querySelectorAll('[data-period]').forEach(function(b) {
+      b.style.borderColor = b.dataset.period === currentPeriod ? '#C9A84C' : '#1E3250';
+      b.style.color = b.dataset.period === currentPeriod ? '#C9A84C' : '#CBD5E1';
+    });
+  } catch (err) {
+    box.innerHTML = '<div style="color:#F87171;font-size:13px">Error: ' + escapeHtml(err.message) + '</div>';
+  }
+}
+
+loadSegments();
 }
 
 async function getRecommendations() {
