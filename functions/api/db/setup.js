@@ -329,7 +329,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_sponsors_email ON sponsors(email)`,
       `CREATE INDEX IF NOT EXISTS idx_sponsor_sessions_token ON sponsor_sessions(token)`,
-      // Email automation queue
+      // Email automation queue (tracking columns mirror scripts/migrate-outreach-tracking.sql + add-status/updated-at)
       `CREATE TABLE IF NOT EXISTS email_queue (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         to_email TEXT NOT NULL,
@@ -339,10 +339,37 @@ export async function onRequest(context) {
         email_type TEXT NOT NULL DEFAULT 'manual',
         scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
         sent_at TEXT DEFAULT NULL,
+        status TEXT DEFAULT 'pending',
+        opened_at TEXT DEFAULT NULL,
+        clicked_at TEXT DEFAULT NULL,
+        provider_id TEXT DEFAULT NULL,
+        retry_count INTEGER DEFAULT 0,
+        last_error TEXT DEFAULT NULL,
+        updated_at TEXT DEFAULT NULL,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_email_queue_status ON email_queue(status)`,
+      // Outreach suppression list (unsubscribe / bounce / complaint compliance)
+      `CREATE TABLE IF NOT EXISTS suppression_list (
+        email TEXT PRIMARY KEY,
+        reason TEXT,
+        created_at TEXT DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_suppression_list_email ON suppression_list(email)`,
+      // Outreach tracking events (open / click / unsubscribe)
+      `CREATE TABLE IF NOT EXISTS tracking_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        message_id INTEGER,
+        contact_id INTEGER,
+        event_type TEXT,
+        event_data TEXT,
+        created_at TEXT DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_tracking_events_message ON tracking_events(message_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_tracking_events_contact ON tracking_events(contact_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_tracking_events_type ON tracking_events(event_type)`,
       // WhatsApp message queue
       `CREATE TABLE IF NOT EXISTS whatsapp_queue (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
