@@ -1,6 +1,7 @@
 import { json, readBody } from '../_shared.js';
 import { moolreBase, moolreHeaders, publicBase } from './_moolre.js';
 import { checkRateLimit } from '../../_rate-limit.js';
+import { resolvePendingTx } from '../expresspay/create.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -16,16 +17,42 @@ export async function onRequest(context) {
     return json({ status: 'error', message: 'Invalid JSON body' }, 400);
   }
 
-  const amount = parseFloat(body.amount);
-  if (!amount || amount <= 0) return json({ status: 'error', message: 'Invalid amount' }, 400);
-
-  const name = (body.name || '').trim();
-  const email = (body.email || '').trim();
-  const phone = (body.phone || '').trim() || '';
-  const currency = (body.currency || 'GHS').toUpperCase();
+  // Two modes:
+  //  - tx_ref supplied (guitar, tiers, books, store, upgrades...): the amount
+  //    is resolved server-side from the pending row and never trusted from the
+  //    client. No donation row is staged.
+  //  - no tx_ref (open donation): a moolre_ ref is generated and a pending
+  //    donation row is staged; settlement uses the Moolre-verified amount.
+  const clientRef = String((body && body.tx_ref) || '').trim();
+  let tx_ref, amount, name, email, phone, currency, stageDonation;
+  if (clientRef) {
+    if (!env.DB) return json({ status: 'error', message: 'D1 not bound' }, 501);
+    let found = null;
+    try {
+      found = await resolvePendingTx(env.DB, clientRef);
+    } catch (_e) {
+      return json({ status: 'error', message: 'Lookup failed' }, 500);
+    }
+    if (!found) return json({ status: 'error', message: 'Unknown or already-settled transaction' }, 404);
+    tx_ref = clientRef;
+    amount = found.amount;
+    name = String((body && body.name) || found.name || '').trim();
+    email = String((body && body.email) || found.email || '').trim();
+    phone = String((body && body.phone) || found.phone || '').trim();
+    currency = String((body && body.currency) || 'GHS').toUpperCase();
+    stageDonation = false;
+  } else {
+    amount = parseFloat(body && body.amount);
+    if (!amount || amount <= 0) return json({ status: 'error', message: 'Invalid amount' }, 400);
+    name = String((body && body.name) || '').trim();
+    email = String((body && body.email) || '').trim();
+    phone = String((body && body.phone) || '').trim();
+    currency = String((body && body.currency) || 'GHS').toUpperCase();
+    tx_ref = 'moolre_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+    stageDonation = true;
+  }
   if (!email || !email.includes('@')) return json({ status: 'error', message: 'A valid email is required' }, 400);
 
-  const tx_ref = 'moolre_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
   const base = moolreBase(env);
   const headers = moolreHeaders(env);
   const site = publicBase(env);
@@ -64,7 +91,7 @@ export async function onRequest(context) {
     return json({ status: 'error', message: 'Payment gateway unavailable' }, 502);
   }
 
-  if (env.DB) {
+  if (stageDonation) {
     try {
       await env.DB.prepare(
         `INSERT INTO donations (tx_ref, amount, currency, donor_name, donor_email, donor_phone, status, provider, flw_id, created_at)
