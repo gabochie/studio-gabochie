@@ -279,45 +279,36 @@ function toggleFAQ(el) {
           <li><span class="check">✅</span> Lifetime access — one payment, forever</li>
         </ul>
         <button class="btn btn-primary btn-block" id="wl-pay-now-btn">Pay <span data-g-symbol-amount>GH₵ 99</span> Now <i class="ti ti-arrow-right"></i></button>
+        <button class="btn btn-ghost btn-block mt-sm" id="wl-pay-momo-btn">Pay with Mobile Money (Moolre)</button>
         <button class="btn btn-ghost btn-block mt-sm" onclick="Guitar.hideSheet()">Maybe Later</button>
-        <div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
+        <div class="trust-row"><span>&#128274; Secured by ExpressPay &amp; Moolre</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
         <div class="trust-sub">MoMo &middot; Card — charged in GHS. 14-day refund if no coursework past Module 5 is accessed.</div>
         <p id="wl-pay-error" style="color:var(--red-light);font-size:12px;text-align:center;margin-top:8px;display:none"></p>
       </div>
     `);
     setTimeout(() => {
-      document.getElementById('wl-pay-now-btn').onclick = async function() {
+      async function startPay(gateway) {
         try {
           const data = await Guitar.enroll();
           if (data.alreadyUnlocked) {
             Guitar.hideSheet();
             Guitar.showToast('Already unlocked!','success');
-          } else if (data.tx_ref) {
-            Guitar.hideSheet();
-            Guitar.showToast('Opening payment...', 'info');
-            try {
-              const cr = await fetch('/api/gateways/expresspay/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tx_ref: data.tx_ref, name: user.name || '', email: user.email, phone: user.phone || '', redirect: '/guitar/learn/?upgrade=pending' })
-              }).then(r => r.json());
-              if (cr.status === 'ok' && cr.checkout_url) {
-                window.location.href = cr.checkout_url;
-              } else {
-                Guitar.showToast('Could not start payment: ' + (cr.message || 'try again'), 'error');
-              }
-            } catch(e) {
-              Guitar.showToast('Network error. No charge was made.', 'error');
-            }
-          } else {
+            return;
+          }
+          if (!data.tx_ref) {
             Guitar.hideSheet();
             Guitar.showToast('Enrollment successful!','success');
+            return;
           }
+          Guitar.hideSheet();
+          Guitar.showToast('Opening payment...', 'info');
+          await Guitar.openGateway(data.tx_ref, gateway, '/guitar/learn/?upgrade=pending');
         } catch(e) {
-          document.getElementById('wl-pay-error').textContent = 'Payment failed. Please try again.';
-          document.getElementById('wl-pay-error').style.display='block';
+          Guitar.showToast((e && e.message) ? e.message + ' — no charge was made.' : 'Network error. No charge was made.', 'error');
         }
-      };
+      }
+      document.getElementById('wl-pay-now-btn').onclick = function() { startPay('expresspay'); };
+      document.getElementById('wl-pay-momo-btn').onclick = function() { startPay('moolre'); };
     }, 100);
   };
 })();

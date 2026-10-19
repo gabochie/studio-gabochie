@@ -83,22 +83,22 @@ window.addEventListener('DOMContentLoaded', function() {
   const modId = p.get('module') ? parseInt(p.get('module')) : null;
   const lesId = p.get('lesson') ? parseInt(p.get('lesson')) : null;
   try { enrollStatus = await Guitar.getEnrollStatus(); } catch(e) {}
-  // Returning from ExpressPay: wait for approval, then reload unlocked.
-  if (p.get('upgrade') === 'pending' && p.get('tx_ref') && !(enrollStatus && enrollStatus.unlocked)) {
-    const rtx = p.get('tx_ref');
-    c.innerHTML = '<div class="section-title">Confirming Payment...</div><div class="section-sub">Your receipt will unlock here once the payment clears — no further action needed.</div>';
+  // Returning from a gateway (ExpressPay or Moolre): the server-side callback
+  // settles the payment; wait until the account unlocks, then refresh.
+  if (p.get('tx_ref') && !(enrollStatus && enrollStatus.unlocked)) {
+    c.innerHTML = '<div class="section-title">Confirming Payment...</div><div class="section-sub">Your purchase unlocks here automatically once the payment clears — no further action needed.</div>';
     let polls = 0;
     const timer = setInterval(async () => {
       polls++;
-      if (polls > 20) { clearInterval(timer); return; }
+      if (polls > 30) { clearInterval(timer); return; }
       try {
-        const s = await (await fetch('/api/gateways/expresspay/status?tx_ref=' + encodeURIComponent(rtx))).json();
-        if (s && s.status === 'ok' && s.approved) {
+        const s = await Guitar.getEnrollStatus();
+        if (s && s.unlocked) {
           clearInterval(timer);
           window.location.href = '/guitar/learn/';
         }
       } catch(e) {}
-    }, 8000);
+    }, 6000);
   }
 
   var _freeMods = Guitar.FREE_MODULES || 3;

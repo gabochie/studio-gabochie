@@ -21,14 +21,20 @@ export async function settlePaidTx(env, db, p) {
   var event = p.event || 'charge.completed';
   var created_at = new Date().toISOString();
 
-  var donUpd = await db.prepare(
-    `UPDATE donations SET amount = ?, currency = ?, status = ?, flw_id = ?, donor_phone = ? WHERE tx_ref = ?`
-  ).bind(verifiedAmount, verifiedCurrency, verifiedStatus, flw_id, donor_phone, tx_ref).run();
-  if (!donUpd || !donUpd.meta || !donUpd.meta.changes) {
-    await db.prepare(
-      `INSERT INTO donations (tx_ref, amount, currency, donor_name, donor_email, donor_phone, status, flw_id, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
+  // Only donation-like references belong in the donations ledger. Product
+  // flows (guitar, memberships, books, store, bookings, upgrades) are tracked
+  // in their own tables and must not create phantom donation rows.
+  var isDonationRef = !/^(GUITAR_|guitar_|tier_|memb_|sub_|books_|bookpw_|store_|booking_|upgrade_)/.test(tx_ref);
+  if (isDonationRef) {
+    var donUpd = await db.prepare(
+      `UPDATE donations SET amount = ?, currency = ?, status = ?, flw_id = ?, donor_phone = ? WHERE tx_ref = ?`
+    ).bind(verifiedAmount, verifiedCurrency, verifiedStatus, flw_id, donor_phone, tx_ref).run();
+    if (!donUpd || !donUpd.meta || !donUpd.meta.changes) {
+      await db.prepare(
+        `INSERT INTO donations (tx_ref, amount, currency, donor_name, donor_email, donor_phone, status, flw_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
+    }
   }
 
   // Attribute donation to campaign if tx_ref starts with camp_
@@ -383,9 +389,9 @@ export async function settlePaidTx(env, db, p) {
   }
 
   // Send receipt email via Brevo for successful donations
-  if (!tx_ref.startsWith('store_') && event === 'charge.completed' && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
+  if (isDonationRef && event === 'charge.completed' && verifiedStatus === 'successful' && donor_email && donor_email !== 'donor@anonymous.invalid' && env.BREVO_API_KEY) {
     var invNum = '';
-    if (!tx_ref.startsWith('booking_') && !tx_ref.startsWith('books_') && !tx_ref.startsWith('sub_') && !tx_ref.startsWith('upgrade_') && !tx_ref.startsWith('guitar_')) {
+    if (isDonationRef) {
       try { invNum = await generateInvoice(env, 'donation', 'donations', { name: donor_name, email: donor_email, phone: donor_phone, amount: verifiedAmount, currency: verifiedCurrency, tx_ref: tx_ref, items: [{ description: 'Donation', quantity: 1, unit_price: verifiedAmount, total: verifiedAmount }] }); } catch (_) {}
     }
     try {
