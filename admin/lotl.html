@@ -329,9 +329,9 @@ function esc(s) {
 
 loadAll();
 
-var LOTL_DAILY_KEY = '';
-function ensureDailyKey() {
-  if (!getAdminKey()) ensureAdminKey();
+function adminReady() {
+  var k = getAdminKey();
+  return !!(k && k !== '__CF_ACCESS__') || (typeof isCloudflareAccess === 'function' && isCloudflareAccess());
 }
 
 function dailyFetch(url, opts) {
@@ -343,8 +343,12 @@ function dailyFetch(url, opts) {
 }
 
 function loadDaily() {
-  ensureDailyKey();
   var box = byId('dailyPanel');
+  if (!adminReady()) {
+    box.innerHTML = '<div style="color:#5A7A9F;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">Admin API key required to manage the daily broadcast.' +
+      '<button class="mini-btn" onclick="ensureAdminKey();loadDaily();">Enter admin key</button></div>';
+    return;
+  }
   box.innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loading…</div>';
   dailyFetch('/admin/api/lotl-daily', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
     if (!d || d.status !== 'ok') { box.innerHTML = '<div class="status-bad">Could not load daily status.</div>'; return; }
