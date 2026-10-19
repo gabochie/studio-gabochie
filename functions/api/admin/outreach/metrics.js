@@ -119,7 +119,7 @@ async function getEmailFunnel(env, since) {
 
 async function getWorkflowStats(env, since) {
   const workflows = await env.DB.prepare(
-    `SELECT name, trigger_type FROM workflows WHERE is_active = 1`
+    `SELECT name, trigger_type FROM workflows WHERE status = 'active'`
   ).all();
 
   const results = {};

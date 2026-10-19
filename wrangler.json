@@ -14,10 +14,6 @@
       "bucket_name": "gahq-books"
     }
   ],
-  "crons": [
-    "* * * * *",
-    "*/5 * * * *"
-  ],
   "vars": {
     "PUBLIC_BASE_URL": "https://studio.gabochie.com"
   }

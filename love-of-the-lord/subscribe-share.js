@@ -27,11 +27,13 @@
     var source = opts.source || 'lotl-devotionals';
     var placeholder = opts.placeholder || 'you@example.com';
     var btnText = opts.btnText || 'Subscribe';
+    var lotlDaily = !!opts.lotlDaily;
+    var subtitle = opts.subtitle || (lotlDaily ? 'The daily teaching, prayer, declaration and decree. One email a day.' : 'One practical essay a week. No spam.');
 
     wrap.innerHTML =
       '<div class="lotl-subscribe-wrap" style="background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:20px;text-align:center">' +
         '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;text-transform:uppercase;color:#F1F5F9;margin:0 0 6px">' + esc(title) + '</h3>' +
-        '<p style="font-family:\'DM Sans\',sans-serif;font-size:13px;color:#8A9BB5;margin:0 0 14px">One practical essay a week. No spam.</p>' +
+        '<p style="font-family:\'DM Sans\',sans-serif;font-size:13px;color:#8A9BB5;margin:0 0 14px">' + esc(subtitle) + '</p>' +
         '<form class="lotl-subscribe-form" onsubmit="return false">' +
           '<input type="email" class="lotl-email" placeholder="' + esc(placeholder) + '" style="width:100%;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:12px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#F1F5F9;margin-bottom:10px" required>' +
           '<div class="cf-turnstile" data-sitekey="' + SITEKEY + '" data-action="turnstile-spin-v2" style="margin:8px auto"></div>' +
@@ -59,7 +61,9 @@
       btn.textContent = 'Subscribing...';
       msgEl.textContent = '';
       var token = (wrap.querySelector('input[name="cf-turnstile-response"]') || {}).value || '';
-      var body = JSON.stringify({ email: email, source: source, cf_turnstile_token: token });
+      var payload = { email: email, source: source, cf_turnstile_token: token };
+      if (lotlDaily) payload.lotl_daily = 1;
+      var body = JSON.stringify(payload);
       fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
         .then(function (r) { return r.json(); })
         .then(function (d) {

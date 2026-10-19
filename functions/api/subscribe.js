@@ -39,6 +39,7 @@ export async function onRequest(context) {
     var name = '', email = '', source = 'newsletter', ref = '', phone = '';
     var utmSource = '', utmMedium = '', utmCampaign = '';
     var waOptIn = false;
+    var lotlDaily = false;
     var turnstile = '';
     if (ct.includes('application/json')) {
       var body = await request.json();
@@ -48,6 +49,7 @@ export async function onRequest(context) {
       ref = body.ref || '';
       phone = body.phone || '';
       waOptIn = body.whatsapp_opt_in === true || body.whatsapp_opt_in === 1 || body.whatsapp_opt_in === '1';
+      lotlDaily = body.lotl_daily === true || body.lotl_daily === 1 || body.lotl_daily === '1';
       utmSource = body.utm_source || '';
       utmMedium = body.utm_medium || '';
       utmCampaign = body.utm_campaign || '';
@@ -60,6 +62,7 @@ export async function onRequest(context) {
       ref = fd.get('ref') || '';
       phone = fd.get('phone') || '';
       waOptIn = fd.get('whatsapp_opt_in') === '1' || fd.get('whatsapp_opt_in') === 'on';
+      lotlDaily = fd.get('lotl_daily') === '1' || fd.get('lotl_daily') === 'on';
       utmSource = fd.get('utm_source') || '';
       utmMedium = fd.get('utm_medium') || '';
       utmCampaign = fd.get('utm_campaign') || '';
@@ -101,7 +104,10 @@ export async function onRequest(context) {
 
     if (existing) {
       if (existing.confirmed === 1) {
-        // Already confirmed
+        // Already confirmed — but let a LOTL signup still opt them into the daily.
+        if (lotlDaily) {
+          await env.DB.prepare("UPDATE subscribers SET lotl_daily = 1 WHERE email = ?").bind(email).run();
+        }
         return new Response(JSON.stringify({
           status: 'ok', existing: true, confirmed: true,
           ref_code: existing.ref_code || '',
@@ -170,8 +176,8 @@ export async function onRequest(context) {
     var confirmToken = genToken();
 
     await env.DB.prepare(
-      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone, whatsapp_opt_in) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)"
-    ).bind(name, email, source, refCode, edition, JSON.stringify(meta), confirmToken, phone, waOptIn ? 1 : 0).run();
+      "INSERT INTO subscribers (name, email, source, ref_code, edition, metadata, confirmed, confirm_token, phone, whatsapp_opt_in, lotl_daily) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)"
+    ).bind(name, email, source, refCode, edition, JSON.stringify(meta), confirmToken, phone, waOptIn ? 1 : 0, lotlDaily ? 1 : 0).run();
 
     // Handle referral if provided
     var referralCount = 0;

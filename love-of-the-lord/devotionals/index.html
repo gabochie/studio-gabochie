@@ -187,6 +187,10 @@ body{background:#0A1628}
   show('daily');
   // Instant read-aloud (free, no MP3): uses built-in phone voice. MP3 render comes later.
   window._pddDays = [];
+  // Engagement beacon (page views/UTM/shares are tracked separately by main.js + share.js).
+  function lotlTrack(type, data){
+    try { if(navigator.sendBeacon) navigator.sendBeacon('/api/event', JSON.stringify({ event_type:type, event_data:JSON.stringify(data||{}), page:location.pathname })); } catch(_e){}
+  }
   window.lotlReadAloud = function(i, btn){
     try {
       if(!('speechSynthesis' in window)){ if(btn) btn.textContent = '🔊 No voice on this device'; return false; }
@@ -203,6 +207,7 @@ body{background:#0A1628}
       } catch(_e) {}
       u.onend = function(){ if(btn){ btn.dataset.playing = ''; btn.textContent = '🔊 Play decree (60-90s)'; } };
       if(btn){ btn.dataset.playing = '1'; btn.textContent = '⏹ Stop'; }
+      lotlTrack('lotl_play', { date: x.date, theme: x.serviceTheme || '' });
       window.speechSynthesis.speak(u);
     } catch(_e) {}
     return false;
@@ -232,6 +237,21 @@ body{background:#0A1628}
     var shown = list.slice(0, _activeMonth === 'All' ? 7 : 31);
     window._pddDays = shown;
     box.innerHTML = '';
+    if(_activeMonth === 'All'){
+      var firstDate = _allDays.length ? _allDays.slice().sort(function(a,b){ return String(a.date).localeCompare(String(b.date)); })[0].date : '';
+      var todayCard = _allDays.filter(function(x){ return x.date === _today; })[0];
+      var dayNum = firstDate ? (Math.floor((new Date(_today) - new Date(firstDate)) / 86400000) + 1) : 0;
+      var banner = document.createElement('div');
+      banner.style.cssText = 'margin:0 0 16px;padding:12px 16px;border:1px solid rgba(201,168,76,.45);border-radius:10px;background:rgba(201,168,76,.08);font-size:13px;color:#3A2E1F;line-height:1.5';
+      if(todayCard){
+        banner.innerHTML = '🟢 <b>Live now</b> — today is <b>' + esc(todayCard.weekday) + ' ' + esc(_today) + '</b>' +
+          (dayNum > 0 ? ' · Day <b>' + dayNum + '</b> of 365' : '') +
+          '. Below are the most recent days. Tap a month button to read or play any day.';
+      } else {
+        banner.innerHTML = '🟢 <b>The daily year is loaded</b> — starts ' + esc(firstDate || 'soon') + ' · ' + _allDays.length + ' day(s) available. Tap a month button to browse.';
+      }
+      box.appendChild(banner);
+    }
     shown.forEach(function(x, i){
       var el = document.createElement('article');
       el.className = 'daily-card';
@@ -250,7 +270,7 @@ body{background:#0A1628}
     });
     var more = document.createElement('p');
     more.className = 'lotl-muted';
-    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (latest up to today — pick a month)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
+    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (most recent days up to today — tap a month for the full year)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
     box.appendChild(more);
   }
   function buildMonths(){
@@ -281,6 +301,7 @@ body{background:#0A1628}
     _allDays = [];
     packs.forEach(function(p){ (_allDays = _allDays.concat((p && p.days) || [])); });
     buildMonths(); renderDaily();
+    lotlTrack('lotl_daily_load', { date: _today, days: _allDays.length });
   }).catch(function(){
     var box = document.getElementById('dailyList');
     if(box) box.innerHTML = '<p class="lotl-muted">Could not load daily decrees. <a href="../daily/2027-01-preview.html" style="color:#C9A84C">Open preview →</a></p>';
@@ -297,6 +318,20 @@ body{background:#0A1628}
 <script defer src="/love-of-the-lord/subscribe-share.js"></script>
 <script>window.GA_FOOTER_ONLY = true;</script>
 <script defer src="/love-of-the-lord/share.js"></script>
+<script>
+(function(){ 'use strict';
+  function init(){
+    if(!window.lotlSubscribe) return;
+    window.lotlSubscribe('#lotl-subscribe-daily', { source:'lotl-devotionals', title:'Get the daily decree', subtitle:'The daily teaching, prayer, declaration and decree. One email a day, always with an unsubscribe link.', btnText:'Send me the daily decree', lotlDaily:true });
+    window.lotlSubscribe('#lotl-subscribe-weekly', { source:'lotl-devotionals-weekly', title:'Weekly S.O.A.P.', subtitle:'One short devotional every Monday.', btnText:'Subscribe' });
+    if(window.lotlShareButtons){
+      window.lotlShareButtons('#lotl-share-daily', { path:'/love-of-the-lord/devotionals/', campaign:'lotl-decrees', content:'daily' });
+      window.lotlShareButtons('#lotl-share-weekly', { path:'/love-of-the-lord/devotionals/', campaign:'lotl-devotionals', content:'weekly' });
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
 <script defer src="/assets/js/main.js"></script>
 <script src="/nav.js"></script>
 </body>

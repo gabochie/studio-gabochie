@@ -157,7 +157,8 @@ export function mockDb(tables) {
                 row[cols[ci]] = chain._bound[bi] !== undefined ? chain._bound[bi] : '';
                 bi++;
               } else if (valParts[ci] !== undefined) {
-                row[cols[ci]] = valParts[ci].replace(/^['"]|['"]$/g, '');
+                var vp = valParts[ci].replace(/^['"]|['"]$/g, '');
+                row[cols[ci]] = /^-?\d+(?:\.\d+)?$/.test(vp) ? Number(vp) : vp;
               } else {
                 row[cols[ci]] = '';
               }
@@ -176,7 +177,7 @@ export function mockDb(tables) {
             var setPart = um[2];
             var wherePart = um[3] || '';
             var assignments = [];
-            var setRe = /((?:[\w.]+)\s*=\s*(?:\?|'[^']*'|json_set\([^)]*\)))/g;
+            var setRe = /((?:[\w.]+)\s*=\s*(?:\?|'[^']*'|-?\d+(?:\.\d+)?|json_set\([^)]*\)))/g;
             var sm;
             while ((sm = setRe.exec(setPart)) !== null) {
               var assign = sm[1].split('=');
@@ -187,6 +188,8 @@ export function mockDb(tables) {
               } else if (/^json_set/i.test(val)) {
                 // Represent the metadata value as a stable marker.
                 assignments.push({ col: col, val: '{"gateway":"g","gateway_txid":"t"}' });
+              } else if (/^-?\d+(?:\.\d+)?$/.test(val)) {
+                assignments.push({ col: col, val: Number(val) });
               } else {
                 assignments.push({ col: col, val: val.replace(/^['"]|['"]$/g, '') });
               }

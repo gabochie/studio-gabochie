@@ -44,6 +44,31 @@ td.email{font-family:'Courier Prime',monospace;font-size:12px;color:#94A3B8}
   <table><thead><tr>
     <th>Email</th><th>Type</th><th>Subject</th><th>Scheduled</th><th>Sent</th><th>Status</th>
   </tr></thead><tbody id="queueBody"></tbody></table>
+
+  <h1 class="page-title" style="margin-top:48px">Engagement <span>&amp; Tracking</span></h1>
+  <p class="page-desc">Opens and clicks recorded by the tracking pixel and click redirect — per email, per type, and per person.</p>
+
+  <div class="queue-stats" id="trackFunnel"></div>
+
+  <div class="top-bar" style="margin-top:8px">
+    <h3 style="font-family:'Syne',sans-serif;font-size:15px;color:#E8EEF7;margin:0">By email type (30 days)</h3>
+  </div>
+  <table><thead><tr><th>Type</th><th>Queued</th><th>Sent</th><th>Opened</th><th>Clicked</th></tr></thead><tbody id="typeBody"></tbody></table>
+
+  <div class="top-bar" style="margin-top:32px">
+    <h3 style="font-family:'Syne',sans-serif;font-size:15px;color:#E8EEF7;margin:0">Recent tracking events</h3>
+    <button class="btn-sm" onclick="loadTracking()">Refresh</button>
+  </div>
+  <table><thead><tr><th>When</th><th>Event</th><th>Recipient</th><th>Subject</th><th>Detail</th></tr></thead><tbody id="eventBody"></tbody></table>
+
+  <div class="top-bar" style="margin-top:32px">
+    <h3 style="font-family:'Syne',sans-serif;font-size:15px;color:#E8EEF7;margin:0">Look up a contact</h3>
+  </div>
+  <div class="info-box" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input class="input" id="contactEmail" type="email" placeholder="someone@example.com" style="flex:1;min-width:240px;padding:10px 12px;background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#E8EEF7;font-size:13px">
+    <button class="btn-sm" onclick="loadContact()">Look up</button>
+  </div>
+  <div id="contactResult"></div>
 </div>
 
 <script src="admin-ui.js"></script>
@@ -102,6 +127,88 @@ async function processQueue() {
   } catch(e) { btn.textContent = 'Error'; btn.disabled = false; }
 }
 
+function pct(n, d) { return d > 0 ? Math.round((n / d) * 100) + '%' : '—'; }
+
+async function loadTracking() {
+  try {
+    var r = await adminFetch('/admin/api/email-tracking?days=30', { cache: 'no-store' });
+    var d = await r.json();
+    renderTracking(d);
+  } catch (e) {
+    document.getElementById('eventBody').innerHTML = '<tr><td colspan="5" class="empty">Failed to load tracking</td></tr>';
+  }
+}
+
+function renderTracking(d) {
+  var f = d.funnel || {};
+  document.getElementById('trackFunnel').innerHTML =
+    '<div class="stat-card"><span class="stat-num">' + (f.sent || 0) + '</span><span class="stat-label">Sent (30d)</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (f.opened || 0) + '</span><span class="stat-label">Opened · ' + pct(f.opened, f.sent) + '</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (f.clicked || 0) + '</span><span class="stat-label">Clicked · ' + pct(f.clicked, f.sent) + '</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (f.failed || 0) + '</span><span class="stat-label">Failed / bounced</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + ((d.suppression && d.suppression.total) || 0) + '</span><span class="stat-label">Suppressed</span></div>';
+
+  var types = d.by_type || [];
+  document.getElementById('typeBody').innerHTML = types.length ? types.map(function (t) {
+    return '<tr><td class="type">' + esc(t.email_type) + '</td><td>' + (t.queued || 0) + '</td><td>' + (t.sent || 0) + '</td><td>' + (t.opened || 0) + '</td><td>' + (t.clicked || 0) + '</td></tr>';
+  }).join('') : '<tr><td colspan="5" class="empty">No email activity yet</td></tr>';
+
+  var events = d.recent_events || [];
+  document.getElementById('eventBody').innerHTML = events.length ? events.map(function (e) {
+    var detail = '';
+    try { var j = JSON.parse(e.event_data || '{}'); detail = j.destination || j.userAgent || ''; } catch (_e) {}
+    if (detail.length > 46) detail = detail.slice(0, 46) + '…';
+    return '<tr><td>' + (e.created_at || '').replace('T', ' ').slice(0, 16) + '</td>' +
+      '<td class="type">' + esc(e.event_type) + '</td>' +
+      '<td class="email">' + esc(e.to_email || '—') + '</td>' +
+      '<td class="subject">' + esc(e.subject || '—') + '</td>' +
+      '<td class="type">' + esc(detail) + '</td></tr>';
+  }).join('') : '<tr><td colspan="5" class="empty">No open/click events recorded yet</td></tr>';
+}
+
+async function loadContact() {
+  var email = (document.getElementById('contactEmail').value || '').trim();
+  var box = document.getElementById('contactResult');
+  if (!email) { box.innerHTML = ''; return; }
+  box.innerHTML = '<p class="lotl-muted" style="color:#5A7A9F;padding:12px">Loading…</p>';
+  try {
+    var r = await adminFetch('/admin/api/email-tracking?email=' + encodeURIComponent(email), { cache: 'no-store' });
+    var d = await r.json();
+    renderContact(d);
+  } catch (e) { box.innerHTML = '<p class="empty">Lookup failed</p>'; }
+}
+
+function renderContact(d) {
+  var s = d.summary || {};
+  var who = [];
+  if (d.subscriber) who.push('subscriber · ' + esc(d.subscriber.source || '') + (d.subscriber.lotl_daily ? ' · daily devotional' : ''));
+  if (d.cold_outreach) who.push('outreach · ' + esc(d.cold_outreach.campaign || d.cold_outreach.status || ''));
+  if (d.suppression) who.push('suppressed · ' + esc(d.suppression.reason || ''));
+
+  var html = '<div class="queue-stats" style="margin:12px 0">' +
+    '<div class="stat-card"><span class="stat-num">' + (s.sends || 0) + '</span><span class="stat-label">Emails</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (s.opened || 0) + '</span><span class="stat-label">Opened</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (s.clicked || 0) + '</span><span class="stat-label">Clicked</span></div>' +
+    '<div class="stat-card"><span class="stat-num">' + (s.delivered || 0) + '</span><span class="stat-label">Delivered</span></div>' +
+    '</div>';
+  if (who.length) html += '<p class="page-desc">' + who.join(' &nbsp;·&nbsp; ') + '</p>';
+
+  var sends = d.sends || [];
+  html += '<table><thead><tr><th>Sent</th><th>Type</th><th>Subject</th><th>Opened</th><th>Clicked</th><th>Status</th></tr></thead><tbody>' +
+    (sends.length ? sends.map(function (r) {
+      return '<tr><td>' + (r.sent_at || r.scheduled_at || '').replace('T', ' ').slice(0, 16) + '</td>' +
+        '<td class="type">' + esc(r.email_type) + '</td>' +
+        '<td class="subject">' + esc(r.subject) + '</td>' +
+        '<td>' + (r.opened_at ? '✓ ' + r.opened_at.replace('T', ' ').slice(0, 16) : '—') + '</td>' +
+        '<td>' + (r.clicked_at ? '✓ ' + r.clicked_at.replace('T', ' ').slice(0, 16) : '—') + '</td>' +
+        '<td>' + esc(r.status) + '</td></tr>';
+    }).join('') : '<tr><td colspan="6" class="empty">No emails recorded for this address</td></tr>') +
+    '</tbody></table>';
+
+  document.getElementById('contactResult').innerHTML = html;
+}
+
+loadTracking();
 loadQueue();
 </script>
 </body></html>

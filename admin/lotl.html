@@ -47,6 +47,10 @@
     <span id="saveState" class="status-ok" hidden>Copied</span>
   </div>
 
+  <h1 class="page-title" style="margin-top:48px">Daily <span>Devotional Email</span></h1>
+  <p class="page-desc">One email a day with the teaching, prayer, declaration and decree — sent only to opted-in subscribers. Opens and clicks are tracked per recipient. Off until you enable it.</p>
+  <div id="dailyPanel" class="lotl-panel" style="margin-bottom:24px"><div style="color:#5A7A9F;font-size:13px">Loading…</div></div>
+
   <div class="lotl-grid">
     <div class="lotl-panel">
       <h3>Seasons &amp; services</h3>
@@ -324,6 +328,81 @@ function esc(s) {
 }
 
 loadAll();
+
+function adminReady() {
+  var k = getAdminKey();
+  return !!(k && k !== '__CF_ACCESS__') || (typeof isCloudflareAccess === 'function' && isCloudflareAccess());
+}
+
+function dailyFetch(url, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  var key = getAdminKey();
+  if (key && key !== '__CF_ACCESS__') opts.headers['X-Admin-Key'] = key;
+  return fetch(url, opts);
+}
+
+function loadDaily() {
+  var box = byId('dailyPanel');
+  if (!adminReady()) {
+    box.innerHTML = '<div style="color:#5A7A9F;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">Admin API key required to manage the daily broadcast.' +
+      '<button class="mini-btn" onclick="ensureAdminKey();loadDaily();">Enter admin key</button></div>';
+    return;
+  }
+  box.innerHTML = '<div style="color:#5A7A9F;font-size:13px">Loading…</div>';
+  dailyFetch('/admin/api/lotl-daily', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d || d.status !== 'ok') { box.innerHTML = '<div class="status-bad">Could not load daily status.</div>'; return; }
+    var state = d.enabled
+      ? '<span style="color:#22C55E;font-weight:600">● Auto-send ON</span>'
+      : '<span style="color:#E8637A;font-weight:600">● Auto-send OFF</span>';
+    var sentToday = d.sent_today ? ('Sent today: ' + d.sent_today.total + ' recipients') : 'Not sent today yet';
+    var content = d.has_content ? ('Today\u2019s devotional: ' + esc(d.subject || '')) : '⚠ No devotional published for ' + esc(d.date);
+    box.innerHTML =
+      '<h3>Today · ' + esc(d.date) + '</h3>' +
+      '<div class="rule">' + state + ' &nbsp;·&nbsp; ' + esc(sentToday) + '</div>' +
+      '<div class="rule">Audience: <b>' + d.audience + '</b> opted-in subscriber(s) of ' + d.confirmed_subscribers + ' confirmed. ' + esc(content) + '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px">' +
+        '<button class="mini-btn" onclick="dailyAction(\'' + (d.enabled ? 'disable' : 'enable') + '\')">' + (d.enabled ? 'Turn auto-send OFF' : 'Turn auto-send ON') + '</button>' +
+        '<button class="mini-btn" onclick="dailyAction(\'send\')">Send now</button>' +
+        '<button class="mini-btn" onclick="dailyOptin()">Ask all confirmed to opt in</button>' +
+        '<button class="mini-btn" onclick="dailyTest()">Send test to…</button>' +
+      '</div>' +
+      '<div class="rule" style="margin-bottom:6px"><b>Preview</b></div>' +
+      '<div style="max-height:420px;overflow:auto;border:1px solid #1E3250;border-radius:8px;background:#0A1628">' +
+        (d.preview_html || '<p style="padding:16px;color:#5A7A9F">No preview available.</p>') +
+      '</div>';
+  }).catch(function () {
+    box.innerHTML = '<div class="status-bad">Could not load daily status.</div>';
+  });
+}
+
+function dailyAction(action) {
+  if (action === 'send' && !confirm('Enqueue today\u2019s devotional to all opted-in subscribers now?')) return;
+  dailyFetch('/admin/api/lotl-daily', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: action }) })
+    .then(function (r) { return r.json(); }).then(function (d) {
+      Toast && (d && d.ok ? Toast.success(typeof d.enqueued === 'number' ? ('Enqueued ' + d.enqueued) : 'Done') : Toast.error((d && d.error) || 'Failed'));
+      loadDaily();
+    }).catch(function () { Toast && Toast.error && Toast.error('Request failed'); });
+}
+
+function dailyTest() {
+  var email = prompt('Send today\u2019s devotional test to which email?');
+  if (!email) return;
+  dailyFetch('/admin/api/lotl-daily', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'test', email: email }) })
+    .then(function (r) { return r.json(); }).then(function (d) {
+      Toast && (d && d.ok ? Toast.success('Test queued') : Toast.error((d && d.error) || 'Failed'));
+    });
+}
+
+function dailyOptin() {
+  if (!confirm('Queue an opt-in invitation to every confirmed subscriber? This does not send the daily devotional to anyone yet.')) return;
+  dailyFetch('/admin/api/lotl-daily', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'optin' }) })
+    .then(function (r) { return r.json(); }).then(function (d) {
+      Toast && (d && d.ok ? Toast.success('Queued opt-in to ' + d.enqueued + ' subscriber(s)') : Toast.error((d && d.error) || 'Failed'));
+    });
+}
+
+loadDaily();
 </script>
 </body>
 </html>
