@@ -23,6 +23,9 @@ export function mockDb(tables) {
             var conditions = db._parseWhere(chain._bound);
             matched = rows.filter(function (r) {
               return conditions.every(function (cond) {
+                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
+                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
+                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
                 var val = cond.val;
                 if (val === '?') {
                   var idx = conditions.indexOf(cond);
@@ -34,9 +37,6 @@ export function mockDb(tables) {
                   return String(r[cond.col]).startsWith(prefix);
                 }
                 if (cond.op === '!=') return String(r[cond.col]) !== String(val);
-                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
-                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
-                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
                 return String(r[cond.col]) === String(val);
               });
             });
@@ -66,6 +66,9 @@ export function mockDb(tables) {
             var conditions = db._parseWhere(chain._bound);
             matched = rows.filter(function (r) {
               return conditions.every(function (cond) {
+                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
+                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
+                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
                 var val = cond.val;
                 if (val === '?') {
                   var idx = conditions.indexOf(cond);
@@ -74,9 +77,6 @@ export function mockDb(tables) {
                 if (val === undefined) return false;
                 if (cond.isLike) return String(r[cond.col]).indexOf(val.replace(/%/g, '')) >= 0;
                 if (cond.op === '!=') return String(r[cond.col]) !== String(val);
-                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
-                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
-                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
                 return String(r[cond.col]) === String(val);
               });
             });
@@ -281,16 +281,24 @@ export function mockDb(tables) {
         // IS NOT NULL
         var nn = part.match(/^((?:\w+\.)?\w+)\s+IS\s+NOT\s+NULL$/i);
         if (nn) { acc.push({ col: db._stripTable(nn[1]), op: 'IS NOT NULL' }); return acc; }
+        // Resolve a `SELECT col FROM tbl` subquery into its column values.
+        var subq = function (inner) {
+          var sq = String(inner).trim().match(/^SELECT\s+(\w+)\s+FROM\s+(\w+)/i);
+          if (!sq) return null;
+          return (db._tables[sq[2]] || []).map(function (r) { return String(r[sq[1]]); });
+        };
         // IN (...)
-        var inM = part.match(/^((?:\w+\.)?\w+)\s+IN\s+\((.+)\)$/i);
+        var inM = part.match(/^((?:\w+\.)?\w+)\s+IN\s*\((.+)\)$/i);
         if (inM) {
-          var vals = inM[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
+          var vals = subq(inM[2]);
+          if (!vals) vals = inM[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
           acc.push({ col: db._stripTable(inM[1]), op: 'IN', vals: vals }); return acc;
         }
         // NOT IN (...)
-        var ni = part.match(/^((?:\w+\.)?\w+)\s+NOT\s+IN\s+\((.+)\)$/i);
+        var ni = part.match(/^((?:\w+\.)?\w+)\s+NOT\s+IN\s*\((.+)\)$/i);
         if (ni) {
-          var nivals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
+          var nivals = subq(ni[2]);
+          if (!nivals) nivals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
           acc.push({ col: db._stripTable(ni[1]), op: 'NOT IN', vals: nivals }); return acc;
         }
         // Handle `col = ?` or `col != value`

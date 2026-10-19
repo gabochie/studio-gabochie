@@ -16,6 +16,9 @@ export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent,
     const errText = await resp.text().catch(function () { return ''; });
     throw new Error('Brevo ' + resp.status + ': ' + String(errText).slice(0, 160));
   }
+  // Return the provider response (carries messageId) so callers that track
+  // delivery can persist provider_id. Callers that ignore it are unaffected.
+  return resp.json().catch(function () { return null; });
 }
 
 export async function queueEmail(env, toEmail, toName, subject, htmlContent, emailType, scheduledAt) {

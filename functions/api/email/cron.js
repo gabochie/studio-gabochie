@@ -1,4 +1,5 @@
 import { sendBrevoEmail, queueEmail, abandonedDonationReminder, abandonedCheckoutReminder, tierRenewalReminder, sampleUpgrade7d, daysFromNow } from './_send.js';
+import { processEmailQueue } from './_process-queue.js';
 import { personalize } from '../../admin/api/newsletter/send.js';
 import { enqueueBroadcast } from '../../admin/api/newsletter/_enqueue.js';
 import { saturdaySendDue } from '../../admin/api/newsletter/schedule.js';
@@ -128,22 +129,15 @@ export async function onRequest(context) {
       result.errors.push('renewal: ' + err.message);
     }
 
-    // Step 2: Process email queue
+    // Step 2: Process email queue (shared processor — signed unsubscribe,
+    // open/click tracking, suppression list, retries, daily Brevo cap).
     try {
-      var { results: queueResults } = await env.DB.prepare(
-        "SELECT * FROM email_queue WHERE sent_at IS NULL AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 50"
-      ).all();
-
-      for (var q of queueResults) {
-        try {
-          await sendBrevoEmail(env, q.to_email, q.to_name, q.subject, q.html_content);
-          await env.DB.prepare("UPDATE email_queue SET sent_at = datetime('now') WHERE id = ?").bind(q.id).run();
-          result.process.sent++;
-        } catch (err) {
-          result.errors.push('send-' + q.id + ': ' + err.message);
-        }
-      }
-      result.process.pending = queueResults.length - result.process.sent;
+      var proc = await processEmailQueue(env, env.DB);
+      result.process.sent = proc.sent;
+      result.process.pending = proc.pending;
+      if (proc.failed) result.process.failed = proc.failed;
+      if (proc.skipped_limited) result.process.skipped_limited = true;
+      if (proc.errors && proc.errors.length) result.errors = result.errors.concat(proc.errors);
     } catch (err) {
       result.errors.push('process: ' + err.message);
     }
