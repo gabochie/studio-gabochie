@@ -182,7 +182,7 @@ The guitar course runs on the same Cloudflare Pages project and D1 database. Aft
 
 ### ExpressPay Paywall
 
-The guitar course uses **ExpressPay** for a one-time GH₵ 99 course unlock.
+The guitar course uses **ExpressPay** for a one-time GH₵ 299 course unlock.
 No additional env vars are needed — the existing `EXPRESSPAY_*` keys are reused.
 
 Settlement: `POST /api/gateways/expresspay/callback` (shared post-url), which

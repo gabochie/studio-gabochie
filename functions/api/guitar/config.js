@@ -1,7 +1,7 @@
 import { json } from './_utils.js';
 
 const DEFAULTS = {
-  price: '99',
+  price: '299',
   comparePrice: '500',
   currencySymbol: 'GH₵',
   freeModules: '3',

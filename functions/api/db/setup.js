@@ -598,7 +598,7 @@ export async function onRequest(context) {
       `ALTER TABLE store_orders ADD COLUMN courier_name TEXT DEFAULT ''`,
       `ALTER TABLE store_orders ADD COLUMN tracking_info TEXT DEFAULT ''`,
       `ALTER TABLE unified_tiers ADD COLUMN flw_plan_id TEXT DEFAULT ''`,
-      `UPDATE settings SET value = '99' WHERE key = 'guitar_price'`,
+      `UPDATE settings SET value = '299' WHERE key = 'guitar_price'`,
       `CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         slug TEXT NOT NULL UNIQUE,

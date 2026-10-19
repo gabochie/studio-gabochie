@@ -153,7 +153,7 @@ describe('crypto guitar unlocks', function () {
     var data = await (await cryptoCreate(ctx)).json();
     expect(data.status).toBe('ok');
     expect(data.purpose).toBe('guitar');
-    expect(data.amount_ghs).toBe(99);
+    expect(data.amount_ghs).toBe(299);
     expect(data.success_url).toContain('/guitar/learn/');
     expect(db._tables.guitar_payments.length).toBe(1);
     expect(db._tables.guitar_payments[0].status).toBe('pending');
