@@ -1,5 +1,6 @@
 {
   "name": "studio-gabochie",
+  "license": "BUSL-1.1",
   "private": true,
   "type": "module",
   "scripts": {
