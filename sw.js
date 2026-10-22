@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v22';
+const VERSION = 'gabochie-v23';
 const AUDIO_CACHE_MAX_BYTES = 26214400; // 25 MB per file — keep offline storage bounded.
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
@@ -47,6 +47,8 @@ const PRECACHE_URLS = [
   '/love-of-the-lord/service.js',
   '/love-of-the-lord/logo.webp',
   '/love-of-the-lord/og-cover.png',
+  '/search/',
+  '/search/pages.json',
 ];
 
 /* Public, idempotent catalog GETs — safe to serve stale-while-revalidate.
@@ -131,7 +133,8 @@ self.addEventListener('fetch', (event) => {
   if (
     path.startsWith('/assets/') ||
     path === '/nav.js' ||
-    path === '/manifest.webmanifest'
+    path === '/manifest.webmanifest' ||
+    path === '/search/pages.json'
   ) {
     event.respondWith(cacheFirst(request));
     return;
