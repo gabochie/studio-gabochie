@@ -24,8 +24,9 @@
   {"title":"Courses for Schools","url":"/courses/#school-wisdom","description":"Curriculum and resources for classroom integration.","keywords":["schools","education","curriculum","classroom","teachers"]},
   {"title":"Articles","url":"/blog/","description":"Essays and insights on creativity, systems, and craft.","keywords":["articles","blog","essays","insights","creativity"]},
   {"title":"Books","url":"/books/","description":"Free and paid books on creativity, wisdom, and practical skills.","keywords":["books","free books","paid books","reading","library"]},
-  {"title":"7 Fearless Steps","url":"/books/7-fearless-steps/","description":"A short guide to moving past fear and into action.","keywords":["fearless","steps","fear","action","courage","guide"]},
-  {"title":"Content Library","url":"/content-library/","description":"Searchable repository of all public resources and downloads.","keywords":["content library","resources","downloads","repository","assets"]},
+  {"title":"7 Fearless Steps: From Witchcraft to Greater Ghanaian Destiny","url":"/books/fearless-steps/","description":"Break free from fear of witchcraft and step into your Greater Ghanaian Destiny in Christ. Pre-order the 36-page easy-read booklet.","keywords":["fearless","steps","witchcraft","deliverance","fear","action","courage","guide","ghana","book","pre-order"]},
+  {"title":"7 Fearless Steps - Free Sample","url":"/books/fearless-steps/read/","description":"Read the Introduction and Step 1 of 7 Fearless Steps free online, or listen to the audio sample.","keywords":["fearless","steps","witchcraft","free sample","read online","audio","introduction"]},
+  {"title":"Content Library","url":"/content/","description":"Searchable repository of all public resources and downloads.","keywords":["content library","resources","downloads","repository","assets"]},
   {"title":"Nation Building","url":"/nationbuilding/","description":"Frameworks and stories for building thriving communities.","keywords":["nation building","community","development","ghana","africa"]},
   {"title":"Manifesto","url":"/manifesto/","description":"Our public declaration of principles and commitments.","keywords":["manifesto","principles","commitments","declaration","values"]},
   {"title":"Careers","url":"/careers/","description":"Open roles and freelance opportunities at Studio Gabochie.","keywords":["careers","jobs","hiring","roles","freelance"]},
@@ -41,7 +42,7 @@
   {"title":"Give","url":"/love-of-the-lord/give/","description":"Support the ministry and outreach work.","keywords":["give","donate","ministry","support","tithe"]},
   {"title":"Ministry Shop","url":"/love-of-the-lord/shop/","description":"Books, apparel, and resources for spiritual growth.","keywords":["shop","books","apparel","ministry","resources"]},
   {"title":"Friday Answers","url":"/love-of-the-lord/answers/","description":"Weekly Q&A on faith, life, and Scripture.","keywords":["friday answers","qa","questions","answers","faith"]},
-  {"title":"Studio Weekly","url":"/love-of-the-lord/weekly/","description":"Weekly newsletter with devotionals and community updates.","keywords":["weekly","newsletter","updates","community","studio"]},
+  {"title":"Studio Weekly","url":"/news/","description":"Weekly newsletter with devotionals and community updates.","keywords":["weekly","newsletter","updates","community","studio"]},
   {"title":"Services","url":"/services/","description":"Professional services: architecture, systems thinking, curriculum, speaking, writing, mentorship, brand.","keywords":["services","architecture","systems thinking","curriculum","speaking","writing","mentorship","brand"]},
   {"title":"Architectural Design","url":"/services/architectural-design/","description":"Human-centered architectural and spatial design.","keywords":["architectural design","architecture","spatial","human centered"]},
   {"title":"Systems Thinking Consulting","url":"/services/systems-thinking/","description":"Organizational and project systems analysis and design.","keywords":["systems consulting","analysis","design","organizations"]},
@@ -53,10 +54,10 @@
   {"title":"Partner With Us","url":"/partners/","description":"Sponsorship, affiliate, and B2B partnership opportunities.","keywords":["partners","sponsorship","affiliate","b2b","partnership"]},
   {"title":"Press & Media","url":"/press/","description":"Press kit, media assets, and contact for journalists.","keywords":["press","media","press kit","journalists","assets"]},
   {"title":"Tutoring Marketplace","url":"/tutoring/","description":"Find or become a tutor in creative and technical subjects.","keywords":["tutoring","tutors","marketplace","teach","learn"]},
-  {"title":"Become a Tutor","url":"/tutoring/become/","description":"Apply to teach and earn on the Studio Gabochie platform.","keywords":["become a tutor","teach","apply","earn","instructor"]},
+  {"title":"Become a Tutor","url":"/tutoring/apply/","description":"Apply to teach and earn on the Studio Gabochie platform.","keywords":["become a tutor","teach","apply","earn","instructor"]},
   {"title":"Art & Design","url":"/art/","description":"Visual art courses, tutorials, and community showcases.","keywords":["art","design","visual art","creativity","showcase"]},
   {"title":"Music","url":"/music/","description":"Music courses, theory, production, and artist resources.","keywords":["music","theory","production","artist","audio"]},
   {"title":"Merch Store","url":"/merch/","description":"Official Studio Gabochie apparel and accessories.","keywords":["merch","apparel","accessories","store","clothing"]},
   {"title":"Community Survey","url":"/survey/","description":"Share your goals and help shape future content.","keywords":["survey","feedback","goals","community","input"]},
-  {"title":"Newsletter Subscribe","url":"/subscribe/","description":"Join the Studio Weekly newsletter for insights and updates.","keywords":["subscribe","newsletter","weekly","updates","email"]}
+  {"title":"Newsletter Subscribe","url":"https://news.gabochie.com/","description":"Join the Studio Weekly newsletter for insights and updates.","keywords":["subscribe","newsletter","weekly","updates","email"]}
 ]
