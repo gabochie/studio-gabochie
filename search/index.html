@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1628">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Search - Studio Gabochie">
+<meta property="og:description" content="Search articles, books, courses, and listings across Studio Gabochie.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://studio.gabochie.com/search/">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<link rel="canonical" href="https://studio.gabochie.com/search/">
+<title>Search - Studio Gabochie</title>
+<meta name="description" content="Search articles, books, courses, and listings across Studio Gabochie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="/assets/fonts/tabler/tabler-icons.min.css" rel="stylesheet">
+<link href="../assets/css/main.css" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Search","url":"https://studio.gabochie.com/search/","description":"Search articles, books, courses, and listings across Studio Gabochie."}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--content-max:1440px}
+body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding-top:64px}
+.hero{max-width:var(--content-max);margin:0 auto;padding:80px 24px 40px;text-align:center}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;color:#fff;line-height:.92;margin-bottom:16px}
+.hero h1 span{color:#C9A84C}
+.hero p{font-size:16px;color:#8A9BB5;max-width:640px;margin:0 auto;line-height:1.7}
+.section{max-width:var(--content-max);margin:0 auto;padding:0 24px 60px}
+
+.search-wrap{margin-top:24px}
+.search-input-row{display:flex;gap:8px;max-width:720px;margin:0 auto}
+.search-input{flex:1;padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:16px;background:#0F1E38;border:1px solid #1E3250;border-radius:10px;color:#CBD5E1;outline:none}
+.search-input::placeholder{color:#5A7A9F}
+.search-input:focus{border-color:#C9A84C}
+.search-btn{padding:14px 22px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:#C9A84C;color:#0A1628;border:none;border-radius:10px;cursor:pointer;transition:background .15s}
+.search-btn:hover{background:#D4B85E}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0}
+.chip{padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:13px;background:#0F1E38;border:1px solid #1E3250;border-radius:999px;color:#8A9BB5;cursor:pointer;transition:all .15s}
+.chip:hover{border-color:#C9A84C;color:#C9A84C}
+.chip.active{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+.chip-count{margin-left:4px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#0A1628}
+.chip:not(.active) .chip-count{color:#5A7A9F}
+
+.results-list{list-style:none}
+.result-item{display:flex;gap:16px;padding:20px;background:#0F1E38;border:1px solid #1E3250;border-radius:12px;margin-bottom:12px;text-decoration:none;color:inherit;transition:border .15s}
+.result-item:hover{border-color:#C9A84C}
+.result-icon{flex:0 0 44px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#1E3250;border-radius:8px;font-size:18px}
+.result-icon.article{color:#3B82F6}
+.result-icon.book{color:#F59E0B}
+.result-icon.course{color:#10B981}
+.result-icon.listing{color:#EF4444}
+.result-icon.static{color:#8B5CF6}
+.result-body{flex:1;min-width:0}
+.result-meta{display:flex;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#5A7A9F;margin-bottom:6px}
+.result-type{color:#C9A84C}
+.result-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;margin-bottom:6px}
+.result-excerpt{font-size:14px;color:#8A9BB5;line-height:1.6}
+mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
+
+.empty-state{text-align:center;padding:60px 24px;color:#5A7A9F}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#fff;margin-bottom:8px}
+.popular-searches{margin-top:24px}
+.popular-searches h4{font-family:'Barlow Condensed',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:#5A7A9F;margin-bottom:12px}
+.popular-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.popular-chip{padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;background:#0F1E38;border:1px solid #1E3250;border-radius:999px;color:#8A9BB5;cursor:pointer;transition:all .15s}
+.popular-chip:hover{border-color:#C9A84C;color:#C9A84C}
+
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px;color:#5A7A9F}
+.spinner{width:24px;height:24px;border:2px solid #1E3250;border-top-color:#C9A84C;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="hero">
+  <div class="hero-eyebrow">Search</div>
+  <h1>Find What You Need</h1>
+  <p>Search across articles, books, courses, and listings &mdash; all in one place.</p>
+</div>
+<div class="section">
+  <div class="search-wrap" role="search" aria-label="Site search">
+    <div class="search-input-row">
+      <input type="search" class="search-input" id="searchInput" placeholder="Search articles, books, courses, careers..." autocomplete="off" aria-label="Search query" aria-autocomplete="list" aria-controls="searchResults" aria-expanded="false">
+      <button class="search-btn" id="searchBtn" aria-label="Search"><i class="ti ti-search" aria-hidden="true"></i></button>
+    </div>
+    <div class="chip-row" id="chipRow" role="tablist" aria-label="Filter by content type">
+      <button class="chip active" data-type="all" role="tab" aria-selected="true" aria-controls="searchResults">All <span class="chip-count" id="countAll">0</span></button>
+      <button class="chip" data-type="article" role="tab" aria-selected="false" aria-controls="searchResults">Articles <span class="chip-count" id="countArticle">0</span></button>
+      <button class="chip" data-type="book" role="tab" aria-selected="false" aria-controls="searchResults">Books <span class="chip-count" id="countBook">0</span></button>
+      <button class="chip" data-type="course" role="tab" aria-selected="false" aria-controls="searchResults">Courses <span class="chip-count" id="countCourse">0</span></button>
+      <button class="chip" data-type="listing" role="tab" aria-selected="false" aria-controls="searchResults">Listings <span class="chip-count" id="countListing">0</span></button>
+    </div>
+    <div id="searchResults" role="region" aria-live="polite" aria-label="Search results"></div>
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon"><i class="ti ti-search-x" aria-hidden="true"></i></div>
+      <h3>No results found</h3>
+      <p id="emptyMessage">Try a different keyword or filter.</p>
+      <div class="popular-searches">
+        <h4>Popular searches</h4>
+        <div class="popular-chips" id="popularChips"></div>
+      </div>
+    </div>
+    <div class="loading" id="loading" hidden><div class="spinner" aria-hidden="true"></div><span>Searching...</span></div>
+  </div>
+</div>
+<div id="footer-placeholder"></div>
+<script defer src="../assets/js/main.js"></script>
+<script src="/courses/courses-data.js"></script>
+<script src="/nav.js"></script>
+<script>
+(function () {
+  var input = document.getElementById('searchInput');
+  var btn = document.getElementById('searchBtn');
+  var chips = document.querySelectorAll('#chipRow .chip');
+  var resultsEl = document.getElementById('searchResults');
+  var emptyEl = document.getElementById('emptyState');
+  var loadingEl = document.getElementById('loading');
+  var emptyMsg = document.getElementById('emptyMessage');
+  var popularChips = document.getElementById('popularChips');
+  var counts = { all: 0, article: 0, book: 0, course: 0, listing: 0 };
+  var currentType = 'all';
+  var debounceTimer = null;
+  var lastQuery = '';
+  var abortController = null;
+  var staticPages = [];
+  var popularTerms = ['systems thinking', 'creativity', 'guitar', 'freelancing', 'digital marketing', 'web development', 'youth leadership', 'nation building', 'faith', 'wisdom'];
+
+  function highlight(text, query) {
+    if (!query) return text;
+    var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  function staticHaystack(page) {
+    var keywords = page.keywords;
+    if (Array.isArray(keywords)) keywords = keywords.join(' ');
+    else if (typeof keywords !== 'string') keywords = '';
+    return ((page.title || '') + ' ' + (page.description || '') + ' ' + keywords).toLowerCase();
+  }
+
+  function staticType(page) {
+    var url = page.url || '';
+    if (url.indexOf('/courses/') === 0) return 'course';
+    if (url.indexOf('/books/') === 0) return 'book';
+    if (url.indexOf('/blog/') === 0) return 'article';
+    if (url.indexOf('/careers/') === 0) return 'listing';
+    return 'static';
+  }
+
+  function iconFor(type) {
+    var map = {
+      article: 'ti ti-file-text',
+      book: 'ti ti-book',
+      course: 'ti ti-graduation-cap',
+      listing: 'ti ti-briefcase',
+      static: 'ti ti-link'
+    };
+    return map[type] || 'ti ti-file';
+  }
+
+  function renderResults(data) {
+    resultsEl.innerHTML = '';
+    var results = data.results || [];
+    if (results.length === 0) {
+      resultsEl.style.display = 'none';
+      emptyEl.hidden = false;
+      emptyMsg.textContent = 'No results for \u201c' + data.query + '\u201d.';
+      popularChips.innerHTML = '';
+      popularTerms.forEach(function (term) {
+        var a = document.createElement('a');
+        a.className = 'popular-chip';
+        a.href = '/search/?q=' + encodeURIComponent(term);
+        a.textContent = term;
+        popularChips.appendChild(a);
+      });
+      return;
+    }
+    resultsEl.style.display = 'block';
+    emptyEl.hidden = true;
+    var ul = document.createElement('ul');
+    ul.className = 'results-list';
+    results.forEach(function (r) {
+      var li = document.createElement('li');
+      li.className = 'result-item';
+      li.innerHTML =
+        '<span class="result-icon ' + r.type + '" aria-hidden="true"><i class="' + iconFor(r.type) + '"></i></span>' +
+        '<div class="result-body">' +
+          '<div class="result-meta"><span class="result-type">' + r.type.charAt(0).toUpperCase() + r.type.slice(1) + '</span></div>' +
+          '<div class="result-title">' + highlight(r.title, data.query) + '</div>' +
+          (r.excerpt ? '<div class="result-excerpt">' + highlight(r.excerpt, data.query) + '</div>' : '') +
+        '</div>';
+      li.onclick = function () { window.location.href = r.url; };
+      li.style.cursor = 'pointer';
+      ul.appendChild(li);
+    });
+    resultsEl.appendChild(ul);
+  }
+
+  function updateCounts(results) {
+    counts = { all: results.length, article: 0, book: 0, course: 0, listing: 0 };
+    results.forEach(function (r) {
+      if (counts[r.type] !== undefined) counts[r.type] += 1;
+    });
+    document.getElementById('countAll').textContent = counts.all;
+    document.getElementById('countArticle').textContent = counts.article;
+    document.getElementById('countBook').textContent = counts.book;
+    document.getElementById('countCourse').textContent = counts.course;
+    document.getElementById('countListing').textContent = counts.listing;
+  }
+
+  function setActiveChip(type) {
+    currentType = type;
+    chips.forEach(function (ch) {
+      var active = ch.dataset.type === type;
+      ch.classList.toggle('active', active);
+      ch.setAttribute('aria-selected', active);
+    });
+  }
+
+  function search(q, type) {
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
+    loadingEl.hidden = false;
+    resultsEl.style.display = 'none';
+    emptyEl.hidden = true;
+
+    var url = '/api/search?q=' + encodeURIComponent(q) + '&type=' + type + '&limit=50';
+    staticReady.then(function () {
+      if (abortController.signal.aborted) return null;
+      return fetch(url, { signal: abortController.signal });
+    })
+      .then(function (res) { return res ? res.json() : null; })
+      .then(function (data) {
+        if (!data) return;
+        loadingEl.hidden = true;
+        if (data.status === 'ok') {
+          // merge static pages
+          var qLower = q.toLowerCase();
+          var staticResults = staticPages.filter(function (p) {
+            if (type !== 'all' && staticType(p) !== type) return false;
+            return staticHaystack(p).indexOf(qLower) >= 0;
+          }).map(function (p) {
+            return { type: staticType(p), title: p.title, url: p.url, excerpt: p.description };
+          });
+          var allResults = (data.results || []).concat(staticResults);
+          // dedupe by url
+          var seen = {};
+          var deduped = allResults.filter(function (r) {
+            if (seen[r.url]) return false;
+            seen[r.url] = true;
+            return true;
+          });
+          // simple relevance: exact title match first, then query in title, then in excerpt
+          deduped.sort(function (a, b) {
+            var ta = (a.title || '').toLowerCase();
+            var tb = (b.title || '').toLowerCase();
+            var ea = (a.excerpt || '').toLowerCase();
+            var eb = (b.excerpt || '').toLowerCase();
+            var aExact = ta === qLower ? 3 : (ta.indexOf(qLower) >= 0 ? 2 : (ea.indexOf(qLower) >= 0 ? 1 : 0));
+            var bExact = tb === qLower ? 3 : (tb.indexOf(qLower) >= 0 ? 2 : (eb.indexOf(qLower) >= 0 ? 1 : 0));
+            return bExact - aExact;
+          });
+          data.results = deduped;
+          updateCounts(deduped);
+          renderResults(data);
+        } else {
+          loadingEl.hidden = true;
+          emptyEl.hidden = false;
+          emptyMsg.textContent = data.message || 'Search failed.';
+        }
+      })
+      .catch(function (err) {
+        if (err.name !== 'AbortError') {
+          loadingEl.hidden = true;
+          emptyEl.hidden = false;
+          emptyMsg.textContent = 'Search error. Please try again.';
+        }
+      });
+  }
+
+  function debouncedSearch() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+      var q = input.value.trim();
+      if (q.length >= 2 && q !== lastQuery) {
+        lastQuery = q;
+        search(q, currentType);
+        history.replaceState(null, '', '/search/?q=' + encodeURIComponent(q) + '&type=' + currentType);
+      } else if (q.length < 2) {
+        loadingEl.hidden = true;
+        resultsEl.style.display = 'none';
+        emptyEl.hidden = true;
+      }
+    }, 280);
+  }
+
+  chips.forEach(function (ch) {
+    ch.addEventListener('click', function () {
+      var type = ch.dataset.type;
+      setActiveChip(type);
+      if (input.value.trim().length >= 2) {
+        lastQuery = '';
+        debouncedSearch();
+      }
+    });
+  });
+
+  input.addEventListener('input', debouncedSearch);
+  btn.addEventListener('click', function () { lastQuery = ''; debouncedSearch(); });
+
+  function loadStaticIndex() {
+    return fetch('/search/pages.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (Array.isArray(data)) staticPages = data; })
+      .catch(function () { staticPages = []; })
+      .then(function () {
+        if (typeof window.COURSE_DATA !== 'undefined' && window.COURSE_DATA.courses) {
+          window.COURSE_DATA.courses.forEach(function (c) {
+            staticPages.push({
+              title: c.title,
+              url: '/courses/' + c.slug + '/',
+              description: c.tagline || c.description,
+              keywords: [c.title, c.tagline, c.description].filter(Boolean)
+            });
+          });
+        }
+      });
+  }
+
+  var staticReady = loadStaticIndex();
+
+  // Initialize from URL
+  var params = new URLSearchParams(window.location.search);
+  var initialQuery = params.get('q') || '';
+  var initialType = params.get('type') || 'all';
+  if (initialQuery) {
+    input.value = initialQuery;
+    lastQuery = '';
+    if (['all','article','book','course','listing'].indexOf(initialType) >= 0) {
+      setActiveChip(initialType);
+    }
+    debouncedSearch();
+  }
+
+  // Keyboard shortcut: / focuses search
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== input && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>

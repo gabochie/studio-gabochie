@@ -51,7 +51,7 @@ describe('download gates (phase 1)', function () {
         { id: 1, user_id: 7, tx_ref: 'store_mine', item_name: 'Tee', status: 'completed' },
         { id: 2, user_id: 9, tx_ref: 'store_theirs', item_name: 'Cap', status: 'completed' }
       ],
-      sessions: [{ token: 'tok-7', user_id: 7, email: 'me@t.co', name: 'Me', membership_tier: 'free' }]
+      sessions: [{ token: 'tok-7', user_id: 7, expires_at: '2099-01-01', email: 'me@t.co', name: 'Me', membership_tier: 'free' }]
     });
     var res = await storeDownload(get('http://localhost/api/store/download?token=tok-7', { DB: db }));
     expect(res.status).toBe(200);
