@@ -22,22 +22,10 @@ export function mockDb(tables) {
           if (chain._bound.length > 0 || db._hasWhere()) {
             var conditions = db._parseWhere(chain._bound);
             matched = rows.filter(function (r) {
-              return conditions.every(function (cond) {
-                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
-                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
-                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
-                var val = cond.val;
-                if (val === '?') {
-                  var idx = conditions.indexOf(cond);
-                  val = chain._bound[idx];
-                }
-                if (val === undefined) return false;
-                if (cond.isLike) {
-                  var prefix = val.replace(/-%$/, '-');
-                  return String(r[cond.col]).startsWith(prefix);
-                }
-                if (cond.op === '!=') return String(r[cond.col]) !== String(val);
-                return String(r[cond.col]) === String(val);
+              return db._matchRow(r, conditions, function (cond) {
+                if (cond.val !== '?') return cond.val;
+                var idx = cond.bindIndex !== undefined ? cond.bindIndex : 0;
+                return chain._bound[idx];
               });
             });
           }
@@ -65,19 +53,10 @@ export function mockDb(tables) {
           if (db._hasWhere()) {
             var conditions = db._parseWhere(chain._bound);
             matched = rows.filter(function (r) {
-              return conditions.every(function (cond) {
-                if (cond.op === 'IS NOT NULL') return r[cond.col] != null && r[cond.col] !== '';
-                if (cond.op === 'IN') return cond.vals.indexOf(String(r[cond.col])) >= 0;
-                if (cond.op === 'NOT IN') return cond.vals.indexOf(String(r[cond.col])) < 0;
-                var val = cond.val;
-                if (val === '?') {
-                  var idx = conditions.indexOf(cond);
-                  val = chain._bound[idx];
-                }
-                if (val === undefined) return false;
-                if (cond.isLike) return String(r[cond.col]).indexOf(val.replace(/%/g, '')) >= 0;
-                if (cond.op === '!=') return String(r[cond.col]) !== String(val);
-                return String(r[cond.col]) === String(val);
+              return db._matchRow(r, conditions, function (cond) {
+                if (cond.val !== '?') return cond.val;
+                var idx = cond.bindIndex !== undefined ? cond.bindIndex : 0;
+                return chain._bound[idx];
               });
             });
           }
@@ -166,6 +145,9 @@ export function mockDb(tables) {
             if (!db._autoId[tbl]) db._autoId[tbl] = db._tables[tbl].length;
             db._autoId[tbl]++;
             row.id = db._autoId[tbl];
+            // D1 tables default created_at to datetime('now'); mirror that so
+            // time-based filters (rate limiting, expiry) behave realistically.
+            if (row.created_at === undefined) row.created_at = db._nowWithModifier(null);
             db._tables[tbl].push(row);
             return { success: true, meta: { changes: 1, last_row_id: row.id } };
           }
@@ -202,15 +184,10 @@ export function mockDb(tables) {
             var setIdx = 0;
             var changed = 0;
             (db._tables[utbl] || []).forEach(function (r) {
-              var match = conditions.every(function (cond, ci) {
-                var val = cond.val;
-                if (val === '?') {
-                  val = bound[whereStart + ci];
-                }
-                if (val === undefined) return false;
-                if (cond.isLike) return String(r[cond.col]).indexOf(val.replace(/%/g, '')) >= 0;
-                if (cond.op === '!=') return String(r[cond.col]) !== String(val);
-                return String(r[cond.col]) === String(val);
+              var match = db._matchRow(r, conditions, function (cond) {
+                if (cond.val !== '?') return cond.val;
+                var ci = conditions.indexOf(cond);
+                return bound[whereStart + ci];
               });
               if (match) {
                 assignments.forEach(function (a) {
@@ -266,56 +243,221 @@ export function mockDb(tables) {
     },
 
     _parseWhere(bound) {
-      bound = bound || [];
       var wherePart = db._lastSql.split(/WHERE/i)[1];
       if (!wherePart) return [];
-      // Strip ORDER BY and LIMIT clauses from WHERE part
+      // Strip the trailing ORDER BY / LIMIT clauses — they carry no filters.
       wherePart = wherePart.replace(/\s+ORDER\s+BY\s+.+$/i, '');
       wherePart = wherePart.replace(/\s+LIMIT\s+\d+(?:\s+OFFSET\s+\d+)?$/i, '');
-      // Replace parenthesized OR groups with 1=1 (wildcard approach)
-      var orRe = /\(\s*(?:\w+\.)?\w+\s+LIKE\s+\?\s+(?:OR\s+(?:\w+\.)?\w+\s+LIKE\s+\?\s*)+\)/i;
-      wherePart = wherePart.replace(orRe, '1=1');
-      var parts = wherePart.split(/ AND /i);
-      return parts.reduce(function (acc, part) {
-        part = part.trim();
-        if (part === '1=1') return acc;
-        // Handle simple column = column (e.g. 1=1)
-        if (/^(?:\w+\.)?\w+\s*=\s*(?:\w+\.)?\w+$/.test(part)) return acc;
-        // IS NOT NULL
-        var nn = part.match(/^((?:\w+\.)?\w+)\s+IS\s+NOT\s+NULL$/i);
-        if (nn) { acc.push({ col: db._stripTable(nn[1]), op: 'IS NOT NULL' }); return acc; }
-        // Resolve a `SELECT col FROM tbl` subquery into its column values.
-        var subq = function (inner) {
-          var sq = String(inner).trim().match(/^SELECT\s+(\w+)\s+FROM\s+(\w+)/i);
-          if (!sq) return null;
-          return (db._tables[sq[2]] || []).map(function (r) { return String(r[sq[1]]); });
-        };
-        // IN (...)
-        var inM = part.match(/^((?:\w+\.)?\w+)\s+IN\s*\((.+)\)$/i);
-        if (inM) {
-          var vals = subq(inM[2]);
-          if (!vals) vals = inM[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
-          acc.push({ col: db._stripTable(inM[1]), op: 'IN', vals: vals }); return acc;
+
+      var conditions = [];
+      var bindSeq = 0;
+      var groupSeq = 0;
+
+      db._splitTopLevel(wherePart, 'AND').forEach(function (part) {
+        var body = part.trim();
+        // Unwrap a parenthesised group: "(a LIKE ? OR b LIKE ?)"
+        if (body.charAt(0) === '(' && body.charAt(body.length - 1) === ')') {
+          body = body.slice(1, -1).trim();
         }
-        // NOT IN (...)
-        var ni = part.match(/^((?:\w+\.)?\w+)\s+NOT\s+IN\s*\((.+)\)$/i);
-        if (ni) {
-          var nivals = subq(ni[2]);
-          if (!nivals) nivals = ni[2].split(',').map(function(v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
-          acc.push({ col: db._stripTable(ni[1]), op: 'NOT IN', vals: nivals }); return acc;
+        var members = db._splitTopLevel(body, 'OR');
+        // More than one member means the group is an OR — members may match
+        // individually, the group as a whole must match at least one.
+        var groupId = members.length > 1 ? groupSeq++ : null;
+        members.forEach(function (member) {
+          var cond = db._parseCondition(member, function () { return bindSeq++; });
+          if (!cond) return;
+          if (groupId !== null) cond.group = groupId;
+          conditions.push(cond);
+        });
+      });
+
+      return conditions;
+    },
+
+    /**
+     * Parse one WHERE fragment into a condition.
+     * `nextBind()` hands back the positional index of the next `?` so that
+     * placeholder values resolve in SQL order.
+     */
+    _parseCondition(op, nextBind) {
+      op = op.trim();
+      if (!op) return null;
+      // Column-to-column comparison (e.g. "1=1") — not evaluable, drop it.
+      if (/^(?:\w+\.)?\w+\s*=\s*(?:\w+\.)?\w+$/.test(op)) return null;
+
+      var nn = op.match(/^((?:\w+\.)?\w+)\s+IS\s+NOT\s+NULL$/i);
+      if (nn) return { col: db._stripTable(nn[1]), op: 'IS NOT NULL' };
+
+      var inM = op.match(/^((?:\w+\.)?\w+)\s+(NOT\s+IN|IN)\s*\((.+)\)$/i);
+      if (inM) {
+        var vals = db._subqueryValues(inM[3]);
+        if (!vals) vals = inM[3].split(',').map(function (v) { return v.trim().replace(/^['"]|['"]$/g, ''); });
+        return { col: db._stripTable(inM[1]), op: inM[2].replace(/\s+/g, ' ').toUpperCase(), vals: vals };
+      }
+
+      var m = op.match(/^((?:\w+\.)?\w+)\s*(=|!=|>=|<=|>|<|LIKE)\s*(.+)$/i);
+      if (!m) return null;
+      var col = db._stripTable(m[1]);
+      var operator = m[2].toUpperCase();
+      var raw = m[3].trim();
+
+      if (raw === '?') {
+        return { col: col, val: '?', op: operator, isLike: operator === 'LIKE', bindIndex: nextBind() };
+      }
+
+      // datetime('now') / datetime('now', '-7 days') resolve against the
+      // current time so time-based filters behave like they do in D1.
+      var dt = raw.match(/^datetime\s*\(\s*['"]now['"]\s*(?:,\s*(.+?))?\s*\)$/i);
+      if (dt) {
+        var dateCond = { col: col, op: operator, isDate: true };
+        var modifier = dt[1] ? dt[1].trim() : '';
+        if (modifier === '?') {
+          dateCond.bindIndex = nextBind();
+        } else if (modifier) {
+          dateCond.dateModifier = modifier.replace(/^['"]|['"]$/g, '');
         }
-        // Handle `col = ?` or `col != value`
-        var m = part.match(/^((?:\w+\.)?\w+)\s*(=|!=|LIKE)\s*(.+)$/i);
-        if (!m) return acc;
-        var raw = m[3].trim();
-        var col = db._stripTable(m[1]);
-        if (raw === '?') { acc.push({ col: col, val: '?', isLike: m[2] === 'LIKE', op: m[2] }); return acc; }
-        raw = raw.replace(/^['"]|['"]$/g, '');
-        var op = m[2];
-        if (op === 'LIKE') { acc.push({ col: col, val: raw, isLike: true, op: '=' }); }
-        else { acc.push({ col: col, val: raw, op: op }); }
-        return acc;
-      }, []);
+        return dateCond;
+      }
+
+      raw = raw.replace(/^['"]|['"]$/g, '');
+      if (operator === 'LIKE') return { col: col, val: raw, op: operator, isLike: true };
+      return { col: col, val: raw, op: operator };
+    },
+
+    /**
+     * Split on a keyword that is not nested inside parentheses.
+     */
+    _splitTopLevel(text, word) {
+      var parts = [];
+      var depth = 0;
+      var buf = '';
+      var i = 0;
+      while (i < text.length) {
+        var ch = text.charAt(i);
+        if (ch === '(') { depth++; buf += ch; i++; continue; }
+        if (ch === ')') { depth--; buf += ch; i++; continue; }
+        if (depth === 0 && db._isWordAt(text, i, word) && text.substr(i, word.length).toUpperCase() === word.toUpperCase()) {
+          parts.push(buf);
+          buf = '';
+          i += word.length;
+          continue;
+        }
+        buf += ch;
+        i++;
+      }
+      parts.push(buf);
+      return parts.map(function (p) { return p.trim(); }).filter(function (p) { return p.length > 0; });
+    },
+
+    _isWordAt(text, index, word) {
+      var before = index > 0 ? text.charAt(index - 1) : ' ';
+      var after = index + word.length < text.length ? text.charAt(index + word.length) : ' ';
+      if (/[A-Za-z0-9_]/.test(before) || /[A-Za-z0-9_]/.test(after)) return false;
+      return true;
+    },
+
+    _subqueryValues(inner) {
+      var sq = String(inner).trim().match(/^SELECT\s+(\w+)\s+FROM\s+(\w+)/i);
+      if (!sq) return null;
+      return (db._tables[sq[2]] || []).map(function (r) { return String(r[sq[1]]); });
+    },
+
+    /**
+     * Evaluate a row against parsed conditions.
+     * Conditions are ANDed; conditions sharing a `group` id are ORed.
+     */
+    /**
+     * Compare two values the way SQLite would: numerically when both are
+     * numbers, lexicographically otherwise (so ISO timestamps order correctly).
+     */
+    _compareValues(a, b) {
+      var sa = String(a == null ? '' : a);
+      var sb = String(b == null ? '' : b);
+      if (/^-?\d+(\.\d+)?$/.test(sa) && /^-?\d+(\.\d+)?$/.test(sb)) {
+        return parseFloat(sa) - parseFloat(sb);
+      }
+      if (sa < sb) return -1;
+      if (sa > sb) return 1;
+      return 0;
+    },
+
+    /**
+     * Current UTC time in SQLite's datetime format, optionally shifted by a
+     * modifier such as '-60 seconds' or '+30 days'.
+     */
+    _nowWithModifier(modifier) {
+      var d = new Date();
+      var m = String(modifier == null ? '' : modifier).trim().replace(/^['"]|['"]$/g, '');
+      var match = m.match(/^([+-])\s*(\d+)\s+(second|minute|hour|day|month|year)s?$/i);
+      if (match) {
+        var amount = parseInt(match[2], 10) * (match[1] === '-' ? -1 : 1);
+        var unit = match[3].toLowerCase();
+        if (unit === 'second') d = new Date(d.getTime() + amount * 1000);
+        else if (unit === 'minute') d = new Date(d.getTime() + amount * 60000);
+        else if (unit === 'hour') d = new Date(d.getTime() + amount * 3600000);
+        else if (unit === 'day') d = new Date(d.getTime() + amount * 86400000);
+        else if (unit === 'month') d.setUTCMonth(d.getUTCMonth() + amount);
+        else if (unit === 'year') d.setUTCFullYear(d.getUTCFullYear() + amount);
+      }
+      return d.toISOString().slice(0, 19).replace('T', ' ');
+    },
+
+    _matchRow(row, conditions, resolveValue) {
+      var plain = [];
+      var groups = {};
+      conditions.forEach(function (cond) {
+        if (cond.group !== undefined && cond.group !== null) {
+          if (!groups[cond.group]) groups[cond.group] = [];
+          groups[cond.group].push(cond);
+        } else {
+          plain.push(cond);
+        }
+      });
+
+      function evalCond(cond) {
+        if (cond.op === 'IS NOT NULL') return row[cond.col] != null && row[cond.col] !== '';
+        if (cond.op === 'IN') return cond.vals.indexOf(String(row[cond.col])) >= 0;
+        if (cond.op === 'NOT IN') return cond.vals.indexOf(String(row[cond.col])) < 0;
+        var val;
+        if (cond.isDate) {
+          var modifier = cond.dateModifier || '';
+          if (cond.bindIndex !== undefined) {
+            modifier = resolveValue({ val: '?', bindIndex: cond.bindIndex });
+          }
+          val = db._nowWithModifier(modifier);
+        } else {
+          val = resolveValue(cond);
+        }
+        if (val === undefined) return false;
+        if (cond.isLike) {
+          // SQLite LIKE is case-insensitive for ASCII — match the same way.
+          var needle = String(val).replace(/%/g, '').toLowerCase();
+          if (!needle) return true;
+          return String(row[cond.col] == null ? '' : row[cond.col]).toLowerCase().indexOf(needle) >= 0;
+        }
+        if (cond.op === '!=') return String(row[cond.col]) !== String(val);
+        if (cond.op === '=') return String(row[cond.col]) === String(val);
+        var cmp = db._compareValues(row[cond.col], val);
+        if (cond.op === '>') return cmp > 0;
+        if (cond.op === '>=') return cmp >= 0;
+        if (cond.op === '<') return cmp < 0;
+        if (cond.op === '<=') return cmp <= 0;
+        return false;
+      }
+
+      for (var i = 0; i < plain.length; i++) {
+        if (!evalCond(plain[i])) return false;
+      }
+      for (var key in groups) {
+        if (!Object.prototype.hasOwnProperty.call(groups, key)) continue;
+        var members = groups[key];
+        var matched = false;
+        for (var m = 0; m < members.length; m++) {
+          if (evalCond(members[m])) { matched = true; break; }
+        }
+        if (!matched) return false;
+      }
+      return true;
     },
 
     _computeAggregates(rows, sql) {

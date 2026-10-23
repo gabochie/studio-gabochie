@@ -38,7 +38,7 @@ describe('auth/session includes membership_tier', function () {
 
 describe('auth/logout accepts Authorization header', function () {
   it('deletes the session from a Bearer token with empty body', async function () {
-    var db = mockDb({ sessions: [{ token: 'tok-9', user_id: 7 }] });
+    var db = mockDb({ sessions: [{ token: 'tok-9', user_id: 7, expires_at: '2099-01-01' }] });
     var ctx = buildContext('http://localhost/api/auth/logout', {
       method: 'POST',
       env: { DB: db },
