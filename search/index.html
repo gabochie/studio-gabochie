@@ -145,6 +145,22 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
     return text.replace(re, '<mark>$1</mark>');
   }
 
+  function staticHaystack(page) {
+    var keywords = page.keywords;
+    if (Array.isArray(keywords)) keywords = keywords.join(' ');
+    else if (typeof keywords !== 'string') keywords = '';
+    return ((page.title || '') + ' ' + (page.description || '') + ' ' + keywords).toLowerCase();
+  }
+
+  function staticType(page) {
+    var url = page.url || '';
+    if (url.indexOf('/courses/') === 0) return 'course';
+    if (url.indexOf('/books/') === 0) return 'book';
+    if (url.indexOf('/blog/') === 0) return 'article';
+    if (url.indexOf('/careers/') === 0) return 'listing';
+    return 'static';
+  }
+
   function iconFor(type) {
     var map = {
       article: 'ti ti-file-text',
@@ -194,8 +210,11 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
     resultsEl.appendChild(ul);
   }
 
-  function updateCounts(c) {
-    counts = c;
+  function updateCounts(results) {
+    counts = { all: results.length, article: 0, book: 0, course: 0, listing: 0 };
+    results.forEach(function (r) {
+      if (counts[r.type] !== undefined) counts[r.type] += 1;
+    });
     document.getElementById('countAll').textContent = counts.all;
     document.getElementById('countArticle').textContent = counts.article;
     document.getElementById('countBook').textContent = counts.book;
@@ -220,19 +239,24 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
     emptyEl.hidden = true;
 
     var url = '/api/search?q=' + encodeURIComponent(q) + '&type=' + type + '&limit=50';
-    fetch(url, { signal: abortController.signal })
-      .then(function (res) { return res.json(); })
+    staticReady.then(function () {
+      if (abortController.signal.aborted) return null;
+      return fetch(url, { signal: abortController.signal });
+    })
+      .then(function (res) { return res ? res.json() : null; })
       .then(function (data) {
+        if (!data) return;
         loadingEl.hidden = true;
         if (data.status === 'ok') {
           // merge static pages
+          var qLower = q.toLowerCase();
           var staticResults = staticPages.filter(function (p) {
-            var hay = (p.title + ' ' + p.description + ' ' + (p.keywords || []).join(' ')).toLowerCase();
-            return hay.indexOf(q.toLowerCase()) >= 0;
+            if (type !== 'all' && staticType(p) !== type) return false;
+            return staticHaystack(p).indexOf(qLower) >= 0;
           }).map(function (p) {
-            return { type: 'static', title: p.title, url: p.url, excerpt: p.description };
+            return { type: staticType(p), title: p.title, url: p.url, excerpt: p.description };
           });
-          var allResults = data.results.concat(staticResults);
+          var allResults = (data.results || []).concat(staticResults);
           // dedupe by url
           var seen = {};
           var deduped = allResults.filter(function (r) {
@@ -241,7 +265,6 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
             return true;
           });
           // simple relevance: exact title match first, then query in title, then in excerpt
-          var qLower = q.toLowerCase();
           deduped.sort(function (a, b) {
             var ta = (a.title || '').toLowerCase();
             var tb = (b.title || '').toLowerCase();
@@ -252,7 +275,7 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
             return bExact - aExact;
           });
           data.results = deduped;
-          updateCounts(data.counts);
+          updateCounts(deduped);
           renderResults(data);
         } else {
           loadingEl.hidden = true;
@@ -299,35 +322,38 @@ mark{background:#C9A84C;color:#0A1628;padding:0 2px;border-radius:2px}
   input.addEventListener('input', debouncedSearch);
   btn.addEventListener('click', function () { lastQuery = ''; debouncedSearch(); });
 
+  function loadStaticIndex() {
+    return fetch('/search/pages.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (Array.isArray(data)) staticPages = data; })
+      .catch(function () { staticPages = []; })
+      .then(function () {
+        if (typeof window.COURSE_DATA !== 'undefined' && window.COURSE_DATA.courses) {
+          window.COURSE_DATA.courses.forEach(function (c) {
+            staticPages.push({
+              title: c.title,
+              url: '/courses/' + c.slug + '/',
+              description: c.tagline || c.description,
+              keywords: [c.title, c.tagline, c.description].filter(Boolean)
+            });
+          });
+        }
+      });
+  }
+
+  var staticReady = loadStaticIndex();
+
   // Initialize from URL
   var params = new URLSearchParams(window.location.search);
   var initialQuery = params.get('q') || '';
   var initialType = params.get('type') || 'all';
   if (initialQuery) {
     input.value = initialQuery;
-    lastQuery = initialQuery;
+    lastQuery = '';
     if (['all','article','book','course','listing'].indexOf(initialType) >= 0) {
       setActiveChip(initialType);
     }
     debouncedSearch();
-  }
-
-  // Load static pages index
-  fetch('/search/pages.json')
-    .then(function (r) { return r.json(); })
-    .then(function (data) { staticPages = data; })
-    .catch(function () { staticPages = []; });
-
-  // Static courses from window.COURSE_DATA
-  if (typeof window.COURSE_DATA !== 'undefined' && window.COURSE_DATA.courses) {
-    window.COURSE_DATA.courses.forEach(function (c) {
-      staticPages.push({
-        title: c.title,
-        url: '/courses/' + c.slug + '/',
-        description: c.tagline || c.description,
-        keywords: [c.title, c.tagline, c.description].join(' ')
-      });
-    });
   }
 
   // Keyboard shortcut: / focuses search
