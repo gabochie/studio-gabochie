@@ -1189,3 +1189,21 @@ body.ga-cookie-open #pay-now-btn,body.ga-cookie-open #wl-pay-now-btn{margin-bott
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .hero-particle { display: none; }
 }
+
+/* ===== Docked global footer ===== */
+/* The dock script re-parents the site footer into .scrollable because the
+   app shell (position:fixed .screen) never scrolls at body level. Cancel
+   the container's padding so the footer runs edge-to-edge of the content
+   column like on every other page, and clear the fixed mobile tab-bar. */
+.scrollable > footer {
+  margin: 80px -20px 0;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+@media(min-width: 1024px){
+  /* Desktop shell padding is 24px 32px (see .screen > .scrollable above):
+     negative margins cancel it so the footer background is full-bleed. */
+  .scrollable > footer {
+    margin: 80px -32px -24px;
+    padding-bottom: 32px;
+  }
+}
