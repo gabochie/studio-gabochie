@@ -1,173 +1,483 @@
 <!DOCTYPE html><html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0, viewport-fit=cover">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
   <meta name="theme-color" content="#0A1628">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>"><title>Gideon Guitar Method — Learn Guitar Online</title>
-<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="description" content="Learn guitar with Guitar: First Things First — the Matthew 6:33 Method by Gideon Abochie. The flagship course of the Guitar School: 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Seek first the system — and the songs will be added. Start free."><meta property="og:title" content="Guitar: First Things First — The Matthew 6:33 Method"><meta property="og:description" content="The flagship course of the Guitar School. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Seek first the system — and the songs will be added. Start free."><meta property="og:type" content="website"><meta property="og:url" content="https://studio.gabochie.com/guitar/"><title>Guitar: First Things First — The Matthew 6:33 Method</title>
+<link rel="canonical" href="https://studio.gabochie.com/guitar/"><!-- school mirror: canonical points to primary -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Guitar: First Things First — The Matthew 6:33 Method",
+  "description": "A Ghanaian-led online guitar method by Gideon Abochie: 16 modules, 64 lessons, tuner, metronome, chord trainer, practice drills, and Ghanaian highlife repertoire. Seek first the system — and the songs will be added. Start free.",
+  "provider": { "@type": "Organization", "name": "Studio Gabochie", "url": "https://studio.gabochie.com" },
+  "url": "https://studio.gabochie.com/guitar/",
+  "offers": {
+    "@type": "Offer",
+    "category": "Paid",
+    "price": "299",
+    "priceCurrency": "GHS",
+    "availability": "https://schema.org/InStock"
+  },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT20H",
+    "learningResourceType": "interactive"
+  }
+}
+</script>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A1628'/><path d='M13 5 L13 11 L10 16 C9 20 10 27 16 27 C22 27 23 20 22 16 L19 11 L19 5 Z' fill='%23C9A84C'/><circle cx='16' cy='21' r='3' fill='%230A1628'/><rect x='14' y='12' width='4' height='2' fill='%230A1628'/><line x1='15' y1='5' x2='15' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='16' y1='5' x2='16' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='17' y1='5' x2='17' y2='25' stroke='%230A1628' stroke-width='0.4'/></svg>
+">
+<link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css"><link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Guitar: First Things First — sales landing. Global tokens from main.css only. Page classes namespaced gtf- */
+.gtf-page{background:var(--bg-primary);color:var(--text-primary)}
+.gtf-hero{background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-card-hover) 50%,var(--bg-primary) 100%);padding:80px 0 56px;position:relative;overflow:hidden}
+.gtf-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(201,168,76,0.08) 0%,transparent 55%);pointer-events:none}
+.gtf-hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;position:relative;z-index:1}
+.gtf-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;font-family:var(--font-heading);font-size:var(--text-2xs);font-weight:600;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px}
+.gtf-hero h1{font-family:var(--font-heading);font-size:clamp(40px,5.5vw,62px);color:#fff;line-height:.95;font-weight:700;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:20px}
+.gtf-hero h1 span{color:var(--gold)}
+.gtf-slugline{font-family:var(--font-body);font-size:clamp(17px,1.3vw,20px);color:rgba(255,255,255,0.75);font-style:italic;margin-bottom:24px}
+.gtf-desc{font-family:var(--font-body);font-size:var(--text-sm);color:rgba(255,255,255,0.55);line-height:var(--leading-relaxed);max-width:540px;margin-bottom:28px}
+.gtf-actions{display:flex;gap:12px;flex-wrap:wrap}
+.gtf-proof{font-family:var(--font-body);font-size:13px;color:var(--text-dim);margin-top:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gtf-proof i{color:var(--gold)}
+
+.gtf-price-card{background:rgba(15,30,56,0.9);border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:32px;backdrop-filter:blur(4px)}
+.gtf-price-label{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.gtf-price{font-family:var(--font-heading);font-size:52px;font-weight:700;color:#fff;line-height:1}
+.gtf-price small{font-size:var(--text-base);color:var(--text-muted);font-weight:400}
+.gtf-price-note{font-family:var(--font-body);font-size:var(--text-xs);color:var(--text-body);margin:10px 0 20px;line-height:1.5}
+.gtf-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.gtf-meta span{font-family:var(--font-body);font-size:13px;color:var(--text-body);display:flex;align-items:center;gap:8px}
+.gtf-meta i{color:var(--gold)}
+.gtf-price-card .btn{width:100%}
+.gtf-price-card .btn+.btn{margin-top:10px}
+
+.gtf-section{padding:80px 0}
+.gtf-label{display:inline-flex;align-items:center;gap:6px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.gtf-heading{font-family:var(--font-serif);font-size:clamp(28px,3vw,38px);margin-bottom:16px;color:var(--text-primary)}
+.gtf-heading span{color:var(--gold)}
+.gtf-sub{font-family:var(--font-body);font-size:var(--text-base);color:var(--text-dim);max-width:640px;line-height:var(--leading-relaxed);margin-bottom:36px}
+
+.gtf-outcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gtf-outcome{display:flex;gap:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px}
+.gtf-outcome i{color:var(--gold);margin-top:3px;flex-shrink:0}
+.gtf-outcome span{font-family:var(--font-body);font-size:14px;color:var(--text-body);line-height:1.5}
+
+.gtf-curriculum{background:var(--bg-card)}
+.gtf-module-list{max-width:760px}
+.gtf-tier-head{display:flex;align-items:center;gap:10px;margin:26px 0 10px;font-family:var(--font-heading);font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-primary)}
+.gtf-tier-head:first-child{margin-top:0}
+.gtf-tier-head .gtf-tier-chip{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.35);background:rgba(201,168,76,.12);padding:2px 10px;border-radius:12px}
+.gtf-module{display:flex;gap:16px;padding:18px 22px;background:var(--bg-card-hover);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;transition:border-color .2s;align-items:flex-start}
+.gtf-module:hover{border-color:var(--gold)}
+.gtf-num{font-family:var(--font-heading);font-size:32px;font-weight:700;color:rgba(201,168,76,.4);line-height:1;flex-shrink:0;min-width:34px}
+.gtf-module h3{font-family:var(--font-heading);font-size:17px;color:var(--text-primary);margin:0 0 4px;letter-spacing:.02em}
+.gtf-module p{font-family:var(--font-body);font-size:13px;color:var(--text-dim);line-height:1.5;margin:0}
+.gtf-chip-free{display:inline-block;font-family:var(--font-heading);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold);padding:2px 10px;border-radius:12px;margin-left:10px;vertical-align:2px}
+
+.gtf-who{background:linear-gradient(135deg,var(--bg-card),#132644);border:1px solid var(--border);border-radius:16px;padding:36px}
+.gtf-who p{font-family:var(--font-body);font-size:var(--text-base);color:var(--text-body);line-height:1.8;margin:0}
+
+.gtf-reader{display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start}
+.gtf-rail{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;position:sticky;top:80px}
+.gtf-rail h4{font-family:var(--font-heading);font-size:15px;color:var(--text-primary);letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px}
+.gtf-rail-item{display:flex;align-items:center;gap:10px;font-family:var(--font-body);font-size:13px;color:var(--text-dim);padding:10px 12px;border-radius:8px;margin-bottom:4px;border:1px solid transparent}
+.gtf-rail-item.done i{color:var(--green)}
+.gtf-rail-item.current{border-color:var(--gold);color:var(--text-primary);background:rgba(201,168,76,.06)}
+.gtf-rail-item.locked i{color:var(--border-light)}
+.gtf-prog{margin-top:14px;font-family:'Courier Prime',monospace;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+.gtf-prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.gtf-prog-bar i{display:block;height:100%;width:75%;background:var(--gold)}
+.gtf-lesson{max-width:680px}
+.gtf-anchor{border:1px solid var(--border);border-left:3px solid var(--gold);background:var(--bg-card);border-radius:0 12px 12px 0;padding:20px 24px;margin-bottom:28px}
+.gtf-anchor-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.gtf-anchor p{font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--text-primary);line-height:1.8}
+.gtf-lesson h3{font-family:var(--font-heading);font-size:26px;color:var(--text-primary);text-transform:uppercase;margin-bottom:14px;letter-spacing:.02em}
+.gtf-lesson>p{font-family:var(--font-body);font-size:15px;color:var(--text-dim);line-height:1.8;margin-bottom:16px}
+.gtf-lesson table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.gtf-lesson td{padding:10px 12px;border-bottom:1px solid var(--border);font-family:var(--font-body);font-size:13.5px;color:var(--text-body);vertical-align:top}
+.gtf-lesson td:first-child{color:var(--gold);width:32%;font-weight:600}
+.gtf-checkpoint{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-top:28px}
+.gtf-cp-label{display:flex;align-items:center;gap:8px;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.gtf-checkpoint ul{list-style:none}
+.gtf-checkpoint li{font-family:var(--font-body);font-size:14px;color:var(--text-body);padding:7px 0;display:flex;gap:10px;align-items:flex-start}
+.gtf-checkpoint li i{color:var(--gold);margin-top:2px}
+.gtf-cp-btn{margin-top:16px}
+
+.gtf-chords{display:flex;gap:16px;flex-wrap:wrap;margin-top:26px}
+.gtf-chord-card{width:340px;max-width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:border-color .2s}
+.gtf-chord-card:hover{border-color:var(--gold)}
+.gtf-chord-card h5{font-family:var(--font-heading);font-size:20px;color:var(--text-primary);letter-spacing:.04em;margin-bottom:2px}
+.gtf-cc-sub{font-family:var(--font-body);font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:12px}
+.gtf-cc-body{display:flex;gap:18px;align-items:center}
+.gtf-cc-facts{flex:1}
+.gtf-msg-ok{background:rgba(52,199,123,.08);border:1px solid rgba(52,199,123,.2);color:var(--green);font-family:var(--font-body);font-size:11.5px;padding:8px 10px;border-radius:8px;margin-bottom:8px;line-height:1.5}
+.gtf-msg-err{background:rgba(232,99,122,.08);border:1px solid rgba(232,99,122,.2);color:#FCA5A5;font-family:var(--font-body);font-size:11.5px;padding:8px 10px;border-radius:8px;line-height:1.5;opacity:.85}
+.gtf-chord-card svg .string{stroke:var(--border-light);stroke-width:2}
+.gtf-chord-card svg .fret{stroke:#22395C;stroke-width:2}
+.gtf-press{fill:var(--gold)}
+.gtf-press-num{font-family:'Courier Prime',monospace;font-size:11px;font-weight:700;fill:var(--bg-primary)}
+.gtf-open{fill:none;stroke:var(--gold);stroke-width:2}
+.gtf-dont{font-family:'Courier Prime',monospace;font-size:12px;fill:var(--border-light);font-weight:700}
+
+.gtf-book{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center}
+.gtf-book-cover{width:120px;height:170px;background:linear-gradient(135deg,var(--bg-card-hover),var(--bg-primary));border:1px solid rgba(201,168,76,.35);border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;padding:14px 10px}
+.gtf-bc-t{font-family:var(--font-heading);font-size:13px;color:var(--text-primary);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
+.gtf-bc-g{font-family:var(--font-heading);font-size:10px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase}
+.gtf-book h3{font-family:var(--font-heading);font-size:22px;color:var(--text-primary);text-transform:uppercase;margin-bottom:6px}
+.gtf-book p{font-family:var(--font-body);font-size:13px;color:var(--text-dim);line-height:1.6}
+.gtf-bundle{font-family:'Courier Prime',monospace;font-size:12px;color:var(--gold);margin-top:8px}
+
+.gtf-cta-band{background:linear-gradient(135deg,var(--bg-card-hover),var(--bg-card));border-top:1px solid rgba(201,168,76,0.15);border-bottom:1px solid rgba(201,168,76,0.15);text-align:center;padding:70px 0}
+.gtf-cta-band h2{font-family:var(--font-heading);font-size:clamp(30px,4vw,44px);color:#fff;text-transform:uppercase;margin-bottom:12px}
+.gtf-cta-band h2 span{color:var(--gold)}
+.gtf-cta-band p{font-family:var(--font-body);font-size:15px;color:var(--text-dim);max-width:560px;margin:0 auto 12px;line-height:var(--leading-relaxed)}
+.gtf-trust{font-family:var(--font-body);font-size:12px;color:var(--text-muted);margin:0 auto 28px}
+
+.gtf-faq-list{max-width:680px;margin:0 auto}
+.gtf-faq{border-bottom:1px solid var(--border);padding:18px 0}
+.gtf-faq-q{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:15px;font-weight:600;color:var(--text-primary);gap:12px;background:none;border:none;width:100%;text-align:left;padding:0;font-family:var(--font-body)}
+.gtf-faq-q i{font-size:18px;color:var(--border-light);transition:transform 0.2s;flex-shrink:0}
+.gtf-faq.open .gtf-faq-q i{transform:rotate(180deg)}
+.gtf-faq-a{font-family:var(--font-body);font-size:14px;color:var(--text-dim);line-height:var(--leading-relaxed);margin-top:8px;display:none;padding-right:32px}
+.gtf-faq.open .gtf-faq-a{display:block}
+
+.gtf-overlay{position:fixed;inset:0;background:rgba(10,22,40,.9);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px}
+.gtf-overlay.open{display:flex}
+.gtf-modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:40px 32px;max-width:420px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.gtf-modal .gtf-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text-muted);font-size:28px;cursor:pointer;line-height:1;padding:4px;font-family:var(--font-serif)}
+.gtf-modal .gtf-close:hover{color:var(--red)}
+.gtf-modal h3{font-family:var(--font-heading);font-size:24px;color:#fff;margin:0 0 6px;text-transform:uppercase}
+.gtf-modal .gtf-modal-sub{font-family:var(--font-body);font-size:13px;color:var(--text-dim);margin-bottom:20px}
+.gtf-modal label{display:block;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--text-body);margin-bottom:4px}
+.gtf-modal input,.gtf-modal select{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-size:14px;outline:none;font-family:var(--font-body);transition:border-color .2s;margin-bottom:10px}
+.gtf-modal input:focus,.gtf-modal select:focus{border-color:var(--gold)}
+.gtf-modal input::placeholder{color:var(--border-light)}
+.gtf-modal select{color:var(--text-body);appearance:none}
+.gtf-modal-err{display:none;color:var(--red);font-size:12px;text-align:center;margin-top:8px;font-family:var(--font-body)}
+.gtf-note{font-family:var(--font-body);font-size:11px;color:var(--border-light);margin-top:16px;text-align:center;line-height:1.6}
+
+.gtf-user-home{text-align:center;padding:64px 20px}
+.gtf-user-home h2{font-family:var(--font-heading);font-size:clamp(24px,4vw,32px);font-weight:700;color:var(--gold);margin-bottom:8px}
+.gtf-user-home>p{font-family:var(--font-body);font-size:14px;color:var(--text-body);margin-bottom:24px}
+.gtf-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:640px;margin:0 auto}
+.gtf-quick a{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);text-decoration:none;color:var(--text-primary);transition:all .2s}
+.gtf-quick a:hover{background:var(--bg-card-hover);border-color:rgba(201,168,76,.2)}
+.gtf-quick i{font-size:26px;color:var(--gold)}
+.gtf-quick .gtf-ql-label{font-family:var(--font-heading);font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.gtf-quick .gtf-ql-desc{font-family:var(--font-body);font-size:10px;color:var(--text-muted)}
+
+@media(max-width:860px){.gtf-hero-grid{grid-template-columns:1fr;gap:32px}.gtf-reader{grid-template-columns:1fr}.gtf-rail{position:static}.gtf-rail .gtf-rail-item{display:inline-flex;margin-right:6px}.gtf-prog{display:none}}
+@media(max-width:640px){.gtf-section{padding:56px 0}.gtf-outcome-grid{grid-template-columns:1fr}.gtf-book{grid-template-columns:1fr;text-align:center;justify-items:center}}
+@media(max-width:480px){.gtf-price{font-size:44px}.gtf-hero{padding:56px 0 40px}.gtf-quick{grid-template-columns:1fr 1fr}}
+</style>
 </head>
-<body class="guitar-app">
-<div class="screen active">
-  <div class="hero" id="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-particles" id="particles"></div>
-    <div class="hero-content">
-      <span class="hero-icon">🎸</span>
-      <h1>Gideon Guitar Method</h1>
-      <p>The fastest path from zero to your first Ghanaian song. Deliberate practice, real-time pitch feedback, and a curriculum built on peer-reviewed learning science.</p>
-      <div class="hero-cta">
-        <a href="/school/guitar/learn/" class="btn btn-ghost btn-lg">Start Free <i class="ti ti-arrow-right"></i></a>
-        <a href="/guitar/songs/" class="btn btn-primary btn-lg">Get Full Access — <span data-g-symbol-amount>GH¢ 299</span> <i class="ti ti-lock-off"></i></a>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-num" data-count="16">0</div><div class="hero-stat-label">Modules</div></div>
-        <div class="hero-stat"><div class="hero-stat-num" data-count="64">0</div><div class="hero-stat-label">Lessons</div></div>
-        <div class="hero-stat"><div class="hero-stat-num" data-count="15">0</div><div class="hero-stat-label">Ghanaian Songs</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">🎤</div><div class="hero-stat-label">Pitch Detection</div></div>
+<body class="gtf-page">
+<div id="nav-placeholder"></div>
+
+    <!-- Logged-in home: replaces the sales page for returning students -->
+    <div id="logged-in-home" style="display:none">
+      <div class="gtf-user-home">
+        <div style="font-size:56px;margin-bottom:8px">🎸</div>
+        <h2>Welcome back!</h2>
+        <p>Pick up where you left off.</p>
+        <div class="gtf-quick">
+          <a href="/guitar/learn/"><i class="ti ti-book"></i><span class="gtf-ql-label">Learn</span><span class="gtf-ql-desc">Continue your lessons</span></a>
+          <a href="/guitar/practice/"><i class="ti ti-bolt"></i><span class="gtf-ql-label">Practice</span><span class="gtf-ql-desc">Drills &amp; warmups</span></a>
+          <a href="/guitar/dashboard/"><i class="ti ti-chart-line"></i><span class="gtf-ql-label">Progress</span><span class="gtf-ql-desc">XP, streaks &amp; stats</span></a>
+          <a href="/guitar/songs/"><i class="ti ti-music"></i><span class="gtf-ql-label">Songs</span><span class="gtf-ql-desc">Song library</span></a>
+          <a href="/guitar/tuner/"><i class="ti ti-microphone"></i><span class="gtf-ql-label">Tuner</span><span class="gtf-ql-desc">Tune your guitar</span></a>
+          <a href="/courses/"><i class="ti ti-school"></i><span class="gtf-ql-label">All Courses</span><span class="gtf-ql-desc">Explore the school</span></a>
+        </div>
+        <p style="margin-top:20px"><a href="#" onclick="Guitar.logout();return false" style="color:var(--text-muted);font-family:var(--font-body);font-size:13px">Sign Out</a></p>
       </div>
     </div>
+
+    <!-- Sales landing (visitors) -->
+    <div id="gtf-sales">
+
+      <header class="gtf-hero"><div class="container gtf-hero-grid">
+        <div>
+          <div class="gtf-badge"><i class="ti ti-guitar"></i> Flagship Course · Creativity School</div>
+          <h1>How To Play The Acoustic Guitar <span>First Things First</span></h1>
+          <div class="gtf-slugline">Seek first the system — and the songs will be added.</div>
+          <div class="gtf-desc">The Matthew 6:33 Method. You are holding the smallest building you will ever play — learn it the way David learned the lyre: the system first, every part in its right relation, and the song is added. The flagship course of the Guitar School — the first of many.</div>
+          <div class="gtf-actions">
+            <button class="btn btn-gold" onclick="gtfOpenEnroll()"><i class="ti ti-player-play"></i> Start Free — Module 1</button>
+            <a class="btn btn-outline" href="#curriculum">See Curriculum</a>
+          </div>
+          <div class="gtf-proof"><i class="ti ti-circle-check"></i> Modules <span data-g-free>3</span> free · No card required · Your first worship song included</div>
+        </div>
+        <div class="gtf-price-card">
+          <div class="gtf-price-label">Registration — Bronze Foundation</div>
+          <div class="gtf-price"><span data-g-symbol>GH₵</span> <span data-g-amount>299</span> <small>one-time</small></div>
+          <div class="gtf-price-note">Less than one premium private lesson in Accra (₵300–550/hr) buys your whole foundation. Then climb: Silver ₵199 · Gold ₵299 — or Apprentice ₵699 all-in (every module, one decision, save 16%).</div>
+          <div class="gtf-meta">
+            <span><i class="ti ti-clock"></i> 16 modules · 64 lessons · 15 min/day</span>
+            <span><i class="ti ti-chart-line"></i> Beginner — no reading music</span>
+            <span><i class="ti ti-certificate"></i> Certificate of completion</span>
+          </div>
+          <button class="btn btn-gold" onclick="Guitar.openPlanSheet({owned:'none'})"><i class="ti ti-bolt"></i> Register Now</button>
+          <button class="btn btn-outline" onclick="gtfOpenEnroll()">Start Free First</button>
+        </div>
+      </div></header>
+
+      <!-- OUTCOMES -->
+      <section class="gtf-section"><div class="container">
+        <div class="gtf-label"><i class="ti ti-target"></i> What You'll Learn</div>
+        <h2 class="gtf-heading">Walk Away <span>Playing, Not Knowing</span></h2>
+        <p class="gtf-sub">These are not theories. Each outcome is a skill you can use the day you learn it.</p>
+        <div class="gtf-outcome-grid">
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Name every part of the guitar and read any chord diagram in one direction.</span></div>
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Tune your guitar correctly every time — the Golden Rule of tightening upward.</span></div>
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Hold the guitar for practice without building bad habits.</span></div>
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Play your first chord — E minor — on day one.</span></div>
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Play the five chords behind a hundred worship songs: G · D · Em · C · Am.</span></div>
+          <div class="gtf-outcome"><i class="ti ti-check"></i><span>Play <b>Seek Ye First the Kingdom of God</b> — verse and refrain — for someone.</span></div>
+        </div>
+      </div></section>
+
+      <!-- CURRICULUM -->
+      <section class="gtf-section gtf-curriculum" id="curriculum"><div class="container">
+        <div class="gtf-label"><i class="ti ti-school"></i> Curriculum</div>
+        <h2 class="gtf-heading">Sixteen Modules. <span>The Seeker's Order.</span></h2>
+        <p class="gtf-sub">Start free, then climb the ladder — Foundation, Songcraft, Expression. 15 minutes a day.</p>
+        <div class="gtf-module-list">
+          <div class="gtf-tier-head">🎸 Free Preview <span class="gtf-tier-chip">Modules 1–<span data-g-free>3</span></span></div>
+          <div class="gtf-module"><div class="gtf-num">1</div><div><h3>Meet Your Guitar <span class="gtf-chip-free">Free</span></h3><p>The system begins: what kind of house you are holding, and how every part is named.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">2</div><div><h3>The Fretboard <span class="gtf-chip-free">Free</span></h3><p>The plan of the house — strings, frets and the map every player carries in their head.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">3</div><div><h3>The Power 5 Chords <span class="gtf-chip-free">Free</span></h3><p>The five chords behind a hundred worship songs — met as shapes before they are mastered.</p></div></div>
+          <div class="gtf-tier-head">🥉 Foundation <span class="gtf-tier-chip">Bronze · Modules 4–5</span></div>
+          <div class="gtf-module"><div class="gtf-num">4</div><div><h3>Rhythm Foundation</h3><p>Down-only strumming on a steady count — the pendulum arm that carries every song.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">5</div><div><h3>One-Minute Changes</h3><p>The bootcamp that turns chord shapes into music — switching cleanly, one minute at a time.</p></div></div>
+          <div class="gtf-tier-head">🥈 Songcraft <span class="gtf-tier-chip">Silver · Modules 6–11</span></div>
+          <div class="gtf-module"><div class="gtf-num">6</div><div><h3>Your First Song</h3><p>Everything you have built, played as an actual song — verse and refrain, start to finish.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">7</div><div><h3>New Chords</h3><p>The wider vocabulary — new shapes added in right relation to the Power 5.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">8</div><div><h3>Strumming Patterns</h3><p>From the down-strum to patterns that lift a room — rhythm as the builder's scaffold.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">9</div><div><h3>Scales &amp; Melody</h3><p>Single notes with intention — the melodic voice between the chords.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">10</div><div><h3>Barre Chords</h3><p>The moveable shapes that open the whole fretboard — earned, not rushed.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">11</div><div><h3>Fingerpicking</h3><p>Fingers apart from the pick — the gentle, deliberate voice of the instrument.</p></div></div>
+          <div class="gtf-tier-head">🥇 Expression <span class="gtf-tier-chip">Gold · Modules 12–16</span></div>
+          <div class="gtf-module"><div class="gtf-num">12</div><div><h3>Advanced Rhythm</h3><p>Syncopation and feel — the difference between keeping time and making it move.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">13</div><div><h3>Pentatonic &amp; Soloing</h3><p>The five-note house every solo lives in — melody made your own.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">14</div><div><h3>Chord Theory</h3><p>Why the shapes work — the plan behind the house, so you can build your own rooms.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">15</div><div><h3>Performance &amp; Expression</h3><p>Playing for people — dynamics, presence, and the calm of a practiced builder.</p></div></div>
+          <div class="gtf-module"><div class="gtf-num">16</div><div><h3>Next Steps</h3><p>Where the method goes from here — and how to keep building after the course.</p></div></div>
+        </div>
+      </div></section>
+
+      <!-- WHO -->
+      <section class="gtf-section"><div class="container">
+        <div class="gtf-label"><i class="ti ti-users"></i> Who It's For</div>
+        <h2 class="gtf-heading">Built for <span>Vision Builders</span></h2>
+        <div class="gtf-who"><p>For every Ghanaian who owns or longs for a guitar but never knew where to start — families, children's ministry teachers, church members, quiet builders who want to learn in the secret place and play for someone by Sunday. No experience, no reading music. A house is built plan-first; so is your playing.</p></div>
+      </div></section>
+
+      <!-- MODULE READER PREVIEW -->
+      <section class="gtf-section gtf-curriculum" id="reader"><div class="container">
+        <div class="gtf-label"><i class="ti ti-book-open"></i> Module 1 — Reader Preview</div>
+        <h2 class="gtf-heading">How a Lesson <span>Reads</span></h2>
+        <p class="gtf-sub">Every lesson runs the same four-beat rhythm: anchor → craft → instruction → checkpoint. Checkpoints save to your dashboard.</p>
+        <div class="gtf-reader">
+          <aside class="gtf-rail">
+            <h4>Module 1 · Meet Your Guitar</h4>
+            <div class="gtf-rail-item done"><i class="ti ti-check"></i> 1 · Anatomy — The House-Walk</div>
+            <div class="gtf-rail-item done"><i class="ti ti-check"></i> 2 · Tuning — Commissioning</div>
+            <div class="gtf-rail-item done"><i class="ti ti-check"></i> 3 · Posture — The Occupant</div>
+            <div class="gtf-rail-item current"><i class="ti ti-player-play"></i> 4 · Your First Sound — Em</div>
+            <div class="gtf-rail-item locked"><i class="ti ti-lock"></i> Module 2 · The Fretboard</div>
+            <div class="gtf-prog">Module 1 · 75% complete<div class="gtf-prog-bar"><i></i></div></div>
+          </aside>
+          <div class="gtf-lesson">
+            <div class="gtf-anchor">
+              <div class="gtf-anchor-label">Anchor</div>
+              <p>"Sing unto him a new song; play skilfully with a loud noise." — Psalm 33:3</p>
+            </div>
+            <h3>Lesson 4 — Your First Sound: E Minor</h3>
+            <p>Every house has a hall — the room that fills with whatever is spoken in it. The first chord we build is <b style="color:var(--text-primary)">E minor (Em)</b>: two fingers, and it welcomes all six strings. A day-one sound that fills the whole room.</p>
+            <table>
+              <tr><td>Index (1st finger)</td><td>2nd fret · A string (5th) — press with the fingertip, close behind the metal bar</td></tr>
+              <tr><td>Middle (2nd finger)</td><td>2nd fret · D string (4th) — neck upright, claw hand, thumb low</td></tr>
+              <tr><td>Strum</td><td>All six strings downward, arm like a pendulum near the soundhole</td></tr>
+            </table>
+            <div class="gtf-chords">
+              <div class="gtf-chord-card">
+                <h5>E MINOR</h5><div class="gtf-cc-sub">The hall · two fingers · all six strings ring</div>
+                <div class="gtf-cc-body">
+                  <svg width="110" height="130" viewBox="0 0 110 130" role="img" aria-label="E minor chord diagram">
+                    <g font-family="Courier Prime, monospace" font-size="10" fill="#8A9BB5">
+                      <text x="6" y="12">6</text><text x="72" y="12">1</text>
+                    </g>
+                    <line x1="20" y1="26" x2="30" y2="26" class="fret" stroke-width="5"/>
+                    <line class="string" x1="20" y1="40" x2="20" y2="118"/>
+                    <line class="string" x1="34" y1="40" x2="34" y2="118"/>
+                    <line class="string" x1="48" y1="40" x2="48" y2="118"/>
+                    <line class="string" x1="62" y1="40" x2="62" y2="118"/>
+                    <line class="string" x1="76" y1="40" x2="76" y2="118"/>
+                    <line class="string" x1="90" y1="40" x2="90" y2="118"/>
+                    <circle cx="34" cy="66" r="9" class="gtf-press"/><text x="34" y="69.5" text-anchor="middle" class="gtf-press-num">1</text>
+                    <circle cx="48" cy="66" r="9" class="gtf-press"/><text x="48" y="69.5" text-anchor="middle" class="gtf-press-num">2</text>
+                    <circle cx="20" cy="92" r="4.5" class="gtf-open"/>
+                    <circle cx="62" cy="92" r="4.5" class="gtf-open"/>
+                    <circle cx="76" cy="92" r="4.5" class="gtf-open"/>
+                    <circle cx="90" cy="92" r="4.5" class="gtf-open"/>
+                    <circle cx="20" cy="66" r="4.5" class="gtf-open"/>
+                    <text x="98" y="70" class="gtf-dont">× — none</text>
+                  </svg>
+                  <div class="gtf-cc-facts">
+                    <div class="gtf-msg-ok"><i class="ti ti-volume"></i> Sound check — strum from the thickest string; all six ring clear.</div>
+                    <div class="gtf-msg-err"><i class="ti ti-alert-triangle"></i> Refuse — lying-flat fingers; thumb hooked over the top.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="gtf-checkpoint">
+              <div class="gtf-cp-label"><i class="ti ti-circle-check"></i> Checkpoint</div>
+              <ul>
+                <li><i class="ti ti-check"></i> Tune — six strings read E·A·D·G·B·e in order</li>
+                <li><i class="ti ti-check"></i> Position — occupant's hold, 60 seconds, breathing normally</li>
+                <li><i class="ti ti-check"></i> Five clean Em strums</li>
+                <li><i class="ti ti-check"></i> One more strum — just to listen</li>
+              </ul>
+              <button class="btn btn-gold gtf-cp-btn" onclick="gtfOpenEnroll()"><i class="ti ti-bolt"></i> Start Free — Track This Checkpoint</button>
+            </div>
+          </div>
+        </div>
+      </div></section>
+
+      <!-- BOOK CROSS-SELL -->
+      <section class="gtf-section"><div class="container">
+        <div class="gtf-label"><i class="ti ti-book"></i> Books · The Companion</div>
+        <h2 class="gtf-heading">The Companion <span>On Paper</span></h2>
+        <div class="gtf-book" style="margin-top:26px">
+          <div class="gtf-book-cover"><div class="gtf-bc-g">Studio Gabochie</div><div class="gtf-bc-t">First Things First<br><span style="color:var(--gold)">The Beginner Guitar Companion</span></div><div class="gtf-bc-g">Gideon Abochie</div></div>
+          <div>
+            <h3>First Things First — The Beginner Guitar Companion</h3>
+            <p>24–28 page easy-read · five chord diagram one-pagers · the printable 7-day practice tracker · the <b>Seek Ye First</b> song sheet · when fingertips hurt (the repair manual, including the spiritual one).</p>
+            <div class="gtf-bundle">PAPER COMPANION · GH₵50 · SOLD ON /BOOKS/</div>
+          </div>
+          <a class="btn btn-gold" href="/books/"><i class="ti ti-book"></i> Get Your Copy — GH₵50</a>
+        </div>
+      </div></section>
+
+      <!-- CTA BAND -->
+      <section class="gtf-cta-band">
+        <h2>Your First Chord Is <span>Free</span></h2>
+        <p>Modules <span data-g-free>3</span> free, no card required. Register for the Bronze foundation whenever you're ready — and carry the book from /books/.</p>
+        <p>This is the flagship course of the Guitar School — the first of many. Begin with the system.</p>
+        <div class="gtf-trust">Cards · MoMo · USSD · Crypto — charged in GH₵ · Secured by ExpressPay &amp; Moolre · No card required to start</div>
+        <button class="btn btn-gold" onclick="gtfOpenEnroll()"><i class="ti ti-player-play"></i> Start Free Now</button>
+      </section>
+
+      <!-- FAQ -->
+      <section class="gtf-section"><div class="container">
+        <div style="text-align:center">
+          <div class="gtf-label" style="justify-content:center"><i class="ti ti-question-mark"></i> Questions</div>
+          <h2 class="gtf-heading" style="text-align:center">Frequently <span>Asked</span></h2>
+        </div>
+        <div class="gtf-faq-list">
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">Do I need a guitar to start? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">Yes — this course is hands-on. Any acoustic you can hold comfortably will do; borrowing is a fine beginning. Lesson 1 walks the parts before you play.</div></div>
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">Do I need a tuner? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">You need to play in tune — a clip-on tuner or any free phone app gets you there. The Golden Rule (tighten upward) is taught early, and the course ships with a built-in tuner.</div></div>
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">What is "the Matthew 6:33 Method"? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">Seek first the Kingdom (the system of the instrument), His righteousness (every part rightly related), and all these things (skill, joy, presence) are added. The same way David learned the lyre. Your first worship song is literally this verse.</div></div>
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">What does Registration cover? Is there more than one payment? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">Registration (Bronze Foundation, GH₵299) unlocks the rest of the foundation — modules 4–5 plus the practice engine, badges and your companion-book coupon. From there you climb: Silver (GH₵199) for Songcraft, Gold (GH₵299) for Expression — or take Apprentice (GH₵699) once for all 16 modules and save 16%. Nobody who paid before this ladder lost anything: earlier full payments still unlock everything.</div></div>
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">What if my fingertips hurt? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">Normal — calluses form in 2–3 weeks. Fifteen minutes daily beats one long heroic session, and the repair manual (in the book) covers everything, including practicing with a heavy heart.</div></div>
+          <div class="gtf-faq"><button class="gtf-faq-q" onclick="gtfToggleFaq(this)">Can I preview the book? <i class="ti ti-chevron-down"></i></button><div class="gtf-faq-a">Yes — the framing essay ("How David Learned the Lyre") and Day 1 of the tracker are free to read at studio.gabochie.com, no email needed.</div></div>
+        </div>
+      </div></section>
+
+    </div><!-- /sales -->
+
+<div id="footer-placeholder"></div>
+
+<!-- ENROLL MODAL -->
+<div class="gtf-overlay" id="gtfEnrollModal">
+  <div class="gtf-modal">
+    <button class="gtf-close" onclick="gtfCloseEnroll()" aria-label="Close">&times;</button>
+    <h3>Start Learning Free</h3>
+    <div class="gtf-modal-sub">Seek first the system — and the songs will be added.</div>
+    <form id="gtf-form">
+      <label for="g-name">Your Name</label>
+      <input id="g-name" type="text" placeholder="e.g. Emmanuel" required>
+      <label for="g-email">Email Address</label>
+      <input id="g-email" type="email" placeholder="your@email.com" required>
+      <label for="g-phone">Phone / WhatsApp (optional)</label>
+      <input id="g-phone" type="tel" placeholder="+233 55 123 4567">
+      <label for="g-level">Your Level</label>
+      <select id="g-level">
+        <option value="beginner">Beginner — never played</option>
+        <option value="starter">Starter — know a few chords</option>
+        <option value="intermediate">Intermediate — can play songs</option>
+      </select>
+      <button type="submit" class="btn btn-gold" id="gtf-submit" style="width:100%;margin-top:6px"><i class="ti ti-bolt"></i> Start Free</button>
+    </form>
+    <div class="gtf-modal-err" id="gtf-err"></div>
+    <div class="gtf-note">Modules <span data-g-free>3</span> free — no card required. Your progress is saved to your dashboard.</div>
   </div>
-
-  <div class="scrollable" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
-    <!-- Science Section -->
-    <div class="section fade-up">
-      <div class="section-title">🧠 The Science</div>
-      <div class="section-sub">Built on peer-reviewed research — deliberate practice (Ericsson '93), spaced repetition (Cepeda '06), interleaving (Shea & Morgan '79)</div>
-      <div class="method-grid stagger">
-        <div class="method-card"><div class="method-icon">🎯</div><div class="method-title">Deliberate Practice</div><div class="method-desc">Focus on your weakest link, not what you already know</div></div>
-        <div class="method-card"><div class="method-icon">🔄</div><div class="method-title">Spaced Repetition</div><div class="method-desc">15 min/day beats 3 hr/weekend — retention triples</div></div>
-        <div class="method-card"><div class="method-icon">🔀</div><div class="method-title">Interleaving</div><div class="method-desc">Mix skills randomly, build robust neural pathways</div></div>
-        <div class="method-card"><div class="method-icon">⚡</div><div class="method-title">One-Minute Changes</div><div class="method-desc">The single most effective beginner chord drill</div></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Songs Section -->
-    <div class="section fade-up">
-      <div class="section-title">🇬🇭 Ghanaian Song Library</div>
-      <div class="section-sub">Learn with songs you already love — Sarkodie, King Promise, Joe Mettle, Kofi Kinaata & more</div>
-      <div class="h-scroll stagger">
-        <div class="pillar-card"><div class="icon">🎤</div><div class="method-title">Sarkodie</div><div class="method-desc">Ayayi, Wish Me Well</div></div>
-        <div class="pillar-card"><div class="icon">🎵</div><div class="method-title">King Promise</div><div class="method-desc">Ewe, Sore</div></div>
-        <div class="pillar-card"><div class="icon">🙏</div><div class="method-title">Joe Mettle</div><div class="method-desc">Grace, Adonai, Amen</div></div>
-        <div class="pillar-card"><div class="icon">🎶</div><div class="method-title">Ebo Taylor</div><div class="method-desc">Highlife master</div></div>
-        <div class="pillar-card"><div class="icon">🎤</div><div class="method-title">Kofi Kinaata</div><div class="method-desc">Things Fall Apart</div></div>
-        <div class="pillar-card"><div class="icon">🎸</div><div class="method-title">Bisa Kdei</div><div class="method-desc">Mon Bébé</div></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Curriculum Section -->
-    <div class="section fade-up">
-      <div class="section-title">📚 Curriculum</div>
-      <div class="section-sub">16 modules across 3 tiers — zero to performance-ready in 20 days</div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥉</span><div><div class="tier-title">Bronze — Foundation</div><div class="tier-sub">Days 1-5: Your first chords and changes</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=1'"><div class="module-num">1</div><div class="module-info"><div class="module-name">Meet Your Guitar</div><div class="module-desc">Parts, tuning & posture</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=2'"><div class="module-num">2</div><div class="module-info"><div class="module-name">The Fretboard</div><div class="module-desc">Strings, notes & finger independence</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=3'"><div class="module-num">3</div><div class="module-info"><div class="module-name">The Power 5</div><div class="module-desc">Em • Am • G • C • D</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=4'"><div class="module-num">4</div><div class="module-info"><div class="module-name">Rhythm Foundation</div><div class="module-desc">Strumming, metronome & time-keeping</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=5'"><div class="module-num">5</div><div class="module-info"><div class="module-name">One-Minute Changes</div><div class="module-desc">Speed & accuracy drill</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥈</span><div><div class="tier-title">Silver — Songcraft</div><div class="tier-sub">Days 6-14: Play real songs</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=6'"><div class="module-num">6</div><div class="module-info"><div class="module-name">Your First Song</div><div class="module-desc">2-chord Ghanaian hit — Wish Me Well</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=7'"><div class="module-num">7</div><div class="module-info"><div class="module-name">Strumming Patterns</div><div class="module-desc">Down-up, syncopation, highlife feel</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=8'"><div class="module-num">8</div><div class="module-info"><div class="module-name">More Chords</div><div class="module-desc">A • E • Dm • B7 • F</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=9'"><div class="module-num">9</div><div class="module-info"><div class="module-name">Ghanaian Songcraft</div><div class="module-desc">Ayayi, Ewe, Adom & more</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=10'"><div class="module-num">10</div><div class="module-info"><div class="module-name">Reading Tablature</div><div class="module-desc">Tabs, notation, finding notes</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=11'"><div class="module-num">11</div><div class="module-info"><div class="module-name">Pentatonic Foundation</div><div class="module-desc">First 5 notes of lead guitar</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-
-      <div class="curriculum-tier">
-        <div class="tier-header"><span class="tier-badge">🥇</span><div><div class="tier-title">Gold — Expression</div><div class="tier-sub">Days 15-20: Master the guitar</div></div></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=12'"><div class="module-num">12</div><div class="module-info"><div class="module-name">Fingerpicking</div><div class="module-desc">Thumb-lead & folk melodies</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=13'"><div class="module-num">13</div><div class="module-info"><div class="module-name">The Barre Wall</div><div class="module-desc">F & Bm — the #1 quit point</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=14'"><div class="module-num">14</div><div class="module-info"><div class="module-name">Ghanaian Lead Guitar</div><div class="module-desc">Highlife phrasing & chops</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=15'"><div class="module-num">15</div><div class="module-info"><div class="module-name">Song Mastery Project</div><div class="module-desc">Learn, practice & record one song</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-        <div class="module-card card-hover" onclick="location.href='/school/guitar/learn/?module=16'"><div class="module-num">16</div><div class="module-info"><div class="module-name">Performance Mode</div><div class="module-desc">Play-along with real-time scoring</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- CTA Section -->
-    <div class="cta-section fade-up">
-      <h2>🎸 Start Your Journey</h2>
-      <p>Free trial — no credit card. First <span data-g-free>3</span> modules are completely free. Unlock all 16 modules + full song library for <span data-g-symbol-amount>GH¢ 299</span>.</p>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-lg" id="cta-register">Start Free <i class="ti ti-arrow-right"></i></button>
-        <a href="/guitar/songs/" class="btn btn-primary btn-lg">Get Full Access <i class="ti ti-lock-off"></i></a>
-      </div>
-    </div>
-
-    <div style="height:20px"></div>
-  </div>
-
-  <nav class="bottom-nav">
-    <a class="nav-item active" href="/school/guitar/"><i class="ti ti-home"></i><span>Home</span></a>
-    <a class="nav-item" href="/school/guitar/learn/"><i class="ti ti-book"></i><span>Learn</span></a>
-    <a class="nav-item" href="/school/guitar/practice/"><i class="ti ti-player-play"></i><span>Practice</span></a>
-    <a class="nav-item" href="/school/guitar/dashboard/"><i class="ti ti-trending-up"></i><span>Progress</span></a>
-    <a class="nav-item" href="/school/guitar/songs/"><i class="ti ti-music"></i><span>Songs</span></a>
-    <a class="nav-item" href="/school/guitar/tuner/"><i class="ti ti-ear"></i><span>Tuner</span></a>
-  </nav>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
 <script>
-// Particles
-(function() {
-  const c = document.getElementById('particles');
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement('div');
-    p.className = 'hero-particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDelay = Math.random() * 6 + 's';
-    p.style.animationDuration = (4 + Math.random() * 4) + 's';
-    p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-    c.appendChild(p);
-  }
-})();
-
-// Animate stats on scroll
-(function() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        const count = parseInt(entry.target.dataset.count);
-        if (count) Guitar.countUp(entry.target, count);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: .5 });
-  document.querySelectorAll('.hero-stat-num[data-count]').forEach(el => observer.observe(el));
-})();
-
-// Fade-up on scroll
-(function() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.style.animationPlayState = 'running'; observer.unobserve(entry.target); }
-    });
-  }, { threshold: .1 });
-  document.querySelectorAll('.fade-up').forEach(el => { el.style.animationPlayState = 'paused'; observer.observe(el); });
-})();
+function gtfOpenEnroll(){document.getElementById('gtfEnrollModal').classList.add('open');document.body.style.overflow='hidden'}
+function gtfCloseEnroll(){document.getElementById('gtfEnrollModal').classList.remove('open');document.body.style.overflow=''}
+function gtfToggleFaq(b){b.parentElement.classList.toggle('open')}
+document.getElementById('gtfEnrollModal').addEventListener('click',function(e){if(e.target===this)gtfCloseEnroll()});
 
 (async function() {
-  await Guitar.init();
+  const user = await Guitar.init();
+  try { await Guitar.fetchConfig(); } catch (e) {}
   Guitar.applyConfig();
+
+  if (user) {
+    document.getElementById('gtf-sales').style.display = 'none';
+    document.getElementById('logged-in-home').style.display = 'block';
+    return;
+  }
+
+  const form = document.getElementById('gtf-form');
+  const submit = document.getElementById('gtf-submit');
+  const errEl = document.getElementById('gtf-err');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    submit.disabled = true;
+    submit.textContent = 'Creating account...';
+    errEl.style.display = 'none';
+
+    const data = {
+      name: document.getElementById('g-name').value.trim(),
+      email: document.getElementById('g-email').value.trim(),
+      phone: document.getElementById('g-phone').value.trim(),
+      skill_level: document.getElementById('g-level').value
+    };
+
+    try {
+      const res = await Guitar.register(data);
+      Guitar.token = res.token;
+      Guitar.user = res.user;
+      localStorage.setItem('ga_token', res.token);
+      localStorage.setItem('ga_student', JSON.stringify(res.user));
+      localStorage.setItem('ga_session_token', res.token);
+      window.location.href = '/guitar/learn/';
+    } catch (err) {
+      errEl.textContent = err.message || 'Something went wrong. Try again.';
+      errEl.style.display = 'block';
+      submit.disabled = false;
+      submit.innerHTML = '<i class="ti ti-bolt"></i> Start Free';
+    }
+  });
 })();
-document.getElementById('cta-register')?.addEventListener('click', () => Guitar.showRegisterModal());
 </script>
+<script src="/assets/js/analytics.js" defer></script>
+<script defer src="/assets/js/main.js"></script>
+<script src="/nav.js"></script>
 </body></html>
