@@ -12,6 +12,7 @@
 /love-of-the-lord/give /love-of-the-lord/give/ 200
 
 # ─── Core infrastructure (kept) ───
+/search /search/ 200
 /login /login/ 200
 /register /register/ 200
 /dashboard /dashboard/ 200
