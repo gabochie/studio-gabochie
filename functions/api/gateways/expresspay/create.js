@@ -126,9 +126,10 @@ export async function resolvePendingTx(db, tx_ref) {
     return { amount: amount, name: row.customer_name || '', email: row.customer_email || '', phone: '', desc: 'Store order — Studio Gabochie' };
   }
   if (/^GUITAR_/.test(tx_ref)) {
-    row = await db.prepare('SELECT amount, user_id, email, status FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
+    row = await db.prepare('SELECT amount, user_id, email, status, plan FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
     if (!row || row.status === 'completed') return null;
     amount = parseFloat(row.amount) || 99;
+    var guitarDescs = { bronze: 'Guitar Bronze Registration — Studio Gabochie', silver: 'Guitar Silver Unlock — Studio Gabochie', gold: 'Guitar Gold Unlock — Studio Gabochie', apprentice: 'Guitar Apprentice (all modules) — Studio Gabochie', full: 'Guitar Method — Studio Gabochie' };
     var buyer = { name: '', email: row.email || '', phone: '' };
     if (row.user_id) {
       try {
@@ -136,7 +137,7 @@ export async function resolvePendingTx(db, tx_ref) {
         if (u) buyer = { name: u.name || '', email: u.email || row.email || '', phone: u.phone || '' };
       } catch (_e) {}
     }
-    return { amount: amount, name: buyer.name, email: buyer.email, phone: buyer.phone, desc: 'Guitar Method full access — Studio Gabochie' };
+    return { amount: amount, name: buyer.name, email: buyer.email, phone: buyer.phone, desc: guitarDescs[row.plan] || 'Guitar Method — Studio Gabochie' };
   }
   if (/^booking_/.test(tx_ref)) {
     row = await db.prepare('SELECT amount, email, name, status FROM bookings WHERE payment_tx_ref = ?').bind(tx_ref).first();

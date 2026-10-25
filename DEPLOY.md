@@ -182,8 +182,21 @@ The guitar course runs on the same Cloudflare Pages project and D1 database. Aft
 
 ### ExpressPay Paywall
 
-The guitar course uses **ExpressPay** for a one-time GH₵ 299 course unlock.
+The guitar course uses **ExpressPay** (and Moolre MoMo, and crypto via
+NOWPayments) for a tiered unlock ladder — prices are admin-configurable via
+D1 `settings` (`guitar_price_bronze`, `guitar_price_silver`,
+`guitar_price_gold`, `guitar_price_apprentice`; fallbacks 299/199/299/699).
 No additional env vars are needed — the existing `EXPRESSPAY_*` keys are reused.
+
+Tier ladder (cumulative; Silver presupposes Bronze, Gold presupposes Silver):
+
+| Plan | Price | Unlocks |
+|---|---|---|
+| `bronze` | GH¢ 299 | Registration — the Bronze foundation (Modules 1–5 after the free preview) |
+| `silver` | GH¢ 199 | Songcraft (Modules 6–11) + the song library |
+| `gold`   | GH¢ 299 | Expression (Modules 12–16) + certificate |
+| `apprentice` | GH¢ 699 | All 16 modules in one decision — saves vs the ladder total |
+| `full` (legacy) | `guitar_price` setting | Everything — kept for backward compatibility |
 
 Settlement: `POST /api/gateways/expresspay/callback` (shared post-url), which
 completes the pending `guitar_payments` row and emails the receipt.
@@ -192,10 +205,10 @@ completes the pending `guitar_payments` row and emails the receipt.
 
 | Step | Endpoint | Description |
 |---|---|---|
-| Check status | `GET /api/guitar/enroll/status` | `{tier: "free"/"registered"/"premium"}` |
+| Check status | `GET /api/guitar/enroll/status` | `{tier, unlocked, bronzeUnlocked, silverUnlocked, goldUnlocked, songLibraryUnlocked, freeModules}` |
 | Register (free) | `POST /api/guitar/register` | Creates user stats, enables free modules |
-| Purchase | `POST /api/guitar/enroll` (auth) | Returns `tx_ref`; pay via `POST /api/gateways/expresspay/create`, redirect user to `checkout_url` |
-| Callback | `POST /api/gateways/expresspay/callback` | ExpressPay post-url; query-verified, unlocks full access + receipt |
+| Purchase | `POST /api/guitar/enroll` (auth), body `{plan}` | Returns `tx_ref` + price for the plan; pay via `POST /api/gateways/expresspay/create`, redirect user to `checkout_url` |
+| Callback | `POST /api/gateways/expresspay/callback` | ExpressPay post-url; query-verified, unlocks the purchased tier + receipt |
 
 ### D1 Tables (guitar_*)
 
@@ -229,5 +242,5 @@ All prefixed with `guitar_` to avoid clashes with existing tables:
 - [ ] Visit `/school/guitar/tuner/` — canvas needle and cents meter render, mic prompt appears
 - [ ] Visit `/school/guitar/dashboard/` — stat counters render (may show zeros for new user)
 - [ ] Visit `/school/guitar/songs/` — song cards load with filter pills
-- [ ] Test enrollment: `POST /api/guitar/enroll {"plan":"free"}` returns 200
+- [ ] Test enrollment: `POST /api/guitar/enroll {"plan":"bronze"}` (auth) returns a pending `tx_ref`
 - [ ] Verify desktop layout ≥1024px: sidebar replaces bottom nav

@@ -1132,7 +1132,7 @@ export async function onRequest(context) {
       `UPDATE programs SET sort_order = 11 WHERE slug = 'intro-computing'`,
       `UPDATE programs SET sort_order = 12 WHERE slug = 'intro-storytelling'`,
        // Fix guitar-method title for existing installs (was seeded as 'Guitar in 30 Days')
-       `UPDATE programs SET title = 'Gideon Guitar Method', tagline = 'Learn to play your favorite Ghanaian songs on guitar.', description = 'The fastest path from zero to your first Ghanaian song. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system built on peer-reviewed learning science. Start with bronze modules free, unlock silver and gold for full access.', duration = 'Self-paced', price = 250, price_label = 'Free Sample &middot; Full Access GH&cent; 250', sort_order = 0 WHERE slug = 'guitar-method'`,
+       `UPDATE programs SET title = 'Guitar: First Things First — The Matthew 6:33 Method', tagline = 'Seek first the system — and the songs will be added.', description = 'The Matthew 6:33 Method by Gideon Abochie, architect and founder. 16 modules, 64 video lessons, real-time pitch detection, deliberate practice system. Start with Modules 1-3 free, register for the Bronze foundation (GH¢299), then Silver, Gold or Apprentice unlocks.', duration = 'Self-paced', price = 299, price_label = 'Free Modules 1-3 · Registration GH&cent; 299', sort_order = 0 WHERE slug = 'guitar-method'`,
       // Newsletter builder tables
       `CREATE TABLE IF NOT EXISTS newsletter_templates (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

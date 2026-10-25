@@ -7,16 +7,25 @@ function esc(s) {
   });
 }
 
-function receiptHtml(name, txRef, amount) {
+var PLAN_LINES = {
+  bronze: { label: 'Guitar: First Things First — Bronze Registration', msg: 'Your Bronze foundation is unlocked — the full Bronze tier of 20 lessons and the whole practice engine. Silver, Gold or Apprentice open the rest of the house whenever you are ready.' },
+  silver: { label: 'Guitar: First Things First — Silver Unlocked', msg: 'Your Silver unlock is active — Modules 6–11: your first Ghanaian songs, strumming patterns, and the pentatonic foundation.' },
+  gold: { label: 'Guitar: First Things First — Gold Unlocked', msg: 'Your Gold unlock is active — Modules 12–16: fingerpicking, the barre wall, highlife lead, Song Mastery and the certificate path.' },
+  apprentice: { label: 'Guitar: First Things First — Apprentice (All Modules)', msg: 'All 16 modules, 64 lessons, and the song library are yours — lifetime access, one decision. Seek first the system, and the songs will be added.' },
+  full: { label: 'Guitar: First Things First — All Modules Unlocked', msg: 'All 16 modules, 64 lessons, and 15+ Ghanaian songs are now yours — lifetime access, no hidden fees.' }
+};
+
+function receiptHtml(name, txRef, amount, plan) {
+  var line = PLAN_LINES[plan] || PLAN_LINES.full;
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
     '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
     '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
     '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
     '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0">Studio Gabochie</h1>' +
-    '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Guitar Method — Full Access Unlocked</p></td></tr>' +
+    '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + line.label + '</p></td></tr>' +
     '<tr><td style="padding:32px">' +
     '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + esc(name || 'Guitarist') + ',</p>' +
-    '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your payment of <strong style="color:#C9A84C">GHS ' + esc(amount) + '</strong> is confirmed. All 16 modules, 64 lessons, and 15+ Ghanaian songs are now yours — lifetime access, no hidden fees.</p>' +
+    '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your payment of <strong style="color:#C9A84C">GHS ' + esc(amount) + '</strong> is confirmed. ' + line.msg + '</p>' +
     '<table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">' +
     '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Transaction</td><td style="color:#1E293B;font-size:13px;font-family:monospace;text-align:right;padding:8px 16px">' + esc(txRef) + '</td></tr>' +
     '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">GHS ' + esc(amount) + '</td></tr>' +
@@ -29,7 +38,7 @@ function receiptHtml(name, txRef, amount) {
 function nudgeHtml(name) {
   return '<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">' +
     '<h2 style="color:#0A1628">How is your first week going, ' + esc(name || 'friend') + '?</h2>' +
-    '<p style="color:#475569;font-size:14px;line-height:1.7">Most guitarists quit in week one because nobody shows them the first win. Open the Guitar Method, finish Module 1, and reply to this email with a video of your first chord change — we reply to every single one.</p>' +
+    '<p style="color:#475569;font-size:14px;line-height:1.7">Most guitarists quit in week one because nobody shows them the first win. Open Guitar: First Things First, finish Module 1, and reply to this email with a video of your first chord change — we reply to every single one. Seek first the system, and the songs will be added.</p>' +
     '<p><a href="https://studio.gabochie.com/guitar/learn/" style="display:inline-block;padding:12px 28px;background:#C9A84C;color:#0A1628;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">Continue Learning</a></p>' +
     '<p style="color:#94A3B8;font-size:12px">Studio Gabochie · <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a></p>' +
     '</body></html>';
@@ -44,14 +53,15 @@ export async function sendGuitarReceipt(env, details) {
     var name = (details && details.name) || '';
     var txRef = (details && details.txRef) || '';
     var amount = (details && details.amount != null) ? String(details.amount) : '';
-    await sendBrevoEmail(env, email, name, 'Guitar Unlocked — Your Receipt · Studio Gabochie', receiptHtml(name, txRef, amount));
+    var plan = (details && details.plan) || 'full';
+    await sendBrevoEmail(env, email, name, 'Guitar Unlocked — Your Receipt · Studio Gabochie', receiptHtml(name, txRef, amount, plan));
     try {
       await queueEmail(env, email, name, 'Your first win is waiting — Studio Gabochie', nudgeHtml(name), 'guitar_nudge_3d', daysFromNow(3));
     } catch (_e) {}
     var phone = details && details.phone ? String(details.phone).replace(/[^0-9]/g, '') : '';
     if (phone && phone.length >= 9) {
       try {
-        await queueWhatsApp(env, phone, 'Studio Gabochie: your Guitar Method payment (GHS ' + amount + ', ref ' + txRef + ') is confirmed. Start learning: https://studio.gabochie.com/guitar/learn/', 'guitar_receipt');
+        await queueWhatsApp(env, phone, 'Studio Gabochie: your Guitar: First Things First payment (GHS ' + amount + ', ref ' + txRef + ') is confirmed. Start learning: https://studio.gabochie.com/guitar/learn/', 'guitar_receipt');
       } catch (_e) {}
     }
   } catch (_e) {}

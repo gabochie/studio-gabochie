@@ -45,7 +45,7 @@ Membership tiers (Ghana Cedis). One-time per period — no auto-renewal; renewal
 | Patron | ₵299 | ₵2,990 | 1-on-1 mentorship, early access, patron community |
 | Founding Partner | — | ₵5,000 | Name on site, private community, co-branded content |
 
-Individual courses are sold separately (one-time): Systems Thinking ₵250, Web Development ₵150, Digital Marketing ₵150, Guitar Method ₵99. Several civic, AI, values, and entrepreneurship programs are free.
+Individual courses are sold separately (one-time): Systems Thinking ₵250, Web Development ₵150, Digital Marketing ₵150, Guitar: First Things First ₵299 registration (includes the Bronze foundation; Silver ₵199, Gold ₵299, Apprentice ₵699 full-path unlocks after). Several civic, AI, values, and entrepreneurship programs are free.
 
 ## Configuration
 

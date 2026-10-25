@@ -10,6 +10,28 @@ async function guitarPrice(db) {
   return 299;
 }
 
+// Tier ladder mirrors functions/api/guitar/enroll/index.js.
+// Rank is cumulative: Silver presupposes Bronze; Gold presupposes Silver.
+var GUITAR_PLAN_RANK = { bronze: 1, silver: 2, gold: 3, apprentice: 4, full: 4 };
+var GUITAR_PLAN_FALLBACK = { bronze: 299, silver: 199, gold: 299, apprentice: 699 };
+async function guitarPlanPrice(db, plan) {
+  if (plan === 'full') return guitarPrice(db);
+  try {
+    const row = await db.prepare('SELECT value FROM settings WHERE key = ?').bind('guitar_price_' + plan).first();
+    if (row && parseInt(row.value)) return parseInt(row.value);
+  } catch (_e) {}
+  return GUITAR_PLAN_FALLBACK[plan];
+}
+async function guitarOwnedRank(db, userId) {
+  try {
+    const { results } = await db.prepare("SELECT plan FROM guitar_payments WHERE user_id = ? AND status = 'completed'").bind(userId).all();
+    let rank = 0;
+    // Legacy rows created before tiered payments have no plan — they unlocked everything.
+    for (const p of (results || [])) { const r = p.plan ? (GUITAR_PLAN_RANK[p.plan] || 0) : GUITAR_PLAN_RANK.full; if (r > rank) rank = r; }
+    return rank;
+  } catch (_e) { return 0; }
+}
+
 var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch', 'guitar'];
 
 var SUCCESS_URLS = {
@@ -107,13 +129,18 @@ export async function onRequest(context) {
     let gUser = null;
     try { gUser = await getSessionUser(env.DB, gToken); } catch (_e) {}
     if (!gUser) return json({ status: 'error', message: 'Login required' }, 401);
-    const paid = await env.DB.prepare("SELECT id FROM guitar_payments WHERE user_id = ? AND status = 'completed' ORDER BY id DESC LIMIT 1").bind(gUser.user_id).first().catch(() => null);
-    if (paid) return json({ status: 'ok', already: true, message: 'Already unlocked' });
-    amountGhs = await guitarPrice(env.DB);
+    let gPlan = (body.plan || 'full'); // legacy clients = full unlock
+    if (!GUITAR_PLAN_RANK[gPlan]) gPlan = 'full';
+    const gRank = await guitarOwnedRank(env.DB, gUser.user_id);
+    if (gRank >= GUITAR_PLAN_RANK[gPlan]) return json({ status: 'ok', already: true, message: 'Already unlocked' });
+    if (gPlan === 'silver' && gRank < 1) return json({ status: 'error', message: 'Complete your Bronze registration first — seek first the system.' }, 400);
+    if (gPlan === 'gold' && gRank < 2) return json({ status: 'error', message: 'Complete Silver first, or take Apprentice for the full path.' }, 400);
+    amountGhs = await guitarPlanPrice(env.DB, gPlan);
     if (!amountGhs || amountGhs <= 0) return json({ status: 'error', message: 'Nothing payable' }, 400);
     name = gUser.name || name; email = gUser.email || email;
     meta.user_id = gUser.user_id;
     meta.guitar = true;
+    meta.guitarPlan = gPlan;
   } else {
     if (!env.DB) return json({ status: 'error', message: 'D1 not bound' }, 501);
     domain_tx = (body.tx_ref || '').trim();
@@ -171,8 +198,8 @@ export async function onRequest(context) {
   if (purpose === 'guitar' && env.DB && meta.user_id) {
     try {
       await env.DB.prepare(
-        "INSERT INTO guitar_payments (user_id, email, status, flw_tx_ref, amount, plan) VALUES (?, ?, 'pending', ?, ?, 'full')"
-      ).bind(meta.user_id, email, tx_ref, amountGhs).run();
+        "INSERT INTO guitar_payments (user_id, email, status, flw_tx_ref, amount, plan) VALUES (?, ?, 'pending', ?, ?, ?)"
+      ).bind(meta.user_id, email, tx_ref, amountGhs, meta.guitarPlan || 'full').run();
     } catch (_e) {}
   }
 
