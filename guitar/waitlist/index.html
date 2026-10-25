@@ -6,13 +6,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
-<meta property="og:title" content="Gideon Guitar Method — Learn Guitar Online">
-<meta property="og:description" content="Learn guitar online with Gideon Guitar Method. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
+<meta name="description" content="Learn guitar online with Guitar: First Things First. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
+<meta property="og:title" content="Guitar: First Things First — Learn Guitar Online">
+<meta property="og:description" content="Learn guitar online with Guitar: First Things First. 16 modules, 64 lessons, tuner, metronome, chord trainer, and practice drills. Lifetime access.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/guitar/waitlist/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
-<title>Gideon Guitar Method — Learn Guitar Online</title>
+<title>Guitar: First Things First — Learn Guitar Online</title>
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A1628'/><path d='M13 5 L13 11 L10 16 C9 20 10 27 16 27 C22 27 23 20 22 16 L19 11 L19 5 Z' fill='%23C9A84C'/><circle cx='16' cy='21' r='3' fill='%230A1628'/><rect x='14' y='12' width='4' height='2' fill='%230A1628'/><line x1='15' y1='5' x2='15' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='16' y1='5' x2='16' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='17' y1='5' x2='17' y2='25' stroke='%230A1628' stroke-width='0.4'/></svg>
 ">
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css"><link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
@@ -74,7 +74,7 @@
 </head>
 <body class="guitar-app">
 <div class="screen active">
-  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Gideon Guitar Method</div><div id="user-area"></div></div>
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Guitar: First Things First</div><div id="user-area"></div></div>
   <div class="scrollable" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <div class="presell-wrap" id="presell-wrap">
 
@@ -93,14 +93,14 @@
 
       <!-- Hero -->
       <div class="presell-section">
-        <div class="presell-h1">Learn to Play <em>Your Favorite Ghanaian Songs</em> on Guitar — Even If You've Never Touched One Before</div>
-        <div class="presell-sub">16 modules · 64 video lessons · Real-time pitch detection · Deliberate practice system · <span data-g-symbol-amount>GH₵ 299</span> lifetime</div>
+        <div class="presell-h1">Seek First the <em>System</em> — and the Songs Will Be Added: <em>The Matthew 6:33 Method</em> for Guitar</div>
+        <div class="presell-sub">16 modules · 64 video lessons · Real-time pitch detection · Deliberate practice system · by Gideon Abochie · Registration <span data-g-amount>GH₵ 299</span></div>
         <div class="presell-proof" id="proof-bar">
           <div class="presell-proof-num skeleton" id="wl-count">—</div>
-          <div class="presell-proof-text"><strong>Students have joined</strong> the Gideon Guitar Method. <span id="wl-today" style="color:var(--gld);font-weight:600"></span></div>
+          <div class="presell-proof-text"><strong>Students have joined</strong> the Guitar: First Things First. <span id="wl-today" style="color:var(--gld);font-weight:600"></span></div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-lg" onclick="openPayment()">Buy Full Access — <span data-g-symbol-amount>GH₵ 299</span> <i class="ti ti-arrow-right"></i></button>
+          <button class="btn btn-primary btn-lg" onclick="openPayment()">Register — Bronze Foundation <i class="ti ti-arrow-right"></i></button>
           <a href="/guitar/learn/" class="btn btn-ghost btn-lg" onclick="Guitar.trackEvent('start_free',{page:'waitlist'})">Try Free <i class="ti ti-arrow-right"></i></a>
         </div>
       </div>
@@ -120,8 +120,8 @@
 
       <!-- Solution -->
       <div class="presell-section">
-        <div class="presell-h1 presell-h1--sm"><em>The Gideon Guitar Method</em> — Built on Science, Not Guesswork</div>
-        <div class="presell-p">This isn't another chord chart. It's a complete practice system based on peer-reviewed research:</div>
+        <div class="presell-h1 presell-h1--sm"><em>The Matthew 6:33 Method</em> — Built on Order, Not Guesswork</div>
+        <div class="presell-p">This isn't another chord chart. It's a complete practice system in the order David learned the lyre — and the order modern learning science confirms:</div>
         <div class="value-grid">
           <div class="value-item"><div class="value-icon">🎯</div><div class="value-title">Deliberate Practice</div><div class="value-desc">Ericsson's method — always work on your weakest link, not what you already know</div></div>
           <div class="value-item"><div class="value-icon">🔄</div><div class="value-title">Spaced Repetition</div><div class="value-desc">15 min/day beats 3 hr/weekends. Your retention triples</div></div>
@@ -230,6 +230,9 @@ function toggleFAQ(el) {
 (async function() {
   if (typeof Guitar === 'undefined') return;
   const user = await Guitar.init();
+  // Owned tier for the plan sheet
+  try { window.wlOwned = (await Guitar.getEnrollStatus()).tier; } catch(e) { window.wlOwned = 'none'; }
+
   Guitar.applyConfig();
 
   // Load waitlist count
@@ -264,52 +267,7 @@ function toggleFAQ(el) {
     if (typeof Guitar === 'undefined') return;
     Guitar.trackEvent('buy_click', { page: 'waitlist' });
     if (!user) { Guitar.showRegisterModal({redirect:'/guitar/waitlist/?registered=1'}); return; }
-    Guitar.showSheet(`
-      <div style="text-align:center;padding-top:8px">
-        <div style="font-size:48px;margin-bottom:8px">🎸</div>
-        <div class="section-title" style="justify-content:center">Gideon Guitar Method</div>
-        <div class="paywall-price"><span data-g-symbol-amount>GH₵ 299</span></div>
-        <div class="paywall-desc">One-time payment — lifetime access to all 16 modules, 64 lessons, 15+ Ghanaian songs, and the full practice engine.</div>
-        <ul class="paywall-features">
-          <li><span class="check">✅</span> 16 modules — Foundation to Performance</li>
-          <li><span class="check">✅</span> 64 video lessons with YouTube tutorials</li>
-          <li><span class="check">✅</span> 15+ Ghanaian songs with chord charts</li>
-          <li><span class="check">✅</span> Practice engine with pitch detection</li>
-          <li><span class="check">✅</span> Progress tracking — streaks, XP, leaderboards</li>
-          <li><span class="check">✅</span> Lifetime access — one payment, forever</li>
-        </ul>
-        <button class="btn btn-primary btn-block" id="wl-pay-now-btn">Pay <span data-g-symbol-amount>GH₵ 299</span> Now <i class="ti ti-arrow-right"></i></button>
-        <button class="btn btn-ghost btn-block mt-sm" id="wl-pay-momo-btn">Pay with Mobile Money (Moolre)</button>
-        <button class="btn btn-ghost btn-block mt-sm" onclick="Guitar.hideSheet()">Maybe Later</button>
-        <div class="trust-row"><span>&#128274; Secured by ExpressPay &amp; Moolre</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
-        <div class="trust-sub">MoMo &middot; Card — charged in GHS. 14-day refund if no coursework past Module 5 is accessed.</div>
-        <p id="wl-pay-error" style="color:var(--red-light);font-size:12px;text-align:center;margin-top:8px;display:none"></p>
-      </div>
-    `);
-    setTimeout(() => {
-      async function startPay(gateway) {
-        try {
-          const data = await Guitar.enroll();
-          if (data.alreadyUnlocked) {
-            Guitar.hideSheet();
-            Guitar.showToast('Already unlocked!','success');
-            return;
-          }
-          if (!data.tx_ref) {
-            Guitar.hideSheet();
-            Guitar.showToast('Enrollment successful!','success');
-            return;
-          }
-          Guitar.hideSheet();
-          Guitar.showToast('Opening payment...', 'info');
-          await Guitar.openGateway(data.tx_ref, gateway, '/guitar/learn/?upgrade=pending');
-        } catch(e) {
-          Guitar.showToast((e && e.message) ? e.message + ' — no charge was made.' : 'Network error. No charge was made.', 'error');
-        }
-      }
-      document.getElementById('wl-pay-now-btn').onclick = function() { startPay('expresspay'); };
-      document.getElementById('wl-pay-momo-btn').onclick = function() { startPay('moolre'); };
-    }, 100);
+    Guitar.openPlanSheet({ owned: (typeof wlOwned !== 'undefined' && wlOwned) || 'none' });
   };
 })();
 </script>

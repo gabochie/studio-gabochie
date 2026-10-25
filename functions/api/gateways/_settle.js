@@ -58,14 +58,14 @@ export async function settlePaidTx(env, db, p) {
       var gExisting = await db.prepare("SELECT status FROM guitar_payments WHERE flw_tx_ref = ?").bind(tx_ref).first();
       if (!gExisting || gExisting.status !== 'completed') {
         await db.prepare("UPDATE guitar_payments SET status = 'completed' WHERE flw_tx_ref = ?").bind(tx_ref).run();
-        var gPay = await db.prepare('SELECT user_id, email FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
+        var gPay = await db.prepare('SELECT user_id, email, plan FROM guitar_payments WHERE flw_tx_ref = ?').bind(tx_ref).first();
         if (gPay && gPay.user_id) {
           await db.prepare(
             'INSERT INTO guitar_user_stats (user_id, total_xp, level, updated_at) VALUES (?, 0, 1, datetime(\'now\')) ON CONFLICT(user_id) DO NOTHING'
           ).bind(gPay.user_id).run();
         }
         var gBuyer = await guitarBuyer(db, tx_ref, (gPay && gPay.email) || donor_email);
-        await sendGuitarReceipt(env, { email: gBuyer.email, name: gBuyer.name, phone: gBuyer.phone, txRef: tx_ref, amount: verifiedAmount });
+        await sendGuitarReceipt(env, { email: gBuyer.email, name: gBuyer.name, phone: gBuyer.phone, txRef: tx_ref, amount: verifiedAmount, plan: (gPay && gPay.plan) || 'full' });
       }
     } catch (_e) {}
   }
@@ -73,7 +73,7 @@ export async function settlePaidTx(env, db, p) {
   // Mark guitar course enrollment
   if (event === 'charge.completed' && tx_ref.startsWith('guitar_')) {
     try {
-      await queueEmail(env, donor_email, donor_name, 'Welcome to the Gideon Guitar Method', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. You now have lifetime access to all 16 modules, 64 video lessons, and the full practice engine.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
+      await queueEmail(env, donor_email, donor_name, 'Welcome to Guitar: First Things First', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. Your unlock is now active — seek first the system, and the songs will be added.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
     } catch (_) {}
   }
 

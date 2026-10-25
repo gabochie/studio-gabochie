@@ -145,16 +145,21 @@ export async function finalizeCryptoPayment(env, opts) {
   }
 
   if ((purpose === 'guitar' || meta.guitar) && meta.user_id) {
-    const gp = await db.prepare("SELECT id, flw_tx_ref FROM guitar_payments WHERE user_id = ? AND status = 'pending' ORDER BY id DESC LIMIT 1").bind(meta.user_id).first().catch(function () { return null; });
+    const gp = await db.prepare("SELECT id, flw_tx_ref, plan FROM guitar_payments WHERE user_id = ? AND status = 'pending' ORDER BY id DESC LIMIT 1").bind(meta.user_id).first().catch(function () { return null; });
     if (gp) {
       await db.prepare("UPDATE guitar_payments SET status = 'completed', flw_tx_ref = ? WHERE id = ?").bind(gp.flw_tx_ref || gateway_txid || tx_ref, gp.id).run();
     }
+    var planLabels = { bronze: 'Bronze Registration', silver: 'Silver Unlock', gold: 'Gold Unlock', apprentice: 'Guitar Apprentice', full: 'Guitar Full Access' };
+    var gPlan = gp && gp.plan ? gp.plan : 'full';
+    var gMsg = (gPlan === 'apprentice' || gPlan === 'full')
+      ? 'All 16 modules and the full song library are now unlocked.'
+      : 'Your ' + (planLabels[gPlan] || 'module unlock') + ' is now active — seek first the system, and the songs will be added.';
     try {
       await db.prepare('INSERT OR IGNORE INTO guitar_user_stats (user_id) VALUES (?)').bind(meta.user_id).run();
     } catch (_e) {}
-    try { await generateInvoice(env, 'course', 'guitar_payments', { name: name, email: email, phone: row.donor_phone, amount: amount, currency: row.currency || 'GHS', tx_ref: tx_ref, items: [{ description: 'Guitar Full Access', quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
+    try { await generateInvoice(env, 'course', 'guitar_payments', { name: name, email: email, phone: row.donor_phone, amount: amount, currency: row.currency || 'GHS', tx_ref: tx_ref, items: [{ description: 'Guitar — ' + (planLabels[gPlan] || 'Course'), quantity: 1, unit_price: amount, total: amount }] }); } catch (_) {}
     await sendCryptoMail(env, email, name, 'Guitar Unlocked — Studio Gabochie',
-      ['Your crypto payment of <strong>' + (row.currency || 'GHS') + ' ' + amount.toFixed(2) + '</strong> is confirmed. All 16 modules and the full song library are now unlocked.'],
+      ['Your crypto payment of <strong>' + (row.currency || 'GHS') + ' ' + amount.toFixed(2) + '</strong> is confirmed. ' + gMsg],
       { url: 'https://studio.gabochie.com/guitar/learn/', label: 'Start Learning' });
     await markDonationRow(env, tx_ref, gateway_txid);
     return { status: 'ok', purpose: 'guitar' };

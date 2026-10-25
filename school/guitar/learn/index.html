@@ -5,7 +5,7 @@
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Learn — Gideon Guitar Method</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Learn — Guitar: First Things First</title>
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A1628'/><path d='M13 5 L13 11 L10 16 C9 20 10 27 16 27 C22 27 23 20 22 16 L19 11 L19 5 Z' fill='%23C9A84C'/><circle cx='16' cy='21' r='3' fill='%230A1628'/><rect x='14' y='12' width='4' height='2' fill='%230A1628'/><line x1='15' y1='5' x2='15' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='16' y1='5' x2='16' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='17' y1='5' x2='17' y2='25' stroke='%230A1628' stroke-width='0.4'/></svg>
 ">
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css">
@@ -105,8 +105,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function isModuleAccessible(m) {
     if (m.id <= _freeMods) return true;
-    if (m.id <= 5) return !!user;
-    return enrollStatus?.unlocked === true;
+    if (m.id <= 5) return !!enrollStatus?.bronzeUnlocked;
+    if (m.id <= 11) return !!enrollStatus?.silverUnlocked;
+    return !!enrollStatus?.goldUnlocked;
   }
 
   function renderModules() {
@@ -125,9 +126,12 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     if (!user) {
       c.innerHTML += `<div style="text-align:center;margin-top:24px;padding:20px;background:rgba(255,255,255,.04);border-radius:var(--radius-lg)"><div style="font-size:14px;margin-bottom:8px">🔓 Modules 1-${_freeMods} are free</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">${_freeMods < 5 ? 'Sign in to unlock Modules ' + (_freeMods + 1) + '-5. ' : ''}Purchase full access for all 16 modules.</div><button class="btn btn-primary btn-sm" onclick="Guitar.showRegisterModal({redirect:'/school/guitar/learn/'})">Sign In <i class="ti ti-arrow-right"></i></button></div>`;
-    } else if (!enrollStatus?.unlocked) {
-      c.innerHTML += `<div style="text-align:center;margin-top:24px;padding:20px;background:rgba(255,255,255,.04);border-radius:var(--radius-lg)"><div style="font-size:14px;margin-bottom:8px">🔓 Premium Locked</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">Modules ${Math.max(_freeMods + 1, 6)}-16 are premium. Pay once, unlock forever.</div><a href="/school/guitar/songs/" class="btn btn-primary btn-sm">Pay ${Guitar.CURRENCY_SYMBOL} ${Guitar.PRICE} <i class="ti ti-arrow-right"></i></a></div>`;
-      Guitar.trackEvent('paywall_view', { page: 'learn_modules' });
+    } else if (!enrollStatus?.goldUnlocked) {
+      const tier = enrollStatus?.tier || 'none';
+      const nextPlan = tier === 'none' ? 'bronze' : tier === 'bronze' ? 'silver' : 'gold';
+      const nextLabel = nextPlan === 'bronze' ? 'Register — Bronze Foundation' : nextPlan === 'silver' ? 'Unlock Silver — Your First Songs' : 'Unlock Gold — The Finish Line';
+      c.innerHTML += `<div style="text-align:center;margin-top:24px;padding:20px;background:rgba(255,255,255,.04);border-radius:var(--radius-lg)"><div style="font-size:14px;margin-bottom:8px">🔒 ${nextLabel}</div><div style="font-size:12px;color:var(--text3);margin-bottom:16px">Seek first the system — and the songs will be added.</div><button class="btn btn-primary btn-sm" onclick="Guitar.openPlanSheet({owned:'${tier}'})">${nextLabel} <i class="ti ti-arrow-right"></i></button></div>`;
+      Guitar.trackEvent('paywall_view', { page: 'learn_modules', tier: tier });
     }
     document.querySelectorAll('.card-hover').forEach((el,i) => { el.style.animation = `fadeUp .4s var(--ease-out) both`; el.style.animationDelay = `${i*60}ms`; });
   }
@@ -137,12 +141,15 @@ window.addEventListener('DOMContentLoaded', function() {
     const mod = MODULES.find(m => m.id === id);
     if (!mod) { renderModules(); return; }
     if (!isModuleAccessible(mod)) {
+      const tier = enrollStatus?.tier || 'none';
+      const nextPlan = mod.id <= 5 ? 'bronze' : mod.id <= 11 ? 'silver' : 'gold';
+      const nextLabel = nextPlan === 'bronze' ? 'Register — Bronze Foundation' : nextPlan === 'silver' ? 'Unlock Silver' : 'Unlock Gold';
       c.innerHTML = `<button class="back-btn" onclick="location.href='/school/guitar/learn/'"><i class="ti ti-arrow-left"></i>All Modules</button>
         <div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:12px">🔒</div>
         <div style="font-size:16px;font-weight:600;margin-bottom:8px">Module Locked</div>
-        <div style="font-size:13px;color:var(--text3);margin-bottom:20px">${user?'Purchase full access to unlock this module.':(_freeMods < 5 ? 'Sign in to unlock Modules ' + (_freeMods + 1) + '-5, or ' : '') + 'purchase full access for all 16.'}</div>
-        ${user?`<a href="/school/guitar/songs/" class="btn btn-primary">Pay ${Guitar.CURRENCY_SYMBOL} ${Guitar.PRICE}</a>`:'<button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:\'/school/guitar/learn/\'})">Sign In</button>'}</div>`;
-      Guitar.trackEvent('paywall_view', { page: 'learn_module_locked', module: id });
+        <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Seek first the system — ${user ? (nextPlan === 'bronze' ? 'registration opens the Bronze foundation.' : nextPlan === 'silver' ? 'Silver opens your first songs, Modules 6-11.' : 'Gold opens the finish line, Modules 12-16.') : 'Create a free account to preview Modules 1-' + _freeMods + '.'}</div>
+        ${user?`<button class="btn btn-primary" onclick="Guitar.openPlanSheet({owned:'${tier}'})">${nextLabel} <i class="ti ti-arrow-right"></i></button>`:'<button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:\'/school/guitar/learn/\'})">Sign In</button>'}</div>`;
+      Guitar.trackEvent('paywall_view', { page: 'learn_module_locked', module: id, tier: tier });
       return;
     }
     let progress = {};
@@ -292,7 +299,7 @@ window.addEventListener('DOMContentLoaded', function() {
       61:'<p>Consistent practice beats marathon sessions.</p><p><strong>Daily minimum:</strong> 10 minutes every day is better than 2 hours once a week.</p><p><strong>Structure:</strong> Warmup (2 min) → Weakness drill (3 min) → Song (3 min) → Fun (2 min).</p><p>Use the practice timer to track your sessions.</p>',
       62:'<p>Recording yourself is the best way to hear your true playing.</p><p><strong>Phone recording:</strong> Your phone microphone is good enough to start. Record a 30-second clip of you playing a song.</p><p><strong>Listen critically:</strong> Compare your timing, chord clarity, and dynamics to the original. Pick one thing to improve next session.</p>',
       63:'<p>You do not need expensive gear to sound good.</p><p><strong>Essential:</strong> A working guitar that stays in tune, a tuner, a strap, and extra strings.</p><p><strong>Nice to have:</strong> A capo (lets you play in different keys), a pick variety pack, a music stand, and a phone stand for recording.</p>',
-      64:'<p>You have completed all 16 modules of the Gideon Guitar Method.</p><p><strong>Where to go next:</strong></p><ul><li>Keep using the Practice section — the One-Minute Drill and Metronome will always challenge you</li><li>Learn songs by your favourite artists using the Song Learning Method</li><li>Record yourself and share your progress</li><li>Consider finding a teacher or joining a band to keep growing</li></ul><p>Music is a lifelong journey. The 64 lessons here are your foundation — what you build on top is up to you.</p>'
+      64:'<p>You have completed all 16 modules of the Guitar: First Things First.</p><p><strong>Where to go next:</strong></p><ul><li>Keep using the Practice section — the One-Minute Drill and Metronome will always challenge you</li><li>Learn songs by your favourite artists using the Song Learning Method</li><li>Record yourself and share your progress</li><li>Consider finding a teacher or joining a band to keep growing</li></ul><p>Music is a lifelong journey. The 64 lessons here are your foundation — what you build on top is up to you.</p>'
     };
     return content[lesId] || '<p>Follow the lesson content below and practice along with your guitar.</p>';
   }
