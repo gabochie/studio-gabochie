@@ -120,7 +120,11 @@ window.addEventListener('DOMContentLoaded', function() {
       c.innerHTML += `<div class="curriculum-tier"><div class="tier-header" style="margin-top:16px"><span class="tier-badge">${td[t].icon}</span><div><div class="tier-title">${td[t].name}</div></div></div>`;
       ms.forEach(m => {
         const access = isModuleAccessible(m);
-        c.innerHTML += `<div class="module-card card-hover" ${access?`onclick="location.href='?module=${m.id}'"`:''} style="${access?'':'opacity:.5;cursor:default'}"><div class="module-num">${access?'✓':'🔒'}</div><div class="module-info"><div class="module-name">${m.title}</div><div class="module-lessons">${m.lessons.length} lessons</div></div>${access?'<i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i>':''}</div>`;
+        const tierName = { bronze:'Bronze', silver:'Silver', gold:'Gold' }[t];
+        const unlockCta = `onclick="Guitar.openPlanSheet({owned:'${enrollStatus?.tier||'none'}'})"`;
+        c.innerHTML += access
+          ? `<div class="module-card card-hover" onclick="location.href='?module=${m.id}'"><div class="module-num">✓</div><div class="module-info"><div class="module-name">${m.title}</div><div class="module-lessons">${m.lessons.length} lessons</div></div><i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px"></i></div>`
+          : `<div class="module-card card-hover" ${unlockCta} style="cursor:pointer"><div class="module-num">🔒</div><div class="module-info"><div class="module-name">${m.title}</div><div class="module-lessons">${m.lessons.length} lessons · <span style="color:var(--gld);font-weight:600">${td[t].icon} ${tierName} — ${Guitar.TIER_PRICES[t]||''} ${Guitar.CURRENCY_SYMBOL||'GH₵'}</span></div></div><span class="btn btn-gold btn-sm" style="flex-shrink:0">Unlock</span></div>`;
       });
       c.innerHTML += `</div>`;
     }
