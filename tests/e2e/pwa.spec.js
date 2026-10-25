@@ -53,7 +53,7 @@ test.describe('PWA shell', function () {
     await page.setViewportSize({ width: 390, height: 844 });
     var bar = page.locator('.tab-bar');
     await expect(bar).toBeVisible();
-    for (const label of ['Home', 'Courses', 'Church', 'Books', 'Account']) {
+    for (const label of ['Home', 'Courses', 'Search', 'Church', 'Books', 'Account']) {
       await expect(bar.getByText(label, { exact: true })).toBeVisible();
     }
     await expect(bar.locator('[data-tab="home"].active')).toBeVisible();
@@ -71,7 +71,7 @@ test.describe('PWA shell', function () {
   test('exactly one bottom nav per page, guitar keeps its 6-item bar', async function ({ page }) {
     await page.setViewportSize({ width: 390, height: 844 });
     var cases = [
-      { url: '/', bar: 'nav.tab-bar', items: 5 },
+      { url: '/', bar: 'nav.tab-bar', items: 6 },
       { url: '/guitar/learn/', bar: 'nav.bottom-nav', items: 6 },
       { url: '/guitar/dashboard/', bar: 'nav.bottom-nav', items: 6 }
     ];
@@ -88,15 +88,17 @@ test.describe('PWA shell', function () {
     await expect(page.locator('.bottom-nav .nav-item.active')).toContainText('Progress');
   });
 
-  test('desktop header reads Courses, Church, Books in order', async function ({ page }) {
+  test('desktop header reads Courses, Church, Books, Search in order', async function ({ page }) {
     await page.goto('/');
     var links = page.locator('.nav-links a.nav-active-link');
-    await expect(links).toHaveCount(3);
+    await expect(links).toHaveCount(4);
     await expect(links.nth(0)).toHaveText('Courses');
     await expect(links.nth(1)).toHaveText('Church');
     await expect(links.nth(2)).toHaveText('Books');
+    await expect(links.nth(3)).toHaveText('Search');
     await expect(links.nth(1)).toHaveAttribute('href', '/love-of-the-lord/');
     await expect(links.nth(2)).toHaveAttribute('href', '/books/');
+    await expect(links.nth(3)).toHaveAttribute('href', '/search/');
   });
 
   test('mobile install banner appears on iOS, closes, and remembers', async function ({ browser }) {
