@@ -78,7 +78,7 @@
 .guitar-app {
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   color: var(--text);
-  background: var(--black);
+  background: var(--bg); /* was var(--black) #0a0a0a — the brand navy now flows from the global token */
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -140,11 +140,16 @@
 }
 .nav-item span { font-size: 9px; font-weight: 500; letter-spacing: .2px; }
 
+/* Canvas: paint the guitar-app body navy so overscroll never flashes white.
+   Uses :root (not html) to outrank main.css's prefers-color-scheme :root rule;
+   guitar.css loads after main.css, so navy wins in both light and dark mode. */
+:root{background:var(--bg)}
+body.guitar-app{background:var(--bg)}
+
 /* ===== Mobile: dock section nav to the bottom (app standard) ===== */
 @media(max-width:1023px){
   .bottom-nav{position:fixed;left:0;right:0;top:auto;bottom:0;z-index:var(--z-sticky)}
-html{background:var(--bg)}
-body.guitar-app{background:var(--bg);padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px)) !important}
+  body.guitar-app{padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px)) !important}
 body.ga-cookie-open .mini-player{bottom:calc(60px + var(--cookie-h,0px) + env(safe-area-inset-bottom, 0px))}
 body.ga-cookie-open #pay-now-btn,body.ga-cookie-open #wl-pay-now-btn{margin-bottom:calc(var(--cookie-h,0px) + 76px)}
   body{padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px))}
