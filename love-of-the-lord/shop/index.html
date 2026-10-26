@@ -27,29 +27,29 @@
 <link rel="stylesheet" href="/assets/css/main.css">
 <link rel="stylesheet" href="/assets/css/lotl.css">
 <style>
-:root{--cream:#F7F1E5}
-body{background:#0A1628}
+:root{--cream:var(--ltl-cream)}
+body{background:var(--bg-primary)}
 /* Topbar + footer + kicker live in /assets/css/lotl.css */
 .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
-.shophero{padding:56px 0 10px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.16),transparent 55%),linear-gradient(180deg,#0A1628,#131f38 70%,#0A1628)}
+.shophero{padding:56px 0 10px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.16),transparent 55%),linear-gradient(180deg,var(--bg-primary),var(--ltl-navy-mid) 70%,var(--bg-primary))}
 .shophero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,5vw,54px);line-height:.98;color:#fff;text-transform:uppercase;margin:8px 0 10px}
-.shophero h1 span{color:#C9A84C}
-.shophero p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:15px;max-width:640px}
+.shophero h1 span{color:var(--gold)}
+.shophero p{font-family:'DM Sans',sans-serif;color:var(--text-body);font-size:15px;max-width:640px}
 .shopsec{padding:30px 0 6px}
-.shopsec h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:#F1F5F9;text-transform:uppercase;margin-bottom:4px}
-.shopsec h2 span{color:#C9A84C}
-.shopsec .sub{font-family:'DM Sans',sans-serif;color:#8A9BB5;font-size:13px;margin-bottom:14px}
+.shopsec h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:var(--text-primary);text-transform:uppercase;margin-bottom:4px}
+.shopsec h2 span{color:var(--gold)}
+.shopsec .sub{font-family:'DM Sans',sans-serif;color:var(--text-dim);font-size:13px;margin-bottom:14px}
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
 .shop-grid .lotl-card{display:flex;flex-direction:column;gap:8px}
-.shop-grid .price{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;color:#C9A84C}
+.shop-grid .price{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;color:var(--gold)}
 .shop-grid .lotl-card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
-#orderSuccess{display:none;background:rgba(52,199,123,.12);border:1px solid #34C77B;color:#34C77B;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px;margin:18px 0}
-#myMusic{display:none;background:#0F1E38;border:1px solid #C9A84C;border-radius:14px;padding:18px;margin:18px 0}
-#myMusic h3{font-family:'Barlow Condensed',sans-serif;color:#F1F5F9;font-size:20px;margin:0 0 8px}
-#myMusic a.dl{display:block;font-family:'DM Sans',sans-serif;font-size:13px;color:#C9A84C;margin:6px 0}
-.notify{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:18px;min-width:0}
-.notify h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#F1F5F9;margin:0 0 6px}
-.notify p{font-family:'DM Sans',sans-serif;font-size:13px;color:#8A9BB5;margin:0 0 10px}
+#orderSuccess{display:none;background:rgba(52,199,123,.12);border:1px solid var(--green);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px;margin:18px 0}
+#myMusic{display:none;background:var(--bg-card);border:1px solid var(--gold);border-radius:14px;padding:18px;margin:18px 0}
+#myMusic h3{font-family:'Barlow Condensed',sans-serif;color:var(--text-primary);font-size:20px;margin:0 0 8px}
+#myMusic a.dl{display:block;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gold);margin:6px 0}
+.notify{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;min-width:0}
+.notify h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--text-primary);margin:0 0 6px}
+.notify p{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-dim);margin:0 0 10px}
 .notify form{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
 .lotl-foot{margin-top:0}
 @media(max-width:640px){.shop-grid{grid-template-columns:1fr}.notify form{grid-template-columns:1fr}}
@@ -118,7 +118,7 @@ body{background:#0A1628}
 <div class="shop-grid">
 <div class="lotl-card"><div class="lotl-tag">Coming soon</div><h3>Full Sermon Archive</h3><p>Every Sunday sermon as downloadable MP3 — full and refresh editions. Leave your email for opening-week access.</p><div class="notify" style="border:none;padding:0"><form id="sermonForm"><div><label class="lotl-label" for="sermonName">Name</label><input class="lotl-field" id="sermonName" name="name" placeholder="Your name" aria-label="Your name"></div><div><label class="lotl-label" for="sermonEmail">Email</label><input class="lotl-field" id="sermonEmail" name="email" type="email" required placeholder="Email" aria-label="Email"></div><div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div><button class="lotl-btn" type="submit">Notify me</button></form><div class="lotl-ok" style="display:none" id="sermonOk">You are on the list. Watch your inbox.</div></div></div>
 </div>
-<p class="lotl-muted" style="margin:18px 0 40px">Payments secured by ExpressPay &amp; crypto · <a href="/legal/refund.html" style="color:#C9A84C">Refund policy</a> · <a href="mailto:love@gabochie.com" style="color:#C9A84C">love@gabochie.com</a></p>
+<p class="lotl-muted" style="margin:18px 0 40px">Payments secured by ExpressPay &amp; crypto · <a href="/legal/refund.html" style="color:var(--gold)">Refund policy</a> · <a href="mailto:love@gabochie.com" style="color:var(--gold)">love@gabochie.com</a></p>
 </section>
 </main>
 
