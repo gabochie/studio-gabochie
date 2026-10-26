@@ -5,233 +5,126 @@
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="description" content="Track your guitar practice progress, view achievements, and monitor your learning journey with Guitar: First Things First."><meta property="og:title" content="Progress Dashboard — Guitar: First Things First"><meta property="og:description" content="Track your guitar practice progress, view achievements, and monitor your learning journey with Guitar: First Things First."><meta property="og:type" content="website"><meta property="og:url" content="https://studio.gabochie.com/guitar/dashboard/"><title>Dashboard — Guitar: First Things First</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="description" content="Track your guitar learning journey: XP, streaks, skill levels, achievements, chord mastery and your 16-module progress calendar."><meta property="og:title" content="Progress Dashboard — Guitar: First Things First"><meta property="og:description" content="Track your guitar learning journey: XP, streaks, skill levels, achievements, chord mastery and your 16-module progress calendar."><meta property="og:type" content="website"><meta property="og:url" content="https://studio.gabochie.com/guitar/dashboard/"><title>Progress — Guitar: First Things First</title>
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A1628'/><path d='M13 5 L13 11 L10 16 C9 20 10 27 16 27 C22 27 23 20 22 16 L19 11 L19 5 Z' fill='%23C9A84C'/><circle cx='16' cy='21' r='3' fill='%230A1628'/><rect x='14' y='12' width='4' height='2' fill='%230A1628'/><line x1='15' y1='5' x2='15' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='16' y1='5' x2='16' y2='25' stroke='%230A1628' stroke-width='0.4'/><line x1='17' y1='5' x2='17' y2='25' stroke='%230A1628' stroke-width='0.4'/></svg>
 ">
 <link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="/assets/css/guitar.css"><link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --d-bg: #0a0a0f;
-  --d-bg2: #111118;
-  --d-bg3: #1a1a24;
-  --d-bg4: #22222f;
-  --d-surface: #1e1e2a;
-  --d-border: rgba(255,255,255,0.08);
-  --d-border2: rgba(255,255,255,0.15);
-  --d-accent: #e8c547;
-  --d-accent2: #f5d76a;
-  --d-accent-dim: rgba(232,197,71,0.12);
-  --d-accent-glow: rgba(232,197,71,0.25);
-  --d-green: #4ade80;
-  --d-green-dim: rgba(74,222,128,0.12);
-  --d-blue: #60a5fa;
-  --d-blue-dim: rgba(96,165,250,0.12);
-  --d-red: #f87171;
-  --d-red-dim: rgba(248,113,113,0.12);
-  --d-purple: #a78bfa;
-  --d-purple-dim: rgba(167,139,250,0.12);
-  --d-text: #f0f0f8;
-  --d-text2: #9090a8;
-  --d-text3: #5a5a70;
-  --d-r: 10px;
-  --d-r2: 16px;
-}
-body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--d-bg); }
-::-webkit-scrollbar-thumb { background: var(--d-bg4); border-radius: 2px; }
-.app { display: flex; height: 100vh; overflow: hidden; }
-.sidebar { width: 260px; min-width: 260px; background: var(--d-bg2); border-right: 1px solid var(--d-border); display: flex; flex-direction: column; overflow-y: auto; }
-.main { flex: 1; overflow-y: auto; }
-.brand { padding: 24px 20px 16px; border-bottom: 1px solid var(--d-border); }
-.brand-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--d-accent); line-height: 1; }
-.brand-sub { font-size: 11px; color: var(--d-text3); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
-.sidebar-section { padding: 12px 0; }
-.sidebar-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--d-text3); padding: 0 20px 8px; font-weight: 500; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 14px; color: var(--d-text2); transition: all .15s; border-left: 2px solid transparent; text-decoration: none; }
-.nav-item:hover { background: var(--d-bg3); color: var(--d-text); border-left-color: var(--d-border2); }
-.nav-item.active { background: var(--d-accent-dim); color: var(--d-accent); border-left-color: var(--d-accent); }
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge { margin-left: auto; background: var(--d-accent); color: #000; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
-.streak-card-s { margin: 12px; background: var(--d-accent-dim); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r); padding: 14px; }
-.streak-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.streak-flame { font-size: 22px; }
-.streak-num-s { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--d-accent); line-height: 1; }
-.streak-label-s { font-size: 11px; color: var(--d-text2); }
-.streak-bar-s { display: flex; gap: 3px; margin-top: 8px; }
-.streak-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--d-bg4); }
-.streak-dot.done { background: var(--d-accent); }
-.weeks-grid { display: grid; gap: 2px; padding: 0 12px 12px; }
-.week-btn { background: none; border: 1px solid var(--d-border); border-radius: 6px; color: var(--d-text2); padding: 8px 12px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; text-align: left; transition: all .15s; display: flex; align-items: center; justify-content: space-between; }
-.week-btn:hover { border-color: var(--d-border2); color: var(--d-text); }
-.week-btn.active { border-color: var(--d-accent); background: var(--d-accent-dim); color: var(--d-accent); }
-.week-pct { font-size: 11px; color: var(--d-text3); }
-.page-header { padding: 28px 32px 20px; border-bottom: 1px solid var(--d-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; line-height: 1; }
-.page-sub { font-size: 14px; color: var(--d-text2); margin-top: 4px; }
-.header-stats { display: flex; gap: 16px; flex-wrap: wrap; }
-.hstat { text-align: center; background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r); padding: 10px 16px; min-width: 80px; }
-.hstat-num { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--d-accent); }
-.hstat-lbl { font-size: 10px; color: var(--d-text3); letter-spacing: 1px; text-transform: uppercase; }
+/* Progress Dashboard — built on the global design system (main.css tokens,
+   bridged through guitar.css). No private palette. */
 .view { display: none; }
 .view.active { display: block; }
-.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 24px 32px; }
-@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+
+/* Layout */
+.dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 900px) { .dashboard-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .dashboard-grid { grid-template-columns: 1fr; } }
-.card-s { background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r2); padding: 20px; }
+
+/* Cards */
+.card-s { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
 .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.card-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--d-text3); font-weight: 500; }
+.card-title { font-size: var(--text-sm); letter-spacing: 2px; text-transform: uppercase; color: var(--text3); font-weight: 600; }
 .card-icon { font-size: 18px; }
+
+/* Page header + stats */
+.page-header { padding: 4px 0 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.page-title { font-family: var(--font-heading); font-size: var(--text-3xl); letter-spacing: 1px; line-height: 1; }
+.page-sub { font-size: var(--text-base); color: var(--text2); margin-top: 4px; }
+.header-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.hstat { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 16px; min-width: 80px; }
+.hstat-num { font-family: var(--font-heading); font-size: 26px; color: var(--gld); }
+.hstat-lbl { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+
+/* Today's lesson */
+.lesson-today-s { grid-column: 1 / -1; background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%); border: 1px solid var(--gld-glow); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden; }
+.lesson-today-s::before { content: ''; position: absolute; top: -30px; right: -30px; width: 160px; height: 160px; background: var(--gld-glass); border-radius: 50%; }
+.lesson-today-tag { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gld); font-weight: 600; }
+.lesson-today-title { font-family: var(--font-heading); font-size: var(--text-2xl); margin-top: 6px; }
+.lesson-today-desc { font-size: var(--text-base); color: var(--text2); margin-top: 6px; max-width: 500px; line-height: 1.5; }
+.lesson-today-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+.lesson-meta-item { display: flex; align-items: center; gap: 6px; font-size: var(--text-base); color: var(--text2); }
+
+/* XP + streak */
+.xp-bar-wrap { display: flex; align-items: center; gap: 12px; }
+.xp-level { width: 38px; height: 38px; border-radius: 50%; background: var(--gld); color: #0A1628; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; font-family: var(--font-heading); }
+.xp-detail { flex: 1; min-width: 0; }
+.xp-label { font-size: var(--text-base); color: var(--text2); }
+.prog-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.prog-fill { height: 100%; background: var(--gld); border-radius: 3px; transition: width .6s cubic-bezier(0.4,0,0.2,1); }
+.prog-fill.green { background: var(--green-light); }
+.prog-fill.blue { background: var(--blue-light); }
+.prog-fill.purple { background: #a78bfa; }
+.streak-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.streak-flame { font-size: 24px; }
+.streak-num-s { font-family: var(--font-heading); font-size: var(--text-2xl); color: var(--gld); line-height: 1; }
+.streak-label-s { font-size: var(--text-sm); color: var(--text2); }
+.streak-bar-s { display: flex; gap: 3px; }
+.streak-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--bg4); }
+.streak-dot.done { background: var(--gld); }
+
+/* Skill rings */
 .skill-rings { display: flex; flex-wrap: wrap; gap: 14px; }
 .skill-ring-wrap { text-align: center; }
-.skill-ring-lbl { font-size: 11px; color: var(--d-text2); margin-top: 6px; }
-.lesson-today-s { grid-column: 1 / -1; background: linear-gradient(135deg, #1a1a24 0%, #16161f 100%); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r2); padding: 24px; position: relative; overflow: hidden; }
-.lesson-today-s::before { content: ''; position: absolute; top: -30px; right: -30px; width: 160px; height: 160px; background: var(--d-accent-dim); border-radius: 50%; }
-.lesson-today-tag { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--d-accent); font-weight: 600; }
-.lesson-today-title { font-family: 'Bebas Neue', sans-serif; font-size: 30px; margin-top: 6px; }
-.lesson-today-desc { font-size: 14px; color: var(--d-text2); margin-top: 6px; max-width: 500px; }
-.lesson-today-meta { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
-.lesson-meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--d-text2); }
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: var(--d-r); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all .15s; text-decoration: none; }
-.btn-primary { background: var(--d-accent); color: #000; }
-.btn-primary:hover { background: var(--d-accent2); transform: translateY(-1px); }
-.btn-ghost { background: transparent; color: var(--d-text2); border: 1px solid var(--d-border); }
-.btn-ghost:hover { border-color: var(--d-border2); color: var(--d-text); }
-.btn-green { background: var(--d-green); color: #000; }
-.btn-green:hover { opacity: .9; }
-.prog-bar { height: 6px; background: var(--d-bg4); border-radius: 3px; overflow: hidden; margin-top: 8px; }
-.prog-fill { height: 100%; background: var(--d-accent); border-radius: 3px; transition: width .6s cubic-bezier(0.4,0,0.2,1); }
-.prog-fill.green { background: var(--d-green); }
-.prog-fill.blue { background: var(--d-blue); }
-.prog-fill.purple { background: var(--d-purple); }
-.achievement { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--d-border); }
-.achievement:last-child { border-bottom: none; }
-.ach-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--d-accent-dim); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-.ach-name { font-size: 14px; font-weight: 500; }
-.ach-desc { font-size: 12px; color: var(--d-text2); }
-.ach-points { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--d-accent); }
-.xp-bar-wrap { display: flex; align-items: center; gap: 10px; padding: 14px 14px 0; }
-.xp-level { width: 36px; height: 36px; border-radius: 50%; background: var(--d-accent); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; font-family: 'Bebas Neue', sans-serif; }
-.xp-detail { flex: 1; }
-.xp-label { font-size: 12px; color: var(--d-text2); display: flex; justify-content: space-between; }
+.skill-ring-lbl { font-size: var(--text-sm); color: var(--text2); margin-top: 6px; }
+.ring-svg { transform: rotate(-90deg); }
+.ring-bg { stroke: var(--bg4); fill: none; stroke-width: 6; }
+.ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1); }
+
+/* Chord mastery */
 .skill-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.skill-bar-label { font-size: 13px; min-width: 28px; font-family: 'JetBrains Mono', monospace; color: var(--d-accent); }
-.skill-bar-track { flex: 1; height: 8px; background: var(--d-bg4); border-radius: 4px; overflow: hidden; }
+.skill-bar-row:last-child { margin-bottom: 0; }
+.skill-bar-label { font-size: var(--text-base); min-width: 28px; font-family: ui-monospace, 'Cascadia Mono', monospace; color: var(--gld); }
+.skill-bar-track { flex: 1; height: 8px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
 .skill-bar-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
-.skill-bar-pct { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--d-text2); min-width: 36px; text-align: right; }
-.calendar-section { padding: 0 32px 32px; }
+.skill-bar-pct { font-family: ui-monospace, 'Cascadia Mono', monospace; font-size: var(--text-sm); color: var(--text2); min-width: 36px; text-align: right; }
+
+/* Achievements */
+.achievement { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.achievement:last-child { border-bottom: none; }
+.ach-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--gld-glass); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.ach-name { font-size: var(--text-base); font-weight: 500; }
+.ach-desc { font-size: var(--text-sm); color: var(--text2); }
+.ach-points { margin-left: auto; font-family: ui-monospace, 'Cascadia Mono', monospace; font-size: var(--text-base); color: var(--gld); }
+
+/* Journey calendar */
+.calendar-section { margin-top: 28px; }
 .week-section { margin-bottom: 28px; }
-.week-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--d-text2); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
-.week-theme { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--d-accent); background: var(--d-accent-dim); border: 1px solid var(--d-accent-glow); padding: 3px 10px; border-radius: 20px; font-weight: 500; letter-spacing: 1px; }
+.week-title { font-family: var(--font-heading); font-size: var(--text-xl); letter-spacing: 1px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+.week-theme { font-family: var(--font-body); font-size: var(--text-sm); color: var(--gld); background: var(--gld-glass); border: 1px solid var(--gld-glow); padding: 3px 10px; border-radius: 20px; font-weight: 500; letter-spacing: 1px; }
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
 @media(max-width:700px){.days-grid{grid-template-columns:repeat(4,1fr)}}
-.day-card { background: var(--d-surface); border: 1px solid var(--d-border); border-radius: var(--d-r); padding: 12px 10px; cursor: pointer; transition: all .15s; text-align: center; position: relative; }
-.day-card:hover { border-color: var(--d-border2); transform: translateY(-2px); }
-.day-card.completed { border-color: var(--d-green); background: var(--d-green-dim); }
-.day-card.today { border-color: var(--d-accent); background: var(--d-accent-dim); box-shadow: 0 0 20px var(--d-accent-dim); }
-.day-card.locked { opacity: .35; cursor: not-allowed; }
-.day-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; color: var(--d-text2); }
-.day-card.today .day-num { color: var(--d-accent); }
-.day-card.completed .day-num { color: var(--d-green); }
-.day-name { font-size: 10px; color: var(--d-text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
-.day-check { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; background: var(--d-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; }
-.challenge-banner { background: linear-gradient(135deg, var(--d-purple-dim) 0%, var(--d-accent-dim) 100%); border: 1px solid rgba(167,139,250,0.25); border-radius: var(--d-r2); padding: 20px 24px; display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-.challenge-icon { font-size: 40px; }
-.challenge-text { flex: 1; }
-.challenge-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; }
-.challenge-desc { font-size: 14px; color: var(--d-text2); margin-top: 4px; }
-.challenge-reward { background: var(--d-accent); color: #000; padding: 8px 16px; border-radius: var(--d-r); font-weight: 600; font-size: 14px; white-space: nowrap; }
-.ring-svg { transform: rotate(-90deg); }
-.ring-bg { stroke: var(--d-bg4); fill: none; stroke-width: 6; }
-.ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1); }
-.badge-glow { animation: badgePulse 2s ease-in-out infinite; }
-@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 var(--d-accent-glow); } 50% { box-shadow: 0 0 20px 4px var(--d-accent-glow); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-.animate-in { animation: fadeUp .4s ease-out forwards; }
-@media(max-width:768px){
-  .sidebar { width: 200px; min-width: 200px; }
-  .dashboard-grid { padding: 16px; }
-  .page-header { padding: 16px; }
-  .calendar-section { padding: 0 16px 16px; }
-}
-@media(max-width:560px){
-  .sidebar { position: fixed; left: -260px; z-index: 200; transition: left .3s; }
-  .sidebar.open { left: 0; }
-  .main { width: 100%; }
-  .days-grid { grid-template-columns: repeat(5, 1fr); }
-}
-.hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 300; width: 36px; height: 36px; background: var(--d-bg3); border: 1px solid var(--d-border); border-radius: 8px; cursor: pointer; align-items: center; justify-content: center; font-size: 18px; color: var(--d-text); transition: all .15s; }
-.hamburger:hover { background: var(--d-bg4); border-color: var(--d-border2); }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; }
-@media(max-width:560px){ .hamburger { display: flex; } .sidebar.open ~ .sidebar-overlay, .sidebar-overlay.open { display: block; } }
+.day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 10px; cursor: pointer; transition: all .15s; text-align: center; position: relative; }
+.day-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.day-card.completed { border-color: var(--green-light); background: var(--green-dim); }
+.day-card.today { border-color: var(--gld); background: var(--gld-glass); box-shadow: 0 0 20px var(--gld-glass); }
+.day-num { font-family: var(--font-heading); font-size: var(--text-2xl); line-height: 1; color: var(--text2); }
+.day-card.today .day-num { color: var(--gld); }
+.day-card.completed .day-num { color: var(--green-light); }
+.day-name { font-size: 10px; color: var(--text3); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day-check { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #0A1628; }
 
-.toast-s { position: fixed; top: 20px; right: 20px; background: var(--d-surface); border: 1px solid var(--d-accent-glow); border-radius: var(--d-r); padding: 14px 18px; max-width: 300px; z-index: 999; animation: slideIn .4s cubic-bezier(0.34,1.56,0.64,1); display: flex; gap: 10px; align-items: flex-start; }
-.toast-s.hide { animation: slideOut .3s ease-in forwards; }
-@keyframes slideOut { to { transform: translateX(120px); opacity: 0; } }
+/* Challenge banner */
+.challenge-title-l { font-family: var(--font-heading); font-size: var(--text-xl); margin-bottom: 8px; }
+.badge-glow { animation: badgePulse 2s ease-in-out infinite; }
+@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 var(--gld-glow); } 50% { box-shadow: 0 0 20px 4px var(--gld-glow); } }
 </style>
 </head>
-<body>
-<div class="app">
-  <!-- ══ SIDEBAR ══ -->
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="brand-logo">🎸 GIDEON GUITAR</div>
-      <div class="brand-sub">Learn. Practice. Master.</div>
-    </div>
-    <div id="sidebar-xp-area">
-      <div class="xp-bar-wrap">
-        <div class="xp-level" id="xp-level-badge">1</div>
-        <div class="xp-detail">
-          <div class="xp-label"><span id="xp-label-text">Level 1 — Beginner</span></div>
-          <div class="xp-label" style="margin-top:3px"><span id="xp-cur">0</span><span style="color:var(--d-text3)"> / 50 XP</span></div>
-          <div class="prog-bar" style="margin-top:6px"><div class="prog-fill" id="xp-bar" style="width:0%"></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="streak-card-s" id="sidebar-streak" style="margin-top:12px">
-      <div class="streak-top">
-        <span class="streak-flame">🔥</span>
-        <div>
-          <div class="streak-num-s" id="streak-num">0</div>
-          <div class="streak-label-s">Day streak</div>
-        </div>
-      </div>
-      <div class="streak-bar-s" id="streak-bar"></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Navigate</div>
-      <a class="nav-item active" href="/guitar/dashboard/"><span class="nav-icon">⊡</span> Dashboard</a>
-      <a class="nav-item" href="/guitar/learn/"><span class="nav-icon">📅</span> Learn</a>
-      <a class="nav-item" href="/guitar/learn/"><span class="nav-icon">🎯</span> Today's Lesson</a>
-      <a class="nav-item" href="/guitar/practice/"><span class="nav-icon">✋</span> Practice</a>
-      <a class="nav-item" href="/guitar/songs/"><span class="nav-icon">🎵</span> Songs</a>
-      <a class="nav-item" href="/courses/"><span class="nav-icon">←</span> All Courses</a>
-    </div>
-    <div class="sidebar-section" id="sidebar-user-area">
-      <div id="user-area" style="margin-top:4px"></div>
-    </div>
-    <div class="sidebar-section" id="sidebar-modules">
-      <div class="sidebar-label">Modules</div>
-      <div class="weeks-grid" id="weeks-grid"></div>
-    </div>
-  </aside>
-
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
-
-  <!-- ══ MAIN ══ -->
-  <main class="main" id="main">
+<body class="guitar-app">
+<div class="screen active">
+  <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Progress</div><div style="display:flex;gap:12px;align-items:center"><a href="/courses/" style="font-size:11px;color:var(--gld);text-decoration:none;font-weight:600;white-space:nowrap">← All Courses</a><div id="user-area"></div></div></div>
+  <div class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%">
 
     <!-- ══ AUTH GATE ══ -->
-    <div class="view active" id="view-auth" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center">
-      <div style="font-size:56px;margin-bottom:12px">📊</div>
-      <div class="page-title" style="font-size:42px">Your Progress Dashboard</div>
-      <div class="page-sub" style="margin-top:6px;margin-bottom:20px">Sign in to track your learning journey</div>
-      <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/dashboard/'})">Sign In <i class="ti ti-arrow-right"></i></button>
+    <div class="view active" id="view-auth">
+      <div style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 0">
+        <div style="font-size:56px;margin-bottom:12px">📊</div>
+        <div class="page-title">Your Progress Dashboard</div>
+        <div class="page-sub" style="margin:6px 0 20px">Sign in to track your learning journey — XP, streaks and every lesson done.</div>
+        <button class="btn btn-primary" onclick="Guitar.showRegisterModal({redirect:'/guitar/dashboard/'})">Sign In <i class="ti ti-arrow-right"></i></button>
+      </div>
     </div>
 
     <!-- ══ DASHBOARD ══ -->
@@ -242,10 +135,10 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
           <div class="page-sub" id="dash-sub">You're on a streak — keep it going!</div>
         </div>
         <div class="header-stats">
-          <div class="hstat"><div class="hstat-num" style="color:var(--d-accent)" id="h-days">0</div><div class="hstat-lbl">Days Done</div></div>
-          <div class="hstat"><div class="hstat-num" style="color:var(--d-green)" id="h-streak">0</div><div class="hstat-lbl">Day Streak</div></div>
-          <div class="hstat"><div class="hstat-num" style="color:var(--d-blue)" id="h-xp">0</div><div class="hstat-lbl">Total XP</div></div>
-          <div class="hstat"><div class="hstat-num" style="color:var(--d-accent)" id="h-lessons">0</div><div class="hstat-lbl">Lessons Done</div></div>
+          <div class="hstat"><div class="hstat-num" id="h-days">0</div><div class="hstat-lbl">Days Done</div></div>
+          <div class="hstat"><div class="hstat-num" style="color:var(--green-light)" id="h-streak">0</div><div class="hstat-lbl">Day Streak</div></div>
+          <div class="hstat"><div class="hstat-num" style="color:var(--blue-light)" id="h-xp">0</div><div class="hstat-lbl">Total XP</div></div>
+          <div class="hstat"><div class="hstat-num" id="h-lessons">0</div><div class="hstat-lbl">Lessons Done</div></div>
         </div>
       </div>
 
@@ -262,13 +155,39 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
           </div>
         </div>
 
+        <!-- Level / XP -->
+        <div class="card-s" id="sidebar-xp-area">
+          <div class="card-header"><div class="card-title">Level</div><div class="card-icon">⚡</div></div>
+          <div class="xp-bar-wrap">
+            <div class="xp-level" id="xp-level-badge">1</div>
+            <div class="xp-detail">
+              <div class="xp-label" id="xp-label-text">Level 1 — Beginner</div>
+              <div class="xp-label" style="margin-top:2px"><span id="xp-cur">0</span><span style="color:var(--text3)"> / 50 XP</span></div>
+              <div class="prog-bar"><div class="prog-fill" id="xp-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Streak -->
+        <div class="card-s" id="sidebar-streak">
+          <div class="card-header"><div class="card-title">Streak</div><div class="card-icon">🔥</div></div>
+          <div class="streak-top">
+            <span class="streak-flame">🔥</span>
+            <div>
+              <div class="streak-num-s" id="streak-num">0</div>
+              <div class="streak-label-s">Day streak</div>
+            </div>
+          </div>
+          <div class="streak-bar-s" id="streak-bar"></div>
+        </div>
+
         <!-- Skill Rings -->
         <div class="card-s">
           <div class="card-header">
             <div class="card-title">Skill Levels</div>
             <div class="card-icon">🎯</div>
           </div>
-          <div class="skill-rings" id="skill-rings"><div style="font-size:12px;color:var(--d-text2);text-align:center;width:100%;padding:12px">Loading...</div></div>
+          <div class="skill-rings" id="skill-rings"><div style="font-size:var(--text-sm);color:var(--text2);text-align:center;width:100%;padding:12px">Loading...</div></div>
         </div>
 
         <!-- Daily Challenge -->
@@ -277,10 +196,10 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
             <div class="card-title">Daily Challenge</div>
             <div class="card-icon">⚡</div>
           </div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:8px" id="challenge-title">Practice 15 minutes</div>
-          <div style="font-size:13px;color:var(--d-text2);margin-bottom:14px" id="challenge-desc">Complete today's lesson and earn XP</div>
+          <div class="challenge-title-l" id="challenge-title">Practice 15 minutes</div>
+          <div style="font-size:var(--text-base);color:var(--text2);margin-bottom:14px" id="challenge-desc">Complete today's lesson and earn XP</div>
           <div class="prog-bar"><div class="prog-fill" id="challenge-prog" style="width:0%"></div></div>
-          <div style="font-size:12px;color:var(--d-text3);margin-top:6px" id="challenge-stat">0 / 1 lessons</div>
+          <div style="font-size:var(--text-sm);color:var(--text3);margin-top:6px" id="challenge-stat">0 / 1 lessons</div>
           <div style="margin-top:14px"><button class="btn btn-primary" onclick="location.href='/guitar/learn/'" style="width:100%;justify-content:center">Accept Challenge → +50 XP</button></div>
         </div>
 
@@ -290,7 +209,7 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
             <div class="card-title">Recent Achievements</div>
             <div class="card-icon">🏆</div>
           </div>
-          <div id="achievements-list"><div style="font-size:12px;color:var(--d-text2);padding:8px 0">Complete lessons to unlock achievements</div></div>
+          <div id="achievements-list"><div style="font-size:var(--text-sm);color:var(--text2);padding:8px 0">Complete lessons to unlock achievements</div></div>
         </div>
 
         <!-- Chord Mastery -->
@@ -299,7 +218,7 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
             <div class="card-title">Chord Mastery</div>
             <div class="card-icon">✋</div>
           </div>
-          <div id="chord-mastery-bars"><div style="font-size:12px;color:var(--d-text2);padding:8px 0;text-align:center">Learn chords to see mastery</div></div>
+          <div id="chord-mastery-bars"><div style="font-size:var(--text-sm);color:var(--text2);padding:8px 0;text-align:center">Learn chords to see mastery</div></div>
         </div>
 
         <!-- Weekly Practice -->
@@ -308,15 +227,15 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
             <div class="card-title">This Week</div>
             <div class="card-icon">📈</div>
           </div>
-          <div style="display:flex;align-items:flex-end;gap:8px;height:80px;padding-top:8px" id="practice-graph"><div style="font-size:12px;color:var(--d-text2);text-align:center;width:100%;padding:8px">Loading...</div></div>
-          <div style="font-size:12px;color:var(--d-text3);text-align:center;margin-top:8px" id="week-total">0 sessions this week</div>
+          <div style="display:flex;align-items:flex-end;gap:8px;height:80px;padding-top:8px" id="practice-graph"><div style="font-size:var(--text-sm);color:var(--text2);text-align:center;width:100%;padding:8px">Loading...</div></div>
+          <div style="font-size:var(--text-sm);color:var(--text3);text-align:center;margin-top:8px" id="week-total">0 sessions this week</div>
         </div>
       </div>
 
       <!-- 30-Day Journey Calendar -->
-      <div class="calendar-section" style="padding-bottom:40px">
+      <div class="calendar-section" style="padding-bottom:24px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-          <div class="card-title" style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--d-text3);font-weight:500">Your Journey</div>
+          <div class="card-title">Your Journey</div>
           <span class="week-theme">16 Modules · 64 Lessons</span>
         </div>
         <div id="calendar-container"></div>
@@ -325,13 +244,13 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
       <!-- One-Minute Records -->
       <div class="calendar-section" style="padding-bottom:80px">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-          <div class="card-title" style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--d-text3);font-weight:500">⚡ One-Minute Records</div>
+          <div class="card-title">⚡ One-Minute Records</div>
         </div>
-        <div id="om-records"><div style="font-size:12px;color:var(--d-text2);padding:8px 0">No records yet. Practice chord changes!</div></div>
+        <div id="om-records"><div style="font-size:var(--text-sm);color:var(--text2);padding:8px 0">No records yet. Practice chord changes!</div></div>
       </div>
     </div>
 
-  </main>
+  </div>
 </div>
 
 <script src="/assets/js/guitar/app.js"></script>
@@ -343,9 +262,9 @@ body { background: var(--d-bg); color: var(--d-text); font-family: 'DM Sans', sa
 function buildSkillRings(stats) {
   const el = document.getElementById('skill-rings');
   const skills = [
-    { name:'Fretting', val:Math.min(95, stats.fretting||(stats.level||1)*15), color: '#e8c547' },
-    { name:'Strumming', val:Math.min(95, stats.strumming||(stats.level||1)*12), color: '#60a5fa' },
-    { name:'Rhythm', val:Math.min(95, stats.rhythm||(stats.level||1)*10), color: '#4ade80' },
+    { name:'Fretting', val:Math.min(95, stats.fretting||(stats.level||1)*15), color: 'var(--gld)' },
+    { name:'Strumming', val:Math.min(95, stats.strumming||(stats.level||1)*12), color: 'var(--blue-light)' },
+    { name:'Rhythm', val:Math.min(95, stats.rhythm||(stats.level||1)*10), color: 'var(--green-light)' },
   ];
   const r = 20, cx = 26, cy = 26, size = 52;
   const circ = 2 * Math.PI * r;
@@ -374,7 +293,7 @@ function buildChordMastery(stats, progress) {
   el.innerHTML = chords.map(c => `
     <div class="skill-bar-row">
       <span class="skill-bar-label">${c.name}</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${c.pct}%;background:${c.pct>70?'var(--d-green)':c.pct>40?'var(--d-accent)':'var(--d-blue)'};"></div></div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" style="width:${c.pct}%;background:${c.pct>70?'var(--green-light)':c.pct>40?'var(--gld)':'var(--blue-light)'};"></div></div>
       <span class="skill-bar-pct">${c.pct}%</span>
     </div>`).join('');
 }
@@ -382,7 +301,7 @@ function buildChordMastery(stats, progress) {
 function buildCalendar(modules) {
   const container = document.getElementById('calendar-container');
   if (!modules || !modules.length) {
-    container.innerHTML = '<div style="font-size:12px;color:var(--d-text2);text-align:center;padding:20px">No modules loaded yet</div>';
+    container.innerHTML = '<div style="font-size:var(--text-sm);color:var(--text2);text-align:center;padding:20px">No modules loaded yet</div>';
     return;
   }
   let dayNum = 0;
@@ -424,24 +343,24 @@ function buildPracticeGraph(sessions) {
   document.getElementById('week-total').textContent = week.reduce((s, w) => s + w.count, 0) + ' sessions this week';
   graph.innerHTML = week.map(w => `
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
-      <div style="font-size:9px;color:var(--d-text3)">${w.count>0?w.count:''}</div>
-      <div style="width:100%;background:${w.count>0?'var(--d-accent)':'rgba(255,255,255,.04)'};height:${Math.max(4,Math.round((w.count/max)*64))}px;border-radius:4px 4px 0 0;min-height:${w.count>0?4:0}px;transition:height .5s"></div>
-      <div style="font-size:9px;color:var(--d-text3)">${w.day}</div>
+      <div style="font-size:9px;color:var(--text3)">${w.count>0?w.count:''}</div>
+      <div style="width:100%;background:${w.count>0?'var(--gld)':'rgba(255,255,255,.06)'};height:${Math.max(4,Math.round((w.count/max)*64))}px;border-radius:4px 4px 0 0;min-height:${w.count>0?4:0}px;transition:height .5s"></div>
+      <div style="font-size:9px;color:var(--text3)">${w.day}</div>
     </div>`).join('');
 }
 
 function buildAchievements(achievements, earnedKeys) {
   const list = document.getElementById('achievements-list');
   if (!achievements || !achievements.length) {
-    list.innerHTML = '<div style="font-size:12px;color:var(--d-text2);padding:8px 0">Complete lessons to unlock achievements</div>';
+    list.innerHTML = '<div style="font-size:var(--text-sm);color:var(--text2);padding:8px 0">Complete lessons to unlock achievements</div>';
     return;
   }
   const shown = achievements.slice(0, 4);
   list.innerHTML = shown.map(a => {
     const earned = a.earned || (earnedKeys||[]).includes(a.key);
     return `<div class="achievement">
-      <div class="ach-icon" style="${earned?'background:var(--d-accent-dim)':'opacity:.4;background:var(--d-bg4)'}">${earned?(a.icon||'🏆'):'🔒'}</div>
-      <div><div class="ach-name" style="${earned?'':'color:var(--d-text3)'}">${a.title||a.name}</div><div class="ach-desc">${earned?a.desc||'':'Keep going!'}</div></div>
+      <div class="ach-icon" style="${earned?'':'opacity:.4;background:var(--bg4)'}">${earned?(a.icon||'🏆'):'🔒'}</div>
+      <div><div class="ach-name" style="${earned?'':'color:var(--text3)'}">${a.title||a.name}</div><div class="ach-desc">${earned?a.desc||'':'Keep going!'}</div></div>
       ${earned?`<div class="ach-points">+${a.xp||a.points||0} XP</div>`:''}
     </div>`;
   }).join('');
@@ -450,12 +369,12 @@ function buildAchievements(achievements, earnedKeys) {
 function buildOmRecords(records) {
   const el = document.getElementById('om-records');
   if (!records || !records.length) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--d-text2);padding:8px 0">No records yet. Practice chord changes!</div>';
+    el.innerHTML = '<div style="font-size:var(--text-sm);color:var(--text2);padding:8px 0">No records yet. Practice chord changes!</div>';
     return;
   }
   const shown = records.slice(-5).reverse();
   el.innerHTML = shown.map(r =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--d-bg3);border-radius:var(--d-r);margin-bottom:8px;font-size:13px"><span>${r.chord_pair}</span><span style="color:var(--d-accent);font-weight:600;font-family:'JetBrains Mono',monospace">${r.best_score||r.score} changes</span></div>`
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border-radius:var(--radius-md);margin-bottom:8px;font-size:var(--text-base)"><span>${r.chord_pair}</span><span style="color:var(--gld);font-weight:600">${r.best_score||r.score} changes</span></div>`
   ).join('');
 }
 
@@ -464,20 +383,6 @@ function buildStreakDots(streak) {
   const total = 14;
   bar.innerHTML = Array.from({length: total}, (_, i) =>
     `<div class="streak-dot ${i < streak ? 'done' : ''}"></div>`
-  ).join('');
-}
-
-function buildModuleNav(modules) {
-  const grid = document.getElementById('weeks-grid');
-  if (!modules || !modules.length) {
-    grid.innerHTML = '';
-    return;
-  }
-  const colors = { bronze: '#e8c547', silver: '#9090a8', gold: '#e8c547' };
-  grid.innerHTML = modules.map((m, i) =>
-    `<button class="week-btn ${i === 0 ? 'active' : ''}" onclick="location.href='/guitar/learn/'" style="border-left:2px solid ${colors[m.tier]||'var(--d-border)'}">
-      ${m.tier === 'bronze' ? '🥉' : m.tier === 'silver' ? '🥈' : '🥇'} ${m.title} <span class="week-pct">${(m.lesson_count||m.lessons||4)}</span>
-    </button>`
   ).join('');
 }
 
@@ -510,7 +415,7 @@ async function renderDashboard(user) {
       ? `You're on a ${streak}-day streak — don't break it today!`
       : 'Start your practice to build a streak!';
 
-    // Sidebar XP
+    // Level / XP card
     document.getElementById('xp-level-badge').textContent = lvl;
     document.getElementById('xp-label-text').textContent = `Level ${lvl} — ${lvl <= 3 ? 'Beginner' : lvl <= 6 ? 'Chord Seeker' : lvl <= 10 ? 'Musician' : 'Guitar Master'}`;
     document.getElementById('xp-cur').textContent = xp;
@@ -566,9 +471,6 @@ async function renderDashboard(user) {
     // Chord mastery
     buildChordMastery(stats, progress);
 
-    // Module nav
-    if (modData.length) buildModuleNav(modData);
-
     // Calendar
     if (modData.length) {
       buildCalendar(modData);
@@ -584,7 +486,6 @@ async function renderDashboard(user) {
             else if (g && g.title) flatMods.push(g);
           });
           buildCalendar(flatMods);
-          if (flatMods.length) buildModuleNav(flatMods);
         }
       } catch(e) {}
     }
@@ -608,19 +509,6 @@ async function renderDashboard(user) {
     document.getElementById('h-lessons').textContent = '--';
   }
 }
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('open');
-}
-// Close sidebar on nav link click (mobile)
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('.nav-item');
-  if (link && window.innerWidth <= 560) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('open');
-  }
-});
 
 // ═══════════════════════════════════════════
 // Init
