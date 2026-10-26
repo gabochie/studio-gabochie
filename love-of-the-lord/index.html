@@ -147,6 +147,11 @@ details.fold summary::-webkit-details-marker{display:none}
 @media(max-width:860px){.hero-grid{grid-template-columns:1fr;text-align:left}.hero p{margin-left:0;margin-right:auto}.cta-row{justify-content:flex-start}.grid3,.split,.twall{grid-template-columns:1fr}.hero{padding-top:84px}.section{padding:40px 0}.frow.c3,.frow.c2,.frow.c21a{grid-template-columns:1fr}}
 .screen.has-media img:not(.audio-cover){display:none}
 .stage{position:absolute;inset:0;z-index:1;background:#000}
+/* Reserve the .now overlay strip so stage content (logo + title + audio pill +
+   .audio-err) never slides underneath the now-playing text. On small screens
+   the fixed 16/9 screen is too short for that stack, so let it grow. */
+.screen.has-media .audio-stage{padding-bottom:88px}
+@media(max-width:640px){.screen.has-media{aspect-ratio:auto;min-height:300px}}
 .stage[hidden]{display:none}
 .stage iframe,.stage video{width:100%;height:100%;border:0;background:#000;display:block}
 .stage .audio-stage{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:22px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.18),transparent 60%),var(--bg-primary)}
