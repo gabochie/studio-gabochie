@@ -165,6 +165,11 @@ footer .footer-bottom{margin-top:14px;padding-top:0;border-top:none}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
 .btn-gold{background:#C9A84C;color:#0A1628}
 .btn-gold:hover{background:#D9B85C;color:#0A1628}
+/* Primary action — gold, matching the brand accent. Used by courses cards,
+   guitar flows and others; without this rule it rendered transparent (a
+   elements) or UA-gray (buttons) depending on the tag. */
+.btn-primary{background:#C9A84C;color:#0A1628}
+.btn-primary:hover{background:#D9B85C;color:#0A1628}
 .btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
 .btn-outline:hover{background:#C9A84C;color:#0A1628}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim)}
