@@ -292,9 +292,11 @@ body{background:var(--bg-primary)}
   }
   var _months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
   var _feeds = [];
-  [2026, 2027].forEach(function(y){
-    _months.forEach(function(mm){
-      _feeds.push(fetch('../daily/' + y + '-' + mm + '.json',{headers:{Accept:'application/json'}}).then(function(r){return r.ok?r.json():{days:[]};}).catch(function(){ return {days:[]}; }));
+  // Daily decrees exist from 2026-10 onward; fetching earlier months only
+  // produced ten 404s in every visitor's console. Start the loop there.
+  [['2026', ['10', '11', '12']], ['2027', _months]].forEach(function(part){
+    part[1].forEach(function(mm){
+      _feeds.push(fetch('../daily/' + part[0] + '-' + mm + '.json',{headers:{Accept:'application/json'}}).then(function(r){return r.ok?r.json():{days:[]};}).catch(function(){ return {days:[]}; }));
     });
   });
   Promise.all(_feeds).then(function(packs){
