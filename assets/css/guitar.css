@@ -143,6 +143,7 @@
 /* ===== Mobile: dock section nav to the bottom (app standard) ===== */
 @media(max-width:1023px){
   .bottom-nav{position:fixed;left:0;right:0;top:auto;bottom:0;z-index:var(--z-sticky)}
+html{background:var(--bg)}
 body.guitar-app{background:var(--bg);padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px)) !important}
 body.ga-cookie-open .mini-player{bottom:calc(60px + var(--cookie-h,0px) + env(safe-area-inset-bottom, 0px))}
 body.ga-cookie-open #pay-now-btn,body.ga-cookie-open #wl-pay-now-btn{margin-bottom:calc(var(--cookie-h,0px) + 76px)}
