@@ -154,9 +154,9 @@ test.describe('Love Of The Lord — service page', function () {
     await page.goto('/love-of-the-lord/give/');
     await expect(page.locator('h1').first()).toContainText('Give');
     // Manual MoMo and bank transfer were removed; the rails are now
-    // ExpressPay, Moolre, and Crypto only.
+    // ExpressPay, Moolre, Crypto, and GhIPSS bank transfer (Ghana).
     var rails = page.locator('.rail');
-    await expect(rails).toHaveCount(3);
+    await expect(rails).toHaveCount(4);
     await expect(page.locator('text=024 326 2019')).toHaveCount(0);
   });
 

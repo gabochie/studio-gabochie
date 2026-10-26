@@ -24,8 +24,9 @@ export async function onRequest(context) {
   const v = await verifyMoolre(env, { externalref: ref, transactionid: txid });
   if (!v.success) return json({ status: 'ok', pending: true });
 
-  // Open donations stamp a `moolre_` ref and settle against the staged row.
-  if (ref.indexOf('moolre_') === 0) {
+  // Open donations stamp a `moolre_`/`ghipss_` ref (GhIPSS virtual accounts)
+  // and settle against the staged row.
+  if (ref.indexOf('moolre_') === 0 || ref.indexOf('ghipss_') === 0) {
     const row = await env.DB.prepare('SELECT * FROM donations WHERE tx_ref = ?').bind(ref).first();
     if (row) {
       await finalizeDonation(env, {
@@ -35,7 +36,7 @@ export async function onRequest(context) {
         donor_name: row.donor_name,
         donor_email: row.donor_email,
         donor_phone: row.donor_phone,
-        gateway: 'moolre',
+        gateway: ref.indexOf('ghipss_') === 0 ? 'ghipss' : 'moolre',
         gateway_txid: v.transactionid || row.flw_id
       });
     }

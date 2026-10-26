@@ -145,6 +145,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="gateway-grid" id="gatewayGrid">
       <button type="button" class="gateway-btn selected" data-gateway="expresspay" onclick="selectGateway('expresspay')"><span class="gw-icon">&#128179;</span>Card / MoMo</button>
       <button type="button" class="gateway-btn" data-gateway="moolre" onclick="selectGateway('moolre')"><span class="gw-icon">&#128188;</span>Moolre</button>
+      <button type="button" class="gateway-btn" data-gateway="ghipss" onclick="selectGateway('ghipss')"><span class="gw-icon">&#127968;</span>Bank Transfer</button>
       <button type="button" class="gateway-btn" data-gateway="crypto" onclick="selectGateway('crypto')"><span class="gw-icon">&#8383;</span>Crypto</button>
     </div>
 
@@ -293,6 +294,7 @@ function startPayment() {
 
   if (!name) { window.payError('Please enter your name.', 'donate'); return; }
   if (!email || !email.includes('@')) { window.payError('Please enter a valid email.', 'donate'); return; }
+  if (selectedGateway === 'ghipss' && !phone) { window.payError('A phone number is required for bank transfer.', 'donate'); return; }
   tagOnboard(email, name, 'donation');
   var amount = selectedAmount;
   if (custSelected) {
@@ -339,8 +341,10 @@ function showGatewayPanel(html) {
 }
 
 function startAlternativeGateway(amount, name, email, phone, btn) {
+  function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
   var endpoint = selectedGateway === 'moolre' ? '/api/gateways/moolre/create'
-    : selectedGateway === 'crypto' ? '/api/gateways/crypto/create' : '';
+    : selectedGateway === 'crypto' ? '/api/gateways/crypto/create'
+    : selectedGateway === 'ghipss' ? '/api/gateways/ghipss/create' : '';
   var payload = { amount: amount, name: name, email: email, phone: phone };
 
   fetch(endpoint, {
@@ -360,6 +364,24 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
       window.location.href = d.authorization_url;
       return;
     }
+    if (selectedGateway === 'ghipss' && d.accountno) {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'ghipss'}), page: location.pathname, email: email}));
+      }
+      var gHtml = '<h3>Pay by Bank Transfer (GhIPSS)</h3>' +
+        '<p class="gw-amount">GH\u20b5 ' + Number(d.amount || d.amount_ghs || amount).toFixed(2) + '</p>' +
+        '<div class="gw-note">Transfer from any Ghana bank app. The account is in your name \u2014 GhIPSS Instant Pay clears it in seconds.</div>' +
+        '<div class="gw-momo">' + esc(d.accountno) + '</div>' +
+        '<div class="gw-note">' + esc(d.bank_name) + ' \u2014 ' + esc(d.accountname) + '<br>Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + esc(d.tx_ref) + '</strong></div>' +
+        '<button class="gw-close" onclick="copyText(\'' + esc(d.accountno).replace(/'/g, "\\'") + '\')">Copy Account Number</button>' +
+        '<button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">Done \u2014 I have sent it</button>';
+      showGatewayPanel(gHtml);
+      window.pendingTxRef = d.tx_ref;
+      window.pendingTxAmount = d.amount || d.amount_ghs || amount;
+      btn.disabled = false;
+      btn.textContent = 'Donate Again';
+      return;
+    }
     if (selectedGateway === 'crypto') {
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'crypto'}), page: location.pathname, email: email}));
@@ -368,8 +390,6 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
         window.location.href = d.invoice_url;
         return;
       }
-function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
-
       // Manual send — show the addresses.
       var addrHtml = '';
       var hasAddr = false;
