@@ -150,11 +150,14 @@ test.describe('Love Of The Lord — service page', function () {
     await expect(mail).toBeVisible();
   });
 
-  test('give page loads with MoMo details', async function ({ page }) {
+  test('give page loads with the three digital rails', async function ({ page }) {
     await page.goto('/love-of-the-lord/give/');
     await expect(page.locator('h1').first()).toContainText('Give');
-    await expect(page.locator('text=Gideon Abochie').first()).toBeVisible();
-    await expect(page.locator('text=024 326 2019').first()).toBeVisible();
+    // Manual MoMo and bank transfer were removed; the rails are now
+    // ExpressPay, Moolre, and Crypto only.
+    var rails = page.locator('.rail');
+    await expect(rails).toHaveCount(3);
+    await expect(page.locator('text=024 326 2019')).toHaveCount(0);
   });
 
   test('give receipt tolerates ExpressPay order-id glued to the return URL', async function ({ page }) {
