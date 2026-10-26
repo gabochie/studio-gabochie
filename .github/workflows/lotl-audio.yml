@@ -26,10 +26,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # edge-tts is the FREE fallback TTS (Microsoft neural voices, en-NG
+      # included) so the pipeline keeps working when the OpenAI account runs
+      # out of credits. lotl-tts.cjs falls through providers in order.
+      - run: python3 -m pip install --quiet edge-tts
       - run: npm ci
       - name: Text -> mp3
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/lotl-tts.cjs ${{ inputs.service_id }}
       - name: mp3 -> R2
         env:
