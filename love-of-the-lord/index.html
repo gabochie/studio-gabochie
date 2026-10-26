@@ -43,6 +43,16 @@ body{background:var(--bg-primary)}
 .frow.c21a{grid-template-columns:2fr 1fr auto}
 @media(max-width:640px){.frow.c3,.frow.c2,.frow.c21a{grid-template-columns:1fr}}
 .micro{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);margin-top:12px}
+/* Hero-offer framing on the player's right column — mirrors the studio .hero-card /
+   guitar .gtf-price-card pattern (eyebrow + bold headline + outcome checklist). */
+.hero-offer{margin-bottom:16px}
+.offer-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.offer-head{font-family:'Barlow Condensed',sans-serif;font-size:clamp(26px,3vw,38px);line-height:1;text-transform:uppercase;color:#fff;margin-bottom:14px}
+.offer-head span{color:var(--gold)}
+.offer-list{list-style:none;margin:0;padding:0}
+.offer-list li{display:flex;align-items:flex-start;gap:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-body);line-height:1.5;margin-bottom:10px}
+.offer-list i{color:var(--gold);margin-top:2px}
+.offer-list b{color:#fff;font-weight:600}
 .player{background:var(--cream);color:var(--ink);border-radius:18px;overflow:hidden;border:1px solid rgba(201,168,76,.5);box-shadow:0 24px 60px rgba(0,0,0,.45)}
 .screen{position:relative;aspect-ratio:16/9;background:var(--bg-primary);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:20px}
 .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25}
@@ -198,6 +208,15 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="micro">✓ Free &nbsp; ✓ No login &nbsp; ✓ Audio-only for low data &nbsp; ✓ Installable app (PWA)</div>
 </div>
 <div>
+<div class="hero-offer">
+  <div class="offer-label">Inside today's service</div>
+  <div class="offer-head">Press play. <span>Church begins.</span></div>
+  <ul class="offer-list">
+    <li><i class="ti ti-music"></i><span><b>Praise &amp; worship</b> — every lyric on screen, sung start to finish</span></li>
+    <li><i class="ti ti-book"></i><span><b>The Word &amp; altar call</b> — a full sermon, never a clip</span></li>
+    <li><i class="ti ti-heart"></i><span><b>Prayer &amp; benediction</b> — leave the service covered</span></li>
+  </ul>
+</div>
 <div class="player" id="start">
 <div class="screen">
 <div class="stage" id="stage" hidden></div>
@@ -223,6 +242,7 @@ details.fold summary::-webkit-details-marker{display:none}
 <div class="micro" id="audioNote" hidden>Audio-only on: video pauses, lyrics + audio continue. Good for low data.</div>
 </div>
 </div>
+<div class="micro">✓ New service every Sunday &nbsp; ✓ Progress saved — leave &amp; return</div>
 </div>
 </div>
 </header>
