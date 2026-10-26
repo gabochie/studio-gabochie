@@ -1,19 +1,44 @@
 /* Love Of The Lord — shared chrome + components.
+   THEME MODEL: the global canvas (navy/gold/neutrals) flows from main.css
+   tokens. The ministry keeps its own liturgical sub-theme below — cream
+   "paper" panels, heart red, ink brown, season green — declared once here
+   so every church page shares it. Never redeclare these per page. */
+
+:root{
+  --ltl-cream:#F7F1E5;
+  --ltl-cream-soft:#EFE6D2;
+  --ltl-cream-track:#E7DCC4;
+  --ltl-cream-line:#D9C89F;
+  --ltl-cream-field-line:#CBBF9F;
+  --ltl-heart:#C1272D;
+  --ltl-ember:#E0A32E;
+  --ltl-wine:#2A0F10;
+  --ltl-wine-2:#5B1518;
+  --ltl-ink:#2B2118;
+  --ltl-ink-soft:#5A4A3A;
+  --ltl-ink-2:#3D3227;
+  --ltl-ink-line:#3A2E1F;
+  --ltl-green:#2F4A2E;
+  --ltl-green-deep:#122B1F;
+  --ltl-green-mid:#1D4030;
+  --ltl-amber-deep:#8A5A00;
+  --ltl-navy-mid:#131F38;
+}
    Linked by every love-of-the-lord/* page after /assets/css/main.css.
    Page <style> blocks keep ONLY page-specific UI (player, give panel, lists);
    everything below is the single source of truth — do not redeclare per page. */
 
 /* ── Topbar ── */
-.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #1E3250;padding-top:env(safe-area-inset-top,0px)}
+.lotl-nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top,0px)}
 .lotl-nav .inner{max-width:1440px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:12px}
-.lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C;flex-shrink:0}
-.lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#F1F5F9;line-height:1.1}
-.lotl-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;color:#C9A84C;text-transform:uppercase}
-.lotl-brand small a{color:#C9A84C;text-decoration:none}
+.lotl-nav img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--ltl-cream);border:2px solid var(--gold);flex-shrink:0}
+.lotl-brand b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-primary);line-height:1.1}
+.lotl-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
+.lotl-brand small a{color:var(--gold);text-decoration:none}
 .lotl-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;min-height:44px;display:inline-flex;align-items:center;color:#A8B9D1;text-decoration:none;padding:8px 12px;border:1px solid #1E3250;border-radius:20px;flex-shrink:0}
-.lotl-links a.live{color:#0A1628;background:#C9A84C;border-color:#C9A84C;font-weight:700}
+.lotl-links a{font-family:'DM Sans',sans-serif;font-size:12px;min-height:44px;display:inline-flex;align-items:center;color:var(--text-body);text-decoration:none;padding:8px 12px;border:1px solid var(--border);border-radius:20px;flex-shrink:0}
+.lotl-links a.live{color:var(--bg-primary);background:var(--gold);border-color:var(--gold);font-weight:700}
 /* Mobile: sideways-scroll strip keeps every section reachable (no hamburger here).
    Contained: the strip swipes internally; the page itself never scrolls sideways. */
 @media(max-width:640px){
@@ -25,49 +50,53 @@ nav.lotl-links{position:static;height:auto;padding:0;background:none;border:none
 }
 
 /* ── Ministry band: full-width airy section directly above the global Studio footer ── */
-.lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 24px 44px;text-align:center;color:#8A9BB5;font-family:'DM Sans',sans-serif;font-size:12px}
+.lotl-ministry{border-top:1px solid rgba(201,168,76,.25);padding:56px 24px 44px;text-align:center;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:12px}
 .lotl-ministry-in{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:12px}
-.lotl-ministry img{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#F7F1E5;border:2px solid #C9A84C}
-.lotl-ministry b{font-family:'Barlow Condensed',sans-serif;font-size:19px;letter-spacing:.12em;color:#F1F5F9}
+.lotl-ministry img{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--ltl-cream);border:2px solid var(--gold)}
+.lotl-ministry b{font-family:'Barlow Condensed',sans-serif;font-size:19px;letter-spacing:.12em;color:var(--text-primary)}
 .lotl-ministry small{font-size:12px}
-.lotl-ministry small a{color:#C9A84C;text-decoration:none}
+.lotl-ministry small a{color:var(--gold);text-decoration:none}
 .lotl-ministry nav{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:13px;position:static;height:auto;background:none;border:none}
-.lotl-ministry nav a{color:#C9A84C;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.lotl-ministry nav a{color:var(--gold);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
 @media(max-width:640px){.lotl-ministry{padding:32px 24px 28px}}
 
 /* ── Eyebrow label ── */
-.kicker{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C;font-weight:700}
+.kicker{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
 
 /* ── Cookie notice docks above the tab bar on mobile (mirrors main.css) ── */
 @media(max-width:860px){#cookieNotice{bottom:calc(64px + env(safe-area-inset-bottom,0px))!important}}
 
 /* ── One button system (DM Sans; .lotl-btn-lg preserves hero CTA hierarchy) ── */
-.lotl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:#C9A84C;color:#0A1628;border:1px solid #C9A84C;border-radius:10px;padding:11px 16px;cursor:pointer;text-decoration:none}
-.lotl-btn:hover{background:#D9B85C;border-color:#D9B85C}
+.lotl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:var(--gold);color:var(--bg-primary);border:1px solid var(--gold);border-radius:10px;padding:11px 16px;cursor:pointer;text-decoration:none}
+.lotl-btn:hover{background:var(--gold-hover);border-color:var(--gold-hover)}
 .lotl-btn-lg{font-size:15px;padding:14px 22px}
-.lotl-btn-outline{background:transparent;color:#C9A84C}
+.lotl-btn-outline{background:transparent;color:var(--gold)}
 .lotl-btn-outline:hover{background:rgba(201,168,76,.1)}
-.lotl-btn-ghost{background:transparent;color:#8A9BB5;border-color:#1E3250}
-.lotl-btn-ghost:hover{color:#CBD5E1;border-color:#3A5278}
+.lotl-btn-ghost{background:transparent;color:var(--text-dim);border-color:var(--border)}
+.lotl-btn-ghost:hover{color:var(--text-body);border-color:var(--border-light)}
 .lotl-btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* ── Cards + tag pills (min-width:0 stops sideways overflow) ── */
-.lotl-card{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:20px;min-width:0}
+.lotl-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px;min-width:0}
 .lotl-card:hover{border-color:rgba(201,168,76,.5)}
-.lotl-tag{display:inline-block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);padding:4px 10px;border-radius:14px}
+.lotl-tag{display:inline-block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);padding:4px 10px;border-radius:14px}
 
 /* ── Form fields + labels + success ── */
-.lotl-label{display:block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8A9BB5;margin-bottom:6px}
-.lotl-label.lotl-label-dark{color:#5A4A3A}
-.lotl-field{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #1E3250;background:#0A1628;color:#F1F5F9;font-family:'DM Sans',sans-serif;font-size:14px;min-width:0}
-.lotl-field:focus{outline:none;border-color:#C9A84C}
+.lotl-label{display:block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+.lotl-label.lotl-label-dark{color:var(--ltl-ink-soft)}
+.lotl-field{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-primary);color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:14px;min-width:0}
+.lotl-field:focus{outline:none;border-color:var(--gold)}
 textarea.lotl-field{resize:vertical;min-height:64px}
-.lotl-ok{background:rgba(52,199,123,.12);border:1px solid #34C77B;color:#34C77B;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
-.lotl-err{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);color:#F87171;font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
+.lotl-ok{background:rgba(52,199,123,.12);border:1px solid var(--green);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
+.lotl-err{background:rgba(232,99,122,.08);border:1px solid rgba(232,99,122,.3);color:var(--red);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:10px;padding:12px}
+
+/* ── Shared card typography (shop/answers cards render bare h3/p otherwise) ── */
+.lotl-card h3{font-family:'Barlow Condensed',sans-serif;font-size:19px;text-transform:uppercase;color:var(--text-primary);margin:0 0 4px}
+.lotl-card p{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-dim);margin:0;line-height:1.55}
 
 /* ── Shared text + focus ── */
-.lotl-muted{font-family:'DM Sans',sans-serif;color:#A8B9D1;font-size:14px}
-:focus-visible{outline:2px solid #C9A84C;outline-offset:2px}
+.lotl-muted{font-family:'DM Sans',sans-serif;color:var(--text-body);font-size:14px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 /* ── Mobile rhythm: copy-to-clipboard target ── */
 #copyMomo{min-height:44px;display:inline-flex;align-items:center}

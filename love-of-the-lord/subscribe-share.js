@@ -69,7 +69,7 @@
         .then(function (d) {
           if (d && d.status === 'ok') {
             msgEl.textContent = d.existing && d.confirmed ? 'You\'re already subscribed \u2014 welcome back!' : 'Check your inbox to confirm.';
-            msgEl.style.color = '#22C55E';
+            msgEl.style.color = '#34C77B';
             emailEl.value = '';
           } else {
             msgEl.textContent = (d && (d.message || d.error)) || 'Something went wrong.';
@@ -120,7 +120,7 @@
         navigator.clipboard.writeText(base).then(function () {
           var orig = copyBtn.textContent;
           copyBtn.textContent = 'Copied';
-          copyBtn.style.color = '#22C55E';
+          copyBtn.style.color = '#34C77B';
           setTimeout(function () { copyBtn.textContent = orig; copyBtn.style.color = ''; }, 1500);
         }).catch(function () {});
       });

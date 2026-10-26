@@ -29,46 +29,46 @@
 <link rel="stylesheet" href="/assets/css/main.css">
 <link rel="stylesheet" href="/assets/css/lotl.css">
 <style>
-:root{--cream:#F7F1E5;--heart:#C1272D;--ink:#2B2118}
-body{background:#0A1628}
+:root{--cream:var(--ltl-cream);--heart:var(--ltl-heart);--ink:var(--ltl-ink)}
+body{background:var(--bg-primary)}
 /* Topbar + footer + kicker live in /assets/css/lotl.css */
 .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
-.dvhero{padding:56px 0 10px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.16),transparent 55%),linear-gradient(180deg,#0A1628,#131f38 70%,#0A1628)}
+.dvhero{padding:56px 0 10px;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.16),transparent 55%),linear-gradient(180deg,var(--bg-primary),var(--ltl-navy-mid) 70%,var(--bg-primary))}
 .dvhero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,5vw,54px);line-height:.98;color:#fff;text-transform:uppercase;margin:8px 0 10px}
-.dvhero h1 span{color:#C9A84C}
-.dvhero p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:15px;max-width:620px}
+.dvhero h1 span{color:var(--gold)}
+.dvhero p{font-family:'DM Sans',sans-serif;color:var(--text-body);font-size:15px;max-width:620px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 4px}
-.filters button{font-family:'DM Sans',sans-serif;font-size:12px;background:#0A1628;border:1px solid #1E3250;color:#8A9BB5;padding:7px 14px;min-height:44px;display:inline-flex;align-items:center;border-radius:18px;cursor:pointer}
-.filters button.on{border-color:#C9A84C;color:#C9A84C;background:rgba(201,168,76,.1)}
-.search{width:100%;max-width:360px;margin:14px 0 0;padding:11px 14px;background:#0A1628;border:1px solid #1E3250;border-radius:10px;color:#F1F5F9;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
-.search:focus{border-color:#C9A84C}
+.filters button{font-family:'DM Sans',sans-serif;font-size:12px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-dim);padding:7px 14px;min-height:44px;display:inline-flex;align-items:center;border-radius:18px;cursor:pointer}
+.filters button.on{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1)}
+.search{width:100%;max-width:360px;margin:14px 0 0;padding:11px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.search:focus{border-color:var(--gold)}
 .dv-list{display:grid;gap:16px;padding:24px 0 56px}
 .dv-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-.dv-date{font-family:'DM Sans',sans-serif;font-size:11px;color:#8A9BB5}
-.dv-item h3{font-family:'Barlow Condensed',sans-serif;font-size:23px;color:#F1F5F9;letter-spacing:.01em;margin-bottom:6px}
-.dv-vsrc{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#C9A84C;margin-bottom:2px}
-.dv-verse{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;font-size:15px;color:#CBD5E1;border-left:3px solid #C9A84C;padding:8px 12px;margin:12px 0;background:rgba(201,168,76,.06);border-radius:0 8px 8px 0}
+.dv-date{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-dim)}
+.dv-item h3{font-family:'Barlow Condensed',sans-serif;font-size:23px;color:var(--text-primary);letter-spacing:.01em;margin-bottom:6px}
+.dv-vsrc{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--gold);margin-bottom:2px}
+.dv-verse{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;font-size:15px;color:var(--text-body);border-left:3px solid var(--gold);padding:8px 12px;margin:12px 0;background:rgba(201,168,76,.06);border-radius:0 8px 8px 0}
 .dv-soap{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
-.dv-soap .block{background:#0A1628;border:1px solid #1E3250;border-radius:10px;padding:12px 14px}
-.dv-soap .block b{display:block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8A9BB5;margin-bottom:4px}
-.dv-soap .block p{font-family:'DM Sans',sans-serif;font-size:14px;color:#CBD5E1;margin:0;line-height:1.6}
-.cta{background:linear-gradient(135deg,#122b1f,#1d4030);border:1px solid rgba(201,168,76,.4);border-radius:14px;padding:24px;margin-bottom:56px;text-align:center}
-.cta h2{font-family:'Barlow Condensed',sans-serif;color:#F7F1E5;font-size:26px;text-transform:uppercase;margin-bottom:8px}
-.cta p{font-family:'DM Sans',sans-serif;color:#CBD5E1;font-size:14px;margin-bottom:14px}
+.dv-soap .block{background:var(--bg-primary);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.dv-soap .block b{display:block;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+.dv-soap .block p{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-body);margin:0;line-height:1.6}
+.cta{background:linear-gradient(135deg,var(--ltl-green-deep),var(--ltl-green-mid));border:1px solid rgba(201,168,76,.4);border-radius:14px;padding:24px;margin-bottom:56px;text-align:center}
+.cta h2{font-family:'Barlow Condensed',sans-serif;color:var(--ltl-cream);font-size:26px;text-transform:uppercase;margin-bottom:8px}
+.cta p{font-family:'DM Sans',sans-serif;color:var(--text-body);font-size:14px;margin-bottom:14px}
 /* buttons + muted text live in /assets/css/lotl.css */
 .brand-row{display:flex;gap:12px;align-items:center;margin-bottom:10px}
-.brand-row img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #C9A84C;background:#F7F1E5}
-.brand-row b{display:block;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C9A84C}
-.brand-row small{display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5}
+.brand-row img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--ltl-cream)}
+.brand-row b{display:block;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.brand-row small{display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim)}
 .tabs{display:flex;gap:8px;margin:16px 0 4px}
-.tabs button{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:#0A1628;border:1px solid #1E3250;color:#8A9BB5;padding:10px 18px;min-height:44px;border-radius:20px;cursor:pointer}
-.tabs button.on{border-color:#C9A84C;color:#0A1628;background:#C9A84C}
+.tabs button{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-dim);padding:10px 18px;min-height:44px;border-radius:20px;cursor:pointer}
+.tabs button.on{border-color:var(--gold);color:var(--bg-primary);background:var(--gold)}
 .daily-card{background:var(--cream);color:var(--ink);border-radius:14px;padding:20px;margin:14px 0;border:1px solid rgba(201,168,76,.6)}
 .daily-card h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;margin:4px 0 6px;text-transform:uppercase;color:var(--ink)}
-.daily-card .dvsrc{font-family:'Barlow Condensed',sans-serif;color:#C1272D;font-size:14px}
-.daily-card .dverse{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;background:#EFE6D2;border-left:3px solid #C1272D;border-radius:0 8px 8px 0;padding:10px 12px;margin:10px 0;font-size:14px;line-height:1.6}
-.daily-card p{font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.65;color:#3d3227;margin:8px 0}
-.daily-card .declare{background:#2B2118;color:#F7F1E5;border-radius:10px;padding:12px 14px;font-weight:700;text-align:center;margin:10px 0}
+.daily-card .dvsrc{font-family:'Barlow Condensed',sans-serif;color:var(--ltl-heart);font-size:14px}
+.daily-card .dverse{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;background:var(--ltl-cream-soft);border-left:3px solid var(--ltl-heart);border-radius:0 8px 8px 0;padding:10px 12px;margin:10px 0;font-size:14px;line-height:1.6}
+.daily-card p{font-family:'DM Sans',sans-serif;font-size:13.5px;line-height:1.65;color:var(--ltl-ink-2);margin:8px 0}
+.daily-card .declare{background:var(--ltl-ink);color:var(--ltl-cream);border-radius:10px;padding:12px 14px;font-weight:700;text-align:center;margin:10px 0}
 .daily-card audio{width:100%;margin-top:8px}
 #currencyToggle{display:none!important}
 </style>
@@ -242,7 +242,7 @@ body{background:#0A1628}
       var todayCard = _allDays.filter(function(x){ return x.date === _today; })[0];
       var dayNum = firstDate ? (Math.floor((new Date(_today) - new Date(firstDate)) / 86400000) + 1) : 0;
       var banner = document.createElement('div');
-      banner.style.cssText = 'margin:0 0 16px;padding:12px 16px;border:1px solid rgba(201,168,76,.45);border-radius:10px;background:rgba(201,168,76,.08);font-size:13px;color:#3A2E1F;line-height:1.5';
+      banner.style.cssText = 'margin:0 0 16px;padding:12px 16px;border:1px solid rgba(201,168,76,.45);border-radius:10px;background:rgba(201,168,76,.08);font-size:13px;color:var(--text-body);line-height:1.5';
       if(todayCard){
         banner.innerHTML = '🟢 <b>Live now</b> — today is <b>' + esc(todayCard.weekday) + ' ' + esc(_today) + '</b>' +
           (dayNum > 0 ? ' · Day <b>' + dayNum + '</b> of 365' : '') +
@@ -270,7 +270,7 @@ body{background:#0A1628}
     });
     var more = document.createElement('p');
     more.className = 'lotl-muted';
-    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (most recent days up to today — tap a month for the full year)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:#C9A84C">formatted preview →</a>';
+    more.innerHTML = 'Showing ' + shown.length + ' of ' + list.length + (_activeMonth === 'All' ? ' (most recent days up to today — tap a month for the full year)' : '') + ' · <a href="../daily/2027-01-preview.html" style="color:var(--gold)">formatted preview →</a>';
     box.appendChild(more);
   }
   function buildMonths(){
@@ -304,7 +304,7 @@ body{background:#0A1628}
     lotlTrack('lotl_daily_load', { date: _today, days: _allDays.length });
   }).catch(function(){
     var box = document.getElementById('dailyList');
-    if(box) box.innerHTML = '<p class="lotl-muted">Could not load daily decrees. <a href="../daily/2027-01-preview.html" style="color:#C9A84C">Open preview →</a></p>';
+    if(box) box.innerHTML = '<p class="lotl-muted">Could not load daily decrees. <a href="../daily/2027-01-preview.html" style="color:var(--gold)">Open preview →</a></p>';
   });
   fetch('devotionals.json',{headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(data){
     items=(data&&data.devotionals)||[];
