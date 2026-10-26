@@ -15,16 +15,16 @@
 <style>
 .readaloud-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;margin-bottom:12px;flex-wrap:wrap}
 .readaloud-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.08em;text-transform:uppercase}
-.readaloud-btn.play{background:#C9A84C;color:#0A1628}
-.readaloud-btn.play:hover{background:#D9B85C}
-.readaloud-btn.play.active{background:#E8637A}
-.readaloud-btn.play.active:hover{background:#EF7A94}
-.readaloud-btn.stop{background:rgba(255,255,255,.06);color:#CBD5E1;border:1px solid #1E3250}
+.readaloud-btn.play{background:var(--gold);color:var(--bg-primary)}
+.readaloud-btn.play:hover{background:var(--gold-hover)}
+.readaloud-btn.play.active{background:var(--red)}
+.readaloud-btn.play.active:hover{background:var(--red-light)}
+.readaloud-btn.stop{background:rgba(255,255,255,.06);color:var(--text-body);border:1px solid var(--border)}
 .readaloud-btn.stop:hover{background:rgba(255,255,255,.1)}
-.readaloud-status{font-size:12px;color:#8A9BB5;flex:1;min-width:100px}
-.readaloud-voice{background:#0A1628;border:1px solid #1E3250;border-radius:6px;color:#CBD5E1;font-size:11px;padding:5px 8px;font-family:inherit;max-width:180px;cursor:pointer}
-.readaloud-rate{display:flex;align-items:center;gap:4px;font-size:11px;color:#8A9BB5}
-.readaloud-rate input{width:60px;accent-color:#C9A84C;cursor:pointer}
+.readaloud-status{font-size:12px;color:var(--text-dim);flex:1;min-width:100px}
+.readaloud-voice{background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:var(--text-body);font-size:11px;padding:5px 8px;font-family:inherit;max-width:180px;cursor:pointer}
+.readaloud-rate{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-dim)}
+.readaloud-rate input{width:60px;accent-color:var(--gold);cursor:pointer}
 .readaloud-highlight{background:rgba(201,168,76,.15);border-radius:2px;transition:background .2s}
 </style>
 </head>
