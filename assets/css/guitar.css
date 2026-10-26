@@ -149,6 +149,12 @@ body.guitar-app{background:var(--bg)}
 /* ===== Mobile: dock section nav to the bottom (app standard) ===== */
 @media(max-width:1023px){
   .bottom-nav{position:fixed;left:0;right:0;top:auto;bottom:0;z-index:var(--z-sticky)}
+  /* Park the cookie notice + floating toasts above the tab bar. main.css only
+     does this <=860px, but the guitar tab bar shows <=1023px — in the
+     861-1023px band the banner covered the nav. */
+  .cookie-notice{bottom:calc(64px + env(safe-area-inset-bottom, 0px))}
+  body.ga-cookie-open .pay-toast{bottom:calc(64px + 14px + var(--cookie-h,0px) + env(safe-area-inset-bottom, 0px))}
+  body.ga-cookie-open .currency-toggle{bottom:calc(64px + 14px + var(--cookie-h, 0px) + env(safe-area-inset-bottom, 0px))}
   body.guitar-app{padding-bottom:calc(64px + env(safe-area-inset-bottom, 0px)) !important}
 body.ga-cookie-open .mini-player{bottom:calc(60px + var(--cookie-h,0px) + env(safe-area-inset-bottom, 0px))}
 body.ga-cookie-open #pay-now-btn,body.ga-cookie-open #wl-pay-now-btn{margin-bottom:calc(var(--cookie-h,0px) + 76px)}
