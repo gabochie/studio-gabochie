@@ -143,6 +143,7 @@ body{background:var(--bg-primary)}
       <div class="rail"><b>1 · Mobile Money (Ghana)</b> — MTN, Telecel, AT via Moolre. Works on any phone.</div>
       <div class="rail"><b>2 · Cards (worldwide)</b> — Visa, Mastercard, Amex via ExpressPay. Diaspora can give from any country.</div>
       <div class="rail"><b>3 · Crypto (global)</b> — USDC/USDT, BTC and more. Every coin converts to ministry work and is receipted.</div>
+      <div class="rail"><b>4 · Bank transfer (Ghana)</b> — from any Ghana bank account via GhIPSS Instant Pay, confirmed in seconds (shown for Ghana visitors).</div>
     </div>
     <p class="fine" id="finePrint">Shown in your currency (≈) — you are charged in Ghana Cedis (GH₵). Crypto settles in USD.</p>
     <div class="cta-row">
@@ -193,6 +194,7 @@ body{background:var(--bg-primary)}
   var RAILS = {
     expresspay: { icon: '\uD83D\uDCB3', label: 'Card / MoMo' },
     moolre: { icon: '\uD83D\uDCF1', label: 'Mobile Money' },
+    ghipss: { icon: '\uD83C\uDFE6', label: 'Bank Transfer' },
     crypto: { icon: '\u20BF', label: 'Crypto' }
   };
 
@@ -254,7 +256,8 @@ body{background:var(--bg-primary)}
   }
 
   function orderRails() {
-    var order = gh ? ['expresspay', 'moolre', 'crypto'] : ['expresspay', 'crypto', 'moolre'];
+    // GhIPSS bank transfer is Ghana-only: offer it to Ghana visitors.
+    var order = gh ? ['expresspay', 'moolre', 'ghipss', 'crypto'] : ['expresspay', 'crypto', 'moolre'];
     var grid = $('gatewayGrid'), more = $('moreWays');
     grid.innerHTML = ''; more.innerHTML = '';
     order.forEach(function (gw, i) {
@@ -305,6 +308,7 @@ body{background:var(--bg-primary)}
     var btn = $('giveBtn');
     if (!name) { window.payError('Please enter your name.', 'lotl-give'); return; }
     if (!email || email.indexOf('@') < 0) { window.payError('Please enter a valid email.', 'lotl-give'); return; }
+    if (gateway === 'ghipss' && !phone) { window.payError('A phone number is required for bank transfer.', 'lotl-give'); return; }
     if (!(amountGhs > 0)) { window.payError('Please choose or enter an amount.', 'lotl-give'); return; }
     if (typeof tagOnboard === 'function') tagOnboard(email, name, 'lotl-donation');
     beacon('donation_started', { name: name, amount: amountGhs, gateway: gateway, currency: cur });
@@ -327,7 +331,7 @@ body{background:var(--bg-primary)}
   }
 
   function payAlt(amount, name, email, phone, btn) {
-    var endpoints = { moolre: '/api/gateways/moolre/create' };
+    var endpoints = { moolre: '/api/gateways/moolre/create', ghipss: '/api/gateways/ghipss/create' };
     var payload = { amount: amount, name: name, email: email, phone: phone };
     if (gateway === 'moolre') payload.redirect = PATH;
     fetch(endpoints[gateway], { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
@@ -336,6 +340,17 @@ body{background:var(--bg-primary)}
         if (!res.ok || res.d.status !== 'ok') throw new Error((res.d && res.d.message) || 'Could not start payment');
         var d = res.d;
         if (gateway === 'moolre' && d.authorization_url) { window.location.href = d.authorization_url; return; }
+        if (gateway === 'ghipss' && d.accountno) {
+          showPanel('<h3>Bank Transfer \u2014 GhIPSS Instant Pay</h3>' +
+            '<p class="gw-amount">GH\u20b5 ' + Number(d.amount || amount).toFixed(2) + '</p>' +
+            '<div class="gw-note">Transfer from any Ghana bank app \u2014 the account is in your name and GhIPSS clears it in seconds.</div>' +
+            '<div class="gw-momo">' + esc(d.accountno) + '</div>' +
+            '<div class="gw-note">' + esc(d.bank_name || 'Bank transfer') + ' \u2014 ' + esc(d.accountname || '') + '<br>Reference: <strong style="color:var(--gold);font-family:monospace">' + esc(d.tx_ref) + '</strong></div>' +
+            '<button class="gw-close" onclick="copyText(\'' + esc(d.accountno).replace(/'/g, "\\'") + '\')">Copy Account Number</button>' +
+            '<button class="gw-close" style="margin-top:8px" onclick="closePanel()">Done \u2014 I have sent it</button>');
+          btn.disabled = false; btn.textContent = 'Give again';
+          return;
+        }
         throw new Error('Unexpected gateway response');
       })
       .catch(function (err) {
