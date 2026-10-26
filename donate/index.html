@@ -393,6 +393,14 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
       // Manual send — show the addresses.
       var addrHtml = '';
       var hasAddr = false;
+      if (d.addresses && d.addresses.evm) {
+        hasAddr = true;
+        addrHtml += '<h3>USDT / USDC / ETH — Base · Polygon · Ethereum</h3><div class="gw-address"><span>' + esc(d.addresses.evm) + '</span><button onclick="copyText(\'' + String(d.addresses.evm).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
+      }
+      if (d.addresses && d.addresses.sol) {
+        hasAddr = true;
+        addrHtml += '<h3>USDC / USDT / SOL — Solana</h3><div class="gw-address"><span>' + esc(d.addresses.sol) + '</span><button onclick="copyText(\'' + String(d.addresses.sol).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
+      }
       if (d.addresses && d.addresses.btc) {
         hasAddr = true;
         addrHtml += '<h3>Pay with Bitcoin (BTC)</h3><div class="gw-address"><span>' + esc(d.addresses.btc) + '</span><button onclick="copyText(\'' + String(d.addresses.btc).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
@@ -402,8 +410,8 @@ function startAlternativeGateway(amount, name, email, phone, btn) {
         addrHtml += '<h3>Pay with USDT (TRC-20)</h3><div class="gw-address"><span>' + esc(d.addresses.usdt_trc20) + '</span><button onclick="copyText(\'' + String(d.addresses.usdt_trc20).replace(/\\/g, "\\\\").replace(/\'/g, "\\'") + '\')">Copy</button></div>';
       }
       addrHtml += '<p class="gw-amount">$ ' + Number(d.amount_usd || 0).toFixed(2) + ' <small style="font-size:13px;color:#6B7F9A">(' + Number(d.amount_ghs || amount).toFixed(2) + ' GH₵)</small></p>';
-      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Use this memo when sending so we can match you: <strong style="color:#CBD5E1;font-family:monospace">' + esc(d.tx_ref) + '</strong></p>';
-      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Send to a brand-new address from your wallet. We confirm crypto gifts manually within 24 hours and email your receipt.</p>';
+      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Reference: <strong style="color:#CBD5E1;font-family:monospace">' + esc(d.tx_ref) + '</strong></p>';
+      addrHtml += '<p style="text-align:center;font-size:12px;color:#6B7F9A">Send from your wallet and match the network — wrong-network sends will not arrive. We confirm crypto gifts within 24 hours and email your receipt.</p>';
       if (!hasAddr) {
         addrHtml = '<h3>Crypto donation</h3><p>Crypto checkout is being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send any crypto amount with memo <strong style="color:#CBD5E1;font-family:monospace">' + esc(d.tx_ref) + '</strong> and we will reach out.</p>';
       }
