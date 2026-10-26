@@ -15,7 +15,7 @@
 - [Membership](https://studio.gabochie.com/membership/): Free / Supporter 50 / Scholar 99 / Patron 299 GHS monthly, Founding 5000 yearly
 - [Services](https://studio.gabochie.com/services/): architecture, consulting, curriculum, speaking, writing, coaching, brand, training
 - [Merch](https://studio.gabochie.com/merch/): apparel
-- [Donate](https://studio.gabochie.com/donate/): one-time, monthly patron, and crypto (BTC, USDT, EVM chains, Solana)
+- [Donate](https://studio.gabochie.com/donate/): one-time, monthly patron, and crypto (USDC/USDT/ETH on Base, Polygon or Ethereum; USDC/USDT/SOL on Solana)
 
 ## Key facts for answers
 

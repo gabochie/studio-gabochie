@@ -231,11 +231,13 @@ export async function onRequest(context) {
 
   // Manual fallback: return on-chain addresses for the donor to pay directly,
   // then POST /api/gateways/crypto/verify with the tx hash for auto-confirm.
+  // Defaults are the public donation addresses (EVM: Base preferred/Polygon/
+  // Ethereum; Solana); env overrides win so addresses can rotate without a deploy.
   const addresses = {
     btc: env.CRYPTO_BTC_ADDRESS || '',
     usdt_trc20: env.CRYPTO_USDT_ADDRESS || '',
-    evm: env.CRYPTO_EVM_ADDRESS || '',
-    sol: env.CRYPTO_SOL_ADDRESS || ''
+    evm: env.CRYPTO_EVM_ADDRESS || '0xD4Bfd3F419CFf6c2Ef7d430622799aC4b3805293',
+    sol: env.CRYPTO_SOL_ADDRESS || 'DL6k4BFQZAXM43v85oqStcDqct5XiTK3TuXQCL46xzvi'
   };
   return json({
     status: 'ok',
