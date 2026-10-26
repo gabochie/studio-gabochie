@@ -146,8 +146,6 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <button type="button" class="gateway-btn selected" data-gateway="expresspay" onclick="selectGateway('expresspay')"><span class="gw-icon">&#128179;</span>Card / MoMo</button>
       <button type="button" class="gateway-btn" data-gateway="moolre" onclick="selectGateway('moolre')"><span class="gw-icon">&#128188;</span>Moolre</button>
       <button type="button" class="gateway-btn" data-gateway="crypto" onclick="selectGateway('crypto')"><span class="gw-icon">&#8383;</span>Crypto</button>
-      <button type="button" class="gateway-btn" data-gateway="manual" onclick="selectGateway('manual')"><span class="gw-icon">&#128176;</span>MoMo Pin</button>
-      <button type="button" class="gateway-btn" data-gateway="bank" onclick="selectGateway('bank')"><span class="gw-icon">&#127974;</span>Bank Transfer</button>
     </div>
 
     <div class="gateway-panel" id="gatewayPanel"></div>
@@ -342,9 +340,7 @@ function showGatewayPanel(html) {
 
 function startAlternativeGateway(amount, name, email, phone, btn) {
   var endpoint = selectedGateway === 'moolre' ? '/api/gateways/moolre/create'
-    : selectedGateway === 'crypto' ? '/api/gateways/crypto/create'
-    : selectedGateway === 'bank' ? '/api/gateways/bank/create'
-    : selectedGateway === 'manual' ? '/api/gateways/manual/create' : '';
+    : selectedGateway === 'crypto' ? '/api/gateways/crypto/create' : '';
   var payload = { amount: amount, name: name, email: email, phone: phone };
 
   fetch(endpoint, {
@@ -393,38 +389,6 @@ function esc(s) { var d = document.createElement('div'); d.appendChild(document.
       }
       addrHtml +='<button class="gw-close" onclick="closeGatewayPanel()">Done — I have sent it</button>';
       showGatewayPanel(addrHtml);
-      window.pendingTxRef = d.tx_ref;
-      window.pendingTxAmount = d.amount_ghs || amount;
-      btn.disabled = false;
-      btn.textContent = 'Donate Again';
-      return;
-    }
-    if (selectedGateway === 'bank') {
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'bank'}), page: location.pathname, email: email}));
-      }
-      if (!d.configured) {
-        showGatewayPanel('<h3>Bank transfer</h3><p>Bank transfers are being configured. Please email <a href="mailto:studio@gabochie.com" style="color:#C9A84C">studio@gabochie.com</a> or use another method — or send <strong style="color:#CBD5E1">GH₵ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> with reference <strong style="color:#CBD5E1;font-family:monospace">' + d.tx_ref + '</strong> and we will reach out.</p><button class="gw-close" onclick="closeGatewayPanel()">Done</button>');
-      } else {
-        var bankHtml = '<h3>Pay by Bank Transfer</h3><div class="gw-note">Send <strong class="gw-amount">GH₵ ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> to:</div>' +
-          '<div class="gw-momo">' + esc(d.bank_name) + '<br>' + esc(d.account_name) + '<br><strong>' + esc(d.account_number) + '</strong>' + (d.bank_branch ? '<br>' + esc(d.bank_branch) : '') + '</div>' +
-          '<div class="gw-note">Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + esc(d.tx_ref) + '</strong></div><div class="gw-note">' + esc(d.note) + '</div>' +
-          '<button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
-        showGatewayPanel(bankHtml);
-      }
-      window.pendingTxRef = d.tx_ref;
-      window.pendingTxAmount = d.amount_ghs || amount;
-      btn.disabled = false;
-      btn.textContent = 'Donate Again';
-      return;
-    }
-    if (selectedGateway === 'manual') {
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/event', JSON.stringify({event_type: 'donation_started', event_data: JSON.stringify({name: name, gateway: 'manual'}), page: location.pathname, email: email}));
-      }
-      var m = 'Send <strong class="gw-amount">GH\u20b5 ' + Number(d.amount_ghs || amount).toFixed(2) + '</strong> via MoMo to:';
-      var panelHtml = '<h3>Pay with Mobile Money</h3><div class="gw-momo">' + d.payout_display + '</div><div class="gw-note">' + (d.momo_name || 'GABOCHIE DESIGN') + ' — ' + d.momo_number + '<br>Reference: <strong style="color:#CBD5E1;font-family:monospace" id="gwRef">' + d.tx_ref + '</strong></div><div class="gw-note">' + d.note + '</div><button class="gw-close" onclick="copyRef()">Copy Reference</button><button class="gw-close" style="margin-top:8px" onclick="closeGatewayPanel()">I have sent it</button>';
-      showGatewayPanel(panelHtml);
       window.pendingTxRef = d.tx_ref;
       window.pendingTxAmount = d.amount_ghs || amount;
       btn.disabled = false;
