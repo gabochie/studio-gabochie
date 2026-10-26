@@ -57,11 +57,7 @@ body{background:var(--bg-primary)}
 .gateway-panel p{font-size:13px;color:var(--text-dim);line-height:1.6;margin:0 0 10px}
 .gw-address{display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:'Courier Prime',monospace;font-size:12px;color:var(--text-body);word-break:break-all}
 .gw-amount{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--gold);margin:0 0 4px}
-.gw-momo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--text-primary);letter-spacing:.04em;text-align:center;margin:12px 0}
 .gw-close{display:block;width:100%;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
-.momo{font-family:'DM Sans',sans-serif;background:rgba(0,0,0,.3);border:1px dashed var(--gold);border-radius:10px;padding:14px;margin:18px 0 0;color:var(--ltl-cream);font-size:14px;text-align:center}
-.momo b{color:var(--gold)}
-.copy-btn{margin-top:8px;font-family:'DM Sans',sans-serif;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer}
 .rails{margin-top:22px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-body)}
 .rails h4{font-weight:700;color:var(--ltl-cream);margin:0 0 8px;font-size:14px}
 .rail{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
@@ -138,21 +134,15 @@ body{background:var(--bg-primary)}
     <button type="button" class="give-btn" id="giveBtn">Give now</button>
     <p class="charge-note" id="billNote"></p>
 
-    <div class="momo">
-      Prefer to give yourself? MTN MoMo: <b>Gideon Abochie — 024 326 2019</b><br>
-      Confirm the name shows <b>GIDEON ABOCHIE</b> before approving.<br>
-      <button type="button" class="copy-btn" id="copyMomo">Copy number</button> <span id="copyMsg" role="status" style="font-size:12px;color:var(--green)"></span>
-    </div>
     <div class="cta-row">
       <a class="lotl-btn lotl-btn-outline" href="https://wa.me/233243262019?text=Hello%2C%20I%20just%20gave%20a%20love%20offering!">I gave — notify 🙏</a>
     </div>
 
     <div class="rails">
       <h4>Everywhere giving — pick your rail</h4>
-      <div class="rail"><b>1 · Mobile Money (Ghana)</b> — MTN, Telecel, AT via Moolre, or the manual MoMo number above. Works on any phone.</div>
+      <div class="rail"><b>1 · Mobile Money (Ghana)</b> — MTN, Telecel, AT via Moolre. Works on any phone.</div>
       <div class="rail"><b>2 · Cards (worldwide)</b> — Visa, Mastercard, Amex via ExpressPay. Diaspora can give from any country.</div>
       <div class="rail"><b>3 · Crypto (global)</b> — USDC/USDT, BTC and more. Every coin converts to ministry work and is receipted.</div>
-      <div class="rail"><b>4 · Bank transfer</b> — details provided at checkout.</div>
     </div>
     <p class="fine" id="finePrint">Shown in your currency (≈) — you are charged in Ghana Cedis (GH₵). Crypto settles in USD.</p>
     <div class="cta-row">
@@ -203,8 +193,7 @@ body{background:var(--bg-primary)}
   var RAILS = {
     expresspay: { icon: '\uD83D\uDCB3', label: 'Card / MoMo' },
     moolre: { icon: '\uD83D\uDCF1', label: 'Mobile Money' },
-    crypto: { icon: '\u20BF', label: 'Crypto' },
-    bank: { icon: '\uD83C\uDFE6', label: 'Bank transfer' }
+    crypto: { icon: '\u20BF', label: 'Crypto' }
   };
 
   var cur = 'USD', gh = true, presets = [], amountGhs = 0, gateway = 'expresspay', custom = false;
@@ -265,7 +254,7 @@ body{background:var(--bg-primary)}
   }
 
   function orderRails() {
-    var order = gh ? ['expresspay', 'moolre', 'crypto', 'bank'] : ['expresspay', 'crypto', 'moolre', 'bank'];
+    var order = gh ? ['expresspay', 'moolre', 'crypto'] : ['expresspay', 'crypto', 'moolre'];
     var grid = $('gatewayGrid'), more = $('moreWays');
     grid.innerHTML = ''; more.innerHTML = '';
     order.forEach(function (gw, i) {
@@ -338,7 +327,7 @@ body{background:var(--bg-primary)}
   }
 
   function payAlt(amount, name, email, phone, btn) {
-    var endpoints = { moolre: '/api/gateways/moolre/create', bank: '/api/gateways/bank/create' };
+    var endpoints = { moolre: '/api/gateways/moolre/create' };
     var payload = { amount: amount, name: name, email: email, phone: phone };
     if (gateway === 'moolre') payload.redirect = PATH;
     fetch(endpoints[gateway], { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
@@ -347,19 +336,6 @@ body{background:var(--bg-primary)}
         if (!res.ok || res.d.status !== 'ok') throw new Error((res.d && res.d.message) || 'Could not start payment');
         var d = res.d;
         if (gateway === 'moolre' && d.authorization_url) { window.location.href = d.authorization_url; return; }
-        if (gateway === 'bank') {
-          if (!d.configured) {
-            showPanel('<h3>Bank transfer</h3><p>Bank transfers are being configured. Please email <a href="mailto:love@gabochie.com" style="color:var(--gold)">love@gabochie.com</a> or use another method.</p><button class="gw-close" onclick="window.__lotlDone()">Done</button>');
-          } else {
-            showPanel('<h3>Pay by Bank Transfer</h3><p>Send <b class="gw-amount">GH\u20b5 ' + Number(d.amount_ghs || amount).toFixed(2) + '</b> to:</p>' +
-              '<div class="gw-momo">' + esc(d.bank_name) + '<br>' + esc(d.account_name) + '<br><strong>' + esc(d.account_number) + '</strong>' + (d.bank_branch ? '<br>' + esc(d.bank_branch) : '') + '</div>' +
-              '<p>Reference: <strong style="color:var(--text-body);font-family:monospace">' + esc(d.tx_ref) + '</strong></p><p>' + esc(d.note || '') + '</p>' +
-              '<button class="gw-close" style="margin-bottom:8px" onclick="window.__lotlCopyRef()">Copy reference</button><button class="gw-close" onclick="window.__lotlDone()">I have sent it</button>');
-            window.__lotlRef = d.tx_ref;
-          }
-          btn.disabled = false; btn.textContent = 'Give again';
-          return;
-        }
         throw new Error('Unexpected gateway response');
       })
       .catch(function (err) {
@@ -367,13 +343,6 @@ body{background:var(--bg-primary)}
         window.payError((err.message || 'Something went wrong.') + ' — email love@gabochie.com', 'lotl-give');
       });
   }
-
-  window.__lotlCopyRef = function () { if (window.__lotlRef) copyText(window.__lotlRef); };
-  window.__lotlDone = function () {
-    var dest = PATH + '?status=pending';
-    if (window.__lotlRef) dest += '&tx_ref=' + encodeURIComponent(window.__lotlRef);
-    window.location.href = dest;
-  };
 
   function showReceipt() {
     var q = new URLSearchParams(window.location.search);
@@ -428,14 +397,6 @@ body{background:var(--bg-primary)}
 
     var bn = $('billNote');
     if (bn) bn.textContent = cur === 'GHS' ? 'Charged in GH\u20b5.' : 'Amounts charged in GH\u20b5; your card is debited the \u2248 equivalent.';
-
-    var copyBtn = $('copyMomo');
-    if (copyBtn) copyBtn.addEventListener('click', function () {
-      var num = '0243262019';
-      var done = function () { copyBtn.textContent = 'Copied ✓'; var m = $('copyMsg'); if (m) m.textContent = 'MoMo number copied'; };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(num).then(done, function () { window.prompt('Copy MoMo number:', num); });
-      else window.prompt('Copy MoMo number:', num);
-    });
 
     showReceipt();
   });

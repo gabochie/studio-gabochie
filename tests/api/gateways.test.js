@@ -4,9 +4,7 @@ import { onRequest as moolreCreate } from '../../functions/api/gateways/moolre/c
 import { onRequest as moolreCallback } from '../../functions/api/gateways/moolre/callback.js';
 import { onRequest as cryptoCreate } from '../../functions/api/gateways/crypto/create.js';
 import { onRequest as cryptoWebhook } from '../../functions/api/gateways/crypto/webhook.js';
-import { onRequest as manualCreate } from '../../functions/api/gateways/manual/create.js';
 import { onRequest as expresspayCreate } from '../../functions/api/gateways/expresspay/create.js';
-import { onRequest as bankCreate } from '../../functions/api/gateways/bank/create.js';
 
 function post(url, body, env) {
   return buildContext(url, {
@@ -274,32 +272,6 @@ describe('Crypto gateway', function () {
   });
 });
 
-describe('Manual MoMo gateway', function () {
-  it('records pending donation and returns momo number', async function () {
-    var db = mockDb({ donations: [] });
-    var ctx = post('http://localhost/api/gateways/manual/create', { amount: 30, name: 'Cee', email: 'cee@test.com', phone: '+233559999999' }, { DB: db, MOMO_NUMBER: '0243262019' });
-    var res = await manualCreate(ctx);
-    expect(res.status).toBe(200);
-    var data = await res.json();
-    expect(data.status).toBe('ok');
-    expect(data.momo_number).toBe('0243262019');
-    expect(data.payout_display).toBe('0243 262 019');
-    expect(data.momo_name).toBe('GABOCHIE DESIGN');
-    expect(data.tx_ref).toMatch(/^manual_/);
-    expect(db._tables.donations).toHaveLength(1);
-    expect(db._tables.donations[0].provider).toBe('manual');
-    expect(db._tables.donations[0].status).toBe('pending');
-  });
-
-  it('defaults to the merchant wallet when no env override', async function () {
-    var db = mockDb({ donations: [] });
-    var ctx = post('http://localhost/api/gateways/manual/create', { amount: 30, name: 'Cee', email: 'cee@test.com' }, { DB: db });
-    var data = await (await manualCreate(ctx)).json();
-    expect(data.momo_number).toBe('0559624456');
-    expect(data.momo_name).toBe('GABOCHIE DESIGN');
-  });
-});
-
 describe('Gateway create rate limiting', function () {
   var realFetch;
   beforeEach(function () {
@@ -330,9 +302,7 @@ describe('Gateway create rate limiting', function () {
   var endpoints = [
     { name: 'expresspay', handler: expresspayCreate, path: 'expresspay/create', body: { tx_ref: 'donate_rl1', amount: 100, name: 'Ana', email: 'ana@test.com' } },
     { name: 'moolre', handler: moolreCreate, path: 'moolre/create', body: { amount: 100, name: 'Ana', email: 'ana@test.com' } },
-    { name: 'crypto', handler: cryptoCreate, path: 'crypto/create', body: { amount: 100, name: 'Ana', email: 'ana@test.com' } },
-    { name: 'manual', handler: manualCreate, path: 'manual/create', body: { amount: 30, name: 'Ana', email: 'ana@test.com' } },
-    { name: 'bank', handler: bankCreate, path: 'bank/create', body: { amount: 30, name: 'Ana', email: 'ana@test.com' } }
+    { name: 'crypto', handler: cryptoCreate, path: 'crypto/create', body: { amount: 100, name: 'Ana', email: 'ana@test.com' } }
   ];
 
   endpoints.forEach(function (ep) {
@@ -356,18 +326,18 @@ describe('Gateway create rate limiting', function () {
   });
 
   it('allows a different IP after the first is throttled', async function () {
-    var url = 'http://localhost/api/gateways/manual/create';
+    var url = 'http://localhost/api/gateways/crypto/create';
     var db = mockDb({ donations: [] });
-    var env = { DB: db };
-    for (var i = 0; i < 5; i++) await manualCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.7'));
-    expect((await manualCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.7'))).status).toBe(429);
-    expect((await manualCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.99'))).status).toBe(200);
+    var env = Object.assign({ DB: db }, { MOOLRE_API_USER: 'user', MOOLRE_PUBLIC_KEY: 'pub', MOOLRE_ACCOUNT_NUMBER: '12345', MOOLRE_BASE_URL: 'https://api.moolre.com', GHS_USD_RATE: '15.0' });
+    for (var i = 0; i < 5; i++) await cryptoCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.7'));
+    expect((await cryptoCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.7'))).status).toBe(429);
+    expect((await cryptoCreate(withIp(url, { amount: 30, name: 'Ana', email: 'ana@test.com' }, env, '198.51.100.99'))).status).toBe(200);
   });
 
   it('is a no-op without a client IP', async function () {
     var db = mockDb({ donations: [] });
-    var ctx = post('http://localhost/api/gateways/manual/create', { amount: 30, name: 'Ana', email: 'ana@test.com' }, { DB: db });
-    expect((await manualCreate(ctx)).status).toBe(200);
+    var ctx = post('http://localhost/api/gateways/crypto/create', { amount: 30, name: 'Ana', email: 'ana@test.com' }, { DB: db });
+    expect((await cryptoCreate(ctx)).status).toBe(200);
     expect(db._tables.events || []).toHaveLength(0);
   });
 });
