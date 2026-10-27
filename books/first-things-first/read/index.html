@@ -69,6 +69,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 .playing{font-size:12px;color:var(--gold)}
 .btn-print{background:transparent;border:1px solid var(--gold);color:var(--gold);font:inherit;font-weight:700;border-radius:999px;padding:7px 16px;cursor:pointer;font-size:13px}
 .btn-print:hover{background:rgba(201,168,76,.1)}
+.btn-hear{background:transparent;border:1px solid var(--gold);color:var(--gold);font:inherit;font-weight:700;border-radius:999px;padding:6px 14px;cursor:pointer;font-size:12.5px;margin:0 0 8px}
+.btn-hear:hover{background:rgba(201,168,76,.1)}
+.btn-hear.on{background:linear-gradient(180deg,#f5c518,var(--gold));color:#241c00;border-color:var(--gold)}
+.hear-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hear-row .hear-hint{font-size:12px;color:var(--dim)}
 /* chord diagrams */
 .chord-grid{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:16px 0}
 .chord-card{background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:14px 12px 10px;text-align:center;min-width:128px}
@@ -563,12 +568,15 @@ The joy of the Lord is your strength.
 </pre>
 <p style="font-size:13px;color:var(--mut)">Verse loop for deeper singing — same chords: <em>"The word of faith is nigh thee"</em> (Romans 10:8) · <em>"He gives me living water"</em> (John 4:14).</p>
 <h3>Melody TAB (top three strings)</h3>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s2a">▶ Hear line 1</button><span class="hear-hint">“The joy of the Lord is your strength” — plays the TAB through your speaker</span></div>
 <pre>
      The JOY   of   the   Lord   is   your   STRENGTH
 e|----------------------------|-----------------3--------|
 B|--------3-----3--1----------|-1--0-----------------0---|
 G|--0--2-----------------0--2-|--------2--0--2----------|
-
+</pre>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s2b">▶ Hear line 2</button><span class="hear-hint">strength held, letting it ring — then the repeat</span></div>
+<pre>
    (strength held... let it ring)        The JOY...
 e|-----0--3--0---------------|----------------------------|
 B|-----------------0--1--3---|--------3-----3--1----------|
@@ -608,17 +616,22 @@ he leadeth me beside the still waters.
 He leadeth me beside the still waters.
 </pre>
 <h3>Melody TAB (the whole verse, top three strings)</h3>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s3a">▶ Hear line 1</button><span class="hear-hint">“The Lord is my shepherd; I shall not want”</span></div>
 <pre>
    The  LORD  is  my  shep-herd;  I   shall  not  want.
 e|-------------------------------------------------0--------|
 B|-----0--0--1--3--------------3-----1--0-------------1-----|
 G|-----------------0--2--0--2-------------------------------|
-
+</pre>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s3b">▶ Hear line 2</button><span class="hear-hint">“He maketh me to lie down in green pastures”</span></div>
+<pre>
    He ma-keth me to lie  down  in  green  pas-tures:
 e|----------------------------------------------------------|
 B|--3--3--1--3--0---------------------1--0------------------|
 G|------------------2--0--2-------------2--0--2-------------|
-
+</pre>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s3c">▶ Hear line 3</button><span class="hear-hint">“he leadeth me beside the still waters” — twice-sung, quieter the second time</span></div>
+<pre>
    he  lead-eth  me  be-side  the  still  wa-ters.
 e|-------------0------------------------------------3--0----|
 B|--1--0--1--------3--1--0--1--3-----------------0----------|
@@ -758,6 +771,67 @@ window.addEventListener('scroll',function(){
   var pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
   document.getElementById('progress').style.width=pct+'%';
 },{passive:true});
+/* ── Hear the melody: plucked-string synth, transcribed from the TABs ── */
+var audioCtx=null, hearTimer=null, hearBtn=null;
+var STRING_HZ={E:329.63,B:246.94,G:196.00};
+var MELODIES={
+  s2a:[['G',0],['G',2],['B',3],['B',3],['B',1],['G',0],['G',2],'-',
+       ['B',1],['B',0],['G',2],['G',0],['G',2],['E',3],['B',0]],
+  s2b:[['E',0],['E',3],['E',0],['B',0],['B',1],['B',3],'-',
+       ['G',0],['G',2],['B',3],['B',3],['B',1],['G',0],['G',2]],
+  s3a:[['B',0],['B',0],['B',1],['B',3],['G',0],['G',2],['G',0],['G',2],
+       ['B',3],['B',1],['B',0],['E',0],['B',1]],
+  s3b:[['B',3],['B',3],['B',1],['B',3],['B',0],['G',2],['G',0],['G',2],
+       ['B',1],['B',0],['G',2],['G',0],['G',2]],
+  s3c:[['B',1],['B',0],['B',1],['E',0],['B',3],['B',1],['B',0],['B',3],
+       ['G',2],['G',0],['G',2],['B',0],['E',3],['E',0]]
+};
+function hearCtx(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function pluck(ctx,when,freq,ring){
+  var osc=ctx.createOscillator(), osc2=ctx.createOscillator();
+  var gain=ctx.createGain(), lp=ctx.createBiquadFilter();
+  osc.type='triangle'; osc.frequency.value=freq;
+  osc2.type='sine'; osc2.frequency.value=freq*2; /* octave shimmer, like a string's brightness */
+  var g2=ctx.createGain(); g2.gain.value=0.18;
+  lp.type='lowpass'; lp.frequency.value=2400; lp.Q.value=0.5;
+  gain.gain.setValueAtTime(0.0001,when);
+  gain.gain.exponentialRampToValueAtTime(0.28,when+0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001,when+ring);
+  osc.connect(gain); osc2.connect(g2); g2.connect(gain); gain.connect(lp); lp.connect(ctx.destination);
+  osc.start(when); osc2.start(when);
+  osc.stop(when+ring+0.05); osc2.stop(when+ring+0.05);
+}
+function hearStop(){
+  if(hearTimer){ clearTimeout(hearTimer); hearTimer=null; }
+  if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx=null; }
+  if(hearBtn){ hearBtn.textContent=hearBtn.getAttribute('data-label')||'▶ Hear'; hearBtn.classList.remove('on'); hearBtn=null; }
+}
+function hearPlay(btn){
+  if(btn===hearBtn){ hearStop(); return; } /* toggle off */
+  hearStop();
+  var notes=MELODIES[btn.getAttribute('data-melody')];
+  if(!notes) return;
+  var ctx=hearCtx(), t=ctx.currentTime+0.08, STEP=0.34;
+  for(var i=0;i<notes.length;i++){
+    if(notes[i]==='-'){ t+=STEP*0.6; continue; }
+    var str=notes[i][0], fret=notes[i][1];
+    var freq=STRING_HZ[str]*Math.pow(2,fret/12);
+    pluck(ctx,t,freq,(i===notes.length-1)?2.2:1.15);
+    t+=STEP;
+  }
+  hearBtn=btn;
+  btn.setAttribute('data-label',btn.textContent);
+  btn.textContent='❚❚ Stop'; btn.classList.add('on');
+  hearTimer=setTimeout(hearStop,(t-ctx.currentTime+0.4)*1000);
+}
+document.querySelectorAll('.btn-hear').forEach(function(b){
+  b.addEventListener('click',function(){ hearPlay(b); });
+});
+document.addEventListener('visibilitychange',function(){ if(document.hidden) hearStop(); });
 </script>
 <script defer src="/assets/js/main.js"></script>
 <script src="/nav.js"></script>
