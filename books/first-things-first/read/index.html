@@ -568,14 +568,14 @@ The joy of the Lord is your strength.
 </pre>
 <p style="font-size:13px;color:var(--mut)">Verse loop for deeper singing — same chords: <em>"The word of faith is nigh thee"</em> (Romans 10:8) · <em>"He gives me living water"</em> (John 4:14).</p>
 <h3>Melody TAB (top three strings)</h3>
-<div class="hear-row noprint"><button class="btn-hear" data-melody="s2a">▶ Hear line 1</button><span class="hear-hint">“The joy of the Lord is your strength” — plays the TAB through your speaker</span></div>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s2a">▶ Hear line 1</button><span class="hear-hint">“The joy of the Lord is your strength” — fingerstyle: chords roll under the melody</span></div>
 <pre>
      The JOY   of   the   Lord   is   your   STRENGTH
 e|----------------------------|-----------------3--------|
 B|--------3-----3--1----------|-1--0-----------------0---|
 G|--0--2-----------------0--2-|--------2--0--2----------|
 </pre>
-<div class="hear-row noprint"><button class="btn-hear" data-melody="s2b">▶ Hear line 2</button><span class="hear-hint">strength held, letting it ring — then the repeat</span></div>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s2b">▶ Hear line 2</button><span class="hear-hint">strength held over Em7, letting it ring — then the repeat</span></div>
 <pre>
    (strength held... let it ring)        The JOY...
 e|-----0--3--0---------------|----------------------------|
@@ -771,7 +771,8 @@ window.addEventListener('scroll',function(){
   var pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
   document.getElementById('progress').style.width=pct+'%';
 },{passive:true});
-/* ── Hear the melody: plucked-string synth, transcribed from the TABs ── */
+/* ── Hear the melody: Karplus-Strong plucked-string synth (guitar tone) —
+   melody on top + fingerstyle chord backing, transcribed from the TABs & chord charts ── */
 var audioCtx=null, hearTimer=null, hearBtn=null;
 var STRING_HZ={E:329.63,B:246.94,G:196.00};
 var MELODIES={
@@ -786,24 +787,57 @@ var MELODIES={
   s3c:[['B',1],['B',0],['B',1],['E',0],['B',3],['B',1],['B',0],['B',3],
        ['G',2],['G',0],['G',2],['B',0],['E',3],['E',0]]
 };
+/* fingerstyle voicings (from the chord charts): bass note + top-three roll */
+var CHORDS={
+  G:    {bass:98.00, roll:[196.00,246.94,392.00]},   /* 320003 */
+  Cmaj7:{bass:130.81,roll:[196.00,246.94,329.63]},   /* x32000 */
+  Em7:  {bass:82.41, roll:[196.00,293.66,329.63]},   /* 022030 */
+  D:    {bass:146.83,roll:[220.00,293.66,369.99]}    /* xx0232 */
+};
+/* which chord enters at which melody event (from the song sheets) */
+var CHORD_MAPS={
+  s2a:[[0,'G'],[7,'Cmaj7'],[11,'Em7']],
+  s2b:[[0,'Em7'],[6,'G']],
+  s3a:[[0,'G'],[8,'Em7']],
+  s3b:[[0,'Cmaj7'],[5,'G'],[9,'D']],
+  s3c:[[0,'G'],[5,'Cmaj7'],[9,'D'],[12,'G']]
+};
 function hearCtx(){
   if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
-function pluck(ctx,when,freq,ring){
-  var osc=ctx.createOscillator(), osc2=ctx.createOscillator();
-  var gain=ctx.createGain(), lp=ctx.createBiquadFilter();
-  osc.type='triangle'; osc.frequency.value=freq;
-  osc2.type='sine'; osc2.frequency.value=freq*2; /* octave shimmer, like a string's brightness */
-  var g2=ctx.createGain(); g2.gain.value=0.18;
-  lp.type='lowpass'; lp.frequency.value=2400; lp.Q.value=0.5;
-  gain.gain.setValueAtTime(0.0001,when);
-  gain.gain.exponentialRampToValueAtTime(0.28,when+0.012);
-  gain.gain.exponentialRampToValueAtTime(0.0001,when+ring);
-  osc.connect(gain); osc2.connect(g2); g2.connect(gain); gain.connect(lp); lp.connect(ctx.destination);
-  osc.start(when); osc2.start(when);
-  osc.stop(when+ring+0.05); osc2.stop(when+ring+0.05);
+/* Karplus-Strong: noise burst in a filtered delay line = a real plucked string */
+function ksBuffer(ctx,freq,ring){
+  var sr=ctx.sampleRate, N=Math.max(2,Math.round(sr/freq)), len=Math.floor(sr*ring);
+  var buf=ctx.createBuffer(1,len,sr), d=buf.getChannelData(0);
+  var dl=new Float32Array(N), i;
+  for(i=0;i<N;i++) dl[i]=Math.random()*2-1;
+  var idx=0, decay=freq<150?0.9975:0.996; /* bass strings ring longer */
+  for(i=0;i<len;i++){
+    var cur=dl[idx], nxt=dl[(idx+1)%N];
+    d[i]=cur;
+    dl[idx]=0.5*(cur+nxt)*decay;
+    idx=(idx+1)%N;
+  }
+  return buf;
+}
+function pluck(ctx,when,freq,vol,ring,cache){
+  var key=Math.round(freq*10)+'|'+Math.round(ring*10);
+  if(!cache[key]) cache[key]=ksBuffer(ctx,freq,ring);
+  var src=ctx.createBufferSource(); src.buffer=cache[key];
+  var g=ctx.createGain(); g.gain.value=vol;
+  src.connect(g); g.connect(cache.bus);
+  src.start(when);
+}
+/* shared master chain: headroom gain → compressor (no clipping, "recorded" glue) */
+function hearBus(ctx){
+  var bus=ctx.createGain(); bus.gain.value=0.55;
+  var comp=ctx.createDynamicsCompressor();
+  comp.threshold.value=-18; comp.knee.value=20; comp.ratio.value=4;
+  comp.attack.value=0.004; comp.release.value=0.24;
+  bus.connect(comp); comp.connect(ctx.destination);
+  return bus;
 }
 function hearStop(){
   if(hearTimer){ clearTimeout(hearTimer); hearTimer=null; }
@@ -815,18 +849,38 @@ function hearPlay(btn){
   hearStop();
   var notes=MELODIES[btn.getAttribute('data-melody')];
   if(!notes) return;
-  var ctx=hearCtx(), t=ctx.currentTime+0.08, STEP=0.34;
-  for(var i=0;i<notes.length;i++){
-    if(notes[i]==='-'){ t+=STEP*0.6; continue; }
+  var ctx=hearCtx(), cache={bus:hearBus(ctx)};
+  var t0=ctx.currentTime+0.08, STEP=0.34, t=t0, times=[], i;
+  for(i=0;i<notes.length;i++){
+    if(notes[i]==='-'){ times.push(null); t+=STEP*0.6; }
+    else { times.push(t); t+=STEP; }
+  }
+  var endT=t;
+  /* melody on top */
+  for(i=0;i<notes.length;i++){
+    if(!times[i]) continue;
     var str=notes[i][0], fret=notes[i][1];
-    var freq=STRING_HZ[str]*Math.pow(2,fret/12);
-    pluck(ctx,t,freq,(i===notes.length-1)?2.2:1.15);
-    t+=STEP;
+    pluck(ctx,times[i],STRING_HZ[str]*Math.pow(2,fret/12),0.9,(i===notes.length-1)?2.4:1.6,cache);
+  }
+  /* fingerstyle chord backing: bass, then 6/8 roll on the top three strings */
+  var map=CHORD_MAPS[btn.getAttribute('data-melody')]||[];
+  for(i=0;i<map.length;i++){
+    var start=map[i][0]<times.length&&times[map[i][0]]?times[map[i][0]]:t0;
+    var nextStart=(i+1<map.length&&times[map[i+1][0]])?times[map[i+1][0]]:endT+0.6;
+    var ch=CHORDS[map[i][1]]; if(!ch) continue;
+    pluck(ctx,start,ch.bass,0.65,2.0,cache);
+    var pattern=[2,1,0,1,2,0], k=0, roll=1.2;
+    for(var j=0;j<6;j++){
+      var when=start+roll+j*0.2;
+      if(when>=nextStart-0.05) break;
+      pluck(ctx,when,ch.roll[pattern[j]],0.45,1.4,cache);
+      k++;
+    }
   }
   hearBtn=btn;
   btn.setAttribute('data-label',btn.textContent);
   btn.textContent='❚❚ Stop'; btn.classList.add('on');
-  hearTimer=setTimeout(hearStop,(t-ctx.currentTime+0.4)*1000);
+  hearTimer=setTimeout(hearStop,(endT-ctx.currentTime+2.6)*1000);
 }
 document.querySelectorAll('.btn-hear').forEach(function(b){
   b.addEventListener('click',function(){ hearPlay(b); });
