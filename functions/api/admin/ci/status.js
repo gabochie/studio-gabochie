@@ -1,5 +1,9 @@
+import { requireAdminAuth } from '../_admin-auth.js';
+
 export async function onRequest(context) {
   var { request, env } = context;
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
 
   if (request.method === 'POST') {
     var auth = request.headers.get('X-CI-Secret');
@@ -33,7 +37,9 @@ export async function onRequest(context) {
     }
   }
 
-  // GET — latest report
+  // GET — latest report (admin-only)
+  var authErr = await requireAdminAuth(request, env);
+  if (authErr) return authErr;
   try {
     var report = await env.DB.prepare(
       "SELECT * FROM ci_reports ORDER BY created_at DESC LIMIT 1"
