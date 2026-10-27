@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Read Free — First Things First: The Beginner Guitar Companion | Studio Gabochie</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1628">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Read First Things First — The Beginner Guitar Companion free, online. The Matthew 6:33 Method: five chords, one groove, three R&B acoustic worship songs — with chord diagrams, a 7-day tracker, TAB and key charts.">
+<link rel="canonical" href="https://studio.gabochie.com/books/first-things-first/read/">
+<meta property="og:title" content="First Things First — The Beginner Guitar Companion">
+<meta property="og:description" content="Read it free, online. Five chords. One groove. Three songs. The Matthew 6:33 Method on the acoustic guitar.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://studio.gabochie.com/books/first-things-first/read/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
+<link rel="stylesheet" href="/assets/css/main.css">
+<style>
+/* ── Reader styles only. Header/footer/tab-bar + base tokens come from /assets/css/main.css + /nav.js ── */
+.funnel{--navy:#0A1628;--navy2:#0F1E38;--line:#1E3250;--gold:#C9A84C;--ink:#F1F5F9;--mut:#8fa0b5;--dim:#5A7A9F}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var(--ink);line-height:1.7;padding-top:64px;padding-bottom:24px}
+@media(max-width:760px){body{padding-bottom:84px}}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#f5c518,var(--gold));z-index:200}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:14px 0 4px;font-size:12px;color:var(--mut)}
+.chips a{color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 12px}
+.chips a:hover{color:var(--gold);border-color:var(--gold)}
+.hero{text-align:center;padding:44px 0 28px}
+.hero .series{font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;font-weight:700}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,6vw,46px);line-height:1.1;margin:10px 0 6px}
+.hero h1 span{color:var(--gold)}
+.hero .sub{color:var(--mut);font-size:15px;max-width:560px;margin:0 auto}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--mut)}
+.badge.free{border-color:var(--gold);color:var(--gold)}
+.cover{aspect-ratio:3/4.2;border-radius:10px;background:linear-gradient(150deg,#1b3a5c,#0d1b2a);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;text-align:center;padding:10%;position:relative;max-width:230px;width:100%;margin:0 auto 18px;overflow:hidden}
+.cover .ct{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#fff;font-size:1.3rem;line-height:1.2;text-transform:uppercase}
+.cover .ct small{display:block;color:var(--gold);font-size:.6rem;letter-spacing:.14em;margin-bottom:8px}
+.cover .csub{color:#cfd8e3;font-size:.72rem;margin-top:10px}
+.audio-card{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:18px;margin:22px 0}
+.audio-card h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:.04em;margin-bottom:4px}
+.audio-card p{font-size:13px;color:var(--mut);margin-bottom:10px}
+.rate-row{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--mut);flex-wrap:wrap}
+.rate-row select{background:var(--navy);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font:inherit}
+.chapter{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:26px 24px;margin:0 0 22px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.chapter h2{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;line-height:1.35;margin-bottom:10px}
+.chapter h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--gold);margin:20px 0 6px;letter-spacing:.03em}
+.chapter p{margin:0 0 12px;color:#D7DEE8;font-size:15.5px}
+.chapter blockquote{border-left:3px solid var(--gold);padding:8px 14px;margin:14px 0;background:rgba(201,168,76,.07);border-radius:0 8px 8px 0;font-family:'Libre Baskerville',Georgia,serif;font-style:italic}
+.chapter ul,.chapter ol{margin:0 0 12px 22px;color:#D7DEE8;font-size:15.5px}
+.chapter li{margin-bottom:6px}
+.chapter hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.chapter table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.chapter th{font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;font-size:12px;color:var(--gold);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.chapter td{padding:7px 8px;border-bottom:1px solid rgba(30,50,80,.5);color:#D7DEE8;vertical-align:top}
+.part-divider{text-align:center;padding:34px 0 10px}
+.part-divider .p-k{font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;font-weight:700}
+.part-divider h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(26px,5vw,38px);margin:6px 0 2px;text-transform:uppercase}
+.listen-row{display:flex;align-items:center;gap:10px;margin:4px 0 16px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border-radius:999px;padding:8px 18px;cursor:pointer;border:0;font-size:14px}
+.btn-listen{background:linear-gradient(180deg,#f5c518,var(--gold));color:#241c00}
+.btn-stop{background:transparent;border:1px solid var(--line);color:var(--mut)}
+.playing{font-size:12px;color:var(--gold)}
+.btn-print{background:transparent;border:1px solid var(--gold);color:var(--gold);font:inherit;font-weight:700;border-radius:999px;padding:7px 16px;cursor:pointer;font-size:13px}
+.btn-print:hover{background:rgba(201,168,76,.1)}
+/* chord diagrams */
+.chord-grid{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.chord-card{background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:14px 12px 10px;text-align:center;min-width:128px}
+.chord-card svg{display:block;margin:0 auto}
+.chord-card .cname{font-family:'Barlow Condensed',sans-serif;font-size:17px;letter-spacing:.05em;color:var(--gold);margin-top:6px}
+.chord-card .croom{font-size:11px;color:var(--dim)}
+.chord-svg text{font-family:'DM Sans',sans-serif}
+/* tab / pre blocks */
+.chapter pre{background:var(--navy);border:1px solid var(--line);border-radius:10px;padding:14px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;font-family:'Consolas','Courier New',monospace;font-size:12.5px;line-height:1.5;color:#CFE0F1}
+.chapter pre b{color:var(--gold);font-weight:700}
+/* wide tables scroll inside their chapter instead of overflowing the page */
+.chapter table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.song .credit{font-size:12px;color:var(--mut);border-left:3px solid var(--gold);padding:6px 12px;margin:0 0 12px;background:rgba(201,168,76,.07);border-radius:0 8px 8px 0}
+.pocket{display:flex;gap:0;justify-content:center;margin:10px 0 4px}
+.pocket span{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:8px;margin-right:-1px;color:var(--mut)}
+.pocket span.d{background:linear-gradient(180deg,#f5c518,var(--gold));color:#241c00;border-color:var(--gold)}
+.pocket span.u{color:var(--gold);border-color:rgba(201,168,76,.5)}
+/* support / unlock */
+.support{background:linear-gradient(135deg,#101f3a,#1A2A45);border:2px solid var(--gold);border-radius:16px;padding:28px 24px;text-align:center;margin:22px 0}
+.support h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--gold);margin-bottom:6px}
+.support .price{font-size:34px;font-weight:700;margin:8px 0}
+.support .price span{font-size:14px;color:var(--mut);font-weight:400}
+.support p{color:var(--mut);font-size:14px;margin-bottom:14px}
+.btn-gold{display:inline-block;background:linear-gradient(180deg,#f5c518,var(--gold));color:#241c00;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:14px 30px;border-radius:10px;text-decoration:none}
+.btn-gold:hover{transform:translateY(-1px)}
+.btn-ghost{display:inline-block;background:transparent;border:1px solid var(--line);color:var(--mut);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:13px;padding:12px 24px;border-radius:10px;text-decoration:none;margin-left:8px}
+.comply{font-size:12px;color:var(--dim);text-align:center;margin:20px 0;line-height:1.7}
+/* print: only the section carrying .printable prints */
+@media print{
+  body{background:#fff;color:#111;padding:0}
+  body.printing #progress,body.printing #nav-placeholder,body.printing #footer-placeholder,body.printing .noprint{display:none!important}
+  body.printing .wrap{max-width:none;padding:0}
+  body.printing .chapter{background:#fff;border:0;color:#111;padding:0}
+  body.printing .chapter p,body.printing .chapter td,body.printing .chapter li{color:#111}
+  body.printing .chapter h2{color:#111}
+  body.printing pre.tab,body.printing .song{background:#fff;color:#111;border-color:#bbb}
+  body.printing .song pre{color:#111}
+  body.printing .chapter{display:none!important}
+  body.printing .chapter.print-target{display:block!important}
+  body.printing .chapter .noprint{display:none!important}
+}
+</style>
+</head>
+<body class="funnel">
+<div id="progress"></div>
+<div id="nav-placeholder"></div>
+<div class="wrap">
+<div class="chips"><span>Jump to:</span><a href="#author">Author</a><a href="#lyre">The Lyre</a><a href="#howto">Start Here</a><a href="#part1">Part One</a><a href="#part2">Part Two</a><a href="#part3">Part Three</a><a href="#songs">Songs</a><a href="#support">Support</a></div>
+<div class="hero">
+<div class="cover"><div><div class="ct"><small>Companion to the course</small>First Things First</div>
+<div class="csub">The Beginner Guitar Companion</div></div></div>
+<p class="series">The Matthew 6:33 Method</p>
+<h1>First Things First <span>The Beginner Guitar Companion</span></h1>
+<p class="sub">Five chords. One groove. Three songs. Read the whole book free, online — built for the phone in your pocket and the guitar on your lap.</p>
+<div class="badges"><span class="badge free">Read free online</span><span class="badge">Chord diagrams</span><span class="badge">Printable tracker</span><span class="badge">R&amp;B acoustic songbook</span></div>
+</div>
+
+<section class="chapter" id="author">
+<p class="kicker">PAGE 2 · ABOUT YOUR AUTHOR &nbsp;·&nbsp; ~2 min read</p>
+<h2>Gideon Abochie</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="author"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="author" hidden>⏹ Stop</button>
+<span class="playing" id="playing-author" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p>I am an architect. I studied at the Kwame Nkrumah University of Science and Technology in Kumasi, and since 2012 I have built and guided projects in Tema, Ghana — first designs, then plans, then the systems beneath buildings: cost guides, land studies, and the intelligence that keeps a family's build from collapsing halfway.</p>
+<p>For twenty years I have drawn buildings that begin as nothing but a plan. I have learned that no beautiful building ever skipped the plan underneath it. You never stand on what you have not laid.</p>
+<p>The acoustic guitar is the smallest building you will ever hold. It has a roof, a resonant hall, a doorway, a frame under tension, and six strings that only sound right when every one of them is in a right relation to the others.</p>
+<p>In this companion, you and I will build your playing the way every lasting thing is built — and the way David, long before any of my buildings, learned his lyre: <strong>seek first the system, then the right order of its parts, and everything else is added.</strong></p>
+<p>I teach that same method in every course at Studio Gabochie. Whether you are learning a lyre, a building, or the Lord Himself — the beginning is always the same: first things first.</p>
+<p><em>Tema, Greater Accra, Ghana</em></p>
+<p style="font-size:13px;color:var(--dim)">WhatsApp: +233 243 262 019 · studio.gabochie.com</p></div>
+</section>
+
+<section class="chapter" id="lyre">
+<p class="kicker">PAGES 3–4 · HOW DAVID LEARNED THE LYRE &nbsp;·&nbsp; ~4 min read</p>
+<h2>The Matthew 6:33 Method — the plan of this whole book</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="lyre"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="lyre" hidden>⏹ Stop</button>
+<span class="playing" id="playing-lyre" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p>A teenager stood alone on the hillsides of Bethlehem with his father's sheep, a small lyre, and no audience at all. No teacher in the room. No applause. Just long, secret hours spent learning how the instrument actually worked — its strings, its order, its way of being in tune.</p>
+<p>Nobody calls that moment famous. And yet look at what came out of it, in the order Scripture records it:</p>
+<ul>
+<li>A servant of the king, searching for help, reports the first thing he saw: <em>"I have seen a son of Jesse the Bethlehemite, who is <strong>skillful in playing</strong>"</em> — and adds, <em>wisdom</em> ("prudent in speech"), and finally, <em>"and the Lord is with him"</em> (1 Samuel 16:18).</li>
+<li>When David played for that tormented king, Saul was <strong>refreshed and well</strong>, and <em>the harmful spirit departed from him</em> (1 Samuel 16:23).</li>
+<li>The skill opened the palace door (1 Samuel 16:19–21) — a shepherd walked into the king's house because of what he had built in the secret.</li>
+<li>And decades later the secret became a school: David appointed families of musicians to <em>"prophesy with lyres, harps, and cymbals"</em> in the house of the Lord — 288 of them, <strong>teachers with their scholars</strong> (1 Chronicles 25:1–8).</li>
+</ul>
+<p>Notice what Jesus said hundreds of years later, in one verse — Matthew 6:33 — because David's life had already proved it:</p>
+<blockquote><em>But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.</em></blockquote>
+<h3>This is the method of this book, in three steps</h3>
+<p><strong>1. Seek first the system (the Kingdom).</strong> David did not begin by chasing songs. He learned the <em>whole</em> of the instrument — its structure, its order, the way it works before it makes music. In this book, that is knowing your instrument's anatomy (Part One), tuning it (the commissioning), and holding it right (the posture). Structure before sound.</p>
+<p><strong>2. And His righteousness (right-relatedness).</strong> Righteousness sounds enormous until you watch it on an instrument: every string tuned to one standard. Every finger in its right place. Every note rightly related to its neighbors, and the player rightly related to the Owner of the Song. David sang <em>"my heart is fixed"</em> <em>before</em> <em>"I will sing praises with psaltery and harp"</em> (Psalm 108:1) — the heart tuned before the strings. And when Saul handed him his armor, David refused the borrowed system (1 Samuel 17:39). He built his own weight. So will you: six strings, no shortcuts, no borrowed gear-must-haves.</p>
+<p><strong>3. And all these things shall be added.</strong> You never chase the added things. You seek the order, and the added things follow the seeker: skill (adept musicianship), joy (play becomes praise), the presence of God in an ordinary room, wisdom that orders thoughts as it orders strings, and — if God wills — things done through your hands you could never have manufactured: refreshment, deliverance, healing.</p>
+<blockquote><strong>You will not learn a song on Day 1. You will learn the house it lives in. On Day 7, you will sing in it.</strong></blockquote></div>
+</section>
+
+<section class="chapter" id="howto">
+<p class="kicker">PAGE 5 · HOW TO USE THIS COMPANION &nbsp;·&nbsp; ~2 min read</p>
+<h2>Start Here — How to Use This Book</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="howto"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="howto" hidden>⏹ Stop</button>
+<span class="playing" id="playing-howto" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p>This companion walks with the free course Module 1 and the full course behind it. Three parts:</p>
+<p><strong>Part One — The Building</strong> (pages 6–9). Know the instrument, tune it, hold it. The system and its rightness. Day 1–2 of the plan.</p>
+<p><strong>Part Two — The Rooms</strong> (pages 10–15). Five chords, one strum. Each chord is a room in the house: learn rooms, and you can live in the house.</p>
+<p><strong>Part Three — The Householder</strong> (pages 16–24). The seven-day plan, the songbook — three R&amp;B acoustic worship songs — troubleshooting, and where to go next.</p>
+<h3>Three rules of the house</h3>
+<ol>
+<li><strong>15 minutes daily.</strong> Not two hours on Sunday. David awoke <em>early</em> and played <em>in secret</em> (Psalm 57:8; 108:2). So do you.</li>
+<li><strong>Tune the heart, then the strings.</strong> One quiet beat before every session. You are not practicing to impress a room; you are building a room for Someone.</li>
+<li><strong>Never play out of tune.</strong> An untuned session trains your ear wrongly. Twenty seconds of tuning protects an hour of practice.</li>
+</ol>
+<h3>Every song, one format</h3>
+<p>Every song in this book is <strong>formatted for R&amp;B acoustic guitar</strong> — the Sunday slow-jam sound — and ships the same six parts: ① the lyric sheet ② the chord chart ③ <em>the cream</em> (one-finger color swaps) ④ melody TAB ⑤ the pocket (the strum pattern and how it feels) ⑥ a key chart. Learn one song this way and you have learned every song this way.</p></div>
+</section>
+
+<div class="part-divider" id="part1"><p class="p-k">Part One · Day 1–2</p><h2>The Building</h2><p style="color:var(--mut);font-size:14px">Structure before sound.</p></div>
+
+<section class="chapter" id="instrument">
+<p class="kicker">PAGE 6 · KNOW YOUR INSTRUMENT (Day 1)</p>
+<h2>Know Your Instrument</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="instrument"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="instrument" hidden>⏹ Stop</button>
+<span class="playing" id="playing-instrument" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<blockquote><em>"Praise him with stringed instruments… let every thing that hath breath praise the Lord." — Psalm 150:4,6</em></blockquote>
+<p>You are holding a sound-house. Walk it the way you would walk a building, from top to bottom:</p>
+<table>
+<tr><th>Part</th><th>On the building site</th><th>What it does</th></tr>
+<tr><td><strong>Headstock</strong></td><td>The forecourt</td><td>The far end; carries the <strong>tuning pegs</strong></td></tr>
+<tr><td><strong>Tuning pegs</strong></td><td>The valves</td><td>Turn to tighten or loosen a string — raising or lowering its pitch</td></tr>
+<tr><td><strong>Nut</strong></td><td>The threshold</td><td>The small white/cream bar between pegs and fretboard; strings cross it into the house</td></tr>
+<tr><td><strong>Neck &amp; fretboard</strong></td><td>The frame &amp; corridor</td><td>The long strip; metal bars (<strong>frets</strong>) mark where you press</td></tr>
+<tr><td><strong>Body</strong></td><td>The great hall</td><td>The hollow chamber that amplifies every sound you make</td></tr>
+<tr><td><strong>Soundhole</strong></td><td>The doorway</td><td>The mouth of the hall — the sound walks out through it</td></tr>
+<tr><td><strong>Bridge</strong></td><td>The plinth</td><td>Anchors the strings at the far end; pulls their vibration into the hall</td></tr>
+<tr><td><strong>Six strings</strong></td><td>The wiring</td><td>Your raw material — named <strong>E · A · D · G · B · e</strong> from thickest to thinnest</td></tr>
+</table>
+<h3>The string map — memorize it today</h3>
+<blockquote><em>"<strong>E</strong>ddie <strong>A</strong>te <strong>D</strong>ynamite, <strong>G</strong>ood <strong>B</strong>ye <strong>E</strong>ddie."</em><br>6th (thickest) → 5th → 4th → 3rd → 2nd → 1st (thinnest)</blockquote>
+<p>The thickest string is <strong>6th</strong> and also called <strong>low E</strong>; the thinnest is <strong>1st</strong>, the <strong>high e</strong>. Every chord diagram in this book is read in that same direction: <strong>6th on the left, 1st on the right.</strong> Get the direction right once, and no diagram will ever confuse you again.</p>
+<p>✔ <strong>The house-walk checkpoint (Day 1):</strong> Touch and <em>say aloud</em> each part: headstock, pegs, nut, neck, fretboard, frets, body, soundhole, bridge, and the six string names in order — two full rounds, without the list.</p></div>
+</section>
+
+<section class="chapter" id="tuning">
+<p class="kicker">PAGE 7 · COMMISSIONING (Day 1–2)</p>
+<h2>Tune Before You Play</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="tuning"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="tuning" hidden>⏹ Stop</button>
+<span class="playing" id="playing-tuning" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<blockquote><em>"My heart is fixed, O God, my heart is fixed: I will sing and give praise." — Psalm 57:7</em></blockquote>
+<p>Builders never open a building to the public before inspection. Musicians never play before tuning. <strong>Both laws are the same law: first the right order, then the use.</strong></p>
+<p>And David's order went one step deeper — <em>"my heart is fixed"</em> came <em>before</em> <em>"I will sing."</em> So begin every session in this order: <strong>one quiet beat — settle the heart — then tune the strings.</strong></p>
+<h3>The Commissioning Checklist</h3>
+<ol>
+<li>Attach a <strong>clip-on tuner</strong> (or open a free phone-tuning app).</li>
+<li>Pluck <strong>one string at a time</strong>, and let it ring. Watch the display name the note.</li>
+<li>Turn the corresponding <strong>tuning peg</strong> until the display reads the target — remember the map: 6th=E, 5th=A, 4th=D, 3rd=G, 2nd=B, 1st=e.</li>
+<li><strong>The Golden Rule — always approach the pitch by tightening upward.</strong> If a string is too high, loosen it below the target and tighten <em>up into</em> the note. Tightened strings settle; strings loosened past pitch fall out of tune again before the day ends. (On a build: you settle loads into their right bearing, not onto their edge.)</li>
+<li>Re-check all six after your first five minutes of playing — new strings stretch the way new concrete settles.</li>
+<li>Put the tuner where you can see it for tomorrow. Tuning is daily, like prayer.</li>
+</ol>
+<p>✔ <strong>Commissioning checkpoint:</strong> all six strings read E·A·D·G·B·e in order, and you have done the last twenty seconds with your eyes on the instrument, not on a message.</p></div>
+</section>
+
+<section class="chapter" id="posture">
+<p class="kicker">PAGE 8 · THE OCCUPANT (Day 2)</p>
+<h2>Posture &amp; the Claw</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="posture"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="posture" hidden>⏹ Stop</button>
+<span class="playing" id="playing-posture" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<blockquote><em>"…whatsoever ye do, do all to the glory of God." — 1 Corinthians 10:31</em></blockquote>
+<p>Bad posture quietly charges interest. On day one it feels harmless; by month two it has collected wrist pain and rusty chords. An architect designs rooms for the people who live in them — so we design your seat before we look at a single chord.</p>
+<ol>
+<li><strong>Sit forward</strong> on a firm chair, with <strong>lower back support</strong>. No sofas, no bed. The chair is the plinth of your whole build.</li>
+<li><strong>Rest the curved waist of the body on your right leg</strong> (mirror everything if you are left-handed).</li>
+<li><strong>Keep the neck fairly upright</strong> — aim the headstock at a wall, not at the floor. A drooping neck is a bad contract your wrist signed on day one; cancel it today.</li>
+<li><strong>Left elbow relaxed and near; the "T-Rex claw":</strong> curve the fingers like a small dinosaur's claw, so you press with <strong>fingertips</strong> — the hard tips, never the soft pads — and lie-flat fingers never smother their neighbors.</li>
+<li><strong>Thumb behind the neck</strong>, low and behind — not hooked over the top. The thumb is scaffolding, not a hand.</li>
+</ol>
+<p>✔ <strong>The hold checkpoint:</strong> correct seat, guitar on the right leg, neck angled up, claw hand, thumb low. Hold 60 seconds without strain, breathing normally. <strong>This is your playing position in every session from now on.</strong></p></div>
+</section>
+
+<section class="chapter" id="em">
+<p class="kicker">PAGE 9 · YOUR FIRST SOUND (Day 2)</p>
+<h2>E Minor — Your First Chord</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="em"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="em" hidden>⏹ Stop</button>
+<span class="playing" id="playing-em" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<blockquote><em>"Sing unto him a new song; play skilfully with a loud noise." — Psalm 33:3</em></blockquote>
+<p>The first chord of our house is <strong>E minor (Em)</strong> — chosen because it uses only two fingers and, full of nerve, welcomes all six strings. A day-one sound that fills the whole room.</p>
+<div class="chord-grid">
+<div class="chord-card">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="E minor chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">×○○○○○ all six ring</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="30" cy="65" r="9" fill="#C9A84C"/><text x="30" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<circle cx="50" cy="65" r="9" fill="#C9A84C"/><text x="50" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<text x="10" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="70" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="90" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="110" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">2nd fret</text>
+</svg>
+<div class="cname">Em</div><div class="croom">the hall</div>
+</div>
+</div>
+<h3>Build it</h3>
+<ul>
+<li><strong>1st finger</strong> → 2nd fret of the <strong>A string</strong> (5th).</li>
+<li><strong>2nd finger</strong> → 2nd fret of the <strong>D string</strong> (4th).</li>
+<li>Press with <strong>fingertips</strong>, close to the front of the metal fret bar — never on top of it, never far behind it.</li>
+<li>Strum <strong>all six strings</strong>, once, downward, steady. Hear the hall answer.</li>
+</ul>
+<p>The first chord you ever place — perhaps one evening in a quiet sitting room in Tema, or anywhere in the world — is the day the invisible system becomes something you can hear. Remember it.</p>
+<p>✔ <strong>Em checkpoint:</strong> tune → position → place → strum. <strong>Five clean strums.</strong> Then stop, and play it once more just to listen to it.</p>
+<p style="font-size:13px;color:var(--dim)">Calluses come in 2–3 weeks (see Troubleshooting); short daily sessions beat one long one, every time.</p></div>
+</section>
+
+<div class="part-divider" id="part2"><p class="p-k">Part Two · Day 3–5</p><h2>The Rooms</h2><p style="color:var(--mut);font-size:14px">Five chords make the whole course's song.</p></div>
+
+<section class="chapter" id="rooms">
+<p class="kicker">PAGES 10–14 · CHORD ONE-PAGERS (Days 3–5)</p>
+<h2>The Power 5 — One Chord, One Room</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="rooms"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="rooms" hidden>⏹ Stop</button>
+<span class="playing" id="playing-rooms" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p>Five chords make the whole course's song. Each one-pager: where to press, how to think of it on the building site, sound-check, and the one mistake to refuse. Reading rule on every diagram: <strong>columns left→right = 6th→1st string · ● press with the numbered finger · ○ open · × do not play.</strong></p>
+<div class="chord-grid">
+<div class="chord-card">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="A minor chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">× skip low E</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#5A7A9F" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="50" cy="65" r="9" fill="#C9A84C"/><text x="50" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<circle cx="70" cy="65" r="9" fill="#C9A84C"/><text x="70" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">3</text>
+<circle cx="90" cy="35" r="9" fill="#C9A84C"/><text x="90" y="39" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<text x="30" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="110" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="8" y="24" font-size="10" text-anchor="middle" fill="#E8637A">×</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">1st fret</text>
+</svg>
+<div class="cname">Am</div><div class="croom">the guest room</div>
+</div>
+<div class="chord-card">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="D major chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">× × from D string</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#5A7A9F" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#5A7A9F" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="70" cy="65" r="9" fill="#C9A84C"/><text x="70" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<circle cx="90" cy="95" r="9" fill="#C9A84C"/><text x="90" y="99" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">3</text>
+<circle cx="110" cy="65" r="9" fill="#C9A84C"/><text x="110" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<text x="50" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="8" y="24" font-size="10" text-anchor="middle" fill="#E8637A">×</text><text x="28" y="24" font-size="10" text-anchor="middle" fill="#E8637A">×</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">the triangle</text>
+</svg>
+<div class="cname">D</div><div class="croom">the balcony</div>
+</div>
+<div class="chord-card">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="G major chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">all six ring</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="10" cy="95" r="9" fill="#C9A84C"/><text x="10" y="99" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<circle cx="30" cy="65" r="9" fill="#C9A84C"/><text x="30" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<circle cx="110" cy="95" r="9" fill="#C9A84C"/><text x="110" y="99" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">3</text>
+<text x="50" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="70" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="90" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">the easy G</text>
+</svg>
+<div class="cname">G</div><div class="croom">the great double door</div>
+</div>
+<div class="chord-card">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="C major chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">× from A string</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#5A7A9F" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="30" cy="95" r="9" fill="#C9A84C"/><text x="30" y="99" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">3</text>
+<circle cx="50" cy="65" r="9" fill="#C9A84C"/><text x="50" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<circle cx="90" cy="35" r="9" fill="#C9A84C"/><text x="90" y="39" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<text x="70" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="110" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="8" y="24" font-size="10" text-anchor="middle" fill="#E8637A">×</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">the cornerstone</text>
+</svg>
+<div class="cname">C</div><div class="croom">the cornerstone</div>
+</div>
+</div>
+<h3>How to think of each room</h3>
+<p><strong>Am — the guest room.</strong> 1st on B·1 · 2nd on D·2 · 3rd on G·2. One new wall added to Em — Am lives next door, which is why these two get along. Do <em>not</em> strike the low E. Sound check: five strings, clear high end. Refuse: striking the 6th string out of habit.</p>
+<p><strong>D — the balcony.</strong> 1st on high-e·2 · 2nd on G·2 · 3rd on B·3 — the triangle faces. A compact triangle up on the top deck; three fingers share narrow ground. Strum from the <strong>D string (4th)</strong> down — four strings is the room's correct size. Refuse: flattening the wrist to reach — bring the elbow in slightly instead.</p>
+<p><strong>G — the great double door.</strong> 2nd on low-E·3 · 1st on A·2 · 3rd on high-e·3. The <em>easy G</em> (3 fingers, whole open hand) — use it, proudly: whole-open G is the beginner's great door. All six strings ring together; no muffle. Refuse: fretting high-e past the 2nd-fret neighbor row — keep the arch.</p>
+<p><strong>C — the cornerstone.</strong> 1st on B·1 · 2nd on D·2 · 3rd on A·3. C major feels like home base to every key you will ever sing in; begin the strum <strong>from the A string (5th)</strong>. Refuse: "choking" the B string with the lying 3rd finger — arch the claw.</p>
+<blockquote><strong>The Rooms in one line:</strong> Em (hall) · Am (guest room) · D (balcony) · G (great door) · C (cornerstone). <strong>Learn the rooms; then you can live in the house.</strong></blockquote></div>
+</section>
+
+<section class="chapter" id="strum">
+<p class="kicker">PAGE 15 · THE STRUM (Day 5)</p>
+<h2>How a House Breathes</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="strum"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="strum" hidden>⏹ Stop</button>
+<span class="playing" id="playing-strum" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<blockquote><em>"…clap your hands, all ye people: sing unto God with the psaltery." — Psalm 47:1</em></blockquote>
+<p>A chord held is a room. A rhythm is the house breathing — and breath is why we praise.</p>
+<ol>
+<li><strong>Down-strums first:</strong> quarters, steady — <strong>1 · 2 · 3 · 4</strong> — arm like a pendulum, loose wrist, brushing near the soundhole.</li>
+<li><strong>The praise pattern (from Day 5):</strong> <strong>D · D · U · U · D</strong> — spoken "down, down, up-up, down." Missing the third beat feels <em>wrong</em> for two minutes and <em>right</em> forever — it is the lift every worship room knows.</li>
+<li><strong>The church waltz → the slow-jam (for the songbook):</strong> Day 6 keeps it plain — <strong>3/4, D · D · D</strong>, spoken "1 · 2 · 3," footstep then sway. Day 7 drops into the <strong>R&amp;B pocket: D · · D · U</strong> ("DOWN … down … up"), every strum a hair late.</li>
+<li>Strum from the forearm; the hand is the brush, the arm is the room's air.</li>
+</ol>
+<p>✔ <strong>Strum checkpoint:</strong> the praise pattern, 8 bars, on Em — steady enough that you could nod your head without watching. Then the waltz on G: 1 · 2 · 3, eight bars, same calm.</p></div>
+</section>
+
+<div class="part-divider" id="part3"><p class="p-k">Part Three · Day 6–7</p><h2>The Householder</h2><p style="color:var(--mut);font-size:14px">The seven-day plan, the songbook, the repairs.</p></div>
+
+<section class="chapter print-target" id="tracker">
+<p class="kicker">PAGES 16–17 · THE SEVEN-DAY PLAN &nbsp;·&nbsp; printable</p>
+<h2>The 7-Day Practice Tracker</h2>
+<div class="noprint">
+<button class="btn-print" onclick="printSection('tracker')">🖨 Print this tracker</button>
+</div>
+<div class="sec-body"><hr>
+<p>Fifteen minutes a day. The plan follows the method: system → right order → added thing. Check the boxes in pencil; the plan is a faithful friend, not a judge.</p>
+<table>
+<tr><th>Day</th><th>🙏 First beat</th><th>🧱 Build (the system)</th><th>🎵 Sound (rightness)</th><th>The added thing today</th></tr>
+<tr><td><strong>1</strong></td><td>Quiet beat · strings tuned</td><td>House-walk: parts + string map aloud ×2</td><td>Em placed, 1 strum</td><td>You learned the building</td></tr>
+<tr><td><strong>2</strong></td><td>Quiet beat · tuned</td><td>Golden-rule tuning; The Hold (60 s)</td><td>Em — 5 clean strums</td><td>Remember your first chord</td></tr>
+<tr><td><strong>3</strong></td><td>Quiet beat · tuned</td><td>Em ↔ Am on a 4-count, with "think next chord on the last strum"</td><td>—</td><td>You opened the guest room</td></tr>
+<tr><td><strong>4</strong></td><td>Quiet beat · tuned</td><td>Add D &amp; C — rooms 3 &amp; 4</td><td>D from 4th string · C from A string</td><td>Rooms in the right sequences</td></tr>
+<tr><td><strong>5</strong></td><td>Quiet beat · tuned</td><td>The praise pattern on Em, 8 bars</td><td>D·D·U·U·D steady</td><td>The house breathes</td></tr>
+<tr><td><strong>6</strong></td><td>Quiet beat · tuned</td><td><strong>Amazing Grace</strong> — verse 1 slow (see songbook)</td><td>G→C·G→D arrivals alone, then with words</td><td>The plan meets the song</td></tr>
+<tr><td><strong>7</strong></td><td>Quiet beat · tuned</td><td><strong>Amazing Grace</strong> — the cream: swap-ins + slow-jam strum</td><td>Cmaj7 · Em7 · the Dsus4 wink</td><td><strong>Play it for someone.</strong> ✨</td></tr>
+</table>
+<p><strong>Day 7 is a giving day</strong> — the hidden room where every other day was headed. Play (or sing) <em>Amazing Grace</em> once, for at least one person: your household, a class of children, your own prayer corner with the door closed and God as the hearer. <strong>The secret place becomes a school the moment you give what it built.</strong></p></div>
+</section>
+
+<div class="part-divider" id="songs"><p class="p-k">The Course Songbook</p><h2>Three Songs, One Pocket</h2><p style="color:var(--mut);font-size:14px">Every song: lyric sheet · chord chart · the cream · TAB · the pocket · key chart.</p></div>
+
+<section class="chapter print-target" id="song1">
+<p class="kicker">SONG 1 · THE TESTIMONY &nbsp;·&nbsp; printable</p>
+<h2>Amazing Grace — R&amp;B Acoustic</h2>
+<div class="noprint">
+<button class="btn-print" onclick="printSection('song1')">🖨 Print this song sheet</button>
+</div>
+<div class="sec-body">
+<p class="credit">Words: John Newton, 1779 · Tune (NEW BRITAIN): early American melody, attr. Carrell &amp; Clayton, 1831 — <strong>public domain, words and music, forever.</strong> Key of G · Chords: G · C · D · Feel: 6/8 slow groove, the Sunday-morning sway. Capo up 2 if the voices run young or high.</p>
+<pre>
+VERSE 1  (the bones — one down-strum per beat: 1 · 2 · 3)
+
+G                              C       G
+A-maz-ing grace, how sweet the sound
+G                           D
+That saved a wretch like me
+G                             C       G
+I once was lost, but now am found
+    G            D            G
+Was blind, but now I see
+
+
+VERSE 2
+
+G                              C       G
+Through many dangers, toils and snares
+G                            D
+I have already come
+G                              C       G
+'Tis grace has brought me safe thus far
+    G              D          G
+And grace will lead me home
+
+
+VERSE 3  (the verse you will sing longest)
+
+G                              C       G
+When we've been there ten thousand years
+    G                  D
+Bright shining as the sun
+G                             C       G
+We've no less days to sing God's praise
+    G              D          G
+Than when we'd first begun
+</pre>
+<h3>How to burn it in (Day 6, ten minutes)</h3>
+<ol>
+<li><strong>Learn the three arrivals first</strong> — say them: <em>G … C·G … D … home to G</em> — and change on the count with no strumming.</li>
+<li><strong>Add the words slowly, one line at a time</strong> — down-strum on every beat 1·2·3.</li>
+<li><strong>Feel the waltz, not the clock</strong> — STRUM-2-3, STRUM-2-3; beat 1 is the footstep, beats 2–3 are the sway.</li>
+<li><strong>The hard arrival is line 3</strong> — "but now am found" changes C→G right on <em>found</em>: practice that arrival alone.</li>
+</ol>
+<div class="pocket noprint" aria-hidden="true"><span class="d">D</span><span>·</span><span>·</span><span class="d">D</span><span>·</span><span class="u">U</span></div>
+<p style="font-size:13px;color:var(--mut)" class="noprint">The pocket: DOWN … down … up. The gap after the first DOWN is where the groove breathes.</p>
+<h3>Day 7 · THE CREAM — the R&amp;B acoustic arrangement</h3>
+<p><em>Same song, same chords you already own — each color costs exactly one finger.</em></p>
+<table>
+<tr><th>Plain chord</th><th>R&amp;B color</th><th>What changes</th><th>The sound</th></tr>
+<tr><td><strong>C</strong> (x32010)</td><td><strong>Cmaj7</strong> (x32000)</td><td><strong>Lift</strong> the 1st finger</td><td>Dreamy, unfinished — like the sentence isn't over</td></tr>
+<tr><td><strong>Em</strong> (022000)</td><td><strong>Em7</strong> (022030)</td><td><strong>Add</strong> the 3rd finger on high-e · 3</td><td>Your first chord, wearing Sunday clothes</td></tr>
+<tr><td><strong>D</strong> (xx0232)</td><td><strong>Dsus4 wink</strong> (xx0233)</td><td><strong>Add</strong> the pinky on high-e · 3 — on, then off, at the line's end</td><td>The "lift-your-heart" church wink</td></tr>
+<tr><td><strong>G</strong> (320003)</td><td><strong>G6 lift</strong> (320000)</td><td><strong>Lift</strong> the high-e finger at a line's last bar</td><td>Lets the verse ring away like a bell</td></tr>
+</table>
+<ul>
+<li>Say the pocket: <strong>"DOWN … down … up."</strong> The gap after the first DOWN is the pocket — don't fill it.</li>
+<li><strong>Laid back is the whole trick:</strong> aim every strum a hair <em>late</em>. You are early to church, never early to the beat.</li>
+<li><strong>Level-up — the thumb-thump:</strong> on the second DOWN, land the fleshy thumb on all strings for a drum-knock, then the UP rings.</li>
+<li><strong>The graduation run (Day 7):</strong> verse 1 bones → verse 2 cream → verse 3 all cream, eyes closed.</li>
+</ul>
+<h3>Key chart</h3>
+<table><tr><th>Sing in</th><th>Capo (G shapes)</th><th>Suits</th></tr>
+<tr><td><strong>G</strong></td><td>none</td><td>Most men's voices — the default</td></tr>
+<tr><td>A♭ / A</td><td>1 – 2</td><td>High voices, children's clubs</td></tr>
+<tr><td>E / F</td><td>7 – 8</td><td>Low, warm registers (Module 5: barre)</td></tr></table>
+</div>
+</section>
+
+<section class="chapter print-target" id="song2">
+<p class="kicker">SONG 2 · THE STRENGTH &nbsp;·&nbsp; printable</p>
+<h2>The Joy of the Lord — Nehemiah 8:10</h2>
+<div class="noprint">
+<button class="btn-print" onclick="printSection('song2')">🖨 Print this song sheet</button>
+</div>
+<div class="sec-body">
+<p class="credit">Words: Nehemiah 8:10, King James Version (public domain) · Music: Studio Gabochie original. Heritage: the old hymn of this name is Albert B. Simpson, 1891 — public domain. Key of G · Feel: the same Sunday slow-jam pocket as Amazing Grace.</p>
+<pre>
+     G                          Cmaj7
+The joy of the Lord is your strength —
+     Em7                    D
+The joy of the Lord is your strength.
+       G                     Cmaj7
+When the walls are down and the work is long,
+       Em7            D        G
+The joy of the Lord is your strength.
+</pre>
+<p style="font-size:13px;color:var(--mut)">Verse loop for deeper singing — same chords: <em>"The word of faith is nigh thee"</em> (Romans 10:8) · <em>"He gives me living water"</em> (John 4:14).</p>
+<h3>Melody TAB (top three strings)</h3>
+<pre>
+     The JOY   of   the   Lord   is   your   STRENGTH
+e|----------------------------|-----------------3--------|
+B|--------3-----3--1----------|-1--0-----------------0---|
+G|--0--2-----------------0--2-|--------2--0--2----------|
+
+   (strength held... let it ring)        The JOY...
+e|-----0--3--0---------------|----------------------------|
+B|-----------------0--1--3---|--------3-----3--1----------|
+G|---------------------------|--0--2-----------------0--2-|
+</pre>
+<p>Bar 1 sits on G · bar 2 lands Cmaj7 → Em7 · the run <code>2--0--2</code> is the walk into D. The highest note is fret 3 on the 1st string — nothing above the third fret.</p>
+<h3>The cream (Song 2's R&amp;B pass)</h3>
+<ul>
+<li>Land the <strong>thumb-thump</strong> on the first syllable of <em>STRENGTH</em> — strength you can hear as well as sing.</li>
+<li>Hold the last bar full value and let the Em7 ring; the gap after it <em>is</em> the rest of the phrase.</li>
+<li>On the repeat, lift the Cmaj7 finger at "when the walls are down" for the G6-style open ring — the sound of walls coming down.</li>
+</ul>
+<h3>Key chart</h3>
+<table><tr><th>Sing in</th><th>Capo (G shapes)</th><th>Suits</th></tr>
+<tr><td><strong>G</strong></td><td>none</td><td>Most men's voices — the default</td></tr>
+<tr><td>A♭ / A</td><td>1 – 2</td><td>High voices, children's clubs</td></tr>
+<tr><td>E / F</td><td>7 – 8</td><td>Low, warm registers (Module 5: barre)</td></tr></table>
+</div>
+</section>
+
+<section class="chapter print-target" id="song3">
+<p class="kicker">SONG 3 · THE TRUST &nbsp;·&nbsp; printable</p>
+<h2>The Lord Is My Shepherd — Psalm 23</h2>
+<div class="noprint">
+<button class="btn-print" onclick="printSection('song3')">🖨 Print this song sheet</button>
+</div>
+<div class="sec-body">
+<p class="credit">Words: Psalm 23:1–3, King James Version (public domain) — <strong>David's own psalm, on David's own instrument.</strong> Music: Studio Gabochie original. Traditional alternative tune: CRIMOND, 1872 — also public domain. Key of G · Feel: the same slow-jam pocket.</p>
+<pre>
+       G                              Em7
+The Lord is my shepherd; I shall not want.
+         Cmaj7                    G        D
+He maketh me to lie down in green pastures:
+        G                     Em7
+he leadeth me beside the still waters.
+         Cmaj7       D           G
+He leadeth me beside the still waters.
+</pre>
+<h3>Melody TAB (the whole verse, top three strings)</h3>
+<pre>
+   The  LORD  is  my  shep-herd;  I   shall  not  want.
+e|-------------------------------------------------0--------|
+B|-----0--0--1--3--------------3-----1--0-------------1-----|
+G|-----------------0--2--0--2-------------------------------|
+
+   He ma-keth me to lie  down  in  green  pas-tures:
+e|----------------------------------------------------------|
+B|--3--3--1--3--0---------------------1--0------------------|
+G|------------------2--0--2-------------2--0--2-------------|
+
+   he  lead-eth  me  be-side  the  still  wa-ters.
+e|-------------0------------------------------------3--0----|
+B|--1--0--1--------3--1--0--1--3-----------------0----------|
+G|----------------------------------2--0--2-----------------|
+</pre>
+<p>The melody never leaves the top three strings and never rises above the third fret. The twice-sung line ("he leadeth me…") is the psalm's own repetition — sing it quieter the second time.</p>
+<h3>The cream (Song 3's R&amp;B pass)</h3>
+<ul>
+<li>The <strong>Dsus4 wink</strong> (pinky on, off) on the word <em>green</em> of "green pastures" — grass flashing once.</li>
+<li>The <strong>G6 lift</strong> at the end of each "still waters" line — the water ringing away.</li>
+<li>Second pass: drop the strum to a bare thumb on the face of the body for "the still waters," then back in for the last line. Quiet is the color.</li>
+</ul>
+<h3>Key chart</h3>
+<table><tr><th>Sing in</th><th>Capo (G shapes)</th><th>Suits</th></tr>
+<tr><td><strong>G</strong></td><td>none</td><td>Most voices — the default</td></tr>
+<tr><td>A</td><td>2</td><td>High voices</td></tr>
+<tr><td>F</td><td>8 (or barre)</td><td>Low voices</td></tr></table>
+<blockquote><strong>The set so far:</strong> Amazing Grace (the testimony) · The Joy of the Lord (the strength) · The Lord Is My Shepherd (the trust). Three songs, one pocket. <strong>That is a worship set.</strong></blockquote>
+</div>
+</section>
+
+<section class="chapter" id="repair">
+<p class="kicker">PAGES 20–23 · TROUBLESHOOTING</p>
+<h2>Troubleshooting &amp; Repair Manual</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="repair"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="repair" hidden>⏹ Stop</button>
+<span class="playing" id="playing-repair" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p><strong>When fingertips hurt.</strong> Every player's first fortnight hurts. Calluses come in two to three weeks; the pain is painful honesty, not damage. Short daily sessions build them kindly; one heroic long session builds nothing. And — practical rest is spiritual rest. If it hurts, stop. The craft you offer God should not be built with resentment. Pause, return tomorrow. Day 7 is a <em>giving</em> day, not a finish line that owes you blood.</p>
+<p><strong>Buzzing strings.</strong> You're on top of the metal fret bar, or too far from it, or not on the fingertip. Move the pressure point to just behind the bar; curve the claw on a greater curve.</p>
+<p><strong>Muffled or choked strings.</strong> A neighboring finger is lying flat on the string. Two fixes, always: ① arch higher (claw harder), ② move the thumb lower behind the neck.</p>
+<p><strong>Strings that go out of tune fast.</strong> New strings stretch — re-tune halfway through the session for the first week. Old, rusty strings — replace; dignity for the ears.</p>
+<p><strong>The low E keeps ringing when it shouldn't (D, Am, C).</strong> Aim the strum — an aimed strum, not a "sweep." Feel the arm stop where the room begins.</p>
+<p><strong>Timing runs away.</strong> Slow down. A metronome (any free app) at 60–70 bpm for 2 minutes beats an hour of rush.</p>
+<p><strong>And the deepest repair: you practiced out of duty today and it felt dead.</strong> Welcome to every serious player's certain week. Play the <em>first chord</em> only — Em, once — and say the verse. <em>"My heart is fixed: I will sing."</em> One honest chord is acceptable worship; two hundred dead ones are not. The method restores everything.</p></div>
+</section>
+
+<section class="chapter" id="next">
+<p class="kicker">PAGE 24 · WHERE DO I GO NEXT</p>
+<h2>You Have a House Now</h2>
+<div class="listen-row">
+<button class="btn btn-listen" data-say="next"><span class="ic">🔊</span><span class="t">Read aloud</span></button>
+<button class="btn btn-stop" data-stop="next" hidden>⏹ Stop</button>
+<span class="playing" id="playing-next" hidden></span>
+</div>
+<div class="sec-body"><hr>
+<p>You have a house now. Rooms, order, a first song — and a method, <em>the Matthew 6:33 Method</em>, that works on anything you will ever build:</p>
+<ul>
+<li><strong>The course (Modules 2–5).</strong> Strum &amp; Switch → The Worship Four (adding Em to G·C·D) → your first song → Lead &amp; Lift — capo, children's songs, leading with confidence. Module 1 of every course at Studio Gabochie is always free.</li>
+<li><strong>This book's home is your screen, but its work is your hands.</strong> Print the tracker; play the song at someone this week.</li>
+<li><strong>One verse of Amazing Grace</strong> will serve children's clubs, family devotions, and your own quiet house for the rest of your life. That is what "first things" are: things that <em>last</em>.</li>
+</ul>
+<blockquote><strong>Close with this.</strong> One chord, offered in praise, is already worship. Seven days from now, so is a whole song. <strong>Seek first the system — the songs will be added.</strong></blockquote>
+<p><strong>— Gideon Abochie</strong> · Studio Gabochie · Tema, Ghana</p></div>
+</section>
+
+<div class="support" id="support">
+<h3>Read free. Support if it built you.</h3>
+<div class="price"><span class="price-convert" data-ghs="50">GH₵50</span> <span>/ pay what you want</span></div>
+<p>This book is free to read, always. If it put a song in your house, your contribution builds the next one. Bronze course registration includes your companion-book coupon.</p>
+<a class="btn-gold" href="/books/">Support with GH₵50 →</a>
+<a class="btn-ghost" href="/guitar/">Start the course free</a>
+</div>
+<p class="comply">Scripture quotations are from the King James Version (public domain). Song sheets in this book carry public-domain words and music, or original Studio Gabochie melodies. Seek Ye First is named as a playing goal only — its words are Matthew 6:33 (KJV); the modern tune is licensed elsewhere.</p>
+</div>
+<div id="footer-placeholder"></div>
+<script>
+var synth = window.speechSynthesis || null;
+var current = null;
+function rate(){ return parseFloat((document.getElementById('rate') || {}).value || '1'); }
+function pickVoice(){
+  if(!synth) return null;
+  var vs = synth.getVoices();
+  var pref = ['en-NG','en_NG','en-GH','en-GB','en'];
+  for(var i=0;i<pref.length;i++){
+    for(var j=0;j<vs.length;j++){ if((vs[j].lang||'').indexOf(pref[i])===0) return vs[j]; }
+  }
+  return vs[0] || null;
+}
+if(synth){ synth.getVoices(); }
+function chunk(text){
+  var sents = text.replace(/\s+/g,' ').match(/[^.!?]+[.!?]+["'")]?|[^.!?]+$/g) || [text];
+  var out=[], cur='';
+  for(var i=0;i<sents.length;i++){
+    if((cur+' '+sents[i]).length>200){ if(cur) out.push(cur.trim()); cur=sents[i]; }
+    else cur+= ' '+sents[i];
+  }
+  if(cur.trim()) out.push(cur.trim());
+  return out;
+}
+function setUI(id, playing, label){
+  var b=document.querySelector('[data-say="'+id+'"]');
+  var s=document.querySelector('[data-stop="'+id+'"]');
+  var p=document.getElementById('playing-'+id);
+  if(b) b.hidden=!!playing;
+  if(s) s.hidden=!playing;
+  if(p){ p.hidden=!playing; if(label) p.textContent=label; }
+}
+function stopAll(){
+  if(synth) synth.cancel();
+  if(current){ setUI(current,false); current=null; }
+}
+function playSection(id){
+  if(!synth){ alert('Read-aloud is not supported in this browser. Try Chrome or Edge.'); return; }
+  stopAll();
+  var body=document.querySelector('#'+id+' .sec-body');
+  if(!body) return;
+  var parts=chunk(body.innerText);
+  if(!parts.length) return;
+  current=id;
+  var v=pickVoice();
+  parts.forEach(function(part,idx){
+    var u=new SpeechSynthesisUtterance(part);
+    if(v) u.voice=v;
+    u.rate=rate();
+    u.onstart=function(){ setUI(id,true,'🔊 Playing… '+(idx+1)+'/'+parts.length); };
+    u.onend=function(){ if(idx===parts.length-1){ setUI(id,false); current=null; } };
+    synth.speak(u);
+  });
+}
+document.querySelectorAll('[data-say]').forEach(function(b){
+  b.addEventListener('click',function(){ playSection(b.getAttribute('data-say')); });
+});
+document.querySelectorAll('[data-stop]').forEach(function(b){
+  b.addEventListener('click',function(){ stopAll(); });
+});
+document.addEventListener('visibilitychange',function(){ if(document.hidden) stopAll(); });
+function printSection(id){
+  document.body.classList.add('printing');
+  window.print();
+}
+window.addEventListener('afterprint',function(){ document.body.classList.remove('printing'); });
+window.addEventListener('scroll',function(){
+  var h=document.documentElement;
+  var pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById('progress').style.width=pct+'%';
+},{passive:true});
+</script>
+<script defer src="/assets/js/main.js"></script>
+<script src="/nav.js"></script>
+</body>
+</html>
