@@ -72,8 +72,20 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 .btn-hear{background:transparent;border:1px solid var(--gold);color:var(--gold);font:inherit;font-weight:700;border-radius:999px;padding:6px 14px;cursor:pointer;font-size:12.5px;margin:0 0 8px}
 .btn-hear:hover{background:rgba(201,168,76,.1)}
 .btn-hear.on{background:linear-gradient(180deg,#f5c518,var(--gold));color:#241c00;border-color:var(--gold)}
+.btn-tune{background:var(--navy);border:1px solid var(--line);color:var(--gold);font:inherit;font-weight:700;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:13px}
+.btn-tune:hover{border-color:var(--gold)}
+.speed-sel{background:var(--navy);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit;font-size:12px}
 .hear-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .hear-row .hear-hint{font-size:12px;color:var(--dim)}
+.chord-card{cursor:pointer;transition:border-color .15s}
+.chord-card:hover,.chord-card:focus-visible{border-color:var(--gold);outline:none}
+.tap-hint{font-size:12.5px;color:var(--dim);margin:-6px 0 12px}
+.illust{background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:16px 14px 12px;margin:16px 0;text-align:center}
+.illust svg{max-width:100%;height:auto}
+.illust figcaption{font-size:12px;color:var(--dim);margin-top:8px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px;font-size:12.5px;color:#D7DEE8;margin:10px 0 0;text-align:left}
+.legend b{color:var(--gold);font-weight:700}
+@media(max-width:520px){.legend{grid-template-columns:1fr}}
 /* chord diagrams */
 .chord-grid{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:16px 0}
 .chord-card{background:var(--navy);border:1px solid var(--line);border-radius:12px;padding:14px 12px 10px;text-align:center;min-width:128px}
@@ -210,7 +222,58 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 </div>
 <div class="sec-body"><hr>
 <blockquote><em>"Praise him with stringed instruments… let every thing that hath breath praise the Lord." — Psalm 150:4,6</em></blockquote>
-<p>You are holding a sound-house. Walk it the way you would walk a building, from top to bottom:</p>
+<p>You are holding a sound-house. Walk it the way you would walk a building, from top to bottom — the picture below is your map:</p>
+<figure class="illust">
+<svg viewBox="0 0 420 580" role="img" aria-label="Labeled illustration of an acoustic guitar: headstock, tuning pegs, nut, neck and fretboard, frets, body, soundhole, bridge, six strings" style="max-width:340px">
+<g stroke="#5A7A9F" stroke-width="1.5" stroke-dasharray="3 3">
+<line x1="158" y1="28" x2="185" y2="28"/><line x1="153" y1="52" x2="176" y2="47"/>
+<line x1="163" y1="76" x2="193" y2="73"/><line x1="153" y1="130" x2="193" y2="130"/>
+<line x1="153" y1="200" x2="193" y2="200"/><line x1="98" y1="165" x2="200" y2="172"/>
+<line x1="312" y1="300" x2="292" y2="305"/><line x1="318" y1="272" x2="242" y2="312"/>
+<line x1="322" y1="468" x2="258" y2="452"/>
+</g>
+<path d="M196 246 C 150 252, 128 280, 130 315 C 131 342, 148 352, 146 372 C 143 400, 100 428, 100 480 C 100 528, 150 552, 210 552 C 270 552, 320 528, 320 480 C 320 428, 277 400, 274 372 C 272 352, 289 342, 290 315 C 292 280, 270 252, 224 246 Z" fill="#142640" stroke="#C9A84C" stroke-width="2.5"/>
+<circle cx="210" cy="325" r="44" fill="none" stroke="#5A7A9F" stroke-width="1.5"/>
+<circle cx="210" cy="325" r="36" fill="#0A1628" stroke="#C9A84C" stroke-width="3"/>
+<rect x="195" y="74" width="30" height="178" fill="#0F1E38" stroke="#8fa0b5" stroke-width="1.5"/>
+<line x1="195" y1="95" x2="225" y2="95" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="116" x2="225" y2="116" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="137" x2="225" y2="137" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="158" x2="225" y2="158" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="179" x2="225" y2="179" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="200" x2="225" y2="200" stroke="#5A7A9F" stroke-width="1.5"/><line x1="195" y1="221" x2="225" y2="221" stroke="#5A7A9F" stroke-width="1.5"/>
+<rect x="187" y="14" width="46" height="62" rx="8" fill="#0F1E38" stroke="#C9A84C" stroke-width="2"/>
+<circle cx="181" cy="28" r="4.5" fill="#C9A84C"/><circle cx="181" cy="46" r="4.5" fill="#C9A84C"/><circle cx="181" cy="63" r="4.5" fill="#C9A84C"/>
+<circle cx="239" cy="28" r="4.5" fill="#C9A84C"/><circle cx="239" cy="46" r="4.5" fill="#C9A84C"/><circle cx="239" cy="63" r="4.5" fill="#C9A84C"/>
+<rect x="195" y="70" width="30" height="6" fill="#F1F5F9"/>
+<rect x="160" y="440" width="100" height="20" rx="5" fill="#1A2A45" stroke="#C9A84C" stroke-width="2"/>
+<line x1="166" y1="450" x2="254" y2="450" stroke="#F1F5F9" stroke-width="2"/>
+<g stroke="#F1F5F9" opacity="0.85">
+<line x1="199" y1="76" x2="165" y2="448" stroke-width="2"/>
+<line x1="203.8" y1="76" x2="179" y2="448" stroke-width="1.7"/>
+<line x1="208.6" y1="76" x2="193" y2="448" stroke-width="1.4"/>
+<line x1="213.4" y1="76" x2="207" y2="448" stroke-width="1.1"/>
+<line x1="218.2" y1="76" x2="221" y2="448" stroke-width="0.9"/>
+<line x1="223" y1="76" x2="235" y2="448" stroke-width="0.7"/>
+</g>
+<g font-size="11" font-weight="700">
+<circle cx="150" cy="28" r="9" fill="#C9A84C"/><text x="150" y="32" text-anchor="middle" fill="#0A1628">1</text>
+<circle cx="145" cy="52" r="9" fill="#C9A84C"/><text x="145" y="56" text-anchor="middle" fill="#0A1628">2</text>
+<circle cx="155" cy="76" r="9" fill="#C9A84C"/><text x="155" y="80" text-anchor="middle" fill="#0A1628">3</text>
+<circle cx="145" cy="130" r="9" fill="#C9A84C"/><text x="145" y="134" text-anchor="middle" fill="#0A1628">4</text>
+<circle cx="145" cy="200" r="9" fill="#C9A84C"/><text x="145" y="204" text-anchor="middle" fill="#0A1628">5</text>
+<circle cx="90" cy="160" r="9" fill="#C9A84C"/><text x="90" y="164" text-anchor="middle" fill="#0A1628">9</text>
+<circle cx="320" cy="300" r="9" fill="#C9A84C"/><text x="320" y="304" text-anchor="middle" fill="#0A1628">6</text>
+<circle cx="325" cy="265" r="9" fill="#C9A84C"/><text x="325" y="269" text-anchor="middle" fill="#0A1628">7</text>
+<circle cx="330" cy="468" r="9" fill="#C9A84C"/><text x="330" y="472" text-anchor="middle" fill="#0A1628">8</text>
+</g>
+<text x="212" y="575" font-size="10" text-anchor="middle" fill="#5A7A9F">front view — the sound-house</text>
+</svg>
+<figcaption>
+<span class="legend">
+<span><b>① Headstock</b> — the forecourt</span><span><b>② Tuning pegs</b> — the valves</span>
+<span><b>③ Nut</b> — the threshold</span><span><b>④ Neck &amp; fretboard</b> — the frame &amp; corridor</span>
+<span><b>⑤ Frets</b> — the markers</span><span><b>⑥ Body</b> — the great hall</span>
+<span><b>⑦ Soundhole</b> — the doorway</span><span><b>⑧ Bridge</b> — the plinth</span>
+<span><b>⑨ Six strings</b> — E·A·D·G·B·e, the wiring</span><span>Tap any chord diagram in this book to hear it.</span>
+</span>
+</figcaption>
+</figure>
 <table>
 <tr><th>Part</th><th>On the building site</th><th>What it does</th></tr>
 <tr><td><strong>Headstock</strong></td><td>The forecourt</td><td>The far end; carries the <strong>tuning pegs</strong></td></tr>
@@ -249,6 +312,25 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 <li>Re-check all six after your first five minutes of playing — new strings stretch the way new concrete settles.</li>
 <li>Put the tuner where you can see it for tomorrow. Tuning is daily, like prayer.</li>
 </ol>
+<figure class="illust">
+<svg viewBox="0 0 340 150" role="img" aria-label="Illustration of a clip-on tuner attached to a guitar headstock, screen showing the note G" style="max-width:300px">
+<rect x="8" y="42" width="66" height="62" rx="8" fill="#0F1E38" stroke="#C9A84C" stroke-width="2"/>
+<circle cx="4" cy="52" r="4" fill="#C9A84C"/><circle cx="4" cy="68" r="4" fill="#C9A84C"/><circle cx="4" cy="86" r="4" fill="#C9A84C"/>
+<circle cx="78" cy="56" r="4" fill="#C9A84C"/><circle cx="78" cy="72" r="4" fill="#C9A84C"/><circle cx="78" cy="90" r="4" fill="#C9A84C"/>
+<rect x="70" y="68" width="76" height="10" rx="4" fill="#C9A84C"/>
+<rect x="140" y="28" width="120" height="98" rx="16" fill="#1A2A45" stroke="#C9A84C" stroke-width="2.5"/>
+<rect x="155" y="46" width="90" height="60" rx="8" fill="#0A1628" stroke="#5A7A9F" stroke-width="1.5"/>
+<text x="200" y="92" font-family="'Barlow Condensed',sans-serif" font-size="34" font-weight="700" text-anchor="middle" fill="#C9A84C">G</text>
+<g fill="#5A7A9F"><rect x="167" y="112" width="3" height="8"/><rect x="184" y="112" width="3" height="8"/><rect x="201" y="108" width="3" height="12" fill="#C9A84C"/><rect x="218" y="112" width="3" height="8"/><rect x="235" y="112" width="3" height="8"/></g>
+<text x="200" y="142" font-size="10" text-anchor="middle" fill="#5A7A9F">the screen names the note — green/gold when in tune</text>
+<text x="41" y="120" font-size="10" text-anchor="middle" fill="#5A7A9F">headstock</text>
+</svg>
+<figcaption>A clip-on tuner — clipped to the headstock, it feels the string's vibration and names the note.</figcaption>
+</figure>
+<div class="hear-row noprint" id="tuner-pitches">
+<span class="hear-hint">Reference pitches — tap a string, tune to it:</span>
+<button class="btn-tune" data-tune="E2">6 · E</button><button class="btn-tune" data-tune="A2">5 · A</button><button class="btn-tune" data-tune="D3">4 · D</button><button class="btn-tune" data-tune="G3">3 · G</button><button class="btn-tune" data-tune="B3">2 · B</button><button class="btn-tune" data-tune="E4">1 · e</button>
+</div>
 <p>✔ <strong>Commissioning checkpoint:</strong> all six strings read E·A·D·G·B·e in order, and you have done the last twenty seconds with your eyes on the instrument, not on a message.</p></div>
 </section>
 
@@ -285,7 +367,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 <blockquote><em>"Sing unto him a new song; play skilfully with a loud noise." — Psalm 33:3</em></blockquote>
 <p>The first chord of our house is <strong>E minor (Em)</strong> — chosen because it uses only two fingers and, full of nerve, welcomes all six strings. A day-one sound that fills the whole room.</p>
 <div class="chord-grid">
-<div class="chord-card">
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear this chord">
 <svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="E minor chord diagram">
 <text x="10" y="10" font-size="9" fill="#5A7A9F">×○○○○○ all six ring</text>
 <line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
@@ -329,9 +411,29 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 <span class="playing" id="playing-rooms" hidden></span>
 </div>
 <div class="sec-body"><hr>
-<p>Five chords make the whole course's song. Each one-pager: where to press, how to think of it on the building site, sound-check, and the one mistake to refuse. Reading rule on every diagram: <strong>columns left→right = 6th→1st string · ● press with the numbered finger · ○ open · × do not play.</strong></p>
+<p>Five chords make the whole course's song. Each one-pager: where to press, how to think of it on the building site, sound-check, and the one mistake to refuse. Reading rule on every diagram: <strong>columns left→right = 6th→1st string · ● press with the numbered finger · ○ open · × do not play.</strong> <em>Tap any chord card to hear it rolled fingerstyle.</em></p>
 <div class="chord-grid">
-<div class="chord-card">
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear E minor">
+<svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="E minor chord diagram">
+<text x="10" y="10" font-size="9" fill="#5A7A9F">×○○○○○ all six ring</text>
+<line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
+<line x1="10" y1="20" x2="10" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="30" y1="20" x2="30" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="50" y1="20" x2="50" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="70" y1="20" x2="70" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="90" y1="20" x2="90" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="110" y1="20" x2="110" y2="120" stroke="#8fa0b5" stroke-width="1.4"/>
+<line x1="10" y1="50" x2="110" y2="50" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="80" x2="110" y2="80" stroke="#5A7A9F" stroke-width="1"/>
+<line x1="10" y1="110" x2="110" y2="110" stroke="#5A7A9F" stroke-width="1"/>
+<circle cx="30" cy="65" r="9" fill="#C9A84C"/><text x="30" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">1</text>
+<circle cx="50" cy="65" r="9" fill="#C9A84C"/><text x="50" y="69" font-size="10" text-anchor="middle" fill="#0A1628" font-weight="700">2</text>
+<text x="10" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="70" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="90" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text><text x="110" y="36" font-size="10" text-anchor="middle" fill="#5A7A9F">○</text>
+<text x="60" y="129" font-size="8" text-anchor="middle" fill="#5A7A9F">2nd fret</text>
+</svg>
+<div class="cname">Em</div><div class="croom">the hall</div>
+</div>
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear A minor">
 <svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="A minor chord diagram">
 <text x="10" y="10" font-size="9" fill="#5A7A9F">× skip low E</text>
 <line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
@@ -353,7 +455,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 </svg>
 <div class="cname">Am</div><div class="croom">the guest room</div>
 </div>
-<div class="chord-card">
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear this chord">
 <svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="D major chord diagram">
 <text x="10" y="10" font-size="9" fill="#5A7A9F">× × from D string</text>
 <line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
@@ -375,7 +477,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 </svg>
 <div class="cname">D</div><div class="croom">the balcony</div>
 </div>
-<div class="chord-card">
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear this chord">
 <svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="G major chord diagram">
 <text x="10" y="10" font-size="9" fill="#5A7A9F">all six ring</text>
 <line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
@@ -396,7 +498,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--navy);color:var
 </svg>
 <div class="cname">G</div><div class="croom">the great double door</div>
 </div>
-<div class="chord-card">
+<div class="chord-card" role="button" tabindex="0" aria-label="Hear this chord">
 <svg class="chord-svg" width="120" height="130" viewBox="0 0 120 130" role="img" aria-label="C major chord diagram">
 <text x="10" y="10" font-size="9" fill="#5A7A9F">× from A string</text>
 <line x1="10" y1="20" x2="110" y2="20" stroke="#F1F5F9" stroke-width="4"/>
@@ -568,7 +670,7 @@ The joy of the Lord is your strength.
 </pre>
 <p style="font-size:13px;color:var(--mut)">Verse loop for deeper singing — same chords: <em>"The word of faith is nigh thee"</em> (Romans 10:8) · <em>"He gives me living water"</em> (John 4:14).</p>
 <h3>Melody TAB (top three strings)</h3>
-<div class="hear-row noprint"><button class="btn-hear" data-melody="s2a">▶ Hear line 1</button><span class="hear-hint">“The joy of the Lord is your strength” — fingerstyle: chords roll under the melody</span></div>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s2a">▶ Hear line 1</button><span class="hear-hint">“The joy of the Lord is your strength” — fingerstyle: chords roll under the melody</span><select class="speed-sel" aria-label="Practice speed"><option value="1">full speed</option><option value="0.75">slow</option><option value="0.55">slower</option></select></div>
 <pre>
      The JOY   of   the   Lord   is   your   STRENGTH
 e|----------------------------|-----------------3--------|
@@ -583,6 +685,19 @@ B|-----------------0--1--3---|--------3-----3--1----------|
 G|---------------------------|--0--2-----------------0--2-|
 </pre>
 <p>Bar 1 sits on G · bar 2 lands Cmaj7 → Em7 · the run <code>2--0--2</code> is the walk into D. The highest note is fret 3 on the 1st string — nothing above the third fret.</p>
+<h3>The fingerstyle pocket — one pattern, move the thumb</h3>
+<p>The whole song rides one wave: the <strong>thumb (p)</strong> plays the chord's bass note, the <strong>fingers (i·m·a)</strong> roll the top three strings — <strong>p · i · m · a · m · i</strong>, six plucks to a 6/8 bar. Learn the wave once; every chord is the same wave with a new bass.</p>
+<pre>
+      G              Cmaj7            Em7
+e|--------------0--------|--------------0--------|--------------0--------|
+B|-----------0-----0-----|-----------0-----0-----|-----------3-----3-----|
+G|-----0-----0-----0-----|-----0-----0-----0-----|-----0-----0-----0-----|
+D|-----------------------|-----------------------|-----------------------|
+A|--3--------------------|--3--------------------|-----------------------|
+E|--3--------------------|-----------------------|--0--------------------|
+    p  i  m  a  m  i       p  i  m  a  m  i        p  i  m  a  m  i
+</pre>
+<p>Thumb: <strong>p</strong> on the 5th string fret 3 for Cmaj7 (its bass note, C), on the 6th string for G and Em7. Fingers rest on the top three strings and never leave home. The melody TAB above is the same roll singing on top.</p>
 <h3>The cream (Song 2's R&amp;B pass — fingerstyle)</h3>
 <ul>
 <li><strong>Set the roll:</strong> thumb plays the bass note of each chord (its lowest string), then the fingers roll the top three strings — one soft wave per bar. The TAB's melody notes ride on that roll.</li>
@@ -616,7 +731,7 @@ he leadeth me beside the still waters.
 He leadeth me beside the still waters.
 </pre>
 <h3>Melody TAB (the whole verse, top three strings)</h3>
-<div class="hear-row noprint"><button class="btn-hear" data-melody="s3a">▶ Hear line 1</button><span class="hear-hint">“The Lord is my shepherd; I shall not want”</span></div>
+<div class="hear-row noprint"><button class="btn-hear" data-melody="s3a">▶ Hear line 1</button><span class="hear-hint">“The Lord is my shepherd; I shall not want”</span><select class="speed-sel" aria-label="Practice speed"><option value="1">full speed</option><option value="0.75">slow</option><option value="0.55">slower</option></select></div>
 <pre>
    The  LORD  is  my  shep-herd;  I   shall  not  want.
 e|-------------------------------------------------0--------|
@@ -638,6 +753,26 @@ B|--1--0--1--------3--1--0--1--3-----------------0----------|
 G|----------------------------------2--0--2-----------------|
 </pre>
 <p>The melody never leaves the top three strings and never rises above the third fret. The twice-sung line ("he leadeth me…") is the psalm's own repetition — sing it quieter the second time.</p>
+<h3>The fingerstyle pocket — one pattern, move the thumb</h3>
+<p>Same wave as Song 2 — <strong>p · i · m · a · m · i</strong>, six plucks to a bar. Only the thumb moves: it seeks out each chord's bass note (D's bass lives on the 4th string).</p>
+<pre>
+      G              Em7
+e|--------------0--------|--------------0--------|
+B|-----------0-----0-----|-----------3-----3-----|
+G|-----0-----0-----0-----|-----0-----0-----0-----|
+D|-----------------------|-----------------------|
+A|--3--------------------|-----------------------|
+E|--3--------------------|--0--------------------|
+    p  i  m  a  m  i       p  i  m  a  m  i
+
+     Cmaj7            D
+e|--------------2--------|--------------2--------|
+B|-----------3-----3-----|-----------3-----3-----|
+G|-----2-----2-----2-----|-----2-----2-----2-----|
+D|-----------------------|--0--------------------|
+A|--3--------------------|-----------------------|
+    p  i  m  a  m  i       p  i  m  a  m  i
+</pre>
 <h3>The cream (Song 3's R&amp;B pass — fingerstyle)</h3>
 <ul>
 <li>The <strong>Dsus4 wink</strong> (pinky on, off) on the word <em>green</em> of "green pastures" — grass flashing once.</li>
@@ -771,10 +906,11 @@ window.addEventListener('scroll',function(){
   var pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
   document.getElementById('progress').style.width=pct+'%';
 },{passive:true});
-/* ── Hear the melody: Karplus-Strong plucked-string synth (guitar tone) —
-   melody on top + fingerstyle chord backing, transcribed from the TABs & chord charts ── */
-var audioCtx=null, hearTimer=null, hearBtn=null;
+/* ── Hear engine v3: Karplus-Strong acoustic guitar — burst-shaped strings,
+   body resonance, stereo, humanization; melody + fingerstyle roll backing ── */
+var audioCtx=null, hearTimer=null, hearBtn=null, busNode=null, liveSources=[];
 var STRING_HZ={E:329.63,B:246.94,G:196.00};
+var OPEN_HZ={E2:82.41,A2:110.00,D3:146.83,G3:196.00,B3:246.94,E4:329.63};
 var MELODIES={
   s2a:[['G',0],['G',2],['B',3],['B',3],['B',1],['G',0],['G',2],'-',
        ['B',1],['B',0],['G',2],['G',0],['G',2],['E',3],['B',0]],
@@ -792,7 +928,10 @@ var CHORDS={
   G:    {bass:98.00, roll:[196.00,246.94,392.00]},   /* 320003 */
   Cmaj7:{bass:130.81,roll:[196.00,246.94,329.63]},   /* x32000 */
   Em7:  {bass:82.41, roll:[196.00,293.66,329.63]},   /* 022030 */
-  D:    {bass:146.83,roll:[220.00,293.66,369.99]}    /* xx0232 */
+  D:    {bass:146.83,roll:[220.00,293.66,369.99]},   /* xx0232 */
+  Em:   {bass:82.41, roll:[196.00,246.94,329.63]},   /* 022000 */
+  Am:   {bass:110.00,roll:[220.00,261.63,329.63]},   /* x02210 */
+  C:    {bass:130.81,roll:[196.00,261.63,329.63]}    /* x32010 */
 };
 /* which chord enters at which melody event (from the song sheets) */
 var CHORD_MAPS={
@@ -802,46 +941,60 @@ var CHORD_MAPS={
   s3b:[[0,'Cmaj7'],[5,'G'],[9,'D']],
   s3c:[[0,'G'],[5,'Cmaj7'],[9,'D'],[12,'G']]
 };
+var ROLLPATTERN=[0,1,2,1,0,1]; /* i m a m i m — matches the fingerstyle pocket TAB */
 function hearCtx(){
   if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
-/* Karplus-Strong: noise burst in a filtered delay line = a real plucked string */
+/* Karplus-Strong: noise burst in a filtered delay line = a plucked string.
+   Bass (wound) strings get a warmer, pre-smoothed burst and a longer decay. */
 function ksBuffer(ctx,freq,ring){
   var sr=ctx.sampleRate, N=Math.max(2,Math.round(sr/freq)), len=Math.floor(sr*ring);
   var buf=ctx.createBuffer(1,len,sr), d=buf.getChannelData(0);
-  var dl=new Float32Array(N), i;
+  var dl=new Float32Array(N), i, prev, cur;
   for(i=0;i<N;i++) dl[i]=Math.random()*2-1;
-  var idx=0, decay=freq<150?0.9975:0.996; /* bass strings ring longer */
+  for(var p=0;p<(freq<250?3:1);p++){ prev=dl[0]; for(i=1;i<N;i++){ cur=dl[i]; dl[i]=(cur+prev)/2; prev=cur; } }
+  var idx=0, decay=freq<=110?0.9982:(freq<=196?0.998:(freq<=300?0.9966:0.9956));
   for(i=0;i<len;i++){
-    var cur=dl[idx], nxt=dl[(idx+1)%N];
+    cur=dl[idx]; var nxt=dl[(idx+1)%N];
     d[i]=cur;
     dl[idx]=0.5*(cur+nxt)*decay;
     idx=(idx+1)%N;
   }
   return buf;
 }
-function pluck(ctx,when,freq,vol,ring,cache){
+function pluck(ctx,when,freq,vol,ring,cache,pan){
   var key=Math.round(freq*10)+'|'+Math.round(ring*10);
   if(!cache[key]) cache[key]=ksBuffer(ctx,freq,ring);
   var src=ctx.createBufferSource(); src.buffer=cache[key];
-  var g=ctx.createGain(); g.gain.value=vol;
-  src.connect(g); g.connect(cache.bus);
-  src.start(when);
+  var g=ctx.createGain();
+  g.gain.value=vol*(0.9+Math.random()*0.2); /* finger velocity — no two plucks alike */
+  var w=when+(Math.random()-0.5)*0.008;      /* laid back by a hair, like a real hand */
+  src.connect(g);
+  if(ctx.createStereoPanner){ var p=ctx.createStereoPanner(); p.pan.value=pan||0; g.connect(p); p.connect(cache.bus); }
+  else g.connect(cache.bus);
+  src.start(Math.max(w,ctx.currentTime));
+  liveSources.push(src);
+  src.onended=function(){ var ix=liveSources.indexOf(src); if(ix>=0) liveSources.splice(ix,1); };
 }
-/* shared master chain: headroom gain → compressor (no clipping, "recorded" glue) */
-function hearBus(ctx){
-  var bus=ctx.createGain(); bus.gain.value=0.55;
+/* master chain (built once): headroom → body resonance (the wood) → warmth → compressor */
+function getBus(ctx){
+  if(busNode) return busNode;
+  busNode=ctx.createGain(); busNode.gain.value=0.55;
+  var body1=ctx.createBiquadFilter(); body1.type='peaking'; body1.frequency.value=110; body1.Q.value=1.1; body1.gain.value=5;
+  var body2=ctx.createBiquadFilter(); body2.type='peaking'; body2.frequency.value=230; body2.Q.value=1.1; body2.gain.value=3;
+  var warm=ctx.createBiquadFilter(); warm.type='lowpass'; warm.frequency.value=5200; warm.Q.value=0.4;
   var comp=ctx.createDynamicsCompressor();
   comp.threshold.value=-18; comp.knee.value=20; comp.ratio.value=4;
   comp.attack.value=0.004; comp.release.value=0.24;
-  bus.connect(comp); comp.connect(ctx.destination);
-  return bus;
+  busNode.connect(body1); body1.connect(body2); body2.connect(warm); warm.connect(comp); comp.connect(ctx.destination);
+  return busNode;
 }
+function stopSources(){ for(var i=0;i<liveSources.length;i++){ try{ liveSources[i].stop(); }catch(e){} } liveSources=[]; }
 function hearStop(){
   if(hearTimer){ clearTimeout(hearTimer); hearTimer=null; }
-  if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx=null; }
+  stopSources();
   if(hearBtn){ hearBtn.textContent=hearBtn.getAttribute('data-label')||'▶ Hear'; hearBtn.classList.remove('on'); hearBtn=null; }
 }
 function hearPlay(btn){
@@ -849,32 +1002,32 @@ function hearPlay(btn){
   hearStop();
   var notes=MELODIES[btn.getAttribute('data-melody')];
   if(!notes) return;
-  var ctx=hearCtx(), cache={bus:hearBus(ctx)};
-  var t0=ctx.currentTime+0.08, STEP=0.34, t=t0, times=[], i;
+  var ctx=hearCtx(), cache={bus:getBus(ctx)};
+  var sp=1, sel=btn.closest('.chapter') && btn.closest('.chapter').querySelector('.speed-sel');
+  if(sel) sp=parseFloat(sel.value)||1;
+  var t0=ctx.currentTime+0.08, STEP=0.34*sp, t=t0, times=[], i;
   for(i=0;i<notes.length;i++){
     if(notes[i]==='-'){ times.push(null); t+=STEP*0.6; }
     else { times.push(t); t+=STEP; }
   }
   var endT=t;
-  /* melody on top */
+  /* melody on top, slightly right of center like a miked top string */
   for(i=0;i<notes.length;i++){
     if(!times[i]) continue;
     var str=notes[i][0], fret=notes[i][1];
-    pluck(ctx,times[i],STRING_HZ[str]*Math.pow(2,fret/12),0.9,(i===notes.length-1)?2.4:1.6,cache);
+    pluck(ctx,times[i],STRING_HZ[str]*Math.pow(2,fret/12),0.9,(i===notes.length-1)?2.4:1.6,cache,0.08);
   }
-  /* fingerstyle chord backing: bass, then 6/8 roll on the top three strings */
+  /* fingerstyle chord backing: thumb bass, then the i·m·a·m·i·m roll */
   var map=CHORD_MAPS[btn.getAttribute('data-melody')]||[];
   for(i=0;i<map.length;i++){
     var start=map[i][0]<times.length&&times[map[i][0]]?times[map[i][0]]:t0;
     var nextStart=(i+1<map.length&&times[map[i+1][0]])?times[map[i+1][0]]:endT+0.6;
     var ch=CHORDS[map[i][1]]; if(!ch) continue;
-    pluck(ctx,start,ch.bass,0.65,2.0,cache);
-    var pattern=[2,1,0,1,2,0], k=0, roll=1.2;
+    pluck(ctx,start,ch.bass,0.65,2.2,cache,0);
     for(var j=0;j<6;j++){
-      var when=start+roll+j*0.2;
+      var when=start+(j+1)*0.2*sp;
       if(when>=nextStart-0.05) break;
-      pluck(ctx,when,ch.roll[pattern[j]],0.45,1.4,cache);
-      k++;
+      pluck(ctx,when,ch.roll[ROLLPATTERN[j]],0.5,1.5,cache,-0.1);
     }
   }
   hearBtn=btn;
@@ -885,7 +1038,30 @@ function hearPlay(btn){
 document.querySelectorAll('.btn-hear').forEach(function(b){
   b.addEventListener('click',function(){ hearPlay(b); });
 });
-document.addEventListener('visibilitychange',function(){ if(document.hidden) hearStop(); });
+/* tap any chord diagram to hear it rolled fingerstyle */
+function chordTap(card){
+  var nameEl=card.querySelector('.cname'); if(!nameEl) return;
+  var ch=CHORDS[nameEl.textContent.trim()]; if(!ch) return;
+  hearStop();
+  var ctx=hearCtx(), cache={bus:getBus(ctx)};
+  var t=ctx.currentTime+0.05;
+  pluck(ctx,t,ch.bass,0.7,2.2,cache,0);
+  for(var j=0;j<6;j++) pluck(ctx,t+(j+1)*0.2,ch.roll[ROLLPATTERN[j]],0.5,1.5,cache,-0.1);
+}
+document.querySelectorAll('.chord-card').forEach(function(c){
+  c.addEventListener('click',function(){ chordTap(c); });
+  c.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); chordTap(c); } });
+});
+/* tuning reference pitches — tap a string name, hear its open note */
+document.querySelectorAll('[data-tune]').forEach(function(b){
+  b.addEventListener('click',function(){
+    hearStop();
+    var f=OPEN_HZ[b.getAttribute('data-tune')]; if(!f) return;
+    var ctx=hearCtx();
+    pluck(ctx,ctx.currentTime+0.05,f,0.85,3.0,{bus:getBus(ctx)},0);
+  });
+});
+document.addEventListener('visibilitychange',function(){ if(document.hidden){ hearStop(); stopSources(); } });
 </script>
 <script defer src="/assets/js/main.js"></script>
 <script src="/nav.js"></script>
