@@ -24,7 +24,14 @@ export async function onRequest(context) {
     });
   }
   try {
-    const formData = await request.formData();
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch (_e) {
+      return new Response(JSON.stringify({ status: 'error', message: 'Invalid form body' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      });
+    }
     if (!await verifyTurnstile(env, request, turnstileToken(formData, 'form'))) {
       return new Response(JSON.stringify({ status: 'error', message: 'CAPTCHA verification failed. Please try again.' }), {
         status: 403, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
