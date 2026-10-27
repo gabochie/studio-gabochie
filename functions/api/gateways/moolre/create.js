@@ -84,11 +84,13 @@ export async function onRequest(context) {
     });
     const data = await resp.json();
     if (data.status !== 1 || !data.data || !data.data.authorization_url) {
-      return json({ status: 'error', message: (data && data.message) || 'Failed to create payment link' }, 502);
+      /* HTTP 200 + status:'error' — Cloudflare masks 5xx bodies, hiding this JSON
+         from the client (see the expresspay/create note from the 2026-10-27 audit). */
+      return json({ status: 'error', message: (data && data.message) || 'Mobile money is briefly unavailable — please pay with crypto or try again in a few minutes.', code: data && data.code });
     }
     linkData = data.data;
   } catch (_e) {
-    return json({ status: 'error', message: 'Payment gateway unavailable' }, 502);
+    return json({ status: 'error', message: 'Mobile money is briefly unavailable — please pay with crypto or try again in a few minutes.', code: 'moolre_unreachable' });
   }
 
   if (stageDonation) {

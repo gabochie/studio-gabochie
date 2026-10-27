@@ -63,7 +63,7 @@
       "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Guitar Method",
+      "name": "Guitar School",
       "short_name": "Guitar",
       "description": "Learn guitar online",
       "url": "/guitar/",

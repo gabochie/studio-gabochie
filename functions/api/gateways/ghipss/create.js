@@ -79,11 +79,13 @@ export async function onRequest(context) {
     });
     const data = await resp.json();
     if (data.status !== 1 || !data.data || !data.data.accountno) {
-      return json({ status: 'error', message: (data && data.message) || 'Failed to create bank account' }, 502);
+      /* HTTP 200 + status:'error' — Cloudflare masks 5xx bodies, hiding this JSON
+         from the client (see the expresspay/create note from the 2026-10-27 audit). */
+      return json({ status: 'error', message: (data && data.message) || 'Bank transfer is briefly unavailable — please pay with crypto or try again in a few minutes.', code: data && data.code });
     }
     acct = data.data;
   } catch (_e) {
-    return json({ status: 'error', message: 'Payment gateway unavailable' }, 502);
+    return json({ status: 'error', message: 'Bank transfer is briefly unavailable — please pay with crypto or try again in a few minutes.', code: 'ghipss_unreachable' });
   }
 
   if (stageDonation) {

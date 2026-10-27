@@ -72,7 +72,12 @@ describe('expresspay gateway', function () {
     });
     var res = await expCreate(post('http://localhost/api/gateways/expresspay/create',
       { tx_ref: 'tier_abc' }, { DB: db }));
-    expect(res.status).toBe(502);
+    /* 200 + status:'error' — Cloudflare masks 5xx bodies with its HTML error page,
+       so gateway failures must NOT use HTTP 5xx (2026-10-27 payment audit). */
+    expect(res.status).toBe(200);
+    var failBody = await res.json();
+    expect(failBody.status).toBe('error');
+    expect(failBody.code).toBe('gateway_not_configured');
   });
 
   it('callback settles an approved MoMo payment after re-query', async function () {
