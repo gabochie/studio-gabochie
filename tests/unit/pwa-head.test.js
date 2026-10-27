@@ -9,6 +9,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const ALLOWLIST = new Set([
   'lotl/index.html', // shortcut redirect, no UI of its own
   'admin/index.html', // internal tooling surface
+  'console/index.html', // internal tooling surface (super admin console)
   'style-guide/index.html', // dev-only reference
 ]);
 

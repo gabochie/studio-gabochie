@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Console — Studio Gabochie</title>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%}
+body{background:#0A1628;color:#CBD5E1;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px}
+a{color:#C9A84C}
+.wrap{width:100%;max-width:460px}
+.wrap.wide{max-width:900px;display:none}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#C9A84C,#8B7034);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;font-weight:800;color:#0A1628;font-family:Syne,sans-serif}
+h1{font-family:Syne,sans-serif;font-size:24px;color:#F1F5F9;text-align:center;margin-bottom:6px}
+h1 span{color:#C9A84C}
+.sub{text-align:center;font-size:13px;color:#5A7A9F;margin-bottom:24px}
+.card{background:#0F1D33;border:1px solid #1E3250;border-radius:16px;padding:28px}
+label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;color:#7A93B5;text-transform:uppercase;margin:14px 0 6px}
+label:first-child{margin-top:0}
+input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #1E3250;background:#0A1628;color:#F1F5F9;font-size:15px;font-family:Inter,sans-serif;outline:none}
+input:focus{border-color:#C9A84C}
+button{width:100%;margin-top:20px;padding:13px;border:none;border-radius:10px;background:#C9A84C;color:#0A1628;font-family:Syne,sans-serif;font-weight:700;font-size:14px;letter-spacing:.04em;cursor:pointer}
+button:hover{background:#D9BC6E}
+button:disabled{opacity:.5;cursor:default}
+.msg{margin-top:14px;padding:10px 14px;border-radius:8px;font-size:13px;display:none}
+.msg.err{display:block;background:rgba(239,68,68,.12);color:#F87171;border:1px solid rgba(239,68,68,.3)}
+.msg.ok{display:block;background:rgba(52,199,123,.12);color:#34C77B;border:1px solid rgba(52,199,123,.3)}
+.alt{text-align:center;margin-top:18px;font-size:12px;color:#5A7A9F}
+.alt a{cursor:pointer}
+.hidden{display:none!important}
+/* panel */
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;background:rgba(201,168,76,.12);color:#C9A84C;font-size:12px;font-weight:600}
+.badge.super{background:rgba(239,68,68,.12);color:#F87171}
+.ptop button{width:auto;margin:0;padding:8px 18px;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+.panel{background:#0F1D33;border:1px solid #1E3250;border-radius:14px;padding:18px}
+.panel h2{font-family:Syne,sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A93B5;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td{padding:6px 8px;border-bottom:1px solid #16283F;vertical-align:top}
+td.mono{font-family:'Space Mono',monospace;color:#C9A84C;font-size:11px}
+td .d{color:#5A7A9F;font-size:11px}
+.links{display:flex;flex-direction:column;gap:8px}
+.links a{display:block;padding:9px 12px;border:1px solid #1E3250;border-radius:8px;text-decoration:none;font-size:13px;color:#CBD5E1}
+.links a:hover{border-color:#C9A84C;color:#C9A84C}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:6px 0}
+.kv b{color:#F1F5F9;font-weight:600}
+.step2{display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="authWrap">
+  <div class="logo">G</div>
+  <h1>Super Admin <span>Console</span></h1>
+  <p class="sub">Studio Gabochie — internal use only</p>
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <form id="loginForm" onsubmit="return doLogin(event)">
+      <label>Email</label>
+      <input type="email" id="email" required autocomplete="email" placeholder="you@gabochie.com">
+      <label>Password</label>
+      <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+      <button type="submit" id="loginBtn">Enter Console</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+    <p class="alt">First time here? <a onclick="showClaim()">Claim your account</a></p>
+  </div>
+
+  <!-- CLAIM (first-run: seeded account has no password yet) -->
+  <div class="card" id="claimCard" style="display:none">
+    <form id="claimForm1" onsubmit="return doClaimSend(event)">
+      <label>Email</label>
+      <input type="email" id="claimEmail" required autocomplete="email" placeholder="you@gabochie.com">
+      <button type="submit" id="claimBtn">Email me a claim code</button>
+      <div class="msg" id="claimMsg"></div>
+    </form>
+    <form id="claimForm2" class="step2" onsubmit="return doClaimVerify(event)">
+      <label>6-digit code (from your email)</label>
+      <input type="text" id="claimCode" required inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="000000" style="letter-spacing:6px;text-align:center;font-family:'Space Mono',monospace">
+      <label>Choose a password (min 8 characters)</label>
+      <input type="password" id="claimPassword" required minlength="8" autocomplete="new-password" placeholder="••••••••">
+      <button type="submit" id="claimVerifyBtn">Claim &amp; Enter</button>
+      <div class="msg" id="claimMsg2"></div>
+    </form>
+    <p class="alt"><a onclick="showLogin()">Back to login</a></p>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div class="wrap wide" id="panelWrap">
+  <div class="ptop">
+    <div><h1 style="text-align:left;margin:0;font-size:20px">Super Admin <span>Console</span></h1></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="badge" id="roleBadge">…</span>
+      <button onclick="doLogout()">Log out</button>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <h2>Account</h2>
+      <div class="kv"><span>Signed in as</span><b id="whoEmail">—</b></div>
+      <div class="kv"><span>Name</span><b id="whoName">—</b></div>
+      <div class="kv"><span>Role</span><b id="whoRole">—</b></div>
+      <h2 style="margin-top:18px">System</h2>
+      <div class="kv"><span>Latest deploy (CI)</span><b id="ciStatus">—</b></div>
+      <div class="kv"><span>Tests</span><b id="ciTests">—</b></div>
+      <h2 style="margin-top:18px">Shortcuts</h2>
+      <div class="links">
+        <a href="/admin/">→ Full Admin Dashboard (Cloudflare Access)</a>
+        <a href="/member/">→ Member Area</a>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Audit Trail (latest 50)</h2>
+      <div id="auditBox" style="font-size:12px;color:#5A7A9F">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API = '/api/admin/console';
+function msg(id, text, cls) {
+  var el = document.getElementById(id);
+  el.textContent = text; el.className = 'msg ' + (cls || 'err');
+}
+function $(id) { return document.getElementById(id); }
+
+function showClaim() {
+  $('loginCard').style.display = 'none';
+  $('claimCard').style.display = 'block';
+  $('claimForm2').style.display = 'none';
+  $('claimForm1').style.display = 'block';
+}
+function showLogin() {
+  $('claimCard').style.display = 'none';
+  $('loginCard').style.display = 'block';
+}
+
+function doLogin(e) {
+  e.preventDefault();
+  $('loginBtn').disabled = true; $('loginMsg').className = 'msg';
+  fetch(API + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: $('email').value, password: $('password').value }) })
+    .then(function(r) { return r.json().then(function(d) { return { s: r.status, d: d }; }); })
+    .then(function(res) {
+      if (res.s === 403 && res.d.code === 'claim_required') { showClaim(); msg('claimMsg', 'This account has no password yet. Claim it with the email code.', 'ok'); return; }
+      if (res.d.status !== 'ok') { msg('loginMsg', res.d.message || 'Login failed'); return; }
+      renderPanel(res.d.user);
+    })
+    .catch(function() { msg('loginMsg', 'Network error. Try again.'); })
+    .finally(function() { $('loginBtn').disabled = false; });
+  return false;
+}
+
+function doClaimSend(e) {
+  e.preventDefault();
+  $('claimBtn').disabled = true; $('claimMsg').className = 'msg';
+  fetch(API + '/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: $('claimEmail').value }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.status !== 'ok') { msg('claimMsg', d.message || 'Could not send code'); return; }
+      msg('claimMsg', d.message || 'Code sent.', 'ok');
+      $('claimForm1').style.display = 'none';
+      $('claimForm2').style.display = 'block';
+      $('claimCode').focus();
+    })
+    .catch(function() { msg('claimMsg', 'Network error. Try again.'); })
+    .finally(function() { $('claimBtn').disabled = false; });
+  return false;
+}
+
+function doClaimVerify(e) {
+  e.preventDefault();
+  $('claimVerifyBtn').disabled = true; $('claimMsg2').className = 'msg';
+  fetch(API + '/claim', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: $('claimEmail').value, code: $('claimCode').value, password: $('claimPassword').value }) })
+    .then(function(r) { return r.json().then(function(d) { return { s: r.status, d: d }; }); })
+    .then(function(res) {
+      if (res.d.status !== 'ok') { msg('claimMsg2', res.d.message || 'Claim failed'); return; }
+      renderPanel(res.d.user);
+    })
+    .catch(function() { msg('claimMsg2', 'Network error. Try again.'); })
+    .finally(function() { $('claimVerifyBtn').disabled = false; });
+  return false;
+}
+
+function doLogout() {
+  fetch(API + '/session', { method: 'DELETE' }).finally(function() { location.reload(); });
+}
+
+function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+function renderPanel(user) {
+  $('authWrap').style.display = 'none';
+  $('panelWrap').classList.remove('wide');
+  var badge = $('roleBadge');
+  badge.textContent = (user.role === 'super_admin' ? '★ ' : '') + user.role.toUpperCase();
+  if (user.role === 'super_admin') badge.className = 'badge super';
+  $('whoEmail').textContent = user.email;
+  $('whoName').textContent = user.name || '—';
+  $('whoRole').textContent = user.role;
+  loadAudit();
+  loadCi();
+}
+
+function loadAudit() {
+  fetch('/api/admin/audit?limit=50')
+    .then(function(r) { return r.json().then(function(d) { return { s: r.status, d: d }; }); })
+    .then(function(res) {
+      if (res.s !== 200 || !res.d.items) { $('auditBox').textContent = 'Audit log unavailable (' + res.s + ')'; return; }
+      if (!res.d.items.length) { $('auditBox').textContent = 'No entries yet.'; return; }
+      var html = '<table>';
+      res.d.items.forEach(function(it) {
+        html += '<tr><td class="mono">' + esc(it.action) + '</td><td>' + esc(it.admin_key) + '<div class="d">' + esc(it.created_at) + (it.details && it.details !== '{}' ? ' · ' + esc(it.details) : '') + '</div></td></tr>';
+      });
+      html += '</table>';
+      $('auditBox').innerHTML = html;
+    })
+    .catch(function() { $('auditBox').textContent = 'Could not load audit log.'; });
+}
+
+function loadCi() {
+  fetch('/api/admin/ci/status')
+    .then(function(r) { return r.json().then(function(d) { return { s: r.status, d: d }; }); })
+    .then(function(res) {
+      if (res.s !== 200 || !res.d.report) { $('ciStatus').textContent = 'No reports'; $('ciTests').textContent = '—'; return; }
+      var r = res.d.report;
+      $('ciStatus').textContent = (r.status || 'unknown') + ' · ' + (r.branch || '');
+      $('ciTests').textContent = r.test_passed + ' / ' + r.test_count + ' passed';
+    })
+    .catch(function() { $('ciStatus').textContent = 'Unavailable'; });
+}
+
+// Auto-resume an existing session
+(function() {
+  fetch(API + '/session').then(function(r) { return r.json().then(function(d) { return { s: r.status, d: d }; }); })
+    .then(function(res) { if (res.s === 200 && res.d.user) renderPanel(res.d.user); })
+    .catch(function() {});
+})();
+</script>
+</body>
+</html>
