@@ -1618,6 +1618,10 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
         total INTEGER DEFAULT 0,
         created_at TEXT DEFAULT (datetime('now'))
       )`,
+      // ── App-level admin roles (super admin system) ──
+      `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'member'`,
+      `INSERT INTO users (name, email, role) VALUES ('Gideon Abochie', 'gid@gabochie.com', 'super_admin')
+        ON CONFLICT(email) DO UPDATE SET role = 'super_admin'`,
     ];
     const results = [];
     for (const sql of statements) {
