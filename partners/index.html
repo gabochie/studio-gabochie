@@ -11,7 +11,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Partner With Us — Studio Gabochie">
-<meta property="og:description" content="Partner with Studio Gabochie to equip leaders across Africa with biblical truth, creative excellence, and systems thinking. Churches, schools, NGOs, and mission-aligned organizations.">
+<meta property="og:description" content="Three ways to partner: Community (free), Impact (sponsor a cohort), Strategic (co-designed programs). Churches, schools, NGOs, corporate CSR, music shops and book retailers.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/partners/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>Partner With Us — Studio Gabochie</title>
-<meta name="description" content="Partner with Studio Gabochie to equip leaders across Africa with biblical truth, creative excellence, and systems thinking. Churches, schools, NGOs, and mission-aligned organizations.">
+<meta name="description" content="Three levels of partnership: Community (free), Impact (sponsor a named cohort), Strategic (co-designed programs). For churches, schools, NGOs, corporate CSR, music shops and book retailers.">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="/assets/fonts/tabler/tabler-icons.min.css" rel="stylesheet">
 <link href="../assets/css/main.css" rel="stylesheet">
@@ -36,23 +36,50 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;color:#fff;line-height:.92;letter-spacing:-.02em;margin-bottom:16px}
 .hero h1 span{color:#C9A84C}
 .hero p{font-size:16px;color:#8A9BB5;max-width:640px;margin:0 auto 40px;line-height:1.7}
-.benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:var(--content-max);margin:0 auto;padding:0 24px 60px}
-.benefit-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px 24px;transition:all .3s}
-.benefit-card:hover{border-color:#C9A84C;transform:translateY(-4px)}
-.benefit-icon{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;color:#C9A84C}
-.benefit-card h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
-.benefit-card p{font-size:13px;color:#8A9BB5;line-height:1.6}
-.partner-types{max-width:var(--content-max);margin:0 auto;padding:0 24px 60px}
+/* proof strip */
+.proof-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 36px;max-width:900px;margin:0 auto 70px;padding:0 24px}
+.proof-item{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:#8A9BB5;letter-spacing:.04em}
+.proof-item i{color:#C9A84C;font-size:17px}
+.proof-item b{color:#E8EEF7}
+/* section scaffolding */
+.section{max-width:var(--content-max);margin:0 auto;padding:0 24px 70px}
 .section-label{font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
 .section-title{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,4vw,44px);font-weight:700;color:#fff;margin-bottom:16px}
 .section-sub{font-size:15px;color:#8A9BB5;max-width:600px;margin-bottom:32px;line-height:1.6}
-.partner-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.partner-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:24px;text-align:center;transition:all .2s}
-.partner-card:hover{border-color:#C9A84C}
-.partner-card .pc-icon{font-size:36px;margin-bottom:8px}
-.partner-card h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
-.partner-card p{font-size:12px;color:#5A7A9F;line-height:1.5;margin-bottom:12px}
-.partner-card .pc-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:#C9A84C;letter-spacing:.05em}
+/* ── the ladder ── */
+.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px;align-items:stretch}
+.rung{position:relative;background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:32px 26px;display:flex;flex-direction:column;transition:all .3s}
+.rung:hover{border-color:#C9A84C;transform:translateY(-4px)}
+.rung.featured{border-color:#C9A84C;background:linear-gradient(180deg,rgba(201,168,76,.07),rgba(15,30,56,1) 55%)}
+.rung-eyebrow{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C9A84C;margin-bottom:8px}
+.rung h3{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:4px}
+.rung .rung-for{font-size:12px;color:#5A7A9F;margin-bottom:16px;line-height:1.5}
+.rung ul{list-style:none;margin-bottom:20px;flex:1}
+.rung li{font-size:13px;color:#CBD5E1;line-height:1.5;padding:7px 0 7px 26px;position:relative;border-bottom:1px solid rgba(30,50,80,.6)}
+.rung li:last-child{border-bottom:none}
+.rung li::before{content:'\2713';position:absolute;left:2px;color:#C9A84C;font-weight:700}
+.rung li.dim{color:#5A7A9F}
+.rung-anchor{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;font-size:12.5px;color:#C9A84C;line-height:1.55;margin-bottom:18px;padding:10px 14px;background:rgba(201,168,76,.06);border-left:2px solid #C9A84C;border-radius:0 8px 8px 0}
+.rung-btn{display:block;text-align:center;padding:12px;background:rgba(201,168,76,.12);color:#C9A84C;border:1px solid rgba(201,168,76,.3);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .2s}
+.rung-btn:hover{background:#C9A84C;color:#0A1628}
+.rung-btn.solid{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
+.rung-btn.solid:hover{background:#D9B85C}
+.rung-badge{position:absolute;top:-11px;right:18px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px}
+/* stakeholder tracks */
+.track-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.track-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:24px;transition:all .2s}
+.track-card:hover{border-color:#C9A84C}
+.track-card .pc-icon{font-size:36px;margin-bottom:8px}
+.track-card h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
+.track-card p{font-size:12px;color:#5A7A9F;line-height:1.5;margin-bottom:10px}
+.track-card .pc-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:#C9A84C;letter-spacing:.05em}
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;counter-reset:step}
+.step{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:26px 24px;position:relative}
+.step::before{counter-increment:step;content:counter(step);position:absolute;top:-14px;left:22px;width:28px;height:28px;border-radius:50%;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.step h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin:8px 0 6px}
+.step p{font-size:12.5px;color:#8A9BB5;line-height:1.6}
+/* form */
 .form-section{max-width:600px;margin:0 auto 80px;padding:0 24px}
 .form-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:32px}
 .form-card h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
@@ -64,12 +91,15 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .form-group textarea{resize:vertical;min-height:100px}
 .form-group select{color:#8A9BB5}
 .form-group select option{background:#0A1628}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
 .submit-btn{width:100%;padding:14px;background:#C9A84C;color:#0A1628;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .submit-btn:hover{background:#D9B85C}
 .submit-btn:disabled{background:rgba(201,168,76,.12);color:#5A7A9F;cursor:not-allowed}
 .msg{display:none;padding:14px;border-radius:8px;font-size:13px;line-height:1.5;margin-top:12px}
 .msg-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#6EE7B7}
 .msg-error{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5}
+/* faq */
 .faq-section{max-width:720px;margin:0 auto 80px;padding:0 24px}
 .faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
 .faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
@@ -77,7 +107,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .faq-q.open::after{content:'\2212'}
 .faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
 .faq-a.open{display:block}
-@media(max-width:640px){.hero{padding:60px 16px 30px}.benefits-grid{padding:0 16px 40px}.partner-types{padding:0 16px 40px}.form-section{padding:0 16px 60px}.faq-section{padding:0 16px 60px}}
+@media(max-width:640px){.hero{padding:60px 16px 30px}.section{padding:0 16px 50px}.form-section{padding:0 16px 60px}.faq-section{padding:0 16px 60px}}
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
@@ -88,117 +118,176 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="hero">
   <div class="hero-eyebrow">Together We Reach Further</div>
   <h1>Partner With <span>Us</span></h1>
-  <p>We believe the best work happens together. Whether you are a church, school, NGO, or mission-aligned organization, partnering with Studio Gabochie multiplies impact — equipping leaders across Africa with biblical truth, creative excellence, and systems thinking.</p>
-</div>
-
-<div class="benefits-grid">
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-books"></i></div>
-    <h3>Co-Branded Content</h3>
-    <p>Your organization's branding on course materials, books, and resources you help distribute to your community.</p>
-  </div>
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-affiliate"></i></div>
-    <h3>Referral Rewards</h3>
-    <p>Earn rewards when your community enrolls in courses or purchases resources through your unique referral link.</p>
-  </div>
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-users"></i></div>
-    <h3>Shared Impact Reports</h3>
-    <p>Quarterly reports showing the measurable impact of our partnership — enrollments, completions, and lives changed.</p>
-  </div>
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-speakerphone"></i></div>
-    <h3>Joint Visibility</h3>
-    <p>Feature your organization in our newsletter, social media, and at events. Together we amplify each other's mission.</p>
-  </div>
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-discount"></i></div>
-    <h3>Community Discounts</h3>
-    <p>Exclusive discounts on courses, books, and resources for your congregation, students, or community members.</p>
-  </div>
-  <div class="benefit-card">
-    <div class="benefit-icon"><i class="ti ti-tools"></i></div>
-    <h3>Curriculum Support</h3>
-    <p>Work with us to adapt course content for your specific context — whether academic, church-based, or community-driven.</p>
+  <p>Studio Gabochie equips leaders across Africa with biblical truth, creative excellence, and systems thinking — self-paced courses, a 16-module Guitar School, a free-to-read companion book, and the Love Of The Lord church platform. Partnering multiplies that reach through <b style="color:#E8EEF7">your</b> community.</p>
+  <div class="proof-strip">
+    <div class="proof-item"><i class="ti ti-school"></i><b>11</b>&nbsp;self-paced courses</div>
+    <div class="proof-item"><i class="ti ti-music"></i>Guitar School — <b>&nbsp;16 modules, 64 lessons</b></div>
+    <div class="proof-item"><i class="ti ti-book"></i>Companion book, free to read</div>
+    <div class="proof-item"><i class="ti ti-map-pin"></i>Accra-rooted, Africa-facing</div>
   </div>
 </div>
 
-<div class="partner-types">
+<!-- ── THE LADDER ── -->
+<div class="section" id="levels">
+  <div class="section-label">Three Ways In</div>
+  <div class="section-title">Partnership, <span style="color:#C9A84C">By Rungs</span></div>
+  <div class="section-sub">Like everything we build, partnership is a ladder — start where you are and climb when it bears fruit. Every rung includes the ones below it.</div>
+  <div class="ladder">
+    <div class="rung">
+      <div class="rung-eyebrow">Level 1 — Free to join</div>
+      <h3>Community Partner</h3>
+      <div class="rung-for">For youth groups, small churches, startups, creators and anyone who wants to carry the mission to their people.</div>
+      <ul>
+        <li>Unique referral link — earn a share of every enrollment</li>
+        <li>Community discount code for your people</li>
+        <li>Starter pack: shareable graphics &amp; announcement copy</li>
+        <li>Feature in our newsletter</li>
+      </ul>
+      <div class="rung-anchor">Starts free — the only cost is a conversation.</div>
+      <button class="rung-btn" onclick="selectLevel('community')">Become a Community Partner</button>
+    </div>
+    <div class="rung featured">
+      <div class="rung-badge">Most Chosen</div>
+      <div class="rung-eyebrow">Level 2 — Sponsor a cohort</div>
+      <h3>Impact Partner</h3>
+      <div class="rung-for">For NGOs, schools, corporate CSR programs and mid-size churches ready to put named scholars into named cohorts.</div>
+      <ul>
+        <li>25–100 scholarship seats in a cohort wearing your name</li>
+        <li>Branded cohort page with your logo &amp; story</li>
+        <li>Quarterly impact report — enrollments, completions, progress</li>
+        <li>Co-hosted workshop, bootcamp or guitar club</li>
+        <li>Priority learner support for your cohort</li>
+      </ul>
+      <div class="rung-anchor">A scholarship seat costs less than a team lunch — we will size the cohort to your budget.</div>
+      <button class="rung-btn solid" onclick="selectLevel('impact')">Sponsor a Cohort</button>
+    </div>
+    <div class="rung">
+      <div class="rung-eyebrow">Level 3 — Annual, co-designed</div>
+      <h3>Strategic Partner</h3>
+      <div class="rung-for">For foundations, universities, denominations and corporates who want to build something with us, not just fund something.</div>
+      <ul>
+        <li>Curriculum co-design &amp; co-branded content</li>
+        <li>Named program sponsorship — e.g. <i>The [Your Name] Lab</i></li>
+        <li>Dedicated partner manager &amp; custom reporting</li>
+        <li>First look at new programs &amp; the companion book series</li>
+        <li>Joint events, keynotes &amp; speaking from our team</li>
+      </ul>
+      <div class="rung-anchor">Priced per program — we scope it together, then put it in writing.</div>
+      <button class="rung-btn" onclick="selectLevel('strategic')">Request a Proposal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── STAKEHOLDER TRACKS ── -->
+<div class="section">
   <div class="section-label">Who We Partner With</div>
-  <div class="section-title">Designed for <span style="color:#C9A84C">Mission-Aligned Organizations</span></div>
-  <div class="section-sub">We work with organizations that share our commitment to developing Christ-centered leaders who think clearly, create excellently, and serve faithfully.</div>
-  <div class="partner-cards">
-    <div class="partner-card">
+  <div class="section-title">Built for <span style="color:#C9A84C">Mission-Aligned Organizations</span></div>
+  <div class="section-sub">Whichever rung you start on, we shape it around your context. Pick your track — the form below lets us route your inquiry to the right conversation.</div>
+  <div class="track-cards">
+    <div class="track-card">
       <div class="pc-icon">&#9962;</div>
-      <h4>Churches &amp; Ministries</h4>
-      <p>Integrate systems thinking and biblical leadership training into your discipleship pathway.</p>
+      <h4>Churches &amp; Denominations</h4>
+      <p>Discipleship pathway integration, systems-thinking leadership training for leaders, Love Of The Lord for your services, church-wide learning discounts.</p>
       <span class="pc-badge">Discipleship</span>
     </div>
-    <div class="partner-card">
+    <div class="track-card">
       <div class="pc-icon">&#127891;</div>
       <h4>Schools &amp; Universities</h4>
-      <p>Offer our courses as credited or supplementary curriculum for students across Africa.</p>
+      <p>Credited or supplementary curriculum licensing, teacher enablement, and after-school guitar clubs powered by the 16-module Guitar School.</p>
       <span class="pc-badge">Education</span>
     </div>
-    <div class="partner-card">
+    <div class="track-card">
       <div class="pc-icon">&#127757;</div>
-      <h4>NGOs &amp; Non-Profits</h4>
-      <p>Equip the communities you serve with practical thinking skills and biblical worldview training.</p>
-      <span class="pc-badge">Community Dev</span>
+      <h4>NGOs, Foundations &amp; CSR</h4>
+      <p>Named scholarship cohorts for the youth you serve, measurable impact reports, co-branded programs for youth empowerment and digital-skills initiatives.</p>
+      <span class="pc-badge">Cohorts &amp; Impact</span>
     </div>
-    <div class="partner-card">
-      <div class="pc-icon">&#128188;</div>
-      <h4>Businesses &amp; Networks</h4>
-      <p>Sponsor course scholarships for aspiring leaders in your industry or professional network.</p>
-      <span class="pc-badge">Sponsorship</span>
+    <div class="track-card">
+      <div class="pc-icon">&#127908;</div>
+      <h4>Music Shops &amp; Book Retailers</h4>
+      <p>Gear discounts and starter-kit deals for Guitar School students, stock or distribute the <i>First Things First</i> companion book, co-hosted jam sessions and signings.</p>
+      <span class="pc-badge">Retail &amp; Distribution</span>
     </div>
   </div>
 </div>
 
-<div class="form-section">
+<!-- ── HOW IT WORKS ── -->
+<div class="section">
+  <div class="section-label">The Process</div>
+  <div class="section-title">Lightweight on <span style="color:#C9A84C">Purpose</span></div>
+  <div class="section-sub">Most partnerships are live within 2–3 weeks. No committees, no 40-page agreements.</div>
+  <div class="steps">
+    <div class="step">
+      <h4>Conversation</h4>
+      <p>Send the form below — we reply within 48 hours and set up a discovery call to understand your community and your goals.</p>
+    </div>
+    <div class="step">
+      <h4>Simple Agreement</h4>
+      <p>We map your rung, cohort size and benefits into a one-page agreement. Everything is priced to your capacity — no surprises.</p>
+    </div>
+    <div class="step">
+      <h4>Launch &amp; Report</h4>
+      <p>Your cohort goes live with branded pages and codes. Then every quarter: a clean impact report you can show your board.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── FORM ── -->
+<div class="form-section" id="partner-form">
   <div class="form-card">
     <h3>Let's Partner</h3>
-    <p class="form-sub">Fill in the form and we will reach out within 48 hours to explore how we can work together.</p>
+    <p class="form-sub">Tell us who you are and which rung interests you — we will reach out within 48 hours.</p>
     <div style="background:#1E3250;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.5;color:#CBD5E1">
       Prefer to give right now?
       <a href="/donate/" style="color:#C9A84C;font-weight:600;text-decoration:none">Donate directly</a>
       — every gift funds scholarships and creative programs.
     </div>
     <form id="partnerForm">
-      <div class="form-group">
-        <label for="orgName">Organization Name</label>
-        <input type="text" id="orgName" name="orgName" required>
-      </div>
-      <div class="form-group">
-        <label for="contactName">Your Full Name</label>
-        <input type="text" id="contactName" name="contactName" required>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="orgName">Organization Name</label>
+          <input type="text" id="orgName" name="orgName" required>
+        </div>
+        <div class="form-group">
+          <label for="contactName">Your Full Name</label>
+          <input type="text" id="contactName" name="contactName" required>
+        </div>
       </div>
       <div class="form-group">
         <label for="contactEmail">Email Address</label>
         <input type="email" id="contactEmail" name="contactEmail" required>
       </div>
-      <div class="form-group">
-        <label for="orgType">Organization Type</label>
-        <select id="orgType" name="orgType" required>
-          <option value="">Select one...</option>
-          <option value="church">Church / Ministry</option>
-          <option value="school">School / University</option>
-          <option value="ngo">NGO / Non-Profit</option>
-          <option value="business">Business / Network</option>
-          <option value="other">Other</option>
-        </select>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="orgType">Organization Type</label>
+          <select id="orgType" name="orgType" required>
+            <option value="">Select one...</option>
+            <option value="church">Church / Ministry</option>
+            <option value="school">School / University</option>
+            <option value="ngo">NGO / Foundation</option>
+            <option value="business">Corporate / Business</option>
+            <option value="retail">Music Shop / Book Retailer</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="level">Partnership Level</label>
+          <select id="level" name="level" required>
+            <option value="">Select one...</option>
+            <option value="community">Community — free to start</option>
+            <option value="impact">Impact — sponsor a cohort</option>
+            <option value="strategic">Strategic — co-designed</option>
+            <option value="unsure">Not sure yet — advise me</option>
+          </select>
+        </div>
       </div>
       <div class="form-group">
-        <label for="interest">What interests you?</label>
-        <select id="interest" name="interest" required>
-          <option value="">Select one...</option>
-          <option value="cobrand">Co-Branded Content</option>
-          <option value="referral">Referral Partnership</option>
-          <option value="sponsorship">Scholarship Sponsorship</option>
-          <option value="curriculum">Curriculum Partnership</option>
-          <option value="distribution">Content Distribution</option>
-          <option value="other">Something Else</option>
+        <label for="program">Program focus</label>
+        <select id="program" name="program">
+          <option value="any">Anything / advise me</option>
+          <option value="guitar">Guitar School (16 modules)</option>
+          <option value="lotl">Love Of The Lord (church platform)</option>
+          <option value="courses">Courses &amp; the companion book</option>
         </select>
       </div>
       <div class="form-group">
@@ -212,11 +301,16 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   </div>
 </div>
 
+<!-- ── FAQ ── -->
 <div class="faq-section">
   <div class="section-label" style="color:#C9A84C;margin-bottom:16px">Frequently Asked Questions</div>
   <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What does each level cost?</div>
+    <div class="faq-a">Community is free. Impact is sized to your budget — a scholarship seat costs less than a team lunch, and we build the cohort around what you can give. Strategic is scoped and priced per program. You will always have the number in writing before committing.</div>
+  </div>
+  <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Is there a financial commitment to partner?</div>
-    <div class="faq-a">Partnership starts with shared vision, not a financial threshold. We work with organizations at every level. Some partnerships involve revenue sharing on referrals; others are purely missional. We will discuss what fits your capacity.</div>
+    <div class="faq-a">Partnership starts with shared vision, not a financial threshold. Community partnerships are free; higher rungs involve sponsorship or revenue sharing. We will discuss what fits your capacity.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do referral rewards work?</div>
@@ -224,7 +318,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can we customize course content for our context?</div>
-    <div class="faq-a">Yes. We work with partners to adapt curriculum — adding contextual examples, local case studies, and translated key terms. Customization scope depends on the partnership level.</div>
+    <div class="faq-a">Yes. We work with partners to adapt curriculum — adding contextual examples, local case studies, and translated key terms. Customization scope grows with the partnership level.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Can our students learn guitar without owning instruments yet?</div>
+    <div class="faq-a">Yes — the Guitar School starts on concepts, ear training and practice tools that need no instrument, and we help schools and partners source instruments through our music-retail partners.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How long does it take to set up a partnership?</div>
@@ -233,6 +331,12 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 </div>
 
 <script>
+function selectLevel(level) {
+  var sel = document.getElementById('level');
+  if (sel) sel.value = level;
+  var target = document.getElementById('partner-form');
+  if (target) target.scrollIntoView({ behavior: 'smooth' });
+}
 document.getElementById('partnerForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
@@ -243,7 +347,8 @@ document.getElementById('partnerForm').addEventListener('submit', async function
     name: document.getElementById('contactName').value,
     email: document.getElementById('contactEmail').value,
     orgType: document.getElementById('orgType').value,
-    interest: document.getElementById('interest').value,
+    level: document.getElementById('level').value,
+    program: document.getElementById('program').value,
     message: document.getElementById('message').value
   };
   tagOnboard(data.email, data.name, 'partner');
@@ -254,8 +359,8 @@ document.getElementById('partnerForm').addEventListener('submit', async function
     var fd = new FormData();
     fd.append('name', data.name);
     fd.append('email', data.email);
-    fd.append('_subject', 'Partnership inquiry: ' + data.org + ' (' + data.interest + ')');
-    fd.append('message', data.message + '\n\n— Organization: ' + data.org + ' (' + data.orgType + ')\n— Interest: ' + data.interest);
+    fd.append('_subject', 'Partnership inquiry: ' + data.org + ' — ' + data.level + ' (' + data.orgType + ')');
+    fd.append('message', data.message + '\n\n— Organization: ' + data.org + ' (' + data.orgType + ')\n— Level: ' + data.level + '\n— Program focus: ' + data.program);
     fd.append('cf-turnstile-response', (this.querySelector('input[name="cf-turnstile-response"]') || {}).value || '');
     const r = await fetch('/api/contact', {method:'POST',body:fd});
     const j = await r.json();
