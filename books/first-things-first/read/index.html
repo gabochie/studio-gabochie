@@ -907,7 +907,7 @@ window.addEventListener('scroll',function(){
   document.getElementById('progress').style.width=pct+'%';
 },{passive:true});
 /* ── Hear engine v3: Karplus-Strong acoustic guitar — burst-shaped strings,
-   body resonance, stereo, humanization; melody + fingerstyle roll backing ── */
+   body resonance, stereo; quantized 6/8 grid, melody rides the roll ── */
 var audioCtx=null, hearTimer=null, hearBtn=null, busNode=null, liveSources=[];
 var STRING_HZ={E:329.63,B:246.94,G:196.00};
 var OPEN_HZ={E2:82.41,A2:110.00,D3:146.83,G3:196.00,B3:246.94,E4:329.63};
@@ -968,13 +968,11 @@ function pluck(ctx,when,freq,vol,ring,cache,pan){
   var key=Math.round(freq*10)+'|'+Math.round(ring*10);
   if(!cache[key]) cache[key]=ksBuffer(ctx,freq,ring);
   var src=ctx.createBufferSource(); src.buffer=cache[key];
-  var g=ctx.createGain();
-  g.gain.value=vol*(0.9+Math.random()*0.2); /* finger velocity — no two plucks alike */
-  var w=when+(Math.random()-0.5)*0.008;      /* laid back by a hair, like a real hand */
+  var g=ctx.createGain(); g.gain.value=vol;
   src.connect(g);
   if(ctx.createStereoPanner){ var p=ctx.createStereoPanner(); p.pan.value=pan||0; g.connect(p); p.connect(cache.bus); }
   else g.connect(cache.bus);
-  src.start(Math.max(w,ctx.currentTime));
+  src.start(Math.max(when,ctx.currentTime)); /* sample-accurate: no timing wobble */
   liveSources.push(src);
   src.onended=function(){ var ix=liveSources.indexOf(src); if(ix>=0) liveSources.splice(ix,1); };
 }
@@ -1005,9 +1003,11 @@ function hearPlay(btn){
   var ctx=hearCtx(), cache={bus:getBus(ctx)};
   var sp=1, sel=btn.closest('.chapter') && btn.closest('.chapter').querySelector('.speed-sel');
   if(sel) sp=parseFloat(sel.value)||1;
-  var t0=ctx.currentTime+0.08, STEP=0.34*sp, t=t0, times=[], i;
+  /* one strict 6/8 grid: the eighth-note (E8) is the quantum.
+     melody moves on the 2-E8 grid, a rest costs 1 E8 — everything lands on slots. */
+  var E8=0.2*sp, STEP=2*E8, t0=ctx.currentTime+0.1, t=t0, times=[], i;
   for(i=0;i<notes.length;i++){
-    if(notes[i]==='-'){ times.push(null); t+=STEP*0.6; }
+    if(notes[i]==='-'){ times.push(null); t+=E8; }
     else { times.push(t); t+=STEP; }
   }
   var endT=t;
@@ -1015,19 +1015,23 @@ function hearPlay(btn){
   for(i=0;i<notes.length;i++){
     if(!times[i]) continue;
     var str=notes[i][0], fret=notes[i][1];
-    pluck(ctx,times[i],STRING_HZ[str]*Math.pow(2,fret/12),0.9,(i===notes.length-1)?2.4:1.6,cache,0.08);
+    pluck(ctx,times[i],STRING_HZ[str]*Math.pow(2,fret/12),0.95,(i===notes.length-1)?2.4:1.6,cache,0.08);
   }
-  /* fingerstyle chord backing: thumb bass, then the i·m·a·m·i·m roll */
+  /* fingerstyle backing: thumb bass on the downbeat, then the i·m·a·m·i roll
+     fills the slots the melody does NOT sing — melody rides the pattern, never doubles it */
   var map=CHORD_MAPS[btn.getAttribute('data-melody')]||[];
   for(i=0;i<map.length;i++){
     var start=map[i][0]<times.length&&times[map[i][0]]?times[map[i][0]]:t0;
-    var nextStart=(i+1<map.length&&times[map[i+1][0]])?times[map[i+1][0]]:endT+0.6;
+    var nextStart=(i+1<map.length&&times[map[i+1][0]])?times[map[i+1][0]]:endT+0.4;
     var ch=CHORDS[map[i][1]]; if(!ch) continue;
-    pluck(ctx,start,ch.bass,0.65,2.2,cache,0);
-    for(var j=0;j<6;j++){
-      var when=start+(j+1)*0.2*sp;
-      if(when>=nextStart-0.05) break;
-      pluck(ctx,when,ch.roll[ROLLPATTERN[j]],0.5,1.5,cache,-0.1);
+    pluck(ctx,start,ch.bass,0.6,2.2,cache,0);
+    for(var j=1;j<6;j++){
+      var when=start+j*E8;
+      if(when>=nextStart-E8*0.4) break;
+      var clash=false;
+      for(var m=0;m<times.length;m++){ if(times[m]&&Math.abs(times[m]-when)<E8*0.4){ clash=true; break; } }
+      if(clash) continue;
+      pluck(ctx,when,ch.roll[ROLLPATTERN[j]],0.4,1.5,cache,-0.1);
     }
   }
   hearBtn=btn;
