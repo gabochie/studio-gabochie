@@ -70,22 +70,26 @@ describe('GhIPSS Instant Pay gateway (Moolre Bank Collections)', function () {
     expect(db._tables.donations).toHaveLength(0);
   });
 
-  it('returns 502 when account creation fails', async function () {
+  it('returns 200 + status:error when account creation fails (5xx bodies are masked by the edge)', async function () {
     globalThis.fetch = async function () {
       return jsonOk({ status: 0, code: 'AD32', message: 'Account No. Creation Failed', data: 'all', go: null });
     };
     var ctx = post('http://localhost/api/gateways/ghipss/create', { amount: 50, name: 'Ana', email: 'ana@test.com', phone: '+233501234567' }, baseEnv);
     var res = await ghipssCreate(ctx);
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.status).toBe('error');
   });
 
-  it('returns 502 when Moolre is unreachable', async function () {
+  it('returns 200 + status:error when Moolre is unreachable (5xx bodies are masked by the edge)', async function () {
     globalThis.fetch = async function () {
       throw new Error('network down');
     };
     var ctx = post('http://localhost/api/gateways/ghipss/create', { amount: 50, name: 'Ana', email: 'ana@test.com', phone: '+233501234567' }, baseEnv);
     var res = await ghipssCreate(ctx);
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.status).toBe('error');
   });
 
   it('verifies and finalizes a pending ghipss donation via the Moolre callback', async function () {

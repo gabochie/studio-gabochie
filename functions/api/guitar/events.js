@@ -20,7 +20,12 @@ export async function onRequest(context) {
       });
     }
 
-    const validTypes = ['registration_complete','buy_click','start_free','paywall_view','lesson_complete'];
+    const validTypes = [
+      // funnel (v1)
+      'registration_complete','buy_click','start_free','paywall_view','lesson_complete',
+      // payment funnel (added 2026-10-27 audit — were 400'd, silently blinding payment analytics)
+      'plan_pay','plan_pay_fallback','plan_pay_all_failed','crypto_pay'
+    ];
     if (!validTypes.includes(event_type)) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid event_type' }), {
         status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

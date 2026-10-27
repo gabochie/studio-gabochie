@@ -55,13 +55,17 @@ describe('Moolre gateway', function () {
     expect(db._tables.donations[0].provider).toBe('moolre');
   });
 
-  it('returns 502 when Moolre link creation fails', async function () {
+  it('returns 200 + status:error when Moolre link creation fails (5xx bodies are masked by the edge)', async function () {
     globalThis.fetch = async function () {
       return jsonOk({ status: 0, code: 'INP02', message: 'Transaction already exits!', data: [] });
     };
     var ctx = post('http://localhost/api/gateways/moolre/create', { amount: 50, name: 'Ana', email: 'ana@test.com' }, { MOOLRE_API_USER: 'user', MOOLRE_PUBLIC_KEY: 'pub', MOOLRE_BASE_URL: 'https://api.moolre.com' });
     var res = await moolreCreate(ctx);
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(200);
+    var body = await res.json();
+    expect(body.status).toBe('error');
+    expect(body.message).toBe('Transaction already exits!');
+    expect(body.code).toBe('INP02');
   });
 
   it('verifies and finalizes a pending donation on callback', async function () {

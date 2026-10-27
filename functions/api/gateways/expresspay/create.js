@@ -77,7 +77,10 @@ export async function onRequest(context) {
     postUrl: postUrl
   });
   if (!submitted.ok) {
-    return json({ status: 'error', message: 'Payment gateway unavailable', code: submitted.error }, 502);
+    /* HTTP 200 + status:'error' — Cloudflare masks 5xx bodies with its HTML error
+       page, so a 502 here would hide this JSON from the client (found in the
+       2026-10-27 payment audit: sandbox outage read as "server down"). */
+    return json({ status: 'error', message: 'Card & MoMo payments are briefly unavailable — please pay with crypto or try again in a few minutes.', code: submitted.error });
   }
   try {
     await env.DB.prepare('INSERT INTO expresspay_tokens (tx_ref, token) VALUES (?, ?) ON CONFLICT(tx_ref) DO UPDATE SET token = excluded.token').bind(tx_ref, submitted.token).run();
