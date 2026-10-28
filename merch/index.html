@@ -105,12 +105,14 @@ function selectSize(itemIdx, size) {
   });
   var btn = document.getElementById('buyBtn_' + itemIdx);
   var cbtn = document.getElementById('cryptoBtn_' + itemIdx);
+  var mbtn = document.getElementById('momoBtn_' + itemIdx);
   if (btn) {
     var item = merchInventory[itemIdx];
     var inv = __inventory[item.slug] || {};
     var qty = inv[size] || 0;
     btn.disabled = qty < 1;
     if (cbtn) cbtn.disabled = qty < 1;
+    if (mbtn) mbtn.disabled = qty < 1;
   }
 }
 
@@ -135,6 +137,7 @@ function renderMerch() {
       '<div class="trust-sub" style="text-align:left;margin:0 0 8px">+ delivery (GHS 20 Accra / GHS 50 upcountry, added at checkout) &middot; 7-day return on unworn sizes (<a href="/legal/refund.html" style="color:#C9A84C">details</a>) &middot; prices ≈ in your currency, billed in GH₵</div>' +
       sizeHtml +
       '<button class="btn btn-gold btn-buy" id="buyBtn_' + i + '" disabled onclick="buyMerchItem(' + i + ')"><i class="ti ti-shopping-cart"></i> Select Size &amp; Buy</button>' +
+      '<button class="btn btn-gold btn-buy" id="momoBtn_' + i + '" disabled onclick="buyMerchMomo(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with MTN MoMo</button>' +
       '<button class="btn btn-gold btn-buy" id="cryptoBtn_' + i + '" disabled onclick="buyMerchCrypto(' + i + ')" style="margin-top:8px;border-color:#1E3250;color:#8A9BB5">Pay with Crypto</button>' +
       '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>' +
       '</div></div>';
@@ -170,6 +173,32 @@ function buyMerchItem(idx) {
       }
       alert('Payment system loading. Please refresh and try again.');
     }).catch(function(){ if (typeof window.payError === 'function') window.payError('Network error — <strong>no charge was made.</strong> Please try again.', 'merch'); else alert('Network error. Please try again.'); });
+  });
+}
+
+function buyMerchMomo(idx) {
+  var item = merchInventory[idx];
+  var size = selectedSizes[idx];
+  if (!size) return;
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  var mbtn = document.getElementById('momoBtn_' + idx);
+  showStoreModal(function(user) {
+    var totalAmount = item.price + (user.delivery_fee || 0);
+    fetch('/api/store/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_type: 'merch', item_name: item.name, item_variant: size, product_slug: item.slug,
+        amount: item.price, currency: 'GHS', customer_name: user.name, customer_email: user.email,
+        user_id: user.user_id || 0, phone: user.phone || '',
+        shipping_address: user.shipping_digital_address || '',
+        shipping_city: user.shipping_city || '', shipping_region: user.shipping_region || '',
+        shipping_digital_address: user.shipping_digital_address || '', delivery_fee: user.delivery_fee || 0
+      })
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.status !== 'ok') { if (typeof window.payError === 'function') window.payError('Failed to create order. Please try again.', 'merch_momo'); else alert('Failed to create order. Please try again.'); return; }
+      window.MomoDirect.start({ tx_ref: d.tx_ref, name: user.name, email: user.email, button: mbtn });
+    }).catch(function(){ if (typeof window.payError === 'function') window.payError('Network error — <strong>no charge was made.</strong> Please try again.', 'merch_momo'); else alert('Network error. Please try again.'); });
   });
 }
 
@@ -213,6 +242,8 @@ function updateStockDisplay() {
     if (btn && selectedSizes[idx] === size && qty < 1) btn.disabled = true;
     var cbtn = document.getElementById('cryptoBtn_' + idx);
     if (cbtn && selectedSizes[idx] === size && qty < 1) cbtn.disabled = true;
+    var mbtn = document.getElementById('momoBtn_' + idx);
+    if (mbtn && selectedSizes[idx] === size && qty < 1) mbtn.disabled = true;
   });
 }
 
@@ -276,5 +307,6 @@ fetch('/api/store/inventory').then(function(r){ return r.json(); }).then(functio
 <script src="/assets/js/analytics.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
 <script src="/nav.js"></script>
+<script src="/assets/js/momo-direct.js"></script>
 </body>
 </html>

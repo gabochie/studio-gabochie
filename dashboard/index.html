@@ -171,6 +171,7 @@ h1 span{color:#C9A84C}
     <p style="color:#8A9BB5;font-size:13px;line-height:1.6;margin-bottom:16px">You're enrolled in the free sample. Upgrade to unlock the complete course with video walkthroughs, real-world case studies, worksheets, and community exercises.</p>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:#C9A84C;margin-bottom:12px"><span id="upgradePriceBig"><span class="price-convert" data-ghs="250">GH₵ 250</span></span> <span style="font-size:14px;color:#5A7A9F;font-weight:400">one-time</span></div>
     <button class="btn btn-gold" id="upgradeBtn" style="width:100%">Upgrade — <span id="upgradePrice"><span class="price-convert" data-ghs="250">GH₵ 250</span></span></button>
+    <button class="btn btn-outline" id="momoBtn" onclick="momoUpgrade(this)" style="margin-top:8px">Pay with MTN MoMo</button>
     <button class="btn btn-outline" id="cryptoBtn" onclick="cryptoUpgrade(this)" style="margin-top:8px">Pay with Crypto</button>
     <p style="color:#5A7A9F;font-size:11px;margin-top:8px" id="upgradeNote">Secure payment via ExpressPay</p>
     <div class="trust-row"><span>Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div>
@@ -770,6 +771,28 @@ function cryptoUpgrade(btn) {
   window.CryptoPay.start({ purpose: 'course', enrollment_token: token, button: btn });
 }
 
+function momoUpgrade(btn) {
+  btn = btn || document.getElementById('momoBtn');
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  btn.disabled = true;
+  btn.textContent = 'Preparing payment...';
+  api('/api/enroll/pre-upgrade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.status !== 'ok' || !data.tx_ref) {
+      if (data.message === 'Already upgraded') { loadDashboard(); return; }
+      throw new Error(data.message || 'Failed to prepare payment');
+    }
+    window.MomoDirect.start({ tx_ref: data.tx_ref, button: btn });
+  }).catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = 'Pay with MTN MoMo';
+    alert(err.message || 'Connection error. Please try again.');
+  });
+}
+
 function recheckUpgrade() {
   var note = document.getElementById('upgradeNote');
   var btn = document.getElementById('upgradeBtn');
@@ -1270,6 +1293,7 @@ loadDashboard();
 <div id="footer-placeholder"></div>
 
 <script defer src="../assets/js/main.js"></script>
+<script defer src="/assets/js/momo-direct.js"></script>
 <script src="/nav.js"></script>
 </body>
 </html>

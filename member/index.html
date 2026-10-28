@@ -110,6 +110,7 @@ h1 span{color:#C9A84C}
   </div>
 </div>
 <script defer src="../assets/js/main.js"></script>
+<script defer src="/assets/js/momo-direct.js"></script>
 <script>
 
 function getCookie(name) {
@@ -158,6 +159,7 @@ function renderPlans(plans, currentTier) {
     var btnHtml = isCurrent
       ? '<button class="btn btn-current" disabled>Current Plan</button>'
       : '<button class="btn btn-gold" onclick="upgrade(\'' + p.slug + '\')">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
+        (price > 0 ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="upgradeMomo(\'' + p.slug + '\')">Pay with MTN MoMo</button>' : '') +
         (price > 0 ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="upgradeCrypto(\'' + p.slug + '\')">Pay with Crypto</button>' : '');
     var priceHtml = price > 0 ? (typeof window.formatPrice === 'function' ? window.formatPrice(price) : 'GH₵ ' + price) : 'Free';
     html += '<div class="plan-card"><h3>' + p.name + '</h3><div class="price">' + priceHtml + '<small>' + periodLabel + '</small></div>' + (billNote ? '<div style="font-size:11px;color:#5A7A9F;margin:-8px 0 8px">' + billNote + '</div>' : '') + '<ul>' + featureLis + '</ul>' + btnHtml + '<div class="trust-row"><span>&#128274; Secured by ExpressPay</span><span>&middot;</span><a href="/legal/refund.html">Refund policy</a><span>&middot;</span><a href="mailto:studio@gabochie.com">Need help?</a></div><div class="trust-sub">Card &middot; MoMo &middot; USSD &middot; Crypto — charged in GHS.</div></div>';
@@ -207,6 +209,20 @@ function upgrade(slug) {
     btn.textContent = 'Upgrade';
     if (typeof window.payError === 'function') window.payError('Connection error — <strong>no charge was made.</strong> Please try again.', 'tier');
     else alert('Connection error. Please try again.');
+  });
+}
+function upgradeMomo(slug) {
+  if (!sessionToken) return;
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  var btn = event && event.target ? event.target : document.querySelector('.btn-gold');
+  subscribeTier(slug, btn, slug === 'founding' ? 'yearly' : 'monthly').then(function(d) {
+    if (!d) return;
+    window.MomoDirect.start({
+      tx_ref: d.tx_ref,
+      name: (d.customer && d.customer.name) || '',
+      email: (d.customer && d.customer.email) || '',
+      button: btn
+    });
   });
 }
 function upgradeCrypto(slug) {

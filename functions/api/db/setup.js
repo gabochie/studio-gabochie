@@ -1622,6 +1622,18 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
       `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'member'`,
       `INSERT INTO users (name, email, role) VALUES ('Gideon Abochie', 'gid@gabochie.com', 'super_admin')
         ON CONFLICT(email) DO UPDATE SET role = 'super_admin'`,
+      // ── Manual MTN MoMo claims (direct-to-wallet rail, admin-confirmed) ──
+      `CREATE TABLE IF NOT EXISTS momo_manual_claims (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tx_ref TEXT NOT NULL UNIQUE,
+        momo_txn_id TEXT NOT NULL,
+        payer_number TEXT DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'submitted',
+        submitted_at TEXT NOT NULL DEFAULT (datetime('now')),
+        decided_at TEXT DEFAULT '',
+        decided_by TEXT DEFAULT ''
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_momo_claims_status ON momo_manual_claims(status)`,
     ];
     const results = [];
     for (const sql of statements) {

@@ -185,6 +185,7 @@ body{background:var(--bg-primary)}
 <script defer src="/love-of-the-lord/share.js"></script>
 <script defer src="/assets/js/main.js"></script>
 <script src="/nav.js"></script>
+<script src="/assets/js/momo-direct.js"></script>
 <script>
 (function () {
   'use strict';
@@ -194,6 +195,7 @@ body{background:var(--bg-primary)}
   var RAILS = {
     expresspay: { icon: '\uD83D\uDCB3', label: 'Card / MoMo' },
     moolre: { icon: '\uD83D\uDCF1', label: 'Mobile Money' },
+    momo: { icon: '\uD83D\uDCE2', label: 'MTN MoMo Direct' },
     ghipss: { icon: '\uD83C\uDFE6', label: 'Bank Transfer' },
     crypto: { icon: '\u20BF', label: 'Crypto' }
   };
@@ -257,7 +259,7 @@ body{background:var(--bg-primary)}
 
   function orderRails() {
     // GhIPSS bank transfer is Ghana-only: offer it to Ghana visitors.
-    var order = gh ? ['expresspay', 'moolre', 'ghipss', 'crypto'] : ['expresspay', 'crypto', 'moolre'];
+    var order = gh ? ['expresspay', 'moolre', 'momo', 'ghipss', 'crypto'] : ['expresspay', 'momo', 'crypto', 'moolre'];
     var grid = $('gatewayGrid'), more = $('moreWays');
     grid.innerHTML = ''; more.innerHTML = '';
     order.forEach(function (gw, i) {
@@ -315,6 +317,10 @@ body{background:var(--bg-primary)}
     btn.disabled = true; btn.textContent = 'Processing…';
     if (gateway === 'expresspay') payExpress(amountGhs, name, email, phone, btn);
     else if (gateway === 'crypto') payCrypto(amountGhs, name, email, phone, btn);
+    else if (gateway === 'momo') {
+      if (typeof window.MomoDirect === 'undefined') { btn.disabled = false; btn.textContent = 'Give now'; window.payError('MoMo checkout still loading — please refresh.', 'lotl-give'); return; }
+      window.MomoDirect.start({ purpose: 'donation', amount: amountGhs, name: name, email: email, phone: phone, button: btn });
+    }
     else payAlt(amountGhs, name, email, phone, btn);
   }
 

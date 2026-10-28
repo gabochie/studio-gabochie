@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css">
 <link rel="stylesheet" href="../assets/css/main.css">
 <script defer src="../assets/js/main.js"></script>
+<script defer src="/assets/js/momo-direct.js"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","name":"Studio Gabochie","description":"Free member workspace with courses, books, and community. Start free, upgrade only when it adds value.","url":"https://studio.gabochie.com/membership/"}
 </script>
@@ -276,7 +277,8 @@ function renderPlans() {
     } else if (!sessionToken) {
       btnHtml = '<a href="/register/" class="btn btn-gold">Get Started</a>';
     } else {
-      btnHtml = '<button class="btn btn-gold" onclick="subscribe(\'' + p.slug + '\',this)">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>';
+      btnHtml = '<button class="btn btn-gold" onclick="subscribe(\'' + p.slug + '\',this)">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
+        (price > 0 && sessionToken ? '<button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="subscribeMomo(\'' + p.slug + '\',this)">Pay with MTN MoMo</button>' : '');
     }
 
     html += '<div class="plan-card' + popularClass + '">' +
@@ -315,6 +317,35 @@ function subscribe(slug, btn) {
       btn: btn,
       btnLabel: 'Upgrade',
       context: 'tier'
+    });
+  })
+  .catch(function(){
+    btn.disabled = false;
+    btn.textContent = 'Upgrade';
+    if (typeof window.payError === 'function') window.payError('Connection error — <strong>no charge was made.</strong> Please try again.', 'tier');
+    else alert('Connection error. Please try again.');
+  });
+}
+
+function subscribeMomo(slug, btn) {
+  if (!sessionToken) return;
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  var wasDisabled = btn.disabled, label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Processing\u2026';
+  fetch('/api/tiers/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+    body: JSON.stringify({ tier: slug, interval: selectedInterval })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.status !== 'ok') { btn.disabled = false; btn.textContent = 'Upgrade'; if (typeof window.payErrorText === 'function') window.payErrorText(d.message || 'Could not start checkout.', 'tier'); else alert(d.message || 'Failed'); return; }
+    window.MomoDirect.start({
+      tx_ref: d.tx_ref,
+      name: (d.customer && d.customer.name) || '',
+      email: (d.customer && d.customer.email) || '',
+      button: btn
     });
   })
   .catch(function(){

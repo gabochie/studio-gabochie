@@ -161,6 +161,7 @@ body{background:var(--bg-primary)}
         '<div class="price price-convert" data-ghs="' + t.price + '">GH₵ ' + t.price + '</div>' +
         '<div class="bill-note">≈ in your currency · charged in GHS</div>' +
         '<div class="row"><button class="lotl-btn" onclick="lotlBuy(' + i + ',\'momo\')">Buy</button>' +
+        '<button class="lotl-btn lotl-btn-outline" id="mbtn_' + i + '" onclick="lotlBuy(' + i + ',\'directmomo\')">MTN MoMo</button>' +
         '<button class="lotl-btn lotl-btn-outline" id="cbtn_' + i + '" onclick="lotlBuy(' + i + ',\'crypto\')">Crypto</button></div>';
       grid.appendChild(el);
     });
@@ -170,6 +171,7 @@ body{background:var(--bg-primary)}
     var t = TRACKS[i];
     if(!t) return;
     if(via === 'crypto' && typeof window.CryptoPay === 'undefined'){ alert('Payment widget still loading. Try again in a moment.'); return; }
+    if(via === 'directmomo' && typeof window.MomoDirect === 'undefined'){ alert('MoMo checkout still loading. Try again in a moment.'); return; }
     if(typeof showStoreModal !== 'function'){ alert('Checkout still loading. Please refresh and try again.'); return; }
     showStoreModal(function(user){
       fetch('/api/store/create', {
@@ -178,6 +180,7 @@ body{background:var(--bg-primary)}
       }).then(function(r){ return r.json(); }).then(function(d){
         if(!d || d.status !== 'ok'){ alert('Failed to create order. Please try again.'); return; }
         if(via === 'crypto'){ window.CryptoPay.start({ purpose: 'lotl-music', tx_ref: d.tx_ref, button: document.getElementById('cbtn_' + i) }); return; }
+        if(via === 'directmomo'){ window.MomoDirect.start({ tx_ref: d.tx_ref, name: user.name, email: user.email, button: document.getElementById('mbtn_' + i) }); return; }
         if(typeof window.payWithExpressPay === 'function'){
           window.payWithExpressPay({ tx_ref: d.tx_ref, name: user.name, email: user.email, phone: user.phone || '', redirect: '/love-of-the-lord/shop/?order=' + encodeURIComponent(d.tx_ref), btn: null, btnLabel: '', context: 'lotl-music' });
           return;
@@ -264,6 +267,7 @@ body{background:var(--bg-primary)}
 <!-- Shop intentionally omits GA_FOOTER_ONLY so main.js keeps the currency toggle and store checkout (showStoreModal / payWithExpressPay / CryptoPay) active. nav.js still renders footer-only (no #nav-placeholder), plus the tab bar. -->
 <script defer src="/assets/js/geo-currency.js"></script>
 <script defer src="/assets/js/main.js"></script>
+<script defer src="/assets/js/momo-direct.js"></script>
 <script src="/nav.js"></script>
 </body>
 </html>
