@@ -34,6 +34,7 @@
         <div class="section-title" style="justify-content:center">Unlock Full Song Library</div>
         <div class="section-sub">Complete Modules 1-<span data-g-free>3</span> for free or purchase full access</div>
         <button class="btn btn-primary btn-block mt-sm" id="buy-btn">Pay <span data-g-symbol-amount>GH₵ 299</span> — Full Access <i class="ti ti-lock-off"></i></button>
+        <button class="btn btn-secondary btn-block mt-sm" id="buy-momo-btn" onclick="buyGuitarMomo(this)">Pay with MTN MoMo</button>
         <button class="btn btn-secondary btn-block mt-sm" id="buy-crypto-btn" onclick="buyGuitarCrypto(this)">Pay with Crypto</button>
       </div>
 
@@ -76,11 +77,17 @@
 
 <script src="/assets/js/guitar/app.js"></script>
 <script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/momo-direct.js" defer></script>
 <script>
 window.buyGuitarCrypto = function(btn) {
   if (typeof window.CryptoPay === 'undefined') { alert('Payment widget still loading. Try again in a moment.'); return; }
   if (!window.Guitar || !Guitar.token) { alert('Please sign in first.'); return; }
   window.CryptoPay.start({ purpose: 'guitar', token: Guitar.token, button: btn || null });
+};
+window.buyGuitarMomo = function(btn) {
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  if (!window.Guitar || !Guitar.token) { alert('Please sign in first.'); return; }
+  window.MomoDirect.start({ purpose: 'guitar', token: Guitar.token, button: btn || null });
 };
 </script>
 <script>

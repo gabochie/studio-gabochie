@@ -59,6 +59,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 </div>
 <div id="footer-placeholder"></div>
 <script defer src="../assets/js/main.js"></script>
+<script defer src="/assets/js/momo-direct.js"></script>
 <script src="/nav.js"></script>
 <script>
 var artInventory = [
@@ -79,6 +80,7 @@ function renderArt() {
       '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(a.price) : 'GH\u20b5 ' + a.price) + '</div>' +
       '<div class="bill-note">≈ in your currency · charged in GHS</div>' +
       '<button class="btn btn-outline btn-sm btn-buy" onclick="buyArtItem(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ')"><i class="ti ti-shopping-cart"></i> Buy Artwork</button>' +
+      '<button class="btn btn-outline btn-sm btn-buy" style="margin-top:8px" onclick="buyArtMomo(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ', this)"><i class="ti ti-phone"></i> Pay with MTN MoMo</button>' +
       '</div></div>';
   }).join('');
 }
@@ -101,6 +103,20 @@ function buyArtItem(name, price) {
         return;
       }
       alert('Payment system loading. Please refresh and try again.');
+    }).catch(function(){ alert('Network error. Please try again or email studio@gabochie.com'); });
+  });
+}
+
+function buyArtMomo(name, price, btn) {
+  if (typeof window.MomoDirect === 'undefined') { alert('MoMo checkout still loading. Try again in a moment.'); return; }
+  showStoreModal(function(user) {
+    fetch('/api/store/create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ item_type: 'art', item_name: name, amount: price, currency: 'GHS', customer_name: user.name, customer_email: user.email, user_id: user.user_id || 0, phone: user.phone || '' })
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.status !== 'ok' || !d.tx_ref) { alert('Could not start checkout. Please try again or email studio@gabochie.com'); return; }
+      window.MomoDirect.start({ tx_ref: d.tx_ref, name: user.name, email: user.email, button: btn });
     }).catch(function(){ alert('Network error. Please try again or email studio@gabochie.com'); });
   });
 }
