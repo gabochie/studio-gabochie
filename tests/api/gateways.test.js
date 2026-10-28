@@ -209,8 +209,9 @@ describe('Crypto gateway', function () {
   });
 
   it('falls back to manual addresses when NOWPayments not configured', async function () {
+    // GHS_USD_RATE is pinned so ghsToUsd never makes a live network call.
     var db = mockDb({ donations: [] });
-    var ctx = post('http://localhost/api/gateways/crypto/create', { amount: 100, name: 'Ben', email: 'ben@test.com' }, { DB: db, CRYPTO_BTC_ADDRESS: 'bc1qabc', CRYPTO_USDT_ADDRESS: 'TRONabc' });
+    var ctx = post('http://localhost/api/gateways/crypto/create', { amount: 100, name: 'Ben', email: 'ben@test.com' }, { DB: db, CRYPTO_BTC_ADDRESS: 'bc1qabc', CRYPTO_USDT_ADDRESS: 'TRONabc', GHS_USD_RATE: '15.0' });
     var res = await cryptoCreate(ctx);
     expect(res.status).toBe(200);
     var data = await res.json();

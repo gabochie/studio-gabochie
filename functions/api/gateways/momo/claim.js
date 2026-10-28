@@ -24,7 +24,8 @@ export async function onRequest(context) {
   const tx_ref = String((body && body.tx_ref) || '').trim();
   const momoTxnId = String((body && body.momo_txn_id) || '').trim();
   const payerNumber = String((body && body.payer_number) || '').trim();
-  if (!/^momom_|^(donate_|camp_|tier_|memb_|sub_|upgrade_|books_|bookpw_|store_|GUITAR_|guitar_|booking_)/.test(tx_ref)) {
+  const rail = (body && body.rail) === 'bank' ? 'bank' : 'momo';
+  if (!/^(momom_|bankm_)|^(donate_|camp_|tier_|memb_|sub_|upgrade_|books_|bookpw_|store_|GUITAR_|guitar_|booking_)/.test(tx_ref)) {
     return json({ status: 'error', message: 'Invalid reference' }, 400);
   }
   // MTN MoMo transaction IDs are typically 8-16 digits; accept 6-24 alphanumerics
@@ -39,13 +40,14 @@ export async function onRequest(context) {
   try {
     // One live claim per reference; re-submitting updates the details.
     await env.DB.prepare(
-      `INSERT INTO momo_manual_claims (tx_ref, momo_txn_id, payer_number, status) VALUES (?, ?, ?, 'submitted')
+      `INSERT INTO momo_manual_claims (tx_ref, momo_txn_id, payer_number, rail, status) VALUES (?, ?, ?, ?, 'submitted')
        ON CONFLICT(tx_ref) DO UPDATE SET
          momo_txn_id = excluded.momo_txn_id,
          payer_number = excluded.payer_number,
+         rail = excluded.rail,
          status = 'submitted',
          submitted_at = datetime('now')`
-    ).bind(tx_ref, momoTxnId, payerNumber).run();
+    ).bind(tx_ref, momoTxnId, payerNumber, rail).run();
   } catch (_e) {
     return json({ status: 'error', message: 'Could not record your payment. Please try again.' }, 500);
   }
