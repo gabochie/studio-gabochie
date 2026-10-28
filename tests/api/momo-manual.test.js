@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mockDb } from '../helpers/mock-cf.js';
 import { onRequest as momoCreate } from '../../functions/api/gateways/momo/create.js';
+import { onRequest as bankCreate } from '../../functions/api/gateways/bank/create.js';
 import { onRequest as momoClaim } from '../../functions/api/gateways/momo/claim.js';
 import { onRequest as momoClaimsAdmin } from '../../functions/api/admin/momo-claims.js';
 
@@ -16,10 +17,18 @@ function makeReq(url, opts) {
 
 function env(opts) {
   opts = opts || {};
+  var db = mockDb({
+    donations: opts.donations || [],
+    book_purchases: opts.books || [],
+    momo_manual_claims: opts.claims || [],
+    events: []
+  });
   return {
-    DB: opts.db || mockDb({ donations: opts.donations || [], book_purchases: opts.books || [], momo_manual_claims: opts.claims || [], events: [] }),
-    MOMO_MANUAL_NUMBER: opts.number !== undefined ? opts.number : '0244000000',
+    DB: opts.db || db,
+    MOMO_MANUAL_NUMBER: '0244000000',
     MOMO_MANUAL_NAME: 'Studio Gabochie',
+    BANK_MANUAL_ACCOUNT_NUMBER: opts.bankNumber !== undefined ? opts.bankNumber : '1234567890123',
+    BANK_MANUAL_BANK: 'GCB Bank',
     ADMIN_API_KEY: 'test-admin-key'
   };
 }
@@ -32,13 +41,13 @@ describe('momo manual create', function () {
     expect(res.status).toBe(405);
   });
 
-  it('answers momo_unconfigured when MOMO_MANUAL_NUMBER is missing', async function () {
+  it('answers manual_unconfigured when MOMO_MANUAL_NUMBER is missing', async function () {
     const res = await momoCreate({
       request: makeReq('https://x.com/api/gateways/momo/create', { body: { amount: 10, email: 'a@b.com' } }),
-      env: env({ number: '' })
+      env: { DB: env().DB, BANK_MANUAL_ACCOUNT_NUMBER: '1', MOMO_MANUAL_NUMBER: '' }
     });
     const body = await res.json();
-    expect(body.code).toBe('momo_unconfigured');
+    expect(body.code).toBe('manual_unconfigured');
   });
 
   it('stages an open donation and returns the number + reference', async function () {
@@ -50,8 +59,10 @@ describe('momo manual create', function () {
     const d = await res.json();
     expect(d.status).toBe('ok');
     expect(d.tx_ref.indexOf('momom_')).toBe(0);
-    expect(d.momo_number).toBe('0244000000');
-    expect(d.momo_name).toBe('Studio Gabochie');
+    expect(d.destination).toBe('0244000000');
+    expect(d.destination_label).toBe('MoMo number');
+    expect(d.account_name).toBe('Studio Gabochie');
+    expect(d.rail).toBe('momo');
     expect(d.amount).toBe(25);
   });
 
@@ -86,6 +97,46 @@ describe('momo manual create', function () {
       env: env()
     });
     expect(res.status).toBe(404);
+  });
+});
+
+/* ─── Bank rail ─── */
+
+describe('momo manual create (bank rail)', function () {
+  it('answers manual_unconfigured when the bank secrets are missing', async function () {
+    const res = await bankCreate({
+      request: makeReq('https://x.com/api/gateways/bank/create', { body: { amount: 10, email: 'a@b.com' } }),
+      env: { DB: env().DB, MOMO_MANUAL_NUMBER: '1', BANK_MANUAL_ACCOUNT_NUMBER: '' }
+    });
+    const body = await res.json();
+    expect(body.code).toBe('manual_unconfigured');
+  });
+
+  it('stages an open donation with a bankm_ reference and bank details', async function () {
+    const res = await bankCreate({
+      request: makeReq('https://x.com/api/gateways/bank/create', { body: { amount: 300, name: 'Ama', email: 'ama@x.com' } }),
+      env: env()
+    });
+    expect(res.status).toBe(200);
+    const d = await res.json();
+    expect(d.status).toBe('ok');
+    expect(d.tx_ref.indexOf('bankm_')).toBe(0);
+    expect(d.destination).toBe('1234567890123');
+    expect(d.destination_label).toBe('Account number');
+    expect(d.network).toBe('GCB Bank');
+    expect(d.rail).toBe('bank');
+  });
+
+  it('resolves product tx_ref server-side on the bank rail too', async function () {
+    const res = await bankCreate({
+      request: makeReq('https://x.com/api/gateways/bank/create', { body: { tx_ref: 'books_abc', email: 'attacker@x.com', amount: 1 } }),
+      env: env({
+        books: [{ tx_ref: 'books_abc', amount: 300, email: 'buy@x.com', name: 'Ama', status: 'pending' }]
+      })
+    });
+    const d = await res.json();
+    expect(d.status).toBe('ok');
+    expect(d.amount).toBe(300);
   });
 });
 

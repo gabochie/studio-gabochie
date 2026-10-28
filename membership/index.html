@@ -278,7 +278,7 @@ function renderPlans() {
       btnHtml = '<a href="/register/" class="btn btn-gold">Get Started</a>';
     } else {
       btnHtml = '<button class="btn btn-gold" onclick="subscribe(\'' + p.slug + '\',this)">' + (price > 0 ? 'Upgrade' : 'Select') + '</button>' +
-        (price > 0 && sessionToken ? '<button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="subscribeMomo(\'' + p.slug + '\',this)">Pay with MTN MoMo</button>' : '');
+        (price > 0 && sessionToken ? '<button class="btn btn-outline" style="margin-top:8px;width:100%" onclick="subscribeMomo(\'' + p.slug + '\',this)">Pay with MoMo / Bank</button>' : '');
     }
 
     html += '<div class="plan-card' + popularClass + '">' +

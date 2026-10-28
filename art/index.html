@@ -80,7 +80,7 @@ function renderArt() {
       '<div class="price">' + (typeof window.formatPrice === 'function' ? window.formatPrice(a.price) : 'GH\u20b5 ' + a.price) + '</div>' +
       '<div class="bill-note">≈ in your currency · charged in GHS</div>' +
       '<button class="btn btn-outline btn-sm btn-buy" onclick="buyArtItem(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ')"><i class="ti ti-shopping-cart"></i> Buy Artwork</button>' +
-      '<button class="btn btn-outline btn-sm btn-buy" style="margin-top:8px" onclick="buyArtMomo(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ', this)"><i class="ti ti-phone"></i> Pay with MTN MoMo</button>' +
+      '<button class="btn btn-outline btn-sm btn-buy" style="margin-top:8px" onclick="buyArtMomo(\'' + a.title.replace(/'/g, "\\'") + '\', ' + a.price + ', this)"><i class="ti ti-phone"></i> Pay with MoMo / Bank</button>' +
       '</div></div>';
   }).join('');
 }

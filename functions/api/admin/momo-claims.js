@@ -22,7 +22,7 @@ export async function onRequest(context) {
       const url = new URL(request.url);
       const limit = Math.min(parseInt(url.searchParams.get('limit')) || 100, 200);
       const rows = await env.DB.prepare(
-        `SELECT tx_ref, momo_txn_id, payer_number, status, submitted_at, decided_at, decided_by
+        `SELECT tx_ref, rail, momo_txn_id, payer_number, status, submitted_at, decided_at, decided_by
          FROM momo_manual_claims ORDER BY CASE WHEN status = 'submitted' THEN 0 ELSE 1 END, id DESC LIMIT ?`
       ).bind(limit).all();
       return json({ status: 'ok', items: (rows && rows.results) || [] });
@@ -78,7 +78,7 @@ export async function onRequest(context) {
       if (staged) {
         const fin = await finalizeCryptoPayment(env, { tx_ref: tx_ref, gateway_txid: claim.momo_txn_id });
         if (fin && fin.status === 'ok') {
-          try { await env.DB.prepare("UPDATE donations SET provider = 'momo_manual' WHERE tx_ref = ?").bind(tx_ref).run(); } catch (_e) {}
+          try { await env.DB.prepare("UPDATE donations SET provider = ? WHERE tx_ref = ?").bind(claim.rail === 'bank' ? 'bank_manual' : 'momo_manual', tx_ref).run(); } catch (_e) {}
           await env.DB.prepare("UPDATE momo_manual_claims SET status = 'confirmed', decided_at = datetime('now'), decided_by = ? WHERE tx_ref = ?")
             .bind(adminEmail, tx_ref).run();
           await logConsoleAction(env.DB, 'momo_claim_confirmed', { actorEmail: adminEmail, entityType: 'momo_manual_claim', entityId: tx_ref, details: { momo_txn_id: claim.momo_txn_id } });
@@ -99,7 +99,7 @@ export async function onRequest(context) {
       name: found.name,
       email: found.email,
       phone: found.phone,
-      gateway: 'momo_manual',
+      gateway: claim.rail === 'bank' ? 'bank_manual' : 'momo_manual',
       gatewayTxId: claim.momo_txn_id,
       event: 'charge.completed',
       raw: {}
