@@ -17,9 +17,9 @@
 (function () {
   var CONFIG = {
     prices: {
-      anchor:   { ghs: 'GH₵1,500',  usd: '≈ $90',  note: 'one session' },
-      sprint:   { ghs: 'GH₵5,000',  usd: '≈ $300', note: 'four sessions' },
-      retainer: { ghs: 'GH₵10,000', usd: '≈ $600', note: 'per month' }
+      anchor:   { ghs: 'GH₵1,500',  ghsValue: 1500,  usd: '≈ $127', note: 'one session' },
+      sprint:   { ghs: 'GH₵5,000',  ghsValue: 5000,  usd: '≈ $424', note: 'four sessions' },
+      retainer: { ghs: 'GH₵10,000', ghsValue: 10000, usd: '≈ $847', note: 'per month' }
     },
     selar: {
       anchor:   '', // paste Anchor Session quick-checkout URL
@@ -30,7 +30,24 @@
 
   window.CONSULTATION_CONFIG = CONFIG;
 
+  // USD labels are indicative for diaspora buyers. Recalculate them from the
+  // site's shared live FX engine instead of shipping a fixed conversion.
+  function refreshUsd() {
+    Object.keys(CONFIG.prices).forEach(function (key) {
+      var price = CONFIG.prices[key];
+      if (!price.ghsValue) return;
+      try {
+        if (typeof window.formatPrice === 'function') {
+          price.usd = '≈ ' + window.formatPrice(price.ghsValue, 'USD');
+        }
+      } catch (_e) {
+        // Keep the last known label; never break the page over an FX error.
+      }
+    });
+  }
+
   function applyPrices() {
+    refreshUsd();
     document.querySelectorAll('[data-price-key]').forEach(function (el) {
       var price = CONFIG.prices[el.getAttribute('data-price-key')];
       if (!price) return;
@@ -60,6 +77,10 @@
     applyPrices();
     applySelarLinks();
   }
+
+  try {
+    window.addEventListener('ga:ratesupdated', applyPrices);
+  } catch (_e) {}
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

@@ -190,7 +190,10 @@ body{background:var(--bg-primary)}
 (function () {
   'use strict';
   var PATH = '/love-of-the-lord/give/';
-  var FALLBACK_RATES = { GHS: 15.2, USD: 1.09, EUR: 1, GBP: 0.86 };
+  // Rates come from the site's single /api/rates engine via main.js.
+  // This object is emergency-only and is replaced as soon as live rates load.
+  var FALLBACK_RATES = { GHS: 12.955712, USD: 1.097534, EUR: 1, GBP: 0.838075 };
+  function fxRates() { return window.__fxRates || window.__currencyRates || FALLBACK_RATES; }
   var SYMBOLS = { GHS: 'GH\u20b5', USD: '$', GBP: '\u00a3', EUR: '\u20ac' };
   var RAILS = {
     expresspay: { icon: '\uD83D\uDCB3', label: 'Card / MoMo' },
@@ -215,7 +218,7 @@ body{background:var(--bg-primary)}
   function localToGhs(v) {
     v = parseFloat(v) || 0;
     if (cur === 'GHS') return Math.round(v * 100) / 100;
-    var r = window.__currencyRates || FALLBACK_RATES;
+    var r = fxRates();
     var ghsPerEur = r.GHS || FALLBACK_RATES.GHS;
     var localPerEur = r[cur] || FALLBACK_RATES[cur] || 1;
     return Math.round(v * (ghsPerEur / localPerEur) * 100) / 100;
@@ -420,6 +423,12 @@ body{background:var(--bg-primary)}
     if (bn) bn.textContent = cur === 'GHS' ? 'Charged in GH\u20b5.' : 'Amounts charged in GH\u20b5; your card is debited the \u2248 equivalent.';
 
     showReceipt();
+
+    // main.js emits this when /api/rates resolves; convert amounts again so a
+    // slow FX request never leaves the donor on a stale conversion.
+    try {
+      window.addEventListener('ga:ratesupdated', function () { buildPresets(); chargeNote(); });
+    } catch (e) {}
   });
 
   (function holdCookie() {

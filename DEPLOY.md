@@ -100,8 +100,12 @@ dashboard setup:
    - `CRYPTO_EVM_ADDRESS` — one address reused for BSC/Polygon/Ethereum
      (USDT/USDC + native coins)
    - `CRYPTO_SOL_ADDRESS` — Solana (SOL + USDC/USDT SPL)
-3. Optional: `GHS_USD_RATE` pins the GHS→USD rate (else live rate, else 0.066
-   fallback). Verification tolerates ±2% FX drift.
+3. Optional: `GHS_USD_RATE` pins the GHS→USD rate (else live rate, else
+   an emergency 12 GHS/USD fallback is recorded with `rate_stale: true`.
+    Stale-rate invoices must be reconciled manually; verification tolerates
+    ±2% FX drift against the rate recorded on the invoice.
+ 4. Public price displays use `GET /api/rates` (6-hour edge cache, live provider,
+    `source` and `stale` fields). No page calls a third-party FX API directly.
 
 Crypto accepts **donations, course upgrades, book purchases, tier
 subscriptions, and merch orders** — the `purpose` is recorded in the payment
@@ -117,7 +121,7 @@ row and the matching product is activated on confirmation.
 | `CRYPTO_TRX_ADDRESS` | Optional | Native TRX receive address |
 | `CRYPTO_EVM_ADDRESS` | For manual mode | EVM receive address (BSC/Polygon/ETH) |
 | `CRYPTO_SOL_ADDRESS` | For manual mode | Solana receive address |
-| `GHS_USD_RATE` | Optional | Pinned GHS-per-USD rate |
+| `GHS_USD_RATE` | Optional | Pinned GHS-per-USD rate for crypto invoices (display rates come from `/api/rates`) |
 
 ---
 

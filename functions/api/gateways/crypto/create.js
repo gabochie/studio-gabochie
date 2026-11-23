@@ -172,7 +172,7 @@ export async function onRequest(context) {
   }
 
   const tx_ref = newRef('crypto_');
-  const { usd, rate } = await ghsToUsd(amountGhs, env);
+  const { usd, rate, stale: rateStale, source: rateSource } = await ghsToUsd(amountGhs, env);
 
   // Accounting row for every crypto payment (idempotency + purpose routing).
   if (env.DB) {
@@ -224,7 +224,7 @@ export async function onRequest(context) {
       });
       const inv = await resp.json();
       if (inv.invoice_url) {
-        return json({ status: 'ok', mode: 'invoice', purpose, tx_ref, invoice_url: inv.invoice_url, amount_usd: usd, amount_ghs: amountGhs, rate, success_url: SUCCESS_URLS[purpose](site, cbParams) });
+        return json({ status: 'ok', mode: 'invoice', purpose, tx_ref, invoice_url: inv.invoice_url, amount_usd: usd, amount_ghs: amountGhs, rate, rate_source: rateSource, rate_stale: rateStale, success_url: SUCCESS_URLS[purpose](site, cbParams) });
       }
     } catch (_e) {}
   }
@@ -247,6 +247,8 @@ export async function onRequest(context) {
     amount_ghs: amountGhs,
     amount_usd: usd,
     rate,
+    rate_source: rateSource,
+    rate_stale: rateStale,
     addresses,
     memo: tx_ref,
     success_url: SUCCESS_URLS[purpose](site, cbParams)
