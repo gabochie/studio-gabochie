@@ -109,6 +109,14 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .form-msg.error{background:rgba(232,99,122,.12);border:1px solid rgba(232,99,122,.3);color:#E8637A}
 .unlocked{display:flex;align-items:flex-start;gap:10px;background:rgba(52,199,123,.09);border:1px solid rgba(52,199,123,.3);border-radius:8px;padding:14px;margin-bottom:14px;font-family:'DM Sans',sans-serif;font-size:12px;color:#CBD5E1;line-height:1.6}
 .unlocked i{color:#34C77B;font-size:18px}
+.consult-cta{border:1px solid rgba(201,168,76,.35);border-left:4px solid #C9A84C;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(15,30,56,.6));border-radius:10px;padding:18px;margin-top:14px}
+.consult-cta .cta-kicker{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C}
+.consult-cta h4{font-family:'Barlow Condensed',sans-serif;font-size:20px;text-transform:uppercase;color:#fff;margin:7px 0 6px}
+.consult-cta p{font-family:'DM Sans',sans-serif;font-size:12px;color:#8A9BB5;line-height:1.65;margin-bottom:10px}
+.consult-cta .cta-price{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#E8D08A;margin-bottom:12px}
+.consult-cta .cta-price span{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:#5A7A9F}
+.consult-cta .cta-link{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:7px;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.consult-cta .cta-link:hover{background:#D9B85C}
 .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
 .search{flex:1 1 240px;position:relative}
 .search i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#5A7A9F;font-size:17px}
@@ -211,6 +219,13 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       </div>
       <div id="resultList"></div>
       <div class="unlocked" id="unlockedMsg" hidden></div>
+      <div class="consult-cta" id="consultCta" hidden>
+        <span class="cta-kicker">Next step · One on one</span>
+        <h4>Turn the list into one plan</h4>
+        <p>24 paths is a starting point, not a strategy. In one hour we pressure-test your top match and you leave with written next steps.</p>
+        <div class="cta-price">Anchor Session · GH₵1,500 <span>(≈ $90)</span></div>
+        <a class="cta-link" id="consultCtaLink" href="/consultation/">Book an Anchor Session <i class="ti ti-arrow-right"></i></a>
+      </div>
       <div class="gate" id="gatePanel">
         <h3>Unlock matches 2 &amp; 3 + the printable guide</h3>
         <p>Your first match is free. Leave your details to get the full top 3 and the complete 24-path guide by email. No spam — just the guide and practical Studio Gabochie resources.</p>

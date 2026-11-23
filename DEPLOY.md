@@ -121,6 +121,22 @@ row and the matching product is activated on confirmation.
 
 ---
 
+## Step 4c: Selar Hosted Checkout (No Secrets)
+
+Selar is a hosted storefront, not a gateway module — it needs **no env vars, webhook or server-side verification** on this site. Anything bought on Selar settles in Selar and is fulfilled there.
+
+1. On Selar's free Starter plan, create your products (books, bundle, courses, guitar registration) and a **Show Love / donation** product.
+2. Copy each product's Quick Checkout URL (`https://selar.com/<product>?quickcheckout=1`).
+3. Paste them into `assets/js/selar-links.js` → `CONFIG`:
+   - `donation` → `/donate/` "Support on Selar" button (prefills name + email)
+   - `products.books`, `products.bundle`, `products.courses`, `products.guitar`
+   - `store` → optional fallback storefront for product buttons
+4. Paste the three consultation product links into `assets/js/consultation-config.js` → `CONFIG.selar`.
+
+Blank links hide their buttons automatically, so a deploy with placeholders is safe. Nothing is settled from a Selar redirect — do **not** auto-unlock site access or mark a donation paid from a return URL.
+
+---
+
 ## Step 5: Brevo SMTP (Email Automation)
 
 1. Go to https://brevo.com → login → **SMTP & API** → **SMTP Keys**

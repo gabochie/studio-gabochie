@@ -33,6 +33,7 @@ const PAGES = [
   ['/love-of-the-lord/devotionals/', 0.8, 'weekly'],
   ['/love-of-the-lord/shop/', 0.7, 'weekly'],
   ['/services/', 0.7, 'monthly'],
+  ['/consultation/', 0.8, 'monthly'],
   ['/services/architectural-design/', 0.6, 'monthly'],
   ['/services/systems-thinking/', 0.6, 'monthly'],
   ['/services/curriculum-design/', 0.6, 'monthly'],
@@ -69,7 +70,7 @@ const PAGES = [
 const VALID_PREFIX = new Set([
   'about', 'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
   'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
-  'membership', 'merch', 'services', 'money-ghana', 'contact', 'press', 'partners', 'careers',
+  'membership', 'merch', 'services', 'consultation', 'money-ghana', 'contact', 'press', 'partners', 'careers',
   'nationbuilding', 'love-of-the-lord', 'search'
 ]);
 

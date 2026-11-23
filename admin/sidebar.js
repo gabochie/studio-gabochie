@@ -50,6 +50,7 @@
     {
       label: 'Finance',
       items: [
+        { href: 'revenue.html',     icon: '\uD83D\uDCB0', label: 'Revenue' },
         { href: 'analytics.html',   icon: '\uD83D\uDCCA', label: 'Analytics' }
       ]
     },

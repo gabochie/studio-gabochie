@@ -11,7 +11,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Book a Consultation — Studio Gabochie">
-<meta property="og:description" content="Book Gideon Abochie's time: systems thinking & strategy, church & ministry leadership, guitar & music program setup, creative projects & brand. One anchor session, a coaching sprint, or a monthly retainer.">
+<meta property="og:description" content="Book Gideon Abochie's time: systems thinking & strategy, ministry leadership, music programs and creative projects. Anchor Session from GH₵1,500, Coaching Sprint GH₵5,000, Advisory Retainer GH₵10,000/mo.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/consultation/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
@@ -19,12 +19,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>Book a Consultation — Studio Gabochie</title>
-<meta name="description" content="Book Gideon Abochie's time — systems thinking & strategy, church & ministry leadership, guitar & music program setup, creative projects & brand. Anchor Session, Coaching Sprint or Advisory Retainer.">
+<meta name="description" content="Book Gideon Abochie's time — systems thinking, ministry leadership, music programs and creative projects. Published prices: Anchor Session GH₵1,500, Coaching Sprint GH₵5,000, Advisory Retainer GH₵10,000/mo.">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="/assets/fonts/tabler/tabler-icons.min.css" rel="stylesheet">
 <link href="../assets/css/main.css" rel="stylesheet">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Service","name":"Consultation — Studio Gabochie","url":"https://studio.gabochie.com/consultation/","description":"One-on-one consultation with Gideon Abochie: systems thinking & strategy, church & ministry leadership, guitar & music program setup, creative projects & brand.","provider":{"@type":"Person","name":"Gideon Abochie"},"areaServed":"Worldwide"}
+{"@context":"https://schema.org","@type":"Service","name":"Consultation — Studio Gabochie","url":"https://studio.gabochie.com/consultation/","description":"One-on-one consultation with Gideon Abochie: systems thinking & strategy, church & ministry leadership, guitar & music program setup, creative projects & brand.","provider":{"@type":"Person","name":"Gideon Abochie"},"areaServed":"Worldwide","offers":[{"@type":"Offer","name":"Anchor Session","price":"1500","priceCurrency":"GHS"},{"@type":"Offer","name":"Coaching Sprint","price":"5000","priceCurrency":"GHS"},{"@type":"Offer","name":"Advisory Retainer","price":"10000","priceCurrency":"GHS"}]}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -62,6 +62,11 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .rung-btn.solid{background:#C9A84C;color:#0A1628;border-color:#C9A84C}
 .rung-btn.solid:hover{background:#D9B85C}
 .rung-badge{position:absolute;top:-11px;right:18px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px}
+.rung-price{margin:0 0 14px;padding:12px 14px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.22);border-radius:8px}
+.rung-price .rp-amount{display:block;font-family:'Barlow Condensed',sans-serif;font-size:25px;font-weight:700;color:#F1F5F9;line-height:1}
+.rung-price .rp-meta{display:block;margin-top:5px;font-family:'Courier Prime',monospace;font-size:11px;color:#C9A84C;line-height:1.5}
+.rung-btn.selar-btn{margin-top:8px;background:transparent;border-color:rgba(201,168,76,.5);color:#E8D08A}
+.rung-btn.selar-btn:hover{background:#C9A84C;color:#0A1628}
 /* tracks */
 .track-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .track-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:24px;transition:all .2s}
@@ -128,7 +133,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="section" id="levels">
   <div class="section-label">Three Ways to Think Together</div>
   <div class="section-title">Sessions, <span style="color:#C9A84C">By Rungs</span></div>
-  <div class="section-sub">Start with one hour. Climb when the thinking bears fruit. Every level includes the ones before it — and every session ends with written action notes.</div>
+  <div class="section-sub">Start with one hour. Climb when the thinking bears fruit. Prices are published below — every level includes the ones before it, and every session ends with written action notes.</div>
   <div class="ladder">
     <div class="rung">
       <div class="rung-eyebrow">Level 1 — One hour</div>
@@ -141,7 +146,12 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <li>One follow-up question by email, answered</li>
       </ul>
       <div class="rung-anchor">An hour of clarity costs less than the wrong decision.</div>
+      <div class="rung-price">
+        <span class="rp-amount" data-price-key="anchor" data-price-field="ghs">GH₵1,500</span>
+        <span class="rp-meta"><span data-price-key="anchor" data-price-field="usd">≈ $90</span> · <span data-price-key="anchor" data-price-field="note">one session</span> · pay before we meet</span>
+      </div>
       <button class="rung-btn" onclick="selectLevel('anchor')">Book an Anchor Session</button>
+      <a class="rung-btn selar-btn" data-selar="anchor" href="#" style="display:none">Pay on Selar</a>
     </div>
     <div class="rung featured">
       <div class="rung-badge">Most Booked</div>
@@ -155,7 +165,12 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <li>Everything an Anchor Session includes, every week</li>
       </ul>
       <div class="rung-anchor">Four sessions that compound — less than a month of guessing.</div>
+      <div class="rung-price">
+        <span class="rp-amount" data-price-key="sprint" data-price-field="ghs">GH₵5,000</span>
+        <span class="rp-meta"><span data-price-key="sprint" data-price-field="usd">≈ $300</span> · <span data-price-key="sprint" data-price-field="note">four sessions</span> · billed as a block</span>
+      </div>
       <button class="rung-btn solid" onclick="selectLevel('sprint')">Start a Coaching Sprint</button>
+      <a class="rung-btn selar-btn" data-selar="sprint" href="#" style="display:none">Pay on Selar</a>
     </div>
     <div class="rung">
       <div class="rung-eyebrow">Level 3 — Ongoing</div>
@@ -168,7 +183,12 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <li>Credits toward done-for-you services if you need hands</li>
       </ul>
       <div class="rung-anchor">On-call thinking — a fraction of a part-time hire.</div>
+      <div class="rung-price">
+        <span class="rp-amount" data-price-key="retainer" data-price-field="ghs">GH₵10,000</span>
+        <span class="rp-meta"><span data-price-key="retainer" data-price-field="usd">≈ $600</span> · <span data-price-key="retainer" data-price-field="note">per month</span> · billed in advance</span>
+      </div>
       <button class="rung-btn" onclick="selectLevel('retainer')">Discuss a Retainer</button>
+      <a class="rung-btn selar-btn" data-selar="retainer" href="#" style="display:none">Pay on Selar</a>
     </div>
   </div>
 </div>
@@ -210,7 +230,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="section">
   <div class="section-label">How Booking Works</div>
   <div class="section-title">From Request to <span style="color:#C9A84C">Session</span></div>
-  <div class="section-sub">Request-to-book: no card needed up front — we confirm the slot first, you pay before we meet.</div>
+  <div class="section-sub">Request-to-book: no card needed up front — we confirm the slot first, you pay before we meet. Pay by MoMo, card, or Selar checkout.</div>
   <div class="steps">
     <div class="step">
       <h4>Send the Form</h4>
@@ -218,7 +238,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     </div>
     <div class="step">
       <h4>Confirm &amp; Pay</h4>
-      <p>Within 48 hours you get a slot confirmation and an invoice. Pay by mobile money or card to lock the time.</p>
+      <p>Within 48 hours you get a slot confirmation and an invoice. Pay by mobile money, card or Selar to lock the time.</p>
     </div>
     <div class="step">
       <h4>Meet</h4>
@@ -311,6 +331,8 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <label for="c-message">What do you want to think through? (a sentence or two helps)</label>
         <textarea id="c-message" name="message" rows="4"></textarea>
       </div>
+      <input type="hidden" id="c-referral" name="referral" value="">
+      <input type="hidden" id="c-context" value="">
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
       <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit" class="submit-btn" id="submitBtn">Request My Slot</button>
@@ -324,7 +346,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   <div class="section-label" style="color:#C9A84C;margin-bottom:16px">Frequently Asked Questions</div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What does a session cost?</div>
-    <div class="faq-a">Quoted when we confirm your slot — by level, not by the minute. An Anchor Session costs less than the wrong decision it prevents; sprint and retainer pricing compounds the discount. You always have the number in writing before paying.</div>
+    <div class="faq-a">Published, not quoted: <b>Anchor Session GH₵1,500</b> (≈ $90), <b>Coaching Sprint GH₵5,000</b> (≈ $300) for four sessions, and <b>Advisory Retainer GH₵10,000</b> (≈ $600) per month. Sprint is billed as a block; retainers monthly in advance. Payment is due before we meet, and the number is always in your confirmation.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How is this different from the courses?</div>
@@ -348,7 +370,28 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   </div>
 </div>
 
+<script src="/assets/js/consultation-config.js"></script>
 <script>
+/* Warm handoff from the free income assessment / guide. */
+(function () {
+  var p = new URLSearchParams(window.location.search);
+  if (p.get('from') !== 'money-ghana') return;
+  var level = document.getElementById('c-level');
+  var track = document.getElementById('c-track');
+  var ref = document.getElementById('c-referral');
+  var context = document.getElementById('c-context');
+  var message = document.getElementById('c-message');
+  if (level) level.value = 'anchor';
+  if (track && !track.value) track.value = 'creative';
+  if (ref) ref.value = 'money-ghana-assessment' + (p.get('utm_campaign') ? ' / ' + p.get('utm_campaign') : '');
+  var lines = [];
+  if (p.get('path')) lines.push('Assessment top path: ' + p.get('path'));
+  if (p.get('profile')) lines.push('Assessment profile: ' + p.get('profile'));
+  if (context) context.value = lines.join('\n');
+  if (message && !message.value) {
+    message.value = 'I took the free income assessment and would like help turning my top path into a clear plan.';
+  }
+})();
 function selectLevel(level) {
   var sel = document.getElementById('c-level');
   if (sel) sel.value = level;
@@ -375,8 +418,10 @@ document.getElementById('consultForm').addEventListener('submit', async function
     fd.append('company', '');
     fd.append('budget', '');
     fd.append('timeline', document.getElementById('c-time').value);
-    fd.append('description', 'Track: ' + track + '\n\n' + document.getElementById('c-message').value);
-    fd.append('referral', '');
+    var context = (document.getElementById('c-context') || {}).value || '';
+    var referral = (document.getElementById('c-referral') || {}).value || '';
+    fd.append('description', (context ? context + '\n\n' : '') + 'Track: ' + track + '\n\n' + document.getElementById('c-message').value);
+    fd.append('referral', referral);
     fd.append('_gotcha', '');
     fd.append('cf-turnstile-response', (this.querySelector('input[name="cf-turnstile-response"]') || {}).value || '');
     const r = await fetch('/api/services/inquiry', {method:'POST',body:fd});

@@ -122,7 +122,7 @@
     <li><strong>/api/track endpoint</strong> — logs page views + custom events (donation_started) to D1 events table, with device type, country, traffic source</li>
     <li><strong>Donation funnel tracking</strong> — donation_started event fires on checkout open, enabling abandoned-donation recovery</li>
     <li><strong>Abandoned donation recovery cron</strong> — runs hourly, checks for donation_started events older than 24h with no completed donation, queues reminder email</li>
-    <li><strong>Flutterwave dashboard</strong> — shows donation amounts, frequency, currency</li>
+    <li><strong>Payment dashboards</strong> — ExpressPay, Moolre and Selar show amounts, frequency and currency</li>
   </ul>
 
   <h3>Key Metrics to Track</h3>
@@ -144,7 +144,7 @@
 
   <!-- ============ REVENUE POTENTIAL ============ -->
   <h2>Annual Revenue Potential</h2>
-  <p>Estimates based on comparable Ghanaian/diaspora content platforms. All figures in GH¢ (Ghana Cedis). 1 USD ≈ GH¢17.</p>
+  <p>Estimates based on comparable Ghanaian/diaspora content platforms. All figures in GH¢ (Ghana Cedis). 1 USD ≈ GH¢17 (illustrative — verify the live rate).</p>
 
   <h3>Conservative — Year 1 (Building Audience)</h3>
   <div class="table-wrap">
@@ -155,7 +155,8 @@
         <tr><td>Membership tiers (20 @ avg GH¢100)</td><td>GH¢2,000</td><td>GH¢12,000</td></tr>
         <tr><td>Sponsorships (1-2 packages)</td><td>GH¢2,500-5,000</td><td>GH¢40,000</td></tr>
         <tr><td>Book sales</td><td>Minimal in Y1</td><td>—</td></tr>
-        <tr><td><strong>Total</strong></td><td><strong>GH¢4,000-8,000</strong></td><td><strong>GH¢48,000-96,000 (~$2,800-5,600)</strong></td></tr>
+        <tr><td>Consultation (2 anchors/mo @ GH¢1,500)</td><td>GH¢3,000</td><td>GH¢36,000</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>GH¢7,000-11,000</strong></td><td><strong>GH¢84,000-132,000 (~$4,900-7,800)</strong></td></tr>
       </tbody>
     </table>
   </div>
@@ -169,7 +170,8 @@
         <tr><td>Membership tiers (100 @ avg GH¢100)</td><td>GH¢10,000</td><td>GH¢60,000</td></tr>
         <tr><td>Sponsorships (3-4 sold/issue)</td><td>GH¢8,000-15,000</td><td>GH¢130,000</td></tr>
         <tr><td>Book sales (200 copies @ GH¢80)</td><td>GH¢1,300 avg</td><td>GH¢16,000</td></tr>
-        <tr><td><strong>Total</strong></td><td><strong>GH¢19,400-31,000</strong></td><td><strong>GH¢291,000 (~$17,000)</strong></td></tr>
+        <tr><td>Consultation (1 sprint + 1 retainer/mo)</td><td>GH¢15,000</td><td>GH¢180,000</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>GH¢34,400-46,000</strong></td><td><strong>GH¢471,000 (~$27,700)</strong></td></tr>
       </tbody>
     </table>
   </div>
@@ -179,21 +181,21 @@
     <table>
       <thead><tr><th>Stream</th><th>Annual</th></tr></thead>
       <tbody>
-        <tr><td>All streams optimized</td><td>GH¢500,000-1,000,000</td></tr>
+        <tr><td>All streams optimized (incl. coaching &amp; speaking)</td><td>GH¢500,000-1,000,000</td></tr>
         <tr><td><strong>Approx USD</strong></td><td><strong>$29,000-58,000</strong></td></tr>
       </tbody>
     </table>
   </div>
 
-  <div class="callout"><strong>Reality check:</strong> This is a side-project / small-ministry revenue range, not a startup. To grow beyond this, you'd need either massive traffic (100K+ subs) or high-ticket offerings (coaching, speaking, consulting at $500-2,000 each).</div>
+  <div class="callout"><strong>Reality check:</strong> Coaching is now a live, priced stream — Anchor GH¢1,500, Sprint GH¢5,000, Retainer GH¢10,000/mo — and removes the old ceiling on this model. Even so, this is a side-project / small-ministry revenue range, not a startup. To grow beyond it you'd need either massive traffic (100K+ subscribers) or additional high-ticket speaking and done-for-you work at $500-2,000 per engagement.</div>
 
   <!-- ============ RECOMMENDED NEXT STEPS ============ -->
   <h2>Recommended Next Steps</h2>
   <p>Each step auto-verifies against the live site. Click the checkbox to mark done, or use the action button to execute.</p>
   <div id="strategyTodos"></div>
   <p style="margin-top:16px;"><button onclick="resetStrategyTodos()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Reset All Progress</button> <button onclick="reverifyStrategy()" style="background:none;border:1px solid #1E3250;color:#5A7A9F;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer">Re-run Checks</button></p>
-  <p><strong>Implemented:</strong> Unified 5-tier membership ladder (Free, Supporter, Scholar, Patron, Founding) on <a href="/membership/" style="color:#C9A84C">/membership/</a> &middot; Books minimum GH¢50 &middot; Unified API at <code>/api/tiers</code> &middot; Founding Partner GH¢5,000/yr top tier. <strong>Remaining:</strong> Enable Cloudflare Web Analytics, grow traffic, pursue sponsorships after 1K+ subs.</p>
-  <div class="footer" style="margin-top:60px;padding:20px 0 40px;border-top:1px solid #1E3250;font-size:12px;color:#475569">Last updated: May 2026</div>
+  <p><strong>Implemented:</strong> Unified 5-tier membership ladder (Free, Supporter, Scholar, Patron, Founding) on <a href="/membership/" style="color:#C9A84C">/membership/</a> &middot; Books minimum GH¢50 &middot; Unified API at <code>/api/tiers</code> &middot; Founding Partner GH¢5,000/yr top tier &middot; Priced consultation ladder on <a href="/consultation/" style="color:#C9A84C">/consultation/</a> (Selar pay links configured in <code>assets/js/consultation-config.js</code>) &middot; Combined revenue dashboard at <code>admin/revenue.html</code> (CSV export, verification-first) &middot; Income-guide assessment funnel feeding priced consultation leads with source attribution. <strong>Remaining:</strong> Paste Selar quick-checkout URLs, grow traffic, pursue sponsorships after 1K+ subs.</p>
+  <div class="footer" style="margin-top:60px;padding:20px 0 40px;border-top:1px solid #1E3250;font-size:12px;color:#475569">Last updated: November 2026</div>
 </div>
 
 <style>
