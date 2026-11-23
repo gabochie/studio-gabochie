@@ -21,25 +21,33 @@ export function newRef(prefix) {
   return (prefix || 'pay_') + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
 }
 
-// GHS -> USD conversion for crypto invoices. Prefer env rate, then live API, then default.
+// GHS -> USD conversion for crypto invoices. Prefer a pinned env rate, then
+// the same live provider used by /api/rates. `rate` is always GHS per USD so
+// every caller reads it the same way; `stale` is true when neither a pinned
+// rate nor a live fetch was available. A stale rate must never be treated as
+// settlement proof — it is recorded on the invoice for manual reconciliation.
+const FX_URL = 'https://open.er-api.com/v6/latest/GHS';
+const FALLBACK_GHS_PER_USD = 12;
 export async function ghsToUsd(amountGhs, env) {
   const amount = round2(amountGhs);
-  const envRate = parseFloat(env.GHS_USD_RATE);
+  const envRate = parseFloat(env && env.GHS_USD_RATE);
   if (envRate && envRate > 0) {
-    return { usd: round2(amount / envRate), rate: envRate };
+    return { usd: round2(amount / envRate), rate: round2(envRate), ghsPerUsd: round2(envRate), stale: false, source: 'pinned' };
   }
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, 4000);
   try {
-    const res = await fetch('https://open.er-api.com/v6/latest/GHS');
+    const res = await fetch(FX_URL, { signal: controller.signal, headers: { Accept: 'application/json' } });
     if (res.ok) {
       const data = await res.json();
-      const r = data && data.rates && data.rates.USD;
-      if (r && r > 0) {
-        return { usd: round2(amount * r), rate: r };
+      const usdPerGhs = data && data.rates && Number(data.rates.USD);
+      if (usdPerGhs && usdPerGhs > 0) {
+        const ghsPerUsd = round2(1 / usdPerGhs);
+        return { usd: round2(amount * usdPerGhs), rate: ghsPerUsd, ghsPerUsd: ghsPerUsd, stale: false, source: 'live' };
       }
     }
-  } catch (_e) {}
-  const dflt = 0.066;
-  return { usd: round2(amount * dflt), rate: dflt };
+  } catch (_e) {} finally { clearTimeout(timer); }
+  return { usd: round2(amount / FALLBACK_GHS_PER_USD), rate: FALLBACK_GHS_PER_USD, ghsPerUsd: FALLBACK_GHS_PER_USD, stale: true, source: 'fallback' };
 }
 
 // Send a short purpose-built confirmation email via Brevo (best-effort).
