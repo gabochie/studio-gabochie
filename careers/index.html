@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0A1628">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0A1628">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Careers — Studio Gabochie">
-<meta property="og:description" content="Join Studio Gabochie and help us equip a generation with creativity, love, and wisdom. View open positions and career resources.">
+<meta property="og:description" content="Remote-only, contract and part-time roles at a small founder-led school. Published pay bands, no unpaid test work.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/careers/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
 <link rel="canonical" href="https://studio.gabochie.com/careers/">
 <title>Careers — Studio Gabochie</title>
-<meta name="description" content="Join Studio Gabochie and help us equip a generation with creativity, love, and wisdom. View open positions and career resources.">
+<meta name="description" content="Remote-only roles at Studio Gabochie. Small founder-led team, published pay bands, contract and part-time work from anywhere in the world.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,73 +30,93 @@ h1,h2,h3,h4{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;line-h
 body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* hero */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;text-align:center;overflow:hidden;padding-top:64px}
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;text-align:center;overflow:hidden;padding-top:64px}
 .hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0A1628 0%,#152240 40%,#1A2D4A 70%,#0A1628 100%);z-index:0}
 .hero-grid{position:absolute;inset:0;z-index:0;opacity:.06;background-image:radial-gradient(circle at 1px 1px,rgba(201,168,76,.6) 1px,transparent 0);background-size:32px 32px}
 .hero-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.08) 0%,transparent 70%);z-index:0;pointer-events:none}
-.hero-content{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:40px 24px}
+.hero-content{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:40px 24px}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border:1px solid rgba(201,168,76,.3);border-radius:20px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
 .hero h1{font-family:var(--display);font-size:56px;font-weight:900;color:#fff;line-height:1.05;margin-bottom:16px}
 .hero h1 span{color:var(--gold)}
-.hero p{font-family:var(--sans);font-size:16px;color:var(--text-muted);line-height:1.7;max-width:560px;margin:0 auto 32px}
+.hero p{font-family:var(--sans);font-size:16px;color:var(--text-muted);line-height:1.7;max-width:600px;margin:0 auto 32px}
+.hero-footnote{font-family:var(--sans);font-size:12px!important;color:var(--text-muted);margin-top:24px!important;margin-bottom:0!important}
 .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .hero-actions .btn{padding:14px 32px;font-size:14px;letter-spacing:.2em}
 
-/* standard section pattern (homepage style) */
+/* shared section pattern */
 .section-label{display:inline-flex;align-items:center;gap:6px;font-family:'Courier Prime',monospace;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:12px}
 .section-heading{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);margin-bottom:16px;color:#E8EEF7}
 .section-heading span{color:#C9A84C}
-.section-sub{font-family:'Barlow',sans-serif;font-size:17px;color:#8A9BB5;max-width:640px;line-height:1.7;margin-bottom:40px}
+.section-sub{font-family:'Barlow',sans-serif;font-size:16px;color:#8A9BB5;max-width:680px;line-height:1.7;margin-bottom:40px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;text-decoration:none;line-height:1}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
 .btn-gold{background:#C9A84C;color:#0A1628}
 .btn-gold:hover{background:#D9B85C;color:#0A1628}
 .btn-outline{background:transparent;border:1.5px solid #C9A84C;color:#C9A84C}
 .btn-outline:hover{background:#C9A84C;color:#0A1628}
-
-/* sections */
 .section{padding:100px 0}
 .section-alt{background:#0F1E38}
-
 .section-header{text-align:center;margin-bottom:48px}
 .section-header h2{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(28px,3.5vw,40px);color:#E8EEF7;margin-bottom:8px}
 .section-header h2 span{color:#C9A84C}
-.section-header p{color:var(--text-muted);font-size:15px;max-width:540px;margin:0 auto;font-family:var(--sans);line-height:1.7}
+.section-header p{color:var(--text-muted);font-size:15px;max-width:680px;margin:0 auto;font-family:var(--sans);line-height:1.7}
 .section-header .accent{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:16px auto 0}
 
-/* job cards */
-.job-list{display:grid;gap:20px}
-.job-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;flex-direction:column;gap:12px;transition:all 0.3s}
-.job-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
-.job-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-.job-card h3{font-family:'Libre Baskerville',Georgia,serif;font-size:20px;font-weight:700;color:#E8EEF7}
-.job-card .badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
-.job-card .badge.full-time{background:rgba(52,199,123,.15);color:#34C77B}
-.job-card .badge.part-time{background:rgba(59,130,246,.15);color:#60A5FA}
-.job-card .badge.contract{background:rgba(245,158,11,.15);color:#F59E0B}
-.job-card .badge.internship{background:rgba(168,85,247,.15);color:#C084FC}
-.job-card .meta{display:flex;gap:8px;flex-wrap:wrap}
-.job-card .meta span{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted);background:rgba(255,255,255,.04);padding:4px 10px;border-radius:6px}
-.job-card .desc{font-family:var(--sans);font-size:14px;color:var(--text-muted);line-height:1.7}
-.job-card .actions{display:flex;gap:10px;margin-top:4px}
+/* role cards */
+.role-list{display:grid;gap:20px}
+.role-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;transition:all 0.3s}
+.role-card.open{border-color:rgba(201,168,76,.45)}
+.role-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.role-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.role-top h3{font-size:21px}
+.badge{display:inline-block;padding:5px 12px;border-radius:6px;font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.badge.open{background:rgba(52,199,123,.15);color:#34C77B}
+.badge.pool{background:rgba(59,130,246,.15);color:#60A5FA}
+.role-meta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.role-meta span{display:inline-flex;align-items:center;gap:5px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--text-muted);background:rgba(255,255,255,.04);padding:5px 10px;border-radius:6px}
+.role-outcome{font-family:var(--sans);font-size:14px;color:#B8C6DA;line-height:1.7;margin-bottom:18px}
+.role-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px}
+.role-cols h4{font-family:'Barlow Condensed',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:8px}
+.role-cols ul{padding-left:18px;font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.7}
+.role-cols li{margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-family:'Barlow',sans-serif;font-size:12px;color:#B8C6DA;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:5px 9px}
+.role-note{font-family:var(--sans);font-style:italic;font-size:12px;color:var(--text-muted);margin-bottom:18px}
 .btn-sm{padding:10px 22px;font-size:12px;border-radius:6px}
-.job-card .save-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:16px;transition:all .2s}
-.job-card .save-btn:hover{border-color:var(--gold);color:var(--gold)}
+.empty-jobs{text-align:center;padding:70px 24px;background:var(--card-bg);border:1px dashed var(--border);border-radius:12px}
+.empty-jobs h3{font-size:20px;margin-bottom:6px}
+.empty-jobs p{font-size:13px;color:var(--text-muted);font-family:var(--sans)}
 
-/* empty state */
-.empty-jobs{text-align:center;padding:80px 24px;background:var(--card-bg);border:1px dashed var(--border);border-radius:12px}
-.empty-jobs .icon{font-size:48px;margin-bottom:12px;opacity:.4}
-.empty-jobs h3{font-family:'Libre Baskerville',Georgia,serif;font-size:20px;color:#E8EEF7;margin-bottom:6px}
-.empty-jobs p{font-size:13px;color:var(--text-muted)}
+/* how we work + offer cards */
+.flat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.flat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:28px 24px}
+.flat-card .f-icon{font-size:28px;margin-bottom:10px}
+.flat-card h4{font-size:17px;margin-bottom:8px}
+.flat-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.7}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px}
+.info-card h3{margin-bottom:16px;font-size:20px}
+.info-card ul{padding-left:20px}
+.info-card li{font-family:var(--sans);font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:10px}
+.info-card li strong{color:#E8EEF7}
+.callout{background:rgba(201,168,76,.07);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:24px 28px;font-family:var(--sans);font-size:14px;line-height:1.8;color:#B8C6DA}
+.callout strong{color:var(--gold)}
+
+/* proof links */
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.proof-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;display:block;transition:all 0.25s}
+.proof-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.proof-card h4{font-size:17px;margin-bottom:6px}
+.proof-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.6}
 
 /* resources */
 .resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-.resource-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;flex-direction:column;gap:10px;transition:all 0.3s}
-.resource-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
-.resource-card .r-icon{font-size:32px}
-.resource-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7}
+.resource-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:28px;display:flex;flex-direction:column;gap:10px;transition:all 0.3s}
+.resource-card:hover{border-color:#C9A84C;transform:translateY(-4px)}
+.resource-card .r-icon{font-size:30px}
+.resource-card h4{font-size:17px}
 .resource-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.7}
-.resource-card a{color:#C9A84C;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px;transition:color .2s}
+.resource-card a{color:#C9A84C;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px;cursor:pointer}
 .resource-card a:hover{color:#D9B85C}
 
 /* lead modal */
@@ -104,63 +124,48 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 .lead-modal.open{opacity:1;pointer-events:auto}
 .lead-modal-box{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;max-width:440px;width:90%;text-align:center;position:relative}
 .lead-modal-box .close-btn{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer}
-.lead-modal-box .close-btn:hover{color:var(--text-light)}
-.lead-modal-box .lm-icon{font-size:48px;margin-bottom:8px}
-.lead-modal-box h3{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:4px}
+.lead-modal-box .lm-icon{font-size:44px;margin-bottom:8px}
+.lead-modal-box h3{font-size:22px;margin-bottom:4px}
 .lead-modal-box p{font-family:var(--sans);font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
-.lead-modal-box .field{margin-bottom:12px;text-align:left}
-.lead-modal-box .field input{width:100%;padding:12px 14px;background:#0A1628;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#E8EEF7;font-family:'DM Sans',sans-serif}
-.lead-modal-box .field input:focus{outline:none;border-color:var(--gold)}
-
-.lead-modal-box .lm-msg{font-size:12px;margin-top:10px;display:none}
+.lead-modal-box .lm-msg{font-family:var(--sans);font-size:12px;margin-top:10px;display:none}
 .lead-modal-box .lm-msg.success{display:block;color:#34C77B}
 .lead-modal-box .lm-msg.error{display:block;color:#EF4444}
-.lead-modal-box .lm-footer{font-size:11px;color:var(--text-muted);margin-top:14px}
+.lead-modal-box .lm-footer{font-family:var(--sans);font-size:11px;color:var(--text-muted);margin-top:14px}
 
-/* apply form */
-.apply-wrap{max-width:640px;margin:0 auto}
+/* application form */
+.apply-wrap{max-width:720px;margin:0 auto}
 .apply-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px 32px}
-.apply-card .form-title{font-family:'Libre Baskerville',Georgia,serif;font-size:22px;font-weight:700;color:#E8EEF7;margin-bottom:4px}
+.apply-card .form-title{font-size:22px;margin-bottom:4px}
 .apply-card .form-subtitle{font-family:var(--sans);font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .field{margin-bottom:16px}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.field label{display:block;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
 .field label .req{color:#EF4444}
 .field input,.field textarea,.field select{width:100%;padding:12px 14px;background:#0A1628;border:1px solid var(--border);border-radius:8px;font-size:14px;color:#E8EEF7;font-family:'DM Sans',sans-serif;transition:border-color .2s}
 .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--gold)}
-.field textarea{min-height:100px;resize:vertical}
-.field .hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.field textarea{min-height:110px;resize:vertical}
+.field .hint{font-family:var(--sans);font-size:11px;color:var(--text-muted);margin-top:4px}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.msg{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.msg{padding:14px 18px;border-radius:8px;font-family:var(--sans);font-size:13px;margin-bottom:16px;display:none}
 .msg.success{display:block;background:rgba(52,199,123,.12);border:1px solid rgba(52,199,123,.3);color:#34C77B}
 .msg.error{display:block;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444}
 
-/* value props */
-.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.value-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px 24px;text-align:center;transition:all 0.3s}
-.value-card:hover{border-color:#C9A84C;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
-.value-card .v-icon{font-size:36px;margin-bottom:12px}
-.value-card h4{font-family:'Libre Baskerville',Georgia,serif;font-size:17px;font-weight:700;color:#E8EEF7;margin-bottom:6px}
-.value-card p{font-family:var(--sans);font-size:13px;color:var(--text-muted);line-height:1.6}
-
-/* loading spinner */
 .sp{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-
 @media(max-width:768px){
-  .hero h1{font-size:34px}
+  .hero h1{font-size:38px}
   .row-2{grid-template-columns:1fr}
+  .role-cols,.two-col{grid-template-columns:1fr}
   .section{padding:60px 0}
   .section-header h2{font-size:26px}
   .resources-grid{grid-template-columns:1fr}
-  .values-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
-  .hero h1{font-size:28px}
+  .hero h1{font-size:30px}
   .hero-actions .btn{padding:12px 24px;font-size:12px}
-  .values-grid{grid-template-columns:1fr}
-  .job-card-top{flex-direction:column}
+  .role-top{flex-direction:column}
+  .apply-card{padding:28px 20px}
 }
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -168,184 +173,390 @@ body{background:var(--navy);color:#CBD5E1;font-family:var(--body);line-height:1.
 <body>
 <div id="nav-placeholder"></div>
 
-<div class="hero">
+<section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-tag">Now Hiring</div>
-    <h1>Build Your<span> Career</span> Build <span>Ghana</span></h1>
-    <p>Join Studio Gabochie and help us equip a generation with creativity, love, and wisdom. We're looking for passionate people who want to make a difference.</p>
+    <div class="hero-tag">Remote-only · Worldwide · Published rates</div>
+    <h1>Work with <span>purpose.</span> Work from <span>anywhere.</span></h1>
+    <p>Studio Gabochie is a small, founder-led school of creativity, love and wisdom. We hire for outcomes, publish what we pay, and never ask for unpaid test work.</p>
     <div class="hero-actions">
-      <a href="#apply" class="btn btn-gold">View Open Positions</a>
-      <a href="#resources" class="btn btn-outline">Explore Resources</a>
+      <a href="#roles" class="btn btn-gold">See open roles</a>
+      <a href="#apply" class="btn btn-outline">Join the talent pool</a>
     </div>
+    <p class="hero-footnote">Every position is remote — anywhere in the world. Contracts and part-time retainers first.</p>
   </div>
-</div>
+</section>
 
-<div class="section section-alt" id="positions">
+<section class="section section-alt" id="roles">
   <div class="container">
     <div class="section-header">
       <div class="section-label"><i class="ti ti-briefcase"></i> Opportunities</div>
-      <h2>Open <span>Positions</span></h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">Current opportunities at Studio Gabochie and partner organizations.</p>
+      <h2>Open roles <span>&amp; talent pool</span></h2>
+      <p class="section-sub">One role is open now. The rest are what we expect to need next — tell us which one fits you, or apply generally.</p>
     </div>
-    <div class="job-list" id="jobList">
+    <div class="role-list" id="roleList">
       <div class="empty-jobs"><div class="sp"></div></div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="section">
+<section class="section" id="how">
   <div class="container">
     <div class="section-header">
-      <div class="section-label"><i class="ti ti-star"></i> Culture</div>
-      <h2>Why <span>Join Us</span></h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">What makes working at Studio Gabochie different.</p>
+      <div class="section-label"><i class="ti ti-settings"></i> How we work</div>
+      <h2>Small on purpose, <span>clear by default</span></h2>
+      <p class="section-sub">A founder, a fleet of AI agents, and humans hired for the judgment machines do not have.</p>
     </div>
-    <div class="values-grid">
-      <div class="value-card">
-        <div class="v-icon"><i class="ti ti-bullseye"></i></div>
-        <h4>Mission-Driven</h4>
-        <p>Every role contributes to raising a generation of systems thinkers, creative leaders, and nation builders.</p>
+    <div class="flat-grid">
+      <div class="flat-card">
+        <div class="f-icon"><i class="ti ti-world"></i></div>
+        <h4>Async first</h4>
+        <p>Work from any country. Decisions and updates are written down. We ask for a few hours of overlap with UTC each week, not a fixed desk.</p>
       </div>
-      <div class="value-card">
-        <div class="v-icon"><i class="ti ti-world"></i></div>
-        <h4>Remote-First</h4>
-        <p>Work from anywhere in Ghana. We believe great talent isn't limited by geography.</p>
+      <div class="flat-card">
+        <div class="f-icon"><i class="ti ti-robot"></i></div>
+        <h4>Humans over the machine</h4>
+        <p>Our agents draft, send receipts and analyse data. You own quality, money, relationships and care — the parts that need a person.</p>
       </div>
-      <div class="value-card">
-        <div class="v-icon"><i class="ti ti-trending-up"></i></div>
-        <h4>Growth Culture</h4>
-        <p>Access to courses, mentorship, and resources to develop your skills while you work.</p>
+      <div class="flat-card">
+        <div class="f-icon"><i class="ti ti-cash"></i></div>
+        <h4>Paid trials, never free spec work</h4>
+        <p>Every role starts with a four-week paid trial and a scoped deliverable. If it is not a fit on either side, we part well.</p>
       </div>
-      <div class="value-card">
-        <div class="v-icon"><i class="ti ti-handshake"></i></div>
-        <h4>Collaborative</h4>
-        <p>Work alongside a passionate team committed to excellence and positive impact.</p>
+      <div class="flat-card">
+        <div class="f-icon"><i class="ti ti-tools"></i></div>
+        <h4>Simple stack</h4>
+        <p>Cloudflare Pages, D1, Brevo, GitHub and WhatsApp. You do not need all of them — only the ones your role touches.</p>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="section section-alt" id="resources">
+<section class="section section-alt" id="offer">
   <div class="container">
     <div class="section-header">
-      <div class="section-label"><i class="ti ti-tools"></i> Resources</div>
-      <h2>Career <span>Resources</span></h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">Tools and guides to help you build a career that matters.</p>
+      <div class="section-label"><i class="ti ti-exchange"></i> The honest bit</div>
+      <h2>What we can <span>and cannot offer</span></h2>
+      <p class="section-sub">So you can decide before you apply.</p>
     </div>
-    <div class="resources-grid">
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-file-text"></i></div>
-        <h4>CV & Cover Letter Guide</h4>
-        <p>How to craft a compelling CV and cover letter that stands out to Ghanaian employers. Includes templates and examples.</p>
-        <a href="#" onclick="return openResourceModal('cv-guide', 'CV & Cover Letter Guide')">Download Guide →</a>
+    <div class="two-col">
+      <div class="info-card">
+        <h3>What we can offer</h3>
+        <ul>
+          <li><strong>Published rates</strong> — the band on each card is what we can pay today.</li>
+          <li><strong>Flexible hours</strong> — agree outcomes, then fit the work around your life.</li>
+          <li><strong>Real ownership</strong> — your name on the work, and a direct line to the founder.</li>
+          <li><strong>Free courses</strong> — the whole learning library is open to you.</li>
+          <li><strong>A mission you can see</strong> — students, books and ministry that are already live.</li>
+        </ul>
       </div>
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-microphone"></i></div>
-        <h4>Interview Preparation</h4>
-        <p>Common interview questions, preparation strategies, and how to make a lasting impression in your next interview.</p>
-        <a href="#" onclick="return openResourceModal('interview-guide', 'Interview Preparation')">Read More →</a>
-      </div>
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-briefcase"></i></div>
-        <h4>Freelance &amp; Gig Economy</h4>
-        <p>How to build a thriving freelance career in Ghana's growing digital economy. Platforms, pricing, and client management.</p>
-        <a href="#" onclick="return openResourceModal('freelance-guide', 'Freelance & Gig Economy')">Explore →</a>
-      </div>
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-books"></i></div>
-        <h4>Skills Development</h4>
-          <p>Free and low-cost courses to build in-demand skills: digital marketing, web development, creative arts, and more.</p>
-          <a href="/courses/">Browse Courses →</a>
-      </div>
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-handshake"></i></div>
-        <h4>Networking Guide</h4>
-        <p>How to build a professional network in Ghana. Conferences, online communities, mentorship, and professional associations.</p>
-        <a href="#" onclick="return openResourceModal('networking-guide', 'Networking Guide')">Learn More →</a>
-      </div>
-      <div class="resource-card">
-        <div class="r-icon"><i class="ti ti-world"></i></div>
-        <h4>Remote Work</h4>
-        <p>How to land and succeed in remote jobs with international companies. Tools, platforms, and tips for Ghanaian professionals.</p>
-        <a href="#" onclick="return openResourceModal('remote-guide', 'Remote Work Guide')">Get Started →</a>
+      <div class="info-card">
+        <h3>What we cannot offer yet</h3>
+        <ul>
+          <li><strong>Employment or benefits</strong> — these are contracts and retainers, not salaried roles.</li>
+          <li><strong>Equipment budget</strong> — bring your own laptop and connection.</li>
+          <li><strong>A large team</strong> — it is one founder and a small agent fleet. You will work independently.</li>
+          <li><strong>Unlimited hours</strong> — scope is agreed up front and paid trials are capped.</li>
+          <li><strong>Guaranteed permanence</strong> — roles grow only when verified revenue does.</li>
+        </ul>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="section" id="apply">
+<section class="section" id="proof">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label"><i class="ti ti-eye"></i> Inspect the work</div>
+      <h2>Decide from <span>evidence</span></h2>
+      <p class="section-sub">Everything below is live. Look before you apply.</p>
+    </div>
+    <div class="proof-grid">
+      <a class="proof-card" href="/courses/"><h4>Courses</h4><p>The actual curriculum, including what is free and what is paid.</p></a>
+      <a class="proof-card" href="/books/"><h4>Books</h4><p>Published writing and how we price digital products.</p></a>
+      <a class="proof-card" href="/money-ghana/"><h4>Income assessment</h4><p>The lead magnet and its handoff into a real consultation ladder.</p></a>
+      <a class="proof-card" href="/consultation/"><h4>Consultation</h4><p>The high-ticket offer you would be helping to deliver and reconcile.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label"><i class="ti ti-shield"></i> Integrity</div>
+      <h2>How we handle <span>trust</span></h2>
+    </div>
+    <div class="callout">
+      <strong>Our non-negotiables:</strong> every payment is re-verified server-side before it is counted as revenue; no sale is ever marked settled from a checkout redirect. We handle learner data carefully, respect the ministry context of this work, and expect the same of everyone who joins. References may be requested before a paid trial begins.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="apply">
   <div class="container">
     <div class="section-header">
       <div class="section-label"><i class="ti ti-send"></i> Apply</div>
-      <h2>Apply <span>Now</span></h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">Submit a general application or apply for a specific position.</p>
+      <h2>Start a <span>conversation</span></h2>
+      <p class="section-sub">We read every application and reply within 5–7 business days. No unpaid tasks, no long forms beyond this one.</p>
     </div>
     <div class="apply-wrap">
       <div id="appMsg" class="msg"></div>
       <div class="apply-card">
-        <div class="form-title">Submit Your Application</div>
-        <div class="form-subtitle">We'll review your application and get back to you within 5-7 business days.</div>
+        <div class="form-title">Submit your application</div>
+        <div class="form-subtitle">Pick the role you are interested in. If none fit, choose a general application.</div>
         <form id="careerForm" onsubmit="return submitApplication(event)">
           <div class="field">
-            <label>Position <span class="hint" style="text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></label>
-            <input type="text" id="job_title" placeholder="e.g. Content Creator, or leave blank for general application">
+            <label for="role_id">Role <span class="req">*</span></label>
+            <select id="role_id" required><option value="general">General application</option></select>
           </div>
           <div class="row-2">
             <div class="field">
-              <label>Full Name <span class="req">*</span></label>
+              <label for="app_name">Full name <span class="req">*</span></label>
               <input type="text" id="app_name" required placeholder="Your full name">
             </div>
             <div class="field">
-              <label>Email <span class="req">*</span></label>
+              <label for="app_email">Email <span class="req">*</span></label>
               <input type="email" id="app_email" required placeholder="you@example.com">
             </div>
           </div>
-          <div class="field">
-            <label>Phone</label>
-            <input type="tel" id="app_phone" placeholder="0XX XXX XXXX">
+          <div class="row-2">
+            <div class="field">
+              <label for="app_phone">Phone or WhatsApp</label>
+              <input type="tel" id="app_phone" placeholder="Include country code">
+            </div>
+            <div class="field">
+              <label for="app_country">Country</label>
+              <input type="text" id="app_country" placeholder="Where you will work from">
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="app_timezone">Timezone</label>
+              <input type="text" id="app_timezone" placeholder="e.g. GMT+0, UTC+2">
+            </div>
+            <div class="field">
+              <label for="app_hours">Hours available per week</label>
+              <input type="number" id="app_hours" min="1" max="80" placeholder="e.g. 10">
+            </div>
           </div>
           <div class="field">
-            <label>Cover Letter / Why You?</label>
-            <textarea id="cover_letter" placeholder="Tell us about yourself, your skills, and why you want to join the mission..."></textarea>
+            <label for="app_rate">Expected rate</label>
+            <input type="text" id="app_rate" placeholder="e.g. GH¢1,500 / month, or your hourly rate">
+          </div>
+          <div class="field">
+            <label for="app_cv">CV link</label>
+            <input type="url" id="app_cv" placeholder="https://...">
+            <div class="hint">A Google Drive, LinkedIn or personal page link is fine.</div>
+          </div>
+          <div class="field">
+            <label for="app_portfolio">Portfolio or work sample link</label>
+            <input type="url" id="app_portfolio" placeholder="https://...">
+          </div>
+          <div class="field">
+            <label for="cover_letter">Why this role, and what you would own first</label>
+            <textarea id="cover_letter" placeholder="Two short paragraphs are plenty. Tell us what you have done that is similar."></textarea>
           </div>
           <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
-          <button type="submit" class="btn btn-gold" id="appBtn" style="width:100%">Submit Application</button>
+          <button type="submit" class="btn btn-gold" id="appBtn" style="width:100%">Submit application</button>
         </form>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<section class="section section-alt" id="resources">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label"><i class="ti ti-tools"></i> Resources</div>
+      <h2>Remote-work <span>readiness kit</span></h2>
+      <p class="section-sub">Free guides for working well from anywhere — useful whether or not you apply here.</p>
+    </div>
+    <div class="resources-grid">
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-world"></i></div>
+        <h4>Remote Work Guide</h4>
+        <p>Timezones, async habits, tools, payments and staying reliable when nobody is watching.</p>
+        <a href="#remote-guide" onclick="return openResourceModal('remote-guide', 'Remote Work Guide')">Open guide →</a>
+      </div>
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-file-text"></i></div>
+        <h4>CV &amp; Cover Letter Guide</h4>
+        <p>How to present outcomes, not duties, for remote roles. Includes a short checklist.</p>
+        <a href="#cv-guide" onclick="return openResourceModal('cv-guide', 'CV &amp; Cover Letter Guide')">Open guide →</a>
+      </div>
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-microphone"></i></div>
+        <h4>Interview Preparation</h4>
+        <p>Common questions, STAR answers and how to interview well over a video call.</p>
+        <a href="#interview-guide" onclick="return openResourceModal('interview-guide', 'Interview Preparation')">Open guide →</a>
+      </div>
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-briefcase"></i></div>
+        <h4>Freelance &amp; Rates</h4>
+        <p>Setting a rate, scoping work and getting paid across borders without surprises.</p>
+        <a href="#freelance-guide" onclick="return openResourceModal('freelance-guide', 'Freelance &amp; Rates')">Open guide →</a>
+      </div>
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-users"></i></div>
+        <h4>Networking Guide</h4>
+        <p>Building a professional network that travels further than any job board.</p>
+        <a href="#networking-guide" onclick="return openResourceModal('networking-guide', 'Networking Guide')">Open guide →</a>
+      </div>
+      <div class="resource-card">
+        <div class="r-icon"><i class="ti ti-books"></i></div>
+        <h4>Learn with us</h4>
+        <p>Free and low-cost courses in digital skills, creativity and systems thinking.</p>
+        <a href="/courses/">Browse courses →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div id="footer-placeholder"></div>
 <script src="/nav.js"></script>
 
 <div class="lead-modal" id="leadModal">
   <div class="lead-modal-box">
-    <button class="close-btn" onclick="closeResourceModal()">&times;</button>
+    <button class="close-btn" type="button" onclick="closeResourceModal()" aria-label="Close">&times;</button>
     <div class="lm-icon"><i class="ti ti-book"></i></div>
-    <h3>Unlock This Resource</h3>
-    <p>Enter your name and email to access <strong id="lmTitle">this guide</strong>. We'll also keep you updated on new career opportunities.</p>
+    <h3>Open the guide</h3>
+    <p>Enter your name and email to read <strong id="lmTitle">this guide</strong>. We will also send new remote opportunities from Studio Gabochie.</p>
     <div class="lm-msg" id="lmMsg"></div>
     <form onsubmit="return submitResourceLead(event)">
       <input type="hidden" id="lmSlug">
       <div class="field">
-        <label>Full Name</label>
+        <label for="lmName">Full name</label>
         <input type="text" id="lmName" required placeholder="Your name">
       </div>
       <div class="field">
-        <label>Email</label>
+        <label for="lmEmail">Email</label>
         <input type="email" id="lmEmail" required placeholder="you@example.com">
       </div>
-      <button type="submit" class="btn btn-gold" id="lmBtn" style="width:100%">Get Access</button>
+      <button type="submit" class="btn btn-gold" id="lmBtn" style="width:100%">Get access</button>
     </form>
     <div class="lm-footer">We respect your privacy. Unsubscribe anytime.</div>
   </div>
 </div>
 
 <script>
+var ROLES_URL = '/assets/js/careers-roles.json';
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(str)));
+  return d.innerHTML;
+}
+
+function escapeAttr(str) {
+  return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function loadRoles() {
+  var container = document.getElementById('roleList');
+  var select = document.getElementById('role_id');
+  fetch(ROLES_URL, { cache: 'no-store' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var roles = (data && data.roles) || [];
+      if (!roles.length) {
+        container.innerHTML = '<div class="empty-jobs"><h3>No roles listed right now</h3><p>Send a general application and we will keep you in mind.</p></div>';
+        return;
+      }
+      var html = '';
+      var options = '<option value="general">General application</option>';
+      roles.forEach(function(role) {
+        var isOpen = role.status === 'open';
+        options += '<option value="' + escapeAttr(role.id) + '">' + escapeHtml(role.title) + '</option>';
+        html += '<article class="role-card' + (isOpen ? ' open' : '') + '">';
+        html += '<div class="role-top"><h3>' + escapeHtml(role.title) + '</h3><span class="badge ' + (isOpen ? 'open' : 'pool') + '">' + escapeHtml(role.statusLabel) + '</span></div>';
+        html += '<div class="role-meta">';
+        html += '<span><i class="ti ti-world"></i> Remote — anywhere</span>';
+        html += '<span><i class="ti ti-cash"></i> ' + escapeHtml(role.band) + '</span>';
+        html += '<span><i class="ti ti-clock"></i> ' + escapeHtml(role.hours) + '</span>';
+        html += '</div>';
+        html += '<p class="role-outcome">' + escapeHtml(role.outcome) + '</p>';
+        html += '<div class="role-cols">';
+        html += '<div><h4>What you would own</h4><ul>';
+        (role.deliverables || []).forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
+        html += '</ul></div>';
+        html += '<div><h4>Skills that matter</h4><div class="chips">';
+        (role.skills || []).forEach(function(skill) { html += '<span>' + escapeHtml(skill) + '</span>'; });
+        html += '</div></div></div>';
+        if (role.note) html += '<p class="role-note">' + escapeHtml(role.note) + '</p>';
+        html += '<button type="button" class="btn btn-gold btn-sm" data-role="' + escapeAttr(role.id) + '">' + (isOpen ? 'Apply now' : 'Apply to talent pool') + ' →</button>';
+        html += '</article>';
+      });
+      container.innerHTML = html;
+      select.innerHTML = options;
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="empty-jobs"><h3>Could not load roles</h3><p>Refresh the page, or send a general application below.</p></div>';
+    });
+}
+
+function submitApplication(e) {
+  e.preventDefault();
+  var btn = document.getElementById('appBtn');
+  var roleSelect = document.getElementById('role_id');
+  var data = {
+    role_id: roleSelect.value,
+    job_title: roleSelect.options[roleSelect.selectedIndex] ? roleSelect.options[roleSelect.selectedIndex].text : '',
+    name: document.getElementById('app_name').value.trim(),
+    email: document.getElementById('app_email').value.trim(),
+    phone: document.getElementById('app_phone').value.trim(),
+    country: document.getElementById('app_country').value.trim(),
+    timezone: document.getElementById('app_timezone').value.trim(),
+    availability_hours: document.getElementById('app_hours').value,
+    pay_expectation: document.getElementById('app_rate').value.trim(),
+    cv_url: document.getElementById('app_cv').value.trim(),
+    portfolio_url: document.getElementById('app_portfolio').value.trim(),
+    cover_letter: document.getElementById('cover_letter').value.trim(),
+    cf_turnstile_token: (document.querySelector('#careerForm input[name="cf-turnstile-response"]') || {}).value || ''
+  };
+  if (!data.name || !data.email) {
+    showAppMsg('Please fill in your name and email.', 'error');
+    return false;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  fetch('/api/careers', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.status === 'ok') {
+      showAppMsg(res.message || 'Application submitted successfully.', 'success');
+      document.getElementById('careerForm').reset();
+      roleSelect.value = data.role_id;
+    } else {
+      showAppMsg(res.error || 'Something went wrong.', 'error');
+    }
+  }).catch(function() {
+    showAppMsg('Network error. Please try again.', 'error');
+  }).finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Submit application';
+  });
+  return false;
+}
+
+function showAppMsg(msg, type) {
+  var box = document.getElementById('appMsg');
+  box.textContent = msg;
+  box.className = 'msg ' + type;
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-role]');
+  if (!btn) return;
+  document.getElementById('role_id').value = btn.getAttribute('data-role');
+  document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
+});
+
 function openResourceModal(slug, title) {
   document.getElementById('lmSlug').value = slug;
   document.getElementById('lmTitle').textContent = title;
@@ -354,7 +565,7 @@ function openResourceModal(slug, title) {
   document.getElementById('lmName').value = '';
   document.getElementById('lmEmail').value = '';
   document.getElementById('lmBtn').disabled = false;
-  document.getElementById('lmBtn').textContent = 'Get Access';
+  document.getElementById('lmBtn').textContent = 'Get access';
   document.getElementById('leadModal').classList.add('open');
   return false;
 }
@@ -368,21 +579,18 @@ function submitResourceLead(e) {
   var btn = document.getElementById('lmBtn');
   var msg = document.getElementById('lmMsg');
   btn.disabled = true;
-  btn.textContent = 'Unlocking...';
-
+  btn.textContent = 'Opening...';
   var slug = document.getElementById('lmSlug').value;
   var name = document.getElementById('lmName').value.trim();
   var email = document.getElementById('lmEmail').value.trim();
-
   if (!name || !email) {
-    msg.textContent = 'Please fill in all fields.';
+    msg.textContent = 'Please fill in both fields.';
     msg.className = 'lm-msg error';
     msg.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = 'Get Access';
-    return;
+    btn.textContent = 'Get access';
+    return false;
   }
-
   fetch('/api/career-resources', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -395,16 +603,16 @@ function submitResourceLead(e) {
       msg.textContent = res.error || 'Something went wrong.';
       msg.className = 'lm-msg error';
       msg.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Get Access';
     }
   }).catch(function() {
     msg.textContent = 'Network error. Please try again.';
     msg.className = 'lm-msg error';
     msg.style.display = 'block';
+  }).finally(function() {
     btn.disabled = false;
-    btn.textContent = 'Get Access';
+    btn.textContent = 'Get access';
   });
+  return false;
 }
 
 document.addEventListener('keydown', function(e) {
@@ -415,101 +623,7 @@ document.getElementById('leadModal').addEventListener('click', function(e) {
   if (e.target === this) closeResourceModal();
 });
 
-function loadJobs() {
-  var container = document.getElementById('jobList');
-  fetch('/api/classifieds?category=jobs&status=approved&limit=20')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status !== 'ok' || !data.items || !data.items.length) {
-        container.innerHTML = '<div class="empty-jobs"><div class="icon"><i class="ti ti-pin"></i></div><h3>No open positions right now</h3><p>Check back soon or submit a general application below.</p></div>';
-        return;
-      }
-      var html = '';
-      data.items.forEach(function(job) {
-        html += '<div class="job-card">';
-        html += '<div class="job-card-top">';
-        html += '<h3>' + escapeHtml(job.title) + '</h3>';
-        var type = (job.listing_type || 'full-time').toLowerCase();
-        html += '<span class="badge ' + type + '">' + type.replace('-',' ') + '</span>';
-        html += '</div>';
-        html += '<div class="meta">';
-        if (job.location) html += '<span>📍 ' + escapeHtml(job.location) + '</span>';
-        if (job.price) html += '<span>💰 ' + escapeHtml(job.price) + '</span>';
-        html += '</div>';
-        if (job.description) html += '<div class="desc">' + escapeHtml(job.description.substring(0,300)) + '</div>';
-        html += '<div class="actions">';
-        html += '<a class="btn btn-gold btn-sm" href="#apply" data-job="' + escapeHtml(job.title) + '">Apply Now →</a>';
-        html += '</div></div>';
-      });
-      container.innerHTML = html;
-    })
-    .catch(function() {
-      container.innerHTML = '<div class="empty-jobs"><div class="icon"><i class="ti ti-alert-triangle"></i></div><h3>Could not load positions</h3><p>Please refresh the page or try again later.</p></div>';
-    });
-}
-
-function submitApplication(e) {
-  e.preventDefault();
-  var btn = document.getElementById('appBtn');
-  btn.disabled = true; btn.textContent = 'Submitting...';
-
-  var data = {
-    job_title: document.getElementById('job_title').value.trim(),
-    name: document.getElementById('app_name').value.trim(),
-    email: document.getElementById('app_email').value.trim(),
-    phone: document.getElementById('app_phone').value.trim(),
-    cover_letter: document.getElementById('cover_letter').value.trim(),
-    cf_turnstile_token: (document.querySelector('#careerForm input[name="cf-turnstile-response"]') || {}).value || ''
-  };
-
-  if (!data.name || !data.email) {
-    showAppMsg('Please fill in your name and email.', 'error');
-    btn.disabled = false; btn.textContent = 'Submit Application';
-    return;
-  }
-
-  fetch('/api/careers', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
-  }).then(function(r){return r.json()}).then(function(res) {
-    if (res.status === 'ok') {
-      showAppMsg(res.message || 'Application submitted successfully! We will review and get back to you.', 'success');
-      document.getElementById('careerForm').reset();
-    } else {
-      showAppMsg(res.error || 'Something went wrong.', 'error');
-    }
-  }).catch(function(){showAppMsg('Network error. Please try again.','error')}).finally(function(){
-    btn.disabled = false; btn.textContent = 'Submit Application';
-  });
-  return false;
-}
-
-function showAppMsg(msg, type) {
-  var box = document.getElementById('appMsg');
-  box.textContent = msg;
-  box.className = 'msg ' + type;
-  box.style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  var d = document.createElement('div');
-  d.appendChild(document.createTextNode(str));
-  return d.innerHTML;
-}
-
-document.addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-job]');
-  if (btn) {
-    e.preventDefault();
-    document.getElementById('job_title').value = btn.getAttribute('data-job');
-    document.getElementById('apply').scrollIntoView({behavior:'smooth'});
-  }
-});
-
-loadJobs();
+loadRoles();
 </script>
 <script src="/assets/js/main.js" defer></script>
 <script src="/assets/js/analytics.js" defer></script>

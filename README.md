@@ -64,6 +64,10 @@ Payment is by MoMo/card after confirmation, or by Selar checkout when a product 
 
 **Income-guide funnel** — the free `/money-ghana/` assessment and its printable guide now hand off to the consultation ladder. Unlocked users see a priced Anchor Session CTA carrying their top path and profile; `/consultation/` pre-fills the level, track and context from those params and records the `money-ghana-assessment` referral. The day-3 assessment email pitches the same ladder, and those leads surface under "Lead sources" on the revenue dashboard. Pipeline is never counted as revenue.
 
+## Careers
+
+`/careers/` is remote-only (anywhere in the world), contract and part-time first, and publishes pay bands instead of promising open jobs that do not exist. The role catalogue lives in `assets/js/careers-roles.json`; one role is marked open and the rest are a talent pool. Applications post structured fields (role, country, timezone, availability, expected rate, CV and portfolio URLs) to `/api/careers` and are reviewable at `GET /admin/api/careers`. Run `npm run db:setup` after deploying to add the new application columns. Career resources remain at `/careers/resources/`.
+
 ## Configuration
 
 Every setting the platform reads is listed in [`.env.example`](.env.example). Copy it to `.dev.vars` for local development, or add the values in Cloudflare Pages → Settings → Environment variables:
