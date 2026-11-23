@@ -1413,10 +1413,16 @@ export async function onRequest(context) {
       `CREATE TABLE IF NOT EXISTS career_applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         job_title TEXT NOT NULL DEFAULT '',
+        role_id TEXT NOT NULL DEFAULT '',
         name TEXT NOT NULL,
         email TEXT NOT NULL,
         phone TEXT DEFAULT '',
+        country TEXT DEFAULT '',
+        timezone TEXT DEFAULT '',
+        availability_hours INTEGER DEFAULT 0,
+        pay_expectation TEXT DEFAULT '',
         cv_url TEXT DEFAULT '',
+        portfolio_url TEXT DEFAULT '',
         cover_letter TEXT DEFAULT '',
         source TEXT NOT NULL DEFAULT 'careers',
         status TEXT NOT NULL DEFAULT 'pending',
@@ -1424,6 +1430,13 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_career_apps_status ON career_applications(status)`,
       `CREATE INDEX IF NOT EXISTS idx_career_apps_email ON career_applications(email)`,
+      // Remote-application fields for databases created before the careers rebuild.
+      `ALTER TABLE career_applications ADD COLUMN role_id TEXT DEFAULT ''`,
+      `ALTER TABLE career_applications ADD COLUMN country TEXT DEFAULT ''`,
+      `ALTER TABLE career_applications ADD COLUMN timezone TEXT DEFAULT ''`,
+      `ALTER TABLE career_applications ADD COLUMN availability_hours INTEGER DEFAULT 0`,
+      `ALTER TABLE career_applications ADD COLUMN pay_expectation TEXT DEFAULT ''`,
+      `ALTER TABLE career_applications ADD COLUMN portfolio_url TEXT DEFAULT ''`,
       // ── Tutor Roadmap ──
       `CREATE TABLE IF NOT EXISTS tutor_roadmap_tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

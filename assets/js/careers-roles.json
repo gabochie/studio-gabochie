@@ -1,0 +1,101 @@
+{
+  "note": "Every role is remote — anywhere in the world. Pay bands are what Studio Gabochie can pay today and rise with verified revenue.",
+  "roles": [
+    {
+      "id": "ops-revenue",
+      "title": "Operations & Revenue Coordinator",
+      "status": "open",
+      "statusLabel": "Open now",
+      "band": "GH¢1,200–2,000 / month",
+      "hours": "~10 hours / week",
+      "outcome": "Own the daily operating loop: review the AI agent output, chase the manual checklist, and reconcile every payment before it is counted as revenue.",
+      "skills": ["Async written English", "Spreadsheets or basic SQL", "Ghana payments: MoMo, Selar, bank transfer", "Process ownership and integrity"],
+      "deliverables": [
+        "Daily Command Center review and content approvals",
+        "Weekly verification-first reconciliation of every payment rail",
+        "Monthly close note and next-week priorities"
+      ],
+      "note": "This is the human supervisor role in our agent architecture."
+    },
+    {
+      "id": "curriculum-editor",
+      "title": "Curriculum & Content Editor",
+      "status": "pool",
+      "statusLabel": "Talent pool",
+      "band": "GH¢700–1,200 / month",
+      "hours": "~6 hours / week",
+      "outcome": "Turn AI drafts into teaching people actually finish — accurate, well-structured, and unmistakably ours.",
+      "skills": ["Sharp editorial English", "Instructional design", "Biblical discernment", "Basic HTML or CMS comfort"],
+      "deliverables": [
+        "Edit two course modules a month to publishable standard",
+        "Fact-check, copyright and sensitivity pass",
+        "Maintain the house style guide"
+      ],
+      "note": "You own quality; the agents do the first draft."
+    },
+    {
+      "id": "growth-partnerships",
+      "title": "Growth & Partnerships",
+      "status": "pool",
+      "statusLabel": "Talent pool",
+      "band": "GH¢1,000–1,800 / month + 10% of verified sponsorship revenue",
+      "hours": "~8 hours / week",
+      "outcome": "Grow the newsletter to 1,000 confirmed subscribers first, then build the sponsorship pipeline that only makes sense after that.",
+      "skills": ["Email marketing", "Analytics and attribution", "Pitch writing", "Relationship building"],
+      "deliverables": [
+        "Weekly growth and lead-source report",
+        "Four thoughtful outreach pitches a week",
+        "Maintained partner and press pipeline"
+      ],
+      "note": "Commission is paid only on revenue we can verify as settled."
+    },
+    {
+      "id": "learner-support",
+      "title": "Learner Support & Consultation Coordinator",
+      "status": "pool",
+      "statusLabel": "Talent pool",
+      "band": "GH¢600–1,000 / month",
+      "hours": "~8 hours / week",
+      "outcome": "Make every learner and consultation lead feel cared for, from enrolment to certificate to the right next session.",
+      "skills": ["Empathy and patience", "Written English", "WhatsApp and email", "Calendars and admin tools"],
+      "deliverables": [
+        "Reply to learner questions within one business day",
+        "Schedule and follow up consultation leads",
+        "Enrolment and certificate quality checks"
+      ],
+      "note": "Agents send receipts; you handle the nuance."
+    },
+    {
+      "id": "web-ops",
+      "title": "Web & Platform Engineer",
+      "status": "pool",
+      "statusLabel": "Talent pool",
+      "band": "GH¢1,500–2,500 / month",
+      "hours": "~10 hours / week",
+      "outcome": "Keep the Cloudflare stack healthy and the deploys boring, so nothing manual is forgotten between releases.",
+      "skills": ["Cloudflare Pages Functions and D1", "JavaScript", "CI and debugging", "Security hygiene"],
+      "deliverables": [
+        "Monthly dependency and security pass",
+        "Production promotion and smoke-test checklist",
+        "Fast fixes for broken pay links and failing checks"
+      ],
+      "note": "Fractional retainer, not an on-call obligation."
+    },
+    {
+      "id": "design",
+      "title": "Brand & Learning Designer",
+      "status": "pool",
+      "statusLabel": "Talent pool",
+      "band": "GH¢50–90 / hour",
+      "hours": "Ad hoc, scoped per project",
+      "outcome": "Make our books, workbooks and press kit look as considered as the teaching inside them.",
+      "skills": ["Figma or Canva", "Accessibility", "Brand consistency", "Print and digital layout"],
+      "deliverables": [
+        "Course workbook and slide templates",
+        "Social and press-kit asset refresh",
+        "Accessible, reusable design system"
+      ],
+      "note": "Hourly with an agreed scope before work starts."
+    }
+  ]
+}
