@@ -212,7 +212,7 @@
       state.unlocked = true;
       renderResults();
       $('unlockedMsg').innerHTML = '<i class="ti ti-circle-check"></i><div><strong>You are on the list.</strong><br>' +
-        'Check your inbox to confirm your subscription — and print or save your results below.</div>';
+        'Confirm your subscription in the email we just sent — the complete 24-path guide will follow. You can also print or save your results below.</div>';
       $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }).catch(function () {
       btn.disabled = false;
