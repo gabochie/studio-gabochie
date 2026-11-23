@@ -234,20 +234,42 @@ export const tierRenewalReminder = (name, tierName, expiryDate) => `<!DOCTYPE ht
     </td></tr>
   </table></body></html>`;
 
-export const confirmSubscription = (name, confirmUrl) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+export const confirmSubscription = (name, confirmUrl, isAssessment) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
   <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
     <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>
     </td></tr>
     <tr><td style="padding:32px 0 24px">
-      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">Confirm Your <span style="color:#C9A84C">Subscription</span></h1>
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#0A1628;margin:0 0 8px">${isAssessment ? 'Confirm &amp; Get Your' : 'Confirm Your'} <span style="color:#C9A84C">${isAssessment ? 'Income Guide' : 'Subscription'}</span></h1>
       <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
-      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">You recently signed up for <strong>The Studio Weekly</strong> — a newsletter on creativity, love, wisdom, and the future of learning from Ghana.</p>
-      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">Please confirm your subscription by clicking the button below. You will not receive any emails until you confirm.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${isAssessment ? 'You just completed the free <strong>Online Income Assessment</strong> on Studio Gabochie. Confirm your email below and we will send you the complete 24-path guide — with payout methods that actually work in Ghana — straight to your inbox.' : 'You recently signed up for <strong>The Studio Weekly</strong> — a newsletter on creativity, love, wisdom, and the future of learning from Ghana.'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">${isAssessment ? 'The guide is free and practical: no upfront fees, no schemes, and no reliance on payment platforms that cannot pay Ghanaian users.' : 'Please confirm your subscription by clicking the button below. You will not receive any emails until you confirm.'}</p>
       <div style="text-align:center;margin:24px 0">
-        <a href="${confirmUrl}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Confirm Subscription</a>
+        <a href="${confirmUrl}" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">${isAssessment ? 'Confirm &amp; Send My Guide' : 'Confirm Subscription'}</a>
       </div>
       <p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">If you did not sign up, you can safely ignore this email.</p>
+    </td></tr>
+    <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
+      <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>
+    </td></tr>
+  </table></body></html>`;
+
+export const assessmentWelcome = (name, refCode) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+  <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
+    <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>
+    </td></tr>
+    <tr><td style="padding:32px 0 24px">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:#0A1628;margin:0 0 8px">Your Ghana <span style="color:#C9A84C">Income Guide</span></h1>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">Thank you for confirming. Here is the complete guide from the assessment — <strong>24 legal, ethical ways to make money online in Ghana</strong>, with the payout method for each path and three safety rules to keep you out of scams.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">It is formatted for printing, so you can save it as a PDF and tick off the paths you want to try.</p>
+      <div style="text-align:center;margin:26px 0">
+        <a href="https://studio.gabochie.com/money-ghana/guide/" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">Open Your Free Guide</a>
+      </div>
+      <p style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">Want your personal top 3 again? <a href="https://studio.gabochie.com/money-ghana/" style="color:#C9A84C">Retake the 3-question assessment</a> any time.</p>
+      ${refCode ? '<div style="background:#0A1628;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px"><p style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;color:#C9A84C;margin:0 0 8px;text-transform:uppercase;letter-spacing:.15em">Your Referral Link</p><p style="font-family:\'Courier Prime\',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://news.gabochie.com/?ref=' + refCode + '</p></div><p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0 0 24px">Share it to earn free ad space in The Studio Weekly: 3 friends gets a footer banner, 10 gets a leaderboard, 50 gets a premium package.</p>' : ''}
+      <p style="font-family:Georgia,serif;font-size:14px;color:#6B7F9A;line-height:1.7;margin:0">Warmly,<br>Gideon Abochie</p>
     </td></tr>
     <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
       <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>

@@ -1,4 +1,6 @@
-import { queueEmail, welcomeFollowup, daysFromNow } from '../email/_send.js';
+import { queueEmail, welcomeFollowup, assessmentWelcome, daysFromNow } from '../email/_send.js';
+
+var ASSESSMENT_SOURCE = 'money-ghana-assessment';
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -15,7 +17,7 @@ export async function onRequest(context) {
 
   try {
     var sub = await env.DB.prepare(
-      "SELECT id, name, email, ref_code, edition, confirmed FROM subscribers WHERE confirm_token = ?"
+      "SELECT id, name, email, ref_code, edition, confirmed, source FROM subscribers WHERE confirm_token = ?"
     ).bind(token).first();
 
     if (!sub) {
@@ -39,7 +41,7 @@ export async function onRequest(context) {
           headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
           body: JSON.stringify({
             email: sub.email,
-            attributes: { NOME: sub.name || '', SOURCE: 'newsletter', REF_CODE: sub.ref_code || '', EDITION: sub.edition || '' },
+            attributes: { NOME: sub.name || '', SOURCE: sub.source || 'newsletter', REF_CODE: sub.ref_code || '', EDITION: sub.edition || '' },
             listIds: [2],
             updateEnabled: true
           })
@@ -50,9 +52,12 @@ export async function onRequest(context) {
     // Send welcome email with referral link
     var refCode = sub.ref_code || '';
     var name = sub.name || '';
+    var isAssessment = sub.source === ASSESSMENT_SOURCE;
     if (env.BREVO_API_KEY) {
       try {
         var welcomeHtml = '<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px"><table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px"><tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED"><span style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span></td></tr><tr><td style="padding:32px 0 24px"><h1 style="font-family:\'Barlow Condensed\',sans-serif;font-size:32px;font-weight:700;color:#0A1628;margin:0 0 8px">Welcome to <span style="color:#C9A84C">The Studio Weekly</span></h1><p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">' + (name ? 'Hi ' + name + ',' : 'Hello,') + '</p><p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">You are now part of a growing community of creators, thinkers, and changemakers who believe that education — and the world — can be rebuilt better.</p><p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 24px">Every week, you will receive essays on creativity, love, wisdom, and the future of learning — plus curated news from Ghana and the diaspora.</p>' + (refCode ? '<div style="background:#0A1628;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px"><p style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;color:#C9A84C;margin:0 0 8px;text-transform:uppercase;letter-spacing:.15em">Your Referral Link</p><p style="font-family:\'Courier Prime\',monospace;font-size:15px;color:#fff;margin:0;word-break:break-all">https://news.gabochie.com/?ref=' + refCode + '</p></div><p style="font-family:Georgia,serif;font-size:13px;color:#94A3B8;line-height:1.6;margin:0">Share your referral link to earn free ad space. Refer 3 friends → Footer Banner ad. Refer 10 → Leaderboard ad. Refer 50 → Premium Package. Full details in your dashboard.</p>' : '') + '</td></tr><tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED"><p style="font-family:\'Courier Prime\',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p></td></tr></table></body></html>';
+
+        if (isAssessment) welcomeHtml = assessmentWelcome(name, refCode);
 
         await fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
@@ -60,7 +65,7 @@ export async function onRequest(context) {
           body: JSON.stringify({
             sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
             to: [{ email: sub.email, name: name }],
-            subject: 'Welcome to The Studio Weekly!',
+            subject: isAssessment ? 'Your Ghana income guide is ready' : 'Welcome to The Studio Weekly!',
             htmlContent: welcomeHtml
           })
         });
@@ -72,7 +77,9 @@ export async function onRequest(context) {
       } catch (_) {}
     }
 
-    return new Response(htmlResponse('Your subscription is confirmed! Welcome to The Studio Weekly.', true, refCode), { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
+    return new Response(htmlResponse(
+      isAssessment ? 'Your subscription is confirmed! Your income guide is on its way to your inbox.' : 'Your subscription is confirmed! Welcome to The Studio Weekly.',
+      true, refCode), { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
   } catch (_err) {
     return new Response(htmlResponse('Something went wrong. Please try again.', false), { headers: { 'Content-Type': 'text/html;charset=utf-8' } });
   }

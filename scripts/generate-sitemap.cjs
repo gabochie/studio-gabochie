@@ -20,6 +20,8 @@ const PAGES = [
   ['/courses/sketching-vision-builders/', 0.8, 'weekly'],
   ['/courses/systems-thinking-genesis/', 0.8, 'weekly'],
   ['/start/', 0.8, 'monthly'],
+  ['/money-ghana/', 0.8, 'monthly'],
+  ['/money-ghana/guide/', 0.7, 'monthly'],
   ['/survey/', 0.7, 'monthly'],
   ['/books/', 0.8, 'monthly'],
   ['/donate/', 0.7, 'monthly'],
@@ -67,7 +69,7 @@ const PAGES = [
 const VALID_PREFIX = new Set([
   'about', 'certificate', 'courses', 'dashboard', 'guitar', 'legal', 'login',
   'register', 'start', 'unsubscribe', 'blog', 'books', 'survey', 'donate',
-  'membership', 'merch', 'services', 'contact', 'press', 'partners', 'careers',
+  'membership', 'merch', 'services', 'money-ghana', 'contact', 'press', 'partners', 'careers',
   'nationbuilding', 'love-of-the-lord', 'search'
 ]);
 

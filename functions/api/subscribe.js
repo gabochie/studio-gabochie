@@ -1,3 +1,9 @@
+var ASSESSMENT_SOURCE = 'money-ghana-assessment';
+
+function isAssessmentSource(source) {
+  return source === ASSESSMENT_SOURCE;
+}
+
 function detectEdition(country) {
   var map = { GH: 'GH', NG: 'GH', CI: 'GH', TG: 'GH', BJ: 'GH', SN: 'GH', GB: 'UK', IE: 'UK', US: 'NA', CA: 'NA' };
   return map[country] || 'ROW';
@@ -23,7 +29,7 @@ var REWARD_TIERS = [
   { min: 50, tier: 'premium', label: 'Premium Package (1 month)', value: 'GH¢10,000' },
 ];
 
-import { confirmSubscription } from './email/_send.js';
+import { confirmSubscription, assessmentWelcome } from './email/_send.js';
 import { checkRateLimit } from './_rate-limit.js';
 import { verifyTurnstile, turnstileToken } from './_turnstile.js';
 
@@ -99,7 +105,7 @@ export async function onRequest(context) {
 
   // Check if existing subscriber
     var existing = await env.DB.prepare(
-      'SELECT id, ref_code, confirmed, confirm_token FROM subscribers WHERE email = ?'
+      'SELECT id, ref_code, confirmed, confirm_token, source FROM subscribers WHERE email = ?'
     ).bind(email).first();
 
     if (existing) {
@@ -124,6 +130,7 @@ export async function onRequest(context) {
           await env.DB.prepare("UPDATE subscribers SET whatsapp_opt_in = 1 WHERE email = ?").bind(email).run();
         }
         confirmUrl = 'https://studio.gabochie.com/api/subscribe/confirm?token=' + existing.confirm_token;
+        var guideResend = isAssessmentSource(existing.source || source);
         if (env.BREVO_API_KEY) {
           try {
             await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -132,8 +139,8 @@ export async function onRequest(context) {
               body: JSON.stringify({
                 sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
                 to: [{ email: email, name: name || existing.name || '' }],
-                subject: 'Please confirm your subscription',
-                htmlContent: confirmSubscription(name || existing.name, confirmUrl)
+                subject: guideResend ? 'Confirm your email — get your Ghana income guide' : 'Please confirm your subscription',
+                htmlContent: confirmSubscription(name || existing.name, confirmUrl, guideResend)
               })
             });
           } catch (_) {}
@@ -162,6 +169,20 @@ export async function onRequest(context) {
               var bcData = await brevoResp.json();
               if (bcData.id) await env.DB.prepare('UPDATE subscribers SET brevo_id = ? WHERE email = ?').bind(String(bcData.id), email).run();
             }
+          } catch (_) {}
+        }
+        if (isAssessmentSource(source) && env.BREVO_API_KEY) {
+          try {
+            await fetch('https://api.brevo.com/v3/smtp/email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+              body: JSON.stringify({
+                sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
+                to: [{ email: email, name: name || '' }],
+                subject: 'Your Ghana income guide is ready',
+                htmlContent: assessmentWelcome(name, legacyRef)
+              })
+            });
           } catch (_) {}
         }
         return new Response(JSON.stringify({
@@ -201,6 +222,7 @@ export async function onRequest(context) {
 
     // Send confirmation email
     confirmUrl = 'https://studio.gabochie.com/api/subscribe/confirm?token=' + confirmToken;
+    var guideSignup = isAssessmentSource(source);
     if (env.BREVO_API_KEY) {
       try {
         await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -209,8 +231,8 @@ export async function onRequest(context) {
           body: JSON.stringify({
             sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
             to: [{ email: email, name: name || '' }],
-            subject: 'Please confirm your subscription',
-            htmlContent: confirmSubscription(name, confirmUrl)
+            subject: guideSignup ? 'Confirm your email — get your Ghana income guide' : 'Please confirm your subscription',
+            htmlContent: confirmSubscription(name, confirmUrl, guideSignup)
           })
         });
       } catch (_) {}
