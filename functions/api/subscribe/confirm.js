@@ -1,4 +1,4 @@
-import { queueEmail, welcomeFollowup, assessmentWelcome, daysFromNow } from '../email/_send.js';
+import { queueEmail, welcomeFollowup, assessmentWelcome, assessmentFollowup, daysFromNow } from '../email/_send.js';
 
 var ASSESSMENT_SOURCE = 'money-ghana-assessment';
 
@@ -71,9 +71,11 @@ export async function onRequest(context) {
         });
       } catch (_) {}
 
-      // Queue day 3 follow-up
+      // Queue day 3 follow-up — assessment leads get the consultation ladder.
       try {
-        await queueEmail(env, sub.email, name, 'Have You Explored the School?', welcomeFollowup(name), 'welcome_followup', daysFromNow(3));
+        var followupHtml = isAssessment ? assessmentFollowup(name) : welcomeFollowup(name);
+        var followupSubject = isAssessment ? 'From your income guide to one clear plan' : 'Have You Explored the School?';
+        await queueEmail(env, sub.email, name, followupSubject, followupHtml, 'welcome_followup', daysFromNow(3));
       } catch (_) {}
     }
 

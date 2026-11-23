@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { confirmSubscription, assessmentWelcome } from '../../functions/api/email/_send.js';
+import { confirmSubscription, assessmentWelcome, assessmentFollowup } from '../../functions/api/email/_send.js';
 import { onRequest as onConfirm } from '../../functions/api/subscribe/confirm.js';
 import { mockDb, buildContext } from '../helpers/mock-cf.js';
 
@@ -37,6 +37,15 @@ describe('money-ghana assessment emails', function () {
     var html = assessmentWelcome('', '');
     expect(html).toContain(GUIDE_URL);
     expect(html).not.toContain('Your Referral Link');
+  });
+
+  it('pitches the priced consultation ladder in the day-3 follow-up', function () {
+    var html = assessmentFollowup('Kwame');
+    expect(html).toContain('Kwame');
+    expect(html).toContain('Anchor Session');
+    expect(html).toContain('GH₵1,500');
+    expect(html).toContain('/consultation/?from=money-ghana');
+    expect(html).toContain(GUIDE_URL);
   });
 });
 
@@ -88,5 +97,24 @@ describe('confirmation handler for assessment leads', function () {
     var mail = calls.filter(function (c) { return c.url.indexOf('/v3/smtp/email') !== -1; })[0];
     expect(mail.body.subject).toBe('Welcome to The Studio Weekly!');
     expect(mail.body.htmlContent).not.toContain(GUIDE_URL);
+  });
+
+  it('queues a consultation follow-up for assessment leads only', async function () {
+    var ctx = contextFor('money-ghana-assessment');
+    await onConfirm(ctx);
+    var queued = ctx.env.DB._tables.email_queue || [];
+    var followup = queued.filter(function (row) { return row.email_type === 'welcome_followup'; })[0];
+    expect(followup).toBeDefined();
+    expect(followup.subject).toBe('From your income guide to one clear plan');
+    expect(followup.html_content).toContain('GH₵1,500');
+    expect(followup.html_content).toContain('/consultation/?from=money-ghana');
+
+    var plainCtx = contextFor('start-page');
+    await onConfirm(plainCtx);
+    var plainQueued = (plainCtx.env.DB._tables.email_queue || []).filter(function (row) {
+      return row.email_type === 'welcome_followup';
+    })[0];
+    expect(plainQueued.subject).toBe('Have You Explored the School?');
+    expect(plainQueued.html_content).not.toContain('GH₵1,500');
   });
 });

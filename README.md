@@ -32,6 +32,7 @@ _Live captures from https://studio.gabochie.com (see `scripts/capture-screenshot
 - **Email automation** — Brevo-driven flows (welcome, receipts, renewals, campaigns) with a signed unsubscribe token.
 - **Content & ops** — admin dashboard, contact submissions, event log, CI reports.
 - **Optional integrations** — WhatsApp, Eventbrite, Instagram, AI (OpenAI/OpenRouter/Anthropic), Cloudflare Turnstile.
+- **High-ticket coaching** — published consultation pricing with optional Selar hosted-checkout links (configured in `assets/js/consultation-config.js`).
 
 ## Pricing
 
@@ -46,6 +47,22 @@ Membership tiers (Ghana Cedis). One-time per period — no auto-renewal; renewal
 | Founding Partner | — | ₵5,000 | Name on site, private community, co-branded content |
 
 Individual courses are sold separately (one-time): Systems Thinking ₵250, Web Development ₵150, Digital Marketing ₵150, Guitar: First Things First ₵299 registration (includes the Bronze foundation; Silver ₵199, Gold ₵299, Apprentice ₵699 full-path unlocks after). Several civic, AI, values, and entrepreneurship programs are free.
+
+Consultation is the high-ticket ladder, booked at `/consultation/`:
+
+| Level | Price | What it is |
+|---|---|---|
+| Anchor Session | ₵1,500 (~$90) | One 60-minute session + written action notes |
+| Coaching Sprint | ₵5,000 (~$300) | Four weekly sessions + action plan |
+| Advisory Retainer | ₵10,000/month (~$600) | 2 sessions + async access monthly |
+
+Payment is by MoMo/card after confirmation, or by Selar checkout when a product link is configured. Request-a-slot posts to `/api/services/inquiry`; no sale is settled from a redirect.
+
+**Selar hosted checkout** is also wired into `/donate/` (Show Love / donations), `/books/` (catalogue + bundle), `/courses/` and `/guitar/`. It is a storefront link, not a gateway module — public links live in `assets/js/selar-links.js` (and consultation links in `assets/js/consultation-config.js`), blank links hide their buttons, and no env vars or webhooks are required. Run `npm run check:revenue` to audit which pay links are live (add `--strict` to fail CI when one is missing).
+
+**Revenue dashboard** — `admin/revenue.html` (API: `GET /admin/api/revenue`) combines donations, paid bookings, books, merch, Guitar School and paid courses into one view, with active subscriptions as MRR and consultation leads as pipeline. Only server-re-verified payments count as settled; pending and failed amounts are shown separately, and Selar stays a manual bucket until reconciled. Includes a 12-month chart, lead-source attribution and CSV export.
+
+**Income-guide funnel** — the free `/money-ghana/` assessment and its printable guide now hand off to the consultation ladder. Unlocked users see a priced Anchor Session CTA carrying their top path and profile; `/consultation/` pre-fills the level, track and context from those params and records the `money-ghana-assessment` referral. The day-3 assessment email pitches the same ladder, and those leads surface under "Lead sources" on the revenue dashboard. Pipeline is never counted as revenue.
 
 ## Configuration
 

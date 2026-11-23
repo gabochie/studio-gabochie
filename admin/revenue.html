@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Revenue — Admin · Studio Gabochie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:20px}
+.card-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;color:#C9A84C;display:block;line-height:1.1}
+.card-label{font-size:11px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.1em;margin-top:8px}
+.card-sub{font-size:11px;color:#8A9BB5;margin-top:6px;line-height:1.5}
+.section-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:600;color:#F1F5F9;margin:28px 0 12px}
+.loading{text-align:center;padding:60px;color:#5A7A9F;font-size:14px}
+.error-box{background:rgba(232,99,122,.1);border:1px solid rgba(232,99,122,.2);color:#FCA5A5;padding:16px;border-radius:8px;font-size:13px}
+.btn-mini{background:#C9A84C;border:none;color:#0A1628;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin:0 8px 16px 0}
+.btn-mini:hover{background:#D9B85C}
+.btn-mini.ghost{background:transparent;border:1px solid #1E3250;color:#CBD5E1}
+.btn-mini.ghost:hover{border-color:#C9A84C;color:#C9A84C}
+.rule{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.22);border-radius:8px;padding:12px 16px;font-size:12px;color:#A8B8CD;line-height:1.6;margin-bottom:20px}
+.rule strong{color:#C9A84C}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5A7A9F;padding:10px 12px;border-bottom:1px solid #1E3250}
+td{padding:12px;border-bottom:1px solid rgba(255,255,255,.04);color:#CBD5E1}
+td.num,th.num{text-align:right;font-family:'Space Mono',monospace}
+tr:last-child td{border-bottom:none}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'Space Mono',monospace;letter-spacing:.06em}
+.pill.ok{background:rgba(34,197,94,.12);color:#4ADE80}
+.pill.warn{background:rgba(201,168,76,.12);color:#E8D08A}
+.pill.bad{background:rgba(248,113,113,.12);color:#FCA5A5}
+.pill.manual{background:rgba(138,155,181,.12);color:#A8B8CD}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px;padding:10px 0 0}
+.bar-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.bar{width:100%;max-width:42px;background:linear-gradient(180deg,#C9A84C,#8A6E2F);border-radius:4px 4px 0 0;min-height:2px}
+.bar-label{font-family:'Space Mono',monospace;font-size:9px;color:#5A7A9F;margin-top:8px;white-space:nowrap}
+.bar-val{font-family:'Space Mono',monospace;font-size:9px;color:#C9A84C;margin-bottom:4px;white-space:nowrap}
+.list{margin:0;padding:0;list-style:none}
+.list li{padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:#CBD5E1;line-height:1.5}
+.list li:last-child{border:none}
+.muted{color:#5A7A9F;font-size:12px}
+@media(max-width:640px){.bars{height:120px;gap:3px}.bar-label{font-size:8px}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="../index.html" class="header-brand"><img src="../assets/images/logo.png" alt=""><span>Studio Gabochie</span></a>
+    <span class="header-tag">Admin Panel</span>
+    <div class="header-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="revenue.html" class="active">Revenue</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="donations.html">Donations</a>
+      <a href="strategy.html">Strategy</a>
+    </div>
+  </div>
+
+  <h1>Combined Revenue <span style="color:#C9A84C;font-size:14px;font-weight:400;font-family:'Inter',sans-serif">all streams, one view</span></h1>
+  <button class="btn-mini" onclick="loadRevenue()">⟳ Refresh</button>
+  <button class="btn-mini ghost" onclick="exportCsv()">↓ Export CSV</button>
+
+  <div class="rule">
+    <strong>Verification rule:</strong> only payments re-checked on the server (gateway callback re-query or admin-confirmed MoMo/bank proof) count as <span class="pill ok">settled</span>.
+    Success-page redirects and browser params never do. <span class="pill warn">Pending</span> is awaiting verification;
+    <span class="pill bad">Failed</span> is never counted. Selar and consultation leads stay <span class="pill manual">manual</span> until reconciled.
+  </div>
+
+  <div id="loading" class="loading">Loading revenue...</div>
+  <div id="error" class="error-box" style="display:none"></div>
+  <div id="content" style="display:none">
+    <div class="grid" id="summary-grid"></div>
+
+    <div class="section-title">Verified streams</div>
+    <div class="card" style="overflow-x:auto"><table>
+      <thead><tr><th>Stream</th><th class="num">Settled</th><th class="num">Pending</th><th class="num">Failed</th><th class="num">Txns</th><th>Last verified</th><th>Status</th></tr></thead>
+      <tbody id="stream-body"></tbody>
+    </table></div>
+
+    <div class="section-title">Verified revenue by month (12 months · GHS)</div>
+    <div class="card"><div class="bars" id="bars"></div></div>
+
+    <div class="section-title">Consultation pipeline (not revenue)</div>
+    <div class="card" id="consultation-card"></div>
+
+    <div class="section-title">Reconciliation &amp; manual channels</div>
+    <div class="card" id="recon-card"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+var revenueData = null;
+
+function money(v) { return 'GH₵ ' + Number(v || 0).toLocaleString('en-GH', { maximumFractionDigits: 0 }); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+function when(s) { return s ? String(s).replace('T', ' ').slice(0, 16) : '—'; }
+
+async function loadRevenue() {
+  var loading = document.getElementById('loading');
+  var error = document.getElementById('error');
+  var content = document.getElementById('content');
+  loading.style.display = 'block';
+  error.style.display = 'none';
+  content.style.display = 'none';
+  try {
+    var r = await adminFetch('/admin/api/revenue', { cache: 'no-store' });
+    var d = await r.json();
+    if (d.status !== 'ok') throw new Error(d.message || d.error || 'Unknown error');
+    revenueData = d;
+    render(d);
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  } catch (err) {
+    loading.style.display = 'none';
+    error.style.display = 'block';
+    error.textContent = 'Error: ' + err.message + ' — set your admin key, then Refresh.';
+  }
+}
+
+function render(d) {
+  var t = d.totals;
+  document.getElementById('summary-grid').innerHTML = [
+    { num: money(t.settled), label: 'Verified revenue (all time)', sub: 'Server-confirmed, one-off streams' },
+    { num: money(t.mrr), label: 'Active subscriptions / MRR', sub: (t.subscription_count || 0) + ' active monthly patrons' },
+    { num: money(t.pending), label: 'Awaiting verification', sub: 'Not counted as revenue yet' },
+    { num: money(d.consultation ? d.consultation.potential : 0), label: 'Consultation pipeline', sub: (d.consultation ? d.consultation.leads : 0) + ' leads — potential only' }
+  ].map(function(item) {
+    return '<div class="card"><span class="card-num">' + item.num + '</span><div class="card-label">' + item.label + '</div><div class="card-sub">' + item.sub + '</div></div>';
+  }).join('');
+
+  document.getElementById('stream-body').innerHTML = d.streams.map(function(s) {
+    var state = s.pending > 0 ? '<span class="pill warn">has pending</span>' : '<span class="pill ok">clean</span>';
+    return '<tr><td>' + esc(s.label) + '</td>' +
+      '<td class="num">' + money(s.settled) + '</td>' +
+      '<td class="num">' + money(s.pending) + '</td>' +
+      '<td class="num">' + money(s.failed) + '</td>' +
+      '<td class="num">' + (s.count || 0) + '</td>' +
+      '<td>' + esc(when(s.last_at)) + '</td><td>' + state + '</td></tr>';
+  }).join('');
+
+  var monthly = d.monthly || [];
+  var peak = Math.max.apply(null, monthly.map(function(m) { return m.total; }).concat([1]));
+  document.getElementById('bars').innerHTML = monthly.map(function(m) {
+    var h = Math.max(2, Math.round((m.total / peak) * 100));
+    return '<div class="bar-col" title="' + esc(m.month) + ': ' + money(m.total) + '">' +
+      '<div class="bar-val">' + (m.total ? Math.round(m.total).toLocaleString() : '') + '</div>' +
+      '<div class="bar" style="height:' + h + '%"></div>' +
+      '<div class="bar-label">' + esc(m.month.slice(2)) + '</div></div>';
+  }).join('');
+
+  var c = d.consultation || { by_level: [], leads: 0, new_leads: 0, potential: 0 };
+  var consultHtml = '<ul class="list">' +
+    '<li><b>' + (c.leads || 0) + '</b> consultation requests · <b>' + (c.new_leads || 0) + '</b> new' +
+    ' · potential value <b style="color:#C9A84C">' + money(c.potential) + '</b></li>';
+  if (c.by_level && c.by_level.length) {
+    c.by_level.forEach(function(row) {
+      consultHtml += '<li>' + esc(row.service) + ' — ' + row.count + ' lead' + (row.count === 1 ? '' : 's') +
+        (row.unit_price ? ' × ' + money(row.unit_price) + ' = <b>' + money(row.potential) + '</b>' : '') +
+        '</li>';
+    });
+  } else {
+    consultHtml += '<li class="muted">No consultation leads yet. The ladder is live at /consultation/.</li>';
+  }
+  if (c.by_source && c.by_source.length) {
+    consultHtml += '<li>Lead sources: ' + c.by_source.map(function(row) {
+      return esc(row.source) + ' <b>' + row.count + '</b>';
+    }).join(' · ') + '</li>';
+  }
+  consultHtml += '<li class="muted">Pipeline is not income. Count only when the invoice is confirmed paid on a verified rail.</li></ul>';
+  document.getElementById('consultation-card').innerHTML = consultHtml;
+
+  var rc = d.reconciliation || {};
+  var claims = rc.manual_claims || {};
+  var html = '<ul class="list">' +
+    '<li>Unverified donations: <b>' + money(rc.unverified_donations) + '</b> · Failed donations: <b>' + money(rc.failed_donations) + '</b></li>' +
+    '<li>Manual MoMo/bank claims — submitted <b>' + (claims.submitted || 0) + '</b>, approved <b>' + (claims.approved || 0) + '</b>, rejected <b>' + (claims.rejected || 0) + '</b></li>';
+  (d.manual_channels || []).forEach(function(ch) {
+    html += '<li><span class="pill manual">' + esc(ch.label) + '</span> — ' + esc(ch.note) + '</li>';
+  });
+  html += '<li class="muted">No redirect or success parameter is trusted as proof of payment anywhere on this site.</li></ul>';
+  document.getElementById('recon-card').innerHTML = html;
+}
+
+function exportCsv() {
+  if (!revenueData) return;
+  var rows = [['stream', 'kind', 'settled_ghs', 'pending_ghs', 'failed_ghs', 'transactions', 'last_verified']];
+  revenueData.streams.forEach(function(s) {
+    rows.push([s.label, s.kind, s.settled, s.pending, s.failed, s.count, s.last_at || '']);
+  });
+  rows.push(['Active subscriptions (MRR)', 'recurring', revenueData.totals.mrr, 0, 0, revenueData.totals.subscription_count, '']);
+  rows.push(['Consultation pipeline', 'pipeline', revenueData.consultation.potential, 0, 0, revenueData.consultation.leads, '']);
+  rows.push([]);
+  rows.push(['month', 'total_ghs']);
+  (revenueData.monthly || []).forEach(function(m) { rows.push([m.month, m.total]); });
+  var csv = rows.map(function(r) {
+    return r.map(function(cell) { return '"' + String(cell == null ? '' : cell).replace(/"/g, '""') + '"'; }).join(',');
+  }).join('\r\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'studio-gabochie-revenue-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+loadRevenue();
+</script>
+</body>
+</html>

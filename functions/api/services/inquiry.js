@@ -1,18 +1,22 @@
 import { queueEmail } from '../email/_send.js';
 import { verifyTurnstile, turnstileToken } from '../_turnstile.js';
 
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[c]));
+
 const notifyHtml = (service, name, email, phone, company, budget, timeline, description, referral) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:20px">
-  <h2 style="color:#0A1628">New Service Inquiry: ${service}</h2>
+  <h2 style="color:#0A1628">New Service Inquiry: ${esc(service)}</h2>
   <table style="font-family:Georgia,serif;font-size:15px;color:#6B7F9A;border-collapse:collapse;width:100%">
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:120px">Service:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${service}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${name}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${email}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Phone:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${phone || '—'}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Company:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${company || '—'}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Budget:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${budget || '—'}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Timeline:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${timeline || '—'}</td></tr>
-    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Referral:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${referral || '—'}</td></tr>
-    ${description ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Description:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${description}</td></tr>` : ''}
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700;width:120px">Service:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${esc(service)}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Name:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${esc(name)}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Email:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${esc(email)}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Phone:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${phone ? esc(phone) : '—'}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Company:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${company ? esc(company) : '—'}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Budget:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${budget ? esc(budget) : '—'}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Timeline:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${timeline ? esc(timeline) : '—'}</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Referral:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${referral ? esc(referral) : '—'}</td></tr>
+    ${description ? `<tr><td style="padding:8px 12px;border:1px solid #E2E6ED;font-weight:700">Description:</td><td style="padding:8px 12px;border:1px solid #E2E6ED">${esc(description)}</td></tr>` : ''}
   </table>
   <p style="font-size:12px;color:#94A3B8;margin-top:16px"><a href="https://studio.gabochie.com/admin/services.html">Manage Inquiries</a></p></body></html>`;
 

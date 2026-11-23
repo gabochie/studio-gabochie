@@ -276,6 +276,27 @@ export const assessmentWelcome = (name, refCode) => `<!DOCTYPE html><html><body 
     </td></tr>
   </table></body></html>`;
 
+export const assessmentFollowup = (name) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
+  <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
+    <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.45em;color:#C9A84C;text-transform:uppercase">Studio Gabochie</span>
+    </td></tr>
+    <tr><td style="padding:32px 0 24px">
+      <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:#0A1628;margin:0 0 8px">From a list of 24 <span style="color:#C9A84C">to one plan</span></h1>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">${name ? 'Hi ' + name + ',' : 'Hello,'}</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">A few days ago you took the free Online Income Assessment and got the 24-path guide. The hardest part is rarely finding options — it is choosing one and starting well.</p>
+      <p style="font-family:Georgia,serif;font-size:16px;color:#6B7F9A;line-height:1.7;margin:0 0 16px">If you would rather pressure-test your shortlist with someone who has built online income in Ghana, I offer a one-hour <strong>Anchor Session</strong>: GH₵1,500 (about $90). We work through your top path, kill the weak assumptions, and you leave with written next steps.</p>
+      <div style="text-align:center;margin:26px 0">
+        <a href="https://studio.gabochie.com/consultation/?from=money-ghana&utm_campaign=assessment-followup" style="display:inline-block;background:#C9A84C;color:#0A1628;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 36px;border-radius:6px">See Consultation Options</a>
+      </div>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#94A3B8;line-height:1.7;margin:0 0 24px">Not ready for that? <a href="https://studio.gabochie.com/money-ghana/guide/" style="color:#C9A84C">Reopen the free guide</a> and pick one path to try this month. The guide stays free either way.</p>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#6B7F9A;line-height:1.7;margin:0">Warmly,<br>Gideon Abochie</p>
+    </td></tr>
+    <tr><td style="text-align:center;padding-top:20px;border-top:1px solid #E2E6ED">
+      <p style="font-family:'Courier Prime',monospace;font-size:10px;color:#94A3B8;margin:0">Studio Gabochie &mdash; Accra, Ghana</p>
+    </td></tr>
+  </table></body></html>`;
+
 export const waitlistConfirmation = (name, programTitle) => `<!DOCTYPE html><html><body style="font-family:Georgia,serif;background:#FAFAFA;padding:40px 20px">
   <table align="center" width="560" style="background:#fff;border-radius:8px;padding:40px">
     <tr><td style="text-align:center;padding-bottom:20px;border-bottom:1px solid #E2E6ED">
