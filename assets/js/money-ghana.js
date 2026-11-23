@@ -98,6 +98,15 @@
       '<div class="payout"><i class="ti ti-credit-card"></i> ' + m.payout + '</div></article>';
   }
 
+  function consultLink() {
+    var top = state.ranked[0] && state.ranked[0].method;
+    var params = new URLSearchParams();
+    params.set('from', 'money-ghana');
+    params.set('path', top ? top.title : '');
+    params.set('profile', $('summary') ? $('summary').textContent : '');
+    return '/consultation/?' + params.toString();
+  }
+
   function setGateEnabled(enabled) {
     ['gateName', 'gateEmail', 'gatePhone', 'gateBtn'].forEach(function (id) {
       var el = $(id);
@@ -110,6 +119,7 @@
     if (!state.ranked.length) {
       $('resultPlaceholder').hidden = false;
       $('resultList').innerHTML = '';
+      $('consultCta').hidden = true;
       setGateEnabled(false);
       return;
     }
@@ -125,6 +135,10 @@
       $('gatePanel').hidden = true;
       $('unlockedMsg').hidden = false;
       $('printBtn').hidden = false;
+      $('consultCtaLink').href = consultLink();
+      $('consultCta').hidden = false;
+    } else {
+      $('consultCta').hidden = true;
     }
   }
 

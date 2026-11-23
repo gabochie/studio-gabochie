@@ -85,6 +85,10 @@
 .school-empty{padding:28px;border:1px dashed #1E3250;border-radius:12px;color:#5A7A9F;font-size:13px;font-style:italic}
 .wisdom-note{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:20px 24px;margin-bottom:28px;font-size:13px;color:#A8B8CD;line-height:1.6}
 .wisdom-note strong{color:#C9A84C;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase}
+.selar-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 14px;margin-bottom:20px}
+.selar-strip span{font-size:12px;color:#8A9BB5;flex:1;min-width:160px}
+.selar-link{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border:1px solid rgba(201,168,76,.45);border-radius:8px;color:#E8D08A;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-decoration:none;background:rgba(201,168,76,.06);white-space:nowrap}
+.selar-link:hover{background:#C9A84C;color:#0A1628}
 </style>
 </head>
 <body>
@@ -95,6 +99,10 @@
   <div class="hero-eyebrow">Studio Gabochie · Creativity, Love &amp; Wisdom</div>
   <h1>Seven Categories. <span>One Way of Seeing.</span></h1>
   <p>Everything here teaches you to create — with your mind, with people, at work, through art, and for your country. Each course starts free with Module 1, no card required.</p>
+  <div class="selar-strip" data-selar-show="courses" style="display:none;max-width:640px;margin:20px auto 0;text-align:left">
+    <span>Prefer Selar? Get selected courses through Selar's hosted checkout — cards, MoMo and wallets.</span>
+    <a class="selar-link" data-selar-link="courses" href="#">Courses on Selar &nearr;</a>
+  </div>
 </div>
 
 <div class="programs">
@@ -390,5 +398,6 @@ document.getElementById('enrollForm').addEventListener('submit', function (e) {
 });
 </script>
 <script src="../nav.js"></script>
+<script src="/assets/js/selar-links.js"></script>
 </body>
 </html>
