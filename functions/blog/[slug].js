@@ -16,29 +16,48 @@ function parseArr(v) {
   } catch (_e) { return []; }
 }
 
+function dbNow() {
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function isFuture(value) {
+  var s = String(value || '').replace('T', ' ').replace('Z', '').slice(0, 19);
+  return !!s && s > dbNow();
+}
+
 export async function onRequest(context) {
   var { request, env, params } = context;
   if (request.method !== 'GET') return new Response('Method not allowed', { status: 405 });
   var slug = (params && params.slug) || '';
   if (!slug || !env.DB) return new Response('Not found', { status: 404 });
 
-  var post = await env.DB.prepare(
-    "SELECT slug, title, excerpt, html, cover_image, tags, faqs, author, published_at, updated_at FROM posts WHERE slug = ? AND status = 'published'"
-  ).bind(slug).first().catch(function () { return null; });
-
-  if (!post) {
-    // Function routes run before static serving: fall back to a pre-rendered
-    // cornerstone file (e.g. /blog/what-is-creativity-coaching/) if present.
-    try {
-      if (env.ASSETS) {
-        var staticRes = await env.ASSETS.fetch(new URL('/blog/' + slug + '/', request.url));
-        if (staticRes && staticRes.status === 200) return staticRes;
-      }
-    } catch (_e) {}
+  function notFound() {
     return new Response(
       '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Article Not Found — Studio Gabochie</title><style>body{font-family:Georgia,serif;background:#0A1628;color:#CBD5E1;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;text-align:center}h1{color:#fff}a{color:#C9A84C}</style></head><body><div><h1>Article Not Found</h1><p>This story is still being written.</p><a href="/blog/">&larr; All articles</a></div></body></html>',
       { status: 404, headers: { 'Content-Type': 'text/html;charset=utf-8' } }
     );
+  }
+
+  var post = await env.DB.prepare(
+    "SELECT slug, title, excerpt, html, cover_image, tags, faqs, author, published_at, updated_at FROM posts WHERE slug = ? AND status = 'published' AND published_at != '' AND published_at <= datetime('now')"
+  ).bind(slug).first().catch(function () { return null; });
+
+  if (!post) {
+    // A scheduled or future-dated DB row must never fall through to a static
+    // file of the same slug — that would leak content before its publish date.
+    var row = await env.DB.prepare('SELECT status, published_at FROM posts WHERE slug = ?').bind(slug).first().catch(function () { return null; });
+    var wouldLeak = row && (row.status === 'scheduled' || (row.status === 'published' && isFuture(row.published_at)));
+    if (!wouldLeak) {
+      // Function routes run before static serving: fall back to a pre-rendered
+      // cornerstone file (e.g. /blog/what-is-creativity-coaching/) if present.
+      try {
+        if (env.ASSETS) {
+          var staticRes = await env.ASSETS.fetch(new URL('/blog/' + slug + '/', request.url));
+          if (staticRes && staticRes.status === 200) return staticRes;
+        }
+      } catch (_e) {}
+    }
+    return notFound();
   }
 
   var tags = parseArr(post.tags);
@@ -65,13 +84,13 @@ export async function onRequest(context) {
   try {
     if (tags.length) {
       var r = await env.DB.prepare(
-        "SELECT slug, title, excerpt FROM posts WHERE status = 'published' AND slug != ? AND tags LIKE ? ORDER BY published_at DESC LIMIT 3"
+        "SELECT slug, title, excerpt FROM posts WHERE status = 'published' AND published_at != '' AND published_at <= datetime('now') AND slug != ? AND tags LIKE ? ORDER BY published_at DESC LIMIT 3"
       ).bind(post.slug, '%' + tags[0] + '%').all();
       related = r.results || [];
     }
     if (!related.length) {
       var r2 = await env.DB.prepare(
-        "SELECT slug, title, excerpt FROM posts WHERE status = 'published' AND slug != ? ORDER BY published_at DESC LIMIT 3"
+        "SELECT slug, title, excerpt FROM posts WHERE status = 'published' AND published_at != '' AND published_at <= datetime('now') AND slug != ? ORDER BY published_at DESC LIMIT 3"
       ).bind(post.slug).all();
       related = (r2.results || []);
     }

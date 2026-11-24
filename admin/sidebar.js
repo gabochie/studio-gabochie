@@ -30,6 +30,14 @@
       ]
     },
     {
+      label: 'Content',
+      items: [
+        { href: 'content-calendar.html', icon: '\uD83D\uDDC5', label: 'Content Calendar' },
+        { href: 'blog.html',             icon: '\u270D\uFE0F',  label: 'Blog' },
+        { href: 'content-ai.html',       icon: '\u2728',        label: 'AI Content' }
+      ]
+    },
+    {
       label: 'Audience',
       items: [
         { href: 'members.html',     icon: '\uD83D\uDC65', label: 'Members' },

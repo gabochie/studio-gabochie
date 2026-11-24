@@ -11,7 +11,7 @@ export async function onRequest(context) {
       return new Response('D1 not bound', { status: 501 });
     }
     const rows = await env.DB.prepare(
-      "SELECT slug, updated_at, published_at, created_at FROM posts WHERE status = 'published' ORDER BY published_at DESC LIMIT 500"
+      "SELECT slug, updated_at, published_at, created_at FROM posts WHERE status = 'published' AND published_at != '' AND published_at <= datetime('now') ORDER BY published_at DESC LIMIT 500"
     ).all();
     const urls = (rows.results || [])
       .filter(function (r) { return /^[a-z0-9-]+$/.test(r.slug || ''); })

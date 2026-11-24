@@ -100,7 +100,7 @@ export async function onRequest(context) {
     article: function () {
       return env.DB.prepare(
         "SELECT slug, title, excerpt, cover_image, author, published_at FROM posts " +
-        "WHERE status = 'published' AND (title LIKE ? OR excerpt LIKE ? OR COALESCE(tags, '') LIKE ?) " +
+        "WHERE status = 'published' AND published_at != '' AND published_at <= datetime('now') AND (title LIKE ? OR excerpt LIKE ? OR COALESCE(tags, '') LIKE ?) " +
         "ORDER BY published_at DESC LIMIT ?"
       ).bind(needle, needle, needle, LIMITS.article).all();
     },

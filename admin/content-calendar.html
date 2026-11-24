@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23C9A84C'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%230A1628'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Content Calendar — Admin · Studio Gabochie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.hint{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px 16px;font-size:12px;color:#8A9BB5;margin-bottom:16px;line-height:1.6}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.stat{background:#0F1E38;border:1px solid #1E3250;border-radius:8px;padding:10px 16px;min-width:110px}
+.stat b{display:block;color:#E8EEF7;font-size:20px;font-family:'Syne',sans-serif}
+.stat span{font-size:10px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.filters select,.filters input{background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:8px 10px;color:#E8EEF7;font-size:12px;font-family:inherit}
+h2.section{color:#E8EEF7;font-size:15px;margin:22px 0 10px;font-family:'Syne',sans-serif}
+.qtable{width:100%;border-collapse:collapse;background:#0F1E38;border:1px solid #1E3250;border-radius:8px;overflow:hidden;font-size:12px}
+.qtable th{text-align:left;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px;font-size:10px;padding:10px 12px;border-bottom:1px solid #1E3250}
+.qtable td{padding:10px 12px;border-bottom:1px solid rgba(30,50,80,.6);color:#CBD5E1;vertical-align:top}
+.qtable tr:last-child td{border-bottom:none}
+.qtable .hook{color:#E8EEF7;max-width:420px}
+.qtable .mono{font-family:'Space Mono',monospace;font-size:11px;color:#8A9BB5}
+.qtable .actions{display:flex;gap:5px;flex-wrap:wrap}
+.qtable button{padding:4px 8px;font-size:10px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap}
+.badge-planned{background:rgba(90,122,159,.15);color:#5A7A9F}
+.badge-ready{background:rgba(96,165,250,.15);color:#60A5FA}
+.badge-due{background:rgba(201,168,76,.18);color:#C9A84C}
+.badge-posted{background:rgba(34,197,94,.15);color:#22C55E}
+.badge-skipped{background:rgba(148,163,184,.12);color:#94A3B8}
+.badge-published{background:rgba(34,197,94,.15);color:#22C55E}
+.badge-scheduled{background:rgba(201,168,76,.15);color:#C9A84C}
+.badge-draft{background:rgba(90,122,159,.15);color:#5A7A9F}
+.inline-form{background:#0F1E38;border:1px solid #C9A84C;border-radius:8px;padding:20px;margin-bottom:16px}
+.inline-form h3{color:#E8EEF7;font-size:14px;margin-bottom:12px}
+.fields{display:flex;flex-direction:column;gap:12px}
+.field-row{display:flex;gap:12px;flex-wrap:wrap}
+.field{flex:1;min-width:160px}
+.field label{display:block;font-size:10px;color:#5A7A9F;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.field input,.field textarea,.field select{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:6px;padding:9px 12px;color:#E8EEF7;font-size:12px;font-family:inherit}
+.field textarea{min-height:64px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#C9A84C}
+.form-actions{display:flex;gap:8px;margin-top:8px}
+.table-empty{padding:20px;color:#5A7A9F;font-size:12px;text-align:center;background:#0F1E38;border:1px solid #1E3250;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1 class="page-title">Content <span>Calendar</span></h1>
+  <p class="page-desc">The 30-day assessment-led plan, wired to <a href="/money-ghana/" style="color:#C9A84C">/money-ghana/</a> with UTM campaigns. Due items become copy-and-post reminders — no platform auto-posting.</p>
+
+  <div class="hint">Daily rhythm: check <strong>Due</strong>, copy the hook + link, post manually, then mark <strong>Posted</strong>. Blog posts with status <strong>Scheduled</strong> are published automatically by the hourly cron. The hourly cron also flips due social items to <strong>Due</strong>.</div>
+
+  <div class="toolbar">
+    <button class="btn btn-gold" onclick="seedPlan()">Seed 30-day plan</button>
+    <button class="btn btn-ghost" onclick="showForm()">+ Add post</button>
+    <button class="btn btn-ghost" onclick="load()">Refresh</button>
+    <a class="btn btn-ghost" href="blog.html" style="text-decoration:none">Blog Manager</a>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="filters">
+    <label style="font-size:10px;color:#5A7A9F;text-transform:uppercase">Week
+      <select id="filterWeek" onchange="renderQueue()"><option value="">All</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    </label>
+    <label style="font-size:10px;color:#5A7A9F;text-transform:uppercase">Platform
+      <select id="filterPlatform" onchange="renderQueue()"><option value="">All</option><option>instagram</option><option>whatsapp</option><option>newsletter</option><option>facebook</option><option>tiktok</option><option>linkedin</option></select>
+    </label>
+    <label style="font-size:10px;color:#5A7A9F;text-transform:uppercase">Status
+      <select id="filterStatus" onchange="renderQueue()"><option value="">All</option><option>planned</option><option>ready</option><option>due</option><option>posted</option><option>skipped</option></select>
+    </label>
+  </div>
+
+  <div id="itemForm" class="inline-form" style="display:none"></div>
+
+  <h2 class="section">Social queue</h2>
+  <div id="queue"><div class="table-empty">Loading…</div></div>
+
+  <h2 class="section">Blog publish queue</h2>
+  <div id="blogQueue"><div class="table-empty">Loading…</div></div>
+
+</div>
+<div class="footer"><a href="index.html">&larr; Dashboard</a> &nbsp; <a href="calendar.html">Issue Calendar</a></div>
+
+<script src="admin-ui.js"></script>
+<script src="admin.js"></script>
+<script src="sidebar.js"></script>
+<script>
+if (!getAdminKey()) ensureAdminKey();
+
+var STATE = { items: [], posts: [] };
+
+function esc(value) {
+  return escapeHtml(String(value == null ? '' : value));
+}
+
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  return adminFetch(path, opts).then(function (r) { return r.json(); });
+}
+
+function load() {
+  api('/api/admin/social-queue').then(function (data) {
+    if (data && data.status === 'error') throw new Error(data.message || 'API error');
+    STATE.items = (data && data.items) || [];
+    STATE.posts = (data && data.posts) || [];
+    renderStats();
+    renderQueue();
+    renderBlogQueue();
+  }).catch(function (err) {
+    Toast.error('Could not load calendar: ' + (err.message || 'unknown error'));
+  });
+}
+
+function renderStats() {
+  var counts = { planned: 0, ready: 0, due: 0, posted: 0, skipped: 0 };
+  STATE.items.forEach(function (item) { if (counts[item.status] !== undefined) counts[item.status]++; });
+  document.getElementById('stats').innerHTML = ['planned', 'ready', 'due', 'posted'].map(function (key) {
+    return '<div class="stat"><b>' + counts[key] + '</b><span>' + key + '</span></div>';
+  }).join('');
+}
+
+function filtered() {
+  var week = document.getElementById('filterWeek').value;
+  var platform = document.getElementById('filterPlatform').value;
+  var status = document.getElementById('filterStatus').value;
+  return STATE.items.filter(function (item) {
+    return (!week || String(item.week) === week) &&
+      (!platform || item.platform === platform) &&
+      (!status || item.status === status);
+  });
+}
+
+function renderQueue() {
+  var items = filtered();
+  var el = document.getElementById('queue');
+  if (!items.length) {
+    el.innerHTML = '<div class="table-empty">No items match these filters. Seed the plan or add a post.</div>';
+    return;
+  }
+  el.innerHTML = '<table class="qtable"><thead><tr>' +
+    '<th>Day</th><th>Content</th><th>CTA / UTM</th><th>Scheduled</th><th>Status</th><th>Actions</th>' +
+    '</tr></thead><tbody>' + items.map(function (item) {
+      var badgeClass = 'badge-' + (item.status || 'planned');
+      var actions = '<button class="btn btn-ghost" onclick="editItem(' + item.id + ')">Edit</button>' +
+        '<button class="btn btn-ghost" onclick="setStatus(' + item.id + ", 'ready')\">Ready</button>";
+      if (item.status === 'ready' || item.status === 'due') {
+        actions += '<button class="btn btn-gold" onclick="setStatus(' + item.id + ", 'posted')\">Posted</button>";
+      }
+      if (item.cta_url) {
+        actions += '<button class="btn btn-ghost" data-url="' + esc(item.cta_url) + '" onclick="copyText(this.dataset.url)">Copy link</button>';
+      }
+      actions += '<button class="btn btn-danger" onclick="deleteItem(' + item.id + ')">Del</button>';
+      return '<tr>' +
+        '<td class="mono">D' + esc(item.day) + ' · W' + esc(item.week) + '<br>' + esc(item.platform) + '</td>' +
+        '<td class="hook"><strong>' + esc(item.hook) + '</strong><br><span class="mono">' + esc(item.pillar) + ' · ' + esc(item.format) + (item.paths ? ' · paths ' + esc(item.paths) : '') + '</span></td>' +
+        '<td class="mono">' + esc(item.cta) + '<br>' + esc(item.utm_campaign) + (item.hard_cta ? ' <span style="color:#C9A84C">HARD</span>' : '') + '</td>' +
+        '<td class="mono">' + esc(item.scheduled_at) + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + esc(item.status) + '</span></td>' +
+        '<td><div class="actions">' + actions + '</div></td>' +
+        '</tr>';
+    }).join('') + '</tbody></table>';
+}
+
+function renderBlogQueue() {
+  var el = document.getElementById('blogQueue');
+  if (!STATE.posts.length) {
+    el.innerHTML = '<div class="table-empty">No blog posts yet.</div>';
+    return;
+  }
+  el.innerHTML = '<table class="qtable"><thead><tr>' +
+    '<th>Title</th><th>Status</th><th>Publish date</th><th>Scheduled</th><th>Campaign</th>' +
+    '</tr></thead><tbody>' + STATE.posts.map(function (p) {
+      var badge = p.status === 'published' ? 'badge-published' : (p.status === 'scheduled' ? 'badge-scheduled' : 'badge-draft');
+      return '<tr><td class="hook"><a href="/blog/' + encodeURIComponent(p.slug) + '/" target="_blank" style="color:#E8EEF7;text-decoration:none">' + esc(p.title) + '</a>' +
+        '<br><span class="mono">/' + esc(p.slug) + '/</span></td>' +
+        '<td><span class="badge ' + badge + '">' + esc(p.status) + '</span></td>' +
+        '<td class="mono">' + esc(p.published_at) + '</td>' +
+        '<td class="mono">' + esc(p.scheduled_at) + '</td>' +
+        '<td class="mono">' + esc(p.utm_campaign) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+
+function showForm(item) {
+  var v = function (key) { return esc(item ? (item[key] || '') : ''); };
+  var localDate = function (value) { return esc(String(value || '').replace(' ', 'T').slice(0, 16)); };
+  var form = document.getElementById('itemForm');
+  form.innerHTML = '<h3>' + (item ? 'Edit post · day ' + esc(item.day) : 'Add a post') + '</h3><div class="fields">' +
+    '<div class="field"><label>Hook / caption starter</label><textarea id="fHook">' + v('hook') + '</textarea></div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label>Platform</label><input id="fPlatform" value="' + (v('platform') || 'instagram') + '"></div>' +
+      '<div class="field"><label>Format</label><input id="fFormat" value="' + v('format') + '"></div>' +
+      '<div class="field"><label>Pillar</label><input id="fPillar" value="' + v('pillar') + '"></div>' +
+    '</div><div class="field-row">' +
+      '<div class="field"><label>Day</label><input id="fDay" type="number" value="' + (v('day') || '1') + '"></div>' +
+      '<div class="field"><label>Week</label><input id="fWeek" type="number" value="' + (v('week') || '1') + '"></div>' +
+      '<div class="field"><label>Scheduled for</label><input id="fScheduled" type="datetime-local" value="' + localDate(item && item.scheduled_at) + '"></div>' +
+    '</div><div class="field-row">' +
+      '<div class="field"><label>CTA</label><input id="fCta" value="' + v('cta') + '"></div>' +
+      '<div class="field"><label>UTM campaign</label><input id="fCampaign" value="' + v('utm_campaign') + '"></div>' +
+    '</div><div class="field-row">' +
+      '<div class="field"><label>Link</label><input id="fUrl" value="' + v('cta_url') + '"></div>' +
+      '<div class="field"><label>Alt link</label><input id="fAltUrl" value="' + v('alt_url') + '"></div>' +
+    '</div><div class="field-row">' +
+      '<div class="field"><label>Paths</label><input id="fPaths" value="' + v('paths') + '"></div>' +
+      '<div class="field"><label>Status</label><select id="fStatus">' +
+        ['planned', 'ready', 'due', 'posted', 'skipped'].map(function (s) {
+          return '<option value="' + s + '"' + ((item && item.status === s) ? ' selected' : '') + '>' + s + '</option>';
+        }).join('') + '</select></div>' +
+    '</div><div class="field"><label>Notes</label><textarea id="fNotes">' + v('notes') + '</textarea></div>' +
+    '</div><div class="form-actions">' +
+      '<button class="btn btn-gold" onclick="saveItem(' + (item ? item.id : 'null') + ')">Save</button>' +
+      '<button class="btn btn-ghost" onclick="hideForm()">Cancel</button></div>';
+  form.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hideForm() { document.getElementById('itemForm').style.display = 'none'; }
+
+function formBody() {
+  return {
+    hook: document.getElementById('fHook').value,
+    platform: document.getElementById('fPlatform').value,
+    format: document.getElementById('fFormat').value,
+    pillar: document.getElementById('fPillar').value,
+    day: Number(document.getElementById('fDay').value) || 0,
+    week: Number(document.getElementById('fWeek').value) || 0,
+    scheduled_at: document.getElementById('fScheduled').value,
+    cta: document.getElementById('fCta').value,
+    utm_campaign: document.getElementById('fCampaign').value,
+    cta_url: document.getElementById('fUrl').value,
+    alt_url: document.getElementById('fAltUrl').value,
+    paths: document.getElementById('fPaths').value,
+    status: document.getElementById('fStatus').value,
+    notes: document.getElementById('fNotes').value
+  };
+}
+
+function saveItem(id) {
+  var body = formBody();
+  var path = id ? '/api/admin/social-queue?id=' + id : '/api/admin/social-queue';
+  api(path, {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' }
+  }).then(function (data) {
+    if (data && data.status === 'error') throw new Error(data.message);
+    hideForm();
+    Toast.success(id ? 'Post updated.' : 'Post added.');
+    load();
+  }).catch(function (err) { Toast.error(err.message || 'Save failed.'); });
+}
+
+function editItem(id) {
+  var item = STATE.items.find(function (i) { return i.id === id; });
+  if (item) showForm(item);
+}
+
+function setStatus(id, status) {
+  api('/api/admin/social-queue?id=' + id, {
+    method: 'PUT', body: JSON.stringify({ status: status }), headers: { 'Content-Type': 'application/json' }
+  }).then(function (data) {
+    if (data && data.status === 'error') throw new Error(data.message);
+    Toast.success('Marked ' + status + '.');
+    load();
+  }).catch(function (err) { Toast.error(err.message || 'Update failed.'); });
+}
+
+function deleteItem(id) {
+  if (!confirm('Delete this calendar item?')) return;
+  api('/api/admin/social-queue?id=' + id, { method: 'DELETE' }).then(function () {
+    Toast.success('Deleted.'); load();
+  }).catch(function () { Toast.error('Delete failed.'); });
+}
+
+function seedPlan() {
+  if (!confirm('Seed the 30-day plan? Existing edits are preserved.')) return;
+  api('/api/admin/social-queue', {
+    method: 'POST', body: JSON.stringify({ seed: true }), headers: { 'Content-Type': 'application/json' }
+  }).then(function (data) {
+    Toast.success('Seeded ' + (data.seeded || 0) + ' plan items.');
+    load();
+  }).catch(function () { Toast.error('Seed failed.'); });
+}
+
+function copyText(value) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(value).then(function () { Toast.success('Link copied.'); }).catch(function () { prompt('Copy link:', value); });
+  } else {
+    prompt('Copy link:', value);
+  }
+}
+
+load();
+</script>
+</body>
+</html>

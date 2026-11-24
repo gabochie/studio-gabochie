@@ -42,4 +42,16 @@ describe('GET /api/sitemap-posts', function () {
     var res = await sitemapPosts(ctx);
     expect(res.status).toBe(501);
   });
+
+  it('skips future-dated published posts', async function () {
+    var db = mockDb({
+      posts: [
+        { slug: 'live-post', updated_at: '2026-10-13 10:00:00', published_at: '2026-10-01', status: 'published' },
+        { slug: 'future-post', updated_at: '2026-10-13 10:00:00', published_at: '2099-01-01 09:00:00', status: 'published' }
+      ]
+    });
+    var xml = await sitemapPosts(get(db)).then(function (r) { return r.text(); });
+    expect(xml).toContain('https://studio.gabochie.com/blog/live-post/');
+    expect(xml).not.toContain('future-post');
+  });
 });

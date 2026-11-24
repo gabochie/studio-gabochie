@@ -1,3 +1,23 @@
+import { CONTENT_CALENDAR_PLAN } from '../../../scripts/content-calendar-plan.js';
+
+function sqlText(value) {
+  return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
+}
+
+function planSeedDate(day) {
+  var d = new Date();
+  d.setUTCDate(d.getUTCDate() + (day - 1));
+  d.setUTCHours(9, 0, 0, 0);
+  return d.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+// Idempotent seed for the 30-day assessment calendar. plan_key is UNIQUE so
+// re-running DB Setup never duplicates the plan or overwrites admin edits.
+var CALENDAR_SEED = CONTENT_CALENDAR_PLAN.map(function (item) {
+  var key = 'day-' + item.day + '-' + item.utm_campaign + '-' + item.platform;
+  return `INSERT OR IGNORE INTO social_queue (plan_key, day, week, arc, pillar, platform, format, hook, paths, cta, utm_campaign, hard_cta, cta_url, alt_url, scheduled_at, status) VALUES (${sqlText(key)}, ${item.day}, ${item.week}, ${sqlText(item.arc)}, ${sqlText(item.pillar)}, ${sqlText(item.platform)}, ${sqlText(item.format)}, ${sqlText(item.hook)}, ${sqlText(item.paths)}, ${sqlText(item.cta)}, ${sqlText(item.utm_campaign)}, ${item.hard_cta ? 1 : 0}, ${sqlText(item.cta_url)}, ${sqlText(item.alt_url || '')}, ${sqlText(planSeedDate(item.day))}, 'planned')`;
+});
+
 export async function onRequest(context) {
   const db = context.env.DB;
   if (!db) {
@@ -616,6 +636,38 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug)`,
       `CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status)`,
+      `CREATE INDEX IF NOT EXISTS idx_posts_status_date ON posts(status, published_at)`,
+      `ALTER TABLE posts ADD COLUMN scheduled_at TEXT DEFAULT ''`,
+      `ALTER TABLE posts ADD COLUMN utm_campaign TEXT DEFAULT ''`,
+      // Normalise legacy ISO timestamps so lexicographic date gating works.
+      `UPDATE posts SET published_at = substr(replace(replace(published_at, 'T', ' '), 'Z', ''), 1, 19) WHERE published_at LIKE '%T%'`,
+      // ── Social content queue / 30-day assessment calendar ──
+      `CREATE TABLE IF NOT EXISTS social_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        plan_key TEXT NOT NULL UNIQUE,
+        day INTEGER NOT NULL DEFAULT 0,
+        week INTEGER NOT NULL DEFAULT 0,
+        arc TEXT DEFAULT '',
+        pillar TEXT DEFAULT '',
+        platform TEXT NOT NULL DEFAULT 'instagram',
+        format TEXT DEFAULT '',
+        hook TEXT DEFAULT '',
+        paths TEXT DEFAULT '',
+        cta TEXT DEFAULT '',
+        utm_campaign TEXT DEFAULT '',
+        hard_cta INTEGER NOT NULL DEFAULT 0,
+        cta_url TEXT DEFAULT '',
+        alt_url TEXT DEFAULT '',
+        scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        status TEXT NOT NULL DEFAULT 'planned',
+        posted_at TEXT DEFAULT '',
+        notes TEXT DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_social_queue_status_date ON social_queue(status, scheduled_at)`,
+      `CREATE INDEX IF NOT EXISTS idx_social_queue_campaign ON social_queue(utm_campaign)`,
+      ...CALENDAR_SEED,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
