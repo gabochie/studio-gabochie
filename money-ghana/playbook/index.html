@@ -332,6 +332,11 @@
       .float-card.one{right:0}
       .float-card.two{left:0}
     }
+    .onpage-nav{background:#0F1E38;border-top:1px solid #1E3250;border-bottom:1px solid #1E3250;padding:14px 0;margin-top:24px}
+    .onpage-inner{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .onpage-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#5A7A9F;margin-right:6px}
+    .onpage-nav a{font-size:.85rem;font-weight:600;color:#8A9BB5;text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .15s}
+    .onpage-nav a:hover{color:#C9A84C;background:rgba(201,168,76,.08)}
   </style>
 </head>
 <body>
@@ -588,19 +593,16 @@
 
   </main>
 
-  <!-- ============ FOOTER ============ -->
-  <footer>
-    <div class="container foot">
-      <a class="brand" href="#top"><span class="brand-mark">G</span><span>studio.gabochie.com<small>Free resources for Ghanaian youth</small></span></a>
-      <div class="foot-links">
-        <a href="#ideas">All ideas</a>
-        <a href="#reality">Scam alerts</a>
-        <a href="#faq">FAQ</a>
-        <a href="#checklist">Free checklist</a>
-      </div>
-      <div>© <span id="year"></span> studio.gabochie.com · Earning estimates are illustrative, not guaranteed.</div>
+  <!-- ============ ON-THIS-PAGE NAV ============ -->
+  <nav class="onpage-nav" aria-label="On this page">
+    <div class="container onpage-inner">
+      <span class="onpage-label">On this page</span>
+      <a href="#ideas">All ideas</a>
+      <a href="#reality">Scam alerts</a>
+      <a href="#faq">FAQ</a>
+      <a href="#checklist">Free checklist</a>
     </div>
-  </footer>
+  </nav>
 
   <!-- ============ DETAIL MODAL ============ -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -1175,7 +1177,7 @@
       downloadChecklist(name);
     });
 
-    $("#year").textContent = new Date().getFullYear();
+    var yEl = $("#year"); if (yEl) yEl.textContent = new Date().getFullYear();
     render();
   </script>
   <div id="footer-placeholder"></div>
