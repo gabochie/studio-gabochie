@@ -50,4 +50,30 @@ describe('GET /blog/:slug SSR', function () {
     expect(res.status).toBe(404);
     expect(await res.text()).toContain('/blog/');
   });
+
+  it('does not leak a future-dated post through the static fallback', async function () {
+    var db = mockDb({
+      posts: [{
+        id: 1, slug: 'future', title: 'Future', excerpt: '', html: '<p>secret</p>',
+        cover_image: '', tags: '[]', faqs: '[]', author: 'Gabo',
+        published_at: '2099-01-01 09:00:00', status: 'published', updated_at: '2026-01-01'
+      }]
+    });
+    var res = await onRequest(ctx('future', db, assetsWith(200, '<h1>static leak</h1>')));
+    expect(res.status).toBe(404);
+    expect(await res.text()).not.toContain('static leak');
+  });
+
+  it('still serves a static cornerstone when only a draft row shares the slug', async function () {
+    var db = mockDb({
+      posts: [{
+        id: 1, slug: 'cornerstone', title: 'Draft', excerpt: '', html: '',
+        cover_image: '', tags: '[]', faqs: '[]', author: 'Gabo',
+        published_at: '', status: 'draft', updated_at: '2026-01-01'
+      }]
+    });
+    var res = await onRequest(ctx('cornerstone', db, assetsWith(200, '<h1>static cornerstone</h1>')));
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain('static cornerstone');
+  });
 });

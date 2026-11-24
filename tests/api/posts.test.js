@@ -96,3 +96,43 @@ describe('GET /admin/api/posts (admin list)', function () {
     expect(body.items.find(function (p) { return p.slug === 'drafty'; }).html).toBe('<p>x</p>');
   });
 });
+
+describe('publish-date gating', function () {
+  function futureDb() {
+    return mockDb({
+      posts: [
+        { id: 1, slug: 'live', title: 'Live', excerpt: '', html: '<p>live</p>', cover_image: '', tags: '[]', faqs: '[]', status: 'published', author: 'Gabo', published_at: '2026-01-01 09:00:00', updated_at: '2026-01-01' },
+        { id: 2, slug: 'future', title: 'Future', excerpt: '', html: '<p>future</p>', cover_image: '', tags: '[]', faqs: '[]', status: 'published', author: 'Gabo', published_at: '2099-01-01 09:00:00', updated_at: '2026-01-01' },
+        { id: 3, slug: 'scheduled', title: 'Scheduled', excerpt: '', html: '<p>scheduled</p>', cover_image: '', tags: '[]', faqs: '[]', status: 'scheduled', author: 'Gabo', published_at: '2099-02-01 09:00:00', scheduled_at: '2099-02-01 09:00:00', updated_at: '2026-01-01' }
+      ]
+    });
+  }
+
+  it('hides future-dated and scheduled posts from the public list', async function () {
+    var res = await posts(ctx('http://localhost/api/posts', { db: futureDb() }));
+    var body = await res.json();
+    expect(body.posts.map(function (p) { return p.slug; })).toEqual(['live']);
+  });
+
+  it('404s a future-dated post by slug', async function () {
+    var res = await posts(ctx('http://localhost/api/posts?slug=future', { db: futureDb() }));
+    expect(res.status).toBe(404);
+  });
+
+  it('stores scheduled status, scheduled_at and utm_campaign on write', async function () {
+    var db = futureDb();
+    var created = await (await posts(ctx('http://localhost/api/posts', {
+      db, method: 'POST',
+      body: {
+        slug: 'planned-post', title: 'Planned', status: 'scheduled',
+        scheduled_at: '2099-03-01T09:00:00Z', published_at: '', utm_campaign: 'assessment-d31'
+      }
+    }))).json();
+    expect(created.status).toBe('ok');
+    var row = db._tables.posts.find(function (p) { return p.slug === 'planned-post'; });
+    expect(row.status).toBe('scheduled');
+    expect(row.scheduled_at).toBe('2099-03-01 09:00:00');
+    expect(row.published_at).toBe('2099-03-01 09:00:00');
+    expect(row.utm_campaign).toBe('assessment-d31');
+  });
+});

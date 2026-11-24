@@ -29,6 +29,7 @@
 .form-actions{display:flex;gap:8px;margin-top:8px}
 .badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase}
 .badge-published{background:rgba(34,197,94,.15);color:#22C55E}
+.badge-scheduled{background:rgba(201,168,76,.15);color:#C9A84C}
 .badge-draft{background:rgba(90,122,159,.15);color:#5A7A9F}
 .hint{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px 16px;font-size:12px;color:#8A9BB5;margin-bottom:16px;line-height:1.6}
 </style>
@@ -39,7 +40,7 @@
   <h1 class="page-title">Blog <span>Manager</span></h1>
   <p class="page-desc">Write once, rank everywhere. Posts publish instantly to <a href="/blog/" style="color:#C9A84C">/blog/</a> with full SEO + FAQ markup.</p>
 
-  <div class="hint">Publishing checklist: status <strong>published</strong> + past publish date → live. New slugs also need one line in <strong>scripts/generate-sitemap.cjs</strong> PAGES[] so the next sitemap regen keeps them. Write body HTML with &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;blockquote&gt; — scripts are stripped on save.</div>
+  <div class="hint">Publishing rules: <strong>published</strong> + past publish date → live (date gating is enforced on every public read path). <strong>Scheduled</strong> posts flip to published automatically on the next hourly cron run when their schedule is due. New slugs also need one line in <strong>scripts/generate-sitemap.cjs</strong> PAGES[] so the next sitemap regen keeps them. Write body HTML with &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;blockquote&gt; — scripts are stripped on save.</div>
 
   <button class="btn btn-gold" onclick="showForm()">+ New Article</button>
   <button class="btn btn-ghost" onclick="aiDraft()" id="aiBtn" style="margin-left:8px">✨ AI Draft</button>
@@ -77,9 +78,11 @@ function renderList(items) {
     return;
   }
   el.innerHTML = items.map(function(p) {
-    var badge = p.status === 'published' ? '<span class="badge badge-published">Published</span>' : '<span class="badge badge-draft">Draft</span>';
+    var badge = p.status === 'published' ? '<span class="badge badge-published">Published</span>' :
+      (p.status === 'scheduled' ? '<span class="badge badge-scheduled">Scheduled</span>' : '<span class="badge badge-draft">Draft</span>');
+    var when = p.status === 'scheduled' ? (p.scheduled_at || p.published_at) : p.published_at;
     return '<div class="card"><div class="card-content"><div class="title">' + escapeHtml(p.title) + ' ' + badge + '</div>' +
-      '<div class="sub">/' + escapeHtml(p.slug) + '/ · ' + escapeHtml(p.published_at || 'unpublished') + '</div></div>' +
+      '<div class="sub">/' + escapeHtml(p.slug) + '/ · ' + escapeHtml(when || 'unpublished') + (p.utm_campaign ? ' · ' + escapeHtml(p.utm_campaign) : '') + '</div></div>' +
       '<div class="card-actions"><a class="btn btn-ghost" href="/blog/' + encodeURIComponent(p.slug) + '/" target="_blank" style="text-decoration:none">View</a>' +
       '<button class="btn btn-ghost" onclick="editPost(\'' + p.slug.replace(/'/g, '') + '\')">Edit</button>' +
       '<button class="btn btn-danger" onclick="deletePost(\'' + p.slug.replace(/'/g, '') + '\')">Delete</button></div></div>';
@@ -99,8 +102,10 @@ function showForm(data) {
     '<div class="field-row"><div class="field"><label>Tags (comma separated)</label><input id="pTags" value="' + tags + '"></div>' +
     '<div class="field"><label>Cover image URL (optional)</label><input id="pCover" value="' + v('cover_image') + '"></div></div>' +
     '<div class="field"><label>FAQs as Q::A lines (one per line — powers answer-engine markup)</label><textarea id="pFaqs" placeholder="What is creativity coaching?::...">' + faqsToLines(data) + '</textarea></div>' +
-    '<div class="field-row"><div class="field"><label>Status</label><select id="pStatus"><option value="draft"' + ((!data || data.status !== 'published') ? ' selected' : '') + '>Draft</option><option value="published"' + ((data && data.status === 'published') ? ' selected' : '') + '>Published</option></select></div>' +
-    '<div class="field"><label>Publish date (ISO, blank = now when publishing)</label><input id="pDate" value="' + v('published_at') + '" placeholder="2026-01-15"></div></div>' +
+    '<div class="field-row"><div class="field"><label>Status</label><select id="pStatus"><option value="draft"' + ((!data || (data.status !== 'published' && data.status !== 'scheduled')) ? ' selected' : '') + '>Draft</option><option value="scheduled"' + ((data && data.status === 'scheduled') ? ' selected' : '') + '>Scheduled</option><option value="published"' + ((data && data.status === 'published') ? ' selected' : '') + '>Published</option></select></div>' +
+    '<div class="field"><label>Publish date (blank = now when publishing)</label><input id="pDate" value="' + v('published_at') + '" placeholder="2026-11-25 09:00:00"></div></div>' +
+    '<div class="field-row"><div class="field"><label>Scheduled for (when status = Scheduled)</label><input id="pScheduled" value="' + v('scheduled_at') + '" placeholder="2026-11-25 09:00:00"></div>' +
+    '<div class="field"><label>UTM campaign</label><input id="pCampaign" value="' + v('utm_campaign') + '" placeholder="assessment-w1"></div></div>' +
     '</div><div class="form-actions"><button class="btn btn-gold" onclick="savePost(\'' + (data ? data.slug.replace(/'/g, '') : '') + '\')">Save</button>' +
     '<button class="btn btn-ghost" onclick="hidePostForm()">Cancel</button></div>';
   form.style.display = 'block';
@@ -136,7 +141,9 @@ function savePost(slug) {
     tags: document.getElementById('pTags').value,
     faqs: faqsFromLines(),
     status: document.getElementById('pStatus').value,
-    published_at: document.getElementById('pDate').value
+    published_at: document.getElementById('pDate').value,
+    scheduled_at: document.getElementById('pScheduled').value,
+    utm_campaign: document.getElementById('pCampaign').value
   };
   if (!isEdit) {
     body.slug = document.getElementById('pSlug').value || body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');

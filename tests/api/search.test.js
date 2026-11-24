@@ -123,4 +123,16 @@ describe('GET /api/search', function () {
     }
     expect(last.status).toBe(429);
   });
+
+  it('excludes future-dated published posts', async function () {
+    var db = seed();
+    db._tables.posts.push({
+      id: 4, slug: 'future-systems', title: 'Future Systems', excerpt: 'Not yet published',
+      cover_image: '', author: 'Gabo', published_at: '2099-01-01 09:00:00',
+      status: 'published', tags: 'systems'
+    });
+    var res = await search(get('http://localhost/api/search?q=systems', { DB: db }));
+    var data = await res.json();
+    expect(data.results.map(function (r) { return r.title; })).not.toContain('Future Systems');
+  });
 });

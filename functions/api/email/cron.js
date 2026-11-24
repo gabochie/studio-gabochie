@@ -6,6 +6,10 @@ import { enqueueBroadcast } from '../../admin/api/newsletter/_enqueue.js';
 import { saturdaySendDue } from '../../admin/api/newsletter/schedule.js';
 import { sendWhatsApp } from '../_whatsapp.js';
 
+function dbStamp(value) {
+  return String(value || '').replace('T', ' ').replace('Z', '').slice(0, 19);
+}
+
 export async function onRequest(context) {
   var { request, env } = context;
   var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Cron-Secret' };
@@ -28,7 +32,7 @@ export async function onRequest(context) {
   }
 
   try {
-    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, checkout: { checked: 0, queued: 0 }, renewal: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, errors: [] };
+    var result = { abandoned: { checked: 0, queued: 0 }, upgrade: { checked: 0, queued: 0 }, checkout: { checked: 0, queued: 0 }, renewal: { checked: 0, queued: 0 }, process: { sent: 0, pending: 0 }, posts: { published: 0, due: 0 }, social_queue: { due: 0, checked: 0 }, errors: [] };
 
     // Step 1: Abandoned donation recovery
     try {
@@ -239,6 +243,42 @@ export async function onRequest(context) {
       }
     } catch (err) {
       result.errors.push('scheduled: ' + err.message);
+    }
+
+    // Step 6: publish scheduled blog posts once their date is due.
+    try {
+      var nowDb = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      var { results: duePosts } = await env.DB.prepare(
+        "SELECT id, slug, published_at, scheduled_at FROM posts WHERE status = 'scheduled' AND scheduled_at != '' AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 50"
+      ).all();
+      var published = 0;
+      for (var dp of duePosts) {
+        var when = dbStamp(dp.scheduled_at || dp.published_at) || nowDb;
+        await env.DB.prepare("UPDATE posts SET status = 'published', published_at = ?, updated_at = ? WHERE id = ?")
+          .bind(when, nowDb, dp.id).run();
+        published++;
+      }
+      result.posts = { published: published, due: duePosts.length };
+    } catch (err) {
+      result.errors.push('scheduled-posts: ' + err.message);
+    }
+
+    // Step 7: flag due social-queue items as "due" so the admin calendar can
+    // show a copy + post reminder. No platform auto-posting is attempted.
+    try {
+      var nowSocial = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      var { results: dueSocial } = await env.DB.prepare(
+        "SELECT id FROM social_queue WHERE status IN ('planned', 'ready') AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 50"
+      ).all();
+      var flagged = 0;
+      for (var sq of dueSocial) {
+        await env.DB.prepare("UPDATE social_queue SET status = 'due', updated_at = ? WHERE id = ?")
+          .bind(nowSocial, sq.id).run();
+        flagged++;
+      }
+      result.social_queue = { due: flagged, checked: dueSocial.length };
+    } catch (err) {
+      result.errors.push('social-queue: ' + err.message);
     }
 
     return new Response(JSON.stringify({ status: 'ok', ...result }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
