@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Ghana Youth Hustle Playbook | 30 Real Ways to Start Earning</title>
+  <meta name="description" content="A free, practical guide for Ghanaian youth: 30 real ways to make money in Ghana, ranked by skill level, startup cost, how fast you can start, and how fast you can get paid." />
+  <meta name="theme-color" content="#0A1628" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css" />
+  <style>
+    :root{
+      --ink:#0A1628;
+      --ink-2:#10233a;
+      --paper:#fffdf8;
+      --cream:#fff5e4;
+      --gold:#C9A84C;
+      --gold-deep:#A88A3C;
+      --green:#C9A84C;
+      --green-soft:rgba(201,168,76,.12);
+      --red:#d64c3b;
+      --red-soft:#fde9e5;
+      --blue-soft:#e8f0ff;
+      --line:#e7e2d5;
+      --muted:#5f6d65;
+      --shadow:0 20px 55px rgba(16,35,29,.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--paper);
+      color:var(--ink);
+      font-family:'DM Sans',system-ui,-apple-system,"Segoe UI",sans-serif;
+      line-height:1.6;
+      padding-top:64px;
+      -webkit-font-smoothing:antialiased;
+    }
+    h1,h2,h3,h4{line-height:1.18;margin:0 0 .6em;letter-spacing:-.025em}
+    p{margin:0 0 1em}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+    .container{width:min(1180px,92%);margin-inline:auto}
+    .section{padding:clamp(56px,8vw,104px) 0}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--gold-deep);
+    }
+    .eyebrow::before{content:"";width:22px;height:2px;background:currentColor;border-radius:2px}
+    .muted{color:var(--muted)}
+    .tiny{font-size:.78rem}
+
+    /* ---------- Header ---------- */
+    .site-header{
+      position:sticky;top:64px;z-index:50;
+      background:rgba(255,253,248,.9);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:70px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em}
+    .brand-mark{
+      width:34px;height:34px;border-radius:10px;
+      background:linear-gradient(145deg,var(--gold),#e8862a);
+      display:grid;place-items:center;color:#2a1c05;font-size:1.05rem;
+      box-shadow:0 6px 14px rgba(230,150,30,.28);
+    }
+    .brand small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+    .nav-links{display:flex;align-items:center;gap:26px;font-size:.88rem;font-weight:600}
+    .nav-links a:hover{color:var(--green)}
+    .nav-cta{
+      background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;
+      font-size:.85rem;font-weight:700;border:0;
+    }
+    .nav-cta:hover{background:var(--ink-2)}
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 85% 10%,rgba(201,168,76,.22),transparent 32%),
+        radial-gradient(circle at 10% 90%,rgba(201,168,76,.12),transparent 38%),
+        linear-gradient(135deg,#0A1628,#10233a 60%,#0F1E38);
+      color:#fff;
+      padding:clamp(64px,9vw,118px) 0 clamp(72px,9vw,120px);
+    }
+    .hero::after{
+      content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+      background-image:radial-gradient(rgba(255,255,255,.6) 1px,transparent 1px);
+      background-size:26px 26px;
+    }
+    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(36px,6vw,80px);align-items:center}
+    .hero .eyebrow{color:var(--gold)}
+    .hero h1{font-size:clamp(2.5rem,5.6vw,4.4rem);font-weight:800;max-width:15ch}
+    .hero h1 em{font-style:normal;color:var(--gold)}
+    .hero-lead{max-width:58ch;color:#d8e6de;font-size:1.05rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 30px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;
+      padding:14px 22px;border-radius:999px;font-weight:800;font-size:.93rem;border:0;
+      transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-gold{background:var(--gold);color:#241904;box-shadow:0 12px 28px rgba(246,185,59,.28)}
+    .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.45)}
+    .btn-ghost:hover{background:rgba(255,255,255,.1)}
+    .btn-dark{background:var(--ink);color:#fff}
+    .hero-stats{display:flex;flex-wrap:wrap;gap:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.16)}
+    .hero-stat strong{display:block;font-size:1.5rem;line-height:1;color:var(--gold)}
+    .hero-stat span{font-size:.76rem;color:#bcd0c5}
+
+    .hero-visual{position:relative}
+    .preview{
+      background:var(--paper);color:var(--ink);border-radius:24px;padding:22px;
+      box-shadow:0 30px 70px rgba(0,0,0,.35);transform:rotate(1.6deg);
+    }
+    .preview-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .preview-top span{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .preview-pill{background:var(--green-soft);color:#7A6320;padding:5px 10px;border-radius:999px;font-size:.68rem;font-weight:800}
+    .preview h3{font-size:1.25rem;margin-bottom:6px}
+    .preview p{font-size:.83rem;color:var(--muted);margin-bottom:16px}
+    .preview-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .preview-meta div{background:#f6f3e9;border-radius:12px;padding:10px 12px}
+    .preview-meta small{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .preview-meta b{font-size:.85rem}
+    .float-card{
+      position:absolute;background:#fff;border-radius:14px;padding:12px 15px;
+      box-shadow:0 18px 40px rgba(0,0,0,.25);font-size:.78rem;font-weight:700;
+    }
+    .float-card.one{top:-22px;right:-8px}
+    .float-card.two{bottom:-24px;left:-18px}
+
+    /* ---------- How it works strip ---------- */
+    .strip{background:var(--cream);border-bottom:1px solid var(--line)}
+    .strip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+    .strip-item{display:flex;gap:14px;align-items:flex-start;padding:26px 22px;border-right:1px solid var(--line)}
+    .strip-item:last-child{border-right:0}
+    .strip-num{width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:50%;background:var(--ink);color:var(--gold);font-weight:800;font-size:.8rem}
+    .strip-item b{display:block;font-size:.92rem}
+    .strip-item span{font-size:.78rem;color:var(--muted)}
+
+    /* ---------- Lead capture ---------- */
+    .lead-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(30px,5vw,70px);align-items:center}
+    .lead-card{
+      background:linear-gradient(150deg,#fff9ec,#fff3de);
+      border:1.5px solid #f0d7a1;border-radius:26px;padding:clamp(24px,4vw,38px);
+      box-shadow:var(--shadow);
+    }
+    .lead-card h2{font-size:clamp(1.7rem,3vw,2.4rem)}
+    .lead-badges{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 22px}
+    .lead-badges span{background:#fff;border:1px solid #eddcb9;border-radius:999px;padding:6px 12px;font-size:.72rem;font-weight:700;color:#7a5c20}
+    .lead-form{display:flex;flex-direction:column;gap:10px}
+    .lead-form .row{display:flex;gap:10px;flex-wrap:wrap}
+    .lead-form input{
+      flex:1 1 180px;min-width:0;padding:14px 16px;border-radius:12px;
+      border:1.5px solid #e3d3b1;background:#fff;color:var(--ink);font-size:.92rem;
+    }
+    .lead-form input:focus{border-color:var(--gold-deep);outline:none;box-shadow:0 0 0 4px rgba(246,185,59,.18)}
+    .lead-form .btn{width:100%;margin-top:4px}
+    .form-note{font-size:.72rem;color:#8a7449;margin:12px 0 0;text-align:center}
+    .success-box{display:none;background:#fff;border:1.5px solid #bfe5d2;border-radius:16px;padding:20px;text-align:center}
+    .success-box.show{display:block}
+    .success-box .check{width:46px;height:46px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:1.4rem;margin:0 auto 12px}
+    .lead-points{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+    .lead-points li{display:flex;gap:14px;align-items:flex-start}
+    .lead-points .ico{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:var(--green-soft);font-size:1.1rem}
+    .lead-points b{display:block;font-size:.95rem}
+    .lead-points span{font-size:.83rem;color:var(--muted)}
+
+    /* ---------- Explorer ---------- */
+    .explorer{background:#f7f5ee;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:26px;flex-wrap:wrap}
+    .section-head h2{font-size:clamp(1.9rem,3.6vw,2.8rem);max-width:18ch}
+    .section-head p{max-width:52ch;color:var(--muted);margin-bottom:0}
+
+    .controls{
+      background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;
+      box-shadow:0 10px 30px rgba(16,35,29,.05);margin-bottom:24px;
+    }
+    .controls-top{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .search{flex:1 1 280px;position:relative}
+    .search span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem}
+    .search input{
+      width:100%;padding:13px 14px 13px 40px;border-radius:11px;border:1.5px solid var(--line);
+      background:#fcfbf7;font-size:.9rem;color:var(--ink);
+    }
+    .search input:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
+    .selects{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px}
+    .selects label{display:block;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+    .selects select{
+      width:100%;padding:11px 32px 11px 12px;border-radius:10px;border:1.5px solid var(--line);
+      background:#fcfbf7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6d65' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;
+      appearance:none;font-size:.82rem;font-weight:600;color:var(--ink);cursor:pointer;
+    }
+    .controls-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:13px;border-top:1px dashed var(--line);flex-wrap:wrap}
+    .results-count{font-size:.83rem;color:var(--muted)}
+    .results-count b{color:var(--ink)}
+    .reset-btn{background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.76rem;font-weight:700;color:var(--muted)}
+    .reset-btn:hover{border-color:var(--red);color:var(--red)}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{
+      position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+      padding:20px;display:flex;flex-direction:column;gap:12px;
+      transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+      cursor:pointer;
+    }
+    .card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:#d8cdb2}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .card-icon{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:14px;background:var(--cream);font-size:1.4rem}
+    .chip{padding:5px 10px;border-radius:999px;font-size:.66rem;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+    .chip.easy{background:var(--green-soft);color:#7A6320}
+    .chip.medium{background:#fff2d8;color:#9a6205}
+    .chip.hard{background:var(--red-soft);color:#a33224}
+    .card-cat{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep)}
+    .card h3{font-size:1.06rem;margin:0;letter-spacing:-.02em}
+    .card-blurb{font-size:.81rem;color:var(--muted);margin:0;min-height:2.6em}
+    .card-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+    .meta-box{background:#faf8f2;border-radius:10px;padding:9px 10px}
+    .meta-box small{display:block;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8b968f}
+    .meta-box b{font-size:.76rem}
+    .card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:4px}
+    .free-tag{font-size:.68rem;font-weight:800;color:var(--green)}
+    .open-btn{border:0;background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-size:.72rem;font-weight:800}
+    .card:hover .open-btn{background:var(--green)}
+    .empty{grid-column:1/-1;text-align:center;padding:60px 20px;background:#fff;border:1px dashed var(--line);border-radius:var(--radius)}
+    .empty span{font-size:2rem;display:block;margin-bottom:10px}
+
+    /* ---------- Reality check ---------- */
+    .reality{background:linear-gradient(135deg,#0A1628,#10233a);color:#fff}
+    .reality .eyebrow{color:var(--gold)}
+    .reality h2{font-size:clamp(1.8rem,3.4vw,2.6rem);max-width:20ch}
+    .reality-lead{color:#CBD5E1;max-width:60ch}
+    .warn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:34px}
+    .warn{
+      display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px;
+    }
+    .warn .w-ico{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:12px;background:rgba(214,76,59,.18);font-size:1.1rem}
+    .warn b{display:block;font-size:.93rem}
+    .warn p{font-size:.8rem;color:#bfd0c6;margin:0}
+
+    /* ---------- FAQ ---------- */
+    .faq-grid{display:grid;grid-template-columns:.6fr 1.4fr;gap:clamp(30px,5vw,70px)}
+    .faq-list{display:grid;gap:12px}
+    details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 18px}
+    summary{cursor:pointer;padding:18px 0;font-weight:700;font-size:.92rem;list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"＋";color:var(--green);font-size:1.1rem;font-weight:800}
+    details[open] summary::after{content:"−"}
+    details p{font-size:.85rem;color:var(--muted);padding-bottom:18px;margin:0}
+
+    /* ---------- Final CTA ---------- */
+    .final-cta{background:linear-gradient(135deg,#0F1E38,#162540);border:1px solid #1E3250;border-left:4px solid var(--gold);border-radius:16px;text-align:center;padding:40px 24px;margin:0 0 24px}
+    .final-cta h2{font-size:clamp(1.8rem,3.6vw,2.7rem);max-width:24ch;margin-inline:auto;color:#E8EEF7}
+    .final-cta p{color:#8A9BB5;max-width:52ch;margin:0 auto 24px}
+    .final-cta .btn{padding:14px 32px;font-size:1rem}
+
+    /* ---------- Footer ---------- */
+    footer{background:#0A1628;color:#8A9BB5;padding:40px 0 26px;font-size:.8rem}
+    .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+    .foot .brand{color:#fff}
+    .foot-links{display:flex;gap:18px;flex-wrap:wrap}
+    .foot-links a:hover{color:var(--gold)}
+
+    /* ---------- Modal ---------- */
+    .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+    .modal.open{display:flex}
+    .backdrop{position:absolute;inset:0;background:rgba(7,20,15,.72);backdrop-filter:blur(4px)}
+    .modal-panel{
+      position:relative;z-index:1;background:var(--paper);border-radius:22px;
+      width:min(720px,100%);max-height:90vh;overflow:auto;box-shadow:0 30px 90px rgba(0,0,0,.4);
+    }
+    .modal-head{
+      background:linear-gradient(135deg,#0A1628,#10233a);color:#fff;padding:26px 28px;
+      display:flex;justify-content:space-between;gap:16px;align-items:flex-start;
+    }
+    .modal-head .m-icon{font-size:2rem}
+    .modal-head h3{font-size:1.45rem;margin:6px 0 8px}
+    .modal-head .chip{display:inline-block;margin-right:6px}
+    .close-btn{background:rgba(255,255,255,.12);border:0;color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.2rem;flex:0 0 36px}
+    .close-btn:hover{background:rgba(255,255,255,.25)}
+    .modal-body{padding:26px 28px 30px}
+    .modal-body h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.11em;color:var(--gold-deep);margin:22px 0 12px}
+    .modal-body h4:first-child{margin-top:0}
+    .m-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .m-stats div{background:#f7f4ea;border-radius:12px;padding:12px;text-align:center}
+    .m-stats small{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800}
+    .m-stats b{font-size:.8rem}
+    .steps{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:step}
+    .steps li{position:relative;padding-left:44px;font-size:.87rem}
+    .steps li::before{
+      counter-increment:step;content:counter(step);position:absolute;left:0;top:0;
+      width:30px;height:30px;border-radius:10px;background:var(--green-soft);color:var(--green);
+      display:grid;place-items:center;font-weight:800;font-size:.8rem;
+    }
+    .tools{display:flex;flex-wrap:wrap;gap:8px}
+    .tools span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.72rem;font-weight:700}
+    .callout{border-radius:14px;padding:15px 17px;font-size:.84rem;display:flex;gap:12px;align-items:flex-start}
+    .callout.tip{background:var(--green-soft);color:#0b5e3e}
+    .callout.warnbox{background:var(--red-soft);color:#8c2d20}
+    .m-cta{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .m-cta .btn-dark{padding:12px 20px}
+    .m-cta span{font-size:.75rem;color:var(--muted)}
+
+    /* ---------- Responsive ---------- */
+    @media(max-width:980px){
+      .hero-grid,.lead-wrap,.faq-grid{grid-template-columns:1fr}
+      .hero-visual{max-width:480px}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .selects{grid-template-columns:repeat(3,1fr)}
+      .warn-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:680px){
+      .nav-links{display:none}
+      .strip-grid{grid-template-columns:1fr}
+      .strip-item{border-right:0;border-bottom:1px solid var(--line)}
+      .strip-item:last-child{border-bottom:0}
+      .grid{grid-template-columns:1fr}
+      .selects{grid-template-columns:1fr 1fr}
+      .m-stats{grid-template-columns:1fr 1fr}
+      .hero-actions .btn{width:100%}
+      .preview{transform:none}
+      .float-card.one{right:0}
+      .float-card.two{left:0}
+    }
+    .onpage-nav{background:#0F1E38;border-top:1px solid #1E3250;border-bottom:1px solid #1E3250;padding:14px 0;margin-top:24px}
+    .onpage-inner{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .onpage-label{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#5A7A9F;margin-right:6px}
+    .onpage-nav a{font-size:.85rem;font-weight:600;color:#8A9BB5;text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .15s}
+    .onpage-nav a:hover{color:#C9A84C;background:rgba(201,168,76,.08)}
+  </style>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="studio.gabochie.com home">
+        <span class="brand-mark">G</span>
+        <span>studio.gabochie.com<small>Free resources for Ghanaian youth</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#ideas">The 30 ideas</a>
+        <a href="#reality">Reality check</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="nav-cta" href="#checklist">Get free checklist</a>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Free guide · 2026 edition</span>
+          <h1>30 real ways to <em>make money in Ghana</em> — starting from ₵0.</h1>
+          <p class="hero-lead">No jargon, no “get rich overnight” promises. Every idea is scored by skill level, startup cost, how fast you can start, and how fast you can actually get paid.</p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="#checklist">Get the free starter checklist →</a>
+            <a class="btn btn-ghost" href="#ideas">Browse all 30 ideas</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><strong>30</strong><span>practical ideas</span></div>
+            <div class="hero-stat"><strong>17</strong><span>start for ₵0</span></div>
+            <div class="hero-stat"><strong>7</strong><span> categories</span></div>
+            <div class="hero-stat"><strong>5</strong><span>smart filters</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="float-card one">⚡ Start today</div>
+          <div class="float-card two">💰 First money in days</div>
+          <div class="preview">
+            <div class="preview-top">
+              <span>Sample idea card</span>
+              <span class="preview-pill">EASY · ₵0</span>
+            </div>
+            <h3>🥟 Bofrot & Puff-Puff Seller</h3>
+            <p>Fry small batches at home and sell at school gates, bus stops and WhatsApp groups.</p>
+            <div class="preview-meta">
+              <div><small>Start</small><b>Today</b></div>
+              <div><small>First money</small><b>1–3 days</b></div>
+              <div><small>Cost</small><b>₵0–₵20</b></div>
+              <div><small>Potential</small><b>₵100–₵800/wk</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW TO USE ============ -->
+    <section class="strip">
+      <div class="container strip-grid">
+        <div class="strip-item">
+          <span class="strip-num">1</span>
+          <div><b>Pick your lane</b><span>Filter by skill, money and speed — not vibes.</span></div>
+        </div>
+        <div class="strip-item">
+          <span class="strip-num">2</span>
+          <div><b>Open the playbook</b><span>Get exact steps, tools and what to watch out for.</span></div>
+        </div>
+        <div class="strip-item">
+          <span class="strip-num">3</span>
+          <div><b>Start small, today</b><span>Test with one customer before you spend big.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LEAD CAPTURE ============ -->
+    <section class="section" id="checklist">
+      <div class="container lead-wrap">
+        <div class="lead-card">
+          <span class="eyebrow">Free download</span>
+          <h2>The ₵0 Starter Checklist</h2>
+          <p class="muted">A one-page action list: the 17 ideas you can start for ₵0, what to buy first, and the 3 questions to ask before you spend a cedi.</p>
+          <div class="lead-badges">
+            <span>✓ One-page PDF-style text</span>
+            <span>✓ No spam</span>
+            <span>✓ Ghana-specific</span>
+          </div>
+
+          <form class="lead-form" id="leadForm" novalidate>
+            <div class="row">
+              <input type="text" id="leadName" placeholder="Your name (optional)" autocomplete="name" aria-label="Your name" />
+              <input type="email" id="leadEmail" placeholder="Your email address" autocomplete="email" required aria-label="Your email address" />
+            </div>
+            <button class="btn btn-dark" type="submit">Send me the free checklist →</button>
+          </form>
+          <p class="form-note" id="formNote">You agree to receive the checklist and occasional practical emails from Studio Gabochie. Unsubscribe any time.</p>
+
+          <div class="success-box" id="successBox" role="status" aria-live="polite">
+            <div class="check">✓</div>
+            <b>You're on the list.</b>
+            <p class="muted tiny" style="margin:8px 0 14px">Your checklist is ready. Download it now, and check your inbox once email delivery is connected.</p>
+            <button class="btn btn-gold" type="button" id="downloadBtn">Download checklist (.txt) ↓</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="eyebrow">What you get</span>
+          <h2 style="font-size:clamp(1.7rem,3vw,2.4rem)">A map, not a motivational poster.</h2>
+          <ul class="lead-points">
+            <li><span class="ico">🎯</span><div><b>Zero-cost starting points</b><span>The 17 ideas you can try with what you already have.</span></div></li>
+            <li><span class="ico">⏱️</span><div><b>Speed ranking</b><span>Which ideas pay in days, which take weeks, which take months.</span></div></li>
+            <li><span class="ico">🛡️</span><div><b>Scam filter</b><span>The red flags that cost Ghanaian youth money every year.</span></div></li>
+            <li><span class="ico">📍</span><div><b>Made for Ghana</b><span>MoMo, WhatsApp, market stalls, schools, campuses and local clients.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ IDEA EXPLORER ============ -->
+    <section class="section explorer" id="ideas">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">The playbook</span>
+            <h2>Find the right hustle for your reality.</h2>
+          </div>
+          <p>Sort by what matters most right now: how much you have, how skilled you are, and how quickly you need your first cedi.</p>
+        </div>
+
+        <div class="controls">
+          <div class="controls-top">
+            <div class="search">
+              <span aria-hidden="true">⌕</span>
+              <input type="search" id="q" placeholder="Search ideas, e.g. WhatsApp, baking, design..." aria-label="Search money-making ideas" />
+            </div>
+          </div>
+          <div class="selects">
+            <div>
+              <label for="catFilter">Category</label>
+              <select id="catFilter"><option value="all">All categories</option></select>
+            </div>
+            <div>
+              <label for="levelFilter">Skill level</label>
+              <select id="levelFilter">
+                <option value="all">Any level</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+            <div>
+              <label for="costFilter">Startup cost</label>
+              <select id="costFilter">
+                <option value="all">Any cost</option>
+                <option value="free">₵0 / almost free</option>
+                <option value="low">Under ₵100</option>
+                <option value="mid">₵100 – ₵1,000</option>
+                <option value="high">₵1,000+</option>
+              </select>
+            </div>
+            <div>
+              <label for="speedFilter">First money</label>
+              <select id="speedFilter">
+                <option value="all">Any timeline</option>
+                <option value="days">Within days</option>
+                <option value="weeks">Within weeks</option>
+                <option value="months">1–3+ months</option>
+              </select>
+            </div>
+            <div>
+              <label for="sortFilter">Sort by</label>
+              <select id="sortFilter">
+                <option value="recommended">Recommended</option>
+                <option value="easy">Easiest first</option>
+                <option value="cheap">Cheapest first</option>
+                <option value="fast">Fastest money</option>
+                <option value="earn">Highest earning</option>
+              </select>
+            </div>
+          </div>
+          <div class="controls-foot">
+            <div class="results-count" id="resultsCount" aria-live="polite">Showing <b>30</b> ideas</div>
+            <button class="reset-btn" type="button" id="resetBtn">Reset filters</button>
+          </div>
+        </div>
+
+        <div class="grid" id="ideaGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============ REALITY CHECK ============ -->
+    <section class="section reality" id="reality">
+      <div class="container">
+        <span class="eyebrow">Read this before you start</span>
+        <h2>There are no magic buttons.</h2>
+        <p class="reality-lead">Most people who “make money fast” online in Ghana either already have an audience, a skill, or capital — or they're selling you the dream. Protect your cedi.</p>
+        <div class="warn-grid">
+          <div class="warn"><span class="w-ico">📉</span><div><b>“Guaranteed” forex / crypto profits</b><p>If someone promises fixed daily returns, it's a scam. Real trading loses money too. Never borrow to trade.</p></div></div>
+          <div class="warn"><span class="w-ico">💳</span><div><b>Pay-to-work “data entry” or VPN jobs</b><p>Legit employers don't ask you to pay a registration, training or activation fee before work.</p></div></div>
+          <div class="warn"><span class="w-ico">🧩</span><div><b>Pyramids, MLMs and “recharge and recruit”</b><p>If the money mostly comes from recruiting people below you, not selling a real product, walk away.</p></div></div>
+          <div class="warn"><span class="w-ico">🎁</span><div><b>Freebies that need your GhanaCard photo</b><p>Don't send ID photos, MoMo PINs or OTP codes to anyone. A real business never needs your PIN.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section" id="faq">
+      <div class="container faq-grid">
+        <div>
+          <span class="eyebrow">Questions</span>
+          <h2 style="font-size:clamp(1.8rem,3.2vw,2.4rem)">Before you begin.</h2>
+          <p class="muted">Short, honest answers to the things people ask most.</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>Do I need a GhanaCard or a registered business to start?</summary>
+            <p>For most ideas here: no. You can sell snacks, braid hair, edit videos or tutor with what you have. You'll need valid ID for things like a MoMo agent account, opening a bank account, or formal registration — check the specific requirements with the provider.</p>
+          </details>
+          <details>
+            <summary>What's the fastest way to make money with zero cedis?</summary>
+            <p>Sell something you already own (thrift flip), offer a service you already have (home tutoring, washing bikes, helping someone with their WhatsApp business), or resell airtime/data on credit from a trusted supplier. The fastest path is almost always a service, not a product.</p>
+          </details>
+          <details>
+            <summary>How much can I realistically earn?</summary>
+            <p>The ranges on each card are rough monthly or weekly figures for someone who shows up consistently — not guarantees. A brand-new side hustle often starts near the bottom of the range. Treat the first month as research, not salary.</p>
+          </details>
+          <details>
+            <summary>I'm a student. Can I do this without dropping out?</summary>
+            <p>Yes. Start with ideas that fit your schedule: weekend stalls, after-school tutoring, short-form video editing, WhatsApp-based selling. Pick one, cap it at 5–10 hours a week, and drop it if your grades or health suffer.</p>
+          </details>
+          <details>
+            <summary>How do I get paid by people outside Ghana?</summary>
+            <p>Freelancers commonly use Paystack, Flutterwave, Wise, PayPal (where supported), or MoMo/bank transfer for local clients. Confirm what the client uses before you start work, and never pay an “upgrade” fee to receive your own money.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="section final-cta">
+      <div class="container">
+        <span class="eyebrow">One small step</span>
+        <h2>Don't just read it. Start one thing this week.</h2>
+        <p>Grab the one-page checklist, pick a single idea, and test it with one real customer. That's how every real hustle in Ghana starts.</p>
+        <a class="btn btn-gold" href="#checklist">Get the free checklist →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ ON-THIS-PAGE NAV ============ -->
+  <nav class="onpage-nav" aria-label="On this page">
+    <div class="container onpage-inner">
+      <span class="onpage-label">On this page</span>
+      <a href="#ideas">All ideas</a>
+      <a href="#reality">Scam alerts</a>
+      <a href="#faq">FAQ</a>
+      <a href="#checklist">Free checklist</a>
+    </div>
+  </nav>
+
+  <!-- ============ DETAIL MODAL ============ -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="backdrop" data-close></div>
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <div class="m-icon" id="mIcon"></div>
+          <h3 id="modalTitle"></h3>
+          <div id="mChips"></div>
+        </div>
+        <button class="close-btn" type="button" data-close aria-label="Close details">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       CONTENT — edit these 30 objects to change the resource.
+       costNum: 0=free, 1=<₵100, 2=₵100-₵1,000, 3=₵1,000+
+       levelNum: 1=easy, 2=medium, 3=hard
+       days: approximate days to first money (for sorting)
+       earnMax: rough upper monthly figure (for sorting only)
+       ========================================================= */
+    const IDEAS = [
+      {
+        id:"bofrot", title:"Bofrot & Puff-Puff Seller", icon:"🥟", cat:"Food & Drink", level:"Easy", levelNum:1,
+        cost:"₵0–₵20", costNum:0, start:"Today", first:"1–3 days", days:3, speed:"days",
+        earn:"₵100–₵800 / week", earnMax:3200,
+        blurb:"Fry small batches at home and sell at school gates, bus stops and WhatsApp groups.",
+        steps:["Buy flour, sugar, yeast and oil — ask a local shop for small quantities or credit.","Fry one small test batch in the evening; price at ₵1–₵2 per piece.","Sell where a crowd already passes, then take WhatsApp pre-orders for the next day."],
+        tools:["Cooking pot","Mixing bowl","WhatsApp","Small polythene bags"],
+        tip:"School gates at 3pm and bus stops at 6pm beat a quiet street every time.",
+        watch:"Hot oil is risky. Use a stable surface, keep a lid nearby, and never fry alone with children around."
+      },
+      {
+        id:"waakye", title:"Waakye / Kenkey Micro-Stall", icon:"🍚", cat:"Food & Drink", level:"Medium", levelNum:2,
+        cost:"₵150–₵600", costNum:2, start:"2–4 days", first:"3–7 days", days:7, speed:"days",
+        earn:"₵400–₵2,000 / week", earnMax:8000,
+        blurb:"One signature meal, one busy corner near a workplace, campus or market.",
+        steps:["Cook a small batch for 10–15 people first and ask for honest feedback.","Price a single plate so your ingredient cost stays under 40% of the selling price.","Set a fixed daily time and location; regulars are what make this work."],
+        tools:["Pot & coal/gas","Serving bowls","Table or trolley","Handwashing station"],
+        tip:"One great dish beats a long menu. Add a drink and you've raised your average sale.",
+        watch:"Food safety matters. Keep covered, wash hands, and check local by-laws for street vending."
+      },
+      {
+        id:"fruit", title:"Fresh Fruit & Smoothie Stand", icon:"🍍", cat:"Food & Drink", level:"Easy", levelNum:1,
+        cost:"₵30–₵150", costNum:1, start:"1–2 days", first:"2–5 days", days:5, speed:"days",
+        earn:"₵200–₵1,200 / week", earnMax:4800,
+        blurb:"Buy fruit at the market, cut or blend it, and sell to heat, traffic and gym crowds.",
+        steps:["Buy 2–3 fast-moving fruits (mango, pineapple, watermelon) early in the morning.","Pre-cut into cups, or blend to order with₵50–₵100 for a second-hand blender.","Sell near a gym, school, office or bus station in the afternoon heat."],
+        tools:["Knife & board","Cups","Cooler with ice","Blender (optional)"],
+        tip:"Offer a 'mix of the day' — it reduces waste and makes choosing easy.",
+        watch:"Cut fruit spoils fast. Only prepare what you can sell in one day."
+      },
+      {
+        id:"grilled", title:"Grilled Chicken & Suya Weekend Stand", icon:"🍗", cat:"Food & Drink", level:"Medium", levelNum:2,
+        cost:"₵200–₵800", costNum:2, start:"3–5 days", first:"4–10 days", days:10, speed:"days",
+        earn:"₵500–₵2,500 / week", earnMax:10000,
+        blurb:"A weekend-only grill outside a bar, station or estate — high demand, clear timing.",
+        steps:["Find a permitted spot with evening foot traffic and ask the owner first.","Buy small quantities of chicken, suya spice and charcoal; test your price with 10 portions.","Run Fridays and Saturdays only until you know your numbers."],
+        tools:["Charcoal grill","Skewers","Gloves","Nose mask"],
+        tip:"Pre-sell on WhatsApp on Friday afternoon so you know how much to buy.",
+        watch:"Smoke and fire are hazards. Keep water nearby and never grill in an enclosed space."
+      },
+      {
+        id:"airtime", title:"Airtime & Data Resale", icon:"📱", cat:"Trading & Retail", level:"Easy", levelNum:1,
+        cost:"₵0–₵20", costNum:0, start:"Today", first:"1–2 days", days:2, speed:"days",
+        earn:"₵50–₵600 / week", earnMax:2400,
+        blurb:"Buy airtime or data at a small discount and resell to friends, family and groups.",
+        steps:["Find a legit wholesale reseller or use a network's reseller option.","Start with₵20 of stock and sell to people you already know.","Keep a simple book of who owes you and collect before you restock."],
+        tools:["Phone","WhatsApp","Small notebook or spreadsheet"],
+        tip:"Data bundles sell faster than airtime. Focus on one network first.",
+        watch:"Never buy from someone asking for your MoMo PIN or OTP. Margins are thin — volume is everything."
+      },
+      {
+        id:"momo", title:"Mobile Money Agent / Float Trading", icon:"💸", cat:"Trading & Retail", level:"Medium", levelNum:2,
+        cost:"₵300–₵2,000", costNum:2, start:"3–7 days", first:"1–2 weeks", days:14, speed:"weeks",
+        earn:"₵300–₵2,000 / week", earnMax:8000,
+        blurb:"Provide cash-in/cash-out in a community that still walks to a vendor.",
+        steps:["Visit your network's agent desk to confirm requirements, ID and float minimums.","Pick a spot with steady traffic: market, bus station or a village centre.","Keep careful float records and start with less than you think you need."],
+        tools:["Valid ID","MoMo agent line","Float balance","Small table/booth"],
+        tip:"Your real product is trust. Be the agent who always has cash and never argues over fees.",
+        watch:"Float theft and fraud are real. Never share your PIN, and reconcile your balance daily."
+      },
+      {
+        id:"thrift", title:"Thrift ('Kra-Kra') Reselling", icon:"👕", cat:"Trading & Retail", level:"Easy", levelNum:1,
+        cost:"₵0–₵100", costNum:0, start:"Today", first:"2–7 days", days:7, speed:"days",
+        earn:"₵150–₵1,000 / week", earnMax:4000,
+        blurb:"Start with your own clothes, then buy underpriced bundles and resell item by item.",
+        steps:["List 5 items you no longer wear with clear photos and honest sizes.","Sell on WhatsApp status, Facebook Marketplace or Jiji.","Reinvest the first cedis into a small bundle from a trusted seller."],
+        tools:["Phone camera","WhatsApp","Marketplace app","Clean clothes"],
+        tip:"Wash, iron and photograph in daylight. Presentation can double your price.",
+        watch:"Check bundle quality before paying. A bad bundle can wipe out your profit."
+      },
+      {
+        id:"flip", title:"Marketplace & Jiji Flipping", icon:"🛋️", cat:"Trading & Retail", level:"Easy", levelNum:1,
+        cost:"₵50–₵300", costNum:1, start:"1–2 days", first:"3–14 days", days:14, speed:"days",
+        earn:"₵200–₵1,500 / week", earnMax:6000,
+        blurb:"Buy undervalued items, make small fixes, and resell for a clean margin.",
+        steps:["Browse Facebook Marketplace and Jiji daily for cheap furniture, phones or appliances.","Meet in a safe public place, check the item properly, and negotiate.","Clean or repair lightly, take bright photos, and relist with an honest description."],
+        tools:["Marketplace apps","Transport","Cleaning supplies","Basic toolkit"],
+        tip:"A ₵40 clean and a good photo can add ₵100 to the selling price.",
+        watch:"Never pay before seeing the item. Avoid anything with unclear ownership."
+      },
+      {
+        id:"produce", title:"Market-to-Door Produce Trading", icon:"🍅", cat:"Trading & Retail", level:"Medium", levelNum:2,
+        cost:"₵50–₵200", costNum:1, start:"2–3 days", first:"3–7 days", days:7, speed:"days",
+        earn:"₵200–₵1,200 / week", earnMax:4800,
+        blurb:"Buy tomatoes, plantain or peppers wholesale and deliver to busy households.",
+        steps:["Pick one staple with daily demand in your area.","Buy small at wholesale price, then pre-sell to 5 households before you buy more.","Deliver at a fixed time and take repeat orders on WhatsApp."],
+        tools:["Basket or sacks","Phone","Scale","WhatsApp list"],
+        tip:"Reliability beats cheapness. Being the person who always delivers on time wins repeat orders.",
+        watch:"Produce spoils. Start small and only scale when you have standing orders."
+      },
+      {
+        id:"laundry", title:"Laundry & Ironing Service", icon:"🧺", cat:"Services & Trades", level:"Easy", levelNum:1,
+        cost:"₵30–₵150", costNum:1, start:"1–3 days", first:"4–10 days", days:10, speed:"days",
+        earn:"₵150–₵900 / week", earnMax:3600,
+        blurb:"Wash, dry and press for students, workers and busy families in your area.",
+        steps:["Offer a simple price list per item or per basket.","Start with neighbours and hostel students; collect and return at agreed times.","Keep a tagged ledger so nothing gets lost."],
+        tools:["Bucket or washing machine","Iron","Hanger line","Labelled bags"],
+        tip:"A 'wash + iron + fold' bundle is easier to sell than washing alone.",
+        watch:"Always confirm stain expectations in writing. Disputes over damaged clothes are common."
+      },
+      {
+        id:"carwash", title:"Car & Motorbike Wash", icon:"🚿", cat:"Services & Trades", level:"Easy", levelNum:1,
+        cost:"₵0–₵50", costNum:0, start:"Today", first:"1–4 days", days:4, speed:"days",
+        earn:"₵100–₵800 / week", earnMax:3200,
+        blurb:"A bucket, cloth and a good spot is enough for your first paying customer.",
+        steps:["Buy a bucket, sponge and two cloths.","Offer a first-wash discount to 5 drivers in your area.","Ask each satisfied customer to introduce one friend."],
+        tools:["Bucket","Sponge","Microfibre cloth","Water source"],
+        tip:"Motorbike washes are faster and need less water — start there.",
+        watch:"Don't wash in places where water runoff is a problem, and agree the price before starting."
+      },
+      {
+        id:"dispatch", title:"Errand Runner / Dispatch Rider", icon:"🛵", cat:"Services & Trades", level:"Easy", levelNum:1,
+        cost:"₵0–₵100", costNum:0, start:"Today", first:"1–3 days", days:3, speed:"days",
+        earn:"₵200–₵1,500 / week", earnMax:6000,
+        blurb:"Deliver documents, food and small packages using a bike or public transport.",
+        steps:["Register on a delivery app if you have a bike, or start with local WhatsApp errands.","Set clear pricing: base fee plus distance.","Build a repeat list of shops, pharmacies and offices."],
+        tools:["Bike (or transport fare)","Helmet","Phone + data","Delivery bag"],
+        tip:"Pharmacy and document deliveries often pay better than food.",
+        watch:"Road safety first. Verify the parcel and the recipient; never carry anything you can't describe."
+      },
+      {
+        id:"tutor", title:"Home Tutoring (BECE / WASSCE)", icon:"📚", cat:"Services & Trades", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"1–3 days", first:"1–2 weeks", days:14, speed:"weeks",
+        earn:"₵200–₵1,200 / week", earnMax:4800,
+        blurb:"Teach one subject you're strong in to younger students in your neighbourhood.",
+        steps:["Choose one subject and one exam level you genuinely know.","Prepare a 30-minute sample lesson and offer a free first session.","Get parents to pay weekly in advance and track each student's progress."],
+        tools:["Notebook","Past questions","Phone","Quiet space"],
+        tip:"Small groups of 3–4 students earn more per hour than one-to-one.",
+        watch:"Be honest about your ability. Promising grades you can't deliver will end the referral chain."
+      },
+      {
+        id:"hair", title:"Hair Braiding & Barbering", icon:"💇🏾", cat:"Services & Trades", level:"Medium", levelNum:2,
+        cost:"₵40–₵200", costNum:1, start:"3–7 days", first:"1–2 weeks", days:14, speed:"weeks",
+        earn:"₵300–₵2,000 / week", earnMax:8000,
+        blurb:"One of Ghana's most reliable cash businesses — skill plus a chair and a mirror.",
+        steps:["If you're already skilled, set up a home corner and book your first 3 clients.","If not, learn from a local professional for 2–4 weeks before charging full price.","Sell braids, threading, shaves and styling add-ons as clear priced options."],
+        tools:["Clippers or needles","Mirror","Chair","Hair products"],
+        tip:"Take before/after photos (with permission) — your best marketing is your own work.",
+        watch:"Hygiene builds trust. Clean tools between clients and don't overbook your day."
+      },
+      {
+        id:"makeup", title:"Makeup & Bridal Styling", icon:"💄", cat:"Creative & Events", level:"Medium", levelNum:2,
+        cost:"₵200–₵1,000", costNum:2, start:"1–2 weeks", first:"2–6 weeks", days:30, speed:"weeks",
+        earn:"₵300–₵2,500 / event", earnMax:10000,
+        blurb:"Go where weddings, funerals and photoshoots already are — and be the person who makes people look good.",
+        steps:["Practise on 3–5 friends and build a small portfolio of photos.","Buy a basic kit: base, powders, lipstick, brushes, lashes.","Partner with a photographer or event planner and offer a package price."],
+        tools:["Starter kit","Brushes","Mirror/light","Portfolio photos"],
+        tip:"A 'bridal + bridesmaids' package is worth far more than a single face.",
+        watch:"Arrive early, confirm the exact venue and time in writing, and always have a backup product."
+      },
+      {
+        id:"photo", title:"Event Photography & Videography", icon:"📷", cat:"Creative & Events", level:"Hard", levelNum:3,
+        cost:"₵500–₵2,000", costNum:2, start:"2–6 weeks", first:"1–3 months", days:60, speed:"months",
+        earn:"₵500–₵4,000 / event", earnMax:16000,
+        blurb:"Capture birthdays, weddings and brand events — a skill business that compounds with every job.",
+        steps:["Learn composition and basic editing with the phone you already own.","Shadow a local photographer for free on 2 events.","Offer a low-priced first event in exchange for photos you can use publicly."],
+        tools:["Phone or camera","Editing software","Power bank","Contract/quote template"],
+        tip:"Your contract should state delivery time, number of edited photos, and payment before the date.",
+        watch:"Never rely on one memory card. Backup on the spot and agree on usage rights."
+      },
+      {
+        id:"decor", title:"Event Decor & Balloon Setups", icon:"🎈", cat:"Creative & Events", level:"Easy", levelNum:1,
+        cost:"₵50–₵300", costNum:1, start:"2–5 days", first:"1–3 weeks", days:14, speed:"weeks",
+        earn:"₵200–₵1,500 / event", earnMax:6000,
+        blurb:"Set up balloons, table decor and backdrops for birthdays, weddings and campus parties.",
+        steps:["Practise one themed setup at home and photograph it from every angle.","Buy a reusable kit: balloons, pump, tape, table cloths and a simple backdrop.","Partner with a venue or planner and offer a fixed package price."],
+        tools:["Balloon pump","Backdrop","Table decor","Phone camera"],
+        tip:"A 'setup + photo corner' package gives you a great photo to sell the next job.",
+        watch:"Confirm setup time, venue access and exactly what's included before the event day."
+      },
+      {
+        id:"social", title:"Social Media Management", icon:"📣", cat:"Digital & Online", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"2–5 days", first:"2–4 weeks", days:21, speed:"weeks",
+        earn:"₵200–₵1,500 / client / month", earnMax:6000,
+        blurb:"Run Instagram, TikTok or Facebook pages for local shops that know they 'need social media' but don't have time.",
+        steps:["Pick one platform and learn it properly (Reels, captions, basic analytics).","Offer a free 7-day trial to 3 local businesses: 5 posts and a simple content plan.","Turn results into a monthly package with a fixed price and clear deliverables."],
+        tools:["Phone","Canva","Meta Business Suite","Analytics screenshots"],
+        tip:"Show before/after follower and enquiry numbers — not just pretty graphics.",
+        watch:"Get page access and payment terms agreed in writing. Scope creep kills this business."
+      },
+      {
+        id:"canva", title:"Canva Design & Flyers", icon:"🎨", cat:"Digital & Online", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"1–3 days", first:"1–3 weeks", days:14, speed:"weeks",
+        earn:"₵100–₵1,000 / week", earnMax:4000,
+        blurb:"Design flyers, menus, event posters and logo basics for people who'd rather pay than struggle.",
+        steps:["Master Canva templates, brand colours and readable typography.","Make 6 sample designs for fake Ghanaian businesses to build a mini portfolio.","Sell through WhatsApp status, Facebook groups and local vendors."],
+        tools:["Canva","Phone or laptop","Portfolio link","WhatsApp"],
+        tip:"Charge by the job, not by the hour — and include 2 revisions in the price.",
+        watch:"Don't use copyrighted images or someone else's logo as your own work."
+      },
+      {
+        id:"editing", title:"Short-Form Video Editing", icon:"🎬", cat:"Digital & Online", level:"Medium", levelNum:2,
+        cost:"₵0–₵50", costNum:0, start:"3–7 days", first:"2–4 weeks", days:21, speed:"weeks",
+        earn:"₵300–₵2,000 / week", earnMax:8000,
+        blurb:"Creators and small brands constantly need Reels and TikToks cut fast and well.",
+        steps:["Learn one mobile editor (CapCut) and one style: clean captions, tight pacing.","Edit 3 sample videos from free footage or your own clips.","Offer a first month of 8–12 videos at a low rate to get testimonials."],
+        tools:["CapCut","Phone","Good headphones","Sample footage"],
+        tip:"Fast turnaround is your edge. Offer a 24-hour express option at a higher price.",
+        watch:"Agree on the number of revisions and file format before you start."
+      },
+      {
+        id:"writing", title:"Freelance Writing & Proofreading", icon:"✍️", cat:"Digital & Online", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"2–5 days", first:"2–6 weeks", days:30, speed:"weeks",
+        earn:"₵150–₵1,200 / week", earnMax:4800,
+        blurb:"Write captions, blog posts, product descriptions and school assignments — if you can write clearly, you can sell it.",
+        steps:["Choose a narrow niche: e.g. blog posts, Instagram captions, or CV reviews.","Write 3 strong samples and put them in a simple online portfolio.","Pitch 5 businesses or sign up on a legit freelance platform."],
+        tools:["Google Docs","Grammarly (optional)","Portfolio","Email"],
+        tip:"Proofreading existing content is often easier to sell than writing from scratch.",
+        watch:"Never write someone's graded exam or coursework — stick to legitimate editing and coaching."
+      },
+      {
+        id:"va", title:"Virtual Assistant (Legit Gigs)", icon:"🗂️", cat:"Digital & Online", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"2–5 days", first:"1–4 weeks", days:21, speed:"weeks",
+        earn:"₵300–₵1,800 / week", earnMax:7200,
+        blurb:"Handle inbox replies, data entry, scheduling and customer care for busy small businesses.",
+        steps:["List 3 services you can do reliably: email replies, data tidy-up, order tracking.","Create a simple rate card and a one-page service description.","Apply to real business owners on LinkedIn and local Facebook groups."],
+        tools:["Phone/laptop","Google Sheets","Email","WhatsApp Business"],
+        tip:"Start with a 5-hour trial week. Reliability gets you rehired faster than any certificate.",
+        watch:"If a 'client' asks you to pay for training, software or a starter pack — it's a scam."
+      },
+      {
+        id:"exam", title:"Online Exam Prep Classes", icon:"🧠", cat:"Digital & Online", level:"Medium", levelNum:2,
+        cost:"₵0–₵50", costNum:0, start:"3–7 days", first:"2–4 weeks", days:21, speed:"weeks",
+        earn:"₵200–₵1,500 / week", earnMax:6000,
+        blurb:"Run small WhatsApp or Zoom classes for BECE/WASSCE candidates who need past-question practice.",
+        steps:["Pick one subject and one exam. Gather legit past questions.","Offer a free 30-minute live session to parents and students.","Charge weekly for a structured group with homework and marked practice."],
+        tools:["WhatsApp or Zoom","Past questions","Whiteboard app","Google Forms"],
+        tip:"Parents pay for progress reports. Send one short weekly update per student.",
+        watch:"Don't promise scores. Use official materials and respect copyright."
+      },
+      {
+        id:"content", title:"TikTok / YouTube Content Channel", icon:"🎥", cat:"Digital & Online", level:"Medium", levelNum:2,
+        cost:"₵0", costNum:0, start:"Today", first:"2–6 months", days:90, speed:"months",
+        earn:"₵0–₵5,000+ / month", earnMax:20000,
+        blurb:"Build an audience around a Ghanaian niche — comedy, campus life, food, style, tech or money.",
+        steps:["Pick one clear niche and one format you can sustain 3 times a week.","Post 30 videos before judging results. Track which 3 do best.","Monetise through brand deals, affiliate links, digital products or donations."],
+        tools:["Phone","CapCut","TikTok/YouTube","Basic tripod"],
+        tip:"Specific beats broad: 'Waakye reviews in Kumasi' is better than 'Ghana food'.",
+        watch:"This is the slowest idea here. Keep a side income while the audience grows."
+      },
+      {
+        id:"newsletter", title:"WhatsApp Newsletter / Paid Group", icon:"💬", cat:"Digital & Online", level:"Easy", levelNum:1,
+        cost:"₵0", costNum:0, start:"1–2 days", first:"2–6 weeks", days:30, speed:"weeks",
+        earn:"₵100–₵1,500 / month", earnMax:6000,
+        blurb:"Curate useful info — jobs, hostel deals, cheap data, events — and charge for the convenience.",
+        steps:["Choose one audience: students in a campus, traders in a market, or job seekers.","Send a free daily/weekly digest for two weeks and ask what they'd pay for.","Launch a paid tier with exclusive leads, early info or direct access."],
+        tools:["WhatsApp Business","Google Forms","Canva","Simple payment link"],
+        tip:"Sell access to information, not information anyone can Google.",
+        watch:"Never forward unverified job or scholarship claims — your reputation is the product."
+      },
+      {
+        id:"affiliate", title:"Affiliate Marketing (Ghana Brands)", icon:"🔗", cat:"Digital & Online", level:"Medium", levelNum:2,
+        cost:"₵0", costNum:0, start:"2–7 days", first:"1–3 months", days:60, speed:"months",
+        earn:"₵0–₵3,000 / month", earnMax:12000,
+        blurb:"Earn commission by recommending products you actually use — data, fashion, gadgets, courses.",
+        steps:["Pick 2–3 brands with a real affiliate or referral programme.","Create honest content: reviews, comparisons, 'how I used it' stories.","Share your link where your audience already trusts you."],
+        tools:["Phone","Social account","Link tracker","Honest reviews"],
+        tip:"A smaller audience that trusts you beats a big one that doesn't.",
+        watch:"Don't promote things you haven't used. Fake reviews will destroy trust fast."
+      },
+      {
+        id:"pod", title:"Print-on-Demand & Custom Merch", icon:"👕", cat:"Tech & AI", level:"Medium", levelNum:2,
+        cost:"₵50–₵300", costNum:1, start:"3–7 days", first:"2–8 weeks", days:45, speed:"weeks",
+        earn:"₵100–₵2,000 / month", earnMax:8000,
+        blurb:"Design T-shirts, mugs and hoodies; a printer handles stock and delivery.",
+        steps:["Find a local printer or POD platform and confirm real production costs.","Design 5 simple Ghana-themed or niche items and pre-sell before printing.","Fulfil only what's ordered, then reinvest profits into better designs."],
+        tools:["Canva or Photoshop","Supplier","Mock-up images","Pre-order form"],
+        tip:"Pre-sell first. The biggest mistake is printing 50 shirts nobody asked for.",
+        watch:"Check print quality and delivery times yourself before promising customers."
+      },
+      {
+        id:"web", title:"Web Design for Local Businesses", icon:"💻", cat:"Tech & AI", level:"Hard", levelNum:3,
+        cost:"₵0–₵50", costNum:0, start:"2–6 weeks", first:"1–3 months", days:75, speed:"months",
+        earn:"₵800–₵6,000 / project", earnMax:24000,
+        blurb:"Build simple, fast websites for salons, restaurants, schools and small shops.",
+        steps:["Learn the basics: a landing page, WhatsApp button, gallery and contact form.","Build 3 free demo sites for real local businesses and show them.","Sell a fixed package with clear price, timeline and 2 rounds of changes."],
+        tools:["Laptop","Hosting/domain","Figma or Canva","Portfolio links"],
+        tip:"A one-page site that loads fast and takes bookings often sells better than a big one.",
+        watch:"Get 50% upfront and agree on who owns the domain and files."
+      },
+      {
+        id:"ai", title:"AI-Powered Services for Businesses", icon:"🤖", cat:"Tech & AI", level:"Hard", levelNum:3,
+        cost:"₵0–₵100", costNum:0, start:"2–4 weeks", first:"1–2 months", days:45, speed:"months",
+        earn:"₵500–₵4,000 / project", earnMax:16000,
+        blurb:"Use AI tools to deliver real work faster: social captions, chatbots, reports, product copy.",
+        steps:["Learn 2–3 tools well and one practical outcome, e.g. 'I set up a WhatsApp reply bot'.","Create a before/after demo showing time or money saved.","Sell the outcome, not the tool: 'I'll cut your reply time in half'."],
+        tools:["AI assistant","ChatGPT/Claude","No-code bot tool","Portfolio demo"],
+        tip:"AI is the engine, not the product. Clients pay for the result and your judgement.",
+        watch:"Always check AI output for accuracy. Never paste client secrets into public tools."
+      },
+      {
+        id:"poultry", title:"Backyard Poultry & Egg Sales", icon:"🐔", cat:"Farming", level:"Hard", levelNum:3,
+        cost:"₵300–₵1,500", costNum:2, start:"2–6 weeks", first:"2–4 months", days:75, speed:"months",
+        earn:"₵300–₵2,500 / month", earnMax:10000,
+        blurb:"A small flock can supply eggs and meat to neighbours, shops and restaurants.",
+        steps:["Start with 10–20 birds and a simple, secure coop.","Find a vet or experienced farmer for vaccination and feeding advice.","Pre-sell eggs to 5 regular buyers before expanding."],
+        tools:["Coop","Feed","Waterers","Vet guidance"],
+        tip:"Record feed cost per egg — that single number tells you if you're making money.",
+        watch:"Disease can wipe out a flock overnight. Biosecurity and vaccination are not optional."
+      }
+    ];
+
+    /* =========================================================
+       APP LOGIC — filtering, sorting, lead form, modal
+       ========================================================= */
+    const $ = (sel) => document.querySelector(sel);
+    const grid = $("#ideaGrid");
+    const countEl = $("#resultsCount");
+    const state = { q:"", cat:"all", level:"all", cost:"all", speed:"all", sort:"recommended" };
+
+    // Populate category filter from data
+    const cats = [...new Set(IDEAS.map(i => i.cat))].sort();
+    const catSelect = $("#catFilter");
+    cats.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      catSelect.appendChild(opt);
+    });
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+
+    function filtered(){
+      const q = state.q.trim().toLowerCase();
+      let list = IDEAS.filter(i => {
+        if(q){
+          const hay = [i.title,i.cat,i.blurb,i.level,i.cost,i.first,i.start,(i.tools||[]).join(" ")].join(" ").toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        if(state.cat !== "all" && i.cat !== state.cat) return false;
+        if(state.level !== "all" && i.level !== state.level) return false;
+        if(state.cost !== "all" && i.costNum !== {free:0,low:1,mid:2,high:3}[state.cost]) return false;
+        if(state.speed !== "all" && i.speed !== state.speed) return false;
+        return true;
+      });
+
+      const by = {
+        recommended: () => 0,
+        easy: (a,b) => a.levelNum - b.levelNum || a.costNum - b.costNum || a.days - b.days,
+        cheap: (a,b) => a.costNum - b.costNum || a.days - b.days || a.levelNum - b.levelNum,
+        fast: (a,b) => a.days - b.days || a.costNum - b.costNum || a.levelNum - b.levelNum,
+        earn: (a,b) => b.earnMax - a.earnMax
+      };
+      list.sort(by[state.sort] || by.recommended);
+      return list;
+    }
+
+    function cardHTML(i){
+      return `
+        <article class="card" data-open="${esc(i.id)}" tabindex="0" role="button" aria-label="Open details for ${esc(i.title)}">
+          <div class="card-top">
+            <div class="card-icon" aria-hidden="true">${i.icon}</div>
+            <span class="chip ${i.level.toLowerCase()}">${esc(i.level)}</span>
+          </div>
+          <div>
+            <div class="card-cat">${esc(i.cat)}</div>
+            <h3>${esc(i.title)}</h3>
+          </div>
+          <p class="card-blurb">${esc(i.blurb)}</p>
+          <div class="card-meta">
+            <div class="meta-box"><small>Start</small><b>${esc(i.start)}</b></div>
+            <div class="meta-box"><small>First money</small><b>${esc(i.first)}</b></div>
+            <div class="meta-box"><small>Cost</small><b>${esc(i.cost)}</b></div>
+            <div class="meta-box"><small>Potential</small><b>${esc(i.earn)}</b></div>
+          </div>
+          <div class="card-foot">
+            <span class="free-tag">${i.costNum === 0 ? "₵0 to start" : "Low entry cost"}</span>
+            <button class="open-btn" type="button" data-open="${esc(i.id)}">See playbook →</button>
+          </div>
+        </article>`;
+    }
+
+    function render(){
+      const list = filtered();
+      grid.innerHTML = list.length
+        ? list.map(cardHTML).join("")
+        : `<div class="empty"><span>🔍</span><b>No ideas match those filters.</b><p class="muted tiny">Try removing one filter or resetting everything.</p></div>`;
+      countEl.innerHTML = `Showing <b>${list.length}</b> of ${IDEAS.length} ideas`;
+    }
+
+    // Wire controls
+    $("#q").addEventListener("input", e => { state.q = e.target.value; render(); });
+    catSelect.addEventListener("change", e => { state.cat = e.target.value; render(); });
+    $("#levelFilter").addEventListener("change", e => { state.level = e.target.value; render(); });
+    $("#costFilter").addEventListener("change", e => { state.cost = e.target.value; render(); });
+    $("#speedFilter").addEventListener("change", e => { state.speed = e.target.value; render(); });
+    $("#sortFilter").addEventListener("change", e => { state.sort = e.target.value; render(); });
+    $("#resetBtn").addEventListener("click", () => {
+      Object.assign(state, {q:"",cat:"all",level:"all",cost:"all",speed:"all",sort:"recommended"});
+      $("#q").value = ""; catSelect.value = "all";
+      ["#levelFilter","#costFilter","#speedFilter"].forEach(s => $(s).value = "all");
+      $("#sortFilter").value = "recommended";
+      render();
+    });
+
+    // Modal
+    const modal = $("#modal");
+    let lastFocused = null;
+
+    function openIdea(id){
+      const i = IDEAS.find(x => x.id === id);
+      if(!i) return;
+      lastFocused = document.activeElement;
+      $("#mIcon").textContent = i.icon;
+      $("#modalTitle").textContent = i.title;
+      $("#mChips").innerHTML = `<span class="chip ${i.level.toLowerCase()}">${esc(i.level)}</span><span class="chip" style="background:rgba(255,255,255,.15);color:#fff">${esc(i.cat)}</span>`;
+      $("#modalBody").innerHTML = `
+        <div class="m-stats">
+          <div><small>Start</small><b>${esc(i.start)}</b></div>
+          <div><small>First money</small><b>${esc(i.first)}</b></div>
+          <div><small>Cost</small><b>${esc(i.cost)}</b></div>
+          <div><small>Potential</small><b>${esc(i.earn)}</b></div>
+        </div>
+        <h4>How to start</h4>
+        <ol class="steps">${i.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+        <h4>What you need</h4>
+        <div class="tools">${i.tools.map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <h4>Make it work</h4>
+        <div class="callout tip"><span>💡</span><div>${esc(i.tip)}</div></div>
+        <h4>Watch out for</h4>
+        <div class="callout warnbox"><span>⚠️</span><div>${esc(i.watch)}</div></div>
+        <div class="m-cta">
+          <a class="btn btn-dark" href="#checklist" data-close>Get the free checklist →</a>
+          <span>Earning figures are rough estimates, not guarantees.</span>
+        </div>`;
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+      $(".close-btn").focus();
+    }
+
+    function closeModal(){
+      modal.classList.remove("open");
+      document.body.style.overflow = "";
+      if(lastFocused) lastFocused.focus();
+    }
+
+    grid.addEventListener("click", e => {
+      const target = e.target.closest("[data-open]");
+      if(target) openIdea(target.dataset.open);
+    });
+    grid.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){
+        const target = e.target.closest("[data-open]");
+        if(target){ e.preventDefault(); openIdea(target.dataset.open); }
+      }
+    });
+    modal.addEventListener("click", e => { if(e.target.closest("[data-close]")) closeModal(); });
+    document.addEventListener("keydown", e => { if(e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
+
+    /* ---------- Lead form (placeholder — connect your email tool) ----------
+       Set LEAD_ENDPOINT to your form/API URL and uncomment the fetch block
+       to send real signups to Mailchimp, Google Forms, Resend, etc.        */
+    const LEAD_ENDPOINT = "/api/subscribe";
+    const leadForm = $("#leadForm");
+
+    function buildChecklistText(name){
+      const free = IDEAS.filter(i => i.costNum === 0);
+      const lines = [
+        "THE ₵0 STARTER CHECKLIST — studio.gabochie.com",
+        "================================================",
+        name ? `Prepared for: ${name}` : "",
+        `Date: ${new Date().toLocaleDateString("en-GB")}`,
+        "",
+        "BEFORE YOU SPEND A SINGLE CEDI",
+        "1. Do you already have a customer, or only an idea?",
+        "2. Can you test it in 48 hours with what you own?",
+        "3. Do you know exactly who pays you and when?",
+        "",
+        `${free.length} IDEAS YOU CAN START FOR ₵0`,
+        "--------------------------------"
+      ];
+      free.forEach((i,n) => {
+        lines.push(`${n+1}. ${i.title}  [${i.level} | ${i.start} | ${i.first}]`);
+        lines.push(`   ${i.blurb}`);
+        lines.push(`   First step: ${i.steps[0]}`);
+        lines.push("");
+      });
+      lines.push("THE 3 SCAM RULES");
+      lines.push("- No fixed 'guaranteed' forex/crypto returns.");
+      lines.push("- Never pay a fee to get a job.");
+      lines.push("- Never share your MoMo PIN, OTP or GhanaCard photo.");
+      lines.push("", "Full guide: studio.gabochie.com (The Ghana Youth Hustle Playbook)");
+      return lines.filter(l => l !== undefined).join("\n");
+    }
+
+    function downloadChecklist(name){
+      try {
+        if (navigator.sendBeacon) {
+          var _d = new Blob([JSON.stringify({ event_type: "playbook_checklist_download", page: location.pathname })], { type: "application/json" });
+          navigator.sendBeacon("/api/event", _d);
+        }
+      } catch (e) {}
+      const blob = new Blob([buildChecklistText(name)], {type:"text/plain;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "ghanas-zero-cedi-starter-checklist.txt";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    leadForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const email = $("#leadEmail").value.trim();
+      const name = $("#leadName").value.trim();
+      const note = $("#formNote");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        note.textContent = "Please enter a valid email address.";
+        note.style.color = "var(--red)";
+        $("#leadEmail").focus();
+        return;
+      }
+      const lead = { name, email, source:"Ghana Youth Hustle Playbook", ts:new Date().toISOString() };
+
+      // Local demo storage (remove once LEAD_ENDPOINT is configured)
+      try{
+        const leads = JSON.parse(localStorage.getItem("ghmoney_leads") || "[]");
+        leads.push(lead);
+        localStorage.setItem("ghmoney_leads", JSON.stringify(leads));
+      }catch(err){ console.warn("Local lead storage unavailable", err); }
+
+      try {
+        if (navigator.sendBeacon) {
+          var _g = new Blob([JSON.stringify({ event_type: "playbook_gate_submit", page: location.pathname, event_data: JSON.stringify({ email: email }) })], { type: "application/json" });
+          navigator.sendBeacon("/api/event", _g);
+        }
+      } catch (e) {}
+      if (LEAD_ENDPOINT) {
+        try {
+          var turnstileEl = document.querySelector('input[name="cf-turnstile-response"]');
+          var payload = {
+            name: name,
+            email: email,
+            source: "ghana-hustle-playbook",
+            utm_source: new URLSearchParams(window.location.search).get("utm_source") || "",
+            utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "",
+            utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "",
+            cf_turnstile_token: turnstileEl ? turnstileEl.value : ""
+          };
+          await fetch(LEAD_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) { console.error("Lead delivery failed", err); }
+      }
+
+      leadForm.style.display = "none";
+      $("#successBox").classList.add("show");
+      downloadChecklist(name);
+    });
+
+    $("#downloadBtn").addEventListener("click", () => {
+      const email = $("#leadEmail").value.trim();
+      let name = "";
+      try{
+        const leads = JSON.parse(localStorage.getItem("ghmoney_leads") || "[]");
+        name = (leads.find(l => l.email === email) || {}).name || "";
+      }catch(err){}
+      downloadChecklist(name);
+    });
+
+    var yEl = $("#year"); if (yEl) yEl.textContent = new Date().getFullYear();
+    render();
+    try {
+      if (navigator.sendBeacon) {
+        var _pb = new Blob([JSON.stringify({ event_type: "playbook_view", page: location.pathname })], { type: "application/json" });
+        navigator.sendBeacon("/api/event", _pb);
+      }
+    } catch (e) {}
+  </script>
+  <div id="footer-placeholder"></div>
+  <script src="/nav.js"></script>
+</body>
+</html>

@@ -22,6 +22,7 @@ const PAGES = [
   ['/start/', 0.8, 'monthly'],
   ['/money-ghana/', 0.8, 'monthly'],
   ['/money-ghana/guide/', 0.7, 'monthly'],
+  ['/money-ghana/playbook/', 0.7, 'monthly'],
   ['/survey/', 0.7, 'monthly'],
   ['/books/', 0.8, 'monthly'],
   ['/donate/', 0.7, 'monthly'],
