@@ -1117,6 +1117,12 @@
     }
 
     function downloadChecklist(name){
+      try {
+        if (navigator.sendBeacon) {
+          var _d = new Blob([JSON.stringify({ event_type: "playbook_checklist_download", page: location.pathname })], { type: "application/json" });
+          navigator.sendBeacon("/api/event", _d);
+        }
+      } catch (e) {}
       const blob = new Blob([buildChecklistText(name)], {type:"text/plain;charset=utf-8"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -1145,6 +1151,12 @@
         localStorage.setItem("ghmoney_leads", JSON.stringify(leads));
       }catch(err){ console.warn("Local lead storage unavailable", err); }
 
+      try {
+        if (navigator.sendBeacon) {
+          var _g = new Blob([JSON.stringify({ event_type: "playbook_gate_submit", page: location.pathname, event_data: JSON.stringify({ email: email }) })], { type: "application/json" });
+          navigator.sendBeacon("/api/event", _g);
+        }
+      } catch (e) {}
       if (LEAD_ENDPOINT) {
         try {
           var turnstileEl = document.querySelector('input[name="cf-turnstile-response"]');
@@ -1182,6 +1194,12 @@
 
     var yEl = $("#year"); if (yEl) yEl.textContent = new Date().getFullYear();
     render();
+    try {
+      if (navigator.sendBeacon) {
+        var _pb = new Blob([JSON.stringify({ event_type: "playbook_view", page: location.pathname })], { type: "application/json" });
+        navigator.sendBeacon("/api/event", _pb);
+      }
+    } catch (e) {}
   </script>
   <div id="footer-placeholder"></div>
   <script src="/nav.js"></script>
