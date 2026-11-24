@@ -9,6 +9,7 @@ var PAGEVIEW_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as t
 var DONATION_EVENTS_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as total FROM events WHERE event_type = 'donation_started' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
 var SUBSCRIPTIONS_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as new_subs, COALESCE(SUM(amount), 0) as revenue FROM subscriptions WHERE status = 'active' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
 var TOP_PAGES_SQL = "SELECT page, COUNT(*) as views FROM page_views WHERE created_at >= datetime('now', '-30 days') GROUP BY page ORDER BY views DESC LIMIT 10";
+var PLAYBOOK_EVENTS_SQL = "SELECT event_type, COUNT(*) as total FROM events WHERE event_type IN ('playbook_view','playbook_gate_submit','playbook_checklist_download') AND created_at >= datetime('now', '-12 months') GROUP BY event_type";
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -26,14 +27,17 @@ export async function onRequest(context) {
 
   try {
     // Fetch all historical data in parallel
-    var [revenue, subscribers, pageviews, donationEvents, subscriptions, topPages] = await Promise.all([
+    var [revenue, subscribers, pageviews, donationEvents, subscriptions, topPages, playbookEvents] = await Promise.all([
       env.DB.prepare(REVENUE_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
       env.DB.prepare(SUBSCRIBER_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
       env.DB.prepare(PAGEVIEW_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
       env.DB.prepare(DONATION_EVENTS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
       env.DB.prepare(SUBSCRIPTIONS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
       env.DB.prepare(TOP_PAGES_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
+      env.DB.prepare(PLAYBOOK_EVENTS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
     ]);
+    var playbookMap = {};
+    (playbookEvents || []).forEach(function(r) { playbookMap[r.event_type] = r.total; });
 
     // Build summary for AI
     var totalRevenue = revenue.reduce(function(s, r) { return s + (r.total || 0); }, 0);
@@ -74,6 +78,7 @@ export async function onRequest(context) {
         donationEvents: donationEvents,
         subscriptions: subscriptions,
         topPages: topPages,
+        playbookEvents: playbookMap,
         totals: { revenue: totalRevenue, subscribers: totalSubs, pageViews: totalViews }
       },
       forecast: forecast
