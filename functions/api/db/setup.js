@@ -737,10 +737,16 @@ export function getStatements(seedAnchor) {
       addColumn('social_queue', 'status', "TEXT DEFAULT 'planned'"),
       addColumn('social_queue', 'posted_at', "TEXT DEFAULT ''"),
       addColumn('social_queue', 'notes', "TEXT DEFAULT ''"),
-      `CREATE INDEX IF NOT EXISTS idx_social_queue_status_date ON social_queue(status, scheduled_at)`,
-      `CREATE INDEX IF NOT EXISTS idx_social_queue_campaign ON social_queue(utm_campaign)`,
-      `UPDATE social_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
-      ...calendarSeed,
+      // These depend on the guarded columns above, so they must run in the
+      // post-column phase. On a legacy DB the plain statement phase happens
+      // before ALTER TABLE, and an INSERT/INDEX using scheduled_at fails there.
+      ...[
+        `CREATE INDEX IF NOT EXISTS idx_social_queue_status_date ON social_queue(status, scheduled_at)`,
+        `CREATE INDEX IF NOT EXISTS idx_social_queue_campaign ON social_queue(utm_campaign)`,
+        `UPDATE social_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
+      ].concat(calendarSeed).map(function (sql, i) {
+        return once('social_queue_post_2026_11_26_' + String(i).padStart(3, '0'), sql);
+      }),
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
