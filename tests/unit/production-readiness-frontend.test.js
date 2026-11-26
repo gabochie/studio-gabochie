@@ -89,6 +89,18 @@ describe('production-readiness frontend fixes', function () {
     expect(css).toContain('.nav-auth button');
   });
 
+  it('keeps audited pages on canonical CSS with valid Google Fonts requests', function () {
+    ['money-ghana/playbook/index.html', 'courses/year-package-2027/index.html'].forEach(function (path) {
+      var html = read(path);
+      expect(html, path + ' canonical CSS').toContain('href="/assets/css/main.css"');
+      expect(html, path + ' legacy CSS').not.toContain('href="/style.css"');
+      var fontHref = (html.match(/href="(https:\/\/fonts\.googleapis\.com\/css2\?[^"]+)"/) || [])[1];
+      expect(fontHref, path + ' font request').toBeTruthy();
+      expect(fontHref, path + ' font request').not.toMatch(/:wght@0,/);
+      expect(fontHref, path + ' font request').not.toMatch(/:wght@[^&"']*[,;]\s*$/);
+    });
+  });
+
   it('removes dormant pixels and the missing LOTL audio source', function () {
     var start = read('start/index.html');
     expect(start).not.toContain('PIXEL_IDS');
