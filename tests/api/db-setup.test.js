@@ -81,9 +81,14 @@ describe('db setup statements', function () {
     var statements = getStatements(new Date('2026-01-01T00:00:00Z'));
     var raw = statements.filter(function (s) { return typeof s === 'string' && s.indexOf('${') >= 0; });
     expect(raw).toHaveLength(0);
-    var seeds = statements.filter(function (s) { return typeof s === 'string' && s.indexOf('INSERT OR IGNORE INTO social_queue') === 0; });
+    // Social calendar seed rows are one-time migrations so they run after the
+    // guarded social_queue columns are applied (legacy DBs lack scheduled_at).
+    var seeds = statements.filter(function (s) {
+      return typeof s === 'object' && s.kind === 'once' &&
+             s.sql.indexOf('INSERT OR IGNORE INTO social_queue') === 0;
+    });
     expect(seeds).toHaveLength(30);
-    expect(seeds[0]).toContain("'2026-01-01 09:00:00'");
+    expect(seeds[0].sql).toContain("'2026-01-01 09:00:00'");
   });
 
   it('creates social_queue before normalising its timestamps', function () {
@@ -126,7 +131,9 @@ describe('db setup statements', function () {
     var once = statements.filter(function (s) { return typeof s === 'object' && s.kind === 'once'; });
     expect(columns.length).toBeGreaterThan(70);
     expect(once.length).toBeGreaterThan(0);
-    expect(once.every(function (s) { return /^dedupe-|^task-status-/.test(s.name); })).toBe(true);
+    expect(once.every(function (s) {
+      return /^dedupe-|^task-status-|^social_queue_post_/.test(s.name);
+    })).toBe(true);
   });
 });
 
