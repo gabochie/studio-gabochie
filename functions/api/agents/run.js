@@ -2,10 +2,32 @@ import { requireAgentAuth } from './_auth.js';
 import { ensureAgentTables } from './_init.js';
 import { callAI } from './_ai.js';
 
+// Agent-supplied SQL is untrusted: SELECT only, one statement, no comments or
+// schema/DDL keywords, at most 100 rows. Used by both query endpoints.
+export function assertReadOnlySql(sql) {
+  var text = String(sql || '').trim();
+  if (!/^SELECT\b/i.test(text)) throw new Error('Only SELECT queries are allowed');
+  // Use indexOf for the NUL byte: a regex containing a control character is
+  // flagged by ESLint's no-control-regex rule. The check is identical.
+  if (text.indexOf(';') !== -1 || text.indexOf('\u0000') !== -1 || /--|\/\*/.test(text)) {
+    throw new Error('Multi-statement SQL and comments are not allowed');
+  }
+  if (/\b(PRAGMA|ATTACH|DETACH|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|VACUUM|REINDEX)\b/i.test(text)) {
+    throw new Error('Only read-only SELECT queries are allowed');
+  }
+  if (!/\bLIMIT\s+\?/i.test(text) && !/\bLIMIT\s+\d+\s*(?:OFFSET\s+\d+)?\s*$/i.test(text)) {
+    text += ' LIMIT 100';
+  } else {
+    var limit = text.match(/\bLIMIT\s+(\d+)/i);
+    if (limit && parseInt(limit[1], 10) > 100) text = text.replace(/\bLIMIT\s+\d+/i, 'LIMIT 100');
+  }
+  return text;
+}
+
 async function queryD1(db, sql, params) {
   try {
-    var result = await db.prepare(sql).bind(...(params || [])).all();
-    return { rows: result.results || [] };
+    var result = await db.prepare(assertReadOnlySql(sql)).bind(...(params || [])).all();
+    return { rows: (result.results || []).slice(0, 100) };
   } catch (err) {
     return { error: err.message };
   }

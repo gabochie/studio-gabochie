@@ -50,7 +50,7 @@ describe('email queue processor (shared)', function () {
     expect(html).toContain('/api/outreach/unsubscribe');
     expect(html).toContain('/api/track/click?url=');
     expect(html).not.toContain('href="https://example.com/x"');
-    expect(sent[0].tags).toEqual(['broadcast']);
+    expect(sent[0].tags).toEqual(['broadcast', 'msg_7']);
     expect(db._tables.email_queue[0].status).toBe('sent');
     expect(db._tables.email_queue[0].provider_id).toBe('msg-1');
   });

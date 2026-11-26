@@ -1,0 +1,18 @@
+# Never publish local secrets, tooling state or test artifacts to Cloudflare Pages.
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+.wrangler/**
+*.log
+coverage/**
+test-results/**
+playwright-report/**
+node_modules/**
+.git/**
+.github/**
+tests/**
+d1-backups/**
+*.tar.gz
+*.tgz

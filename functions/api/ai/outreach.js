@@ -6,12 +6,14 @@ import { checkRateLimit } from '../_rate-limit.js';
 
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
+// Segments are bounded and respect consent: email requires a confirmed,
+// non-suppressed address; WhatsApp requires an explicit whatsapp_opt_in.
 var SEGMENTS = {
-  active: { label: 'Active (last 30d)', sql: "SELECT DISTINCT email, name, phone FROM subscribers WHERE email IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) LIMIT 20" },
-  dormant: { label: 'Dormant (31-90d)', sql: "SELECT DISTINCT s.email, s.name, s.phone FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) AND s.created_at >= datetime('now', '-90 days') LIMIT 20" },
-  churned: { label: 'Churned (90d+)', sql: "SELECT DISTINCT s.email, s.name, s.phone FROM subscribers s WHERE s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-90 days')) AND s.created_at <= datetime('now', '-90 days') LIMIT 20" },
-  donors: { label: 'Donors', sql: "SELECT DISTINCT donor_email as email, donor_name as name, donor_phone as phone FROM donations WHERE status = 'successful' AND created_at >= datetime('now', '-180 days') LIMIT 20" },
-  students: { label: 'Students', sql: "SELECT DISTINCT email, name, student_phone as phone FROM students WHERE created_at >= datetime('now', '-180 days') LIMIT 20" },
+  active: { label: 'Active (last 30d)', sql: "SELECT DISTINCT s.email, s.name, s.phone, COALESCE(s.whatsapp_opt_in, 0) AS whatsapp_opt_in FROM subscribers s WHERE s.confirmed = 1 AND s.email != '' AND s.email NOT IN (SELECT email FROM suppression_list) AND s.email IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) LIMIT 20" },
+  dormant: { label: 'Dormant (31-90d)', sql: "SELECT DISTINCT s.email, s.name, s.phone, COALESCE(s.whatsapp_opt_in, 0) AS whatsapp_opt_in FROM subscribers s WHERE s.confirmed = 1 AND s.email != '' AND s.email NOT IN (SELECT email FROM suppression_list) AND s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-30 days')) AND s.created_at >= datetime('now', '-90 days') LIMIT 20" },
+  churned: { label: 'Churned (90d+)', sql: "SELECT DISTINCT s.email, s.name, s.phone, COALESCE(s.whatsapp_opt_in, 0) AS whatsapp_opt_in FROM subscribers s WHERE s.confirmed = 1 AND s.email != '' AND s.email NOT IN (SELECT email FROM suppression_list) AND s.email NOT IN (SELECT email FROM events WHERE created_at >= datetime('now', '-90 days')) AND s.created_at <= datetime('now', '-90 days') LIMIT 20" },
+  donors: { label: 'Donors', sql: "SELECT DISTINCT d.donor_email AS email, d.donor_name AS name, d.donor_phone AS phone, 0 AS whatsapp_opt_in FROM donations d WHERE d.status = 'successful' AND d.donor_email != '' AND d.donor_email NOT IN (SELECT email FROM suppression_list) AND d.created_at >= datetime('now', '-180 days') LIMIT 20" },
+  students: { label: 'Students', sql: "SELECT DISTINCT t.email, t.name, t.student_phone AS phone, 0 AS whatsapp_opt_in FROM students t WHERE t.email != '' AND t.email NOT IN (SELECT email FROM suppression_list) AND t.created_at >= datetime('now', '-180 days') LIMIT 20" },
 };
 
 export async function onRequest(context) {
@@ -60,8 +62,17 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ error: 'Invalid segment' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
+      var suppRows = await env.DB.prepare('SELECT email FROM suppression_list').all().catch(function () { return { results: [] }; });
+      var suppressed = new Set((suppRows.results || []).map(function (s) { return String(s.email || '').toLowerCase(); }));
       var usersResult = await env.DB.prepare(SEGMENTS[segment].sql).all();
-      var users = usersResult.results || [];
+      var users = (usersResult.results || []).filter(function (u) {
+        // Belt-and-braces: never queue to a suppressed address even if the
+        // segment query is running against a legacy schema.
+        var email = String((u && (u.email || u.donor_email)) || '').toLowerCase();
+        if (!email || suppressed.has(email)) return false;
+        if (u && u.confirmed !== undefined && Number(u.confirmed) !== 1) return false;
+        return true;
+      });
 
       if (users.length === 0) {
         return new Response(JSON.stringify({ status: 'ok', message: 'No users in this segment', sent: 0 }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
@@ -70,11 +81,11 @@ export async function onRequest(context) {
       var segmentLabel = SEGMENTS[segment].label;
 
       // Generate content via AI (different prompts per channel)
-      var isWhatsApp = channel === 'whatsapp' || channel === 'both';
-      var systemPrompt = isWhatsApp
+      var wantsWhatsApp = channel === 'whatsapp' || channel === 'both';
+      var systemPrompt = wantsWhatsApp
         ? 'You are an outreach specialist for Studio Gabochie. Write warm, personal WhatsApp messages. Keep it under 300 characters. No HTML. No formatting.'
         : 'You are an outreach specialist for Studio Gabochie — a Bible-based school of creativity, love, and wisdom. Write warm, personal re-engagement emails. Keep it under 150 words. Use simple HTML with inline styles.';
-      var userPrompt = isWhatsApp
+      var userPrompt = wantsWhatsApp
         ? 'Write a WhatsApp re-engagement message for segment: ' + segmentLabel + '. The message should sound personal, remind them of our mission (creativity, love, wisdom), and include a CTA to visit studio.gabochie.com. Wrap subject in SUBJECT: and body in BODY:.'
         : 'Write a re-engagement email for the segment: ' + segmentLabel + '. Subject line: ' + (subject || 'We miss you — Studio Gabochie') + '. The email should sound personal, remind them of the mission, and include a clear CTA to visit studio.gabochie.com/school/. Wrap subject in SUBJECT: and body in BODY:.';
 
@@ -118,7 +129,9 @@ export async function onRequest(context) {
           } catch (_e) {}
         }
 
-        if (channel === 'whatsapp' || channel === 'both') {
+        // WhatsApp is opt-in only. Donor/student segments deliberately expose
+        // whatsapp_opt_in = 0; subscriber segments use the real consent flag.
+        if (wantsWhatsApp && Number(user.whatsapp_opt_in) === 1) {
           if (!phone) continue;
           var personalizedMsg = messageBody.replace(/\[name\]/g, name || 'Friend').replace(/{name}/g, name || 'Friend').replace(/<[^>]+>/g, '');
           try {
@@ -141,7 +154,7 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ error: 'email param required' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      var events = await env.DB.prepare("SELECT event_type, page FROM events WHERE email = ? ORDER BY created_at DESC LIMIT 10").bind(userEmail).all();
+      var events = await env.DB.prepare('SELECT event_type, page FROM events WHERE email = ? ORDER BY created_at DESC LIMIT 10').bind(userEmail).all();
       var donations = await env.DB.prepare("SELECT amount, created_at FROM donations WHERE donor_email = ? AND status = 'successful' ORDER BY created_at DESC LIMIT 5").bind(userEmail).all();
 
       var profile = {
@@ -150,13 +163,13 @@ export async function onRequest(context) {
         recentDonations: (donations.results || []).map(function(d) { return 'GHS ' + (d.amount || 0) + ' on ' + (d.created_at || ''); }),
       };
 
-      let systemPrompt = 'You are a content recommendation engine. Recommend 3 specific pages from studio.gabochie.com based on user activity. Output JSON only.';
-      let userPrompt = 'User profile: ' + JSON.stringify(profile) + '\n\nAvailable content: /school/ (programs), /books/ (books), /campaigns/1-million-systems-thinkers (campaign), /membership/ (membership), /support/ (support), /content/ (articles), /school/guitar/ (guitar course), /manifesto/ (manifesto)\n\nRespond with: { "recommendations": [{"page": "url", "reason": "why this fits"}] }';
+      var systemRec = 'You are a content recommendation engine. Recommend 3 specific pages from studio.gabochie.com based on user activity. Output JSON only.';
+      var userRec = 'User profile: ' + JSON.stringify(profile) + '\n\nAvailable content: /school/ (programs), /books/ (books), /campaigns/1-million-systems-thinkers (campaign), /membership/ (membership), /support/ (support), /content/ (articles), /school/guitar/ (guitar course), /manifesto/ (manifesto)\nRespond with: { "recommendations": [{"page": "url", "reason": "why this fits"}] }';
 
-      let result = await callAI(env, systemPrompt, userPrompt, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 800 });
+      var recResult = await callAI(env, systemRec, userRec, { model: 'gpt-4o-mini', temperature: 0.3, max_tokens: 800 });
 
       var recs = {};
-      try { recs = JSON.parse(result.content); } catch (_e) { recs = { recommendations: [] }; }
+      try { recs = JSON.parse(recResult.content); } catch (_e) { recs = { recommendations: [] }; }
 
       return new Response(JSON.stringify({ status: 'ok', profile: profile, recommendations: recs.recommendations || [] }), { headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }

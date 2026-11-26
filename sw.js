@@ -1,6 +1,6 @@
 /* Studio Gabochie service worker — PWA phase 1 (shell + catalog offline). */
 
-const VERSION = 'gabochie-v24';
+const VERSION = 'gabochie-v25';
 const AUDIO_CACHE_MAX_BYTES = 26214400; // 25 MB per file — keep offline storage bounded.
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
@@ -8,9 +8,9 @@ const RUNTIME_CACHE = `${VERSION}-runtime`;
    so the redirect target is the only reliable precache key. */
 const OFFLINE_URL = '/offline';
 
-/* Precache the app shell only. Everything here is same-origin, small, and
-   version-broken by VERSION, so a new deploy never serves a stale shell. */
-const PRECACHE_URLS = [
+/* Required app shell: small, always-present files that make the offline page
+   and navigation work. A failure here fails the install (as before). */
+const CRITICAL_SHELL_URLS = [
   '/',
   OFFLINE_URL,
   '/manifest.webmanifest',
@@ -20,6 +20,11 @@ const PRECACHE_URLS = [
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/icons/apple-touch-icon.png',
+];
+
+/* Optional content precache: monthly devotional JSON and ministry pages.
+   These must not hold the whole install hostage when one URL is missing. */
+const OPTIONAL_PRECACHE_URLS = [
   '/love-of-the-lord/',
   '/love-of-the-lord/devotionals/',
   '/love-of-the-lord/devotionals/devotionals.json',
@@ -90,7 +95,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(SHELL_CACHE)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then((cache) =>
+        cache.addAll(CRITICAL_SHELL_URLS).then(() =>
+          Promise.allSettled(OPTIONAL_PRECACHE_URLS.map((url) => cache.add(url)))
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
@@ -129,14 +138,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static same-origin assets: cache-first, they are versioned by filename or precache.
+  // Static same-origin assets. Hashed filenames are immutable -> cache-first.
+  // Non-hashed /assets/* are revalidated in the background so deploys are not
+  // pinned to an old main.js/main.css in the runtime cache.
+  const HASHED_ASSET = /[.-][0-9a-f]{8,}\.[a-z0-9]+$/i;
   if (
     path.startsWith('/assets/') ||
     path === '/nav.js' ||
     path === '/manifest.webmanifest' ||
     path === '/search/pages.json'
   ) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(
+      path.startsWith('/assets/') && !HASHED_ASSET.test(path)
+        ? staleWhileRevalidate(request)
+        : cacheFirst(request)
+    );
     return;
   }
 
@@ -183,8 +199,11 @@ async function cacheFirstAudio(request) {
 async function handleNavigation(request) {
   try {
     const response = await fetch(request);
-    const cache = await caches.open(RUNTIME_CACHE);
-    cache.put(request, response.clone());
+    /* Only cache real, same-origin successes — never opaque redirects/errors. */
+    if (response.ok && response.type === 'basic') {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+    }
     return response;
   } catch (_err) {
     const cached = await caches.match(request, { ignoreSearch: false });

@@ -1,3 +1,5 @@
+import { safeEqual } from '../gateways/_shared.js';
+
 /**
  * Brevo Webhook Handler
  * POST /api/webhooks/brevo
@@ -6,11 +8,17 @@
 export async function onRequest(context) {
   const { request, env } = context;
 
-  // Verify webhook signature (Brevo sends X-Mailin-Signature header)
-  const signature = request.headers.get('X-Mailin-Signature');
-  const secret = env.BREVO_WEBHOOK_SECRET || env.BREVO_API_KEY;
-  
-  if (secret && signature) {
+  // Verify webhook signature (Brevo sends X-Mailin-Signature header).
+  // A dedicated webhook secret is preferred; the API key remains a fallback for
+  // existing deployments. Once a secret is configured, missing or invalid
+  // signatures fail closed — an unauthenticated POST must never mutate state.
+  const signature = request.headers.get('X-Mailin-Signature') || '';
+  const secret = env.BREVO_WEBHOOK_SECRET || env.BREVO_API_KEY || '';
+
+  if (secret) {
+    if (!signature || !/^[0-9a-f]{64}$/i.test(signature)) {
+      return new Response('Invalid signature', { status: 401 });
+    }
     const body = await request.clone().text();
     const valid = await verifyBrevoSignature(body, signature, secret);
     if (!valid) {
@@ -22,7 +30,7 @@ export async function onRequest(context) {
   let events;
   try {
     events = await request.json();
-  } catch (err) {
+  } catch (_err) {
     return new Response('Invalid JSON', { status: 400 });
   }
 
@@ -47,25 +55,16 @@ async function verifyBrevoSignature(payload, signature, secret) {
       encoder.encode(secret),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
-      ['verify']
+      ['sign']
     );
-    
-    const sigBuffer = hexToBuffer(signature);
-    const data = encoder.encode(payload);
-    
-    return await crypto.subtle.verify('HMAC', key, sigBuffer, data);
+    const digest = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
+    const expected = Array.from(new Uint8Array(digest)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    // Fixed-length compare: no early exit on the first differing byte.
+    return safeEqual(expected, String(signature).toLowerCase());
   } catch (err) {
     console.error('Signature verification error:', err);
     return false;
   }
-}
-
-function hexToBuffer(hex) {
-  const bytes = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < hex.length; i += 2) {
-    bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
-  }
-  return bytes.buffer;
 }
 
 async function processBrevoEvent(event, env) {

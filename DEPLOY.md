@@ -25,16 +25,17 @@ Netlify and GitHub Pages will NOT work (they don't support D1 or Cloudflare Func
 ## Step 2: D1 Database
 
 1. In Cloudflare dashboard, go to **Workers & Pages** → **D1**
-2. Click **Create database** → name it `studio-gabochie-db` → **Create**
+2. Click **Create database** → name it `gahq` → **Create** (this name is pinned in `wrangler.json`, `scripts/db-setup.js`, and the CI migration check — do not rename it without updating all three)
 3. Go back to **Pages** → your project → **Settings** → **Functions**
 4. Under **D1 database bindings**, click **Add binding**:
    - **Variable name**: `DB`
-   - **D1 database**: select `studio-gabochie-db`
+   - **D1 database**: select `gahq`
 5. **Redeploy** the project
-6. Visit `https://<project>.pages.dev/api/db/setup` to initialize all tables
-   - This creates: `subscribers`, `tasks`, `enrollments`, `contact_submissions`,
-     `donations`, `event_log`, `book_purchases`, `phase_verifications`,
-     `subscriptions`, `donor_phone`, `ci_reports`
+6. Initialize tables either from CI (`npm run db:setup`, blocking) or, for a first manual setup, from `https://<project>.pages.dev/api/db/setup`.
+   - The endpoint creates the full schema defined in `functions/api/db/setup.js` (including `subscribers`, `donations`, `bookings`, `users`, `sessions`, `ci_reports`, `quality_runs`, `quality_reports`, `expresspay_tokens`, and `guitar_*` tables).
+   - It returns **JSON**, not a plain-text string:
+     `{"status":"ok","tables":<count>,"results":[…],"failed":[],"failed_count":0}`.
+     Any failed statement returns HTTP 500 with `status:"error"` and a populated `failed` array; that is a failed deploy/setup.
 
 ---
 
@@ -50,9 +51,11 @@ Add these to **Cloudflare Pages** → project → **Settings** → **Environment
 | `MOMO_NUMBER` / `MOMO_NAME` | Optional | Manual MoMo wallet override (default: merchant 0559624456 / GABOCHIE DESIGN) |
 | `BANK_NAME` / `BANK_ACCOUNT_NAME` / `BANK_ACCOUNT_NUMBER` / `BANK_BRANCH` | For bank transfers | Manual bank-transfer details; unset = guided to email instead |
 | `BREVO_API_KEY` | Yes | Brevo SMTP API key (for email automation) |
-| `CRON_SECRET` | Yes | Shared secret for `/api/email/cron` (must match GitHub Actions secret) |
+| `CRON_SECRET` | Yes | Shared secret for `/api/email/cron`; send it in the `X-Cron-Secret` header, never in the query string |
 | `AGENT_AUTH_KEY` | Yes | Shared secret for `/api/agents/*` endpoints (must match GitHub Actions secret) |
-| `CI_WEBHOOK_SECRET` | If using CI | Shared secret between GitHub Actions and this endpoint |
+| `CI_WEBHOOK_SECRET` | Yes | Shared secret between GitHub Actions and `/api/admin/ci/status` + `/admin/api/qa/scan` |
+| `ADMIN_API_KEY` | Yes | Shared secret for admin API routes (must match the value used for admin access) |
+| `GEMINI_API_KEY` | For audio workflow | Google AI Studio key used by `lotl-audio.yml` / `scripts/lotl-tts.cjs` |
 
 Each variable should have values for **Production** (and optionally Preview).
 
@@ -160,12 +163,15 @@ Blank links hide their buttons automatically, so a deploy with placeholders is s
    - `CI_WEBHOOK_SECRET` — same value used in Cloudflare env vars
    - `CLOUDFLARE_API_TOKEN` — Cloudflare API token with **Cloudflare Pages** edit permissions
    - `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account ID (for D1 backup script)
-   - `CRON_SECRET` — shared secret for `/api/email/cron` endpoint, must match `CRON_SECRET` in Cloudflare env vars
+   - `CRON_SECRET` — shared secret for `/api/email/cron` endpoint, must match `CRON_SECRET` in Cloudflare env vars (sent as `X-Cron-Secret`)
    - `AGENT_AUTH_KEY` — shared secret for `/api/agents/*` endpoints, must match `AGENT_AUTH_KEY` in Cloudflare env vars
+   - `GEMINI_API_KEY` — Google AI Studio key for the audio workflow
+   - `GH_RULESET_TOKEN` — optional PAT with ruleset read access; when set, `protection-policy-check` verifies all required status checks
 3. The pipeline runs automatically on every push/PR to `main`:
-   - **Test phase**: lint JS, lint HTML, unit tests, coverage, E2E, audit, secrets scan, asset checks
-   - **Deploy phase**: only on push to `main`, after all tests pass, deploys to Cloudflare Pages via `wrangler pages deploy`
-4. Results post to your admin dashboard at `/admin/`
+   - **Test phase**: lint JS, lint HTML, HTML validation, a11y, unit tests, coverage, static E2E, full-stack E2E (local D1 + mock gateway), audit, gitleaks, asset checks, protection-policy check
+   - **Deploy phase**: only on push to `main`, after all required checks pass. Deploys are serialized (`concurrency: deploy-main`, no cancellation), then `npm run predeploy`, Cloudflare Pages deploy, blocking `npm run db:setup`, migration verification, smoke checks, and a blocking QA scan. Any failure stops the release.
+4. Results post to your admin dashboard at `/admin/`.
+5. In GitHub → Settings → Rules → Rulesets, make `main` protected and require the status checks listed in `.github/workflows/ci.yml` (`Lint JavaScript`, `Lint HTML`, `HTML Validator`, `Accessibility audit`, `Unit & API tests`, `Test coverage`, `E2E tests`, `Full-stack E2E (D1 + mock gateway)`, `Security audit`, `Secrets scan`, `Asset checks`, `Protection policy check`) plus the `gitleaks` check from `secret-scan.yml`. Require at least one approving review and dismiss stale approvals. This is a manual GitHub-side step; CI only verifies it when `GH_RULESET_TOKEN` is configured.
 
 ### Automated Cron Workflows
 
@@ -173,6 +179,26 @@ Blank links hide their buttons automatically, so a deploy with placeholders is s
 |---|---|---|
 | `email-cron.yml` | Every hour | Processes email queue (abandoned donations), drains pending agent queue items (cold outreach, analytics, fulfillment) |
 | `backup.yml` | Daily at midnight UTC | Dumps all D1 tables to JSON, uploads as 7-day retention artifact |
+
+### Rollback runbook (manual, production)
+
+Assets and D1 data are separate. Roll back the Pages deployment first, then decide whether the D1 schema/data needs a restore.
+
+1. Find the last known-good deployment ID (CI records current and previous IDs in the deploy job, or list them):
+   ```bash
+   curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/studio-gabochie/deployments?per_page=10" \
+     | jq -r '.result[] | [.id, .created_on, .latest_stage.status, (.deployment_trigger.metadata.commit_hash // "")] | @tsv'
+   ```
+2. Roll back production to that deployment:
+   ```bash
+   curl -fsS -X POST -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/studio-gabochie/deployments/$GOOD_DEPLOYMENT_ID/rollback"
+   ```
+3. Run the smoke checks from the deploy job (`/api/db/ping` and critical pages) and confirm the dashboard CI card reports the older run.
+4. **D1 is not rolled back automatically.** If a migration changed data, restore from the newest good `backup.yml` artifact using `npx wrangler d1 execute gahq --remote --file=<dump>.sql` (or the equivalent JSON import), then re-verify critical tables.
+
+**Monthly drill (manual):** download the most recent `backup.yml` artifact, restore it into a *throwaway* D1 database (never production), run `npm run db:setup` against it, and confirm row counts for `subscribers`, `donations`, `users`, and `guitar_enrollments`. Record the date and outcome. A backup that has never been restored is not a backup.
 
 ---
 
@@ -244,7 +270,7 @@ All prefixed with `guitar_` to avoid clashes with existing tables:
 
 ## Step 8: Post-Deploy Verification Checklist
 
-- [ ] Visit `/api/db/setup` — returns `"Tables ready"`
+- [ ] Visit `/api/db/setup` — returns JSON `{"status":"ok", ...}` with `failed_count: 0` (CI runs this as a blocking step; never call it on production outside a release unless you are deliberately repairing the schema)
 - [ ] Visit homepage — all sections render, no JS errors in console
 - [ ] Visit `/support/` — tier cards load, currency toggle works
 - [ ] Visit `/school/` — programs listed, only Genesis is active

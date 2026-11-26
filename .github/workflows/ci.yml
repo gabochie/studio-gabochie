@@ -13,13 +13,19 @@ permissions:
   contents: read
   deployments: write
 
+# Only one release pipeline at a time. Never cancel an in-flight deploy: an
+# interrupted Pages deploy / D1 migration leaves production in a mixed state.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
 jobs:
   lint-js:
     name: Lint JavaScript
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
@@ -30,8 +36,8 @@ jobs:
     name: Lint HTML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
@@ -42,8 +48,9 @@ jobs:
     name: Unit & API tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
@@ -54,14 +61,15 @@ jobs:
     name: Test coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
       - run: npm ci
       - run: npm run test:coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: coverage
@@ -71,8 +79,8 @@ jobs:
     name: E2E tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
@@ -84,36 +92,117 @@ jobs:
       - name: Wait for server
         run: |
           for i in $(seq 1 30); do
-            curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server ready" && break
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000 || printf '000')
+            if [ "$code" = "200" ]; then echo "Server ready"; exit 0; fi
             sleep 1
           done
+          echo "::error::Static server did not become ready"
+          exit 1
       - name: Run E2E tests
         run: npx playwright test
         env:
           BASE_URL: http://localhost:3000
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
           name: playwright-report
           path: playwright-report/
 
-  audit:
-    name: Security audit
+  e2e-fullstack:
+    name: Full-stack E2E (D1 + mock gateway)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
       - run: npm ci
-      - run: npm audit --audit-level=high
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Start mock ExpressPay gateway
+        run: node scripts/mock-expresspay.cjs > mock-expresspay.log 2>&1 &
+      - name: Start Pages dev with D1 binding and mock gateway secrets
+        run: |
+          npx wrangler pages dev . --d1 DB \
+            --binding CI_WEBHOOK_SECRET=local-ci-secret \
+            --binding PUBLIC_BASE_URL=http://localhost:8788 \
+            --binding EXPRESSPAY_BASE_URL=http://localhost:8790/api \
+            --binding EXPRESSPAY_MERCHANT_ID=ci-test-merchant \
+            --binding EXPRESSPAY_API_KEY=ci-test-api-key \
+            --port 8788 > wrangler-dev.log 2>&1 &
+      - name: Wait for full stack
+        run: |
+          ready=0
+          for i in $(seq 1 60); do
+            api=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8788/api/db/ping || printf '000')
+            mock=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8790/__tokens || printf '000')
+            if [ "$api" = "200" ] && [ "$mock" = "200" ]; then ready=1; break; fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo "::error::Full stack not ready"
+            echo "--- wrangler-dev.log ---"; cat wrangler-dev.log
+            echo "--- mock-expresspay.log ---"; cat mock-expresspay.log
+            exit 1
+          fi
+      - name: Seed local D1 (schema + data)
+        run: |
+          RESP=$(curl -fsS -X POST -H 'X-CI-Secret: local-ci-secret' http://localhost:8788/api/db/setup)
+          echo "$RESP" | jq '{status, tables, failed_count}'
+          if [ "$(echo "$RESP" | jq -r '.status')" != "ok" ]; then
+            echo "::error::Local D1 setup failed"
+            exit 1
+          fi
+          GUITAR_RESP=$(curl -fsS http://localhost:8788/api/guitar/setup)
+          echo "$GUITAR_RESP" | jq '{ok, message, tables: (.tables | length)}'
+          if [ "$(echo "$GUITAR_RESP" | jq -r '.ok')" != "true" ]; then
+            echo "::error::Local guitar schema setup failed"
+            exit 1
+          fi
+      - name: Run full-stack onboarding/payment E2E
+        run: |
+          # Keep the Playwright exit code but still parse the JSON report so a
+          # skipped payment test can never silently pass the release gate.
+          set +e
+          npx playwright test tests/e2e/onboarding.spec.js --reporter=json > e2e-fullstack-report.json
+          test_code=$?
+          set -e
+          if [ ! -s e2e-fullstack-report.json ]; then
+            echo "::error::Playwright did not produce a JSON report"
+            exit 1
+          fi
+          node -e "const r=JSON.parse(require('fs').readFileSync('e2e-fullstack-report.json','utf8'));const stats=r.stats||{};const skipped=Number(stats.skipped||0)+((r.tests||[]).filter(t=>t.status==='skipped').length);console.log('full-stack E2E:',JSON.stringify({expected:stats.expected,unexpected:stats.unexpected,skipped:skipped}));if(skipped>0){console.error('::error::Full-stack E2E skipped '+skipped+' test(s) — API stack must be live');process.exit(1)}"
+          if [ "$test_code" -ne 0 ]; then exit "$test_code"; fi
+        env:
+          BASE_URL: http://localhost:8788
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: failure()
+        with:
+          name: e2e-fullstack-report
+          path: |
+            e2e-fullstack-report.json
+            wrangler-dev.log
+            mock-expresspay.log
+            playwright-report/
+
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - run: npm audit --audit-level=moderate
 
   secrets:
     name: Secrets scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Check for potential secrets
         run: |
           fail=0
@@ -136,7 +225,7 @@ jobs:
     name: Asset checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Check image sizes
         run: |
           fail=0
@@ -173,25 +262,23 @@ jobs:
     name: HTML Validator
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
       - run: npm ci
-      - name: Validate all HTML files
+      - name: Validate all HTML files (blocking)
         run: |
-          npx html-validator-cli --quiet \
-            --file="$(find . -path ./node_modules -prune -o -name '*.html' -print | head -5)" \
-            --verbose 2>/dev/null || true
-          echo "HTML validation complete (run locally for full check)"
+          npm run lint:html
+          npx --yes html-validate@11.22.1 index.html
 
   a11y:
     name: Accessibility audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
@@ -201,83 +288,205 @@ jobs:
       - name: Wait for server
         run: |
           for i in $(seq 1 30); do
-            curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server ready" && break
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000 || printf '000')
+            if [ "$code" = "200" ]; then echo "Server ready"; exit 0; fi
             sleep 1
           done
-      - name: Run axe-core
+          echo "::error::Static server did not become ready"
+          exit 1
+      - name: Install matching Chrome and driver
+        run: npx --yes browser-driver-manager install chrome
+      - name: Run axe-core (blocking)
         run: |
-          npx @axe-core/cli http://localhost:3000 --exit --chromium-flags='--headless --no-sandbox' 2>/dev/null || true
-          echo "Axe a11y audit complete"
+          eval "$(npx --yes browser-driver-manager which | grep -E '^(CHROME_TEST_PATH|CHROMEDRIVER_TEST_PATH)=')"
+          npx --yes @axe-core/cli@4.14.0 http://localhost:3000 --exit \
+            --chrome-path "$CHROME_TEST_PATH" \
+            --chromedriver-path "$CHROMEDRIVER_TEST_PATH" \
+            --chrome-options='--headless --no-sandbox'
+
+  protection-policy-check:
+    name: Protection policy check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Fail on suppressed required checks
+        run: |
+          if grep -nE '\|\|[[:space:]]*(true|echo)' .github/workflows/ci.yml; then
+            echo "::error::A required CI job suppresses failures with a shell fallback. Remove it."
+            exit 1
+          fi
+          echo "::notice::No suppressed failures in ci.yml"
+      - name: Validate repository ruleset (when a token is configured)
+        env:
+          GH_TOKEN: ${{ secrets.GH_RULESET_TOKEN }}
+        run: |
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::notice::GH_RULESET_TOKEN not configured — ruleset check skipped. Required reviews and gitleaks must be set manually in GitHub settings."
+            exit 0
+          fi
+          gh api "repos/${GITHUB_REPOSITORY}/rulesets" > rulesets.json
+          jq -r '.[].name' rulesets.json
+          for check in "Lint JavaScript" "Lint HTML" "HTML Validator" "Accessibility audit" "Unit & API tests" "Test coverage" "E2E tests" "Full-stack E2E (D1 + mock gateway)" "Security audit" "Secrets scan" "Asset checks" "Protection policy check" "gitleaks"; do
+            if ! jq -e --arg name "$check" '[.[] | select(.enforcement == "active") | .rules[]? | select(.type == "required_status_checks") | .parameters.required_status_checks[]?.context] | index($name) != null' rulesets.json > /dev/null; then
+              echo "::error::Ruleset is missing required status check: $check"
+              exit 1
+            fi
+          done
+          echo "Ruleset contains all required status checks"
 
   report:
     name: Report to dashboard
     if: github.ref == 'refs/heads/main'
-    needs: [lint-js, lint-html, html-validator, a11y, test-unit, coverage, test-e2e, audit, secrets, assets]
+    needs: [lint-js, lint-html, html-validator, a11y, test-unit, coverage, test-e2e, e2e-fullstack, audit, secrets, assets, protection-policy-check]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
       - run: npm ci
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: coverage
+          path: coverage/
       - name: Get test results
         id: tests
         run: |
-          npx vitest run --reporter=json 2>/dev/null > vitest-report.json || true
-          echo "report=$(cat vitest-report.json | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          npx vitest run --reporter=json > vitest-report.json
+          TOTAL=$(jq -r '.numTotalTests // 0' vitest-report.json)
+          PASSED=$(jq -r '.numPassedTests // 0' vitest-report.json)
+          FAILED=$(jq -r '.numFailedTests // 0' vitest-report.json)
+          COVERAGE=$(jq -r '.total.lines.pct // 0' coverage/coverage-summary.json)
+          echo "test_count=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "test_passed=$PASSED" >> "$GITHUB_OUTPUT"
+          echo "test_failed=$FAILED" >> "$GITHUB_OUTPUT"
+          echo "coverage_pct=$COVERAGE" >> "$GITHUB_OUTPUT"
       - name: Post to dashboard
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          CI_SECRET: ${{ secrets.CI_WEBHOOK_SECRET }}
+          TEST_COUNT: ${{ steps.tests.outputs.test_count }}
+          TEST_PASSED: ${{ steps.tests.outputs.test_passed }}
+          TEST_FAILED: ${{ steps.tests.outputs.test_failed }}
+          COVERAGE_PCT: ${{ steps.tests.outputs.coverage_pct }}
         run: |
-          REPORT=$(cat vitest-report.json 2>/dev/null || echo '{}')
-          TOTAL=$(echo "$REPORT" | node -e "let d=[];process.stdin.on('data',c=>d.push(c));process.stdin.on('end',()=>{try{let r=JSON.parse(d.join(''));let t=r.totalTestFiles||0, p=r.numPassedTestSuites||0, f=r.numFailedTestSuites||0, tc=r.numTotalTests||0, tp=r.numPassedTests||0, tf=r.numFailedTests||0; console.log(JSON.stringify({total:t,passed:p,failed:f,tests_total:tc,tests_passed:tp,tests_failed:tf}))}catch(e){console.log('{}')}})")
-          TOTAL_COUNT=$(echo "$TOTAL" | node -e "let d=[];process.stdin.on('data',c=>d.push(c));process.stdin.on('end',()=>{try{console.log(JSON.parse(d.join('')).tests_total||0)}catch(e){console.log(0)}})")
-          PASSED=$(echo "$TOTAL" | node -e "let d=[];process.stdin.on('data',c=>d.push(c));process.stdin.on('end',()=>{try{console.log(JSON.parse(d.join('')).tests_passed||0)}catch(e){console.log(0)}})")
-          FAILED=$(echo "$TOTAL" | node -e "let d=[];process.stdin.on('data',c=>d.push(c));process.stdin.on('end',()=>{try{console.log(JSON.parse(d.join('')).tests_failed||0)}catch(e){console.log(0)}})")
-          STATUS="${{ needs.test-unit.result }}"
-          if [ "$STATUS" = "success" ]; then STATUS="success"; else STATUS="failure"; fi
-          curl -s -X POST 'https://studio.gabochie.com/api/admin/ci/status' \
+          STATUS=success
+          if [ "$(printf '%s' "$NEEDS_JSON" | jq -r '[to_entries[] | select(.value.result != "success")] | length')" -ne 0 ]; then STATUS=failure; fi
+          if [ "$(jq -r '.success' vitest-report.json)" != "true" ]; then STATUS=failure; fi
+          RESP=$(curl --fail-with-body -sS --retry 3 -X POST 'https://studio.gabochie.com/api/admin/ci/status' \
             -H 'Content-Type: application/json' \
-            -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
-            -d "$(cat <<EOF
-          {
-            "run_id": "${{ github.run_id }}",
-            "status": "$STATUS",
-            "test_count": $TOTAL_COUNT,
-            "test_passed": $PASSED,
-            "test_failed": $FAILED,
-            "coverage_pct": 0,
-            "branch": "${{ github.ref_name }}",
-            "triggered_by": "${{ github.event_name }}"
-          }
-          EOF
-          )"
+            -H "X-CI-Secret: $CI_SECRET" \
+            -d "$(jq -n \
+              --arg run_id "${{ github.run_id }}" \
+              --arg status "$STATUS" \
+              --argjson test_count "$TEST_COUNT" \
+              --argjson test_passed "$TEST_PASSED" \
+              --argjson test_failed "$TEST_FAILED" \
+              --argjson coverage_pct "$COVERAGE_PCT" \
+              --arg branch "${{ github.ref_name }}" \
+              --arg triggered_by "${{ github.event_name }}" \
+              '{run_id: $run_id, status: $status, test_count: $test_count, test_passed: $test_passed, test_failed: $test_failed, coverage_pct: $coverage_pct, branch: $branch, triggered_by: $triggered_by}')")
+          echo "Dashboard response: $RESP"
 
   deploy:
     name: Deploy to Cloudflare Pages
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [lint-js, lint-html, html-validator, a11y, test-unit, coverage, test-e2e, e2e-fullstack, audit, secrets, assets, protection-policy-check]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: 'npm'
       - run: npm ci
-      - name: Predeploy checks (non-blocking)
-        run: npm run predeploy || echo "Predeploy checks had warnings (non-blocking)"
+      - name: Predeploy checks (blocking)
+        run: npm run predeploy
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy . --project-name studio-gabochie
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      - name: Run DB setup (non-blocking)
-        run: npm run db:setup || echo "DB setup had warnings (non-blocking)"
-      - name: Trigger QA scan
+        run: npx wrangler pages deploy . --project-name studio-gabochie --branch main
+      - name: Record release metadata
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          sleep 10
-          curl -s -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
+          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            echo "::notice::CLOUDFLARE_ACCOUNT_ID not set — release metadata skipped"
+            exit 0
+          fi
+          if curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/studio-gabochie/deployments?per_page=2" -o deployments.json; then
+            jq '{commit_sha: "${{ github.sha }}", deployment_id: .result[0].id, previous_deployment_id: .result[1].id, deployed_at: .result[0].created_on}' deployments.json > release-metadata.json
+            cat release-metadata.json
+          else
+            echo "::warning::Could not fetch deployment metadata from Cloudflare API"
+          fi
+      - name: Run DB setup (blocking)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run db:setup
+      - name: Verify migrations (critical tables present)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          npx wrangler d1 execute gahq --remote --json --command "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('users','sessions','ci_reports','quality_runs','quality_reports','expresspay_tokens','guitar_enrollments')" > migration-check.json 2> migration-check.err
+          cat migration-check.err
+          jq '.' migration-check.json
+          NAMES=$(jq -r '.[0].results[].name' migration-check.json)
+          for table in users sessions ci_reports quality_runs quality_reports expresspay_tokens guitar_enrollments; do
+            if ! printf '%s\n' "$NAMES" | grep -qx "$table"; then
+              echo "::error::Migration verification failed — missing table: $table"
+              exit 1
+            fi
+          done
+          echo "Migration verification passed: all critical tables present"
+      - name: Post-deploy smoke test (blocking)
+        run: |
+          for path in /api/db/ping / /support/ /school/ /books/ /guitar/ /love-of-the-lord/give/; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' "https://studio.gabochie.com$path" || printf '000')
+            if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+              echo "::error::Smoke test failed for $path (HTTP $code)"
+              exit 1
+            fi
+            echo "OK $path ($code)"
+          done
+      - name: Trigger QA scan (blocking)
+        id: qa
+        run: |
+          RESP=$(curl -fsS -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
             -H 'Content-Type: application/json' \
             -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
-            -d '{"trigger":"deploy"}' || echo "QA scan trigger failed (non-fatal)"
+            -d '{"trigger":"deploy"}')
+          echo "$RESP" | jq '{status, run_id, critical_failed}'
+          RUN_ID=$(printf '%s' "$RESP" | jq -r '.run_id // 0')
+          if [ "$RUN_ID" = "0" ] || [ -z "$RUN_ID" ]; then
+            echo "::error::QA scan did not return a run_id"
+            exit 1
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+      - name: Poll QA scan and fail on critical findings
+        env:
+          CI_SECRET: ${{ secrets.CI_WEBHOOK_SECRET }}
+          RUN_ID: ${{ steps.qa.outputs.run_id }}
+        run: |
+          LAST='{}'
+          for i in $(seq 1 30); do
+            LAST=$(curl -fsS -H "X-CI-Secret: $CI_SECRET" "https://studio.gabochie.com/admin/api/qa/scan?run_id=$RUN_ID")
+            echo "$LAST" | jq '{run_status, failed, critical_failed}'
+            if [ "$(printf '%s' "$LAST" | jq -r '.run_status // "failed"')" != "in_progress" ]; then break; fi
+            sleep 5
+          done
+          printf '%s' "$LAST" | jq -e '.status == "ok"' > /dev/null
+          printf '%s' "$LAST" | jq -e '.run_status == "completed"' > /dev/null
+          CRITICAL=$(printf '%s' "$LAST" | jq -r '.critical_failed // 0')
+          if [ "$CRITICAL" -gt 0 ]; then
+            printf '%s' "$LAST" | jq '.critical_pages, .critical_failures'
+            echo "::error::QA scan found $CRITICAL failed check(s) on critical pages"
+            exit 1
+          fi
+          echo "QA scan passed: no critical-page failures"
 
   qa-scan-cron:
     name: Quality scan (CRON)
@@ -286,7 +495,7 @@ jobs:
     steps:
       - name: Trigger QA scan
         run: |
-          curl -s -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
+          curl -fsS -X POST 'https://studio.gabochie.com/admin/api/qa/scan' \
             -H 'Content-Type: application/json' \
             -H 'X-CI-Secret: ${{ secrets.CI_WEBHOOK_SECRET }}' \
             -d '{"trigger":"cron"}'

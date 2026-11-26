@@ -1,3 +1,5 @@
+import { escapeHtml, safeEqual } from '../gateways/_shared.js';
+
 export async function onRequest(context) {
   var { request, env, params } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
@@ -19,20 +21,27 @@ export async function onRequest(context) {
     }
     if (!invoice) return new Response('Invoice not found', { status: 404 });
 
-    // Token check — if the invoice has an email, require ?token={invoice_number}
-    if (invoice.customer_email && token !== invoice.invoice_number) {
-      return new Response('<html><body style="font-family:Georgia,serif;background:#FAFAFA;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><div style="text-align:center;padding:40px"><h2 style="color:#0A1628">Invoice Locked</h2><p style="color:#6B7F9A">This invoice requires authentication. Use the link from your email.</p></div></body></html>', { status: 401, headers: { 'Content-Type': 'text/html;charset=utf-8' } });
+    // Token check: a high-entropy token generated at issue time is the only
+    // credential for a public invoice view. There is deliberately no fallback
+    // to the sequential invoice number, so numbers cannot be enumerated.
+    if (invoice.access_token || invoice.customer_email) {
+      if (!invoice.access_token || !token || !safeEqual(token, invoice.access_token)) {
+        return new Response('<html><body style="font-family:Georgia,serif;background:#FAFAFA;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><div style="text-align:center;padding:40px"><h2 style="color:#0A1628">Invoice Locked</h2><p style="color:#6B7F9A">This invoice requires authentication. Use the link from your email.</p></div></body></html>', { status: 401, headers: { 'Content-Type': 'text/html;charset=utf-8' } });
+      }
     }
 
     var items = JSON.parse(invoice.items || '[]');
-    var dateStr = new Date(invoice.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-    var paidStr = invoice.paid_at ? new Date(invoice.paid_at.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    var currency = escapeHtml(invoice.currency || 'GHS');
+    var dateStr = escapeHtml(new Date(invoice.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }));
+    var paidStr = invoice.paid_at ? escapeHtml(new Date(invoice.paid_at.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })) : '';
 
-    var rows = items.map(function(item, i) {
-      return '<tr' + (i === items.length - 1 ? ' style="font-weight:700"' : '') + '><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#1E293B">' + (item.description || '') + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#64748B;text-align:center">' + (item.quantity || 1) + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#64748B;text-align:right">' + invoice.currency + ' ' + (item.unit_price || 0).toFixed(2) + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#1E293B;text-align:right">' + invoice.currency + ' ' + (item.total || 0).toFixed(2) + '</td></tr>';
+    var rows = items.map(function (item, i) {
+      var unit = (Number(item.unit_price) || 0).toFixed(2);
+      var total = (Number(item.total) || 0).toFixed(2);
+      return '<tr' + (i === items.length - 1 ? ' style="font-weight:700"' : '') + '><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#1E293B">' + escapeHtml(item.description || '') + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#64748B;text-align:center">' + escapeHtml(item.quantity || 1) + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#64748B;text-align:right">' + currency + ' ' + unit + '</td><td style="padding:10px 14px;border-bottom:1px solid #E2E8F0;color:#1E293B;text-align:right">' + currency + ' ' + total + '</td></tr>';
     }).join('');
 
-    var html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invoice ' + invoice.invoice_number + ' — Studio Gabochie</title>' +
+    var html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invoice ' + escapeHtml(invoice.invoice_number) + ' — Studio Gabochie</title>' +
       '<style>' +
       'body{font-family:Georgia,serif;background:#F4F6FA;margin:0;padding:20px;color:#1E293B}' +
       '.inv{max-width:640px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}' +
@@ -66,26 +75,26 @@ export async function onRequest(context) {
       '<div class="inv-hdr"><img src="https://studio.gabochie.com/assets/images/logo.png" alt="Studio Gabochie" style="height:40px;margin-bottom:8px"><h1>Studio Gabochie</h1><p>Official Invoice</p></div>' +
       '<div class="inv-body">' +
       '<div class="inv-meta">' +
-      '<div><div class="lbl">Invoice #</div><div class="val num">' + invoice.invoice_number + '</div></div>' +
+      '<div><div class="lbl">Invoice #</div><div class="val num">' + escapeHtml(invoice.invoice_number) + '</div></div>' +
       '<div><div class="lbl">Date Issued</div><div class="val">' + dateStr + '</div></div>' +
       '<div><div class="lbl">Status</div><div class="val"><span class="badge badge-paid">Paid</span></div></div>' +
       '</div>' +
       '<div style="margin-bottom:28px"><div class="lbl" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94A3B8;margin-bottom:4px">Bill To</div>' +
-      '<div style="font-size:15px;color:#1E293B">' + (invoice.customer_name || 'Valued Customer') + '</div>' +
-      '<div style="font-size:13px;color:#64748B">' + (invoice.customer_email || '') + '</div>' +
-      (invoice.customer_phone ? '<div style="font-size:13px;color:#64748B">' + invoice.customer_phone + '</div>' : '') +
-      (invoice.customer_company ? '<div style="font-size:13px;color:#64748B">' + invoice.customer_company + '</div>' : '') +
+      '<div style="font-size:15px;color:#1E293B">' + escapeHtml(invoice.customer_name || 'Valued Customer') + '</div>' +
+      '<div style="font-size:13px;color:#64748B">' + escapeHtml(invoice.customer_email || '') + '</div>' +
+      (invoice.customer_phone ? '<div style="font-size:13px;color:#64748B">' + escapeHtml(invoice.customer_phone) + '</div>' : '') +
+      (invoice.customer_company ? '<div style="font-size:13px;color:#64748B">' + escapeHtml(invoice.customer_company) + '</div>' : '') +
       '</div>' +
       '<table><thead><tr><th style="width:50%">Description</th><th style="width:60px">Qty</th><th style="width:100px">Unit Price</th><th style="width:100px">Amount</th></tr></thead><tbody>' +
       rows +
       '</tbody></table>' +
       '<table class="totals">' +
-      '<tr><td>Subtotal</td><td>' + invoice.currency + ' ' + invoice.subtotal.toFixed(2) + '</td></tr>' +
-      (invoice.tax ? '<tr><td>Tax</td><td>' + invoice.currency + ' ' + invoice.tax.toFixed(2) + '</td></tr>' : '') +
-      '<tr class="grand"><td>Total</td><td>' + invoice.currency + ' ' + invoice.total.toFixed(2) + '</td></tr>' +
+      '<tr><td>Subtotal</td><td>' + currency + ' ' + (Number(invoice.subtotal) || 0).toFixed(2) + '</td></tr>' +
+      (invoice.tax ? '<tr><td>Tax</td><td>' + currency + ' ' + (Number(invoice.tax) || 0).toFixed(2) + '</td></tr>' : '') +
+      '<tr class="grand"><td>Total</td><td>' + currency + ' ' + (Number(invoice.total) || 0).toFixed(2) + '</td></tr>' +
       '</table>' +
       '<div style="margin-top:24px;padding-top:16px;border-top:1px solid #E2E8F0;font-size:13px;color:#64748B;line-height:1.6">' +
-      '<p style="margin:0 0 4px"><strong style="color:#1E293B">Payment Reference:</strong> ' + (invoice.reference_tx_ref || '-') + '</p>' +
+      '<p style="margin:0 0 4px"><strong style="color:#1E293B">Payment Reference:</strong> ' + escapeHtml(invoice.reference_tx_ref || '-') + '</p>' +
       (paidStr ? '<p style="margin:0"><strong style="color:#1E293B">Paid On:</strong> ' + paidStr + '</p>' : '') +
       '</div>' +
       '</div>' +

@@ -1,6 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { onRequest } from '../../functions/api/careers.js';
 import { mockDb } from '../helpers/mock-cf.js';
+
+// These tests exercise application storage, not CAPTCHA. Stub the verifier so
+// they do not depend on the old fail-open-without-secret behaviour.
+vi.mock('../../functions/api/_turnstile.js', async function (importOriginal) {
+  var actual = await importOriginal();
+  return {
+    // Unconfigured deployments are stubbed to pass for the storage tests;
+    // the dedicated CAPTCHA test configures a secret and uses the real check.
+    verifyTurnstile: function (env, request, token) {
+      if (env && env.TURNSTILE_SECRET) return actual.verifyTurnstile(env, request, token);
+      return Promise.resolve(true);
+    },
+    turnstileToken: actual.turnstileToken
+  };
+});
 
 function post(fields) {
   return new Request('https://studio.gabochie.com/api/careers', {

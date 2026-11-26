@@ -35,9 +35,11 @@ async function guitarOwnedRank(db, userId) {
 var PURPOSES = ['donation', 'course', 'books', 'tier', 'merch', 'guitar'];
 
 var SUCCESS_URLS = {
-  donation: function (site, p) { return site + '/donate/?tx_ref=' + encodeURIComponent(p.tx_ref) + '&status=successful&amount=' + p.amount + '&name=' + encodeURIComponent(p.name) + '&email=' + encodeURIComponent(p.email) + '&phone=' + encodeURIComponent(p.phone); },
+  // Success URLs land in browser history/logs/Referer headers: opaque reference
+  // only, never the donor's name/email/phone.
+  donation: function (site, p) { return site + '/donate/?tx_ref=' + encodeURIComponent(p.tx_ref) + '&status=successful&amount=' + encodeURIComponent(String(p.amount)); },
   course: function (site, p) { return site + '/dashboard/' + (p.access_token ? '?token=' + encodeURIComponent(p.access_token) : ''); },
-  books: function (site, p) { return site + '/books/download?tx_ref=' + encodeURIComponent(p.domain_tx) + '&email=' + encodeURIComponent(p.email) + '&name=' + encodeURIComponent(p.name); },
+  books: function (site, p) { return site + '/books/download?tx_ref=' + encodeURIComponent(p.domain_tx); },
   tier: function (site, p) { return site + '/member/?success=' + encodeURIComponent(p.tier || 'supporter'); },
   merch: function (site, p) { return site + '/merch/?order=' + encodeURIComponent(p.domain_tx) + '&status=successful'; },
   guitar: function (site, _p) { return site + '/guitar/learn/'; },

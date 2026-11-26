@@ -40,8 +40,15 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'error', message: 'subject and html required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // If test_email is set, look up subscriber for personalization
+    // If test_email is set, look up subscriber for personalization. Test sends
+    // must honour the same suppression list as the broadcast queue — admins
+    // should not be able to deliver mail to an address that unsubscribed or
+    // hard-bounced simply by using the test path.
     if (test_email) {
+      const suppressed = await env.DB.prepare("SELECT 1 FROM suppression_list WHERE email = ?").bind(test_email).first();
+      if (suppressed) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Test send refused: this address is on the suppression list' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      }
       const sub = await env.DB.prepare("SELECT name, edition, ref_code FROM subscribers WHERE email = ?").bind(test_email).first();
       const name = (sub && sub.name) || 'Gideon';
       const edition = (sub && sub.edition) || 'GH';

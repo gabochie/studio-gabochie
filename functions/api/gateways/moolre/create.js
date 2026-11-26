@@ -1,4 +1,4 @@
-import { json, readBody } from '../_shared.js';
+import { json, readBody, newRef } from '../_shared.js';
 import { moolreBase, moolreHeaders, publicBase } from './_moolre.js';
 import { checkRateLimit } from '../../_rate-limit.js';
 import { resolvePendingTx } from '../expresspay/create.js';
@@ -48,7 +48,7 @@ export async function onRequest(context) {
     email = String((body && body.email) || '').trim();
     phone = String((body && body.phone) || '').trim();
     currency = String((body && body.currency) || 'GHS').toUpperCase();
-    tx_ref = 'moolre_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+    tx_ref = newRef('moolre_');
     stageDonation = true;
   }
   if (!email || !email.includes('@')) return json({ status: 'error', message: 'A valid email is required' }, 400);
@@ -60,9 +60,10 @@ export async function onRequest(context) {
   // Callers may return the donor to their own same-origin page (e.g. the church
   // Give page). Rejected unless it is a single-slash root-relative path.
   var redirectPath = (body.redirect && body.redirect.charAt(0) === '/' && body.redirect.charAt(1) !== '/') ? body.redirect : '/donate.html';
+  // The redirect is public (browser history, logs, Referer). Carry only the
+  // opaque reference + non-sensitive status/amount — never donor PII.
   const redirectUrl = site + redirectPath + (redirectPath.indexOf('?') >= 0 ? '&' : '?') + 'tx_ref=' + encodeURIComponent(tx_ref) +
-    '&status=successful&amount=' + amount +
-    '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&phone=' + encodeURIComponent(phone);
+    '&status=successful&amount=' + encodeURIComponent(String(amount));
 
   let linkData;
   try {

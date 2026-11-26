@@ -78,6 +78,8 @@ cp .env.example .dev.vars
 
 Grouped by purpose: core (public URL + API keys), payments (ExpressPay, Moolre, NOWPayments, manual MoMo/bank), email (Brevo), AI providers, Turnstile, WhatsApp, Eventbrite, Instagram, and access-control secrets. Every value ships blank — nothing sensitive is committed.
 
+There is no local pre-commit hook. Required checks run in `.github/workflows/ci.yml` and `secret-scan.yml`; those must be made required in GitHub branch protection (see [DEPLOY.md](DEPLOY.md)).
+
 ## Deploy
 
 This project requires **Cloudflare Pages with Functions + D1 database**.
@@ -86,7 +88,7 @@ See [DEPLOY.md](DEPLOY.md) for full setup instructions.
 ## Development
 
 ```bash
-npm install    # Install dependencies + install pre-commit hook
+npm install    # Install dependencies (no pre-commit hook is installed)
 npm run dev    # Start local server (requires Cloudflare Pages Functions emulator)
 npm test       # Run unit + API tests
 npm run check  # Run lint + tests

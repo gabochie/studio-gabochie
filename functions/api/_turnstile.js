@@ -4,15 +4,13 @@
 // module is the only place that talks to Cloudflare's siteverify endpoint, so
 // the secret never reaches the client. Verdicts:
 //
-//   - No TURNSTILE_SECRET configured -> allow. The widget only renders when a
-//     sitekey is present, so this path exists so an unconfigured deploy (or a
-//     local run without secrets) never locks real users out of the forms.
+//   - No TURNSTILE_SECRET configured -> reject. An unconfigured deploy is a
+//     configuration error, not a reason to let auth/payment/claim traffic in.
 //   - Missing/empty token -> reject.
 //   - siteverify returns success -> allow, anything else -> reject.
-//   - siteverify unreachable -> allow, matching checkRateLimit's fail-open
-//     posture so a Cloudflare blip cannot block legitimate submissions.
+//   - siteverify unreachable or non-2xx -> reject (fail closed).
 export async function verifyTurnstile(env, request, token) {
-  if (!env || !env.TURNSTILE_SECRET) return true;
+  if (!env || !env.TURNSTILE_SECRET) return false;
   if (!token || !String(token).trim()) return false;
   var ip = '';
   try {
@@ -30,10 +28,13 @@ export async function verifyTurnstile(env, request, token) {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body.toString()
     });
+    if (!resp) return false;
+    // Non-2xx responses are never a successful challenge verdict.
+    if (resp.ok === false || (typeof resp.status === 'number' && (resp.status < 200 || resp.status >= 300))) return false;
     var result = await resp.json();
     return !!(result && result.success);
   } catch (_e) {
-    return true;
+    return false;
   }
 }
 

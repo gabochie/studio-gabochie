@@ -53,7 +53,12 @@ describe('download gates (phase 1)', function () {
       ],
       sessions: [{ token: 'tok-7', user_id: 7, expires_at: '2099-01-01', email: 'me@t.co', name: 'Me', membership_tier: 'free' }]
     });
-    var res = await storeDownload(get('http://localhost/api/store/download?token=tok-7', { DB: db }));
+    var ctx = buildContext('http://localhost/api/store/download', {
+      method: 'GET',
+      env: { DB: db },
+      request: new Request('http://localhost/api/store/download', { headers: { Authorization: 'Bearer tok-7' } })
+    });
+    var res = await storeDownload(ctx);
     expect(res.status).toBe(200);
     var data = await res.json();
     expect(data.orders).toHaveLength(1);

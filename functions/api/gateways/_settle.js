@@ -1,6 +1,7 @@
 import { queueEmail, donationImpactFollowup, bookUpsell, daysFromNow } from '../email/_send.js';
-import { generateInvoice } from '../invoices/generate.js';
+import { generateInvoice, invoicePublicLink } from '../invoices/generate.js';
 import { sendGuitarReceipt, guitarBuyer } from '../guitar/_receipt.js';
+import { escapeHtml } from './_shared.js';
 
 // Shared settlement for confirmed payments, gateway-agnostic.
 // Called by the Flutterwave webhook (legacy), the ExpressPay callback,
@@ -25,16 +26,28 @@ export async function settlePaidTx(env, db, p) {
   // flows (guitar, memberships, books, store, bookings, upgrades) are tracked
   // in their own tables and must not create phantom donation rows.
   var isDonationRef = !/^(GUITAR_|guitar_|tier_|memb_|sub_|books_|bookpw_|store_|booking_|upgrade_)/.test(tx_ref);
+  var alreadySettled = false;
   if (isDonationRef) {
+    // Atomic claim: only a still-pending row may be moved to the verified
+    // terminal status. A replayed callback cannot re-run the whole settlement
+    // (no duplicate receipts/invoices), and no second worker can claim the row.
     var donUpd = await db.prepare(
-      `UPDATE donations SET amount = ?, currency = ?, status = ?, flw_id = ?, donor_phone = ? WHERE tx_ref = ?`
-    ).bind(verifiedAmount, verifiedCurrency, verifiedStatus, flw_id, donor_phone, tx_ref).run();
+      `UPDATE donations SET amount = ?, currency = ?, status = ?, flw_id = ?, donor_phone = ?
+       WHERE tx_ref = ? AND status = ?`
+    ).bind(verifiedAmount, verifiedCurrency, verifiedStatus, flw_id, donor_phone, tx_ref, 'pending').run();
     if (!donUpd || !donUpd.meta || !donUpd.meta.changes) {
-      await db.prepare(
-        `INSERT INTO donations (tx_ref, amount, currency, donor_name, donor_email, donor_phone, status, flw_id, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
+      var existing = await db.prepare('SELECT status FROM donations WHERE tx_ref = ?').bind(tx_ref).first().catch(function () { return null; });
+      if (existing) {
+        // Terminal row: this is a replay, not a new payment. Skip all side effects.
+        alreadySettled = true;
+      } else {
+        await db.prepare(
+          `INSERT INTO donations (tx_ref, amount, currency, donor_name, donor_email, donor_phone, status, flw_id, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(tx_ref, verifiedAmount, verifiedCurrency, donor_name, donor_email, donor_phone, verifiedStatus, flw_id, created_at).run();
+      }
     }
+    if (alreadySettled) return;
   }
 
   // Attribute donation to campaign if tx_ref starts with camp_
@@ -73,7 +86,7 @@ export async function settlePaidTx(env, db, p) {
   // Mark guitar course enrollment
   if (event === 'charge.completed' && tx_ref.startsWith('guitar_')) {
     try {
-      await queueEmail(env, donor_email, donor_name, 'Welcome to Guitar: First Things First', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + (donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + verifiedAmount.toFixed(0) + '</strong> is confirmed. Your unlock is now active — seek first the system, and the songs will be added.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
+      await queueEmail(env, donor_email, donor_name, 'Welcome to Guitar: First Things First', '<div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;padding:32px;color:#1E293B"><h1 style="color:#C9A84C;font-size:22px;margin:0 0 16px">🎸 Welcome to the Method</h1><p style="line-height:1.6;margin:0 0 16px">Dear ' + escapeHtml(donor_name || 'Student') + ',</p><p style="line-height:1.6;margin:0 0 16px">Your payment of <strong>GH¢ ' + escapeHtml(verifiedAmount.toFixed(0)) + '</strong> is confirmed. Your unlock is now active — seek first the system, and the songs will be added.</p><p style="line-height:1.6;margin:0 0 16px"><a href="https://studio.gabochie.com/school/guitar/learn/" style="background:#C9A84C;color:#0A1628;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Start Learning Now</a></p><p style="color:#64748B;font-size:12px;margin:24px 0 0">Studio Gabochie — Accra, Ghana</p></div>', 'guitar_enrollment', daysFromNow(0));
     } catch (_) {}
   }
 
@@ -104,13 +117,13 @@ export async function settlePaidTx(env, db, p) {
         <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Your Books Are Ready</p>
         </td></tr>
         <tr><td style="padding:32px">
-        <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${bName},</p>
+        <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${escapeHtml(bName)},</p>
         <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for your purchase! Your premium books bundle is ready to download.</p>
         <table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">
-        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Transaction</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${tx_ref}</td></tr>
-        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">GHS ${verifiedAmount.toFixed(2)}</td></tr>
+        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Transaction</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${escapeHtml(tx_ref)}</td></tr>
+        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">GHS ${escapeHtml(verifiedAmount.toFixed(2))}</td></tr>
         </table>
-        <a href="https://studio.gabochie.com/books/download?tx_ref=${tx_ref}" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Download Your Books</a>
+        <a href="https://studio.gabochie.com/books/download?tx_ref=${escapeHtml(encodeURIComponent(tx_ref))}" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Download Your Books</a>
         <p style="color:#64748B;font-size:12px;line-height:1.6;margin:24px 0 0">This download link is unique to your purchase. Do not share it.</p>
         </td></tr></table></td></tr></table></body></html>`;
         await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -151,9 +164,9 @@ export async function settlePaidTx(env, db, p) {
             '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
             '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Full Access Activated</p></td></tr>' +
             '<tr><td style="padding:32px">' +
-            '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + upgEnrollment.student_name + ',</p>' +
-            '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your full access to <strong style="color:#C9A84C">' + upgEnrollment.title + '</strong> is now active. Start learning at your own pace.</p>' +
-            '<a href="https://studio.gabochie.com/dashboard/?token=' + upgEnrollment.access_token + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
+            '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + escapeHtml(upgEnrollment.student_name) + ',</p>' +
+            '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your full access to <strong style="color:#C9A84C">' + escapeHtml(upgEnrollment.title) + '</strong> is now active. Start learning at your own pace.</p>' +
+            '<a href="https://studio.gabochie.com/dashboard/?token=' + escapeHtml(encodeURIComponent(upgEnrollment.access_token || '')) + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Dashboard</a>' +
             '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
             '</td></tr></table></td></tr></table></body></html>';
           await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -193,7 +206,7 @@ export async function settlePaidTx(env, db, p) {
               '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
               '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + (membTier === 'vip' ? 'VIP' : 'Premium') + ' Membership Active</p></td></tr>' +
               '<tr><td style="padding:32px">' +
-              '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (membUser.name || donor_name) + ',</p>' +
+              '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + escapeHtml(membUser.name || donor_name) + ',</p>' +
               '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + (membTier === 'vip' ? 'VIP' : 'Premium') + '</strong> membership is now active. Enjoy full access to all courses, resources, and features.</p>' +
               '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
               '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
@@ -231,15 +244,15 @@ export async function settlePaidTx(env, db, p) {
         <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
         <tr><td style="background:#0A1628;padding:32px;text-align:center">
         <h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>
-        <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Welcome, ${tierName}!</p>
+        <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Welcome, ${escapeHtml(tierName)}!</p>
         </td></tr>
         <tr><td style="padding:32px">
-        <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${donor_name},</p>
-        <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for becoming a <strong style="color:#C9A84C">${tierName}</strong>. Your support makes every book, video, and teaching possible.</p>
+        <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${escapeHtml(donor_name)},</p>
+        <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for becoming a <strong style="color:#C9A84C">${escapeHtml(tierName)}</strong>. Your support makes every book, video, and teaching possible.</p>
         <table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">
-        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Plan</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">${tierName}</td></tr>
-        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${subCurrency} ${subAmount.toFixed(2)}</td></tr>
-        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:12px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${tx_ref}</td></tr>
+        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Plan</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">${escapeHtml(tierName)}</td></tr>
+        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${escapeHtml(subCurrency)} ${escapeHtml(subAmount.toFixed(2))}</td></tr>
+        <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:12px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${escapeHtml(tx_ref)}</td></tr>
         </table>
         <p style="color:#64748B;font-size:13px;line-height:1.6;margin:0 0 20px">What happens next?</p>
         <ul style="color:#475569;font-size:13px;line-height:1.7;padding-left:20px;margin:0 0 24px">
@@ -286,10 +299,10 @@ export async function settlePaidTx(env, db, p) {
             '<table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">' +
             '<tr><td style="background:#0A1628;padding:32px;text-align:center">' +
             '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
-            '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + displayName + ' Tier Active</p></td></tr>' +
+            '<p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">' + escapeHtml(displayName) + ' Tier Active</p></td></tr>' +
             '<tr><td style="padding:32px">' +
-            '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + (tierUser ? tierUser.name : (tierSub.name || donor_name)) + ',</p>' +
-            '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + displayName + '</strong> tier is now active. Thank you for supporting the mission.</p>' +
+            '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + escapeHtml(tierUser ? tierUser.name : (tierSub.name || donor_name)) + ',</p>' +
+            '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Your <strong style="color:#C9A84C">' + escapeHtml(displayName) + '</strong> tier is now active. Thank you for supporting the mission.</p>' +
             '<a href="https://studio.gabochie.com/member/" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none">Go to Membership</a>' +
             '<p style="color:#94A3B8;font-size:11px;line-height:1.5;margin:24px 0 0">Studio Gabochie &mdash; Accra, Ghana</p>' +
             '</td></tr></table></td></tr></table></body></html>';
@@ -353,9 +366,9 @@ export async function settlePaidTx(env, db, p) {
         var shipRegion = orderRec ? orderRec.shipping_region : '';
         var isPhysical = shipCity || shipRegion;
         var deliverySection = isPhysical
-          ? '<p style="color:#1E293B;font-size:14px;line-height:1.6;margin:0 0 8px">We\'ll ship your order to <strong style="color:#C9A84C">' + shipCity + ', ' + shipRegion + '</strong>.</p>' +
+          ? '<p style="color:#1E293B;font-size:14px;line-height:1.6;margin:0 0 8px">We\'ll ship your order to <strong style="color:#C9A84C">' + escapeHtml(shipCity) + ', ' + escapeHtml(shipRegion) + '</strong>.</p>' +
             '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">You\'ll receive a tracking update once dispatched. Delivery typically takes 1-3 business days within Accra, 3-7 days upcountry.</p>'
-          : '<a href="https://studio.gabochie.com/store/download?tx_ref=' + tx_ref + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
+          : '<a href="https://studio.gabochie.com/store/download?tx_ref=' + escapeHtml(encodeURIComponent(tx_ref)) + '" style="display:inline-block;padding:14px 32px;background:#C9A84C;color:#0A1628;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Download Your Purchase</a>' +
             '<p style="color:#64748B;font-size:12px;line-height:1.6;margin:0">Your download link is unique to this purchase. Do not share it.</p>';
         var receiptHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">' +
           '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">' +
@@ -364,12 +377,12 @@ export async function settlePaidTx(env, db, p) {
           '<h1 style="font-family:Georgia,serif;color:#C9A84C;font-size:24px;margin:0;letter-spacing:-.02em">Studio Gabochie</h1>' +
           '<p style="color:#6B7F9A;font-size:13px;margin:8px 0 0">Thank You for Your Purchase</p></td></tr>' +
           '<tr><td style="padding:32px">' +
-          '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + donor_name + ',</p>' +
-          '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for purchasing <strong style="color:#C9A84C">' + displayName + '</strong>. Your payment of <strong style="color:#C9A84C">' + verifiedCurrency + ' ' + verifiedAmount.toFixed(2) + '</strong> has been confirmed.</p>' +
+          '<p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ' + escapeHtml(donor_name) + ',</p>' +
+          '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for purchasing <strong style="color:#C9A84C">' + escapeHtml(displayName) + '</strong>. Your payment of <strong style="color:#C9A84C">' + escapeHtml(verifiedCurrency) + ' ' + escapeHtml(verifiedAmount.toFixed(2)) + '</strong> has been confirmed.</p>' +
           '<table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">' +
-          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Item</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">' + displayName + '</td></tr>' +
-          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:13px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + tx_ref + '</td></tr>' +
-          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + verifiedCurrency + ' ' + verifiedAmount.toFixed(2) + '</td></tr>' +
+          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Item</td><td style="color:#1E293B;font-size:13px;font-weight:600;text-align:right;padding:8px 16px">' + escapeHtml(displayName) + '</td></tr>' +
+          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Transaction</td><td style="color:#1E293B;font-size:13px;font-family:monospace;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + escapeHtml(tx_ref) + '</td></tr>' +
+          '<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">' + escapeHtml(verifiedCurrency) + ' ' + escapeHtml(verifiedAmount.toFixed(2)) + '</td></tr>' +
           '</table>' +
           deliverySection +
           '</td></tr></table></td></tr></table></body></html>';
@@ -396,7 +409,8 @@ export async function settlePaidTx(env, db, p) {
     }
     try {
       const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-      const invLink = invNum ? '<p style="margin:12px 0 0"><a href="https://studio.gabochie.com/api/invoices/' + invNum + '?token=' + invNum + '" style="color:#C9A84C;text-decoration:underline;font-size:13px">View Invoice &rsaquo;</a></p>' : '';
+      const invoiceUrl = invNum ? await invoicePublicLink(env, invNum) : '';
+      const invLink = invoiceUrl ? '<p style="margin:12px 0 0"><a href="' + escapeHtml(invoiceUrl) + '" style="color:#C9A84C;text-decoration:underline;font-size:13px">View Invoice &rsaquo;</a></p>' : '';
       const receiptHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#F4F6FA;font-family:Georgia,serif">
       <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
       <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -405,13 +419,13 @@ export async function settlePaidTx(env, db, p) {
       <p style="color:#6B7F9A;font-size:12px;margin:8px 0 0">Donation Receipt</p>
       </td></tr>
       <tr><td style="padding:32px">
-      <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${donor_name},</p>
-      <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for your generous gift of <strong style="color:#C9A84C">${verifiedCurrency} ${verifiedAmount.toFixed(2)}</strong>. Your support makes every book, video, and teaching possible.</p>
+      <p style="color:#1E293B;font-size:15px;line-height:1.6;margin:0 0 20px">Dear ${escapeHtml(donor_name)},</p>
+      <p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 24px">Thank you for your generous gift of <strong style="color:#C9A84C">${escapeHtml(verifiedCurrency)} ${escapeHtml(verifiedAmount.toFixed(2))}</strong>. Your support makes every book, video, and teaching possible.</p>
       <table width="100%" cellpadding="8" cellspacing="0" style="background:#F8FAFC;border-radius:8px;margin-bottom:24px">
-      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Receipt No.</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${tx_ref}</td></tr>
-      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Date</td><td style="color:#1E293B;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${dateStr}</td></tr>
-      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${verifiedCurrency} ${verifiedAmount.toFixed(2)}</td></tr>
-      ${donor_phone ? `<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Phone</td><td style="color:#1E293B;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${donor_phone}</td></tr>` : ''}
+      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px">Receipt No.</td><td style="color:#1E293B;font-size:13px;font-weight:600;font-family:monospace;text-align:right;padding:8px 16px">${escapeHtml(tx_ref)}</td></tr>
+      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Date</td><td style="color:#1E293B;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${escapeHtml(dateStr)}</td></tr>
+      <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Amount</td><td style="color:#C9A84C;font-size:15px;font-weight:700;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${escapeHtml(verifiedCurrency)} ${escapeHtml(verifiedAmount.toFixed(2))}</td></tr>
+      ${donor_phone ? `<tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Phone</td><td style="color:#1E293B;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">${escapeHtml(donor_phone)}</td></tr>` : ''}
       <tr><td style="color:#64748B;font-size:12px;padding:8px 16px;border-top:1px solid #E2E8F0">Status</td><td style="color:#22C55E;font-size:13px;text-align:right;padding:8px 16px;border-top:1px solid #E2E8F0">Confirmed</td></tr>
       </table>
       <p style="color:#64748B;font-size:12px;line-height:1.6;margin:0 0 6px">This receipt was issued automatically. Keep it for your records.</p>

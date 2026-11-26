@@ -4,12 +4,13 @@ import { requireAdminAuth } from '../admin/_admin-auth.js';
 var corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key' };
 
 var REVENUE_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as txns, SUM(amount) as total, AVG(amount) as avg FROM donations WHERE status = 'successful' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
-var SUBSCRIBER_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as total FROM subscribers WHERE created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
-var PAGEVIEW_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as total FROM page_views WHERE created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
+var SUBSCRIBER_SQL = "SELECT strftime('%Y-%m', subscribed_at) as month, COUNT(*) as total FROM subscribers WHERE subscribed_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
+var PAGEVIEW_SQL = "SELECT strftime('%Y-%m', viewed_at) as month, COUNT(*) as total FROM page_views WHERE viewed_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
 var DONATION_EVENTS_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as total FROM events WHERE event_type = 'donation_started' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
 var SUBSCRIPTIONS_SQL = "SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as new_subs, COALESCE(SUM(amount), 0) as revenue FROM subscriptions WHERE status = 'active' AND created_at >= datetime('now', '-12 months') GROUP BY month ORDER BY month";
-var TOP_PAGES_SQL = "SELECT page, COUNT(*) as views FROM page_views WHERE created_at >= datetime('now', '-30 days') GROUP BY page ORDER BY views DESC LIMIT 10";
+var TOP_PAGES_SQL = "SELECT page, COUNT(*) as views FROM page_views WHERE viewed_at >= datetime('now', '-30 days') GROUP BY page ORDER BY views DESC LIMIT 10";
 var PLAYBOOK_EVENTS_SQL = "SELECT event_type, COUNT(*) as total FROM events WHERE event_type IN ('playbook_view','playbook_gate_submit','playbook_checklist_download') AND created_at >= datetime('now', '-12 months') GROUP BY event_type";
+var ASSESSMENT_EVENTS_SQL = "SELECT event_type, COUNT(*) as total FROM events WHERE event_type IN ('assessment_start','assessment_complete','assessment_unlock') AND created_at >= datetime('now', '-12 months') GROUP BY event_type";
 
 export async function onRequest(context) {
   var { request, env } = context;
@@ -26,18 +27,24 @@ export async function onRequest(context) {
   }
 
   try {
-    // Fetch all historical data in parallel
-    var [revenue, subscribers, pageviews, donationEvents, subscriptions, topPages, playbookEvents] = await Promise.all([
-      env.DB.prepare(REVENUE_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
-      env.DB.prepare(SUBSCRIBER_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
-      env.DB.prepare(PAGEVIEW_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
+    // Core metrics must fail loudly: silent empty arrays hide broken SQL.
+    // Event breakdowns are optional and stay best-effort.
+    var rows = await Promise.all([
+      env.DB.prepare(REVENUE_SQL).all().then(function(r) { return r.results || []; }),
+      env.DB.prepare(SUBSCRIBER_SQL).all().then(function(r) { return r.results || []; }),
+      env.DB.prepare(PAGEVIEW_SQL).all().then(function(r) { return r.results || []; }),
       env.DB.prepare(DONATION_EVENTS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
-      env.DB.prepare(SUBSCRIPTIONS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
-      env.DB.prepare(TOP_PAGES_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
+      env.DB.prepare(SUBSCRIPTIONS_SQL).all().then(function(r) { return r.results || []; }),
+      env.DB.prepare(TOP_PAGES_SQL).all().then(function(r) { return r.results || []; }),
       env.DB.prepare(PLAYBOOK_EVENTS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
+      env.DB.prepare(ASSESSMENT_EVENTS_SQL).all().then(function(r) { return r.results || []; }).catch(function() { return []; }),
     ]);
+    var revenue = rows[0], subscribers = rows[1], pageviews = rows[2], donationEvents = rows[3];
+    var subscriptions = rows[4], topPages = rows[5], playbookEvents = rows[6], assessmentEvents = rows[7];
     var playbookMap = {};
     (playbookEvents || []).forEach(function(r) { playbookMap[r.event_type] = r.total; });
+    var assessmentMap = {};
+    (assessmentEvents || []).forEach(function(r) { assessmentMap[r.event_type] = r.total; });
 
     // Build summary for AI
     var totalRevenue = revenue.reduce(function(s, r) { return s + (r.total || 0); }, 0);
@@ -58,6 +65,7 @@ export async function onRequest(context) {
       '  Page Views: ' + totalViews,
       '\nRecent 3 Months Revenue: ' + JSON.stringify(recentRevenue),
       '\nTop Pages (Last 30 Days): ' + JSON.stringify(topPages),
+      '\nAssessment Funnel (12mo): ' + JSON.stringify(assessmentMap),
     ].join('\n');
 
     // Generate AI-powered predictions
@@ -79,6 +87,7 @@ export async function onRequest(context) {
         subscriptions: subscriptions,
         topPages: topPages,
         playbookEvents: playbookMap,
+        assessmentEvents: assessmentMap,
         totals: { revenue: totalRevenue, subscribers: totalSubs, pageViews: totalViews }
       },
       forecast: forecast

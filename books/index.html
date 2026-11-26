@@ -31,8 +31,8 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .wrap{max-width:var(--content-max);margin:0 auto;width:100%}
 .nav-links a.active{color:#fff}
 .intro{text-align:center;margin-bottom:40px}
-.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
-.intro h2 span{color:#C9A84C}
+.intro h1,.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.intro h1 span,.intro h2 span{color:#C9A84C}
 .intro p{color:#6B7F9A;font-size:15px;line-height:1.7;max-width:600px;margin:0 auto}
 .book-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;padding:24px;margin-bottom:16px;display:flex;gap:20px;align-items:flex-start}
 .book-card .icon{width:48px;height:48px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:22px;color:#C9A84C;flex-shrink:0}
@@ -68,7 +68,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .lead-modal .icon{font-size:40px;margin-bottom:8px}
 .lead-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#F1F5F9;margin-bottom:4px}
 .lead-modal .book-name{color:#C9A84C;font-size:13px;margin-bottom:16px}
-.lead-modal input{width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;margin-bottom:10px;outline:none;font-family:'DM Sans',sans-serif}
+.lead-modal input{width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif}
 .lead-modal input:focus{border-color:#C9A84C}
 .lead-modal .submit{width:100%;padding:12px;border:none;border-radius:8px;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
 .lead-modal .submit:disabled{opacity:.5;cursor:not-allowed}
@@ -78,13 +78,16 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 @media(max-width:600px){.book-card{flex-direction:column;align-items:stretch}}
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<!-- Production-readiness metadata -->
+<meta name="description" content="Explore digital books by Studio Gabochie on systems thinking, biblical worldview, creative excellence, digital skills, and nation building.">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <div id="nav-placeholder"></div>
 <div class="wrap">
 
   <div class="intro">
-    <h2>Books That <span>Unlock the Kingdom</span></h2>
+    <h1>Books That <span>Unlock the Kingdom</span></h1>
     <p>From Scripture and technology to national transformation — resources that challenge the mind, awaken creativity, and illuminate the wisdom of God for every area of life.</p>
   </div>
 
@@ -117,10 +120,10 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
     <div class="price"><span class="price-convert" data-ghs="300">GH₵300</span> <span>/ one-time</span></div>
     <p class="bill-note">Shown in your currency (≈). Billed in GH₵.</p>
     <div class="input-group" style="margin-bottom:12px">
-      <input type="email" id="bundleEmail" placeholder="Your email address" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
+      <input type="email" id="bundleEmail" placeholder="Your email address" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;font-family:'DM Sans',sans-serif">
     </div>
     <div class="input-group" style="margin-bottom:16px">
-      <input type="text" id="bundleName" placeholder="Your full name" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;outline:none;font-family:'DM Sans',sans-serif">
+      <input type="text" id="bundleName" placeholder="Your full name" style="padding:12px 16px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;width:100%;max-width:320px;font-family:'DM Sans',sans-serif">
     </div>
     <button class="btn btn-gold" id="buyBtn" onclick="buyBundle()">Buy Bundle — <span class="price-convert" data-ghs="300">GH₵300</span></button>
     <div style="margin-top:10px"><button class="btn btn-outline" id="buyMomoBtn" onclick="buyBundleMomo()">Pay with MoMo / Bank</button></div>
@@ -142,9 +145,9 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <form id="leadForm">
           <input type="text" name="name" placeholder="Your name" required>
           <input type="email" name="email" id="leadEmail" placeholder="Your email" required>
-          <input type="tel" name="phone" placeholder="WhatsApp (e.g. 233501234567)" style="width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:10px">
+          <input type="tel" name="phone" placeholder="WhatsApp (e.g. 233501234567)" style="width:100%;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:10px">
           <div style="display:flex;gap:8px;margin-bottom:10px">
-            <input type="number" id="payAmount" placeholder="Amount (GH₵)" min="50" value="50" step="10" style="flex:1;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;width:0">
+            <input type="number" id="payAmount" placeholder="Amount (GH₵)" min="50" value="50" step="10" style="flex:1;padding:12px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#CBD5E1;font-size:14px;font-family:'DM Sans',sans-serif;width:0">
             <button type="button" id="payWithBtn" onclick="payWithAmount()" style="padding:12px 16px;border:2px solid #C9A84C;border-radius:8px;background:transparent;color:#C9A84C;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.1em">Pay &amp; Download</button>
           </div>
           <button type="button" id="payMomoBtn" onclick="payWithMomo()" style="width:100%;padding:10px;margin-bottom:10px;border:1px solid #1E3250;border-radius:8px;background:transparent;color:#8A9BB5;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.1em">Pay with MoMo / Bank</button>

@@ -50,6 +50,7 @@ test.describe('Guitar — bronze payment through the mock gateway (browser)', fu
     // Seed a registered student the way the register modal would.
     var email = 'e2e-pay-' + Date.now() + '@test.gabochie.com';
     var reg = await (await page.request.post('/api/guitar/register', {
+      headers: { Origin: new URL(process.env.BASE_URL || 'http://localhost:8788').origin },
       data: { name: 'E2E Payer', email: email }
     })).json();
     await page.addInitScript(function (seed) {

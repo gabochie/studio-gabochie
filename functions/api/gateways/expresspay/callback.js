@@ -41,10 +41,30 @@ export async function onRequest(context) {
   const q = await expresspayQuery(env, token);
   if (!q.approved) return json({ status: 'ok', pending: !!q.pending });
 
+  // The provider's result is the only trusted source for the reference. A
+  // caller-supplied order-id may be stale or deliberately point at another
+  // pending donation, so it is rejected unless it matches the queried order.
+  const providerRef = String(q.orderId || '').trim();
+  if (!providerRef) return json({ status: 'ok', note: 'provider reference missing' });
+  if (tx_ref && tx_ref !== providerRef) {
+    return json({ status: 'error', message: 'Order reference mismatch' }, 400);
+  }
+  let mappedRef = null;
+  try {
+    const mapped = await env.DB.prepare('SELECT tx_ref FROM expresspay_tokens WHERE token = ?').bind(token).first();
+    if (mapped && mapped.tx_ref) mappedRef = String(mapped.tx_ref).trim();
+  } catch (_e) {
+    // Table may not exist in older deployments; provider verification still
+    // governs the settlement reference in that case.
+  }
+  if (mappedRef && mappedRef !== providerRef) {
+    return json({ status: 'error', message: 'Token/reference mismatch' }, 400);
+  }
+
   let expected = null;
   let contact = { name: '', email: '', phone: '' };
   try {
-    const f = await resolvePendingTx(env.DB, tx_ref || q.orderId);
+    const f = await resolvePendingTx(env.DB, providerRef);
     if (!f) return json({ status: 'ok', note: 'already settled or unknown' });
     expected = f.amount;
     contact = f;
@@ -55,7 +75,7 @@ export async function onRequest(context) {
     return json({ status: 'error', message: 'Amount mismatch' }, 402);
   }
   await settlePaidTx(env, env.DB, {
-    tx_ref: tx_ref || q.orderId,
+    tx_ref: providerRef,
     amount: q.amount,
     currency: q.currency || 'GHS',
     status: 'successful',

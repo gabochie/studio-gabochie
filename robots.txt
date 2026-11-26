@@ -1,10 +1,10 @@
 # Allow all well-behaved crawlers
 User-agent: *
 Allow: /
-Allow: /api/sitemap-posts
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
+Allow: /api/sitemap-posts
 Disallow: /member/
 Disallow: /coverage/
 

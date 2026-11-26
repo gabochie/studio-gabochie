@@ -127,9 +127,24 @@ export async function setLotlDailyEnabled(env, on) {
   return on ? '1' : '0';
 }
 
+// Opted-in, confirmed subscribers only, excluding anyone on the suppression
+// list. The cap keeps a single broadcast within the shared Brevo daily limit.
+var LOTL_BATCH_LIMIT = 500;
+
+function optedInSubscribersSql() {
+  return "SELECT email, name FROM subscribers WHERE confirmed = 1 AND lotl_daily = 1 AND email != '' " +
+    "AND email NOT IN (SELECT email FROM suppression_list) ORDER BY id ASC LIMIT " + LOTL_BATCH_LIMIT;
+}
+
+function optedInEveryoneSql() {
+  return "SELECT email, name FROM subscribers WHERE confirmed = 1 AND email != '' " +
+    "AND email NOT IN (SELECT email FROM suppression_list) ORDER BY id ASC LIMIT " + LOTL_BATCH_LIMIT;
+}
+
 export async function lotlDailyAudienceCount(db) {
   var row = await db.prepare(
-    "SELECT COUNT(*) AS cnt FROM subscribers WHERE confirmed = 1 AND lotl_daily = 1 AND email != ''"
+    "SELECT COUNT(*) AS cnt FROM subscribers WHERE confirmed = 1 AND lotl_daily = 1 AND email != '' " +
+    "AND email NOT IN (SELECT email FROM suppression_list)"
   ).first();
   return (row && row.cnt) || 0;
 }
@@ -152,7 +167,7 @@ export async function enqueueLotlDaily(env, opts) {
   if (opts.audience === 'all_confirmed') {
     subject = opts.subject || 'Get the daily devotional from Love Of The Lord';
     html = opts.html || '';
-    var rows0 = await db.prepare("SELECT email, name FROM subscribers WHERE confirmed = 1 AND email != '' ORDER BY id ASC").all();
+    var rows0 = await db.prepare(optedInEveryoneSql()).all();
     var list0 = rows0.results || [];
     if (!list0.length) return { ok: false, error: 'No confirmed subscribers' };
     for (var i0 = 0; i0 < list0.length; i0++) {
@@ -181,9 +196,7 @@ export async function enqueueLotlDaily(env, opts) {
   var already = await lotlDailySentFor(db, date);
   if (already) return { ok: false, error: 'Already sent for ' + date + ' (' + already.total + ' recipients)' };
 
-  var rows = await db.prepare(
-    "SELECT email, name FROM subscribers WHERE confirmed = 1 AND lotl_daily = 1 AND email != '' ORDER BY id ASC"
-  ).all();
+  var rows = await db.prepare(optedInSubscribersSql()).all();
   var list = rows.results || [];
   if (!list.length) return { ok: false, error: 'No opted-in subscribers yet' };
 
@@ -195,10 +208,16 @@ export async function enqueueLotlDaily(env, opts) {
   var claimed = claim && claim.meta ? claim.meta.changes : 1;
   if (!claimed) return { ok: false, error: 'Already sent for ' + date + ' (claimed by another run)' };
 
-  for (var i = 0; i < list.length; i++) {
-    await db.prepare(
-      "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type, scheduled_at, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))"
-    ).bind(list[i].email, list[i].name || '', subject, html, LOTL_DAILY_TYPE).run();
+  try {
+    for (var i = 0; i < list.length; i++) {
+      await db.prepare(
+        "INSERT INTO email_queue (to_email, to_name, subject, html_content, email_type, scheduled_at, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))"
+      ).bind(list[i].email, list[i].name || '', subject, html, LOTL_DAILY_TYPE).run();
+    }
+  } catch (err) {
+    // Release the day's claim so a later tick can retry the broadcast.
+    await db.prepare('DELETE FROM lotl_daily_sends WHERE send_date = ?').bind(date).run();
+    return { ok: false, date: date, error: 'Could not enqueue broadcast: ' + String((err && err.message) || err) };
   }
 
   return { ok: true, date: date, enqueued: list.length, total: list.length, subject: subject, kind: 'broadcast' };

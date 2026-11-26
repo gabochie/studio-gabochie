@@ -4,21 +4,40 @@ import { enqueueBroadcast } from './_enqueue.js';
 
 var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
 
-// Saturday (UTC) of the week containing the given date, as YYYY-MM-DD.
-export function saturdayOfWeek(d) {
+// Ghana is UTC+0 all year (Africa/Accra), but read the clock through the IANA
+// zone so the Saturday send gate follows local time rather than assuming UTC.
+function accraParts(d) {
   const dt = d instanceof Date ? new Date(d.getTime()) : new Date(d);
-  const day = dt.getUTCDay();
-  const diff = (6 - day + 7) % 7;
-  dt.setUTCDate(dt.getUTCDate() + diff);
-  return dt.toISOString().slice(0, 10);
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Africa/Accra', year: 'numeric', month: '2-digit', day: '2-digit',
+    weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(dt);
+  const out = {};
+  for (const p of parts) out[p.type] = p.value;
+  return {
+    date: out.year + '-' + out.month + '-' + out.day,
+    weekday: out.weekday,
+    hour: parseInt(out.hour, 10),
+    minute: parseInt(out.minute, 10)
+  };
 }
 
-// Saturday 06:00+ UTC gate. Returns this Saturday's date (YYYY-MM-DD)
+// Saturday of the week containing the given date, as YYYY-MM-DD (Accra time).
+export function saturdayOfWeek(d) {
+  const dt = d instanceof Date ? new Date(d.getTime()) : new Date(d);
+  const local = accraParts(dt);
+  const weekdayIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(local.weekday);
+  const diff = (6 - weekdayIndex + 7) % 7;
+  dt.setUTCDate(dt.getUTCDate() + diff);
+  return accraParts(dt).date;
+}
+
+// Saturday 06:00+ Africa/Accra gate. Returns this Saturday's date (YYYY-MM-DD)
 // when a scheduled send is due, else null. Pure function for tests.
 export function saturdaySendDue(now) {
-  const dt = now instanceof Date ? now : new Date(now);
-  if (dt.getUTCDay() !== 6 || dt.getUTCHours() < 6) return null;
-  return dt.toISOString().slice(0, 10);
+  const local = accraParts(now);
+  if (local.weekday !== 'Sat' || local.hour < 6) return null;
+  return local.date;
 }
 
 // Parse AI output: first SUBJECT: line is the subject, rest is the body.
@@ -99,7 +118,10 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({ status: 'error', message: 'Draft needs a subject and body before approval' }), { status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       }
       const by = String(body.approved_by || 'admin').slice(0, 80);
-      await env.DB.prepare("UPDATE newsletter_schedule SET status = 'approved', approved_by = ?, approved_at = datetime('now'), updated_at = datetime('now') WHERE id = ?").bind(by, id).run();
+      const approved = await env.DB.prepare("UPDATE newsletter_schedule SET status = 'approved', approved_by = ?, approved_at = datetime('now'), updated_at = datetime('now') WHERE id = ? AND status = 'draft'").bind(by, id).run();
+      if (!approved || !approved.meta || approved.meta.changes === 0) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Draft is no longer pending approval' }), { status: 409, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      }
       return new Response(JSON.stringify({ status: 'ok', id: id }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 
@@ -116,7 +138,10 @@ export async function onRequest(context) {
       if (!result.ok) {
         return new Response(JSON.stringify({ status: 'error', message: result.error }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
       }
-      await env.DB.prepare("UPDATE newsletter_schedule SET status = 'queued', issue_id = ?, updated_at = datetime('now') WHERE id = ?").bind(result.issueId, id).run();
+      const queued = await env.DB.prepare("UPDATE newsletter_schedule SET status = 'queued', issue_id = ?, updated_at = datetime('now') WHERE id = ? AND status = 'approved'").bind(result.issueId, id).run();
+      if (!queued || !queued.meta || queued.meta.changes === 0) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Issue is no longer approved' }), { status: 409, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+      }
       return new Response(JSON.stringify({ status: 'ok', id: id, issue_number: result.issueNumber, enqueued: result.enqueued }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
     }
 

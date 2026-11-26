@@ -78,7 +78,7 @@ describe('enroll GET honors ?program=', function () {
   it('switches to the requested program enrollment', async function () {
     var ctx = buildContext('http://localhost/api/enroll?program=prog-b', {
       env: { DB: twoProgramDb() },
-      request: req('http://localhost/api/enroll?program=prog-b&token=tok-A')
+      request: req('http://localhost/api/enroll?program=prog-b', { headers: { Authorization: 'Bearer tok-A' } })
     });
     var data = await (await enrollGet(ctx)).json();
     expect(data.status).toBe('ok');
@@ -88,7 +88,7 @@ describe('enroll GET honors ?program=', function () {
   it('keeps the token enrollment when the program has no enrollment', async function () {
     var ctx = buildContext('http://localhost/api/enroll?program=prog-zzz', {
       env: { DB: twoProgramDb() },
-      request: req('http://localhost/api/enroll?program=prog-zzz&token=tok-A')
+      request: req('http://localhost/api/enroll?program=prog-zzz', { headers: { Authorization: 'Bearer tok-A' } })
     });
     var data = await (await enrollGet(ctx)).json();
     expect(data.status).toBe('ok');

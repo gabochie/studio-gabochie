@@ -1,9 +1,8 @@
 function getToken(request) {
   var auth = request.headers.get('Authorization') || '';
   if (auth.startsWith('Bearer ')) return auth.slice(7);
-  var url = new URL(request.url);
-  var qs = url.searchParams.get('token');
-  if (qs) return qs;
+  // Credentials are never accepted from the query string: URLs are logged,
+  // cached and leaked via Referer headers. Header and cookie only.
   var cookie = request.headers.get('Cookie') || '';
   var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
   return m ? m[1] : '';

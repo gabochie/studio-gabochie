@@ -48,8 +48,8 @@
 body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD5E1;min-height:100vh;padding:104px 24px 24px}
 .wrap{max-width:var(--content-max);margin:0 auto;width:100%}
 .intro{text-align:center;margin-bottom:40px}
-.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
-.intro h2 span{color:#C9A84C}
+.intro h1,.intro h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.intro h1 span,.intro h2 span{color:#C9A84C}
 .intro p{color:#5A7A9F;font-size:14px;max-width:600px;margin:0 auto;line-height:1.7}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 .merch-card{background:#0F1E38;border:1px solid #1E3250;border-radius:12px;overflow:hidden;transition:border-color .3s}
@@ -69,12 +69,14 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .merch-card .btn-buy:disabled{opacity:.45;cursor:not-allowed;border-color:#3A5278;color:#5A7A9F;background:rgba(255,255,255,.04)}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
 </style>
+<!-- Production-readiness metadata -->
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <div id="nav-placeholder"></div>
 <div class="wrap">
   <div class="intro">
-    <h2>Official <span>Merchandise</span></h2>
+    <h1>Official <span>Merchandise</span></h1>
     <p>Wear the vision. Premium apparel featuring original Studio designs — crafted for comfort and conviction.</p>
   </div>
   <div id="orderSuccess" style="display:none;background:rgba(52,199,123,.1);border:1px solid #34C77B;border-radius:10px;padding:20px;margin-bottom:24px;text-align:center">

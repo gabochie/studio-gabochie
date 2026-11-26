@@ -129,6 +129,15 @@ export async function runDueWorkflows(db, now = new Date()) {
   for (const wf of rows) {
     if (!workflowDue(wf, now)) continue;
 
+    // Claim the run before enqueueing anything. A second overlapping tick sees
+    // the new last_run_at and skips this workflow instead of duplicating steps.
+    const expectedLast = wf.last_run_at || '';
+    const claim = await db.prepare(
+      `UPDATE workflows SET last_run_at = datetime('now'), total_runs = COALESCE(total_runs, 0) + 1
+       WHERE id = ? AND (last_run_at = ? OR last_run_at IS NULL)`
+    ).bind(wf.id, expectedLast).run();
+    if (!claim || !claim.meta || claim.meta.changes === 0) continue;
+
     const steps = (await db.prepare(
       `SELECT * FROM workflow_steps WHERE workflow_id = ? ORDER BY step_order ASC`
     ).bind(wf.id).all()).results || [];
@@ -145,10 +154,6 @@ export async function runDueWorkflows(db, now = new Date()) {
       ).bind(step.agent_type, wf.id, payload).run();
       enqueued++;
     }
-
-    await db.prepare(
-      `UPDATE workflows SET last_run_at = datetime('now'), total_runs = COALESCE(total_runs, 0) + 1 WHERE id = ?`
-    ).bind(wf.id).run();
 
     report.triggered.push({ id: wf.id, name: wf.name, steps_enqueued: enqueued });
     report.enqueued += enqueued;

@@ -187,7 +187,7 @@ export async function onRequest(context) {
     '<form onsubmit="return false"><input id="nlEmail" type="email" placeholder="you@example.com">' +
     '<div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>' +
     '<button type="button" onclick="blogSubscribe()">Subscribe Free</button></form>' +
-    '<p class="msg" id="nlMsg"></p></div>' +
+    '<p class="msg" id="nlMsg" role="status" aria-live="polite"></p></div>' +
     '<div id="footer-placeholder"></div>' +
     '<script>function blogSubscribe(){var e=document.getElementById("nlEmail").value.trim();var m=document.getElementById("nlMsg");if(!e||e.indexOf("@")<0){m.style.display="block";m.style.color="#E8637A";m.textContent="Enter a valid email.";return;}fetch("/api/subscribe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:e,source:"blog-post",cf_turnstile_token:(document.querySelector(\'.nl input[name="cf-turnstile-response"]\')||{}).value||""})}).then(function(r){return r.json()}).then(function(d){if(d&&d.status==="ok"){m.style.display="block";m.style.color="#22C55E";m.textContent=(d.existing&&d.confirmed)?"You are already subscribed — welcome back!":"Check your inbox to confirm.";}else{m.style.display="block";m.style.color="#E8637A";m.textContent=(d&&(d.message||d.error))||"Something went wrong.";}}).catch(function(){m.style.display="block";m.style.color="#E8637A";m.textContent="Something went wrong.";});}</script>' +
     '<script src="/nav.js"></script>' +

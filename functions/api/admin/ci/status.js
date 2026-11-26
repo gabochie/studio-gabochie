@@ -1,5 +1,17 @@
 import { requireAdminAuth } from '../_admin-auth.js';
 
+// Compare secrets in constant time. Both inputs are hashed to fixed-length
+// digests first, so a wrong-length guess cannot leak the expected length and
+// every byte is examined regardless of where the first mismatch occurs.
+async function safeEqual(a, b) {
+  var encoder = new TextEncoder();
+  var left = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(String(a || ''))));
+  var right = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(String(b || ''))));
+  var diff = 0;
+  for (var i = 0; i < left.length; i++) diff |= left[i] ^ right[i];
+  return diff === 0;
+}
+
 export async function onRequest(context) {
   var { request, env } = context;
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
@@ -7,7 +19,7 @@ export async function onRequest(context) {
 
   if (request.method === 'POST') {
     var auth = request.headers.get('X-CI-Secret');
-    if (!auth || auth !== env.CI_WEBHOOK_SECRET) {
+    if (!auth || !env.CI_WEBHOOK_SECRET || !(await safeEqual(auth, env.CI_WEBHOOK_SECRET))) {
       return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
         status: 403, headers: { 'Content-Type': 'application/json' }
       });

@@ -10,14 +10,18 @@ jobs:
     name: Process email + agent queue
     runs-on: ubuntu-latest
     steps:
+      # CRON_SECRET is sent as a header, never in the URL (query strings leak
+      # into proxy/access logs). Requires the cron endpoint to accept
+      # X-Cron-Secret — coordinated with the endpoint owner.
       - name: Run email cron endpoint
         run: |
-          curl -s -X GET 'https://studio.gabochie.com/api/email/cron?secret=${{ secrets.CRON_SECRET }}' \
-            -H 'Accept: application/json' || echo "Email cron call failed"
+          curl -fsS -X GET 'https://studio.gabochie.com/api/email/cron' \
+            -H 'Accept: application/json' \
+            -H 'X-Cron-Secret: ${{ secrets.CRON_SECRET }}'
 
       - name: Process agent queue (cold outreach, analytics, fulfillment)
         run: |
-          curl -s -X POST 'https://studio.gabochie.com/api/agents/orchestrate' \
+          curl -fsS -X POST 'https://studio.gabochie.com/api/agents/orchestrate' \
             -H 'Content-Type: application/json' \
             -H 'X-Agent-Auth: ${{ secrets.AGENT_AUTH_KEY }}' \
-            -d '{"max_items":3}' || echo "Orchestrator call failed"
+            -d '{"max_items":3}'

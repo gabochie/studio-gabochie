@@ -1,5 +1,5 @@
 export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent, opts) {
-  if (!env.BREVO_API_KEY) return;
+  if (!env.BREVO_API_KEY) throw new Error('BREVO_API_KEY is not configured');
   const payload = {
     sender: { name: 'Gideon Abochie', email: 'newsletter@gabochie.com' },
     to: [{ email: toEmail, name: toName || '' }],
@@ -7,11 +7,16 @@ export async function sendBrevoEmail(env, toEmail, toName, subject, htmlContent,
     htmlContent
   };
   if (opts && opts.tags && opts.tags.length) payload.tags = opts.tags;
-  const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
-    body: JSON.stringify(payload)
-  });
+  let resp;
+  try {
+    resp = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'api-key': env.BREVO_API_KEY },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    throw new Error('Brevo request failed: ' + String((err && err.message) || err).slice(0, 160));
+  }
   if (!resp.ok) {
     const errText = await resp.text().catch(function () { return ''; });
     throw new Error('Brevo ' + resp.status + ': ' + String(errText).slice(0, 160));

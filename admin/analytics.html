@@ -57,6 +57,8 @@
     <div class="grid" id="summary-grid"></div>
     <div class="section-title">Ghana Hustle Playbook Funnel (12mo)</div>
     <div class="grid" id="playbook-grid"></div>
+    <div class="section-title">Income Assessment Funnel (12mo)</div>
+    <div class="grid" id="assessment-grid"></div>
     <div class="section-title">🔮 Forecast</div>
     <div class="grid" id="forecast-grid"></div>
     <div class="section-title">💡 Insights</div>
@@ -104,6 +106,21 @@ async function loadAnalytics() {
       { num: pb.playbook_view || 0, label: 'Playbook Views' },
       { num: pb.playbook_gate_submit || 0, label: 'Email Gate Submits' },
       { num: pb.playbook_checklist_download || 0, label: 'Checklist Downloads' },
+    ].map(function(item) {
+      return '<div class="card"><span class="card-num">' + item.num + '</span><div class="card-label">' + item.label + '</div></div>';
+    }).join('');
+
+    // Assessment funnel grid
+    var am = d.historical.assessmentEvents || {};
+    var starts = am.assessment_start || 0;
+    var completes = am.assessment_complete || 0;
+    var unlocks = am.assessment_unlock || 0;
+    document.getElementById('assessment-grid').innerHTML = [
+      { num: starts, label: 'Assessments Started' },
+      { num: completes, label: 'Assessments Completed' },
+      { num: unlocks, label: 'Results Unlocked' },
+      { num: starts ? Math.round((completes / starts) * 100) + '%' : '—', label: 'Start → Complete' },
+      { num: completes ? Math.round((unlocks / completes) * 100) + '%' : '—', label: 'Complete → Unlock' }
     ].map(function(item) {
       return '<div class="card"><span class="card-num">' + item.num + '</span><div class="card-label">' + item.label + '</div></div>';
     }).join('');

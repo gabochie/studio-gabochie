@@ -39,9 +39,15 @@
 .module-card.module-complete .module-num{background:var(--green-dim);color:var(--green)}
 .readaloud-highlight{background:rgba(201,168,76,.15);border-radius:2px;transition:background .2s}
 </style>
+<!-- Production-readiness metadata -->
+<link rel="canonical" href="https://studio.gabochie.com/guitar/learn/">
+<meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Learn Guitar - Guitar: First Things First","url":"https://studio.gabochie.com/guitar/learn/","description":"Structured guitar curriculum - 16 modules from beginner chords to barre chords, fingerpicking, and soloing. Free lessons available.","isPartOf":{"@type":"WebSite","name":"Studio Gabochie","url":"https://studio.gabochie.com"}}</script>
 </head>
 <body class="guitar-app">
 <div class="screen active">
+  <h1 class="sr-only">Learn Guitar — Guitar: First Things First</h1>
   <div class="hdr"><div class="hdr-logo"><span class="icon">🎸</span> Learn</div><div id="om-progress" style="font-size:11px;color:var(--text3)"></div><div style="display:flex;gap:12px;align-items:center"><a href="/courses/" style="font-size:11px;color:var(--gld);text-decoration:none;font-weight:600;white-space:nowrap">← All Courses</a><div id="user-area"></div></div></div>
   <div id="learn-content" class="scrollable" style="flex:1;overflow-y:auto;padding:16px 20px;max-width:700px;margin:0 auto;width:100%"><div style="padding:20px"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:80%"></div><div style="margin-top:16px"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div></div></div>
   <nav class="bottom-nav">
@@ -241,7 +247,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     if (lesson.video) {
       c.innerHTML += `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg);margin-bottom:16px;background:rgba(0,0,0,.3)">
-        <iframe src="${lesson.video}" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allowfullscreen></iframe>
+        <iframe src="${lesson.video}" title="Guitar lesson video" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allowfullscreen></iframe>
       </div>`;
     } else {
       c.innerHTML += `<div style="border-radius:var(--radius-lg);margin-bottom:16px;background:rgba(201,168,76,.06);border:1px dashed rgba(201,168,76,.25);padding:32px 20px;text-align:center">

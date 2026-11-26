@@ -201,11 +201,11 @@ export const CONTENT_CALENDAR_PLAN = [
   {
     day: 24, week: 4, arc: 'From a list to one plan', pillar: 'Conversion',
     platform: 'instagram', format: 'Retargeted post',
-    hook: '24 paths is a starting point, not a strategy. Pressure-test your top one.',
-    paths: '', cta: 'Hard CTA — Anchor Session',
+    hook: '24 paths is a starting point, not a strategy. See your match first, then pressure-test it.',
+    paths: '', cta: 'Hard CTA — assessment first, Anchor Session second',
     utm_campaign: 'assessment-d24', hard_cta: true,
-    cta_url: consultation('instagram', 'social', 'assessment-d24'),
-    alt_url: assessment('instagram', 'social', 'assessment-d24')
+    cta_url: assessment('instagram', 'social', 'assessment-d24'),
+    alt_url: consultation('instagram', 'social', 'assessment-d24')
   },
   {
     day: 25, week: 4, arc: 'From a list to one plan', pillar: 'Education',
@@ -251,7 +251,7 @@ export const CONTENT_CALENDAR_PLAN = [
     day: 30, week: 5, arc: 'Retarget and close', pillar: 'Conversion',
     platform: 'newsletter', format: 'Recap + newsletter',
     hook: '30 days, 24 paths, one next step.',
-    paths: 'Top 5 from engagement', cta: 'Hard CTA — assessment + consultation',
+    paths: 'Top 5 from engagement', cta: 'Hard CTA — assessment first, consultation second',
     utm_campaign: 'assessment-d30', hard_cta: true,
     cta_url: assessment('newsletter', 'email', 'assessment-d30'),
     alt_url: consultation('newsletter', 'email', 'assessment-d30-close')

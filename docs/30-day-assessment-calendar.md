@@ -83,13 +83,13 @@ Path numbers refer to `assets/js/money-ghana-data.js` (`methods[].id`).
 | 21 | Conversion | Reel | "Not sure which of the 24 fits? Three questions." | — | **Hard CTA** — `assessment-w3` |
 | 22 | Education | Reel | "You got a match. Now what? The first 48 hours." | 1, 3, 8, 16 | Soft — "Unlock the guide" `assessment-d22` |
 | 23 | Education | Carousel | "A one-page plan: write these four lines tonight." | — | Soft — `assessment-d23` |
-| 24 | Conversion | Retargeted post | "24 paths is a starting point, not a strategy. Pressure-test your top one." | — | **Hard CTA** — `C?from=money-ghana&utm_source=instagram&utm_medium=social&utm_campaign=assessment-d24` |
+| 24 | Conversion | Retargeted post | "24 paths is a starting point, not a strategy. See your match first, then pressure-test it." | — | **Hard CTA** — assessment first: `/money-ghana/?utm_source=instagram&utm_medium=social&utm_campaign=assessment-d24`; consultation second (for people who already unlocked a match): `/consultation/?from=money-ghana&utm_source=instagram&utm_medium=social&utm_campaign=assessment-d24` |
 | 25 | Education | Reel | "Complete beginner — where do I actually start?" | 1, 2, 3, 8, 12, 20 | Soft — `assessment-d25` |
 | 26 | Trust | Carousel | "No upfront fees, no fake promises — our three guardrails." | Guardrails 1–3 | Soft — `assessment-d26` |
 | 27 | Education | Story sequence | Poll "phone or laptop?" then show the matching paths. | 1, 2, 8 vs. 4, 5, 16 | Soft — story link `assessment-d27` |
 | 28 | Conversion | Direct post | "Last call this month: take the test, get the guide, book the session." | — | **Hard CTA** — `assessment-w4` |
 | 29 | Education | Retargeting Reel | "Started the test but didn't finish? It takes 3 questions." | — | Soft — `assessment-d29` |
-| 30 | Conversion | Recap + newsletter | "30 days, 24 paths, one next step." | Top 5 from engagement | **Hard CTA** — `assessment-d30` + `C?...&utm_campaign=assessment-d30-close` |
+| 30 | Conversion | Recap + newsletter | "30 days, 24 paths, one next step." | Top 5 from engagement | **Hard CTA** — assessment first: `/money-ghana/?utm_source=newsletter&utm_medium=email&utm_campaign=assessment-d30`; consultation second, only for unlocked leads: `/consultation/?from=money-ghana&utm_source=newsletter&utm_medium=email&utm_campaign=assessment-d30-close` |
 
 ## Production rhythm
 
@@ -119,7 +119,7 @@ Checkpoints on **Days 7, 14, 21 and 30**:
 | Settled bookings vs. pipeline | `admin/revenue.html` (pipeline is never counted as revenue) |
 | Engagement by format | Platform analytics; compare Reel vs. carousel vs. story |
 
-**Gap to close:** the site records unlocks (subscribers) and consultation referrals, but not quiz starts or completions. To measure drop-off between "clicked the link" and "took the test", add event logging to `runAssessment()` in `assets/js/money-ghana.js` and report it in the admin dashboard. Until then, judge the calendar on leads and bookings, not clicks alone.
+**Funnel events:** `assets/js/money-ghana.js` records `assessment_start`, `assessment_complete` and `assessment_unlock` with the visitor's five UTM parameters via `/api/event`. See the Income Assessment Funnel card in `admin/analytics.html` for the start → complete → unlock conversion rates. Judge the calendar on that funnel plus leads and bookings, not clicks alone.
 
 ## Guardrails for execution
 

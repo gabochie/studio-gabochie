@@ -18,11 +18,8 @@ export async function onRequest(context) {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
+  // Header only: ?secret= leaks the cron secret into logs and cache keys.
   var cronSecret = request.headers.get('X-Cron-Secret') || '';
-  if (!cronSecret) {
-    try { cronSecret = new URL(request.url).searchParams.get('secret') || ''; } catch (_) {}
-  }
-
   if (!env.CRON_SECRET || cronSecret !== env.CRON_SECRET) {
     return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   }
@@ -43,8 +40,8 @@ export async function onRequest(context) {
            AND e.email != ''
            AND e.created_at <= datetime('now', '-24 hours')
            AND NOT EXISTS (SELECT 1 FROM donations d WHERE d.donor_email = e.email AND d.status = 'completed')
-           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_donation')
-         ORDER BY e.created_at ASC`
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_donation' AND q.created_at >= datetime('now', '-30 days') AND q.status != 'failed')
+         ORDER BY e.created_at ASC LIMIT 50`
       ).all();
 
       result.abandoned.checked = abandonedResults.length;
@@ -67,7 +64,7 @@ export async function onRequest(context) {
            AND e.student_email != ''
            AND e.enrolled_at <= datetime('now', '-7 days')
            AND NOT EXISTS (SELECT 1 FROM enrollments a WHERE a.student_email = e.student_email AND a.status = 'active')
-           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.student_email AND q.email_type = 'sample_upgrade_7d')
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.student_email AND q.email_type = 'sample_upgrade_7d' AND q.created_at >= datetime('now', '-30 days') AND q.status != 'failed')
          ORDER BY e.enrolled_at ASC LIMIT 50`
       ).all();
 
@@ -94,7 +91,7 @@ export async function onRequest(context) {
            AND NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.email = e.email AND s.status = 'active')
            AND NOT EXISTS (SELECT 1 FROM store_orders o WHERE o.customer_email = e.email AND o.status = 'completed')
            AND NOT EXISTS (SELECT 1 FROM book_purchases b WHERE b.email = e.email AND b.status = 'completed')
-           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_checkout')
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_checkout' AND q.created_at >= datetime('now', '-30 days') AND q.status != 'failed')
          ORDER BY e.created_at ASC LIMIT 50`
       ).all();
 
@@ -118,7 +115,7 @@ export async function onRequest(context) {
            AND u.membership_expires_at != ''
            AND u.membership_expires_at <= datetime('now', '+7 days')
            AND u.email != ''
-           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = u.email AND q.email_type = 'tier_renewal' AND q.created_at >= u.membership_expires_at)
+           AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = u.email AND q.email_type = 'tier_renewal' AND q.created_at >= datetime('now', '-30 days') AND q.status != 'failed' AND q.created_at >= u.membership_expires_at)
          ORDER BY u.membership_expires_at ASC LIMIT 50`
       ).all();
 
@@ -151,6 +148,14 @@ export async function onRequest(context) {
     // Step 2: Process email queue (shared processor — signed unsubscribe,
     // open/click tracking, suppression list, retries, daily Brevo cap).
     try {
+      if (!env.BREVO_API_KEY) {
+        var pendingRow = await env.DB.prepare(
+          "SELECT COUNT(*) AS c FROM email_queue WHERE status = 'pending' AND scheduled_at <= datetime('now')"
+        ).first();
+        if (pendingRow && pendingRow.c > 0) {
+          result.errors.push('brevo: BREVO_API_KEY is missing; ' + pendingRow.c + ' pending email(s) were not sent');
+        }
+      }
       var proc = await processEmailQueue(env, env.DB);
       result.process.sent = proc.sent;
       result.process.pending = proc.pending;
@@ -161,23 +166,36 @@ export async function onRequest(context) {
       result.errors.push('process: ' + err.message);
     }
 
-    // Step 3: Process WhatsApp queue
+    // Step 3: Process WhatsApp queue. Claim each row conditionally so two
+    // ticks never deliver the same message twice; retry with backoff.
     try {
       var { results: waResults } = await env.DB.prepare(
         "SELECT * FROM whatsapp_queue WHERE status = 'pending' AND scheduled_at <= datetime('now') ORDER BY scheduled_at ASC LIMIT 20"
       ).all();
       var waSent = 0;
+      var waPending = waResults.length;
       for (var wa of waResults) {
+        var waClaim = await env.DB.prepare(
+          "UPDATE whatsapp_queue SET status = 'sending' WHERE id = ? AND status = 'pending'"
+        ).bind(wa.id).run();
+        if (!waClaim || !waClaim.meta || waClaim.meta.changes === 0) continue;
+        waPending--;
         try {
           await sendWhatsApp(env, wa.to_phone, wa.message_text);
-          await env.DB.prepare("UPDATE whatsapp_queue SET status = 'sent', sent_at = datetime('now') WHERE id = ?").bind(wa.id).run();
+          await env.DB.prepare(
+            "UPDATE whatsapp_queue SET status = 'sent', sent_at = datetime('now') WHERE id = ? AND status = 'sending'"
+          ).bind(wa.id).run();
           waSent++;
         } catch (err) {
-          await env.DB.prepare("UPDATE whatsapp_queue SET status = 'failed' WHERE id = ?").bind(wa.id).run();
-          result.errors.push('whatsapp-' + wa.id + ': ' + err.message);
+          var waAttempts = (wa.attempts || 0) + 1;
+          var waMsg = String((err && err.message) || err).slice(0, 300);
+          await env.DB.prepare(
+            "UPDATE whatsapp_queue SET status = ?, attempts = ?, last_error = ?, scheduled_at = datetime('now', '+5 minutes') WHERE id = ? AND status = 'sending'"
+          ).bind(waAttempts >= 3 ? 'failed' : 'pending', waAttempts, waMsg, wa.id).run();
+          result.errors.push('whatsapp-' + wa.id + ': ' + waMsg);
         }
       }
-      result.whatsapp = { sent: waSent, pending: waResults.length - waSent };
+      result.whatsapp = { sent: waSent, pending: waPending };
     } catch (err) {
       result.errors.push('whatsapp-process: ' + err.message);
     }
@@ -196,17 +214,25 @@ export async function onRequest(context) {
       for (var n = 0; n < outRows.length; n++) {
         var item = outRows[n];
         touchedIssues[item.issue_id] = true;
+        // Claim before sending so two overlapping cron ticks cannot both
+        // deliver the same outbox row.
+        var outClaim = await env.DB.prepare(
+          "UPDATE newsletter_outbox SET status = 'sending' WHERE id = ? AND status = 'pending'"
+        ).bind(item.id).run();
+        if (!outClaim || !outClaim.meta || outClaim.meta.changes === 0) continue;
         try {
           const tag = 'newsletter-issue-' + (item.issue_number || item.issue_id || 'x');
           await sendBrevoEmail(env, item.email, item.name, item.subject, personalize(item.html || '', item.name, item.edition, item.ref_code), { tags: ['newsletter', tag] });
-          await env.DB.prepare("UPDATE newsletter_outbox SET status = 'sent', sent_at = datetime('now') WHERE id = ?").bind(item.id).run();
-          nlSent++;
+          var sentNl = await env.DB.prepare(
+            "UPDATE newsletter_outbox SET status = 'sent', sent_at = datetime('now') WHERE id = ? AND status = 'sending'"
+          ).bind(item.id).run();
+          if (sentNl && sentNl.meta && sentNl.meta.changes > 0) nlSent++;
         } catch (err) {
           var errMsg = String((err && err.message) || err).slice(0, 200);
           try {
             var cur = await env.DB.prepare('SELECT attempts FROM newsletter_outbox WHERE id = ?').bind(item.id).first();
             var nextAttempts = ((cur && cur.attempts) || 0) + 1;
-            await env.DB.prepare('UPDATE newsletter_outbox SET attempts = ?, last_error = ?, status = ? WHERE id = ?').bind(nextAttempts, errMsg, nextAttempts >= 3 ? 'failed' : 'pending', item.id).run();
+            await env.DB.prepare("UPDATE newsletter_outbox SET attempts = ?, last_error = ?, status = ? WHERE id = ? AND status = 'sending'").bind(nextAttempts, errMsg, nextAttempts >= 3 ? 'failed' : 'pending', item.id).run();
           } catch (_e) {}
           nlFail++;
         }
@@ -215,8 +241,13 @@ export async function onRequest(context) {
         try {
           var sentN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'sent'").bind(issueId).first();
           var failN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'failed'").bind(issueId).first();
-          var pendN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status = 'pending'").bind(issueId).first();
-          await env.DB.prepare("UPDATE newsletter_issues SET sent_count = ?, failed_count = ?, status = ? WHERE id = ?").bind((sentN && sentN.n) || 0, (failN && failN.n) || 0, (pendN && pendN.n > 0) ? 'sending' : 'sent', issueId).run();
+          var activeN = await env.DB.prepare("SELECT COUNT(*) AS n FROM newsletter_outbox WHERE issue_id = ? AND status IN ('pending', 'sending')").bind(issueId).first();
+          var sentCount = (sentN && sentN.n) || 0;
+          var failCount = (failN && failN.n) || 0;
+          var activeCount = (activeN && activeN.n) || 0;
+          var issueStatus = activeCount > 0 ? 'sending' : (failCount > 0 ? (sentCount > 0 ? 'partial' : 'failed') : 'sent');
+          await env.DB.prepare("UPDATE newsletter_issues SET sent_count = ?, failed_count = ?, status = ? WHERE id = ?")
+            .bind(sentCount, failCount, issueStatus, issueId).run();
         } catch (_e) {}
       }
       result.newsletter = { sent: nlSent, failed: nlFail, attempted: outRows.length };
@@ -234,8 +265,14 @@ export async function onRequest(context) {
         if (sched) {
           const queued = await enqueueBroadcast(env, { subject: sched.subject, theme: sched.theme, html: sched.html });
           if (queued.ok) {
-            await env.DB.prepare("UPDATE newsletter_schedule SET status = 'queued', issue_id = ?, updated_at = datetime('now') WHERE id = ?").bind(queued.issueId, sched.id).run();
-            result.scheduled = { sent: true, week_of: weekOf, issue_number: queued.issueNumber, enqueued: queued.enqueued };
+            var scheduleClaim = await env.DB.prepare(
+              "UPDATE newsletter_schedule SET status = 'queued', issue_id = ?, updated_at = datetime('now') WHERE id = ? AND status = 'approved'"
+            ).bind(queued.issueId, sched.id).run();
+            if (scheduleClaim && scheduleClaim.meta && scheduleClaim.meta.changes === 0) {
+              result.errors.push('scheduled: issue ' + sched.id + ' is no longer approved');
+            } else {
+              result.scheduled = { sent: true, week_of: weekOf, issue_number: queued.issueNumber, enqueued: queued.enqueued };
+            }
           } else {
             result.errors.push('scheduled: ' + queued.error);
           }
@@ -254,9 +291,9 @@ export async function onRequest(context) {
       var published = 0;
       for (var dp of duePosts) {
         var when = dbStamp(dp.scheduled_at || dp.published_at) || nowDb;
-        await env.DB.prepare("UPDATE posts SET status = 'published', published_at = ?, updated_at = ? WHERE id = ?")
+        var postClaim = await env.DB.prepare("UPDATE posts SET status = 'published', published_at = ?, updated_at = ? WHERE id = ? AND status = 'scheduled'")
           .bind(when, nowDb, dp.id).run();
-        published++;
+        if (postClaim && postClaim.meta && postClaim.meta.changes > 0) published++;
       }
       result.posts = { published: published, due: duePosts.length };
     } catch (err) {
@@ -272,9 +309,9 @@ export async function onRequest(context) {
       ).all();
       var flagged = 0;
       for (var sq of dueSocial) {
-        await env.DB.prepare("UPDATE social_queue SET status = 'due', updated_at = ? WHERE id = ?")
+        var socialClaim = await env.DB.prepare("UPDATE social_queue SET status = 'due', updated_at = ? WHERE id = ? AND status IN ('planned', 'ready')")
           .bind(nowSocial, sq.id).run();
-        flagged++;
+        if (socialClaim && socialClaim.meta && socialClaim.meta.changes > 0) flagged++;
       }
       result.social_queue = { due: flagged, checked: dueSocial.length };
     } catch (err) {
