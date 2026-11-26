@@ -445,7 +445,7 @@ jobs:
           echo "Migration verification passed: all critical tables present"
       - name: Post-deploy smoke test (blocking)
         run: |
-          for path in /api/db/ping / /support/ /school/ /books/ /guitar/ /love-of-the-lord/give/; do
+          for path in /api/db/ping / /support/ /school/ /books/ /guitar/ /love-of-the-lord/give/ /courses/year-package-2027/; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' "https://studio.gabochie.com$path" || printf '000')
             if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
               echo "::error::Smoke test failed for $path (HTTP $code)"

@@ -605,6 +605,17 @@ export function getStatements(seedAnchor) {
       addColumn('users', 'reset_token', 'TEXT DEFAULT \'\''),
       addColumn('users', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
       addColumn('enrollments', 'user_id', 'INTEGER DEFAULT 0'),
+      // 2027 Year Package — one trial or full grant per member per resource.
+      `CREATE TABLE IF NOT EXISTS resource_entitlements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        resource_slug TEXT NOT NULL,
+        access_until TEXT DEFAULT '',
+        source TEXT NOT NULL DEFAULT 'trial',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        UNIQUE (user_id, resource_slug)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_resource_entitlements_user ON resource_entitlements(user_id)`,
       `CREATE TABLE IF NOT EXISTS membership_plans (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tier TEXT NOT NULL UNIQUE,

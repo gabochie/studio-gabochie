@@ -49,7 +49,8 @@ describe('FE-09 sitemap lastmod values', function () {
   });
 
   it('keeps the URL set and gives each URL a real date', function () {
-    expect(entries).toHaveLength(54);
+    // 54 original URLs + /courses/year-package-2027/ (2027 Year Package).
+    expect(entries).toHaveLength(55);
     expect(new Set(entries.map(function (e) { return e.lastmod; })).size).toBeGreaterThan(1);
     entries.forEach(function (e) {
       expect(e.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);

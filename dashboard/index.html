@@ -139,6 +139,19 @@ h1 span{color:#C9A84C}
     <button class="btn btn-outline no-print" onclick="window.print()">&#128424; Print This Page</button>
   </div>
 
+  <!-- 2027 Year Package — the single Member/User dashboard entry point -->
+  <div class="card" id="yearPackageCard" style="border-left:3px solid #C9A84C;margin-bottom:20px">
+    <div class="program-header">
+      <h3>2027 — Your Year of Divine Creativity, Divine Love and Divine Wisdom</h3>
+      <span class="badge" id="yearPackageBadge">Personal development</span>
+    </div>
+    <div style="font-size:13px;color:#8A9BB5;margin:8px 0 14px">
+      52 weeks · four fields (Self, Family, Business, Nation) · five dimensions · one focused project.
+      Included with Scholar, Patron and Founding. Free members: 14-day trial of Weeks 1–2.
+    </div>
+    <a href="/courses/year-package-2027/" class="btn btn-gold">Open 2027 Year Package &rarr;</a>
+  </div>
+
   <!-- Sample content (shown to all) -->
   <div class="card" id="sampleCard">
     <h2>Sample <span>Module</span></h2>
@@ -1295,5 +1308,21 @@ loadDashboard();
 <script defer src="../assets/js/main.js"></script>
 <script defer src="/assets/js/momo-direct.js"></script>
 <script src="/nav.js"></script>
+<script>
+(function () {
+  var badge = document.getElementById('yearPackageBadge');
+  if (!badge) return;
+  var token = '';
+  try { token = localStorage.getItem('ga_session_token') || ''; } catch (e) {}
+  if (!token) return;
+  fetch('/api/year-package/access', { headers: { Authorization: 'Bearer ' + token } })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.access === 'full') badge.textContent = 'Full access';
+      else if (d.access === 'trial') badge.textContent = 'Trial · ' + d.days_left + ' days';
+      else badge.textContent = 'Trial available';
+    }).catch(function () {});
+})();
+</script>
 </body>
 </html>
