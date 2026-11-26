@@ -21,10 +21,20 @@ for (const statement of statements) {
   else plain.push(statement.sql);
 }
 
+const shellQuote = (value) => "'" + String(value).replace(/'/g, "'\\''") + "'";
+
 function runSql(sql, json) {
-  const file = join(tmpDir, 'setup-' + runSql.n++ + '.sql');
-  writeFileSync(file, sql + '\n', 'utf8');
-  const args = ['npx', 'wrangler', 'd1', 'execute', DB, `--file="${file}"`, '--remote'];
+  const args = ['npx', 'wrangler', 'd1', 'execute', DB, '--remote'];
+  if (json) {
+    // Remote --file goes through D1's import API and returns only an import
+    // summary, not query rows. Read queries must use --command (query API)
+    // so PRAGMA/SELECT results are actually returned for the schema guards.
+    args.push('--command', shellQuote(sql));
+  } else {
+    const file = join(tmpDir, 'setup-' + runSql.n++ + '.sql');
+    writeFileSync(file, sql + '\n', 'utf8');
+    args.push('--file', shellQuote(file));
+  }
   if (json) args.push('--json');
   return execSync(args.join(' '), { encoding: 'utf8', timeout: 120000 });
 }
