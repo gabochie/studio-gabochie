@@ -111,9 +111,13 @@
     else { libraryNote.textContent = 'All 52 weeks are open.'; }
     weeksEl.innerHTML = data.weeks.map(function (w) {
       var unlocked = open.some(function (x) { return x.n === w.n; });
-      return '<a class="week' + (unlocked ? '' : ' locked') + '" href="#" ' +
-        (unlocked ? 'onclick="yearPackage.openWeek(' + w.n + ');return false"' : '') + '>' +
-        '<strong>W' + w.n + '</strong><br>' + esc(w.title) + '</a>';
+      var inner = '<strong>W' + w.n + '</strong><br>' + esc(w.title);
+      if (unlocked) {
+        return '<a class="week" href="#" onclick="yearPackage.openWeek(' + w.n +
+               ');return false">' + inner + '</a>';
+      }
+      // Locked weeks are non-interactive spans: no dead link and no keyboard tab stop.
+      return '<span class="week locked" aria-disabled="true">' + inner + '</span>';
     }).join('');
     resourcesEl.innerHTML = (access.access === 'full' ? data.resources : []).map(function (r) {
       return '<a class="week" href="#" onclick="yearPackage.openResource(\'' +
@@ -134,6 +138,7 @@
     }).catch(function () { say('Could not load the resource. Please try again.'); });
   }
 
-  window.yearPackage = { openWeek: openWeek, openResource: openResource, refresh: refresh };
+  window.yearPackage = { openWeek: openWeek, openResource: openResource,
+                         showLibrary: showLibrary, refresh: refresh };
   refresh();
 })();
