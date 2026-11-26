@@ -71,9 +71,15 @@ function fail(message, err) {
   throw err || new Error(message);
 }
 
+const isCreateTable = (sql) => /^\s*CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\b/i.test(sql);
+const createTables = plain.filter(isCreateTable);
+const otherPlain = plain.filter((sql) => !isCreateTable(sql));
+
 console.log(`Running ${plain.length} setup statements (plus ${columnMigrations.length} guarded columns and ${onceMigrations.length} one-time migrations)...`);
 try {
-  const out = runSql(plain.join(';\n\n') + ';', false);
+  // Tables exist before any column migration or data statement runs. This is
+  // essential for legacy production DBs whose tables predate several columns.
+  const out = runSql(createTables.join(';\n\n') + ';', false);
   console.log(out);
   if (/\bERROR\b/i.test(out)) fail('D1 setup reported errors');
 
@@ -90,6 +96,13 @@ try {
     for (const migration of byTable[table]) {
       if (!present.has(migration.column)) extra.push(migration.sql);
     }
+  }
+
+  // Indexes, inserts and updates run only after every guarded column exists.
+  if (otherPlain.length) {
+    const plainOut = runSql(otherPlain.join(';\n\n') + ';', false);
+    console.log(plainOut);
+    if (/\bERROR\b/i.test(plainOut)) fail('D1 setup reported errors');
   }
 
   const applied = new Set(rowsOf(runSql('SELECT name FROM setup_migrations', true)).map((r) => r && r.name));
