@@ -20,9 +20,11 @@ function fakeDb(opts) {
   }
   var applied = {};
   var alters = [];
+  var order = [];
   var db = {
     _alters: alters,
     _applied: applied,
+    _order: order,
     prepare(sql) {
       var chain = {
         bind() { return chain; },
@@ -42,6 +44,7 @@ function fakeDb(opts) {
           return null;
         },
         async run() {
+          order.push(sql);
           var am = sql.match(/^ALTER TABLE (\w+) ADD COLUMN (\w+)/i);
           if (am) {
             alters.push(am[1] + '.' + am[2]);
@@ -132,8 +135,21 @@ describe('db setup statements', function () {
     expect(columns.length).toBeGreaterThan(70);
     expect(once.length).toBeGreaterThan(0);
     expect(once.every(function (s) {
-      return /^dedupe-|^task-status-|^social_queue_post_/.test(s.name);
+      return /^dedupe-|^task-status-|^social_queue_post_|^email_queue_scheduled_index_|^whatsapp_queue_scheduled_index_|^normalise_/.test(s.name);
     })).toBe(true);
+  });
+
+  it('runs guarded columns before statements that depend on them', async function () {
+    var db = fakeDb({ missing: { table: 'email_queue', column: 'scheduled_at' } });
+    var res = await onRequest(ctx(db));
+    expect(res.status).toBe(200);
+    var order = db._order;
+    var create = order.findIndex(function (s) { return /^CREATE TABLE IF NOT EXISTS email_queue/i.test(s); });
+    var alter = order.findIndex(function (s) { return /^ALTER TABLE email_queue ADD COLUMN scheduled_at/i.test(s); });
+    var index = order.findIndex(function (s) { return /idx_email_queue_scheduled/i.test(s); });
+    expect(create).toBeGreaterThan(-1);
+    expect(alter).toBeGreaterThan(create);
+    expect(index).toBeGreaterThan(alter);
   });
 });
 

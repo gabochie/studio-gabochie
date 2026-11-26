@@ -397,7 +397,10 @@ export function getStatements(seedAnchor) {
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       addColumn('email_queue', 'status', 'TEXT DEFAULT \'pending\''),
-      `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
+      addColumn('email_queue', 'scheduled_at', "TEXT DEFAULT (datetime('now'))"),
+      // Indexes using scheduled_at must run after the guarded column above.
+      once('email_queue_scheduled_index_2026_11_26',
+        `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`),
       `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_status ON email_queue(status)`,
       // Outreach suppression list (unsubscribe / bounce / complaint compliance)
@@ -434,7 +437,10 @@ export function getStatements(seedAnchor) {
       )`,
       addColumn('whatsapp_queue', 'attempts', 'INTEGER DEFAULT 0'),
       addColumn('whatsapp_queue', 'last_error', 'TEXT DEFAULT NULL'),
-      `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_scheduled ON whatsapp_queue(scheduled_at)`,
+      addColumn('whatsapp_queue', 'scheduled_at', "TEXT DEFAULT (datetime('now'))"),
+      // Indexes using scheduled_at must run after the guarded column above.
+      once('whatsapp_queue_scheduled_index_2026_11_26',
+        `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_scheduled ON whatsapp_queue(scheduled_at)`),
       `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_status ON whatsapp_queue(status)`,
       // ExpressPay checkout tokens (query API needs the token; order-id alone is not enough)
       `CREATE TABLE IF NOT EXISTS expresspay_tokens (
@@ -690,9 +696,13 @@ export function getStatements(seedAnchor) {
       addColumn('posts', 'utm_campaign', 'TEXT DEFAULT \'\''),
       // Normalise legacy ISO timestamps so lexicographic date gating works.
       `UPDATE posts SET published_at = substr(replace(replace(published_at, 'T', ' '), 'Z', ''), 1, 19) WHERE published_at LIKE '%T%' OR published_at LIKE '%Z%'`,
-      `UPDATE posts SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
-      `UPDATE email_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
-      `UPDATE whatsapp_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
+      // scheduled_at normalisation must run after the guarded columns above.
+      once('normalise_posts_scheduled_at_2026_11_26',
+        `UPDATE posts SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`),
+      once('normalise_email_queue_scheduled_at_2026_11_26',
+        `UPDATE email_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`),
+      once('normalise_whatsapp_queue_scheduled_at_2026_11_26',
+        `UPDATE whatsapp_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`),
       // ── Social content queue / 30-day assessment calendar ──
       `CREATE TABLE IF NOT EXISTS social_queue (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1824,9 +1834,22 @@ export async function onRequest(context) {
   }
   try {
     const statements = getStatements();
+    // Legacy databases can lack columns that were added later. Run table
+    // creation first, then guarded column migrations, then every statement
+    // that reads/writes those columns (indexes, seeds, updates), then the
+    // one-time data migrations. The original declaration order mixes them and
+    // fails on production schemas predating the column additions.
+    const isCreateTable = function (s) {
+      return typeof s === 'string' && /^\s*CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\b/i.test(s);
+    };
+    const ordered = []
+      .concat(statements.filter(isCreateTable))
+      .concat(statements.filter(function (s) { return s && s.kind === 'column'; }))
+      .concat(statements.filter(function (s) { return typeof s === 'string' && !isCreateTable(s); }))
+      .concat(statements.filter(function (s) { return s && s.kind === 'once'; }));
     const results = [];
     const failed = [];
-    for (const statement of statements) {
+    for (const statement of ordered) {
       const sql = typeof statement === 'string' ? statement : statement.sql;
       const label = sql.slice(0, 50) + '...';
       try {
