@@ -1,5 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mockDb, buildContext } from '../helpers/mock-cf.js';
+
+// These tests exercise subscription storage, not CAPTCHA. Stub the verifier
+// so they do not depend on the old fail-open-without-secret behaviour.
+vi.mock('../../functions/api/_turnstile.js', function () {
+  return { verifyTurnstile: vi.fn(async function () { return true; }), turnstileToken: function () { return ''; } };
+});
 
 import { onRequest } from '../../functions/api/subscribe.js';
 

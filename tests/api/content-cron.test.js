@@ -4,11 +4,11 @@ import { mockDb, buildContext } from '../helpers/mock-cf.js';
 import { onRequest as cron } from '../../functions/api/email/cron.js';
 
 function ctx(db, secret) {
-  var url = 'http://localhost/api/email/cron?secret=' + secret;
+  var url = 'http://localhost/api/email/cron';
   return buildContext(url, {
     method: 'GET',
     env: { DB: db, CRON_SECRET: 'cron-secret' },
-    request: new Request(url)
+    request: new Request(url, { headers: { 'X-Cron-Secret': secret } })
   });
 }
 

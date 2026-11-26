@@ -1,29 +1,10 @@
-import { verifyAccessJwt } from '../api/admin/_access-jwt.js';
+// Both admin URL trees (/admin/ and /api/admin/) must apply exactly the same
+// authorization rules. Delegate to the canonical helper rather than
+// re-implementing it — the /api/ version also accepts named console role
+// sessions, and a divergent copy let the same operator be authorized by one
+// prefix and denied by the other.
+import { requireAdminAuth as sharedRequireAdminAuth } from '../api/admin/_admin-auth.js';
 
 export async function requireAdmin(request, env) {
-  // 1. Try Cloudflare Access JWT
-  var accessUser = await verifyAccessJwt(request, env);
-  if (accessUser) return null;
-
-  // 2. Fall back to admin API key
-  const key = request.headers.get('X-Admin-Key') || '';
-  const expected = env.ADMIN_API_KEY || env.ADMIN_KEY || '';
-
-  if (!expected) {
-    if (!env.CF_ACCESS_TEAM) {
-      return new Response(JSON.stringify({ status: 'error', message: 'Admin API not configured' }), {
-        status: 501, headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
-      status: 403, headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  if (key !== expected) {
-    return new Response(JSON.stringify({ status: 'error', message: 'Unauthorized' }), {
-      status: 403, headers: { 'Content-Type': 'application/json' }
-    });
-  }
-  return null;
+  return sharedRequireAdminAuth(request, env);
 }

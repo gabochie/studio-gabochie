@@ -1,3 +1,5 @@
+import { verifyAccessJwt } from './api/admin/_access-jwt.js';
+
 const COMING_SOON = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,20 +109,18 @@ export async function onRequest(context) {
     }
   }
 
-  // Validate session for gated paths
+  // Validate session for gated paths. A bare CF_Authorization cookie is not
+  // proof of anything: it must be a signature-verified Cloudflare Access JWT.
   var sessionValid = false;
-  if (env.DB && isGated) {
-    var cookie = request.headers.get('Cookie') || '';
-
-    // Cloudflare Access check first (for admin paths)
+  if (isGated) {
     if (path.startsWith('/admin/')) {
-      if (cookie.indexOf('CF_Authorization=') !== -1) {
-        sessionValid = true;
-      }
+      var accessUser = await verifyAccessJwt(request, env);
+      if (accessUser) sessionValid = true;
     }
 
-    // Fall back to session token
-    if (!sessionValid) {
+    // Fall back to the first-party session token
+    if (!sessionValid && env.DB) {
+      var cookie = request.headers.get('Cookie') || '';
       var m = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
       if (m) {
         try {
@@ -134,10 +134,6 @@ export async function onRequest(context) {
   }
 
   if (isGated && !sessionValid) {
-    if (path.startsWith('/admin/')) {
-      // For admin paths, let Cloudflare Access or the API auth handle it
-      return context.next();
-    }
     var loginUrl = '/login/?redirect=' + encodeURIComponent(path);
     return new Response(null, {
       status: 302,
@@ -169,11 +165,28 @@ export async function onRequest(context) {
     } catch (_e) {}
   }
 
-  // CSRF protection: reject cross-origin mutating requests
-  var origin = request.headers.get('Origin') || '';
-  if (origin && !origin.includes(url.hostname) && !origin.includes('studio.gabochie.com')) {
-    var method = request.method;
-    if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+  // CSRF protection: mutating browser requests must declare an exact Origin.
+  // Server-to-server callbacks carry their own provider verification (HMAC /
+  // gateway re-query), so they are exempt from the browser-origin requirement.
+  var method = request.method;
+  var isMutating = method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE';
+  var providerVerified = request.headers.has('X-Mailin-Signature') ||
+    request.headers.has('x-nowpayments-sig') ||
+    request.headers.has('X-Flutterwave-Signature') ||
+    path.indexOf('/api/gateways/expresspay/callback') === 0;
+  if (isMutating && !providerVerified) {
+    var originRaw = request.headers.get('Origin') || '';
+    var allowedOrigins = [url.origin, 'https://studio.gabochie.com'];
+    if (url.hostname === 'news.gabochie.com') allowedOrigins.push('https://news.gabochie.com');
+    var originOk = false;
+    if (originRaw) {
+      try {
+        originOk = allowedOrigins.indexOf(new URL(originRaw).origin) !== -1;
+      } catch (_e) {
+        originOk = false;
+      }
+    }
+    if (!originOk) {
       return new Response(JSON.stringify({ error: 'Forbidden' }), {
         status: 403, headers: { 'Content-Type': 'application/json' }
       });

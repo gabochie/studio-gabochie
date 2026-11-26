@@ -281,6 +281,16 @@ export async function onRequest(context) {
   if (!row || row.provider !== 'crypto') return json({ status: 'error', message: 'Unknown crypto payment', code: 'UNKNOWN_TX' }, 404);
   if (row.status === 'successful') return json({ status: 'ok', already: true });
 
+  // A chain transaction can only pay one invoice. flw_id stores the verified
+  // gateway/hash for successful rows (see markDonationRow), so reuse is a
+  // double-credit attempt even when the caller supplies a different tx_ref.
+  const reused = await env.DB.prepare(
+    'SELECT tx_ref FROM donations WHERE flw_id = ? AND status = ? AND tx_ref != ? LIMIT 1'
+  ).bind(tx_hash, 'successful', tx_ref).first().catch(() => null);
+  if (reused) {
+    return json({ status: 'error', message: 'This transaction hash has already been used', code: 'TX_ALREADY_USED' }, 409);
+  }
+
   // TRON: USDT-TRC20 address by default; native TRX only when explicitly requested.
   let to = '';
   if (chain === 'tron' && (body.asset || '').toUpperCase() === 'TRX') {

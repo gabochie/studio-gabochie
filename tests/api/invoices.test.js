@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { mockDb, buildContext } from '../helpers/mock-cf.js';
-import { generateInvoice } from '../../functions/api/invoices/generate.js';
+import { generateInvoice, invoicePublicLink } from '../../functions/api/invoices/generate.js';
 import { onRequest } from '../../functions/api/invoices/[id].js';
 
 describe('generateInvoice()', function () {
@@ -71,6 +71,18 @@ describe('generateInvoice()', function () {
     expect(invNum).toBeTruthy();
     expect(invNum).toContain('INV-');
   });
+
+  it('stores a high-entropy access token and builds a link from it', async function () {
+    env.PUBLIC_BASE_URL = 'https://studio.gabochie.com';
+    var invNum = await generateInvoice(env, 'donation', 'donations', {
+      name: 'Test User', email: 'test@example.com', amount: 200, currency: 'GHS', tx_ref: 'tx_donation_002'
+    });
+    var stored = env.DB._tables.invoices[0];
+    expect(stored.access_token).toMatch(/^[0-9a-f]{48}$/);
+    var link = await invoicePublicLink(env, invNum);
+    expect(link).toContain('/api/invoices/' + invNum + '?token=' + stored.access_token);
+    expect(link).not.toContain('?token=' + invNum);
+  });
 });
 
 describe('GET /api/invoices/[id]', function () {
@@ -78,6 +90,7 @@ describe('GET /api/invoices/[id]', function () {
   var mockInvoice = {
     id: 1,
     invoice_number: 'INV-2026-0001',
+    access_token: 'TEST_ACCESS_TOKEN_NOT_A_SECRET',
     customer_name: 'John Doe',
     customer_email: 'john@test.com',
     customer_phone: '+233501234567',
@@ -95,7 +108,7 @@ describe('GET /api/invoices/[id]', function () {
   };
 
   beforeEach(function () {
-    ctx = buildContext('http://localhost/api/invoices/INV-2026-0001?token=INV-2026-0001', {
+    ctx = buildContext('http://localhost/api/invoices/INV-2026-0001?token=TEST_ACCESS_TOKEN_NOT_A_SECRET', {
       params: { id: 'INV-2026-0001' },
       env: {
         DB: mockDb({ invoices: [mockInvoice] }),
@@ -162,12 +175,31 @@ describe('GET /api/invoices/[id]', function () {
     expect(text).toContain('Invoice Locked');
   });
 
-  it('shows Invoice Locked when token does not match invoice number', async function () {
+  it('shows Invoice Locked when token is wrong', async function () {
     ctx.request = new Request('http://localhost/api/invoices/INV-2026-0001?token=wrong-token');
     var res = await onRequest(ctx);
     expect(res.status).toBe(401);
     var text = await res.text();
     expect(text).toContain('Invoice Locked');
+  });
+
+  it('rejects the sequential invoice number as a token', async function () {
+    ctx.request = new Request('http://localhost/api/invoices/INV-2026-0001?token=INV-2026-0001');
+    var res = await onRequest(ctx);
+    expect(res.status).toBe(401);
+  });
+
+  it('escapes dynamic values in the rendered HTML', async function () {
+    ctx.env.DB._tables.invoices[0].customer_name = '<script>alert(1)</script>';
+    ctx.env.DB._tables.invoices[0].items = JSON.stringify([{
+      description: '<img src=x onerror=alert(1)>', quantity: 1, unit_price: 100, total: 100
+    }]);
+    var res = await onRequest(ctx);
+    var text = await res.text();
+    expect(text).not.toContain('<script>alert(1)</script>');
+    expect(text).not.toContain('<img src=x onerror=alert(1)>');
+    expect(text).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+    expect(text).toContain('&lt;img src=x onerror=alert(1)&gt;');
   });
 
   it('sets Content-Type to text/html', async function () {

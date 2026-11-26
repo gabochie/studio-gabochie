@@ -53,7 +53,7 @@
 .section-label{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:#5A7A9F;margin-bottom:20px}
 .faq-section{max-width:720px;margin:0 auto;padding:0 24px 80px}
 .faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
-.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;width:100%;padding:0;background:none;border:none;text-align:left;font-family:inherit}
 .faq-q::after{content:'+';font-size:16px;color:#C9A84C}
 .faq-q.open::after{content:'\2212'}
 .faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
@@ -67,7 +67,8 @@
 .enroll-modal .close:hover{color:#E8637A}
 .enroll-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#fff;margin:0 0 6px}
 .enroll-modal .sub{font-family:'Barlow',sans-serif;font-size:13px;color:#8A9BB5;margin-bottom:20px}
-.enroll-modal input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#E8EEF7;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s;margin-bottom:10px}
+.enroll-modal label{display:block;font-size:12px;color:#8A9BB5;margin-bottom:4px}
+.enroll-modal input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:8px;border:1px solid #1E3250;background:#0A1628;color:#E8EEF7;font-size:14px;font-family:'DM Sans',sans-serif;transition:border-color .2s;margin-bottom:10px}
 .enroll-modal input:focus{border-color:#C9A84C}
 .enroll-modal input::placeholder{color:#3A5278}
 .enroll-modal .msg{font-size:13px;line-height:1.6;margin:12px 0 0;display:none;padding:12px;border-radius:8px;font-family:'Barlow',sans-serif}
@@ -90,6 +91,8 @@
 .selar-link{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border:1px solid rgba(201,168,76,.45);border-radius:8px;color:#E8D08A;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-decoration:none;background:rgba(201,168,76,.06);white-space:nowrap}
 .selar-link:hover{background:#C9A84C;color:#0A1628}
 </style>
+<!-- Production-readiness metadata -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Courses - Studio Gabochie","url":"https://studio.gabochie.com/courses/","description":"Practical, self-paced courses across seven categories. Start free with Module 1, no card required.","isPartOf":{"@type":"WebSite","name":"Studio Gabochie","url":"https://studio.gabochie.com"}}</script>
 </head>
 <body>
 
@@ -113,34 +116,37 @@
 <div class="faq-section">
   <div class="section-label">Questions</div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do I need any experience?</div>
-    <div class="faq-a">None. Every course starts from the basics and builds up. The exercises are practical, not academic.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="courses-faq-1">Do I need any experience?</button>
+    <div class="faq-a" id="courses-faq-1">None. Every course starts from the basics and builds up. The exercises are practical, not academic.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How much does it cost?</div>
-    <div class="faq-a">Module 1 of every course is free — no card required. Full access is a one-time payment you make only when you choose to.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="courses-faq-2">How much does it cost?</button>
+    <div class="faq-a" id="courses-faq-2">Module 1 of every course is free — no card required. Full access is a one-time payment you make only when you choose to.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How do I access my course?</div>
-    <div class="faq-a">Your personal dashboard at <a href="/dashboard/" style="color:#C9A84C">studio.gabochie.com/dashboard/</a>. Log in with your email and access code.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="courses-faq-3">How do I access my course?</button>
+    <div class="faq-a" id="courses-faq-3">Your personal dashboard at <a href="/dashboard/" style="color:#C9A84C">studio.gabochie.com/dashboard/</a>. Log in with your email and access code.</div>
   </div>
 </div>
 
 <div id="footer-placeholder"></div>
 
 <!-- ENROLL MODAL -->
-<div class="enroll-overlay" id="enrollModal">
+<div class="enroll-overlay" id="enrollModal" role="dialog" aria-modal="true" aria-labelledby="enrollTitle" aria-hidden="true">
   <div class="enroll-modal" style="position:relative">
-    <button class="close" onclick="closeEnroll()">&times;</button>
+    <button type="button" class="close" onclick="closeEnroll()" aria-label="Close enrollment form">&times;</button>
     <h3 id="enrollTitle">Start Learning Free</h3>
     <div class="sub" id="enrollSub"></div>
     <form id="enrollForm">
+      <label for="enrollName">Your name</label>
       <input type="text" id="enrollName" placeholder="Your name" autocomplete="name" required>
+      <label for="enrollEmail">Your email</label>
       <input type="email" id="enrollEmail" placeholder="Your email" autocomplete="email" required>
+      <label for="enrollPhone">Phone / WhatsApp (optional)</label>
       <input type="tel" id="enrollPhone" placeholder="Phone / WhatsApp (optional)" autocomplete="tel">
       <button type="submit" class="btn btn-gold" style="width:100%;margin-top:6px" id="enrollBtn"><i class="ti ti-bolt"></i> Start Free</button>
     </form>
-    <div class="msg" id="enrollMsg"></div>
+    <div class="msg" id="enrollMsg" role="status" aria-live="polite"></div>
     <div class="signup-note">Free Module 1 - no card required. Your progress is saved to your dashboard.</div>
   </div>
 </div>
@@ -150,6 +156,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 var COURSE_SLUG = null;
+var enrollReturnFocus = null;
 
 function truncateText(s, n) {
   if (!s) return '';
@@ -166,19 +173,45 @@ function formatPriceEl(price) {
 
 function openEnroll(slug, title, tagline) {
   COURSE_SLUG = slug;
+  enrollReturnFocus = document.activeElement;
   document.getElementById('enrollTitle').textContent = title || 'Start Learning Free';
   document.getElementById('enrollSub').textContent = tagline || 'Free Module 1 - no card required.';
   var msg = document.getElementById('enrollMsg');
   msg.className = 'msg';
-  msg.innerHTML = '';
-  document.getElementById('enrollModal').classList.add('open');
+  msg.textContent = '';
+  var modal = document.getElementById('enrollModal');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
   document.getElementById('enrollName').focus();
 }
 
 function closeEnroll() {
-  document.getElementById('enrollModal').classList.remove('open');
+  var modal = document.getElementById('enrollModal');
+  if (!modal.classList.contains('open')) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  if (enrollReturnFocus && typeof enrollReturnFocus.focus === 'function') enrollReturnFocus.focus();
+  enrollReturnFocus = null;
 }
+
+/* Keep keyboard focus inside the dialog while it is open. */
+function trapEnrollFocus(e) {
+  var modal = document.getElementById('enrollModal');
+  if (!modal.classList.contains('open')) return;
+  var focusable = Array.prototype.slice.call(modal.querySelectorAll('button, input, a[href], select, textarea, [tabindex]:not([tabindex="-1"])'))
+    .filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+  if (!focusable.length) return;
+  var first = focusable[0];
+  var last = focusable[focusable.length - 1];
+  if (e.key === 'Tab') {
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  if (e.key === 'Escape') { e.preventDefault(); closeEnroll(); }
+}
+document.addEventListener('keydown', trapEnrollFocus);
 
 function renderPrograms(staticData, apiPrograms) {
   var data = staticData || { courses: [], homepage: {} };

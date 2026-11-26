@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/fonts/tabler/tabler-icons.min.css" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     :root{
       --ink:#0A1628;
@@ -439,6 +440,7 @@
               <input type="text" id="leadName" placeholder="Your name (optional)" autocomplete="name" aria-label="Your name" />
               <input type="email" id="leadEmail" placeholder="Your email address" autocomplete="email" required aria-label="Your email address" />
             </div>
+            <div class="cf-turnstile" id="leadTurnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="playbook-gate" data-callback="onLeadTurnstile"></div>
             <button class="btn btn-dark" type="submit">Send me the free checklist →</button>
           </form>
           <p class="form-note" id="formNote">You agree to receive the checklist and occasional practical emails from Studio Gabochie. Unsubscribe any time.</p>
@@ -446,7 +448,7 @@
           <div class="success-box" id="successBox" role="status" aria-live="polite">
             <div class="check">✓</div>
             <b>You're on the list.</b>
-            <p class="muted tiny" style="margin:8px 0 14px">Your checklist is ready. Download it now, and check your inbox once email delivery is connected.</p>
+            <p class="muted tiny" style="margin:8px 0 14px">Your checklist is ready — download it now. Watch your inbox for your confirmation email and more practical resources from Studio Gabochie.</p>
             <button class="btn btn-gold" type="button" id="downloadBtn">Download checklist (.txt) ↓</button>
           </div>
         </div>
@@ -1080,11 +1082,69 @@
     modal.addEventListener("click", e => { if(e.target.closest("[data-close]")) closeModal(); });
     document.addEventListener("keydown", e => { if(e.key === "Escape" && modal.classList.contains("open")) closeModal(); });
 
-    /* ---------- Lead form (placeholder — connect your email tool) ----------
-       Set LEAD_ENDPOINT to your form/API URL and uncomment the fetch block
-       to send real signups to Mailchimp, Google Forms, Resend, etc.        */
+    /* ---------- Lead form ---------- */
     const LEAD_ENDPOINT = "/api/subscribe";
     const leadForm = $("#leadForm");
+    const NOTE_DEFAULT = "You agree to receive the checklist and occasional practical emails from Studio Gabochie. Unsubscribe any time.";
+    const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+    var leadTokenResolve = null;
+
+    // Same ga_utm behaviour as assets/js/main.js: URL parameters win, and a
+    // URL with utm_source persists all five parameters for later navigation.
+    function gaGetUtm() {
+      if (typeof window.gaGetUtm === "function") {
+        try { return window.gaGetUtm() || {}; } catch (e) {}
+      }
+      var stored = {};
+      try { stored = JSON.parse(localStorage.getItem("ga_utm") || "{}") || {}; } catch (e) {}
+      var fromUrl = {};
+      try {
+        var params = new URLSearchParams(window.location.search);
+        UTM_KEYS.forEach(function (key) {
+          var value = params.get(key);
+          if (value) fromUrl[key] = String(value).slice(0, 120);
+        });
+      } catch (e) {}
+      if (fromUrl.utm_source) {
+        try { localStorage.setItem("ga_utm", JSON.stringify(fromUrl)); } catch (e) {}
+        return fromUrl;
+      }
+      return Object.keys(fromUrl).length ? Object.assign({}, stored, fromUrl) : stored;
+    }
+
+    // Turnstile auto-renders the widget; explicitly execute it and resolve
+    // when its callback delivers the token (or after a short timeout).
+    window.onLeadTurnstile = function (token) {
+      if (leadTokenResolve) { leadTokenResolve(token || ""); leadTokenResolve = null; }
+    };
+
+    function getLeadToken() {
+      var el = document.querySelector('input[name="cf-turnstile-response"]');
+      if (el && el.value) return Promise.resolve(el.value);
+      return new Promise(function (resolve) {
+        var done = false;
+        function finish(token) {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          leadTokenResolve = null;
+          resolve(token || "");
+        }
+        var timer = setTimeout(function () { finish(""); }, 8000);
+        leadTokenResolve = finish;
+        try {
+          if (window.turnstile && typeof window.turnstile.execute === "function") {
+            window.turnstile.execute($("#leadTurnstile"), { callback: "onLeadTurnstile" });
+          } else if (el && el.value) {
+            finish(el.value);
+          } else {
+            finish("");
+          }
+        } catch (err) {
+          finish("");
+        }
+      });
+    }
 
     function buildChecklistText(name){
       const free = IDEAS.filter(i => i.costNum === 0);
@@ -1136,15 +1196,53 @@
       const email = $("#leadEmail").value.trim();
       const name = $("#leadName").value.trim();
       const note = $("#formNote");
+      const btn = leadForm.querySelector('button[type="submit"]');
+      const btnLabel = btn.textContent;
+      note.textContent = NOTE_DEFAULT;
+      note.style.color = "";
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
         note.textContent = "Please enter a valid email address.";
         note.style.color = "var(--red)";
         $("#leadEmail").focus();
         return;
       }
-      const lead = { name, email, source:"Ghana Youth Hustle Playbook", ts:new Date().toISOString() };
 
-      // Local demo storage (remove once LEAD_ENDPOINT is configured)
+      const lead = { name, email, source:"Ghana Youth Hustle Playbook", ts:new Date().toISOString() };
+      const utm = gaGetUtm();
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+      try {
+        var payload = {
+          name: name,
+          email: email,
+          source: "ghana-hustle-playbook",
+          cf_turnstile_token: LEAD_ENDPOINT ? await getLeadToken() : ""
+        };
+        UTM_KEYS.forEach(function (key) { if (utm[key]) payload[key] = utm[key]; });
+        if (LEAD_ENDPOINT) {
+          var response = await fetch(LEAD_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          var data = await response.json().catch(function () { return {}; });
+          if (!response.ok || !data || data.status !== "ok") {
+            note.textContent = (data && data.message) || "We could not save your details. Please try again.";
+            note.style.color = "var(--red)";
+            return;
+          }
+        }
+      } catch (err) {
+        note.textContent = "Network error. Please try again.";
+        note.style.color = "var(--red)";
+        console.error("Lead delivery failed", err);
+        return;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = btnLabel;
+      }
+
+      // Success only: store locally, record the gate event, reveal the download.
       try{
         const leads = JSON.parse(localStorage.getItem("ghmoney_leads") || "[]");
         leads.push(lead);
@@ -1153,30 +1251,11 @@
 
       try {
         if (navigator.sendBeacon) {
-          var _g = new Blob([JSON.stringify({ event_type: "playbook_gate_submit", page: location.pathname, event_data: JSON.stringify({ email: email }) })], { type: "application/json" });
+          var eventData = Object.assign({ email: email }, utm);
+          var _g = new Blob([JSON.stringify({ event_type: "playbook_gate_submit", page: location.pathname, event_data: JSON.stringify(eventData) })], { type: "application/json" });
           navigator.sendBeacon("/api/event", _g);
         }
       } catch (e) {}
-      if (LEAD_ENDPOINT) {
-        try {
-          var turnstileEl = document.querySelector('input[name="cf-turnstile-response"]');
-          var payload = {
-            name: name,
-            email: email,
-            source: "ghana-hustle-playbook",
-            utm_source: new URLSearchParams(window.location.search).get("utm_source") || "",
-            utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "",
-            utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "",
-            cf_turnstile_token: turnstileEl ? turnstileEl.value : ""
-          };
-          await fetch(LEAD_ENDPOINT, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-        } catch (err) { console.error("Lead delivery failed", err); }
-      }
-
       leadForm.style.display = "none";
       $("#successBox").classList.add("show");
       downloadChecklist(name);

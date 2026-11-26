@@ -1,14 +1,49 @@
 import { requireAdminAuth } from '../../../api/admin/_admin-auth.js';
 
+// Pages whose failures block a release. Everything else is reported but does
+// not fail the post-deploy QA gate.
+var CRITICAL_PAGES = [
+  '/', '/support/', '/donate/', '/school/', '/books/',
+  '/consultation/', '/guitar/', '/love-of-the-lord/give/'
+];
+
+function isCriticalPage(pageUrl) {
+  var path;
+  try {
+    path = new URL(pageUrl).pathname;
+  } catch (_err) {
+    return false;
+  }
+  if (path === '/') return true;
+  for (var i = 0; i < CRITICAL_PAGES.length; i++) {
+    var base = CRITICAL_PAGES[i];
+    if (base === '/') continue; // root is exact-match only, not a prefix for every URL
+    if (path === base || path.indexOf(base) === 0) return true;
+  }
+  return false;
+}
+
+// Constant-time secret comparison: hash to fixed-length digests first so a
+// wrong-length guess leaks nothing and every byte is checked.
+async function safeEqual(a, b) {
+  var encoder = new TextEncoder();
+  var left = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(String(a || ''))));
+  var right = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(String(b || ''))));
+  var diff = 0;
+  for (var i = 0; i < left.length; i++) diff |= left[i] ^ right[i];
+  return diff === 0;
+}
+
 export async function onRequest(context) {
   var { request, env } = context;
-  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
+  var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (!env.DB) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
   // Dual auth: admin key (manual) or CI secret (automated)
   var ciAuth = request.headers.get('X-CI-Secret');
-  if (!ciAuth || ciAuth !== env.CI_WEBHOOK_SECRET) {
+  var ciOk = !!ciAuth && !!env.CI_WEBHOOK_SECRET && await safeEqual(ciAuth, env.CI_WEBHOOK_SECRET);
+  if (!ciOk) {
     var authErr = await requireAdminAuth(request, env);
     if (authErr) return authErr;
   }
@@ -17,6 +52,49 @@ export async function onRequest(context) {
   var MAX_PAGES = 50;
 
   try {
+    // GET — poll a run started by CI. Returns critical-page failures separately
+    // so the deploy gate can fail on those without failing on every optional page.
+    if (request.method === 'GET') {
+      var params = new URL(request.url).searchParams;
+      var pollId = Number(params.get('run_id'));
+      if (!Number.isInteger(pollId) || pollId < 1) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Invalid run_id' }), {
+          status: 400, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+        });
+      }
+      var run = await env.DB.prepare(
+        "SELECT id, status, total_checks, passed_checks, failed_checks, warn_checks, started_at, completed_at FROM quality_runs WHERE id = ?"
+      ).bind(pollId).first();
+      if (!run) {
+        return new Response(JSON.stringify({ status: 'error', message: 'Run not found' }), {
+          status: 404, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+        });
+      }
+      var failedResult = await env.DB.prepare(
+        "SELECT page_url, check_name, message FROM quality_reports WHERE run_id = ? AND status = 'fail'"
+      ).bind(pollId).all();
+      var failedRows = (failedResult && failedResult.results) || [];
+      var criticalRows = failedRows.filter(function (r) { return isCriticalPage(r.page_url); });
+      return new Response(JSON.stringify({
+        status: 'ok',
+        run_id: run.id,
+        run_status: run.status,
+        total_checks: run.total_checks,
+        passed: run.passed_checks,
+        failed: run.failed_checks,
+        warn: run.warn_checks,
+        critical_failed: criticalRows.length,
+        critical_pages: Array.from(new Set(criticalRows.map(function (r) { return r.page_url; }))),
+        critical_failures: criticalRows.slice(0, 20)
+      }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+    }
+
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ status: 'error', message: 'Method not allowed' }), {
+        status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors)
+      });
+    }
+
     var body = await request.json().catch(function() { return {}; });
     var trigger = body.trigger || 'manual';
 
@@ -85,6 +163,9 @@ export async function onRequest(context) {
       "UPDATE quality_runs SET status = 'completed', total_checks = ?, passed_checks = ?, failed_checks = ?, warn_checks = ?, completed_at = datetime('now') WHERE id = ?"
     ).bind(allReports.length, passed, failed, warn, runId).run();
 
+    var criticalFailures = allReports.filter(function (r) {
+      return r.status === 'fail' && isCriticalPage(r.page_url);
+    });
     return new Response(JSON.stringify({
       status: 'ok',
       run_id: runId,
@@ -92,7 +173,9 @@ export async function onRequest(context) {
       total_checks: allReports.length,
       passed: passed,
       failed: failed,
-      warn: warn
+      warn: warn,
+      critical_failed: criticalFailures.length,
+      critical_pages: Array.from(new Set(criticalFailures.map(function (r) { return r.page_url; })))
     }), { headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
 
   } catch (err) {

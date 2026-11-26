@@ -1,3 +1,5 @@
+import { randomDigits } from '../gateways/_shared.js';
+
 function sanitize(s) { return (s || '').replace(/<[^>]*>/g, '').trim(); }
 
 export async function onRequest(context) {
@@ -29,7 +31,7 @@ export async function onRequest(context) {
       'SELECT id FROM users WHERE email = ?'
     ).bind(email).first();
     var isNew = !existingUser;
-    var code = String(Math.floor(100000 + Math.random() * 900000));
+    var code = randomDigits(6);
     var expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
     await db.prepare(
       'UPDATE otp_codes SET used = 1 WHERE identifier = ? AND used = 0'

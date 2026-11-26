@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="../assets/css/main.css">
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="/assets/js/money-ghana-data.js" defer></script>
+<script src="/assets/js/consultation-config.js" defer></script>
 <script src="/assets/js/money-ghana.js" defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -205,7 +206,8 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <div class="question"><h3>1. What best describes you?</h3><div class="option-grid" id="q-profile"></div></div>
         <div class="question"><h3>2. What device do you have?</h3><div class="option-grid" id="q-setup"></div></div>
         <div class="question"><h3>3. Starting capital?</h3><div class="option-grid" id="q-capital"></div></div>
-        <button class="submit-btn" type="submit">Show my first match <i class="ti ti-arrow-right"></i></button>
+        <button class="submit-btn" id="quizBtn" type="submit" disabled>Show my first match <i class="ti ti-arrow-right"></i></button>
+        <p class="form-msg" id="quizMsg" hidden></p>
       </form>
       <div class="summary-row" id="summaryRow" hidden><span id="summary"></span><button type="button" id="retakeBtn">Start over</button></div>
     </div>
@@ -223,7 +225,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
         <span class="cta-kicker">Next step · One on one</span>
         <h4>Turn the list into one plan</h4>
         <p>24 paths is a starting point, not a strategy. In one hour we pressure-test your top match and you leave with written next steps.</p>
-        <div class="cta-price">Anchor Session · GH₵1,500 <span>(≈ $90)</span></div>
+        <div class="cta-price">Anchor Session · GH₵1,500 <span>(<span data-price-key="anchor" data-price-field="usd">≈ $127</span>)</span></div>
         <a class="cta-link" id="consultCtaLink" href="/consultation/">Book an Anchor Session <i class="ti ti-arrow-right"></i></a>
       </div>
       <div class="gate" id="gatePanel">

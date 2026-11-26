@@ -1,15 +1,8 @@
--- Daily LOTL devotional broadcast (opt-in)
--- Run via: npx wrangler d1 execute gahq --file=scripts/migrate-lotl-daily.sql --remote
+-- NO-OP / HISTORICAL MIGRATION
+--
+-- subscribers.lotl_daily, settings(lotl_daily_enabled) and
+-- lotl_daily_sends are already created by functions/api/db/setup.js.
+-- The old unconditional ALTER TABLE failed on re-runs; use the guarded
+-- setup script instead: npm run db:setup.
 
--- Opt-in flag on subscribers (0 = no daily devotional emails)
-ALTER TABLE subscribers ADD COLUMN lotl_daily INTEGER DEFAULT 0;
-
--- Master switch, controlled from admin/lotl.html. Off until deliberately enabled.
-INSERT OR IGNORE INTO settings (key, value) VALUES ('lotl_daily_enabled', '0');
-
--- Once-per-day guard so a cron tick can never double-send a broadcast.
-CREATE TABLE IF NOT EXISTS lotl_daily_sends (
-  send_date TEXT PRIMARY KEY,
-  total INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT (datetime('now'))
-);
+SELECT 'migrate-lotl-daily.sql is a no-op; run npm run db:setup' AS note;

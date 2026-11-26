@@ -133,7 +133,7 @@ test.describe('Love Of The Lord — service page', function () {
       await expect(page.locator('footer a[href="/love-of-the-lord/"]').first()).toBeVisible();
       await expect(page.locator('footer a[href="/love-of-the-lord/give/"]').first()).toBeVisible();
       var colOrder = await page.evaluate(function () {
-        return [...document.querySelectorAll('footer .container > div > h4')].map(function (e) { return e.textContent; }).join(',');
+        return [...document.querySelectorAll('footer .container > div > h2, footer .container > div > h4')].map(function (e) { return e.textContent; }).join(',');
       });
       expect(colOrder.indexOf('Ministry')).toBeLessThan(colOrder.indexOf('Connect'));
     }

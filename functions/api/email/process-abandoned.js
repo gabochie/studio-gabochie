@@ -1,7 +1,17 @@
 import { queueEmail, abandonedDonationReminder, daysFromNow } from './_send.js';
+import { requireAdmin } from '../../admin/_auth.js';
 
 export async function onRequest(context) {
-  const { env } = context;
+  const { request, env } = context;
+
+  // Cron callers use the header only (query strings leak secrets into logs);
+  // interactive callers must be an authenticated admin.
+  const cronSecret = request.headers.get('X-Cron-Secret') || '';
+  if (!env.CRON_SECRET || cronSecret !== env.CRON_SECRET) {
+    const denied = await requireAdmin(request, env);
+    if (denied) return denied;
+  }
+
   if (!env.DB) {
     return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
   }
@@ -13,8 +23,8 @@ export async function onRequest(context) {
          AND e.email != ''
          AND e.created_at <= datetime('now', '-24 hours')
          AND NOT EXISTS (SELECT 1 FROM donations d WHERE d.donor_email = e.email AND d.status = 'completed')
-         AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_donation')
-       ORDER BY e.created_at ASC`
+         AND NOT EXISTS (SELECT 1 FROM email_queue q WHERE q.to_email = e.email AND q.email_type = 'abandoned_donation' AND q.created_at >= datetime('now', '-30 days') AND q.status != 'failed')
+       ORDER BY e.created_at ASC LIMIT 50`
     ).all();
 
     let queued = 0;

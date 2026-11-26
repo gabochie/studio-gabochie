@@ -3,9 +3,7 @@ export function getToken(request, body) {
   var m = auth.match(/^Bearer\s+(.+)$/i);
   if (m) return m[1];
   if (body && body.token) return (body.token || '').trim();
-  var url = new URL(request.url);
-  var q = url.searchParams.get('token');
-  if (q) return q;
+  // No ?token= source: query strings leak through logs/history/Referer.
   var cookie = request.headers.get('Cookie') || '';
   var cm = cookie.match(/(?:^|;\s*)ga_session=([^;]+)/);
   if (cm) return cm[1];

@@ -61,10 +61,10 @@ describe('newsletter batched outbox (phase 1)', function () {
         { id: 2, issue_id: 9, email: 'b@t.co', name: 'Ben', edition: 'UK', ref_code: 'GA-2', status: 'pending', attempts: 0 }
       ]
     });
-    var ctx = buildContext('http://localhost/api/email/cron?secret=s3', {
+    var ctx = buildContext('http://localhost/api/email/cron', {
       method: 'GET',
       env: { DB: db, CRON_SECRET: 's3', BREVO_API_KEY: 'brevo-key' },
-      request: new Request('http://localhost/api/email/cron?secret=s3')
+      request: new Request('http://localhost/api/email/cron', { headers: { 'X-Cron-Secret': 's3' } })
     });
     var res = await emailCron(ctx);
     expect(res.status).toBe(200);
@@ -87,10 +87,10 @@ describe('newsletter batched outbox (phase 1)', function () {
         { id: 1, issue_id: 9, email: 'a@t.co', name: 'Ama', edition: 'GH', ref_code: 'GA-1', status: 'pending', attempts: 2 }
       ]
     });
-    var ctx = buildContext('http://localhost/api/email/cron?secret=s3', {
+    var ctx = buildContext('http://localhost/api/email/cron', {
       method: 'GET',
       env: { DB: db, CRON_SECRET: 's3', BREVO_API_KEY: 'brevo-key' },
-      request: new Request('http://localhost/api/email/cron?secret=s3')
+      request: new Request('http://localhost/api/email/cron', { headers: { 'X-Cron-Secret': 's3' } })
     });
     var res = await emailCron(ctx);
     var data = await res.json();

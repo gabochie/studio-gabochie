@@ -18,13 +18,27 @@ export async function processEmailQueue(env, db, opts) {
   const dailyLimit = opts.dailyLimit || EMAIL_DAILY_LIMIT;
   const batchSize = opts.batchSize || EMAIL_BATCH_SIZE;
 
-  // Daily cap (Brevo free-tier guard). sent_at is 'YYYY-MM-DD HH:MM:SS', so a
-  // lexicographic >= against today's date counts everything sent today.
-  const today = new Date().toISOString().split('T')[0];
-  const countRow = await db.prepare(
-    "SELECT COUNT(*) AS cnt FROM email_queue WHERE status = 'sent' AND sent_at >= ?"
-  ).bind(today).first();
-  const sentToday = (countRow && countRow.cnt) || 0;
+  // Reaper: a worker that dies after claiming a row leaves it 'sending'
+  // forever. Reclaim after 15 minutes, but never grow retry_count past the
+  // dead-letter threshold; exhausted rows are failed instead.
+  await db.prepare(
+    "UPDATE email_queue SET status = 'pending', scheduled_at = datetime('now'), " +
+      "last_error = 'reclaimed: stuck in sending', updated_at = datetime('now') " +
+      "WHERE status = 'sending' AND retry_count < 3 " +
+      "AND COALESCE(updated_at, created_at) < datetime('now', '-15 minutes')"
+  ).run();
+  await db.prepare(
+    "UPDATE email_queue SET status = 'failed', " +
+      "last_error = 'dead-lettered: stuck in sending', updated_at = datetime('now') " +
+      "WHERE status = 'sending' AND retry_count >= 3 " +
+      "AND COALESCE(updated_at, created_at) < datetime('now', '-15 minutes')"
+  ).run();
+
+  // Daily cap (Brevo free-tier guard). Count by sent_at regardless of the
+  // current status: webhook-driven status changes must not free up quota.
+  // Use an explicit bound timestamp rather than datetime('now','start of day')
+  // so the same query works on D1 and on the test mock.
+  const sentToday = await countSentToday(db);
   if (sentToday >= dailyLimit) {
     summary.skipped_limited = true;
     return summary;
@@ -46,10 +60,14 @@ export async function processEmailQueue(env, db, opts) {
   summary.pending = rows.length;
 
   for (const email of rows) {
-    const res = await sendQueuedEmail(env, db, email);
+    if (sentToday + summary.sent >= dailyLimit) {
+      summary.skipped_limited = true;
+      break;
+    }
+    const res = await sendQueuedEmail(env, db, email, dailyLimit);
     if (res.status === 'sent') { summary.sent++; summary.pending--; }
     else if (res.status === 'failed') { summary.failed++; summary.pending--; }
-    else if (res.status === 'retry') { summary.pending--; }
+    else if (res.status === 'retry' || res.status === 'skip') { summary.pending--; }
     if (res.error) summary.errors.push('send-' + email.id + ': ' + res.error);
     // Respect Brevo's rate limit (~10 req/sec).
     await new Promise((r) => setTimeout(r, 100));
@@ -57,12 +75,32 @@ export async function processEmailQueue(env, db, opts) {
   return summary;
 }
 
-async function sendQueuedEmail(env, db, email) {
+function todayStart() {
+  return new Date().toISOString().slice(0, 10) + ' 00:00:00';
+}
+
+async function countSentToday(db) {
+  const row = await db.prepare(
+    'SELECT COUNT(*) AS cnt FROM email_queue WHERE sent_at >= ?'
+  ).bind(todayStart()).first();
+  return (row && row.cnt) || 0;
+}
+
+async function sendQueuedEmail(env, db, email, dailyLimit) {
   const id = email.id;
   try {
-    await db.prepare(
-      "UPDATE email_queue SET status = 'sending', updated_at = datetime('now') WHERE id = ?"
+    // Conditional claim: concurrent cron ticks cannot deliver the same row.
+    const claim = await db.prepare(
+      "UPDATE email_queue SET status = 'sending', updated_at = datetime('now') WHERE id = ? AND status = 'pending'"
     ).bind(id).run();
+    if (!claim || !claim.meta || claim.meta.changes === 0) {
+      return { status: 'skip', error: 'not claimed' };
+    }
+    // Re-check the cap after claiming so a concurrent tick cannot overshoot.
+    if ((await countSentToday(db)) >= (dailyLimit || EMAIL_DAILY_LIMIT)) {
+      await db.prepare("UPDATE email_queue SET status = 'pending' WHERE id = ? AND status = 'sending'").bind(id).run();
+      return { status: 'skip', error: 'daily cap reached' };
+    }
 
     const baseUrl = env.PUBLIC_BASE_URL || 'https://studio.gabochie.com';
     const pixel = `<img src="${baseUrl}/api/track/open?mid=${id}&cid=${encodeURIComponent(email.to_email)}" width="1" height="1" alt="" style="display:none">`;
@@ -72,7 +110,7 @@ async function sendQueuedEmail(env, db, email) {
 
     const result = await sendBrevoEmail(
       env, email.to_email, email.to_name, email.subject, trackedHtml,
-      { tags: [email.email_type || 'manual'] }
+      { tags: [email.email_type || 'manual', 'msg_' + id] }
     );
     const providerId = (result && result.messageId) || null;
 

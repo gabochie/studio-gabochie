@@ -77,12 +77,12 @@ describe('turnstile helpers', function () {
       headers: { 'CF-Connecting-IP': '203.0.113.9' },
     });
 
-    it('allows everything when TURNSTILE_SECRET is not configured', async function () {
+    it('rejects everything when TURNSTILE_SECRET is not configured', async function () {
       var spy = stubSiteverify({ success: true });
-      expect(await verifyTurnstile({ }, request, '')).toBe(true);
-      expect(await verifyTurnstile({ TURNSTILE_SECRET: '' }, request, '')).toBe(true);
-      expect(await verifyTurnstile(undefined, request, '')).toBe(true);
-      // Never reaches Cloudflare, so an unconfigured deploy cannot lock users out.
+      expect(await verifyTurnstile({ }, request, 'tok')).toBe(false);
+      expect(await verifyTurnstile({ TURNSTILE_SECRET: '' }, request, 'tok')).toBe(false);
+      expect(await verifyTurnstile(undefined, request, 'tok')).toBe(false);
+      // Never reaches Cloudflare: an unconfigured verifier cannot be a pass.
       expect(spy).not.toHaveBeenCalled();
     });
 
@@ -115,9 +115,9 @@ describe('turnstile helpers', function () {
       expect(await verifyTurnstile({ TURNSTILE_SECRET: 'sec' }, request, 'tok')).toBe(false);
     });
 
-    it('fails open when siteverify is unreachable, matching checkRateLimit', async function () {
+    it('fails closed when siteverify is unreachable', async function () {
       stubSiteverify(null, { networkError: true });
-      expect(await verifyTurnstile({ TURNSTILE_SECRET: 'sec' }, request, 'tok')).toBe(true);
+      expect(await verifyTurnstile({ TURNSTILE_SECRET: 'sec' }, request, 'tok')).toBe(false);
     });
 
     it('posts the secret, token and client ip to siteverify', async function () {
@@ -191,7 +191,7 @@ describe('Turnstile enforcement on the public form endpoints', function () {
     expect(res.status).toBe(200);
   });
 
-  it('still accepts /api/contact with no token when no secret is configured', async function () {
+  it('rejects /api/contact when no Turnstile secret is configured', async function () {
     var ctx = buildContext('http://localhost/api/contact', {
       env: {
         DB: mockDb({ subscribers: [], contacts: [] }),
@@ -203,7 +203,8 @@ describe('Turnstile enforcement on the public form endpoints', function () {
     });
     ctx.request = contactRequest({ name: 'Test User', email: 'test@example.com', message: 'Hello' });
     var res = await contactOnRequest(ctx);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(403);
+    expect((await res.json()).message).toContain('CAPTCHA');
   });
 
   it('rejects a /api/subscribe submission with no token when the secret is set', async function () {
@@ -242,7 +243,7 @@ describe('Turnstile enforcement on the public form endpoints', function () {
     expect(res.status).toBe(403);
   });
 
-  it('allows a siteverify outage rather than blocking legitimate senders', async function () {
+  it('rejects a /api/subscribe submission when siteverify is unreachable', async function () {
     stubSiteverify(null, { networkError: true });
     var ctx = buildContext('http://localhost/api/subscribe', {
       env: { DB: mockDb({ subscribers: [] }), TURNSTILE_SECRET: 'sec' },
@@ -252,6 +253,6 @@ describe('Turnstile enforcement on the public form endpoints', function () {
       cf_turnstile_token: 'tok',
     });
     var res = await subscribeOnRequest(ctx);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(403);
   });
 });

@@ -1,0 +1,154 @@
+import { describe, it, expect } from 'vitest';
+import { onRequest, getStatements } from '../../functions/api/db/setup.js';
+import { buildContext } from '../helpers/mock-cf.js';
+
+function columnMap() {
+  var map = {};
+  for (var s of getStatements()) {
+    if (typeof s === 'object' && s.kind === 'column') {
+      (map[s.table] = map[s.table] || []).push(s.column);
+    }
+  }
+  return map;
+}
+
+function fakeDb(opts) {
+  opts = opts || {};
+  var present = columnMap();
+  if (opts.missing) {
+    present[opts.missing.table] = present[opts.missing.table].filter(function (c) { return c !== opts.missing.column; });
+  }
+  var applied = {};
+  var alters = [];
+  var db = {
+    _alters: alters,
+    _applied: applied,
+    prepare(sql) {
+      var chain = {
+        bind() { return chain; },
+        async all() {
+          var pm = sql.match(/^PRAGMA table_info\((\w+)\)/i);
+          if (pm) {
+            return { results: (present[pm[1]] || []).map(function (name) { return { name: name }; }) };
+          }
+          return { results: [] };
+        },
+        async first() {
+          if (/^SELECT name FROM setup_migrations/i.test(sql)) {
+            var nm = sql.match(/VALUES \('([^']+)'\)/) || chain._bound || [];
+            var name = typeof nm === 'string' ? nm : nm[0];
+            return applied[name] ? { name: name } : null;
+          }
+          return null;
+        },
+        async run() {
+          var am = sql.match(/^ALTER TABLE (\w+) ADD COLUMN (\w+)/i);
+          if (am) {
+            alters.push(am[1] + '.' + am[2]);
+            (present[am[1]] = present[am[1]] || []).push(am[2]);
+          }
+          var im = sql.match(/INSERT (?:OR IGNORE )?INTO setup_migrations \(name\) VALUES \('([^']+)'\)/i);
+          if (im) applied[im[1]] = true;
+          if (opts.failOn && opts.failOn.test(sql)) throw new Error('injected failure');
+          return { success: true, meta: { changes: 1 } };
+        }
+      };
+      return chain;
+    }
+  };
+  return db;
+}
+
+function ctx(db, opts) {
+  opts = opts || {};
+  var url = 'http://localhost/api/db/setup';
+  var method = opts.method || 'POST';
+  var headers = Object.assign({}, opts.headers || {});
+  if (!opts.noAuth && !headers['X-CI-Secret'] && !headers['X-Admin-Key'] && !headers['ADMIN_KEY']) {
+    headers['X-CI-Secret'] = 'ci-secret';
+  }
+  return buildContext(url, {
+    method: method,
+    env: Object.assign({
+      DB: db, CI_WEBHOOK_SECRET: 'ci-secret', ADMIN_API_KEY: 'admin-key'
+    }, opts.env || {}),
+    request: new Request(url, { method: method, headers: headers })
+  });
+}
+
+describe('db setup statements', function () {
+  it('returns fully interpolated SQL with no raw template placeholders', function () {
+    var statements = getStatements(new Date('2026-01-01T00:00:00Z'));
+    var raw = statements.filter(function (s) { return typeof s === 'string' && s.indexOf('${') >= 0; });
+    expect(raw).toHaveLength(0);
+    var seeds = statements.filter(function (s) { return typeof s === 'string' && s.indexOf('INSERT OR IGNORE INTO social_queue') === 0; });
+    expect(seeds).toHaveLength(30);
+    expect(seeds[0]).toContain("'2026-01-01 09:00:00'");
+  });
+
+  it('describes guarded columns and one-time destructive migrations', function () {
+    var statements = getStatements();
+    var columns = statements.filter(function (s) { return typeof s === 'object' && s.kind === 'column'; });
+    var once = statements.filter(function (s) { return typeof s === 'object' && s.kind === 'once'; });
+    expect(columns.length).toBeGreaterThan(70);
+    expect(once.length).toBeGreaterThan(0);
+    expect(once.every(function (s) { return /^dedupe-|^task-status-/.test(s.name); })).toBe(true);
+  });
+});
+
+describe('db setup endpoint', function () {
+  it('only adds a missing column once across repeated runs', async function () {
+    var db = fakeDb({ missing: { table: 'store_orders', column: 'product_slug' } });
+    var first = await onRequest(ctx(db));
+    expect(first.status).toBe(200);
+    expect(db._alters).toContain('store_orders.product_slug');
+    var count = db._alters.length;
+    var second = await onRequest(ctx(db));
+    expect(second.status).toBe(200);
+    expect(db._alters).toHaveLength(count);
+  });
+
+  it('reports HTTP 500 when setup statements fail', async function () {
+    var db = fakeDb({ failOn: /INSERT OR IGNORE INTO settings/ });
+    var res = await onRequest(ctx(db));
+    expect(res.status).toBe(500);
+    var data = await res.json();
+    expect(data.status).toBe('error');
+    expect(data.failed_count).toBeGreaterThan(0);
+  });
+});
+
+describe('db setup auth and method gate (OPS-02)', function () {
+  it('rejects requests with no credentials', async function () {
+    var res = await onRequest(ctx(fakeDb(), { noAuth: true }));
+    expect(res.status).toBe(403);
+  });
+
+  it('accepts a valid X-CI-Secret', async function () {
+    var res = await onRequest(ctx(fakeDb(), { headers: { 'X-CI-Secret': 'ci-secret' } }));
+    expect(res.status).toBe(200);
+  });
+
+  it('accepts a valid X-Admin-Key', async function () {
+    var res = await onRequest(ctx(fakeDb(), { headers: { 'X-Admin-Key': 'admin-key' } }));
+    expect(res.status).toBe(200);
+  });
+
+  it('rejects a wrong X-CI-Secret with no other credentials', async function () {
+    var res = await onRequest(ctx(fakeDb(), { headers: { 'X-CI-Secret': 'wrong-secret' } }));
+    expect(res.status).toBe(403);
+  });
+
+  it('does not accept the legacy ADMIN_KEY header', async function () {
+    var res = await onRequest(ctx(fakeDb(), { headers: { 'ADMIN_KEY': 'admin-key' } }));
+    expect(res.status).toBe(403);
+  });
+
+  it('returns 405 for GET and handles OPTIONS preflight', async function () {
+    var db = fakeDb();
+    expect((await onRequest(ctx(db, { method: 'GET' }))).status).toBe(405);
+    var preflight = await onRequest(ctx(db, { method: 'OPTIONS', noAuth: true }));
+    expect(preflight.status).toBe(204);
+    expect(preflight.headers.get('Access-Control-Allow-Methods')).toContain('POST');
+  });
+});

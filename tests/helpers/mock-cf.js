@@ -177,10 +177,13 @@ export function mockDb(tables) {
               }
             }
             var conditions = wherePart ? db._parseWhere([]) : [];
-            // Resolve SET binds first (in order), then WHERE binds from the tail.
+            // Resolve SET binds first (in order), then WHERE binds. Counting
+            // SET placeholders is correct even when a WHERE clause contains
+            // extra literal conditions (e.g. "id = ? AND status = 'pending'").
             var bound = chain._bound;
-            var setCount = assignments.filter(function(a) { return a.val === '?bound?'; }).length;
-            var whereStart = bound.length - conditions.length;
+            // Count every placeholder in SET, including ones nested in
+            // expressions such as datetime('now', '+' || ? || ' minutes').
+            var whereStart = (setPart.match(/\?/g) || []).length;
             var setIdx = 0;
             var changed = 0;
             (db._tables[utbl] || []).forEach(function (r) {

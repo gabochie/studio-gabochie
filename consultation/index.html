@@ -15,6 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://studio.gabochie.com/consultation/">
 <meta property="og:image" content="https://studio.gabochie.com/assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://studio.gabochie.com/consultation/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,17 +70,17 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .rung-btn.selar-btn:hover{background:#C9A84C;color:#0A1628}
 /* tracks */
 .track-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.track-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:24px;transition:all .2s}
+.track-card{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:24px;transition:all .2s;text-decoration:none;color:inherit;cursor:pointer}
 .track-card:hover{border-color:#C9A84C}
 .track-card .pc-icon{font-size:36px;margin-bottom:8px}
-.track-card h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
+.track-card h3{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:6px}
 .track-card p{font-size:12px;color:#5A7A9F;line-height:1.5;margin-bottom:10px}
 .track-card .pc-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:#C9A84C;letter-spacing:.05em}
 /* process */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;counter-reset:step}
 .step{background:#0F1E38;border:1px solid #1E3250;border-radius:10px;padding:26px 24px;position:relative}
 .step::before{counter-increment:step;content:counter(step);position:absolute;top:-14px;left:22px;width:28px;height:28px;border-radius:50%;background:#C9A84C;color:#0A1628;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
-.step h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin:8px 0 6px}
+.step h3{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;margin:8px 0 6px}
 .step p{font-size:12.5px;color:#8A9BB5;line-height:1.6}
 /* form */
 .form-section{max-width:600px;margin:0 auto 80px;padding:0 24px}
@@ -89,7 +90,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:12px;font-weight:600;color:#8A9BB5;margin-bottom:4px}
 .form-group input,.form-group select,.form-group textarea{width:100%;background:#0A1628;border:1px solid #1E3250;border-radius:8px;padding:12px 16px;color:#E8EEF7;font-size:14px;font-family:inherit;transition:border-color .2s;box-sizing:border-box}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#C9A84C}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#C9A84C}
 .form-group textarea{resize:vertical;min-height:100px}
 .form-group select{color:#8A9BB5}
 .form-group select option{background:#0A1628}
@@ -104,7 +105,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 /* faq */
 .faq-section{max-width:720px;margin:0 auto 80px;padding:0 24px}
 .faq-item{border-bottom:1px solid #1E3250;padding:14px 0}
-.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.faq-q{font-size:14px;font-weight:500;color:#E8EEF7;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;width:100%;padding:0;background:none;border:none;text-align:left;font-family:inherit}
 .faq-q::after{content:'+';font-size:16px;color:#C9A84C}
 .faq-q.open::after{content:'\2212'}
 .faq-a{padding-top:8px;font-size:13px;color:#8A9BB5;line-height:1.6;display:none}
@@ -132,7 +133,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <!-- ── SESSION LEVELS ── -->
 <div class="section" id="levels">
   <div class="section-label">Three Ways to Think Together</div>
-  <div class="section-title">Sessions, <span style="color:#C9A84C">By Rungs</span></div>
+  <h2 class="section-title">Sessions, <span style="color:#C9A84C">By Rungs</span></h2>
   <div class="section-sub">Start with one hour. Climb when the thinking bears fruit. Prices are published below — every level includes the ones before it, and every session ends with written action notes.</div>
   <div class="ladder">
     <div class="rung">
@@ -196,30 +197,30 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <!-- ── TRACKS ── -->
 <div class="section">
   <div class="section-label">What We Can Think About</div>
-  <div class="section-title">Four <span style="color:#C9A84C">Tracks</span></div>
+  <h2 class="section-title">Four <span style="color:#C9A84C">Tracks</span></h2>
   <div class="section-sub">Pick the closest track in the form — the first session usually reshapes it anyway.</div>
   <div class="track-cards">
     <div class="track-card">
       <div class="pc-icon">&#129518;</div>
-      <h4>Systems Thinking &amp; Strategy</h4>
+      <h3>Systems Thinking &amp; Strategy</h3>
       <p>Map the whole picture, find leverage points, design interventions — for organizations, teams and personal direction. The flagship course, applied to your actual situation.</p>
       <span class="pc-badge">Strategy</span>
     </div>
     <div class="track-card">
       <div class="pc-icon">&#9962;</div>
-      <h4>Church &amp; Ministry Leadership</h4>
+      <h3>Church &amp; Ministry Leadership</h3>
       <p>Ministry structure that doesn't burn you out, discipleship pathways that stick, and adopting Love Of The Lord in your congregation's rhythm.</p>
       <span class="pc-badge">Ministry</span>
     </div>
     <div class="track-card">
       <div class="pc-icon">&#127908;</div>
-      <h4>Guitar &amp; Music Program Setup</h4>
+      <h3>Guitar &amp; Music Program Setup</h3>
       <p>Build a guitar program for your school, church or studio — curriculum from the 16-module method, instruments, teacher training, and a launch plan.</p>
       <span class="pc-badge">Music Ed</span>
     </div>
     <div class="track-card">
       <div class="pc-icon">&#127912;</div>
-      <h4>Creative Projects &amp; Brand</h4>
+      <h3>Creative Projects &amp; Brand</h3>
       <p>Brand direction, book development, and shipping creative work — the practice behind Studio Gabochie itself, applied to yours.</p>
       <span class="pc-badge">Creative</span>
     </div>
@@ -229,23 +230,23 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <!-- ── PROCESS ── -->
 <div class="section">
   <div class="section-label">How Booking Works</div>
-  <div class="section-title">From Request to <span style="color:#C9A84C">Session</span></div>
+  <h2 class="section-title">From Request to <span style="color:#C9A84C">Session</span></h2>
   <div class="section-sub">Request-to-book: no card needed up front — we confirm the slot first, you pay before we meet. Pay by MoMo, card, or Selar checkout.</div>
   <div class="steps">
     <div class="step">
-      <h4>Send the Form</h4>
+      <h3>Send the Form</h3>
       <p>Pick your level, track and preferred time below. It reaches Gideon directly — no assistants, no ticket queues.</p>
     </div>
     <div class="step">
-      <h4>Confirm &amp; Pay</h4>
+      <h3>Confirm &amp; Pay</h3>
       <p>Within 48 hours you get a slot confirmation and an invoice. Pay by mobile money, card or Selar to lock the time.</p>
     </div>
     <div class="step">
-      <h4>Meet</h4>
+      <h3>Meet</h3>
       <p>Video call (or Accra in-person). You bring the situation; we think it through on the map together.</p>
     </div>
     <div class="step">
-      <h4>Act on the Notes</h4>
+      <h3>Act on the Notes</h3>
       <p>Written session notes and next steps land in your inbox within 24 hours. Sprint and retainer clients keep climbing.</p>
     </div>
   </div>
@@ -254,27 +255,27 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <!-- ── OFFERINGS & DOCUMENTS ── -->
 <div class="section">
   <div class="section-label">Offerings &amp; Documents</div>
-  <div class="section-title">Everything on <span style="color:#C9A84C">the Table</span></div>
+  <h2 class="section-title">Everything on <span style="color:#C9A84C">the Table</span></h2>
   <div class="section-sub">Read the terms and take the one-pager to whoever needs convincing — before you spend a cedi.</div>
   <div class="track-cards">
-    <div class="track-card" style="cursor:pointer" onclick="location.href='/consultation/overview'">
+    <a class="track-card" href="/consultation/overview">
       <div class="pc-icon">&#128196;</div>
-      <h4>Consultation Overview</h4>
+      <h3>Consultation Overview</h3>
       <p>The one-page brief: levels, tracks, anchors and how booking works. Print-friendly — for boards, bosses and spouses.</p>
       <span class="pc-badge">Print / PDF</span>
-    </div>
-    <div class="track-card" style="cursor:pointer" onclick="location.href='/legal/consultation'">
+    </a>
+    <a class="track-card" href="/legal/consultation">
       <div class="pc-icon">&#9878;</div>
-      <h4>Booking &amp; Session Terms</h4>
+      <h3>Booking &amp; Session Terms</h3>
       <p>Payments, rescheduling, cancellations, confidentiality and what a session does — and doesn't — include. In plain language.</p>
       <span class="pc-badge">Legal</span>
-    </div>
-    <div class="track-card" style="cursor:pointer" onclick="document.getElementById('booking-form').scrollIntoView({behavior:'smooth'})">
+    </a>
+    <a class="track-card" href="#booking-form">
       <div class="pc-icon">&#128172;</div>
-      <h4>Request a Slot</h4>
+      <h3>Request a Slot</h3>
       <p>The form below reaches Gideon directly. 48-hour confirmation, mobile money or card, reschedule freely up to 24 hours before.</p>
       <span class="pc-badge">48h Reply</span>
-    </div>
+    </a>
   </div>
 </div>
 
@@ -336,7 +337,7 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
       <div class="cf-turnstile" data-sitekey="0x4AAAAAAFaBpQ3dnRXS9xw_" data-action="turnstile-spin-v2"></div>
       <button type="submit" class="submit-btn" id="submitBtn">Request My Slot</button>
-      <div class="msg" id="formMsg"></div>
+      <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
     </form>
   </div>
 </div>
@@ -345,28 +346,28 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
 <div class="faq-section">
   <div class="section-label" style="color:#C9A84C;margin-bottom:16px">Frequently Asked Questions</div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What does a session cost?</div>
-    <div class="faq-a">Published, not quoted: <b>Anchor Session GH₵1,500</b> (<span data-price-key="anchor" data-price-field="usd">≈ $127</span>), <b>Coaching Sprint GH₵5,000</b> (<span data-price-key="sprint" data-price-field="usd">≈ $424</span>) for four sessions, and <b>Advisory Retainer GH₵10,000</b> (<span data-price-key="retainer" data-price-field="usd">≈ $847</span>) per month. USD figures are approximate and follow the site's live exchange rate; the GH₵ price is what you pay. Sprint is billed as a block; retainers monthly in advance. Payment is due before we meet, and the number is always in your confirmation.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-1">What does a session cost?</button>
+    <div class="faq-a" id="faq-a-1">Published, not quoted: <b>Anchor Session GH₵1,500</b> (<span data-price-key="anchor" data-price-field="usd">≈ $127</span>), <b>Coaching Sprint GH₵5,000</b> (<span data-price-key="sprint" data-price-field="usd">≈ $424</span>) for four sessions, and <b>Advisory Retainer GH₵10,000</b> (<span data-price-key="retainer" data-price-field="usd">≈ $847</span>) per month. USD figures are approximate and follow the site's live exchange rate; the GH₵ price is what you pay. Sprint is billed as a block; retainers monthly in advance. Payment is due before we meet, and the number is always in your confirmation.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How is this different from the courses?</div>
-    <div class="faq-a">Courses teach the framework at your own pace; a consultation applies it to <b>your</b> situation, live. Many clients do both — take the course for depth, book a session for the stuck part.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-2">How is this different from the courses?</button>
+    <div class="faq-a" id="faq-a-2">Courses teach the framework at your own pace; a consultation applies it to <b>your</b> situation, live. Many clients do both — take the course for depth, book a session for the stuck part.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">How is this different from your Services?</div>
-    <div class="faq-a">Consultation is advice — thinking, mapping, deciding. Services are done-for-you work — builds, designs, curricula. Sprint and retainer clients get credits toward services when the thinking turns into work.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-3">How is this different from your Services?</button>
+    <div class="faq-a" id="faq-a-3">Consultation is advice — thinking, mapping, deciding. Services are done-for-you work — builds, designs, curricula. Sprint and retainer clients get credits toward services when the thinking turns into work.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">What if I need to reschedule?</div>
-    <div class="faq-a">Reschedule freely up to 24 hours before — the invoice carries to the new slot. Inside 24 hours or no-shows, the session is forfeited (see the Booking &amp; Session Terms).</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-4">What if I need to reschedule?</button>
+    <div class="faq-a" id="faq-a-4">Reschedule freely up to 24 hours before — the invoice carries to the new slot. Inside 24 hours or no-shows, the session is forfeited (see the Booking &amp; Session Terms).</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Do we meet in person or online?</div>
-    <div class="faq-a">Online by default — a video link comes with your confirmation. In-person sessions in Accra can be arranged at booking.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-5">Do we meet in person or online?</button>
+    <div class="faq-a" id="faq-a-5">Online by default — a video link comes with your confirmation. In-person sessions in Accra can be arranged at booking.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Is what we discuss confidential?</div>
-    <div class="faq-a">Yes. Session content stays between us; written notes go only to you. Nothing you share appears in courses, books or marketing without your written permission.</div>
+    <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-6">Is what we discuss confidential?</button>
+    <div class="faq-a" id="faq-a-6">Yes. Session content stays between us; written notes go only to you. Nothing you share appears in courses, books or marketing without your written permission.</div>
   </div>
 </div>
 
@@ -383,7 +384,13 @@ body{font-family:'Libre Baskerville',Georgia,serif;background:#0A1628;color:#CBD
   var message = document.getElementById('c-message');
   if (level) level.value = 'anchor';
   if (track && !track.value) track.value = 'creative';
-  if (ref) ref.value = 'money-ghana-assessment' + (p.get('utm_campaign') ? ' / ' + p.get('utm_campaign') : '');
+  /* Keep the existing referral string and append every available UTM field. */
+  var refParts = ['money-ghana-assessment'];
+  ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (key) {
+    var val = p.get(key);
+    if (val) refParts.push(key + '=' + val);
+  });
+  if (ref) ref.value = refParts.join(' / ');
   var lines = [];
   if (p.get('path')) lines.push('Assessment top path: ' + p.get('path'));
   if (p.get('profile')) lines.push('Assessment profile: ' + p.get('profile'));

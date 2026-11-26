@@ -186,6 +186,36 @@ describe('console claim', function () {
     });
     expect(res.status).toBe(400);
   });
+
+  it('issues unpredictable six-digit codes', async function () {
+    var env = { DB: db({ users: [superAdminRow()] }) };
+    await claimOnRequest({
+      request: makeReq('https://x.com/api/admin/console/claim', { body: { email: 'gid@gabochie.com' } }),
+      env: env
+    });
+    await claimOnRequest({
+      request: makeReq('https://x.com/api/admin/console/claim', { body: { email: 'gid@gabochie.com' } }),
+      env: env
+    });
+    var codes = env.DB._tables.otp_codes.map(function (row) { return row.code; });
+    expect(codes).toHaveLength(2);
+    codes.forEach(function (code) { expect(code).toMatch(/^\d{6}$/); });
+    expect(codes[0]).not.toBe(codes[1]);
+  });
+
+  it('locks a code after five wrong attempts', async function () {
+    var env = { DB: db({ users: [superAdminRow()], otp_codes: [{ id: 1, identifier: 'gid@gabochie.com', code: '123456', expires_at: '2999-01-01 00:00:00', used: 0, attempts: 0 }] }) };
+    var statuses = [];
+    for (var i = 0; i < 5; i++) {
+      var res = await claimOnRequest({
+        request: makeReq('https://x.com/api/admin/console/claim', { method: 'PUT', body: { email: 'gid@gabochie.com', code: '000000', password: 'BrandNewPass1' } }),
+        env: env
+      });
+      statuses.push(res.status);
+    }
+    expect(statuses).toEqual([401, 401, 401, 401, 429]);
+    expect(env.DB._tables.otp_codes[0].used).toBe(1);
+  });
 });
 
 /* ─── requireAdminAuth accepts role sessions ─── */

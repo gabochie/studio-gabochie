@@ -1,31 +1,64 @@
 import { CONTENT_CALENDAR_PLAN } from '../../../scripts/content-calendar-plan.js';
+import { requireAdminAuth } from '../admin/_admin-auth.js';
+import { safeEqual } from '../gateways/_shared.js';
 
 function sqlText(value) {
   return "'" + String(value == null ? '' : value).replace(/'/g, "''") + "'";
 }
 
-function planSeedDate(day) {
-  var d = new Date();
+// Normalise every seeded timestamp to SQLite's "YYYY-MM-DD HH:MM:SS" format.
+// One anchor is used for the whole 30-day seed so a single DB Setup run never
+// straddles midnight; plan_key is UNIQUE so re-runs are harmless.
+function planSeedDate(day, anchor) {
+  var d = anchor ? new Date(anchor.getTime()) : new Date();
+  d.setUTCHours(0, 0, 0, 0);
   d.setUTCDate(d.getUTCDate() + (day - 1));
   d.setUTCHours(9, 0, 0, 0);
   return d.toISOString().slice(0, 19).replace('T', ' ');
 }
 
-// Idempotent seed for the 30-day assessment calendar. plan_key is UNIQUE so
-// re-running DB Setup never duplicates the plan or overwrites admin edits.
-var CALENDAR_SEED = CONTENT_CALENDAR_PLAN.map(function (item) {
-  var key = 'day-' + item.day + '-' + item.utm_campaign + '-' + item.platform;
-  return `INSERT OR IGNORE INTO social_queue (plan_key, day, week, arc, pillar, platform, format, hook, paths, cta, utm_campaign, hard_cta, cta_url, alt_url, scheduled_at, status) VALUES (${sqlText(key)}, ${item.day}, ${item.week}, ${sqlText(item.arc)}, ${sqlText(item.pillar)}, ${sqlText(item.platform)}, ${sqlText(item.format)}, ${sqlText(item.hook)}, ${sqlText(item.paths)}, ${sqlText(item.cta)}, ${sqlText(item.utm_campaign)}, ${item.hard_cta ? 1 : 0}, ${sqlText(item.cta_url)}, ${sqlText(item.alt_url || '')}, ${sqlText(planSeedDate(item.day))}, 'planned')`;
-});
+// Column migrations are descriptors rather than raw SQL: SQLite has no
+// ALTER TABLE ... ADD COLUMN IF NOT EXISTS, so both the HTTP endpoint and
+// scripts/db-setup.js check PRAGMA table_info before applying them.
+function addColumn(table, column, definition) {
+  return { kind: 'column', table: table, column: column, definition: definition,
+    sql: 'ALTER TABLE ' + table + ' ADD COLUMN ' + column + ' ' + definition };
+}
 
-export async function onRequest(context) {
-  const db = context.env.DB;
-  if (!db) {
-    return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 501, headers: { 'Content-Type': 'application/json' } });
-  }
-  try {
-    const statements = [
-      `CREATE TABLE IF NOT EXISTS subscribers (
+// Destructive data cleanups are historical migrations: record them in
+// setup_migrations so they run at most once per database.
+function once(name, sql) {
+  return { kind: 'once', name: name, sql: sql };
+}
+
+async function addColumnIfMissing(db, table, column, definition) {
+  var info = await db.prepare('PRAGMA table_info(' + table + ')').all();
+  var cols = (info && info.results) || [];
+  if (cols.some(function (c) { return c && c.name === column; })) return false;
+  await db.prepare('ALTER TABLE ' + table + ' ADD COLUMN ' + column + ' ' + definition).run();
+  return true;
+}
+
+async function runOnceIfNeeded(db, migration, sql) {
+  var done = await db.prepare('SELECT name FROM setup_migrations WHERE name = ?').bind(migration).first();
+  if (done) return false;
+  await db.prepare(sql).run();
+  await db.prepare('INSERT OR IGNORE INTO setup_migrations (name) VALUES (?)').bind(migration).run();
+  return true;
+}
+
+// Single source of truth for both the HTTP endpoint and scripts/db-setup.js.
+// Returns plain SQL strings plus guarded column/one-time migration descriptors;
+// no raw template placeholders survive into the returned statements.
+export function getStatements(seedAnchor) {
+  var anchor = seedAnchor ? new Date(seedAnchor.getTime()) : new Date();
+  var calendarSeed = CONTENT_CALENDAR_PLAN.map(function (item) {
+    var key = 'day-' + item.day + '-' + item.utm_campaign + '-' + item.platform;
+    return `INSERT OR IGNORE INTO social_queue (plan_key, day, week, arc, pillar, platform, format, hook, paths, cta, utm_campaign, hard_cta, cta_url, alt_url, scheduled_at, status) VALUES (${sqlText(key)}, ${item.day}, ${item.week}, ${sqlText(item.arc)}, ${sqlText(item.pillar)}, ${sqlText(item.platform)}, ${sqlText(item.format)}, ${sqlText(item.hook)}, ${sqlText(item.paths)}, ${sqlText(item.cta)}, ${sqlText(item.utm_campaign)}, ${item.hard_cta ? 1 : 0}, ${sqlText(item.cta_url)}, ${sqlText(item.alt_url || '')}, ${sqlText(planSeedDate(item.day, anchor))}, 'planned')`;
+  });
+  return [
+    `CREATE TABLE IF NOT EXISTS setup_migrations (name TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT (datetime('now')))`,
+    `CREATE TABLE IF NOT EXISTS subscribers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL DEFAULT '',
         email TEXT NOT NULL UNIQUE,
@@ -181,7 +214,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_tx_ref ON store_orders(tx_ref)`,
       `CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(status)`,
-      `ALTER TABLE store_orders ADD COLUMN product_slug TEXT DEFAULT ''`,
+      addColumn('store_orders', 'product_slug', 'TEXT DEFAULT \'\''),
       `CREATE TABLE IF NOT EXISTS inventory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_slug TEXT NOT NULL,
@@ -211,10 +244,10 @@ export async function onRequest(context) {
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('merch_delivery_fee_upcountry', '50')`,
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('merch_delivery_free_threshold', '0')`,
       // ── Cleanup duplicate rows from repeated seed runs ──
-      `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`,
-      `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`,
-      `DELETE FROM gallery WHERE id NOT IN (SELECT MIN(id) FROM gallery GROUP BY title, image_url)`,
-      `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`,
+      once('dedupe-testimonials', `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`),
+      once('dedupe-stats', `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`),
+      once('dedupe-gallery', `DELETE FROM gallery WHERE id NOT IN (SELECT MIN(id) FROM gallery GROUP BY title, image_url)`),
+      once('dedupe-tasks', `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`),
       // ── Unique indexes so INSERT OR IGNORE prevents future duplicates ──
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_testimonials_unique ON testimonials(author, content)`,
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_stats_unique ON stats(label, value)`,
@@ -235,29 +268,29 @@ export async function onRequest(context) {
         ('Behind the Scenes', 'Behind the scenes content creation', 'assets/images/gallery/behind-scenes.jpg', 'content', 5),
         ('Ministry Moment', 'A moment of ministry and connection', 'assets/images/gallery/ministry-moment.jpg', 'ministry', 6)`,
       // Migrations
-      `ALTER TABLE page_views ADD COLUMN country TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN city TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN ip TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN device_type TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN user_agent TEXT DEFAULT ''`,
-      `ALTER TABLE page_views ADD COLUMN source TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN ref_code TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN edition TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN confirmed INTEGER DEFAULT 0`,
-      `ALTER TABLE subscribers ADD COLUMN brevo_id TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN phone TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN whatsapp_opt_in INTEGER DEFAULT 0`,
-      `ALTER TABLE subscribers ADD COLUMN onboarding_tag TEXT DEFAULT ''`,
-      `ALTER TABLE subscribers ADD COLUMN confirm_token TEXT DEFAULT ''`,
-      `ALTER TABLE donations ADD COLUMN donor_phone TEXT DEFAULT ''`,
-      `ALTER TABLE donations ADD COLUMN provider TEXT DEFAULT ''`,
-      `ALTER TABLE donations ADD COLUMN metadata TEXT DEFAULT '{}'`,
-      `ALTER TABLE bookings ADD COLUMN amount REAL DEFAULT 0`,
-      `ALTER TABLE students ADD COLUMN salt TEXT DEFAULT ''`,
-      `ALTER TABLE students ADD COLUMN reset_token TEXT DEFAULT ''`,
-      `ALTER TABLE students ADD COLUMN reset_token_expires_at TEXT DEFAULT ''`,
-      `ALTER TABLE users ADD COLUMN reset_token TEXT DEFAULT ''`,
-      `ALTER TABLE users ADD COLUMN reset_token_expires_at TEXT DEFAULT ''`,
+      addColumn('page_views', 'country', 'TEXT DEFAULT \'\''),
+      addColumn('page_views', 'city', 'TEXT DEFAULT \'\''),
+      addColumn('page_views', 'ip', 'TEXT DEFAULT \'\''),
+      addColumn('page_views', 'device_type', 'TEXT DEFAULT \'\''),
+      addColumn('page_views', 'user_agent', 'TEXT DEFAULT \'\''),
+      addColumn('page_views', 'source', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'ref_code', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'edition', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'confirmed', 'INTEGER DEFAULT 0'),
+      addColumn('subscribers', 'brevo_id', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'phone', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'whatsapp_opt_in', 'INTEGER DEFAULT 0'),
+      addColumn('subscribers', 'onboarding_tag', 'TEXT DEFAULT \'\''),
+      addColumn('subscribers', 'confirm_token', 'TEXT DEFAULT \'\''),
+      addColumn('donations', 'donor_phone', 'TEXT DEFAULT \'\''),
+      addColumn('donations', 'provider', 'TEXT DEFAULT \'\''),
+      addColumn('donations', 'metadata', 'TEXT DEFAULT \'{}\''),
+      addColumn('bookings', 'amount', 'REAL DEFAULT 0'),
+      addColumn('students', 'salt', 'TEXT DEFAULT \'\''),
+      addColumn('students', 'reset_token', 'TEXT DEFAULT \'\''),
+      addColumn('students', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
+      addColumn('users', 'reset_token', 'TEXT DEFAULT \'\''),
+      addColumn('users', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
       `CREATE TABLE IF NOT EXISTS referrals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         referrer_code TEXT NOT NULL,
@@ -304,7 +337,7 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status)`,
       `CREATE INDEX IF NOT EXISTS idx_programs_slug ON programs(slug)`,
       // Migrations for programs
-      `ALTER TABLE programs ADD COLUMN full_content TEXT DEFAULT ''`,
+      addColumn('programs', 'full_content', 'TEXT DEFAULT \'\''),
       `CREATE TABLE IF NOT EXISTS phase_verifications (
         phase INTEGER PRIMARY KEY,
         verified_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -399,8 +432,12 @@ export async function onRequest(context) {
         status TEXT NOT NULL DEFAULT 'pending',
         sent_at TEXT DEFAULT NULL,
         scheduled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        attempts INTEGER DEFAULT 0,
+        last_error TEXT DEFAULT NULL,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      addColumn('whatsapp_queue', 'attempts', 'INTEGER DEFAULT 0'),
+      addColumn('whatsapp_queue', 'last_error', 'TEXT DEFAULT NULL'),
       `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_scheduled ON whatsapp_queue(scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_whatsapp_queue_status ON whatsapp_queue(status)`,
       // ExpressPay checkout tokens (query API needs the token; order-id alone is not enough)
@@ -479,11 +516,11 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_certificates_code ON certificates(certificate_code)`,
       `CREATE INDEX IF NOT EXISTS idx_certificates_email ON certificates(student_email)`,
       // Gamification: XP columns on enrollments
-      `ALTER TABLE enrollments ADD COLUMN xp INTEGER DEFAULT 0`,
-      `ALTER TABLE enrollments ADD COLUMN xp_level INTEGER DEFAULT 1`,
-      `ALTER TABLE enrollments ADD COLUMN streak INTEGER DEFAULT 0`,
-      `ALTER TABLE enrollments ADD COLUMN last_module_at TEXT DEFAULT ''`,
-      `ALTER TABLE enrollments ADD COLUMN token_expires_at TEXT DEFAULT ''`,
+      addColumn('enrollments', 'xp', 'INTEGER DEFAULT 0'),
+      addColumn('enrollments', 'xp_level', 'INTEGER DEFAULT 1'),
+      addColumn('enrollments', 'streak', 'INTEGER DEFAULT 0'),
+      addColumn('enrollments', 'last_module_at', 'TEXT DEFAULT \'\''),
+      addColumn('enrollments', 'token_expires_at', 'TEXT DEFAULT \'\''),
       // Achievements table (definitions)
       `CREATE TABLE IF NOT EXISTS achievements (
         key TEXT PRIMARY KEY,
@@ -563,10 +600,10 @@ export async function onRequest(context) {
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       `CREATE INDEX IF NOT EXISTS idx_otp_identifier ON otp_codes(identifier)`,
-      `ALTER TABLE users ADD COLUMN password_hash TEXT DEFAULT ''`,
-      `ALTER TABLE users ADD COLUMN membership_tier TEXT NOT NULL DEFAULT 'free'`,
-      `ALTER TABLE users ADD COLUMN membership_expires_at TEXT DEFAULT ''`,
-      `ALTER TABLE enrollments ADD COLUMN user_id INTEGER DEFAULT 0`,
+      addColumn('users', 'password_hash', 'TEXT DEFAULT \'\''),
+      addColumn('users', 'membership_tier', 'TEXT NOT NULL DEFAULT \'free\''),
+      addColumn('users', 'membership_expires_at', 'TEXT DEFAULT \'\''),
+      addColumn('enrollments', 'user_id', 'INTEGER DEFAULT 0'),
       `CREATE TABLE IF NOT EXISTS membership_plans (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tier TEXT NOT NULL UNIQUE,
@@ -578,11 +615,11 @@ export async function onRequest(context) {
         sort_order INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
-      `ALTER TABLE membership_plans ADD COLUMN description TEXT DEFAULT ''`,
-      `ALTER TABLE membership_plans ADD COLUMN price_ghs REAL DEFAULT 0`,
-      `ALTER TABLE membership_plans ADD COLUMN price_usd REAL DEFAULT 0`,
-      `ALTER TABLE membership_plans ADD COLUMN features TEXT DEFAULT '[]'`,
-      `ALTER TABLE membership_plans ADD COLUMN sort_order INTEGER DEFAULT 0`,
+      addColumn('membership_plans', 'description', 'TEXT DEFAULT \'\''),
+      addColumn('membership_plans', 'price_ghs', 'REAL DEFAULT 0'),
+      addColumn('membership_plans', 'price_usd', 'REAL DEFAULT 0'),
+      addColumn('membership_plans', 'features', 'TEXT DEFAULT \'[]\''),
+      addColumn('membership_plans', 'sort_order', 'INTEGER DEFAULT 0'),
       `INSERT OR IGNORE INTO membership_plans (tier, name, description, price_ghs, price_usd, features, sort_order) VALUES
         ('free', 'Free', 'Basic access to public content', 0, 0, '["Browse courses","Read articles","Subscribe to newsletter"]', 0),
         ('premium', 'Premium', 'Full course access + exclusive content', 99, 6, '["All courses","Download materials","Premium articles","Priority support"]', 1),
@@ -608,16 +645,16 @@ export async function onRequest(context) {
         ('patron', 'Patron', 'Everything plus personal mentorship and certificate fees.', 299, 2990, '["All Scholar features","1-on-1 mentorship sessions","Early access to new content","Certificate fees included","Quarterly video call with Gideon","Name listed in supporter roll"]', '', 3),
         ('founding', 'Founding Partner', 'Top-tier partnership with recognition and exclusive community.', 0, 5000, '["All Patron features","Name featured on website","Private Founding Partner community","Co-branded content opportunities","Priority feature requests","Exclusive event invitations"]', 'Flagship', 4)
       `,
-      `ALTER TABLE store_orders ADD COLUMN user_id INTEGER DEFAULT 0`,
-      `ALTER TABLE store_orders ADD COLUMN shipping_address TEXT DEFAULT ''`,
-      `ALTER TABLE store_orders ADD COLUMN shipping_city TEXT DEFAULT ''`,
-      `ALTER TABLE store_orders ADD COLUMN shipping_region TEXT DEFAULT ''`,
-      `ALTER TABLE store_orders ADD COLUMN shipping_digital_address TEXT DEFAULT ''`,
-      `ALTER TABLE store_orders ADD COLUMN delivery_fee REAL DEFAULT 0`,
-      `ALTER TABLE store_orders ADD COLUMN delivery_status TEXT DEFAULT 'pending'`,
-      `ALTER TABLE store_orders ADD COLUMN courier_name TEXT DEFAULT ''`,
-      `ALTER TABLE store_orders ADD COLUMN tracking_info TEXT DEFAULT ''`,
-      `ALTER TABLE unified_tiers ADD COLUMN flw_plan_id TEXT DEFAULT ''`,
+      addColumn('store_orders', 'user_id', 'INTEGER DEFAULT 0'),
+      addColumn('store_orders', 'shipping_address', 'TEXT DEFAULT \'\''),
+      addColumn('store_orders', 'shipping_city', 'TEXT DEFAULT \'\''),
+      addColumn('store_orders', 'shipping_region', 'TEXT DEFAULT \'\''),
+      addColumn('store_orders', 'shipping_digital_address', 'TEXT DEFAULT \'\''),
+      addColumn('store_orders', 'delivery_fee', 'REAL DEFAULT 0'),
+      addColumn('store_orders', 'delivery_status', 'TEXT DEFAULT \'pending\''),
+      addColumn('store_orders', 'courier_name', 'TEXT DEFAULT \'\''),
+      addColumn('store_orders', 'tracking_info', 'TEXT DEFAULT \'\''),
+      addColumn('unified_tiers', 'flw_plan_id', 'TEXT DEFAULT \'\''),
       `UPDATE settings SET value = '299' WHERE key = 'guitar_price'`,
       `CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -637,10 +674,14 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug)`,
       `CREATE INDEX IF NOT EXISTS idx_posts_status ON posts(status)`,
       `CREATE INDEX IF NOT EXISTS idx_posts_status_date ON posts(status, published_at)`,
-      `ALTER TABLE posts ADD COLUMN scheduled_at TEXT DEFAULT ''`,
-      `ALTER TABLE posts ADD COLUMN utm_campaign TEXT DEFAULT ''`,
+      addColumn('posts', 'scheduled_at', 'TEXT DEFAULT \'\''),
+      addColumn('posts', 'utm_campaign', 'TEXT DEFAULT \'\''),
       // Normalise legacy ISO timestamps so lexicographic date gating works.
-      `UPDATE posts SET published_at = substr(replace(replace(published_at, 'T', ' '), 'Z', ''), 1, 19) WHERE published_at LIKE '%T%'`,
+      `UPDATE posts SET published_at = substr(replace(replace(published_at, 'T', ' '), 'Z', ''), 1, 19) WHERE published_at LIKE '%T%' OR published_at LIKE '%Z%'`,
+      `UPDATE posts SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
+      `UPDATE social_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
+      `UPDATE email_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
+      `UPDATE whatsapp_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
       // ── Social content queue / 30-day assessment calendar ──
       `CREATE TABLE IF NOT EXISTS social_queue (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -667,7 +708,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_social_queue_status_date ON social_queue(status, scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_social_queue_campaign ON social_queue(utm_campaign)`,
-      ...CALENDAR_SEED,
+      ...calendarSeed,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -693,16 +734,16 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_cold_outreach_status ON cold_outreach(status)`,
       `CREATE INDEX IF NOT EXISTS idx_cold_outreach_category ON cold_outreach(category)`,
       // ── Instagram lead gen columns ──
-      `ALTER TABLE cold_outreach ADD COLUMN instagram_username TEXT DEFAULT ''`,
-      `ALTER TABLE cold_outreach ADD COLUMN follower_count INTEGER DEFAULT 0`,
-      `ALTER TABLE cold_outreach ADD COLUMN following_count INTEGER DEFAULT 0`,
-      `ALTER TABLE cold_outreach ADD COLUMN bio TEXT DEFAULT ''`,
-      `ALTER TABLE cold_outreach ADD COLUMN profile_url TEXT DEFAULT ''`,
-      `ALTER TABLE cold_outreach ADD COLUMN is_verified INTEGER DEFAULT 0`,
-      `ALTER TABLE cold_outreach ADD COLUMN score REAL DEFAULT 0`,
-      `ALTER TABLE cold_outreach ADD COLUMN score_reason TEXT DEFAULT ''`,
-      `ALTER TABLE cold_outreach ADD COLUMN scrape_source TEXT DEFAULT ''`,
-      `ALTER TABLE cold_outreach ADD COLUMN last_scraped TEXT DEFAULT ''`,
+      addColumn('cold_outreach', 'instagram_username', 'TEXT DEFAULT \'\''),
+      addColumn('cold_outreach', 'follower_count', 'INTEGER DEFAULT 0'),
+      addColumn('cold_outreach', 'following_count', 'INTEGER DEFAULT 0'),
+      addColumn('cold_outreach', 'bio', 'TEXT DEFAULT \'\''),
+      addColumn('cold_outreach', 'profile_url', 'TEXT DEFAULT \'\''),
+      addColumn('cold_outreach', 'is_verified', 'INTEGER DEFAULT 0'),
+      addColumn('cold_outreach', 'score', 'REAL DEFAULT 0'),
+      addColumn('cold_outreach', 'score_reason', 'TEXT DEFAULT \'\''),
+      addColumn('cold_outreach', 'scrape_source', 'TEXT DEFAULT \'\''),
+      addColumn('cold_outreach', 'last_scraped', 'TEXT DEFAULT \'\''),
       // ── Agent Infrastructure ──
       `CREATE TABLE IF NOT EXISTS agent_types (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1035,7 +1076,7 @@ export async function onRequest(context) {
         ('Align script/flag drift across church pages', 'share.js missing on answers/shop; geo-currency.js missing on devotionals/answers; GA_FOOTER_ONLY missing on give/shop', 9, 'pending', 'manual', 'high')
       `,
       // Mark Phase 6.1 as done (book sales)
-      `UPDATE tasks SET status = 'done' WHERE id IN (SELECT id FROM tasks WHERE title = 'Set up digital book sales with pay-per-download' AND phase = 6)`,
+      once('task-status-5', `UPDATE tasks SET status = 'done' WHERE id IN (SELECT id FROM tasks WHERE title = 'Set up digital book sales with pay-per-download' AND phase = 6)`),
       `INSERT OR IGNORE INTO books (title, slug, description, price, file_url, is_premium, sort_order) VALUES
         ('The Bible as Kingdom OS', 'the-bible-as-kingdom-os', 'A paradigm-shifting exploration of the Bible as the operating system of the Kingdom of God.', 0, '/books/the-bible-as-kingdom-os.pdf', 0, 1),
         ('The Divine Algorithm', 'divine-algorithm', 'An interactive report exploring divine patterns, codes, and algorithms hidden in Scripture.', 0, '/books/divine_algorithm_report.html', 0, 2),
@@ -1048,21 +1089,21 @@ export async function onRequest(context) {
       `,
       `UPDATE books SET cover_url = '/books/fearless-steps/img/after.jpg' WHERE cover_url = '/books/fearless-steps/img/after.png'`,
       // Mark Phase 5 + 6.1 tasks as done (for existing installations)
-      `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%book sales%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%hardcoded homepage%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%Architectural Thinking module%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%sponsored slot pricing%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%student progress%' AND status = 'pending'`,
+      once('task-status-6', `UPDATE tasks SET status = 'done' WHERE phase = 5 AND status = 'pending'`),
+      once('task-status-7', `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%book sales%' AND status = 'pending'`),
+      once('task-status-8', `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%hardcoded homepage%' AND status = 'pending'`),
+      once('task-status-9', `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%Architectural Thinking module%' AND status = 'pending'`),
+      once('task-status-10', `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%sponsored slot pricing%' AND status = 'pending'`),
+      once('task-status-11', `UPDATE tasks SET status = 'done' WHERE phase = 6 AND title LIKE '%student progress%' AND status = 'pending'`),
       // Mark Phase 7 infrastructure tasks as done (for existing installations)
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%strategic partnership%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%press kit%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%JSON-LD%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%referral API%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Share-to-unlock%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Partners page%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Press kit page%' AND status = 'pending'`,
-      `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Content library page%' AND status = 'pending'`,
+      once('task-status-12', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%strategic partnership%' AND status = 'pending'`),
+      once('task-status-13', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%press kit%' AND status = 'pending'`),
+      once('task-status-14', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%JSON-LD%' AND status = 'pending'`),
+      once('task-status-15', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%referral API%' AND status = 'pending'`),
+      once('task-status-16', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Share-to-unlock%' AND status = 'pending'`),
+      once('task-status-17', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Partners page%' AND status = 'pending'`),
+      once('task-status-18', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Press kit page%' AND status = 'pending'`),
+      once('task-status-19', `UPDATE tasks SET status = 'done' WHERE phase = 7 AND title LIKE '%Content library page%' AND status = 'pending'`),
       // Seed data removed to prevent re-insertion on deploy. Programs managed through admin CRUD.
       // Module seeds for new programs
       `INSERT OR IGNORE INTO modules (program_id, title, slug, description, sort_order) VALUES
@@ -1195,16 +1236,19 @@ export async function onRequest(context) {
       )`,
       `CREATE TABLE IF NOT EXISTS newsletter_issues (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        issue_number INTEGER,
+        issue_number INTEGER UNIQUE,
         subject TEXT NOT NULL DEFAULT '',
         theme TEXT NOT NULL DEFAULT '',
         html TEXT NOT NULL DEFAULT '',
         subscriber_count INTEGER DEFAULT 0,
         sent_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
-      `ALTER TABLE newsletter_issues ADD COLUMN status TEXT DEFAULT 'sent'`,
-      `ALTER TABLE newsletter_issues ADD COLUMN sent_count INTEGER DEFAULT 0`,
-      `ALTER TABLE newsletter_issues ADD COLUMN failed_count INTEGER DEFAULT 0`,
+      addColumn('newsletter_issues', 'status', 'TEXT DEFAULT \'sent\''),
+      addColumn('newsletter_issues', 'sent_count', 'INTEGER DEFAULT 0'),
+      addColumn('newsletter_issues', 'failed_count', 'INTEGER DEFAULT 0'),
+      // Legacy tables can have duplicate issue numbers; surface that as a
+      // setup failure rather than silently creating a second live issue.
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_newsletter_issues_number ON newsletter_issues(issue_number)`,
       // Batched broadcast outbox: enqueue fast, drain across cron ticks
       `CREATE TABLE IF NOT EXISTS newsletter_outbox (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1274,9 +1318,9 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_survey_created ON survey_responses(created_at)`,
       `CREATE INDEX IF NOT EXISTS idx_survey_topic ON survey_responses(topic)`,
-      `ALTER TABLE survey_responses ADD COLUMN email TEXT DEFAULT ''`,
-      `ALTER TABLE survey_responses ADD COLUMN interests TEXT DEFAULT '[]'`,
-      `ALTER TABLE survey_responses ADD COLUMN other_text TEXT DEFAULT ''`,
+      addColumn('survey_responses', 'email', 'TEXT DEFAULT \'\''),
+      addColumn('survey_responses', 'interests', 'TEXT DEFAULT \'[]\''),
+      addColumn('survey_responses', 'other_text', 'TEXT DEFAULT \'\''),
       // Set Bible-based programs to coming_soon, focus on nation building
       `UPDATE programs SET status = 'coming_soon' WHERE slug IN ('systems-thinking-genesis','revelation-study','psalms-worship-word')`,
       // Activate Sketching &amp; Drawing for Vision Builders with full content
@@ -1371,7 +1415,7 @@ export async function onRequest(context) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status)`,
       `CREATE INDEX IF NOT EXISTS idx_campaigns_slug ON campaigns(slug)`,
-      `ALTER TABLE donations ADD COLUMN campaign_id INTEGER DEFAULT 0`,
+      addColumn('donations', 'campaign_id', 'INTEGER DEFAULT 0'),
       `CREATE INDEX IF NOT EXISTS idx_donations_campaign ON donations(campaign_id)`,
       // ── Seed: first fundraising campaign ──
       `INSERT OR IGNORE INTO campaigns (name, slug, description, goal_amount, currency, type, status, start_date, end_date) VALUES ('Train 1 Million Ghanaian Youth in Systems Thinking', '1-million-systems-thinkers', 'A national movement to equip 1,000,000 Ghanaian youth with systems thinking, problem-solving, and AI-era skills. Your GH¢100 sponsors one youth for a full semester of training in systems thinking, digital literacy, and creative problem-solving.', 1000000, 'GHS', 'crowdfunding', 'active', datetime('now'), datetime('now', '+90 days'))`,
@@ -1483,12 +1527,12 @@ export async function onRequest(context) {
       `CREATE INDEX IF NOT EXISTS idx_career_apps_status ON career_applications(status)`,
       `CREATE INDEX IF NOT EXISTS idx_career_apps_email ON career_applications(email)`,
       // Remote-application fields for databases created before the careers rebuild.
-      `ALTER TABLE career_applications ADD COLUMN role_id TEXT DEFAULT ''`,
-      `ALTER TABLE career_applications ADD COLUMN country TEXT DEFAULT ''`,
-      `ALTER TABLE career_applications ADD COLUMN timezone TEXT DEFAULT ''`,
-      `ALTER TABLE career_applications ADD COLUMN availability_hours INTEGER DEFAULT 0`,
-      `ALTER TABLE career_applications ADD COLUMN pay_expectation TEXT DEFAULT ''`,
-      `ALTER TABLE career_applications ADD COLUMN portfolio_url TEXT DEFAULT ''`,
+      addColumn('career_applications', 'role_id', 'TEXT DEFAULT \'\''),
+      addColumn('career_applications', 'country', 'TEXT DEFAULT \'\''),
+      addColumn('career_applications', 'timezone', 'TEXT DEFAULT \'\''),
+      addColumn('career_applications', 'availability_hours', 'INTEGER DEFAULT 0'),
+      addColumn('career_applications', 'pay_expectation', 'TEXT DEFAULT \'\''),
+      addColumn('career_applications', 'portfolio_url', 'TEXT DEFAULT \'\''),
       // ── Tutor Roadmap ──
       `CREATE TABLE IF NOT EXISTS tutor_roadmap_tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1676,7 +1720,7 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
       `CREATE INDEX IF NOT EXISTS idx_service_inquiries_status ON service_inquiries(status)`,
       `CREATE INDEX IF NOT EXISTS idx_service_inquiries_created ON service_inquiries(created_at)`,
       // ── Daily LOTL devotional broadcast (opt-in) ──
-      `ALTER TABLE subscribers ADD COLUMN lotl_daily INTEGER DEFAULT 0`,
+      addColumn('subscribers', 'lotl_daily', 'INTEGER DEFAULT 0'),
       `INSERT OR IGNORE INTO settings (key, value) VALUES ('lotl_daily_enabled', '0')`,
       `CREATE TABLE IF NOT EXISTS lotl_daily_sends (
         send_date TEXT PRIMARY KEY,
@@ -1684,7 +1728,7 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
         created_at TEXT DEFAULT (datetime('now'))
       )`,
       // ── App-level admin roles (super admin system) ──
-      `ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'member'`,
+      addColumn('users', 'role', 'TEXT NOT NULL DEFAULT \'member\''),
       `INSERT INTO users (name, email, role) VALUES ('Gideon Abochie', 'gid@gabochie.com', 'super_admin')
         ON CONFLICT(email) DO UPDATE SET role = 'super_admin'`,
       // ── Manual direct rails (MoMo + bank transfer, admin-confirmed) ──
@@ -1700,24 +1744,79 @@ Tone: [friendly / professional / funny]</pre><p>Example: ""Write 5 Instagram cap
         decided_by TEXT DEFAULT ''
       )`,
       `CREATE INDEX IF NOT EXISTS idx_momo_claims_status ON momo_manual_claims(status)`,
-      `ALTER TABLE momo_manual_claims ADD COLUMN rail TEXT NOT NULL DEFAULT 'momo'`,
-    ];
+      addColumn('momo_manual_claims', 'rail', 'TEXT NOT NULL DEFAULT \'momo\''),
+  ];
+}
+
+var SETUP_CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-CI-Secret, X-Admin-Key'
+};
+
+function setupResponse(body, status) {
+  return new Response(JSON.stringify(body), {
+    status: status || 200,
+    headers: Object.assign({ 'Content-Type': 'application/json' }, SETUP_CORS)
+  });
+}
+
+export async function onRequest(context) {
+  var { request, env } = context;
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: SETUP_CORS });
+  }
+  if (request.method !== 'POST') {
+    return setupResponse({ status: 'error', message: 'Method not allowed' }, 405);
+  }
+
+  // CI deploys present X-CI-Secret; interactive admins fall back to the
+  // standard admin auth (Access JWT / X-Admin-Key / admin session). The legacy
+  // ADMIN_KEY is deliberately not accepted by requireAdminAuth.
+  var ci = request.headers.get('X-CI-Secret') || '';
+  if (!(ci && env.CI_WEBHOOK_SECRET && await safeEqual(ci, env.CI_WEBHOOK_SECRET))) {
+    var denied = await requireAdminAuth(request, env);
+    if (denied) return denied;
+  }
+
+  const db = env.DB;
+  if (!db) {
+    return setupResponse({ error: 'D1 not bound' }, 501);
+  }
+  try {
+    const statements = getStatements();
     const results = [];
-    for (const sql of statements) {
+    const failed = [];
+    for (const statement of statements) {
+      const sql = typeof statement === 'string' ? statement : statement.sql;
+      const label = sql.slice(0, 50) + '...';
       try {
-        await db.prepare(sql).run();
-        results.push({ sql: sql.slice(0, 50) + '...', ok: true });
+        if (typeof statement === 'string') {
+          await db.prepare(sql).run();
+        } else if (statement.kind === 'column') {
+          await addColumnIfMissing(db, statement.table, statement.column, statement.definition);
+        } else if (statement.kind === 'once') {
+          await runOnceIfNeeded(db, statement.name, sql);
+        } else {
+          await db.prepare(sql).run();
+        }
+        results.push({ sql: label, ok: true });
       } catch (e) {
-        results.push({ sql: sql.slice(0, 50) + '...', ok: false, error: e.message });
+        const entry = { sql: label, ok: false, error: e.message };
+        results.push(entry);
+        failed.push(entry);
       }
     }
-    return new Response(JSON.stringify({ status: 'ok', tables: results.length, results }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    if (failed.length) {
+      return setupResponse({
+        status: 'error', message: failed.length + ' setup statement(s) failed',
+        tables: results.length, results, failed, failed_count: failed.length
+      }, 500);
+    }
+    return setupResponse({ status: 'ok', tables: results.length, results, failed: [], failed_count: 0 });
   } catch (err) {
-    return new Response(JSON.stringify({ status: 'error', message: err.message }), {
-      status: 500, headers: { 'Content-Type': 'application/json' }
-    });
+    return setupResponse({ status: 'error', message: err.message, failed: [], failed_count: 0 }, 500);
   }
 }
 

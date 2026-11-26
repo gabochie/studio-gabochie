@@ -6,26 +6,74 @@
   var D = window.MONEY_GHANA_DATA;
   if (!D) return;
 
-  var state = { ranked: [], unlocked: false, category: 'all', query: '' };
+  var state = { ranked: [], unlocked: false, category: 'all', query: '', started: false, answers: null, topPath: '' };
+  var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
   var $ = function (id) { return document.getElementById(id); };
   var catById = function (id) {
     return D.categories.filter(function (c) { return c.id === id; })[0] || D.categories[0];
   };
 
+  // Prefer the site-wide helper; mirror its localStorage ga_utm behaviour when
+  // it is not loaded so all five campaign parameters survive navigation.
+  function gaGetUtm() {
+    if (typeof window.gaGetUtm === 'function') {
+      try { return window.gaGetUtm() || {}; } catch (_e) {}
+    }
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem('ga_utm') || '{}') || {}; } catch (_e) {}
+    var fromUrl = {};
+    try {
+      var params = new URLSearchParams(window.location.search);
+      UTM_KEYS.forEach(function (key) {
+        var value = params.get(key);
+        if (value) fromUrl[key] = String(value).slice(0, 120);
+      });
+    } catch (_e) {}
+    if (fromUrl.utm_source) {
+      try { localStorage.setItem('ga_utm', JSON.stringify(fromUrl)); } catch (_e) {}
+      return fromUrl;
+    }
+    return Object.keys(fromUrl).length ? Object.assign({}, stored, fromUrl) : stored;
+  }
+
+  function sendEvent(eventType, data) {
+    try {
+      if (!navigator.sendBeacon) return;
+      var payload = { event_type: eventType, event_data: Object.assign({}, gaGetUtm(), data || {}), page: window.location.pathname };
+      navigator.sendBeacon('/api/event', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    } catch (_e) {}
+  }
+
   function setMessage(el, text, kind) {
+    if (!el) return;
     el.textContent = text;
     el.className = 'form-msg ' + (kind || '');
     el.hidden = false;
+  }
+
+  function quizAnswers(form) {
+    var answers = {};
+    ['profile', 'setup', 'capital'].forEach(function (key) {
+      var input = form ? form.querySelector('input[name="' + key + '"]:checked') : null;
+      if (input) answers[key] = input.value;
+    });
+    return answers;
+  }
+
+  function updateQuizButton() {
+    var btn = $('quizBtn');
+    if (!btn) return;
+    btn.disabled = Object.keys(quizAnswers($('quizForm'))).length < 3;
   }
 
   function renderQuiz() {
     D.questions.forEach(function (q) {
       var host = $('q-' + q.id);
       if (!host) return;
-      host.innerHTML = q.options.map(function (o, i) {
-        return '<label class="option"><input type="radio" name="' + q.id + '" value="' + o.value + '"' +
-          (i === 0 ? ' checked' : '') + '><span class="option-inner"><span class="option-title">' +
-          o.label + '</span><span class="option-hint">' + o.hint + '</span></span></label>';
+      host.innerHTML = q.options.map(function (o) {
+        return '<label class="option"><input type="radio" name="' + q.id + '" value="' + o.value + '">' +
+          '<span class="option-inner"><span class="option-title">' + o.label + '</span>' +
+          '<span class="option-hint">' + o.hint + '</span></span></label>';
       }).join('');
     });
   }
@@ -104,6 +152,10 @@
     params.set('from', 'money-ghana');
     params.set('path', top ? top.title : '');
     params.set('profile', $('summary') ? $('summary').textContent : '');
+    var utm = gaGetUtm();
+    UTM_KEYS.forEach(function (key) {
+      if (utm[key]) params.set(key, utm[key]);
+    });
     return '/consultation/?' + params.toString();
   }
 
@@ -145,12 +197,16 @@
   function runAssessment(event) {
     event.preventDefault();
     var form = $('quizForm');
-    var answers = {
-      profile: form.elements.profile.value,
-      setup: form.elements.setup.value,
-      capital: form.elements.capital.value
-    };
+    var answers = quizAnswers(form);
+    if (Object.keys(answers).length < 3) {
+      setMessage($('quizMsg'), 'Answer all three questions to see your match.', 'error');
+      return;
+    }
+    if ($('quizMsg')) $('quizMsg').hidden = true;
+    state.answers = answers;
     state.ranked = rank(answers);
+    state.topPath = state.ranked[0] ? state.ranked[0].method.title : '';
+    sendEvent('assessment_complete', { top_path: state.topPath });
     state.unlocked = false;
     $('gatePanel').hidden = false;
     $('unlockedMsg').hidden = true;
@@ -165,7 +221,12 @@
 
   function resetAssessment() {
     state.ranked = [];
+    state.answers = null;
+    state.topPath = '';
+    state.started = false;
     state.unlocked = false;
+    updateQuizButton();
+    sendEvent('assessment_start');
     $('resultList').innerHTML = '';
     $('resultPlaceholder').hidden = false;
     $('gatePanel').hidden = false;
@@ -189,17 +250,27 @@
       return;
     }
 
-    var params = new URLSearchParams(window.location.search);
+    var utm = gaGetUtm();
     var tokenEl = $('gateForm').querySelector('input[name="cf-turnstile-response"]');
     var payload = {
       name: name,
       email: email,
       source: 'money-ghana-assessment',
-      utm_source: params.get('utm_source') || '',
-      utm_medium: params.get('utm_medium') || '',
-      utm_campaign: params.get('utm_campaign') || '',
       cf_turnstile_token: tokenEl ? tokenEl.value : ''
     };
+    UTM_KEYS.forEach(function (key) {
+      if (utm[key]) payload[key] = utm[key];
+    });
+    if (state.answers) {
+      payload.profile = state.answers.profile;
+      payload.setup = state.answers.setup;
+      payload.capital = state.answers.capital;
+      payload.top_path = state.topPath;
+      payload.assessment_profile = state.answers.profile;
+      payload.assessment_setup = state.answers.setup;
+      payload.assessment_capital = state.answers.capital;
+      payload.assessment_top_path = state.topPath;
+    }
     if (phone) {
       payload.phone = phone;
       payload.whatsapp_opt_in = true;
@@ -223,6 +294,7 @@
         setMessage(msg, result.data.message || 'Something went wrong. Please try again.', 'error');
         return;
       }
+      sendEvent('assessment_unlock', { top_path: state.topPath });
       state.unlocked = true;
       renderResults();
       $('unlockedMsg').innerHTML = '<i class="ti ti-circle-check"></i><div><strong>You are on the list.</strong><br>' +
@@ -270,7 +342,15 @@
     renderSteps();
     renderPrintGuide();
     setGateEnabled(false);
+    updateQuizButton();
 
+    $('quizForm').addEventListener('change', function () {
+      updateQuizButton();
+      if (!state.started) {
+        state.started = true;
+        sendEvent('assessment_start');
+      }
+    });
     $('quizForm').addEventListener('submit', runAssessment);
     $('gateForm').addEventListener('submit', submitGate);
     $('retakeBtn').addEventListener('click', resetAssessment);

@@ -18,6 +18,15 @@ function parseJwtPayload(payload) {
   catch (_e) { return null; }
 }
 
+// CF_ACCESS_TEAM is normally the bare team slug, but some deployments store
+// the full issuer URL. Normalise to the slug so both forms produce one exact
+// expected issuer (and never build a URL from attacker-controlled material).
+function normalizeTeam(team) {
+  var value = String(team == null ? '' : team).trim();
+  var m = value.match(/^https:\/\/([A-Za-z0-9][A-Za-z0-9-]*)\.cloudflareaccess\.com\/?$/i);
+  return m ? m[1] : value;
+}
+
 async function fetchPublicKeys(team, env) {
   var url = 'https://' + team + '.cloudflareaccess.com/cdn-cgi/access/certs';
   // Try KV cache first if available
@@ -54,6 +63,9 @@ export async function verifyAccessJwt(request, env) {
   var team = env.CF_ACCESS_TEAM;
   var aud = env.CF_ACCESS_AUD;
   if (!team || !aud) return null;
+  var teamName = normalizeTeam(team);
+  if (!teamName || /[^A-Za-z0-9-]/.test(teamName)) return null;
+  var expectedIssuer = 'https://' + teamName + '.cloudflareaccess.com';
 
   // Extract JWT from header, cookie, or Authorization header
   var jwt = request.headers.get('Cf-Access-Jwt-Assertion') || '';
@@ -77,7 +89,7 @@ export async function verifyAccessJwt(request, env) {
 
   // Fetch and cache public keys
   var keys;
-  try { keys = await fetchPublicKeys(team, env); }
+  try { keys = await fetchPublicKeys(teamName, env); }
   catch (_e) { return null; }
 
   var jwk = findKey(keys, header.kid);
@@ -100,26 +112,23 @@ export async function verifyAccessJwt(request, env) {
   if (!payload) return null;
 
   var now = Math.floor(Date.now() / 1000);
-  if (payload.exp && payload.exp < now) return null;
+  // exp is mandatory: an unexpiring token is never an admin credential.
+  if (typeof payload.exp !== 'number' || !isFinite(payload.exp) || payload.exp <= now) return null;
   if (payload.nbf && payload.nbf > now) return null;
-  if (payload.iss && !payload.iss.includes(team)) return null;
+  // Exact issuer match only — substring matching would accept
+  // https://team.cloudflareaccess.com.evil.test.
+  if (payload.iss !== expectedIssuer) return null;
 
-  // Validate audience
-  if (payload.aud) {
-    var expectedAud = aud;
-    // aud can be string or array
-    var audMatch = false;
-    if (typeof payload.aud === 'string') {
-      audMatch = payload.aud === expectedAud || payload.aud.indexOf(expectedAud) !== -1;
-    } else if (Array.isArray(payload.aud)) {
-      for (var i = 0; i < payload.aud.length; i++) {
-        if (payload.aud[i] === expectedAud || payload.aud[i].indexOf(expectedAud) !== -1) {
-          audMatch = true; break;
-        }
-      }
-    }
-    if (!audMatch) return null;
+  // aud is mandatory and must match exactly (JWT allows a string or an array).
+  // No substring/prefix matching: a related audience is a different audience.
+  if (payload.aud === undefined || payload.aud === null) return null;
+  var expectedAudiences = Array.isArray(aud) ? aud : [aud];
+  var audiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+  var audMatch = false;
+  for (var i = 0; i < audiences.length; i++) {
+    if (expectedAudiences.indexOf(audiences[i]) !== -1) { audMatch = true; break; }
   }
+  if (!audMatch) return null;
 
   return {
     sub: payload.sub || '',

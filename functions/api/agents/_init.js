@@ -2,7 +2,6 @@ var ensured = false;
 
 export async function ensureAgentTables(db) {
   if (ensured || !db) return;
-  ensured = true;
   var stmts = [
     `CREATE TABLE IF NOT EXISTS agent_types (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT DEFAULT '', status TEXT NOT NULL DEFAULT 'active', max_sub_agents INTEGER DEFAULT 5, max_run_time_seconds INTEGER DEFAULT 60, retry_policy TEXT DEFAULT '{"max_retries":3,"backoff":"exponential"}', created_at TEXT NOT NULL DEFAULT (datetime('now')))`,
     `INSERT OR IGNORE INTO agent_types (name, description, max_sub_agents, max_run_time_seconds) VALUES ('orchestrator', 'Manages sub-agents, delegates tasks, monitors execution', 10, 120), ('content', 'Drafts newsletters, blog posts, SEO meta, social copy', 3, 60), ('outreach', 'Segments audience, sends follow-ups, dormant subscriber reactivation', 3, 60), ('analytics', 'Generates reports, forecasts revenue, detects anomalies', 2, 120), ('fulfillment', 'Monitors payments, triggers sequences, processes orders', 5, 30), ('task_processor', 'Reads the agent queue, executes or escalates tasks', 3, 30)`,
@@ -22,10 +21,20 @@ export async function ensureAgentTables(db) {
     `CREATE TABLE IF NOT EXISTS agent_tools (id INTEGER PRIMARY KEY AUTOINCREMENT, agent_type_id INTEGER NOT NULL, tool_name TEXT NOT NULL, tool_description TEXT DEFAULT '', tool_schema TEXT DEFAULT '{}', enabled INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now')), FOREIGN KEY (agent_type_id) REFERENCES agent_types(id), UNIQUE(agent_type_id, tool_name))`,
     `CREATE TABLE IF NOT EXISTS agent_prompts (id INTEGER PRIMARY KEY AUTOINCREMENT, agent_type TEXT NOT NULL, prompt_key TEXT NOT NULL, system_prompt TEXT NOT NULL DEFAULT '', user_template TEXT NOT NULL DEFAULT '', model TEXT DEFAULT 'gpt-4o-mini', temperature REAL DEFAULT 0.7, max_tokens INTEGER DEFAULT 1024, created_at TEXT NOT NULL DEFAULT (datetime('now')), UNIQUE(agent_type, prompt_key))`,
   ];
+  // Only cache success. A failed DDL statement must not permanently disable
+  // schema checks for this Worker instance — retry on the next request.
+  var failures = [];
   for (var s of stmts) {
-    try { await db.prepare(s).run(); } catch (_e) {
-      // Ignore errors from indexes that already exist or minor conflicts
+    try {
+      await db.prepare(s).run();
+    } catch (e) {
+      failures.push(String((e && e.message) || e));
     }
+  }
+  if (failures.length) {
+    console.warn('ensureAgentTables: ' + failures.length + ' statement(s) failed', failures);
+  } else {
+    ensured = true;
   }
 }
 
@@ -44,6 +53,10 @@ export async function ensureAdminTables(db) {
     `CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number)`,
   ];
   for (var s of stmts) {
-    try { await db.prepare(s).run(); } catch (_e) {}
+    try {
+      await db.prepare(s).run();
+    } catch (e) {
+      console.warn('ensureAdminTables: statement failed', String((e && e.message) || e));
+    }
   }
 }

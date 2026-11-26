@@ -1,5 +1,6 @@
 import { verifyAccessJwt } from './_access-jwt.js';
 import { getConsoleUser } from './_console-session.js';
+import { safeEqual } from '../gateways/_shared.js';
 
 export async function requireAdminAuth(request, env) {
   var cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key, X-CI-Secret' };
@@ -8,11 +9,12 @@ export async function requireAdminAuth(request, env) {
   var accessUser = await verifyAccessJwt(request, env);
   if (accessUser) return null; // authenticated via Access
 
-  // 2. Fall back to admin API key
+  // 2. Fall back to the dedicated admin API key. ADMIN_KEY is intentionally
+  //    no longer accepted: a legacy shared secret must not grant admin access.
   var key = request.headers.get('X-Admin-Key') || '';
-  var adminKey = env.ADMIN_API_KEY || env.ADMIN_KEY || '';
+  var adminKey = env.ADMIN_API_KEY || '';
 
-  if (adminKey && key === adminKey) return null;
+  if (adminKey && key && safeEqual(key, adminKey)) return null;
 
   // 3. Fall back to console role session (super_admin / admin named accounts)
   if (env.DB) {

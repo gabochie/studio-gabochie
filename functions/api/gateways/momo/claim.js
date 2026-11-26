@@ -38,16 +38,25 @@ export async function onRequest(context) {
   }
 
   try {
-    // One live claim per reference; re-submitting updates the details.
-    await env.DB.prepare(
-      `INSERT INTO momo_manual_claims (tx_ref, momo_txn_id, payer_number, rail, status) VALUES (?, ?, ?, ?, 'submitted')
-       ON CONFLICT(tx_ref) DO UPDATE SET
-         momo_txn_id = excluded.momo_txn_id,
-         payer_number = excluded.payer_number,
-         rail = excluded.rail,
-         status = 'submitted',
-         submitted_at = datetime('now')`
-    ).bind(tx_ref, momoTxnId, payerNumber, rail).run();
+    var existing = await env.DB.prepare('SELECT status FROM momo_manual_claims WHERE tx_ref = ?').bind(tx_ref).first();
+    if (existing && existing.status && existing.status !== 'submitted') {
+      return json({ status: 'error', message: 'This payment reference has already been ' + existing.status + '.' }, 409);
+    }
+    if (existing) {
+      // Guard the state transition in SQL too: a concurrent admin decision
+      // must never be overwritten by a late customer re-submission.
+      var updated = await env.DB.prepare(
+        `UPDATE momo_manual_claims SET momo_txn_id = ?, payer_number = ?, rail = ?, submitted_at = datetime('now')
+         WHERE tx_ref = ? AND status = ?`
+      ).bind(momoTxnId, payerNumber, rail, tx_ref, 'submitted').run();
+      if (!updated || !updated.meta || !updated.meta.changes) {
+        return json({ status: 'error', message: 'This claim has already been decided.' }, 409);
+      }
+    } else {
+      await env.DB.prepare(
+        `INSERT INTO momo_manual_claims (tx_ref, momo_txn_id, payer_number, rail, status) VALUES (?, ?, ?, ?, 'submitted')`
+      ).bind(tx_ref, momoTxnId, payerNumber, rail).run();
+    }
   } catch (_e) {
     return json({ status: 'error', message: 'Could not record your payment. Please try again.' }, 500);
   }

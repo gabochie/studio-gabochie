@@ -48,7 +48,7 @@ h1 span{color:#C9A84C}
 .card{background:#0F1E38;border:1px solid #1E3250;border-radius:14px;padding:28px 24px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:11px;color:#5A7A9F;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-.field input{width:100%;padding:13px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#E8EEF7;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;box-sizing:border-box}
+.field input{width:100%;padding:13px 14px;border:1px solid #1E3250;border-radius:8px;background:#0A1628;color:#E8EEF7;font-size:15px;font-family:inherit;transition:border-color .2s;box-sizing:border-box}
 .field input:focus{border-color:#C9A84C}
     .wa-optin{display:flex;gap:10px;align-items:flex-start;margin:2px 0 8px;font-size:13px;color:#8A9BB5;cursor:pointer;line-height:1.5}
     .wa-optin input{width:18px;height:18px;margin-top:1px;accent-color:#C9A84C;flex-shrink:0;cursor:pointer}
@@ -135,37 +135,6 @@ h1 span{color:#C9A84C}
 </div>
 
 <script>
-/* ── Paid-social pixel scaffolding: dormant until IDs are set ── */
-var PIXEL_IDS = { meta: '', tiktok: '' };
-(function initPixels(){
-  try {
-    if (PIXEL_IDS.meta) {
-      var f = document.createElement('script');
-      f.async = true;
-      f.src = 'https://connect.facebook.net/en_US/fbevents.js';
-      document.head.appendChild(f);
-      window.fbq = window.fbq || function(){ (window.fbq.q = window.fbq.q || []).push(arguments); };
-      window.fbq('init', PIXEL_IDS.meta);
-      window.fbq('track', 'PageView');
-    }
-    if (PIXEL_IDS.tiktok) {
-      var t = document.createElement('script');
-      t.async = true;
-      t.src = 'https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=' + encodeURIComponent(PIXEL_IDS.tiktok) + '&lib=ttq';
-      document.head.appendChild(t);
-      window.ttq = window.ttq || [];
-    }
-  } catch (_) {}
-})();
-function pixelLead(){
-  try {
-    if (PIXEL_IDS.meta && window.fbq) window.fbq('track', 'Lead');
-    if (PIXEL_IDS.tiktok && window.ttq && window.ttq.track) window.ttq.track('CompleteRegistration');
-  } catch (_) {}
-}
-</script>
-
-<script>
 function getParam(name) {
   var m = window.location.search.match(new RegExp('[?&]' + name + '=([^&]+)'));
   return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
@@ -231,7 +200,6 @@ document.getElementById('startForm').addEventListener('submit', function(e){
     btn.disabled = false;
     btn.textContent = 'Send Me The Weekly';
     if (d && d.status === 'ok') {
-      pixelLead();
       try {
         fetch('/api/track', {method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({event:'landing_convert', page:'/start/', email:email, campaign: UTM.campaign || UTM.source || 'direct'})});

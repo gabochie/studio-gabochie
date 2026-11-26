@@ -1,6 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { onRequest } from '../../functions/api/services/inquiry.js';
 import { mockDb } from '../helpers/mock-cf.js';
+
+// These tests exercise inquiry storage, not CAPTCHA. Stub the verifier so they
+// do not depend on the old fail-open-without-secret behaviour.
+vi.mock('../../functions/api/_turnstile.js', function () {
+  return { verifyTurnstile: vi.fn(async function () { return true; }), turnstileToken: function () { return ''; } };
+});
 
 function post(fields) {
   return new Request('https://studio.gabochie.com/api/services/inquiry', {

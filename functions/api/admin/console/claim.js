@@ -4,6 +4,7 @@
 import { hashPassword } from '../../auth/_hash.js';
 import { checkRateLimit } from '../../_rate-limit.js';
 import { createConsoleSession, consoleCookie, logConsoleAction } from '../_console-session.js';
+import { randomDigits, safeEqual } from '../../gateways/_shared.js';
 
 function json(body, status, extraHeaders) {
   return new Response(JSON.stringify(body), {
@@ -40,7 +41,7 @@ export async function onRequest(context) {
         // Generic response — no account-state disclosure.
         return json({ status: 'ok', message: 'If this account can be claimed, a code has been sent.' });
       }
-      var code = String(Math.floor(100000 + Math.random() * 900000));
+      var code = randomDigits(6);
       var expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
       await db.prepare('UPDATE otp_codes SET used = 1 WHERE identifier = ? AND used = 0').bind(email).run();
       await db.prepare('INSERT INTO otp_codes (identifier, code, expires_at) VALUES (?, ?, ?)').bind(email, code, expiresAt).run();
@@ -75,17 +76,39 @@ export async function onRequest(context) {
     var user2 = await db.prepare('SELECT id, name, email, role, password_hash FROM users WHERE email = ?').bind(email).first();
     if (!claimable(user2)) return json({ status: 'error', message: 'This account cannot be claimed. Log in with your password instead.' }, 403);
 
+    // Fetch the live record first, then compare in fixed time. Looking the code
+    // up in SQL would leak a timing oracle and skipped the per-code attempt cap.
     var otp = await db.prepare(
-      "SELECT id, code, expires_at, attempts FROM otp_codes WHERE identifier = ? AND code = ? AND used = 0 ORDER BY id DESC LIMIT 1"
-    ).bind(email, code2).first();
-    if (!otp) {
+      "SELECT id, code, expires_at, attempts FROM otp_codes WHERE identifier = ? AND used = 0 ORDER BY id DESC LIMIT 1"
+    ).bind(email).first();
+    async function recordFailedAttempt(record) {
+      if (!record) return 0;
+      var attempts = (parseInt(record.attempts, 10) || 0) + 1;
+      try {
+        await db.prepare('UPDATE otp_codes SET attempts = ?, used = ? WHERE id = ?')
+          .bind(attempts, attempts >= 5 ? 1 : 0, record.id).run();
+      } catch (_e) {}
+      if (attempts >= 5) {
+        await logConsoleAction(db, 'console_claim_locked', { actorEmail: email, ip: ip });
+      }
+      return attempts;
+    }
+
+    if (!otp || !safeEqual(String(otp.code || ''), code2)) {
+      var wrongAttempts = await recordFailedAttempt(otp);
+      if (wrongAttempts >= 5) {
+        return json({ status: 'error', message: 'Too many wrong attempts. Request a new code.' }, 429);
+      }
       await logConsoleAction(db, 'console_claim_bad_code', { actorEmail: email, ip: ip });
       return json({ status: 'error', message: 'Invalid or expired code' }, 401);
     }
     if (otp.expires_at && otp.expires_at <= new Date().toISOString().replace('T', ' ').slice(0, 19)) {
+      var expiredAttempts = await recordFailedAttempt(otp);
+      if (expiredAttempts >= 5) {
+        return json({ status: 'error', message: 'Too many wrong attempts. Request a new code.' }, 429);
+      }
       return json({ status: 'error', message: 'Code expired. Request a new one.' }, 401);
     }
-    if ((otp.attempts || 0) >= 5) return json({ status: 'error', message: 'Too many wrong attempts. Request a new code.' }, 429);
 
     var stored = await hashPassword(password);
     await db.prepare('UPDATE users SET password_hash = ?, last_login_at = datetime(\'now\') WHERE id = ?').bind(stored, user2.id).run();

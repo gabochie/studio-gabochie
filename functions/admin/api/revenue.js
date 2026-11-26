@@ -95,6 +95,51 @@ function consultationPotential(service) {
   return 0;
 }
 
+/*
+ * service_inquiries has no dedicated UTM columns. The inquiry form stores
+ * attribution in `referral`, e.g. "money-ghana-assessment / assessment-d24"
+ * or "...?utm_source=instagram&utm_medium=social&utm_campaign=assessment-d24".
+ * Parse that string here so the dashboard can report source/medium/campaign
+ * without a schema migration.
+ */
+function parseReferral(value) {
+  var raw = String(value || '').trim();
+  var out = { source: 'direct', utm_source: '', utm_medium: '', utm_campaign: '' };
+  if (!raw) return out;
+  var sourceFound = false;
+  var segments = raw.split(/\s*(?:\||\?|&)\s*|\s+\/\s+/);
+  segments.forEach(function (segment) {
+    var part = String(segment || '').trim();
+    if (!part) return;
+    var eq = part.indexOf('=');
+    if (eq > 0 && /^utm_/.test(part.slice(0, eq))) {
+      var key = part.slice(0, eq);
+      if (Object.prototype.hasOwnProperty.call(out, key)) out[key] = part.slice(eq + 1);
+      return;
+    }
+    if (/^https?:\/\//i.test(part)) {
+      try {
+        var params = new URL(part).searchParams;
+        ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+          if (params.get(k)) out[k] = params.get(k);
+        });
+      } catch (_e) {}
+      return;
+    }
+    // Campaign slugs from the content calendar ("assessment-d24") are not
+    // referral sources.
+    if (/^assessment-[a-z0-9_-]+$/i.test(part)) {
+      if (!out.utm_campaign) out.utm_campaign = part;
+      return;
+    }
+    if (!sourceFound) {
+      out.source = part;
+      sourceFound = true;
+    }
+  });
+  return out;
+}
+
 export async function onRequest(context) {
   var request = context.request;
   var env = context.env;
@@ -155,9 +200,30 @@ export async function onRequest(context) {
     consultation.potential = consultation.by_level.reduce(function (s, r) { return s + r.potential; }, 0);
     var sourceRows = await safeAll(db,
       "SELECT COALESCE(NULLIF(referral,''), 'direct') AS source, COUNT(*) AS count FROM service_inquiries WHERE service LIKE '%onsult%' GROUP BY source ORDER BY count DESC");
-    consultation.by_source = sourceRows.map(function (row) {
-      return { source: row.source || 'direct', count: num(row.count) };
+    var sourceCounts = {};
+    var utmCounts = {};
+    sourceRows.forEach(function (row) {
+      var parsed = parseReferral(row.source);
+      var count = num(row.count);
+      sourceCounts[parsed.source] = (sourceCounts[parsed.source] || 0) + count;
+      if (parsed.utm_source || parsed.utm_medium || parsed.utm_campaign) {
+        var key = [parsed.source, parsed.utm_source, parsed.utm_medium, parsed.utm_campaign].join('\u0000');
+        if (!utmCounts[key]) utmCounts[key] = {
+          source: parsed.source,
+          utm_source: parsed.utm_source,
+          utm_medium: parsed.utm_medium,
+          utm_campaign: parsed.utm_campaign,
+          count: 0
+        };
+        utmCounts[key].count += count;
+      }
     });
+    consultation.by_source = Object.keys(sourceCounts).map(function (source) {
+      return { source: source, count: sourceCounts[source] };
+    }).sort(function (a, b) { return b.count - a.count; });
+    consultation.by_utm = Object.keys(utmCounts).map(function (key) {
+      return utmCounts[key];
+    }).sort(function (a, b) { return b.count - a.count; });
     var newLeadRow = await safeFirst(db,
       "SELECT COUNT(*) AS count FROM service_inquiries WHERE service LIKE '%onsult%' AND status = 'new'", {});
     consultation.new_leads = num(newLeadRow.count);

@@ -172,6 +172,14 @@ function render(d) {
       return esc(row.source) + ' <b>' + row.count + '</b>';
     }).join(' · ') + '</li>';
   }
+  if (c.by_utm && c.by_utm.length) {
+    consultHtml += '<li>UTM attribution: ' + c.by_utm.map(function(row) {
+      return [row.utm_source, row.utm_medium, row.utm_campaign].filter(Boolean).map(esc).join(' / ') +
+        ' <b>' + row.count + '</b>';
+    }).join(' · ') + '</li>';
+  } else {
+    consultHtml += '<li class="muted">No structured UTMs on consultation leads yet. Campaign slugs in the referral string are parsed automatically.</li>';
+  }
   consultHtml += '<li class="muted">Pipeline is not income. Count only when the invoice is confirmed paid on a verified rail.</li></ul>';
   document.getElementById('consultation-card').innerHTML = consultHtml;
 
