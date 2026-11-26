@@ -90,6 +90,11 @@ describe('release configuration', function () {
     expect(report).toContain('numTotalTests');
     expect(report).toContain('coverage-summary.json');
     expect(report).toContain('toJSON(needs)');
+    const checkout = ci.jobs.report.steps.find(function (step) {
+      return String(step.uses || '').startsWith('actions/checkout@');
+    });
+    expect(checkout, 'dashboard report must fetch full git history').toBeTruthy();
+    expect(checkout.with['fetch-depth']).toBe(0);
   });
 
   it('audits moderate advisories and uses `&&` in the local deploy script', function () {
