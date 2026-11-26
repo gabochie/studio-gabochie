@@ -122,8 +122,15 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Start mock ExpressPay gateway
         run: node scripts/mock-expresspay.cjs > mock-expresspay.log 2>&1 &
-      - name: Start Pages dev with D1 binding and CI secret
-        run: npx wrangler pages dev . --d1 DB --binding CI_WEBHOOK_SECRET=local-ci-secret --port 8788 > wrangler-dev.log 2>&1 &
+      - name: Start Pages dev with D1 binding and mock gateway secrets
+        run: |
+          npx wrangler pages dev . --d1 DB \
+            --binding CI_WEBHOOK_SECRET=local-ci-secret \
+            --binding PUBLIC_BASE_URL=http://localhost:8788 \
+            --binding EXPRESSPAY_BASE_URL=http://localhost:8790/api \
+            --binding EXPRESSPAY_MERCHANT_ID=ci-test-merchant \
+            --binding EXPRESSPAY_API_KEY=ci-test-api-key \
+            --port 8788 > wrangler-dev.log 2>&1 &
       - name: Wait for full stack
         run: |
           ready=0
@@ -264,11 +271,7 @@ jobs:
       - name: Validate all HTML files (blocking)
         run: |
           npm run lint:html
-          for attempt in 1 2 3; do
-            if npx --yes html-validator-cli@7.0.1 --quiet --file=index.html --verbose; then exit 0; fi
-            if [ "$attempt" -lt 3 ]; then sleep 10; fi
-          done
-          exit 1
+          npx --yes html-validate@11.22.1 index.html
 
   a11y:
     name: Accessibility audit

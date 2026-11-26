@@ -65,6 +65,22 @@ describe('release configuration', function () {
     expect(source).toContain('tests/e2e/onboarding.spec.js');
     expect(source).toContain('--reporter=json');
     expect(source).toContain('skipped');
+    for (const binding of [
+      'CI_WEBHOOK_SECRET=local-ci-secret',
+      'PUBLIC_BASE_URL=http://localhost:8788',
+      'EXPRESSPAY_BASE_URL=http://localhost:8790/api',
+      'EXPRESSPAY_MERCHANT_ID=ci-test-merchant',
+      'EXPRESSPAY_API_KEY=ci-test-api-key'
+    ]) {
+      expect(source, 'missing binding ' + binding).toContain(binding);
+    }
+  });
+
+  it('validates HTML offline instead of the rate-limited W3C endpoint', function () {
+    const ci = workflow('ci.yml');
+    const source = JSON.stringify(ci.jobs['html-validator']);
+    expect(source).toContain('html-validate@11.22.1');
+    expect(source).not.toContain('html-validator-cli');
   });
 
   it('fails the dashboard post when the endpoint rejects it', function () {
