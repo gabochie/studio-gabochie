@@ -60,7 +60,15 @@ function parseWranglerJson(out) {
 
 function rowsOf(out) {
   const parsed = parseWranglerJson(out);
-  return Array.isArray(parsed) && parsed[0] && Array.isArray(parsed[0].results) ? parsed[0].results : [];
+  // Wrangler --json emits either a single { results: [...] } object or an
+  // array of them, depending on version. Handle both so PRAGMA checks see
+  // the real columns instead of treating every column as missing.
+  if (parsed && !Array.isArray(parsed) && Array.isArray(parsed.results)) return parsed.results;
+  if (Array.isArray(parsed)) {
+    if (parsed[0] && Array.isArray(parsed[0].results)) return parsed[0].results;
+    if (parsed[0] && Array.isArray(parsed[0].rows)) return parsed[0].rows;
+  }
+  return [];
 }
 
 function fail(message, err) {
