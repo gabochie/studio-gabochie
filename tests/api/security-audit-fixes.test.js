@@ -183,6 +183,13 @@ describe('SEC-16 middleware origin parsing and admin gate', function () {
     expect(res.status).toBe(200);
   });
 
+  it('allows CI secret database setup without an Origin', async function () {
+    var env = { DB: mockDb({ settings: [] }) };
+    expect((await middleware(ctx('https://studio.gabochie.com/api/db/setup', { method: 'POST' }, env))).status).toBe(403);
+    var res = await middleware(ctx('https://studio.gabochie.com/api/db/setup', { method: 'POST', headers: { 'X-CI-Secret': 'ci-secret' } }, env));
+    expect(res.status).toBe(200);
+  });
+
   it('no longer treats a bare CF_Authorization cookie as an admin session', async function () {
     var env = { DB: mockDb({ sessions: [], settings: [] }) };
     var res = await middleware(ctx('https://studio.gabochie.com/admin/', { headers: { Cookie: 'CF_Authorization=forged' } }, env));

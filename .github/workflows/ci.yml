@@ -122,10 +122,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Start mock ExpressPay gateway
         run: node scripts/mock-expresspay.cjs > mock-expresspay.log 2>&1 &
-      - name: Configure local CI secret
-        run: printf 'CI_WEBHOOK_SECRET=local-ci-secret\n' > .dev.vars
-      - name: Start Pages dev with D1 binding
-        run: npx wrangler pages dev . --d1 DB --port 8788 > wrangler-dev.log 2>&1 &
+      - name: Start Pages dev with D1 binding and CI secret
+        run: npx wrangler pages dev . --d1 DB --binding CI_WEBHOOK_SECRET=local-ci-secret --port 8788 > wrangler-dev.log 2>&1 &
       - name: Wait for full stack
         run: |
           ready=0
@@ -147,6 +145,12 @@ jobs:
           echo "$RESP" | jq '{status, tables, failed_count}'
           if [ "$(echo "$RESP" | jq -r '.status')" != "ok" ]; then
             echo "::error::Local D1 setup failed"
+            exit 1
+          fi
+          GUITAR_RESP=$(curl -fsS http://localhost:8788/api/guitar/setup)
+          echo "$GUITAR_RESP" | jq '{ok, message, tables: (.tables | length)}'
+          if [ "$(echo "$GUITAR_RESP" | jq -r '.ok')" != "true" ]; then
+            echo "::error::Local guitar schema setup failed"
             exit 1
           fi
       - name: Run full-stack onboarding/payment E2E

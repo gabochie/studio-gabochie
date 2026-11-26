@@ -247,7 +247,6 @@ export function getStatements(seedAnchor) {
       once('dedupe-testimonials', `DELETE FROM testimonials WHERE id NOT IN (SELECT MIN(id) FROM testimonials GROUP BY author, content)`),
       once('dedupe-stats', `DELETE FROM stats WHERE id NOT IN (SELECT MIN(id) FROM stats GROUP BY label, value)`),
       once('dedupe-gallery', `DELETE FROM gallery WHERE id NOT IN (SELECT MIN(id) FROM gallery GROUP BY title, image_url)`),
-      once('dedupe-tasks', `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`),
       // ── Unique indexes so INSERT OR IGNORE prevents future duplicates ──
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_testimonials_unique ON testimonials(author, content)`,
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_stats_unique ON stats(label, value)`,
@@ -286,11 +285,6 @@ export function getStatements(seedAnchor) {
       addColumn('donations', 'provider', 'TEXT DEFAULT \'\''),
       addColumn('donations', 'metadata', 'TEXT DEFAULT \'{}\''),
       addColumn('bookings', 'amount', 'REAL DEFAULT 0'),
-      addColumn('students', 'salt', 'TEXT DEFAULT \'\''),
-      addColumn('students', 'reset_token', 'TEXT DEFAULT \'\''),
-      addColumn('students', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
-      addColumn('users', 'reset_token', 'TEXT DEFAULT \'\''),
-      addColumn('users', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
       `CREATE TABLE IF NOT EXISTS referrals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         referrer_code TEXT NOT NULL,
@@ -363,6 +357,7 @@ export function getStatements(seedAnchor) {
       `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
       `CREATE INDEX IF NOT EXISTS idx_tasks_source ON tasks(source)`,
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_tasks_title ON tasks(title)`,
+      once('dedupe-tasks', `DELETE FROM tasks WHERE id NOT IN (SELECT MIN(id) FROM tasks GROUP BY title)`),
       // Sponsor auth tables
       `CREATE TABLE IF NOT EXISTS sponsors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -401,6 +396,7 @@ export function getStatements(seedAnchor) {
         updated_at TEXT DEFAULT NULL,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
+      addColumn('email_queue', 'status', 'TEXT DEFAULT \'pending\''),
       `CREATE INDEX IF NOT EXISTS idx_email_queue_scheduled ON email_queue(scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_sent ON email_queue(sent_at)`,
       `CREATE INDEX IF NOT EXISTS idx_email_queue_status ON email_queue(status)`,
@@ -477,6 +473,9 @@ export function getStatements(seedAnchor) {
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`,
       `CREATE INDEX IF NOT EXISTS idx_students_email ON students(email)`,
+      addColumn('students', 'salt', 'TEXT DEFAULT \'\''),
+      addColumn('students', 'reset_token', 'TEXT DEFAULT \'\''),
+      addColumn('students', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
       // Module progress tracking tables
       `CREATE TABLE IF NOT EXISTS modules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -603,6 +602,8 @@ export function getStatements(seedAnchor) {
       addColumn('users', 'password_hash', 'TEXT DEFAULT \'\''),
       addColumn('users', 'membership_tier', 'TEXT NOT NULL DEFAULT \'free\''),
       addColumn('users', 'membership_expires_at', 'TEXT DEFAULT \'\''),
+      addColumn('users', 'reset_token', 'TEXT DEFAULT \'\''),
+      addColumn('users', 'reset_token_expires_at', 'TEXT DEFAULT \'\''),
       addColumn('enrollments', 'user_id', 'INTEGER DEFAULT 0'),
       `CREATE TABLE IF NOT EXISTS membership_plans (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -679,7 +680,6 @@ export function getStatements(seedAnchor) {
       // Normalise legacy ISO timestamps so lexicographic date gating works.
       `UPDATE posts SET published_at = substr(replace(replace(published_at, 'T', ' '), 'Z', ''), 1, 19) WHERE published_at LIKE '%T%' OR published_at LIKE '%Z%'`,
       `UPDATE posts SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
-      `UPDATE social_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
       `UPDATE email_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
       `UPDATE whatsapp_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
       // ── Social content queue / 30-day assessment calendar ──
@@ -708,6 +708,7 @@ export function getStatements(seedAnchor) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_social_queue_status_date ON social_queue(status, scheduled_at)`,
       `CREATE INDEX IF NOT EXISTS idx_social_queue_campaign ON social_queue(utm_campaign)`,
+      `UPDATE social_queue SET scheduled_at = substr(replace(replace(scheduled_at, 'T', ' '), 'Z', ''), 1, 19) WHERE scheduled_at LIKE '%T%' OR scheduled_at LIKE '%Z%'`,
       ...calendarSeed,
       // ── Cold Outreach Table ──
       `CREATE TABLE IF NOT EXISTS cold_outreach (

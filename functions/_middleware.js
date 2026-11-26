@@ -173,7 +173,8 @@ export async function onRequest(context) {
   var providerVerified = request.headers.has('X-Mailin-Signature') ||
     request.headers.has('x-nowpayments-sig') ||
     request.headers.has('X-Flutterwave-Signature') ||
-    path.indexOf('/api/gateways/expresspay/callback') === 0;
+    path.indexOf('/api/gateways/expresspay/callback') === 0 ||
+    (path === '/api/db/setup' && request.headers.has('X-CI-Secret'));
   if (isMutating && !providerVerified) {
     var originRaw = request.headers.get('Origin') || '';
     var allowedOrigins = [url.origin, 'https://studio.gabochie.com'];

@@ -61,6 +61,7 @@ describe('release configuration', function () {
     expect(source).toContain('wrangler pages dev');
     expect(source).toContain('mock-expresspay.cjs');
     expect(source).toContain('/api/db/setup');
+    expect(source).toContain('/api/guitar/setup');
     expect(source).toContain('tests/e2e/onboarding.spec.js');
     expect(source).toContain('--reporter=json');
     expect(source).toContain('skipped');

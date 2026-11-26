@@ -86,6 +86,40 @@ describe('db setup statements', function () {
     expect(seeds[0]).toContain("'2026-01-01 09:00:00'");
   });
 
+  it('creates social_queue before normalising its timestamps', function () {
+    var sql = getStatements().map(function (s) { return typeof s === 'string' ? s : s.sql; });
+    var create = sql.findIndex(function (s) { return s.indexOf('CREATE TABLE IF NOT EXISTS social_queue') === 0; });
+    var update = sql.findIndex(function (s) { return s.indexOf('UPDATE social_queue SET scheduled_at') === 0; });
+    expect(create).toBeGreaterThan(-1);
+    expect(update).toBeGreaterThan(create);
+  });
+
+  it('guards the email_queue status column before indexing it', function () {
+    var statements = getStatements();
+    var guarded = statements.some(function (s) {
+      return typeof s === 'object' && s.kind === 'column' && s.table === 'email_queue' && s.column === 'status';
+    });
+    var index = statements.findIndex(function (s) { return typeof s === 'string' && s.indexOf('CREATE INDEX IF NOT EXISTS idx_email_queue_status') === 0; });
+    expect(guarded).toBe(true);
+    expect(index).toBeGreaterThan(-1);
+  });
+
+  it('creates every table before altering or cleaning it up', function () {
+    var statements = getStatements();
+    var sql = statements.map(function (s) { return typeof s === 'string' ? s : s.sql; });
+    for (var s of statements) {
+      if (typeof s === 'string') continue;
+      var table = s.kind === 'column'
+        ? s.table
+        : ((s.sql.match(/\b(?:FROM|INTO|UPDATE)\s+(\w+)/i) || [])[1]);
+      if (!table) continue;
+      var create = sql.findIndex(function (v) { return v.indexOf('CREATE TABLE IF NOT EXISTS ' + table + ' (') === 0; });
+      var use = sql.findIndex(function (v) { return v === s.sql; });
+      expect(create, 'missing CREATE TABLE for ' + table).toBeGreaterThan(-1);
+      expect(use, 'missing statement for ' + table).toBeGreaterThan(create);
+    }
+  });
+
   it('describes guarded columns and one-time destructive migrations', function () {
     var statements = getStatements();
     var columns = statements.filter(function (s) { return typeof s === 'object' && s.kind === 'column'; });
