@@ -520,6 +520,33 @@ export function getStatements(seedAnchor) {
       )`,
       `CREATE INDEX IF NOT EXISTS idx_certificates_code ON certificates(certificate_code)`,
       `CREATE INDEX IF NOT EXISTS idx_certificates_email ON certificates(student_email)`,
+      // Guitar course enrolments and their audit trail (CI verifies these tables).
+      `CREATE TABLE IF NOT EXISTS guitar_enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER DEFAULT 0,
+        student_name TEXT DEFAULT '',
+        student_email TEXT NOT NULL,
+        student_phone TEXT DEFAULT '',
+        plan TEXT NOT NULL DEFAULT 'bronze',
+        status TEXT NOT NULL DEFAULT 'pending',
+        payment_ref TEXT DEFAULT '',
+        payment_amount REAL DEFAULT 0,
+        currency TEXT DEFAULT 'GHS',
+        enrolled_at TEXT NOT NULL DEFAULT (datetime('now')),
+        expires_at TEXT DEFAULT '',
+        UNIQUE(student_email, plan)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_guitar_enrollments_email ON guitar_enrollments(student_email)`,
+      `CREATE INDEX IF NOT EXISTS idx_guitar_enrollments_status ON guitar_enrollments(status)`,
+      `CREATE TABLE IF NOT EXISTS guitar_enrollment_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enrollment_id INTEGER NOT NULL,
+        event TEXT NOT NULL,
+        details TEXT DEFAULT '{}',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (enrollment_id) REFERENCES guitar_enrollments(id)
+      )`,
+      `CREATE INDEX IF NOT EXISTS idx_guitar_enrollment_log_enrollment ON guitar_enrollment_log(enrollment_id)`,
       // Gamification: XP columns on enrollments
       addColumn('enrollments', 'xp', 'INTEGER DEFAULT 0'),
       addColumn('enrollments', 'xp_level', 'INTEGER DEFAULT 1'),

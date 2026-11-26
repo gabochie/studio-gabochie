@@ -139,6 +139,12 @@ describe('db setup statements', function () {
     })).toBe(true);
   });
 
+  it('creates the guitar enrolment tables required by CI verification', function () {
+    var sql = getStatements().map(function (s) { return typeof s === 'string' ? s : s.sql; });
+    expect(sql.some(function (s) { return s.indexOf('CREATE TABLE IF NOT EXISTS guitar_enrollments') === 0; })).toBe(true);
+    expect(sql.some(function (s) { return s.indexOf('CREATE TABLE IF NOT EXISTS guitar_enrollment_log') === 0; })).toBe(true);
+  });
+
   it('runs guarded columns before statements that depend on them', async function () {
     var db = fakeDb({ missing: { table: 'email_queue', column: 'scheduled_at' } });
     var res = await onRequest(ctx(db));
