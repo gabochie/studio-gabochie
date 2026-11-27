@@ -101,6 +101,12 @@ describe('production-readiness frontend fixes', function () {
     });
   });
 
+  it('keeps the 2027 hero inside the shared content gutter', function () {
+    var html = read('courses/year-package-2027/index.html');
+    expect(html).toContain('.hero{padding:var(--space-12) var(--space-6) var(--space-10)}');
+    expect(html).toContain('.hero{padding:var(--space-10) var(--space-6) var(--space-8)}');
+  });
+
   it('removes dormant pixels and the missing LOTL audio source', function () {
     var start = read('start/index.html');
     expect(start).not.toContain('PIXEL_IDS');
