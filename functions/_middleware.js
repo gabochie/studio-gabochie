@@ -91,6 +91,36 @@ function isGeoScope(path) {
   return path === '/love-of-the-lord' || path.indexOf('/love-of-the-lord/') === 0;
 }
 
+// Public theme toggle. Admin/console keep their own dark-only UI, and the
+// guitar sub-app is deliberately dark even when the rest of the site is light.
+const THEME_ASSET_VERSION = '20261127';
+const THEME_COLORS = { dark: '#0A1628', light: '#F7F4EC' };
+const THEME_STATUS_BAR = { dark: 'black-translucent', light: 'default' };
+const THEME_HEAD = '<link rel="stylesheet" href="/assets/css/theme.css?v=' + THEME_ASSET_VERSION + '">' +
+  '<script src="/assets/js/theme.js?v=' + THEME_ASSET_VERSION + '"></script>';
+
+function isThemeScope(path, isNews) {
+  if (isNews || pathIsExcludedFromTheme(path)) return false;
+  return true;
+}
+
+function pathIsExcludedFromTheme(path) {
+  if (path === '/admin' || path === '/admin/' || path.indexOf('/admin/') === 0) return true;
+  if (path === '/console' || path.indexOf('/console/') === 0) return true;
+  if (path.indexOf('/guitar/') === 0 || path.indexOf('/school/guitar/') === 0) return true;
+  if (path.indexOf('/api/') === 0) return true;
+  return false;
+}
+
+function themeFromRequest(request) {
+  try {
+    var match = (request.headers.get('Cookie') || '').match(/(?:^|;\s*)ga_theme=([^;]+)/);
+    var value = match ? decodeURIComponent(match[1]).toLowerCase() : '';
+    if (value === 'light' || value === 'dark') return value;
+  } catch (_e) { /* invalid cookie falls through to the dark default */ }
+  return 'dark';
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -196,20 +226,48 @@ export async function onRequest(context) {
 
   var pageResponse = await context.next();
 
-  // Annotate Love Of The Lord HTML with the visitor's country + default currency.
-  // Every other path is returned untouched.
-  if (isGeoScope(path)) {
-    var contentType = pageResponse.headers.get('Content-Type') || '';
-    if (contentType.indexOf('text/html') >= 0) {
-      var country = (request.cf && request.cf.country) || '';
-      var currency = geoCurrencyFor(country);
-      return new HTMLRewriter().on('html', {
-        element: function (el) {
+  var contentType = pageResponse.headers.get('Content-Type') || '';
+  var isHtml = method === 'GET' && contentType.indexOf('text/html') >= 0;
+  var applyTheme = isHtml && isThemeScope(path, isNews);
+  var applyGeo = isHtml && isGeoScope(path);
+
+  // Annotate Love Of The Lord HTML with country + currency, and add the public
+  // theme bootstrap to every other in-scope HTML response. One rewriter keeps
+  // the two transforms in a single pass and avoids bulk-editing 100+ pages.
+  if (applyTheme || applyGeo) {
+    var theme = applyTheme ? themeFromRequest(request) : 'dark';
+    var rewriter = new HTMLRewriter();
+
+    rewriter.on('html', {
+      element: function (el) {
+        if (applyGeo) {
+          var country = (request.cf && request.cf.country) || '';
           el.setAttribute('data-geo-country', country);
-          el.setAttribute('data-geo-currency', currency);
+          el.setAttribute('data-geo-currency', geoCurrencyFor(country));
         }
-      }).transform(pageResponse);
+        if (applyTheme) el.setAttribute('data-theme', theme);
+      }
+    });
+
+    if (applyTheme) {
+      rewriter.on('head', {
+        element: function (el) {
+          el.append(THEME_HEAD, { html: true });
+        }
+      });
+      rewriter.on('meta[name="theme-color"]', {
+        element: function (el) {
+          el.setAttribute('content', THEME_COLORS[theme]);
+        }
+      });
+      rewriter.on('meta[name="apple-mobile-web-app-status-bar-style"]', {
+        element: function (el) {
+          el.setAttribute('content', THEME_STATUS_BAR[theme]);
+        }
+      });
     }
+
+    return rewriter.transform(pageResponse);
   }
 
   return pageResponse;

@@ -166,5 +166,8 @@ All admin UI and public site default to dark theme:
 - Borders: `#1E3250` (subtle blue-grey)
 - Accent: `#C9A84C` (gold) for CTAs, highlights, active states
 
-The public site supports `prefers-color-scheme: light` via media query.
+The public site has a user-switchable **day theme** in addition to the default night theme. The toggle is injected by `functions/_middleware.js` into public HTML responses; it writes a `ga_theme` cookie and `localStorage ga_theme`, with values `dark` or `light`. Cookies win on the next page load, so the choice is applied before paint. First-time visitors always get night, regardless of OS preference.
+
+`assets/css/theme.css` and `assets/js/theme.js` are public-only. Admin, console, news and the deliberately dark guitar sub-app are excluded from injection. The old `prefers-color-scheme` media query remains in `main.css` as a fallback for static previews, but the injected `data-theme` attribute makes night authoritative on the live site.
+
 No light theme is currently implemented for the admin panel.
