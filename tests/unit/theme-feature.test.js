@@ -42,6 +42,8 @@ describe('public day theme and toggle', function () {
     expect(themeCss).not.toMatch(/^:root\s*\{/m);
     expect(themeCss).toContain('--bg-primary:#F7F4EC!important');
     expect(themeCss).toContain('--gold:#8A6A17!important');
+    expect(themeCss).toContain('button:where(:not(.theme-toggle):not(.nav-toggle):not([style*="#C9A84C" i]))');
+    expect(themeCss).not.toContain('button:not(#themeToggle)');
   });
 
   it('adds an accessible toggle without changing nav link counts', function () {

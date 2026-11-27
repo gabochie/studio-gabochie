@@ -195,7 +195,7 @@ html[data-theme="light"] .footer-legal--bar{border-color:var(--border)!important
 html[data-theme="light"] .brand-footer img{filter:none!important}
 
 /* ─── Buttons and form controls ─── */
-html[data-theme="light"] button:not(#themeToggle):not(.nav-toggle):not([style*="#C9A84C" i]){
+html[data-theme="light"] button:where(:not(.theme-toggle):not(.nav-toggle):not([style*="#C9A84C" i])){
   background:var(--bg-card-hover)!important;
   border-color:var(--border)!important;
   color:var(--text-body)!important

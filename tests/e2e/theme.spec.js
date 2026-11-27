@@ -24,6 +24,29 @@ test('public theme toggle switches, persists and leaves nav intact', async ({ pa
   await expect(toggle).toHaveAttribute('aria-label', 'Switch to night theme');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F7F4EC');
 
+  // The generic legacy-button override must not beat gold primary buttons.
+  await page.evaluate(function () {
+    var generic = document.createElement('button');
+    generic.id = 'themeProbeGeneric';
+    generic.textContent = 'Generic';
+    var primary = document.createElement('button');
+    primary.id = 'themeProbePrimary';
+    primary.className = 'btn btn-gold';
+    primary.textContent = 'Primary';
+    document.body.appendChild(generic);
+    document.body.appendChild(primary);
+  });
+  await expect.poll(function () {
+    return page.locator('#themeProbeGeneric').evaluate(function (el) {
+      return getComputedStyle(el).backgroundColor;
+    });
+  }).toBe('rgb(241, 235, 218)');
+  await expect.poll(function () {
+    return page.locator('#themeProbePrimary').evaluate(function (el) {
+      return getComputedStyle(el).backgroundColor;
+    });
+  }).toBe('rgb(138, 106, 23)');
+
   await page.reload();
   await expect(root).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('#themeToggle')).toHaveAttribute('aria-pressed', 'true');
